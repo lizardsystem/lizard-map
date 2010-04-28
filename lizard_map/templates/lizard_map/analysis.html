@@ -1,0 +1,70 @@
+{# Summary view: small map on the left to show selection; graphs on the right #}
+{% extends "krw_waternet/gisbase.html" %}
+{% block subtitle %} Analysis {% endblock %}
+
+{% block map-javascript %}
+<script type="text/javascript" src="{{ STATIC_URL }}krw_waternet/check-tree.js"></script>
+
+<script type="text/javascript">
+
+    showMap = function() {
+        var options = {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            //displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            units: "m",
+            numZoomLevels: 18,
+            //maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+            //                                 20037508, 20037508.34),
+            maxExtent: new OpenLayers.Bounds(129394,6659216,1335570,7306790)
+        };
+        var map = new OpenLayers.Map('map', options);
+        // Layers.
+        //var metacartaLayer = new OpenLayers.Layer.WMS(
+        //    "OpenLayers WMS",
+        //    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'});
+        var openstreetmapLayer = new OpenLayers.Layer.OSM(
+            "Openstreetmap",
+            "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
+            {buffer: 0});
+        map.addLayer(openstreetmapLayer);
+        var areasLayer = new OpenLayers.Layer.WMS(
+            "areas",
+            "{% url krw_areas_wms %}",
+            {layers: 'basic'},
+            {singleTile: true,
+             isBaseLayer: false});
+        map.addLayer(areasLayer);
+        //map.addLayer(metacartaLayer);
+        // Controls.
+        map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
+        // Extend zooming.
+        //map.setCenter(new OpenLayers.LonLat(550000, 6870000), 10);
+        map.zoomToExtent(new OpenLayers.Bounds(405679,6772124,707223,6934017));
+    };
+    $(document).ready(showMap);
+
+</script>
+{% endblock map-javascript %}
+
+
+{% block sidebar %}
+<div id="gridSource-div"></div>
+<br />
+<div id="gridA-div"></div>
+<br />
+<div id="gridB-div"></div>
+{% endblock %}
+
+{% block object-tabs %}
+<ul>
+  <li class="selected">Analysescherm</li>
+  <li>Weergaveopties</li>
+  <li class="last">Instructies</li>
+</ul>
+{% endblock %}
+
+{% block object-actions %}
+{# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
+<span class="ss_sprite ss_printer">Printen</span> |
+<span class="ss_sprite ss_application_go">Exporteren</span>
+{% endblock %}

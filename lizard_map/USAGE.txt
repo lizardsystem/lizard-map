@@ -1,0 +1,9 @@
+Usage of lizard-map
+=============================================
+
+
+Usage:
+
+    >>> import lizard_map
+
+Show how to import the main classes and how to use them.
