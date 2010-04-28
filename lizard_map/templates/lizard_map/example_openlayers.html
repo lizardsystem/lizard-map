@@ -1,0 +1,31 @@
+{% extends "lizard_ui/lizardgis.html" %}
+
+{% block title %}Openlayers demo{% endblock %}
+
+{% block head-extras %}
+  <script type="text/javascript">
+      $(document).ready(showExampleMap);
+      $("#map").height(mainContentHeight);
+      var map = new OpenLayers.Map('map');
+      var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+      map.addLayer(wms);
+      map.zoomToMaxExtent();
+  </script>
+{% endblock head-extras %}
+
+{% block sidebar %}
+<ul>
+  <li>This</li>
+  <li>is the</li>
+  <li>sidebar</li>
+</ul>
+<p>
+  The sidebar is for showing overview info, details, perhaps a small
+  "navigator" map to indicate the current location, etc.
+</p>
+{% endblock %}
+
+{% block object-tabs %}
+workspace a ....... workspace b
+{% endblock %}

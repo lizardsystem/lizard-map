@@ -1,0 +1,21 @@
+Changelog of lizard-map
+===================================================
+
+
+0.3 (2010-04-14)
+----------------
+
+- Reordered templates a bit between lizard-ui and us.
+
+
+0.2 (2010-03-29)
+----------------
+
+- Really added analysis.html
+
+
+0.1 (2010-03-29)
+----------------
+
+- Moved analysis.html from krw-waternet to lizard-map
+- Initial library skeleton created by nensskel.  Jack Ha
