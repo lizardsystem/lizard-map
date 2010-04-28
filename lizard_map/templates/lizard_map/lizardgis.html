@@ -1,0 +1,14 @@
+{% extends "lizard_ui/lizardbase.html" %}
+
+{% block base-head-extras %}
+  {% comment %}
+    Extra javascript we inject into the special for-other-base-templates
+    block.  For regular javascript/css injection, use the head-extras block.
+  {% endcomment %}
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}openlayers/OpenLayers.js"></script>
+{% endblock base-head-extras %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock content %}
