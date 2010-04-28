@@ -14,7 +14,7 @@ long_description = '\n\n'.join([
 install_requires = [
     'Django',
     'django-staticfiles',
-    'lizard-ui',
+    'lizard-ui >= 0.6',
     ],
 
 tests_require = [

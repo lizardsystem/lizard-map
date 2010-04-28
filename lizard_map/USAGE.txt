@@ -2,8 +2,11 @@ Usage of lizard-map
 =============================================
 
 
-Usage:
+Smoke test:
 
     >>> import lizard_map
+    >>> import lizard_map.models
+    >>> import lizard_map.urls
+    >>> import lizard_map.views
 
 Show how to import the main classes and how to use them.

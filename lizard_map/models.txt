@@ -1,0 +1,24 @@
+Lizard-map models
+=================
+
+All map-related work uses workspaces and workspace items.
+
+    >>> from lizard_map.models import Workspace
+    >>> from lizard_map.models import WorkspaceItem
+
+
+A workspace can contain workspace items:
+
+    >>> workspace1 = Workspace()
+    >>> workspace1.save()
+    >>> workspace1
+    <Workspace: ...>
+    >>> workspace1.workspace_items.all()
+    []
+    >>> workspace_item1 = workspace1.workspace_items.create(
+    ...     url='http://example.com')
+    >>> workspace_item2 = workspace1.workspace_items.create(
+    ...     url='http://example.org')
+    >>> workspace1.workspace_items.all()
+    [<WorkspaceItem: http://example.com>, <WorkspaceItem: http://example.org>]
+
