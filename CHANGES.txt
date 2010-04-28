@@ -1,0 +1,9 @@
+Changelog of lizard-map
+===================================================
+
+
+0.1 (2010-03-29)
+----------------
+
+- Moved analysis.html from krw-waternet to lizard-map
+- Initial library skeleton created by nensskel.  Jack Ha
