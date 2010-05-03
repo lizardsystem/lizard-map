@@ -22,3 +22,31 @@ A workspace can contain workspace items:
     >>> workspace1.workspace_items.all()
     [<WorkspaceItem: http://example.com>, <WorkspaceItem: http://example.org>]
 
+A workspace item can point to a method that returns a layer:
+
+    >>> workspace_item1.has_layer()
+    False
+    >>> workspace_item1.layer_method = 'todo'
+    >>> workspace_item1.has_layer()
+    True
+
+The layer method probably needs arguments. You can store them as a json string:
+
+    >>> workspace_item1.layer_method_json
+    ''
+    >>> workspace_item1.layer_method_arguments()
+    {}
+    >>> workspace_item1.layer_method_json = '{"bla": "yes"}'
+    >>> workspace_item1.layer_method_arguments()
+    {'bla': 'yes'}
+
+The method is looked up as a setuptools entry point:
+
+    >>> workspace_item1.layers()  #TODO
+
+
+
+A workspace item always has a name:
+
+    >>> workspace_item1.name()
+    u''
