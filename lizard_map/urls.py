@@ -10,13 +10,16 @@ urlpatterns = patterns(
     url(r'^wms/',
         'lizard_map.views.wms',
         name="lizard_map_wms"),
-    #(r'^admin/', include(admin.site.urls)),
+    url(r'^workspace/(?P<workspace_id>\d+)/',
+        'lizard_map.views.workspace',
+        name="lizard_map_workspace"),
     )
 
 
 if settings.DEBUG:
     urlpatterns += patterns(
         '',
+        (r'^admin/', include(admin.site.urls)),
         (r'', include('staticfiles.urls')),
         # Demo map stuff.
         (r'^$', 'django.views.generic.simple.direct_to_template',

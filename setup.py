@@ -41,5 +41,9 @@ setup(name='lizard-map',
       extras_require = {'test': tests_require},
       entry_points={
           'console_scripts': [
-          ]},
+          ],
+          'lizard_map.layer_method': [
+            'shapefile_layer = lizard_map.layers:shapefile_layer',
+            ]
+          },
       )

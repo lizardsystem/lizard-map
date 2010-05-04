@@ -1,9 +1,25 @@
-from django.db import models
 import simplejson
+
+import pkg_resources
+from django.db import models
+from django.contrib.auth.models import User
+
+ENTRY_POINT = 'lizard_map.layer_method'
+
+
+class LayerMethodNotFoundError(Exception):
+    pass
 
 
 class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
+    name = models.CharField(max_length=80,
+                            blank=True)
+    extent_north = models.FloatField(blank=True, null=True)  # Default value for NL?
+    extent_east = models.FloatField(blank=True, null=True)
+    extent_south = models.FloatField(blank=True, null=True)
+    extent_west = models.FloatField(blank=True, null=True)
+    owner = models.ForeignKey(User, blank=True, null=True)
 
     def __unicode__(self):
         return u'%s' % self.id
@@ -30,6 +46,7 @@ class WorkspaceItem(models.Model):
         """Return friendly name"""
         return u''
 
+    @property
     def layer_method_arguments(self):
         """Return dict of parsed layer_method_json."""
         json = self.layer_method_json
@@ -41,6 +58,14 @@ class WorkspaceItem(models.Model):
         """Can I provide a WMS layer?"""
         return bool(self.layer_method)
 
+    @property
+    def _layer_method_instance(self):
+        for entrypoint in pkg_resources.iter_entry_points(group=ENTRY_POINT):
+            if entrypoint.name == self.layer_method:
+                return entrypoint.load()
+        raise LayerMethodNotFoundError(
+            u'Entry point for %r not found' % self.layer_method)
+
     def layers(self):
-        """Return layers for a mapnik map."""
-        pass
+        """Return layers and styles for a mapnik map."""
+        return self._layer_method_instance(**self.layer_method_arguments)

@@ -5,6 +5,7 @@ Usage of lizard-map
 Smoke test:
 
     >>> import lizard_map
+    >>> import lizard_map.admin
     >>> import lizard_map.models
     >>> import lizard_map.urls
     >>> import lizard_map.views

@@ -1,9 +1,25 @@
 import StringIO
 
 import mapnik
-import pkg_resources
 import PIL.Image
 from django.http import HttpResponse
+from django.template import RequestContext
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render_to_response
+
+from lizard_map.layers import shapefile_layer
+from lizard_map.models import Workspace
+
+
+def workspace(request,
+              workspace_id,
+              template='lizard_map/workspace.html'):
+    """Render page with one workspace"""
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    return render_to_response(
+        template,
+        {'workspace': workspace},
+        context_instance=RequestContext(request))
 
 
 def wms(request):  # workspace=xyz, layers=abc?
@@ -30,28 +46,12 @@ def wms(request):  # workspace=xyz, layers=abc?
     m.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
-    layer = mapnik.Layer(
-        "Waterlichamen",
-        ("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 "
-         "+k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel "
-         "+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 "
-         "+units=m +no_defs"))
-    # TODO: ^^^ translation!
-    layer.datasource = mapnik.Shapefile(
-        file=pkg_resources.resource_filename(
-            'lizard_map',
-            'test_shapefiles/KRWwaterlichamen_vlakken.shp'))
-    area_style = mapnik.Style()
-    layout_rule = mapnik.Rule()
-    area_looks = mapnik.PolygonSymbolizer(mapnik.Color('lightblue'))
-    line_looks = mapnik.LineSymbolizer(mapnik.Color('blue'), 1)
-    area_looks.fill_opacity = 1
-    layout_rule.symbols.append(area_looks)
-    layout_rule.symbols.append(line_looks)
-    area_style.rules.append(layout_rule)
-    m.append_style('Area style', area_style)
-    layer.styles.append('Area style')
-    m.layers.append(layer)
+    # TODO: iterate
+    layers, styles = shapefile_layer()
+    for layer in layers:
+        m.layers.append(layer)
+    for name in styles:
+        m.append_style(name, styles[name])
 
     #Zoom and create image
     m.zoom_to_box(mapnik.Envelope(*bbox))
