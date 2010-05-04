@@ -7,14 +7,20 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    (r'^$', 'django.views.generic.simple.direct_to_template',
-     {'template': 'lizard_map/example_openlayers.html'}),
+    url(r'^wms/',
+        'lizard_map.views.wms',
+        name="lizard_map_wms"),
     #(r'^admin/', include(admin.site.urls)),
     )
 
 
 if settings.DEBUG:
-    # Add this also to the projects that use this application
-    urlpatterns += patterns('',
+    urlpatterns += patterns(
+        '',
         (r'', include('staticfiles.urls')),
+        # Demo map stuff.
+        (r'^$', 'django.views.generic.simple.direct_to_template',
+         {'template': 'lizard_map/example_openlayers.html'}),
+        (r'^example_wms/$', 'django.views.generic.simple.direct_to_template',
+         {'template': 'lizard_map/example_wms.html'}),
     )

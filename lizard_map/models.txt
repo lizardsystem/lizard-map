@@ -44,8 +44,6 @@ The method is looked up as a setuptools entry point:
 
     >>> workspace_item1.layers()  #TODO
 
-
-
 A workspace item always has a name:
 
     >>> workspace_item1.name()

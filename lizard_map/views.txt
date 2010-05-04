@@ -1,0 +1,4 @@
+Views
+=====
+
+    >>> from lizard_map.views import wms
