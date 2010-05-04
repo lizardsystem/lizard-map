@@ -1,0 +1,11 @@
+<div class="sidebarbox">
+  <h2>Workspaces</h2>
+  {% for workspace in workspaces %}
+  <h3>{{ workspace }}</h3>
+  <div> todo </div>
+  {% empty %}
+  <div>
+    No workspaces chosen/defined/whatever.
+  </div>
+  {% endfor %}
+</div>

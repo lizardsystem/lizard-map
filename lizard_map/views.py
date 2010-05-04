@@ -25,6 +25,7 @@ def wms(request):  # workspace=xyz, layers=abc?
         '+nadgrids=@null +no_defs +over')  # No commas between strings!
     # TODO ^^^ Is this the correct one for google?
     m = mapnik.Map(width, height)
+    # TODO: rename 'm'
     m.srs = google_mercator
     m.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')

@@ -7,6 +7,8 @@
   <script type="text/javascript">
 
       showMap = function() {
+
+          // Set up projection and bounds.
           var options = {
               projection: new OpenLayers.Projection("EPSG:900913"),
               //displayProjection: new OpenLayers.Projection("EPSG:4326"),
@@ -17,15 +19,15 @@
               maxExtent: new OpenLayers.Bounds(129394,6659216,1335570,7306790)
           };
           var map = new OpenLayers.Map('map', options);
-          // Layers.
-          //var metacartaLayer = new OpenLayers.Layer.WMS(
-          //    "OpenLayers WMS",
-          //    "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'});
+
+          // Set up base layer.
           var openstreetmapLayer = new OpenLayers.Layer.OSM(
               "Openstreetmap",
               "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
               {buffer: 0});
           map.addLayer(openstreetmapLayer);
+
+          // Add our own data layers.
           var areasLayer = new OpenLayers.Layer.WMS(
               "areas",
               "{% url lizard_map_wms %}",
@@ -33,13 +35,17 @@
               {singleTile: true,
                isBaseLayer: false});
           map.addLayer(areasLayer);
-          //map.addLayer(metacartaLayer);
-          // Controls.
+
+          // Set up controls, zoom and center.
           map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
           // Extend zooming.
           map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
-          //map.zoomToExtent(new OpenLayers.Bounds(405679,6772124,707223,6934017));
+
       };
       $(document).ready(showMap);
   </script>
 {% endblock map-javascript %}
+
+
+{% block sidebar %}
+{% endblock sidebar %}
