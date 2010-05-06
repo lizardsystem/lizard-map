@@ -2,7 +2,7 @@ import mapnik
 import pkg_resources
 
 
-def shapefile_layer():
+def shapefile_layer(**kwargs):
     """Return layer and styles for a shapefile.
 
     Registered as ``shapefile_layer``
@@ -20,9 +20,9 @@ def shapefile_layer():
         file=pkg_resources.resource_filename(
             'lizard_map',
             'test_shapefiles/KRWwaterlichamen_vlakken.shp'))
-    area_looks = mapnik.PolygonSymbolizer(mapnik.Color('lightblue'))
-    line_looks = mapnik.LineSymbolizer(mapnik.Color('blue'), 1)
-    area_looks.fill_opacity = 1
+    area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975')) #light brownish
+    line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
+    area_looks.fill_opacity = 0.5
     layout_rule = mapnik.Rule()
     layout_rule.symbols.append(area_looks)
     layout_rule.symbols.append(line_looks)

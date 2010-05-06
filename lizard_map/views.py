@@ -18,12 +18,13 @@ def workspace(request,
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     return render_to_response(
         template,
-        {'workspace': workspace},
+        {'workspaces': [workspace]},
         context_instance=RequestContext(request))
 
-
-def wms(request):  # workspace=xyz, layers=abc?
+def wms(request, workspace_id):
     """Return PNG as WMS service."""
+
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
 
     # WMS standard parameters
     width = int(request.GET.get('WIDTH'))
@@ -47,11 +48,12 @@ def wms(request):  # workspace=xyz, layers=abc?
     #m.background = mapnik.Color('blue')
 
     # TODO: iterate
-    layers, styles = shapefile_layer()
-    for layer in layers:
-        m.layers.append(layer)
-    for name in styles:
-        m.append_style(name, styles[name])
+    for workspace_item in workspace.workspace_items.all():
+        layers, styles = workspace_item.layers()
+        for layer in layers:
+            m.layers.append(layer)
+        for name in styles:
+            m.append_style(name, styles[name])
 
     #Zoom and create image
     m.zoom_to_box(mapnik.Envelope(*bbox))

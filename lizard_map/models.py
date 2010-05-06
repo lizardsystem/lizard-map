@@ -6,6 +6,14 @@ from django.contrib.auth.models import User
 
 ENTRY_POINT = 'lizard_map.layer_method'
 
+def layer_method_names():
+    """Return allowed layer method names (from entrypoints)
+    
+    in tuple of 2-tuples
+    """
+    entrypoints = [(entrypoint.name, entrypoint.name) for 
+                   entrypoint in pkg_resources.iter_entry_points(group=ENTRY_POINT)]
+    return tuple(entrypoints)
 
 class LayerMethodNotFoundError(Exception):
     pass
@@ -27,12 +35,12 @@ class Workspace(models.Model):
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
+
     workspace = models.ForeignKey(Workspace,
                                   related_name='workspace_items')
     url = models.URLField(verify_exists=False)
     layer_method = models.SlugField(blank=True,
-                                    choices=(('a', 'Aaaa'),
-                                             ('b', 'Bbbb')))
+                                    choices=layer_method_names())
     # ^^^ string that identifies a setuptools entry point that points to a
     # specific method that returns (WMS) layers.  Often only one, but it *can*
     # be more than one layer.
@@ -48,11 +56,17 @@ class WorkspaceItem(models.Model):
 
     @property
     def layer_method_arguments(self):
-        """Return dict of parsed layer_method_json."""
+        """Return dict of parsed layer_method_json. 
+
+        Converts keys to str.
+        """
         json = self.layer_method_json
         if not json:
             return {}
-        return simplejson.loads(json)
+        result = {}
+        for k, v in simplejson.loads(json).items():
+            result[str(k)] = v
+        return result
 
     def has_layer(self):
         """Can I provide a WMS layer?"""

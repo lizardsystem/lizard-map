@@ -28,13 +28,15 @@
           map.addLayer(openstreetmapLayer);
 
           // Add our own data layers.
-          var areasLayer = new OpenLayers.Layer.WMS(
-              "areas",
-              "{% url lizard_map_wms %}",
-              {layers: 'basic'},
-              {singleTile: true,
-               isBaseLayer: false});
-          map.addLayer(areasLayer);
+          {% for workspace in workspaces %}
+            var areasLayer = new OpenLayers.Layer.WMS(
+                "{{ workspace.name }}",
+                "{% url lizard_map_wms workspace_id=workspace.id %}",
+                {layers: 'basic'},
+                {singleTile: true,
+                 isBaseLayer: false});
+            map.addLayer(areasLayer);
+          {% endfor %}
 
           // Set up controls, zoom and center.
           map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));

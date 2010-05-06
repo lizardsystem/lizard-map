@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^wms/',
+    url(r'^workspace/(?P<workspace_id>\d+)/wms/',
         'lizard_map.views.wms',
         name="lizard_map_wms"),
     url(r'^workspace/(?P<workspace_id>\d+)/',
