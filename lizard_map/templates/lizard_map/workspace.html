@@ -1,2 +1,6 @@
 {% extends "lizard_map/wms.html" %}
+{% load workspaces %}
 
+{% block sidebar %}
+{% workspace workspace %}
+{% endblock sidebar %}

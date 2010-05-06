@@ -1,0 +1,10 @@
+<div class="sidebarbox">
+  <h2>{{ workspace.name }}</h2>
+  <ul>
+    {% for workspace_item in workspace.workspace_items.all %}
+    <li><a href="{{ workspace_item.url }}">{{ workspace_item }}</a></li>
+    {% empty %}
+    No workspaceitems
+    {% endfor %}
+  </ul>
+</div>
