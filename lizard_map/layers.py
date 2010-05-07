@@ -2,7 +2,7 @@ import mapnik
 import pkg_resources
 
 
-def shapefile_layer(**kwargs):
+def shapefile_layer():
     """Return layer and styles for a shapefile.
 
     Registered as ``shapefile_layer``
@@ -32,3 +32,8 @@ def shapefile_layer(**kwargs):
     layer.styles.append('Area style')
     layers = [layer]
     return layers, styles
+
+
+def points_layer():
+    """Return layer and styles that render points."""
+    return [], []
