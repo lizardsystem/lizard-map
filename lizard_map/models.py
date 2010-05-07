@@ -6,14 +6,16 @@ from django.contrib.auth.models import User
 
 ENTRY_POINT = 'lizard_map.layer_method'
 
+
 def layer_method_names():
     """Return allowed layer method names (from entrypoints)
-    
+
     in tuple of 2-tuples
     """
-    entrypoints = [(entrypoint.name, entrypoint.name) for 
-                   entrypoint in pkg_resources.iter_entry_points(group=ENTRY_POINT)]
+    entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in
+                   pkg_resources.iter_entry_points(group=ENTRY_POINT)]
     return tuple(entrypoints)
+
 
 class LayerMethodNotFoundError(Exception):
     pass
@@ -23,7 +25,8 @@ class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
     name = models.CharField(max_length=80,
                             blank=True)
-    extent_north = models.FloatField(blank=True, null=True)  # Default value for NL?
+    # TODO below: default extend values for NL?
+    extent_north = models.FloatField(blank=True, null=True)
     extent_east = models.FloatField(blank=True, null=True)
     extent_south = models.FloatField(blank=True, null=True)
     extent_west = models.FloatField(blank=True, null=True)
@@ -55,7 +58,7 @@ class WorkspaceItem(models.Model):
 
     @property
     def layer_method_arguments(self):
-        """Return dict of parsed layer_method_json. 
+        """Return dict of parsed layer_method_json.
 
         Converts keys to str.
         """
