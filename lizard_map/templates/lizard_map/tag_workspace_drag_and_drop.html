@@ -1,0 +1,17 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+        {% for workspace in workspaces %}
+        $("#workspace_{{ workspace }}").sortable({
+            update: function() {
+                var order = $("#workspace_{{ workspace }}.workspace_items").sortable("serialize");
+                $.post("{% url lizard_map_workspace_item_reorder workspace %}", 
+                       order, function(response){
+                    //$(".workspace_items").html(response);
+                });
+            }
+        });
+        {% endfor %}
+
+    });
+
+</script>

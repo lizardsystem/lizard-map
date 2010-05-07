@@ -2,13 +2,16 @@ import StringIO
 
 import mapnik
 import PIL.Image
+from django.db.models import Max
 from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
+import simplejson as json
 
 from lizard_map.layers import shapefile_layer
 from lizard_map.models import Workspace
+from lizard_map.models import WorkspaceItem
 
 
 def workspace(request,
@@ -20,6 +23,40 @@ def workspace(request,
         template,
         {'workspaces': [workspace]},
         context_instance=RequestContext(request))
+
+def workspace_item_reorder(request, workspace_id):
+    """reorder workspace items
+
+    reorders workspace_item[] in new order. expects all workspace_items from workspace
+
+    TODO: check permissions
+    """
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    workspace_items = [get_object_or_404(WorkspaceItem, pk=workspace_item_id) for 
+                       workspace_item_id in request.POST.getlist('workspace_items[]')]
+    for i, workspace_item in enumerate(workspace_items):
+        if workspace_item.workspace == workspace:
+            workspace_item.index = i*10
+            workspace_item.save()
+    return HttpResponse(json.dumps(''))
+
+def workspace_item_add(request, workspace_id):
+    """add new workspace item to workspace"""
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+
+    max_index = workspace.workspace_items.aggregate(Max('index'))['index__max']
+
+    workspace.workspace_items.create(layer_method='shapefile_layer', index=max_index+10)
+
+    return HttpResponse(json.dumps(''))
+
+def workspace_item_delete(request, workspace_item_id):
+    """delete workspace item from workspace"""
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    workspace_item.delete()
+
+    return HttpResponse(json.dumps(''))
+
 
 def wms(request, workspace_id):
     """Return PNG as WMS service."""

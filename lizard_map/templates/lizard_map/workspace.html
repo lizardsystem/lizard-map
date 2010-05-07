@@ -1,6 +1,10 @@
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
+{% block head-extras %}
+{% workspace_drag_and_drop workspaces %}
+{% endblock %}
+
 {% block sidebar %}
 
 {% workspace workspaces.0 %}

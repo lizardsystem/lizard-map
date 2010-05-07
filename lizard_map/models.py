@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 import simplejson
 
 import pkg_resources
@@ -35,9 +36,14 @@ class Workspace(models.Model):
     def __unicode__(self):
         return u'%s' % self.id
 
+    def get_absolute_url(self):
+        return reverse('lizard_map_workspace', kwargs={'workspace_id': self.id})
+
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
+    class Meta:
+        ordering = ['index']
 
     workspace = models.ForeignKey(Workspace,
                                   related_name='workspace_items')
@@ -49,8 +55,10 @@ class WorkspaceItem(models.Model):
     layer_method_json = models.TextField(blank=True)
     # ^^^ Contains json (TODO: add json verification)
 
+    index = models.IntegerField(blank=True, default=0)
+
     def __unicode__(self):
-        return u'ws=%s %s' % (self.workspace, self.layer_method)
+        return u'(%d) ws=%s %s' % (self.id, self.workspace, self.layer_method)
 
     def name(self):
         """Return friendly name"""

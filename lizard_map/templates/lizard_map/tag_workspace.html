@@ -1,10 +1,11 @@
-<div class="sidebarbox">
+<div id="workspace" class="sidebarbox workspace">
   <h2>{{ workspace.name }}</h2>
-  <ul>
+  <ul id="workspace_{{ workspace.id }}" class="workspace_items">
     {% for workspace_item in workspace.workspace_items.all %}
-    <li><a href="{{ workspace_item.url }}">{{ workspace_item }}</a></li>
+    <li id="workspace_items_{{ workspace_item.id }}"><a href="{{ workspace_item.url }}">{{ workspace_item }}</a></li>
     {% empty %}
     No workspaceitems
     {% endfor %}
   </ul>
+trash clear load save
 </div>

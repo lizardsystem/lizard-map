@@ -16,3 +16,8 @@ def workspace_debug_info(context):
 def workspace(workspace):
     """Display workspace."""
     return {'workspace': workspace}
+
+@register.inclusion_tag("lizard_map/tag_workspace_drag_and_drop.html")
+def workspace_drag_and_drop(workspaces):
+    """inserts javascript for workspaces"""
+    return {'workspaces': workspaces}
