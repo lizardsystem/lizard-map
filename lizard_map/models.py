@@ -50,7 +50,7 @@ class WorkspaceItem(models.Model):
     # ^^^ Contains json (TODO: add json verification)
 
     def __unicode__(self):
-        return u'%s %s' % (self.workspace, self.layer_method)
+        return u'ws=%s %s' % (self.workspace, self.layer_method)
 
     def name(self):
         """Return friendly name"""
@@ -85,3 +85,5 @@ class WorkspaceItem(models.Model):
     def layers(self):
         """Return layers and styles for a mapnik map."""
         return self._layer_method_instance(**self.layer_method_arguments)
+
+

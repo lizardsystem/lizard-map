@@ -44,6 +44,7 @@ setup(name='lizard-map',
           ],
           'lizard_map.layer_method': [
             'shapefile_layer = lizard_map.layers:shapefile_layer',
+            'points_layer = lizard_map.layers:points_layer',
             ]
           },
       )

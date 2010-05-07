@@ -15,12 +15,10 @@ A workspace can contain workspace items:
     <Workspace: ...>
     >>> workspace1.workspace_items.all()
     []
-    >>> workspace_item1 = workspace1.workspace_items.create(
-    ...     url='http://example.com')
-    >>> workspace_item2 = workspace1.workspace_items.create(
-    ...     url='http://example.org')
+    >>> workspace_item1 = workspace1.workspace_items.create()
+    >>> workspace_item2 = workspace1.workspace_items.create()
     >>> workspace1.workspace_items.all()
-    [<WorkspaceItem: http://example.com>, <WorkspaceItem: http://example.org>]
+    [<WorkspaceItem: ws=1 >, <WorkspaceItem: ws=1 >]
 
 A workspace item can point to a method that returns a layer:
 
