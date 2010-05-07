@@ -38,7 +38,6 @@ class WorkspaceItem(models.Model):
 
     workspace = models.ForeignKey(Workspace,
                                   related_name='workspace_items')
-    url = models.URLField(verify_exists=False)
     layer_method = models.SlugField(blank=True,
                                     choices=layer_method_names())
     # ^^^ string that identifies a setuptools entry point that points to a
@@ -48,7 +47,7 @@ class WorkspaceItem(models.Model):
     # ^^^ Contains json (TODO: add json verification)
 
     def __unicode__(self):
-        return u'%s' % self.url
+        return u'%s %s' % (self.workspace, self.layer_method)
 
     def name(self):
         """Return friendly name"""
