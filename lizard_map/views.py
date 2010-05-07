@@ -41,25 +41,24 @@ def wms(request, workspace_id):
         '+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
         '+nadgrids=@null +no_defs +over')  # No commas between strings!
     # TODO ^^^ Is this the correct one for google?
-    m = mapnik.Map(width, height)
-    # TODO: rename 'm'
-    m.srs = google_mercator
-    m.background = mapnik.Color('transparent')
+    mapnik_map = mapnik.Map(width, height)
+    mapnik_map.srs = google_mercator
+    mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
     # TODO: iterate
     for workspace_item in workspace.workspace_items.all():
         layers, styles = workspace_item.layers()
         for layer in layers:
-            m.layers.append(layer)
+            mapnik_map.layers.append(layer)
         for name in styles:
-            m.append_style(name, styles[name])
+            mapnik_map.append_style(name, styles[name])
 
     #Zoom and create image
-    m.zoom_to_box(mapnik.Envelope(*bbox))
+    mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
     # m.zoom_to_box(layer.envelope())
     img = mapnik.Image(width, height)
-    mapnik.render(m, img)
+    mapnik.render(mapnik_map, img)
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
     rgba_image = PIL.Image.fromstring('RGBA', (width, height), img.tostring())
     buf = StringIO.StringIO()
