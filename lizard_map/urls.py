@@ -22,6 +22,9 @@ urlpatterns = patterns(
     url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
+    url(r'^workspaceitem/delete/',
+        'lizard_map.views.workspace_item_delete',
+        name="lizard_map_workspace_item_delete"),
     )
 
 

@@ -25,7 +25,8 @@ class LayerMethodNotFoundError(Exception):
 class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
     name = models.CharField(max_length=80,
-                            blank=True)
+                            blank=True,
+                            default='workspace')
     # TODO below: default extend values for NL?
     extent_north = models.FloatField(blank=True, null=True)
     extent_east = models.FloatField(blank=True, null=True)
@@ -45,6 +46,8 @@ class WorkspaceItem(models.Model):
     class Meta:
         ordering = ['index']
 
+    name = models.CharField(max_length=80,
+                            blank=True)
     workspace = models.ForeignKey(Workspace,
                                   related_name='workspace_items')
     layer_method = models.SlugField(blank=True,
@@ -58,11 +61,11 @@ class WorkspaceItem(models.Model):
     index = models.IntegerField(blank=True, default=0)
 
     def __unicode__(self):
-        return u'(%d) ws=%s %s' % (self.id, self.workspace, self.layer_method)
+        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.layer_method)
 
-    def name(self):
-        """Return friendly name"""
-        return u''
+    #def name(self):
+    #    """Return friendly name"""
+    #    return u''
 
     @property
     def layer_method_arguments(self):

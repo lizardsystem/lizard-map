@@ -1,16 +1,50 @@
 <script type="text/javascript">
     $(document).ready(function(){
         {% for workspace in workspaces %}
-        $("#workspace_{{ workspace }}").sortable({
+        {# make the items in a workspace sortable #}
+        $("#workspace_{{ workspace.id }}").sortable({
             update: function() {
                 var order = $("#workspace_{{ workspace }}.workspace_items").sortable("serialize");
                 $.post("{% url lizard_map_workspace_item_reorder workspace %}", 
-                       order, function(response){
-                    //$(".workspace_items").html(response);
-                });
+                       order);
             }
         });
+
+        {# make the workspace droppable, only accept items from 'app' #}
+        $("#workspace_{{ workspace.id }}").droppable({
+            accept: '.workspace_acceptable',
+            drop: function(event, ui) { 
+                //fade out draggable item 
+                ui.helper.fadeOut();
+                //get layer_method and parameters from url, 
+                name = ui.draggable.attr("name"); //TODO: deze attr naam is misschien gevaarlijk
+                layer_method = ui.draggable.attr("layer_method");
+                layer_method_json = ui.draggable.attr("layer_method_json");
+                //make workspace item of it
+                $.post("{% url lizard_map_workspace_item_add workspace_id=workspace.id %}",
+                       { name: name,
+                         layer_method: layer_method,
+                         layer_method_json: layer_method_json
+                       },
+                       function(data) {
+                           alert('new workspace item created. reload page');
+                       }
+                      );
+            }
+        });
+
         {% endfor %}
+
+        {% comment %}for all workspaces we have a trash bin, all trash bins are in fact the same{% endcomment %}
+        $("#workspace_trash").droppable({
+            accept: '.workspace_item',
+            drop: function(event, ui) {
+                workspace_item_id = ui.draggable.attr("value");
+                $.post("{% url lizard_map_workspace_item_delete %}", 
+                       { workspace_item_id: workspace_item_id });
+                ui.draggable.remove();
+            }
+        });
 
     });
 

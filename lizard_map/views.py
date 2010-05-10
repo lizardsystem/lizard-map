@@ -43,15 +43,32 @@ def workspace_item_reorder(request, workspace_id):
 def workspace_item_add(request, workspace_id):
     """add new workspace item to workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
+    print request.POST
+    name = request.POST['name']
+    layer_method = request.POST['layer_method']
+    layer_method_json = request.POST['layer_method_json']
 
-    max_index = workspace.workspace_items.aggregate(Max('index'))['index__max']
+    if workspace.workspace_items.count() > 0:
+        max_index = workspace.workspace_items.aggregate(Max('index'))['index__max']
+    else:
+        max_index = 10
 
-    workspace.workspace_items.create(layer_method='shapefile_layer', index=max_index+10)
+    workspace.workspace_items.create(layer_method=layer_method, 
+                                     index=max_index+10, 
+                                     layer_method_json=layer_method_json,
+                                     name=name)
 
     return HttpResponse(json.dumps(''))
 
-def workspace_item_delete(request, workspace_item_id):
-    """delete workspace item from workspace"""
+def workspace_item_delete(request, workspace_item_id=None):
+    """delete workspace item from workspace
+
+    if workspace_item_id is not provided, it tries to get the variable
+    workspace_item_id from the request.POST
+    """
+    if workspace_item_id is None:
+        print request.POST
+        workspace_item_id = request.POST['workspace_item_id']
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     workspace_item.delete()
 
