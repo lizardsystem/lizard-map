@@ -12,10 +12,12 @@ def workspace_debug_info(context):
     workspaces = Workspace.objects.all()
     return {'workspaces': workspaces}
 
+
 @register.inclusion_tag("lizard_map/tag_workspace.html")
 def workspace(workspace):
     """Display workspace."""
     return {'workspace': workspace}
+
 
 @register.inclusion_tag("lizard_map/tag_workspace_drag_and_drop.html")
 def workspace_drag_and_drop(workspaces):
