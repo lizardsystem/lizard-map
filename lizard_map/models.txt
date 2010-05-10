@@ -1,11 +1,14 @@
 Lizard-map models
 =================
 
+
+Workspaces
+----------
+
 All map-related work uses workspaces and workspace items.
 
     >>> from lizard_map.models import Workspace
     >>> from lizard_map.models import WorkspaceItem
-
 
 A workspace can contain workspace items:
 
@@ -18,7 +21,7 @@ A workspace can contain workspace items:
     >>> workspace_item1 = workspace1.workspace_items.create()
     >>> workspace_item2 = workspace1.workspace_items.create()
     >>> workspace1.workspace_items.all()
-    [<WorkspaceItem: ws=1 >, <WorkspaceItem: ws=1 >]
+    [<WorkspaceItem: (1) name= ws=1 >, <WorkspaceItem: (2) name= ws=1 >]
 
 A workspace item can point to a method that returns a layer:
 
@@ -64,5 +67,57 @@ parameters (from json):
 
 A workspace item always has a name:
 
-    >>> workspace_item1.name()
-    u''
+    >>> workspace_item1.name
+    ''
+
+
+Attached geometry
+-----------------
+
+There are several items that need geometry.  And it isn't always handy or
+possible to add the geometry fields to the original item's model.  So django's
+generic relation mechanism is used to hook geometry to any and all.
+
+    >>> from django.contrib.contenttypes.models import ContentType
+    >>> from lizard_map.models import AttachedPoint
+
+We'll abuse a workspace to tie a point geometry to it:
+
+    >>> from django.contrib.gis.geos import Point
+    >>> workspace1_geometry = AttachedPoint(
+    ...     content_object=workspace1,
+    ...     point=Point(1, 1))
+    >>> workspace1_geometry.save()
+
+Workspace doesn't have any reverse relation defined, so we have to query it by hand:
+
+    >>> workspace_type = ContentType.objects.get_for_model(workspace1)
+    >>> AttachedPoint.objects.filter(content_type__pk=workspace_type.id,
+    ...                              object_id=workspace1.id)
+    [<AttachedPoint: (1.0, 1.0)>]
+
+You *can* define a relation back, though:
+http://docs.djangoproject.com/en/dev/ref/contrib/contenttypes/#reverse-generic-relations
+
+We'll add a second workspace plus geometry:
+
+    >>> workspace2 = Workspace()
+    >>> workspace2.save()
+    >>> workspace2_geometry = AttachedPoint(
+    ...     content_object=workspace2,
+    ...     point=Point(2, 2))
+    >>> workspace2_geometry.save()
+
+Important for the mapnik integration: getting the sql query to grab all items
+of a certain type with attached points:
+
+    >>> AttachedPoint.objects.all()
+    [<AttachedPoint: (1.0, 1.0)>, <AttachedPoint: (2.0, 2.0)>]
+    >>> AttachedPoint.objects.filter(content_type__pk=workspace_type.id)
+    [<AttachedPoint: (1.0, 1.0)>, <AttachedPoint: (2.0, 2.0)>]
+    >>> print AttachedPoint.objects.filter(content_type__pk=workspace_type.id).query
+    SELECT ...
+    >>> #.values
+    >>> #.values_list
+
+

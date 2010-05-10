@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     'lizard_map',
     'lizard_ui',
     'staticfiles',
+    'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -27,7 +28,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # {{ STATIC_URL }}myapp/my.css in your templates.
     'staticfiles.context_processors.static_url',
     )
-
 
 try:
     # Import local settings that aren't stored in svn.

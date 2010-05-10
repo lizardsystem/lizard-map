@@ -32,8 +32,3 @@ def shapefile_layer():
     layer.styles.append('Area style')
     layers = [layer]
     return layers, styles
-
-
-def points_layer():
-    """Return layer and styles that render points."""
-    return [], []

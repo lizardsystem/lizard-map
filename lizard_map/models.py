@@ -1,9 +1,13 @@
 from django.core.urlresolvers import reverse
 import simplejson
 
-import pkg_resources
-from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+from django.contrib.gis.db import models as gismodels
+import pkg_resources
+
 
 ENTRY_POINT = 'lizard_map.layer_method'
 
@@ -98,3 +102,16 @@ class WorkspaceItem(models.Model):
         return self._layer_method_instance(**self.layer_method_arguments)
 
 
+class AttachedPoint(models.Model):
+    """Point geometry attached to another model instance."""
+    # The geometry.
+    point = gismodels.PointField()
+    # Three fields needed to attach ourselves to another model instance.
+    content_type = models.ForeignKey(ContentType)
+    object_id = models.PositiveIntegerField()
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+    objects = gismodels.GeoManager()
+
+    def __unicode__(self):
+        return '(%s, %s)' % (self.point.x, self.point.y)
