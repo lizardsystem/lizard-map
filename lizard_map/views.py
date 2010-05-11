@@ -44,6 +44,7 @@ def workspace_item_reorder(request, workspace_id, template='lizard_map/tag_works
         {'workspace': workspace},
         context_instance=RequestContext(request))
 
+# TODO: put item_add and item_edit in 1 function
 def workspace_item_add(request, workspace_id, template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
@@ -100,6 +101,22 @@ def workspace_item_delete(request, workspace_item_id=None):
     workspace_item.delete()
 
     return HttpResponse(json.dumps(workspace_id))
+
+
+def session_workspace_edit_item(request, workspace_item_id=None, workspace_category='user'):
+    """edits workspace item, de function automatically finds best appropriate workspace
+
+    if workspace_item_id is None, a new workspace_item will be created using workspace_item_add
+    TODO if workspace_item_id is filled in, apply edits and save
+
+    """
+    workspace_id = request.session['workspaces'][workspace_category][0]
+    
+    if workspace_item_id is None:
+        return workspace_item_add(request, workspace_id)
+
+    #todo: maak functie af
+    return
 
 
 def wms(request, workspace_id):
