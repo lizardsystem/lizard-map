@@ -117,6 +117,7 @@ class AttachedPoint(models.Model):
 ############
 
 class WorkspaceManager():
+
     def __init__(self, request):
         self.request = request
         self.workspaces = {}
@@ -171,20 +172,20 @@ class WorkspaceManager():
             changes = self.load_workspaces()
 
         #check if components exist, else create them
-        if not self.workspaces['default']:
+        if not 'default' in self.workspaces:
             try:
                 self.workspaces['default'] = [Workspace.objects.get(name='achtergrond'), ]
             except Workspace.DoesNotExist:
                 pass
             changes = True
 
-        if not self.workspaces['temp']:
+        if not 'temp' in self.workspaces:
             workspace_temp = Workspace(name='temp')
             workspace_temp.save()
             self.workspaces['temp'] = [workspace_temp, ]
             changes = True
 
-        if not self.workspaces['user']:
+        if not 'user' in self.workspaces:
             workspace_user = Workspace()
             workspace_user.save()
             self.workspaces['user'] = [workspace_user, ]
