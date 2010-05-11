@@ -34,3 +34,9 @@ versions), add them as an "svn external" in the ``local_checkouts/`` directory
 and add them to the ``develop =`` list in buildout.cfg.
 
 Tests can always be run with ``bin/test`` or ``bin\test.exe``.
+
+External dependencies
+---------------------
+
+You need pysqlite 2.5+
+    $> sudo apt-get install python-pysqlite2
