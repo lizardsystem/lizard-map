@@ -1,16 +1,16 @@
-<div id="workspace" class="sidebarbox workspace">
+<div id="workspace_{{ workspace.id }}" class="sidebarbox workspace">
   <h2>{{ workspace.name }}</h2>
-  <ul id="workspace_{{ workspace.id }}" class="workspace_items">
+  <ul id="workspace_{{ workspace.id }}" class="workspace_items" workspace_id="{{ workspace.id }}">
     {% for workspace_item in workspace.workspace_items.all %}
-    <li id="workspace_items_{{ workspace_item.id }}" value="{{ workspace_item.id }}" class="workspace_item"><input id="" type="checkbox"/>{% if workspace_item.name %}{{ workspace_item.name }}{% else %}(noname){% endif %}</li>
+    <li id="workspace_items_{{ workspace_item.id }}" value="{{ workspace_item.id }}" class="workspace_item" workspace_id="{{ workspace.id }}"><input id="{{ workspace_item.id }}" class="workspace_item_checkbox" type="checkbox" checked="{{ workspace_item.visible }}" workspace_id="{{ workspace.id }}"/>{% if workspace_item.name %}{{ workspace_item.name }}{% else %}(noname){% endif %}</li>
     {% empty %}
     {# No workspaceitems #}
     <li>Drag items here</li>
     {% endfor %}
   </ul>
   {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
-  <div id="workspace_trash"><span class="ss_sprite ss_bin_empty"></span></div> 
-  <div id="workspace_new"><span class="ss_sprite ss_page_add"></span></div> 
-  <div id="workspace_load"><span class="ss_sprate ss_page_go"></span></div> 
-  <div id="workspace_save"><span class="ss_sprite ss_page_save"></span></div> 
+  <div class="workspace_trash"><span class="ss_sprite ss_bin_empty"></span></div> 
+  <div class="workspace_new"><span class="ss_sprite ss_page_add"></span></div> 
+  <div class="workspace_load"><span class="ss_sprate ss_page_go"></span></div> 
+  <div class="workspace_save"><span class="ss_sprite ss_page_save"></span></div> 
 </div>

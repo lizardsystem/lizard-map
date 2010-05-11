@@ -24,8 +24,8 @@ def workspace(request,
         {'workspaces': [workspace]},
         context_instance=RequestContext(request))
 
-def workspace_item_reorder(request, workspace_id):
-    """reorder workspace items
+def workspace_item_reorder(request, workspace_id, template='lizard_map/tag_workspace.html'):
+    """reorder workspace items. returns rendered workspace
 
     reorders workspace_item[] in new order. expects all workspace_items from workspace
 
@@ -34,16 +34,19 @@ def workspace_item_reorder(request, workspace_id):
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     workspace_items = [get_object_or_404(WorkspaceItem, pk=workspace_item_id) for 
                        workspace_item_id in request.POST.getlist('workspace_items[]')]
+    print workspace_items
     for i, workspace_item in enumerate(workspace_items):
-        if workspace_item.workspace == workspace:
-            workspace_item.index = i*10
-            workspace_item.save()
-    return HttpResponse(json.dumps(''))
+        workspace_item.workspace = workspace
+        workspace_item.index = i*10
+        workspace_item.save()
+    return render_to_response(
+        template,
+        {'workspace': workspace},
+        context_instance=RequestContext(request))
 
-def workspace_item_add(request, workspace_id):
-    """add new workspace item to workspace"""
+def workspace_item_add(request, workspace_id, template='lizard_map/tag_workspace.html'):
+    """add new workspace item to workspace. returns rendered workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
-    print request.POST
     name = request.POST['name']
     layer_method = request.POST['layer_method']
     layer_method_json = request.POST['layer_method_json']
@@ -57,22 +60,46 @@ def workspace_item_add(request, workspace_id):
                                      index=max_index+10, 
                                      layer_method_json=layer_method_json,
                                      name=name)
+    return render_to_response(
+        template,
+        {'workspace': workspace},
+        context_instance=RequestContext(request))
 
-    return HttpResponse(json.dumps(''))
+def workspace_item_edit(request, workspace_item_id=None, visible=None):
+    """edits a workspace_item
+
+    returns workspace_id
+
+    TODO: permission
+    """
+    if workspace_item_id is None:
+        workspace_item_id = request.POST['workspace_item_id']
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    if visible is None:
+        if request.POST['visible']:
+            visible = request.POST['visible']
+    if visible:
+        lookup = {'true': True, 'false': False}
+        workspace_item.visible = lookup[visible]
+    workspace_item.save()
+
+    return HttpResponse(json.dumps(workspace_item.workspace.id))
 
 def workspace_item_delete(request, workspace_item_id=None):
     """delete workspace item from workspace
+
+    returns workspace_id
 
     if workspace_item_id is not provided, it tries to get the variable
     workspace_item_id from the request.POST
     """
     if workspace_item_id is None:
-        print request.POST
         workspace_item_id = request.POST['workspace_item_id']
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    workspace_id = workspace_item.workspace.id
     workspace_item.delete()
 
-    return HttpResponse(json.dumps(''))
+    return HttpResponse(json.dumps(workspace_id))
 
 
 def wms(request, workspace_id):
@@ -101,7 +128,7 @@ def wms(request, workspace_id):
     #m.background = mapnik.Color('blue')
 
     # TODO: iterate
-    for workspace_item in workspace.workspace_items.all():
+    for workspace_item in workspace.workspace_items.filter(visible=True):
         layers, styles = workspace_item.layers()
         for layer in layers:
             mapnik_map.layers.append(layer)

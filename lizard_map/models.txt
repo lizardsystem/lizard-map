@@ -71,6 +71,16 @@ A workspace item always has a name:
     ''
 
 
+Using workspaces
+----------------
+
+Multiple workspaces are attached to a session. These workspaces are
+used in several screens. We need a client to use this functionality.
+
+     >>> from django.test.client import Client
+     >>> c = Client()
+     >>> workspace_manager = WorkspaceManager(request)
+
 Attached geometry
 -----------------
 

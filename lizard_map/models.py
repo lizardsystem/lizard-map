@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 import simplejson
 
 from django.contrib.auth.models import User
@@ -37,13 +38,13 @@ class Workspace(models.Model):
     extent_south = models.FloatField(blank=True, null=True)
     extent_west = models.FloatField(blank=True, null=True)
     owner = models.ForeignKey(User, blank=True, null=True)
+    visible = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u'%s' % self.id
+        return u'(%s) %s' % (self.id, self.name)
 
     def get_absolute_url(self):
         return reverse('lizard_map_workspace', kwargs={'workspace_id': self.id})
-
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
@@ -63,13 +64,10 @@ class WorkspaceItem(models.Model):
     # ^^^ Contains json (TODO: add json verification)
 
     index = models.IntegerField(blank=True, default=0)
+    visible = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.layer_method)
-
-    #def name(self):
-    #    """Return friendly name"""
-    #    return u''
 
     @property
     def layer_method_arguments(self):
@@ -115,3 +113,84 @@ class AttachedPoint(models.Model):
 
     def __unicode__(self):
         return '(%s, %s)' % (self.point.x, self.point.y)
+
+############
+
+class WorkspaceManager():
+    def __init__(self, request):
+        self.request = request
+        self.workspaces = {}
+
+    def save_workspaces(self):
+        """save workspaces to session"""
+        print self.workspaces
+        workspaces_id = {}
+        for k, workspace_list in self.workspaces.items():
+            workspaces_id[k] = [workspace.id for workspace in workspace_list]
+        self.request.session['workspaces'] = workspaces_id
+
+    def load_workspaces(self, workspaces_id=None):
+        """load workspaces from session
+
+        returns number of workspaces that could not be loaded"""
+        errors = 0
+        if workspaces_id is None:
+            workspaces_id = self.request.session['workspaces']
+        for k, workspace_ids in workspaces_id.items():
+            self.workspaces[k] = []
+            for workspace_id in workspace_ids:
+                try:
+                    new_workspace = Workspace.objects.get(pk=workspace_id)
+                    self.workspaces[k].append(new_workspace)
+                except Workspace.DoesNotExist:
+                    errors += 1
+        return errors
+
+    def load_or_create(self):
+        """load workspaces references by session['workspaces'] or
+        create new workspace
+
+        workspaces are returned in a dictionary:
+        {
+        'default': [...default layers],
+        'temp': workspace_temp,
+        'user': [...user workspaces]
+        }
+
+        they are stored in the session as a dictionary of ids:
+        {
+        'default': [id1, id2, ...],
+        'temp': [id, ],
+        'user': [id3, id4, ...],
+        }
+        """
+
+        self.workspaces = {}
+        changes = False
+        if self.request.session.has_key('workspaces'):
+            changes = self.load_workspaces()
+
+        #check if components exist, else create them
+        if not self.workspaces['default']:
+            try:
+                self.workspaces['default'] = [Workspace.objects.get(name='achtergrond'), ]
+            except Workspace.DoesNotExist:
+                pass
+            changes = True
+
+        if not self.workspaces['temp']:
+            workspace_temp = Workspace(name='temp')
+            workspace_temp.save()
+            self.workspaces['temp'] = [workspace_temp, ]
+            changes = True
+
+        if not self.workspaces['user']:
+            workspace_user = Workspace()
+            workspace_user.save()
+            self.workspaces['user'] = [workspace_user, ]
+            changes = True
+
+        if changes:
+            self.save_workspaces()
+        print self.workspaces
+        return self.workspaces

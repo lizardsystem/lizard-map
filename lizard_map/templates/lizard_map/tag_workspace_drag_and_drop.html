@@ -1,17 +1,23 @@
 <script type="text/javascript">
     $(document).ready(function(){
-        {% for workspace in workspaces %}
+        {% for workspace in workspaces.user %}
         {# make the items in a workspace sortable #}
-        $("#workspace_{{ workspace.id }}").sortable({
+        $("ul#workspace_{{ workspace.id }}").sortable({
             update: function() {
-                var order = $("#workspace_{{ workspace }}.workspace_items").sortable("serialize");
-                $.post("{% url lizard_map_workspace_item_reorder workspace %}", 
-                       order);
-            }
+                var order = $("#workspace_{{ workspace.id }}.workspace_items").sortable("serialize");
+                $.post("{% url lizard_map_workspace_item_reorder workspace_id=workspace.id %}", 
+                       order,
+                       function(data) {
+                           //$("div#workspace_{{ workspace.id }}").replaceWith(data);
+                           updateLayer({{ workspace.id }});
+                       }
+                      );
+            },
+            connectWith: '.workspace_items'
         });
 
         {# make the workspace droppable, only accept items from 'app' #}
-        $("#workspace_{{ workspace.id }}").droppable({
+        $("ul#workspace_{{ workspace.id }}").droppable({
             accept: '.workspace_acceptable',
             drop: function(event, ui) { 
                 //fade out draggable item 
@@ -27,7 +33,8 @@
                          layer_method_json: layer_method_json
                        },
                        function(data) {
-                           alert('new workspace item created. reload page');
+                           //$("div#workspace_{{ workspace.id }}").replaceWith(data);
+                           updateLayer({{ workspace.id }});
                        }
                       );
             }
@@ -36,16 +43,36 @@
         {% endfor %}
 
         {% comment %}for all workspaces we have a trash bin, all trash bins are in fact the same{% endcomment %}
-        $("#workspace_trash").droppable({
+        $(".workspace_trash").droppable({
             accept: '.workspace_item',
             drop: function(event, ui) {
                 workspace_item_id = ui.draggable.attr("value");
                 $.post("{% url lizard_map_workspace_item_delete %}", 
-                       { workspace_item_id: workspace_item_id });
+                       { workspace_item_id: workspace_item_id }, function(workspace_id) {
+                           updateLayer(workspace_id);
+                       });
                 ui.draggable.remove();
             }
         });
 
+        {# make checkboxes of workspace_items respond when clicked #}
+        $(".workspace_item_checkbox").bind('click', function() {
+            $.post("{% url lizard_map_workspace_item_edit %}", 
+                   { workspace_item_id: this.id, visible: this.checked }, function(workspace_id) {
+                       updateLayer(workspace_id);
+                   });
+        });
+
     });
+
+    updateWorkspaces = function() {
+        alert('updating workspaces');
+    };
+
+
+    updateAll = function() {
+        alert('updating all');
+        updateWorkspaces();
+    };
 
 </script>

@@ -25,6 +25,9 @@ urlpatterns = patterns(
     url(r'^workspaceitem/delete/',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
+    url(r'^workspaceitem/edit/',
+        'lizard_map.views.workspace_item_edit',
+        name="lizard_map_workspace_item_edit"),
     )
 
 

@@ -5,6 +5,12 @@
   bla bla
   {% endcomment %}
   <script type="text/javascript">
+    var layers = []
+
+    //layers is globally defined in wms.html
+    updateLayer = function(workspace_id) {
+        layers[workspace_id].mergeNewParams({'random': Math.random()});
+    };
 
       showMap = function() {
 
@@ -28,14 +34,16 @@
           map.addLayer(openstreetmapLayer);
 
           // Add our own data layers.
-          {% for workspace in workspaces %}
-            var areasLayer = new OpenLayers.Layer.WMS(
-                "{{ workspace.name }}",
-                "{% url lizard_map_wms workspace_id=workspace.id %}",
-                {layers: 'basic'},
-                {singleTile: true,
-                 isBaseLayer: false});
-            map.addLayer(areasLayer);
+          {% for workspace_list in workspaces.values %}
+            {% for workspace in workspace_list %}
+              layers[{{ workspace.id }}] = new OpenLayers.Layer.WMS(
+                  "{{ workspace.name }}",
+                  "{% url lizard_map_wms workspace_id=workspace.id %}",
+                  {layers: 'basic'},
+                  {singleTile: true,
+                   isBaseLayer: false});
+              map.addLayer(layers[{{ workspace.id }}]);
+            {% endfor %}
           {% endfor %}
 
           // Set up controls, zoom and center.
