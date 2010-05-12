@@ -186,6 +186,8 @@ def wms(request, workspace_id):
 
 
 def clickinfo(request, workspace_id):
+    # TODO: this one is mostly for testing, so it can be removed later on.
+    # [reinout]
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     # xy params from the GET request.
     x = float(request.GET.get('x'))
