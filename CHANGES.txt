@@ -5,7 +5,19 @@ Changelog of lizard-map
 0.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added views for showing and managing workspaces.
+
+- Added workspaces and workspaceitems for showing map layers and de-coupling
+  them with behind-the-scenes data.
+
+- Added generic WMS view.
+
+- Added shapefile layer rendering function.
+
+- Added generic layer rendering and layer searching hook-ups through
+  so-called setuptools entrypoints.
+
+- Added template tags for rendering workspaces.
 
 
 0.3 (2010-04-14)

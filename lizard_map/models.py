@@ -10,7 +10,8 @@ from django.contrib.gis.db import models as gismodels
 import pkg_resources
 
 
-ENTRY_POINT = 'lizard_map.layer_method'
+LAYER_ENTRY_POINT = 'lizard_map.layer_method'
+SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 
 
 def layer_method_names():
@@ -19,7 +20,7 @@ def layer_method_names():
     in tuple of 2-tuples
     """
     entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in
-                   pkg_resources.iter_entry_points(group=ENTRY_POINT)]
+                   pkg_resources.iter_entry_points(group=LAYER_ENTRY_POINT)]
     return tuple(entrypoints)
 
 
@@ -45,6 +46,7 @@ class Workspace(models.Model):
 
     def get_absolute_url(self):
         return reverse('lizard_map_workspace', kwargs={'workspace_id': self.id})
+
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
@@ -89,15 +91,29 @@ class WorkspaceItem(models.Model):
 
     @property
     def _layer_method_instance(self):
-        for entrypoint in pkg_resources.iter_entry_points(group=ENTRY_POINT):
+        for entrypoint in pkg_resources.iter_entry_points(group=LAYER_ENTRY_POINT):
             if entrypoint.name == self.layer_method:
                 return entrypoint.load()
         raise LayerMethodNotFoundError(
             u'Entry point for %r not found' % self.layer_method)
 
+    @property
+    def _search_method_instance(self):
+        for entrypoint in pkg_resources.iter_entry_points(group=SEARCH_ENTRY_POINT):
+            if entrypoint.name == self.layer_method:
+                return entrypoint.load()
+        return None
+
     def layers(self):
         """Return layers and styles for a mapnik map."""
         return self._layer_method_instance(**self.layer_method_arguments)
+
+    def search(self, x, y, radius=None):
+        """Return item(s) found at x, y."""
+        search_method = self._search_method_instance
+        if not search_method:
+            return []
+        return search_method(x, y, radius=radius, **self.layer_method_arguments)
 
 
 class AttachedPoint(models.Model):

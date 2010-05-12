@@ -48,6 +48,41 @@
 
           // Set up controls, zoom and center.
           map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
+          // Click handling.
+          {% if javascript_click_handler %}
+            MapClickControl = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'single': true,
+                    'double': false,
+                    'pixelTolerance': 0,
+                    'stopSingle': false,
+                    'stopDouble': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    );
+                    this.handler = new OpenLayers.Handler.Click(
+                        this, {
+                            'click': this.trigger
+                        }, this.handlerOptions
+                    );
+                },
+
+                trigger: function(e) {
+                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
+                    // map_click_handler comes from lizard_map.js.
+                    {{ javascript_click_handler }}(lonlat.lon, lonlat.lat, map);
+                }
+            });
+            var map_click_control = new MapClickControl();
+            map.addControl(map_click_control);
+            map_click_control.activate();
+          {% endif %}
           // Extend zooming.
           map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
 

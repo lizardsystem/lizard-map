@@ -32,7 +32,7 @@ def workspace_item_reorder(request, workspace_id, template='lizard_map/tag_works
     TODO: check permissions
     """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
-    workspace_items = [get_object_or_404(WorkspaceItem, pk=workspace_item_id) for 
+    workspace_items = [get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
                        workspace_item_id in request.POST.getlist('workspace_items[]')]
     print workspace_items
     for i, workspace_item in enumerate(workspace_items):
@@ -57,8 +57,8 @@ def workspace_item_add(request, workspace_id, template='lizard_map/tag_workspace
     else:
         max_index = 10
 
-    workspace.workspace_items.create(layer_method=layer_method, 
-                                     index=max_index+10, 
+    workspace.workspace_items.create(layer_method=layer_method,
+                                     index=max_index+10,
                                      layer_method_json=layer_method_json,
                                      name=name)
     return render_to_response(
@@ -144,7 +144,6 @@ def wms(request, workspace_id):
     mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
-    # TODO: iterate
     for workspace_item in workspace.workspace_items.filter(visible=True):
         layers, styles = workspace_item.layers()
         for layer in layers:
@@ -169,3 +168,25 @@ def wms(request, workspace_id):
     response = HttpResponse(buf.read())
     response['Content-type'] = 'image/png'
     return response
+
+
+def clickinfo(request, workspace_id):
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    # xy params from the GET request.
+    x = float(request.GET.get('x'))
+    y = float(request.GET.get('y'))
+
+    found = None
+    for workspace_item in workspace.workspace_items.filter(visible=True):
+        found_items = workspace_item.search(x, y)
+        if found_items:
+            # Grab first one for now.
+            found = found_items[0]
+            break
+
+    if found:
+        msg = "You found %s at  %s, %s" % (found.name, found.x, found.y)
+    else:
+        msg = 'Nothing found'
+    # TODO: return json: {msg, x_found, y_found}
+    return HttpResponse(msg)
