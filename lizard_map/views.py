@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 import simplejson as json
 
-from lizard_map.layers import shapefile_layer
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 
@@ -24,20 +23,25 @@ def workspace(request,
         {'workspaces': [workspace]},
         context_instance=RequestContext(request))
 
-def workspace_item_reorder(request, workspace_id, template='lizard_map/tag_workspace.html'):
+
+def workspace_item_reorder(request,
+                           workspace_id,
+                           template='lizard_map/tag_workspace.html'):
     """reorder workspace items. returns rendered workspace
 
-    reorders workspace_item[] in new order. expects all workspace_items from workspace
+    reorders workspace_item[] in new order. expects all workspace_items from
+    workspace
 
     TODO: check permissions
     """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
-    workspace_items = [get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
-                       workspace_item_id in request.POST.getlist('workspace_items[]')]
+    workspace_items = [
+        get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
+        workspace_item_id in request.POST.getlist('workspace_items[]')]
     print workspace_items
     for i, workspace_item in enumerate(workspace_items):
         workspace_item.workspace = workspace
-        workspace_item.index = i*10
+        workspace_item.index = i * 10
         workspace_item.save()
     return render_to_response(
         template,
@@ -45,7 +49,11 @@ def workspace_item_reorder(request, workspace_id, template='lizard_map/tag_works
         context_instance=RequestContext(request))
 
 # TODO: put item_add and item_edit in 1 function
-def workspace_item_add(request, workspace_id, template='lizard_map/tag_workspace.html'):
+
+
+def workspace_item_add(request,
+                       workspace_id,
+                       template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     name = request.POST['name']
@@ -53,18 +61,20 @@ def workspace_item_add(request, workspace_id, template='lizard_map/tag_workspace
     layer_method_json = request.POST['layer_method_json']
 
     if workspace.workspace_items.count() > 0:
-        max_index = workspace.workspace_items.aggregate(Max('index'))['index__max']
+        max_index = workspace.workspace_items.aggregate(
+            Max('index'))['index__max']
     else:
         max_index = 10
 
     workspace.workspace_items.create(layer_method=layer_method,
-                                     index=max_index+10,
+                                     index=max_index + 10,
                                      layer_method_json=layer_method_json,
                                      name=name)
     return render_to_response(
         template,
         {'workspace': workspace},
         context_instance=RequestContext(request))
+
 
 def workspace_item_edit(request, workspace_item_id=None, visible=None):
     """edits a workspace_item
@@ -86,6 +96,7 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 
     return HttpResponse(json.dumps(workspace_item.workspace.id))
 
+
 def workspace_item_delete(request, workspace_item_id=None):
     """delete workspace item from workspace
 
@@ -103,15 +114,19 @@ def workspace_item_delete(request, workspace_item_id=None):
     return HttpResponse(json.dumps(workspace_id))
 
 
-def session_workspace_edit_item(request, workspace_item_id=None, workspace_category='user'):
-    """edits workspace item, de function automatically finds best appropriate workspace
+def session_workspace_edit_item(request,
+                                workspace_item_id=None,
+                                workspace_category='user'):
+    """edits workspace item, the function automatically finds best appropriate
+    workspace
 
-    if workspace_item_id is None, a new workspace_item will be created using workspace_item_add
-    TODO if workspace_item_id is filled in, apply edits and save
+    if workspace_item_id is None, a new workspace_item will be created using
+    workspace_item_add TODO if workspace_item_id is filled in, apply edits and
+    save
 
     """
     workspace_id = request.session['workspaces'][workspace_category][0]
-    
+
     if workspace_item_id is None:
         return workspace_item_add(request, workspace_id)
 
