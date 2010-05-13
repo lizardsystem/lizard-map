@@ -19,6 +19,10 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/add/',
         'lizard_map.views.workspace_item_add',
         name="lizard_map_workspace_item_add"),
+    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/',
+        'lizard_map.views.workspace_items',
+        name="lizard_map_workspace_items"),
+
     url(r'^workspace/(?P<workspace_id>\d+)/',
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
@@ -26,6 +30,7 @@ urlpatterns = patterns(
         'lizard_map.views.session_workspace_edit_item',
         {'workspace_category': 'temp'},
         name="lizard_map_session_workspace_add_item_temp"),
+
     url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
@@ -35,6 +40,13 @@ urlpatterns = patterns(
     url(r'^workspaceitem/edit/',
         'lizard_map.views.workspace_item_edit',
         name="lizard_map_workspace_item_edit"),
+    url(r'^workspaceitem/',
+        'lizard_map.views.workspace_items',
+        name="lizard_map_workspace_items"),
+
+    url(r'^icons/(?P<icon_filename>.*)',
+        'lizard_map.views.icon',
+        name="lizard_map_icon"),
     )
 
 

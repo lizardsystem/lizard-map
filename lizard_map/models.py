@@ -115,6 +115,13 @@ class WorkspaceItem(models.Model):
             return []
         return search_method(x, y, radius=radius, **self.layer_method_arguments)
 
+    @property
+    def symbol_url(self):
+        """return url to symbol
+
+        TODO: not implemented yet
+        """
+        return reverse('lizard_map_icon', kwargs={'icon_filename': 'brug.png'})
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
@@ -200,6 +207,10 @@ class WorkspaceManager():
             workspace_temp.save()
             self.workspaces['temp'] = [workspace_temp, ]
             changes = True
+        else:
+            #clear all items in temp workspace
+            for workspace in self.workspaces['temp']:
+                workspace.workspace_items.all().delete()
 
         if not 'user' in self.workspaces:
             workspace_user = Workspace()

@@ -1,0 +1,6 @@
+{% for workspace_item in workspace.workspace_items.all %}
+  <li id="workspace_items_{{ workspace_item.id }}" value="{{ workspace_item.id }}" class="workspace_item" workspace_id="{{ workspace.id }}"><img src="{{ workspace_item.symbol_url }}"/><input id="{{ workspace_item.id }}" class="workspace_item_checkbox" type="checkbox"{% if workspace_item.visible %} checked="true"{% endif %} workspace_id="{{ workspace.id }}"/>{% if workspace_item.name %}{{ workspace_item.name }}{% else %}(noname){% endif %}</li>
+{% empty %}
+  {# No workspaceitems #}
+  <li>Drag items here</li>
+{% endfor %}

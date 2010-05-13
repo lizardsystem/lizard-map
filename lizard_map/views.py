@@ -1,16 +1,22 @@
 import StringIO
+import os
 
 import mapnik
 import PIL.Image
+import pkg_resources
 from django.db.models import Max
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 import simplejson as json
+from django.conf import settings
 
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
+from lizard_map.symbol_manager import SymbolManager
+
+ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 
 
 def workspace(request,
@@ -23,11 +29,10 @@ def workspace(request,
         {'workspaces': [workspace]},
         context_instance=RequestContext(request))
 
-
 def workspace_item_reorder(request,
                            workspace_id,
                            template='lizard_map/tag_workspace.html'):
-    """reorder workspace items. returns rendered workspace
+    """reorder workspace items. returns workspace_id
 
     reorders workspace_item[] in new order. expects all workspace_items from
     workspace
@@ -43,16 +48,13 @@ def workspace_item_reorder(request,
         workspace_item.workspace = workspace
         workspace_item.index = i * 10
         workspace_item.save()
-    return render_to_response(
-        template,
-        {'workspace': workspace},
-        context_instance=RequestContext(request))
+    return HttpResponse(json.dumps(workspace.id))
+
 
 # TODO: put item_add and item_edit in 1 function
-
-
 def workspace_item_add(request,
                        workspace_id,
+                       is_temp_workspace=False,
                        template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
@@ -60,6 +62,9 @@ def workspace_item_add(request,
     layer_method = request.POST['layer_method']
     layer_method_json = request.POST['layer_method_json']
 
+    if is_temp_workspace:
+        # only one workspace item is used in the temp workspace
+        workspace.workspace_items.all().delete()
     if workspace.workspace_items.count() > 0:
         max_index = workspace.workspace_items.aggregate(
             Max('index'))['index__max']
@@ -70,10 +75,7 @@ def workspace_item_add(request,
                                      index=max_index + 10,
                                      layer_method_json=layer_method_json,
                                      name=name)
-    return render_to_response(
-        template,
-        {'workspace': workspace},
-        context_instance=RequestContext(request))
+    return HttpResponse(json.dumps(workspace.id))
 
 
 def workspace_item_edit(request, workspace_item_id=None, visible=None):
@@ -127,11 +129,26 @@ def session_workspace_edit_item(request,
     """
     workspace_id = request.session['workspaces'][workspace_category][0]
 
+    is_temp_workspace = workspace_category == 'temp'
+
     if workspace_item_id is None:
-        return workspace_item_add(request, workspace_id)
+        return workspace_item_add(request, workspace_id, 
+                                  is_temp_workspace=is_temp_workspace)
 
     #todo: maak functie af
     return
+
+
+def workspace_items(request, workspace_id=None):
+    """get workspace items as html list items
+
+    if workspace_id is None, fetch from GET"""
+
+    if workspace_id is None:
+        workspace_id = request.GET['workspace_id']
+        
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    return render_to_response("lizard_map/workspace_items.html", {'workspace': workspace})
 
 
 def wms(request, workspace_id):
@@ -161,6 +178,7 @@ def wms(request, workspace_id):
 
     for workspace_item in workspace.workspace_items.filter(visible=True):
         layers, styles = workspace_item.layers()
+        layers.reverse()  # first item should be drawn on top (=last)
         for layer in layers:
             mapnik_map.layers.append(layer)
         for name in styles:
@@ -185,6 +203,20 @@ def wms(request, workspace_id):
     return response
 
 
+def icon(request, icon_filename):
+    """Use symbol manager to create icon, return http redirect to url
+    of icon
+
+    """
+
+    sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
+    output_filename = sm.get_symbol_transformed('brug.png')
+
+    # redirect to settings.MEDIA_URL/generated_icons/<filename>
+
+    return HttpResponseRedirect(settings.MEDIA_URL + 'generated_icons/' + output_filename)
+
+
 def clickinfo(request, workspace_id):
     # TODO: this one is mostly for testing, so it can be removed later on.
     # [reinout]
@@ -207,3 +239,4 @@ def clickinfo(request, workspace_id):
         msg = 'Nothing found'
     # TODO: return json: {msg, x_found, y_found}
     return HttpResponse(msg)
+
