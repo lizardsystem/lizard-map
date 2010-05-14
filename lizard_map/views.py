@@ -12,6 +12,7 @@ from django.shortcuts import render_to_response
 import simplejson as json
 from django.conf import settings
 
+from lizard_map import coordinates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.symbol_manager import SymbolManager
@@ -168,13 +169,8 @@ def wms(request, workspace_id):
     # TODO: check that they're not none
 
     # Map settings
-    google_mercator = (
-        '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
-        '+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
-        '+nadgrids=@null +no_defs +over')  # No commas between strings!
-    # TODO ^^^ Is this the correct one for google?
     mapnik_map = mapnik.Map(width, height)
-    mapnik_map.srs = google_mercator
+    mapnik_map.srs = coordinates.GOOGLE
     mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 

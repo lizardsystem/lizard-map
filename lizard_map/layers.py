@@ -1,5 +1,9 @@
+# TODO: this file is currently unused.  Perhaps we *do* want generic shapefile
+# rendering, though, so it is retained as example code.  2010-05-14.
 import mapnik
 import pkg_resources
+
+from lizard_map import coordinates
 
 
 def shapefile_layer():
@@ -9,12 +13,7 @@ def shapefile_layer():
     """
     layers = []
     styles = {}
-    layer = mapnik.Layer(
-        "Waterlichamen",
-        ("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 "
-         "+k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel "
-         "+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 "
-         "+units=m +no_defs"))
+    layer = mapnik.Layer("Waterlichamen", coordinates.RD)
     # TODO: ^^^ translation!
     layer.datasource = mapnik.Shapefile(
         file=pkg_resources.resource_filename(

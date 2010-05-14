@@ -5,6 +5,9 @@ Changelog of lizard-map
 0.4 (unreleased)
 ----------------
 
+- Collected the rijksdriehoek and google mercator proj4 strings in one
+  location (coordinates.py).  Including handy conversion methods.
+
 - Added views for showing and managing workspaces.
 
 - Added workspaces and workspaceitems for showing map layers and de-coupling
