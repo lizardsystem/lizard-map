@@ -29,6 +29,7 @@ def workspace(request,
         {'workspaces': [workspace]},
         context_instance=RequestContext(request))
 
+
 def workspace_item_reorder(request,
                            workspace_id,
                            template='lizard_map/tag_workspace.html'):
@@ -132,7 +133,7 @@ def session_workspace_edit_item(request,
     is_temp_workspace = workspace_category == 'temp'
 
     if workspace_item_id is None:
-        return workspace_item_add(request, workspace_id, 
+        return workspace_item_add(request, workspace_id,
                                   is_temp_workspace=is_temp_workspace)
 
     #todo: maak functie af
@@ -146,9 +147,10 @@ def workspace_items(request, workspace_id=None):
 
     if workspace_id is None:
         workspace_id = request.GET['workspace_id']
-        
+
     workspace = get_object_or_404(Workspace, pk=workspace_id)
-    return render_to_response("lizard_map/workspace_items.html", {'workspace': workspace})
+    return render_to_response("lizard_map/workspace_items.html",
+                              {'workspace': workspace})
 
 
 def wms(request, workspace_id):
@@ -209,12 +211,14 @@ def icon(request, icon_filename):
 
     """
 
-    sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
+    sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT,
+                                                    'generated_icons'))
     output_filename = sm.get_symbol_transformed('brug.png')
 
     # redirect to settings.MEDIA_URL/generated_icons/<filename>
 
-    return HttpResponseRedirect(settings.MEDIA_URL + 'generated_icons/' + output_filename)
+    return HttpResponseRedirect(settings.MEDIA_URL + 'generated_icons/' +
+                                output_filename)
 
 
 def clickinfo(request, workspace_id):
@@ -239,4 +243,3 @@ def clickinfo(request, workspace_id):
         msg = 'Nothing found'
     # TODO: return json: {msg, x_found, y_found}
     return HttpResponse(msg)
-
