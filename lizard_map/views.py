@@ -26,7 +26,7 @@ def workspace(request,
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     return render_to_response(
         template,
-        {'workspaces': [workspace]},
+        {'workspaces': {'user': [workspace]}},
         context_instance=RequestContext(request))
 
 

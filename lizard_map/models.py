@@ -137,7 +137,8 @@ class AttachedPoint(models.Model):
     def __unicode__(self):
         return '(%s, %s)' % (self.point.x, self.point.y)
 
-############
+# TODO: move the workspacemanager elsewhere as it is not a model.
+
 
 class WorkspaceManager():
 
@@ -158,6 +159,8 @@ class WorkspaceManager():
 
         returns number of workspaces that could not be loaded"""
         errors = 0
+        # TODO: fix up workspaces_id and workspace_ids as those terms are too
+        # similar.  They will lead to coding errors.
         if workspaces_id is None:
             workspaces_id = self.request.session['workspaces']
         for k, workspace_ids in workspaces_id.items():
