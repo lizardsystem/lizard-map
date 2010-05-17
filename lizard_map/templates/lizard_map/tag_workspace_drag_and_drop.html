@@ -50,9 +50,11 @@
             placeholder: 'ui-sortable-placeholder'
         });
 
-        // Make the workspace droppable, only accept items from 'app'.
+        // Make the workspace droppable, only accept items with the class
+        // '.workspace_acceptable'.
         $("ul#workspace_{{ workspace.id }}").droppable({
             accept: '.workspace_acceptable',
+            hoverClass: 'drophover',
             drop: function(event, ui) {
                 // Fade out draggable item.
                 ui.helper.fadeOut();
