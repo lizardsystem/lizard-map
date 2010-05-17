@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
 import simplejson
 
 from django.contrib.auth.models import User
@@ -30,6 +31,11 @@ class LayerMethodNotFoundError(Exception):
 
 class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
+
+    class Meta:
+        verbose_name = _("Workspace")
+        verbose_name_plural = _("Workspaces")
+
     name = models.CharField(max_length=80,
                             blank=True,
                             default='workspace')
@@ -52,6 +58,8 @@ class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
     class Meta:
         ordering = ['index']
+        verbose_name = _("Workspace item")
+        verbose_name_plural = _("Workspace items")
 
     name = models.CharField(max_length=80,
                             blank=True)
@@ -125,6 +133,11 @@ class WorkspaceItem(models.Model):
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
+
+    class Meta:
+        verbose_name = _("Attached point")
+        verbose_name_plural = _("Attached points")
+
     # The geometry.
     point = gismodels.PointField()
     # Three fields needed to attach ourselves to another model instance.
