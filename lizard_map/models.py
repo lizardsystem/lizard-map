@@ -1,16 +1,20 @@
+import os
+
+import pkg_resources
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.gis.db import models as gismodels
+from django.db import models
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 import simplejson
 
-from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
-from django.db import models
-from django.contrib.gis.db import models as gismodels
-import pkg_resources
+from lizard_map.symbol_manager import SymbolManager
 
-
+ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 LAYER_ENTRY_POINT = 'lizard_map.layer_method'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 
@@ -129,7 +133,12 @@ class WorkspaceItem(models.Model):
 
         TODO: not implemented yet
         """
-        return reverse('lizard_map_icon', kwargs={'icon_filename': 'brug.png'})
+
+        sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT,
+                                                        'generated_icons'))
+        output_filename = sm.get_symbol_transformed('brug.png')
+
+        return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
@@ -153,7 +162,7 @@ class AttachedPoint(models.Model):
 # TODO: move the workspacemanager elsewhere as it is not a model.
 
 
-class WorkspaceManager():
+class WorkspaceManager:
 
     def __init__(self, request):
         self.request = request
@@ -236,5 +245,4 @@ class WorkspaceManager():
 
         if changes:
             self.save_workspaces()
-        print self.workspaces
         return self.workspaces

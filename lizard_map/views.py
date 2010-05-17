@@ -1,23 +1,17 @@
 import StringIO
-import os
 
 import mapnik
 import PIL.Image
-import pkg_resources
 from django.db.models import Max
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 import simplejson as json
-from django.conf import settings
 
 from lizard_map import coordinates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
-from lizard_map.symbol_manager import SymbolManager
-
-ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 
 
 def workspace(request,
@@ -199,22 +193,6 @@ def wms(request, workspace_id):
     response = HttpResponse(buf.read())
     response['Content-type'] = 'image/png'
     return response
-
-
-def icon(request, icon_filename):
-    """Use symbol manager to create icon, return http redirect to url
-    of icon
-
-    """
-
-    sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT,
-                                                    'generated_icons'))
-    output_filename = sm.get_symbol_transformed('brug.png')
-
-    # redirect to settings.MEDIA_URL/generated_icons/<filename>
-
-    return HttpResponseRedirect(settings.MEDIA_URL + 'generated_icons/' +
-                                output_filename)
 
 
 def clickinfo(request, workspace_id):
