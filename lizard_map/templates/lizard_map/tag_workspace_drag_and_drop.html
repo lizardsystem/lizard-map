@@ -1,44 +1,44 @@
 <script type="text/javascript">
 
-    // binds checkboxes of workspace_items to an action
+    // Bind checkboxes of workspace_items to an action.
     bindCheckboxes = function() {
         $(".workspace_item_checkbox").bind('click', function() {
-            $.post("{% url lizard_map_workspace_item_edit %}", 
-                   { workspace_item_id: this.id, visible: this.checked }, 
+            $.post("{% url lizard_map_workspace_item_edit %}",
+                   { workspace_item_id: this.id, visible: this.checked },
                    function(workspace_id) {updateWorkspace(workspace_id)}
                   );
         });
         // $(document).ready(stretchOneSidebarBox);
         // $(window).resize(stretchOneSidebarBox);
-
     };
 
-    // updates workspace sidebarbox
+    // Update workspace sidebarbox.
     updateWorkspaceBox = function(workspace_id) {
         $.get("{% url lizard_map_workspace_items %}",
               {workspace_id: workspace_id},
-              function(workspace_items_li) { 
+              function(workspace_items_li) {
                 {# replace list items with new list items #}
-                $("ul#workspace_"+workspace_id).html(workspace_items_li); 
+                $("ul#workspace_"+workspace_id).html(workspace_items_li);
                 bindCheckboxes();
               });
     };
 
-    // updates workspace boxes and their visible layers
+    // Update workspace boxes and their visible layers.
     updateWorkspace = function(workspace_id) {
         updateLayer(workspace_id);
         updateWorkspaceBox(workspace_id);
     };
 
-    // initialize all workspace actions
+    // Initialize all workspace actions.
     $(document).ready(function(){
         {% for workspace in workspaces.user %}
 
-        {# make the items in a workspace sortable #}
+        // Make the items in a workspace sortable.
         $("ul#workspace_{{ workspace.id }}").sortable({
             update: function() {
-                var order = $("#workspace_{{ workspace.id }}.workspace_items").sortable("serialize");
-                $.post("{% url lizard_map_workspace_item_reorder workspace_id=workspace.id %}", 
+                var order = $("#workspace_{{ workspace.id }}.workspace_items"
+                    ).sortable("serialize");
+                $.post("{% url lizard_map_workspace_item_reorder workspace_id=workspace.id %}",
                        order,
                        function(workspace_id) {updateWorkspace(workspace_id)}
                       );
@@ -46,17 +46,18 @@
             connectWith: '.workspace_items'
         });
 
-        {# make the workspace droppable, only accept items from 'app' #}
+        // Make the workspace droppable, only accept items from 'app'.
         $("ul#workspace_{{ workspace.id }}").droppable({
             accept: '.workspace_acceptable',
-            drop: function(event, ui) { 
-                //fade out draggable item 
+            drop: function(event, ui) {
+                // Fade out draggable item.
                 ui.helper.fadeOut();
-                //get layer_method and parameters from url, 
-                name = ui.draggable.attr("name"); //TODO: deze attr naam is misschien gevaarlijk
+                // Get layer_method and parameters from url.
+                name = ui.draggable.attr("name");
+                // ^^^ TODO: this attr name might be dangerous.
                 layer_method = ui.draggable.attr("layer_method");
                 layer_method_json = ui.draggable.attr("layer_method_json");
-                //make workspace item of it
+                // Make workspace item out of it.
                 $.post("{% url lizard_map_workspace_item_add workspace_id=workspace.id %}",
                        { name: name,
                          layer_method: layer_method,
@@ -76,14 +77,14 @@
             drop: function(event, ui) {
                 workspace_item_id = ui.draggable.attr("value");
                 ui.draggable.remove();  // for visual snappyness
-                $.post("{% url lizard_map_workspace_item_delete %}", 
-                       { workspace_item_id: workspace_item_id }, 
+                $.post("{% url lizard_map_workspace_item_delete %}",
+                       { workspace_item_id: workspace_item_id },
                        function(workspace_id) {updateWorkspace(workspace_id)}
                       );
             }
         });
 
-        {# make checkboxes of workspace_items respond when clicked #}
+        // Make checkboxes of workspace_items respond when clicked.
         bindCheckboxes();
     });
 
