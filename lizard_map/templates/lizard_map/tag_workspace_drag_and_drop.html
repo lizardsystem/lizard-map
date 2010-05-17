@@ -27,6 +27,7 @@
     updateWorkspace = function(workspace_id) {
         updateLayer(workspace_id);
         updateWorkspaceBox(workspace_id);
+        stretchOneSidebarBox();
     };
 
     // Initialize all workspace actions.
@@ -47,7 +48,6 @@
             cursor: 'move',
             revert: 'true',
             placeholder: 'ui-sortable-placeholder'
-
         });
 
         // Make the workspace droppable, only accept items from 'app'.
