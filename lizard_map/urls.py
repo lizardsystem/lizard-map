@@ -43,10 +43,6 @@ urlpatterns = patterns(
     url(r'^workspaceitem/',
         'lizard_map.views.workspace_items',
         name="lizard_map_workspace_items"),
-
-    url(r'^icons/(?P<icon_filename>.*)',
-        'lizard_map.views.icon',
-        name="lizard_map_icon"),
     )
 
 
