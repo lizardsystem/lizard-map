@@ -3,7 +3,7 @@
   <h2 class="collapsible">{{ workspace.name }}</h2>
   <div>
     <ul id="workspace_{{ workspace.id }}"
-        class="workspace_items"
+        class="workspace_items without-bullets"
         workspace_id="{{ workspace.id }}">
 
       {% for workspace_item in workspace.workspace_items.all %}

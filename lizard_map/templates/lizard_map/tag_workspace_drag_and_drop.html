@@ -17,9 +17,9 @@
         $.get("{% url lizard_map_workspace_items %}",
               {workspace_id: workspace_id},
               function(workspace_items_li) {
-                {# replace list items with new list items #}
-                $("ul#workspace_"+workspace_id).html(workspace_items_li);
-                bindCheckboxes();
+                  {# replace list items with new list items #}
+                  $("ul#workspace_"+workspace_id).html(workspace_items_li);
+                  bindCheckboxes();
               });
     };
 
@@ -43,7 +43,11 @@
                        function(workspace_id) {updateWorkspace(workspace_id)}
                       );
             },
-            connectWith: '.workspace_items'
+            connectWith: '.workspace_items',
+            cursor: 'move',
+            revert: 'true',
+            placeholder: 'ui-sortable-placeholder'
+
         });
 
         // Make the workspace droppable, only accept items from 'app'.
