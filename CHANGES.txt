@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.4 (unreleased)
+0.4 (2010-05-18)
 ----------------
 
 - Collected the rijksdriehoek and google mercator proj4 strings in one
