@@ -170,7 +170,6 @@ class WorkspaceManager:
 
     def save_workspaces(self):
         """save workspaces to session"""
-        print self.workspaces
         workspaces_id = {}
         for k, workspace_list in self.workspaces.items():
             workspaces_id[k] = [workspace.id for workspace in workspace_list]

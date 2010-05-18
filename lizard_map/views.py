@@ -41,7 +41,6 @@ def workspace_item_reorder(request,
     workspace_items = [
         get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
         workspace_item_id in request.POST.getlist('workspace_items[]')]
-    print workspace_items
     for i, workspace_item in enumerate(workspace_items):
         workspace_item.workspace = workspace
         workspace_item.index = i * 10
