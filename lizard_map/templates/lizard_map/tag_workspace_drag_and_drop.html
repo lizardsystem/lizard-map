@@ -50,9 +50,9 @@
         });
 
         // Make the workspace droppable, only accept items with the class
-        // '.workspace_acceptable'.
+        // '.workspace-acceptable'.
         $("ul#workspace_{{ workspace.id }}").droppable({
-            accept: '.workspace_acceptable',
+            accept: '.workspace-acceptable',
             hoverClass: 'drophover',
             drop: function(event, ui) {
                 // Fade out draggable item.
