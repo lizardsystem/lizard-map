@@ -1,12 +1,16 @@
 <script type="text/javascript">
 
     // Bind checkboxes of workspace_items to an action.
+    // deze zorgt soms voor een looping foutmelding
     bindCheckboxes = function() {
         $(".workspace_item_checkbox").bind('click', function() {
-            $.post("{% url lizard_map_workspace_item_edit %}",
-                   { workspace_item_id: this.id, visible: this.checked },
-                   function(workspace_id) {updateWorkspace(workspace_id)}
-                  );
+            $.ajax({
+                url: "{% url lizard_map_workspace_item_edit %}",
+                data: { workspace_item_id: this.id, visible: this.checked },
+                success: function(workspace_id) {updateWorkspace(workspace_id)},
+                type: "POST",
+                async: false
+            });
         });
         // $(document).ready(stretchOneSidebarBox);
         // $(window).resize(stretchOneSidebarBox);
@@ -14,13 +18,17 @@
 
     // Update workspace sidebarbox.
     updateWorkspaceBox = function(workspace_id) {
-        $.get("{% url lizard_map_workspace_items %}",
-              {workspace_id: workspace_id},
-              function(workspace_items_li) {
-                  {# replace list items with new list items #}
-                  $("ul#workspace_"+workspace_id).html(workspace_items_li);
-                  bindCheckboxes();
-              });
+        $.ajax({
+            url: "{% url lizard_map_workspace_items %}",
+            data: {workspace_id: workspace_id},
+            success: function(workspace_items_li) {
+                {# replace list items with new list items #}
+                $("ul#workspace_"+workspace_id).html(workspace_items_li);
+                bindCheckboxes(); 
+            },
+            type: "GET",
+            async: false
+        });
     };
 
     // Update workspace boxes and their visible layers.
@@ -82,10 +90,13 @@
             drop: function(event, ui) {
                 workspace_item_id = ui.draggable.attr("value");
                 ui.draggable.remove();  // for visual snappyness
-                $.post("{% url lizard_map_workspace_item_delete %}",
-                       { workspace_item_id: workspace_item_id },
-                       function(workspace_id) {updateWorkspace(workspace_id)}
-                      );
+                $.ajax({
+                    url: "{% url lizard_map_workspace_item_delete %}",
+                    data: { workspace_item_id: workspace_item_id },
+                    success: function(workspace_id) {updateWorkspace(workspace_id)},
+                    type: "POST",
+                    async: false
+                });
             }
         });
 
