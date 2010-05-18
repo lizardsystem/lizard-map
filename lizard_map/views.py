@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
+from django.views.decorators.cache import never_cache
 import simplejson as json
 
 from lizard_map import coordinates
@@ -25,6 +26,7 @@ def workspace(request,
         context_instance=RequestContext(request))
 
 
+@never_cache
 def workspace_item_reorder(request,
                            workspace_id,
                            template='lizard_map/tag_workspace.html'):
@@ -48,6 +50,7 @@ def workspace_item_reorder(request,
 
 
 # TODO: put item_add and item_edit in 1 function
+@never_cache
 def workspace_item_add(request,
                        workspace_id,
                        is_temp_workspace=False,
@@ -74,6 +77,7 @@ def workspace_item_add(request,
     return HttpResponse(json.dumps(workspace.id))
 
 
+@never_cache
 def workspace_item_edit(request, workspace_item_id=None, visible=None):
     """edits a workspace_item
 
@@ -95,6 +99,7 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
     return HttpResponse(json.dumps(workspace_item.workspace.id))
 
 
+@never_cache
 def workspace_item_delete(request, workspace_item_id=None):
     """delete workspace item from workspace
 
@@ -135,6 +140,7 @@ def session_workspace_edit_item(request,
     return
 
 
+@never_cache
 def workspace_items(request, workspace_id=None):
     """get workspace items as html list items
 
@@ -145,7 +151,7 @@ def workspace_items(request, workspace_id=None):
 
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     return render_to_response("lizard_map/workspace_items.html",
-                              {'workspace': workspace})
+                                  {'workspace': workspace})
 
 
 def wms(request, workspace_id):
