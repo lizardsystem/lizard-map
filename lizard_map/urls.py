@@ -7,6 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+
+    # Actions/services on/from workspaces
     url(r'^workspace/(?P<workspace_id>\d+)/wms/',
         'lizard_map.views.wms',
         name="lizard_map_wms"),
@@ -22,15 +24,26 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/',
         'lizard_map.views.workspace_items',
         name="lizard_map_workspace_items"),
-
     url(r'^workspace/(?P<workspace_id>\d+)/',
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
+
+    # Partially the same actions as above,
+    # you have to put workspace_id in GET parameter here...
+    url(r'^workspaceitemreorder/',
+        'lizard_map.views.workspace_item_reorder',
+        name="lizard_map_workspace_item_reorder"),
+    url(r'^workspaceitemadd/',
+        'lizard_map.views.workspace_item_add',
+        name="lizard_map_workspace_item_add"),
+
+    # Actions on your session workspace - the system looks for the right workspace
     url(r'^session_workspace/',
         'lizard_map.views.session_workspace_edit_item',
         {'workspace_category': 'temp'},
         name="lizard_map_session_workspace_add_item_temp"),
 
+    # Actions on workspace items
     url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),

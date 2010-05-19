@@ -28,7 +28,7 @@ def workspace(request,
 
 @never_cache
 def workspace_item_reorder(request,
-                           workspace_id,
+                           workspace_id=None,
                            template='lizard_map/tag_workspace.html'):
     """reorder workspace items. returns workspace_id
 
@@ -37,6 +37,9 @@ def workspace_item_reorder(request,
 
     TODO: check permissions
     """
+    if workspace_id is None:
+        workspace_id = request.GET['workspace_id']        
+
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     workspace_items = [
         get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
@@ -51,10 +54,12 @@ def workspace_item_reorder(request,
 # TODO: put item_add and item_edit in 1 function
 @never_cache
 def workspace_item_add(request,
-                       workspace_id,
+                       workspace_id=None,
                        is_temp_workspace=False,
                        template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
+    if workspace_id is None:
+        workspace_id = request.GET['workspace_id']        
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     name = request.POST['name']
     layer_method = request.POST['layer_method']
