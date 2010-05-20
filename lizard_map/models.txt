@@ -21,7 +21,7 @@ A workspace can contain workspace items:
     >>> workspace_item1 = workspace1.workspace_items.create()
     >>> workspace_item2 = workspace1.workspace_items.create()
     >>> workspace1.workspace_items.all()
-    [<WorkspaceItem: (1) name= ws=1 >, <WorkspaceItem: (2) name= ws=1 >]
+    [<WorkspaceItem: (1) name= ws=... >, <WorkspaceItem: (2) name= ws=... >]
 
 A workspace item can point to a method that returns a layer:
 
@@ -77,9 +77,14 @@ Using workspaces
 Multiple workspaces are attached to a session. These workspaces are
 used in several screens. We need a client to use this functionality.
 
-     >>> from django.test.client import Client
-     >>> c = Client()
-     >>> workspace_manager = WorkspaceManager(request)
+    >>> from django.test.client import Client
+    >>> c = Client()
+
+We use the WorkspaceManager to find and create our workspaces:
+
+    >>> from lizard_map.models import WorkspaceManager
+    >>> mock_request = {}
+    >>> workspace_manager = WorkspaceManager(mock_request)
 
 Attached geometry
 -----------------
