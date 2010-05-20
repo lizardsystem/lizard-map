@@ -134,5 +134,3 @@ of a certain type with attached points:
     SELECT ...
     >>> #.values
     >>> #.values_list
-
-

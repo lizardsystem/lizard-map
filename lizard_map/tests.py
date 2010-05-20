@@ -11,6 +11,7 @@ def suite():
         'USAGE.txt',
         'models.txt',
         'views.txt',
+        'layers.txt',
         #'TODO_several_more_tests.txt',
         module_relative=True,
         optionflags=(doctest.NORMALIZE_WHITESPACE|
