@@ -36,16 +36,18 @@ bindCheckboxes = function() {
 
 // Make workspace sortable
 addWorkspaceSortableDroppable = function() {
+
   // Make the items in a workspace sortable.
   $("ul.workspace_items").sortable({
     update: function() {
+      var workspace_id = $(this).attr("workspace_id");
       var url = $("a.url-lizard-map-workspace-item-reorder").attr("href");
       var order = $("#workspace_"+workspace_id+".workspace_items"
                    ).sortable("serialize");
-      $.post(url + "?workspace_id="+workspace_id,
+      /* $.post(url + "?workspace_id="+workspace_id,
              order,
              updateWorkspace(workspace_id)
-            );
+            ); */
     },
     connectWith: '.workspace_items',
     cursor: 'move',
@@ -118,6 +120,7 @@ $(document).ready(function(){
     // updateWorkspaceBox({{ workspace.id }});
     // {% endfor %}
 
+    
   $(".workspace_trash").droppable({
     accept: '.workspace_item',
     hoverClass: 'drophover',
@@ -139,5 +142,5 @@ $(document).ready(function(){
   });
 
   // Make checkboxes of workspace_items respond when clicked.
-    bindCheckboxes();
+  bindCheckboxes();
 });
