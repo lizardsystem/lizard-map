@@ -132,8 +132,8 @@ $(document).ready(function(){
         url: url,
         data: { workspace_item_id: workspace_item_id },
         success: function(workspace_id) {
-          //  updateWorkspace(workspace_id);
-            location.reload();
+            updateWorkspace(workspace_id);
+            //location.reload();
         },
         type: "POST",
         async: false
