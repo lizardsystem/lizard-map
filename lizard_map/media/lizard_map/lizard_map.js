@@ -44,10 +44,10 @@ addWorkspaceSortableDroppable = function() {
       var url = $("a.url-lizard-map-workspace-item-reorder").attr("href");
       var order = $("#workspace_"+workspace_id+".workspace_items"
                    ).sortable("serialize");
-      /* $.post(url + "?workspace_id="+workspace_id,
+      $.post(url + "?workspace_id="+workspace_id,
              order,
              updateWorkspace(workspace_id)
-            ); */
+            );
     },
     connectWith: '.workspace_items',
     cursor: 'move',
