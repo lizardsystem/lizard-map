@@ -59,7 +59,7 @@ def workspace_item_add(request,
                        template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
     if workspace_id is None:
-        workspace_id = request.GET['workspace_id']        
+        workspace_id = request.POST['workspace_id']        
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     name = request.POST['name']
     layer_method = request.POST['layer_method']
