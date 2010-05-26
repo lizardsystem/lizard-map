@@ -19,8 +19,7 @@ demo_map_click_handler = function(x, y, map) {
     //      );
 };
 
-    /* Workspace functions, requires jquery.workspace.js */
-
+/* Workspace functions, requires jquery.workspace.js */
 
 // Initialize all workspace actions.
 $(document).ready(function(){

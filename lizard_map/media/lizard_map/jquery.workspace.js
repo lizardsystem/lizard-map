@@ -1,8 +1,24 @@
 /*
 Workspace plugin
 
-Globally defined requirements
+Globally defined requirements:
+
+$("a.url-lizard-map-workspace-items").attr("href");
+$("a.url-lizard-map-workspace-item-edit").attr("href");
+$("a.url-lizard-map-workspace-item-reorder").attr("href");
+$("a.url-lizard-map-workspace-item-add").attr("href");
+$("a.url-lizard-map-workspace-item-delete").attr("href");
+
+css class drophover
+
+A workspace needs:
+
+attr("workspace_id")
+<ul> inside with class workspace_items at depth 2
+workspace_trash class inside workspace
+workspace_item_checkbox class in ul.workspace_items
 */
+
 
 /*
 updates the workspace box using an ajax call
@@ -44,7 +60,10 @@ jQuery.fn.updateWorkspaceBox = function() {
   });
 };
 
-/* Bind checkboxes */
+/* Bind checkboxes 
+
+$("a.url-lizard-map-workspace-item-edit").attr("href");
+*/
   jQuery.fn.bindCheckboxes = function() {
       return this.each(function(){
           $workspace = $(this);
@@ -71,7 +90,7 @@ $("a.url-lizard-map-workspace-item-add").attr("href");
 
 matching objects require (needs cleanup):
 this.attr("workspace_id");
-$("#workspace_"+workspace_id+".workspace_items");
+<ul> at depth 2
 
 */
 jQuery.fn.workspaceInteraction = function() {
@@ -82,14 +101,14 @@ jQuery.fn.workspaceInteraction = function() {
         workspaceItems = $workspace.find("ul.workspace_items");
         workspaceItems.sortable({
             update: function (event, ui) {
+                // very strange... $workspace becomes the <ul> element
+                // (which is workspaceItems)...  using workspaceItems
                 var url = $("a.url-lizard-map-workspace-item-reorder").attr("href");
-                var order = $("#workspace_"+workspace_id+".workspace_items"
-                    ).sortable("serialize");
+                var order = workspaceItems.sortable("serialize");
                 $.post(url + "?workspace_id="+workspace_id,
                        order,
                        function(workspace_id) {
-                           // very strange... $workspace becomes the <ul> element...
-                           $workspace.parent().parent().updateWorkspace();
+                           workspaceItems.parent().parent().updateWorkspace();
                        }
                       );
             },
@@ -120,8 +139,9 @@ jQuery.fn.workspaceInteraction = function() {
                          layer_method_json: layer_method_json
                        },
                        function(workspace_id) {
-                           // very strange... $workspace becomes the <ul> element...
-                           $workspace.parent().parent().updateWorkspace();
+                           // very strange... $workspace becomes the
+                           // <ul> element, using workspaceItems...
+                           workspaceItems.parent().parent().updateWorkspace();
                        }
                       );
             }
@@ -171,8 +191,8 @@ workspace_trash class inside workspace
                       url: url,
                       data: { workspace_item_id: workspace_item_id },
                       success: function(workspace_id) {
-                          $workspace.updateWorkspace(); // vreemde looping bug
-                          // location.reload();
+                          // $workspace.updateWorkspace(); // vreemde looping bug
+                          location.reload();
                       },
                       type: "POST",
                       async: false
