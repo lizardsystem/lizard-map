@@ -1,6 +1,16 @@
-{# Shows one workspace. #}
+{# Shows one workspace. Options: show_new_workspace #}
 <div id="workspace_{{ workspace.id }}" class="sidebarbox workspace" workspace_id="{{ workspace.id }}">
-  <h2 class="collapsible">{{ workspace.name }}</h2>
+  <h2>{# class="collapsible" weggehaald omdat andere links dan ook linken naar de collapsible #}
+    {{ workspace.name }}
+    <a href="{% url lizard_map_workspace workspace_id=workspace.id %}" title="link to {{ workspace.name }}" class="title">
+      <span class="ss_sprite ss_arrow_turn_right">&nbsp;</span>
+    </a>
+    {% if show_new_workspace %}
+    <a href="?new_workspace" title="new workspace" class="title">
+      <span class="ss_sprite ss_page_add">&nbsp;</span>
+    </a>
+    {% endif %}
+  </h2>
   <div>
     <ul id="workspace_{{ workspace.id }}"
         class="workspace_items without-bullets"
@@ -11,7 +21,6 @@
     {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
     <div class="sidebarbox-actions">
       <div class="workspace_trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
-      <div class="workspace_link"><a href="{% url lizard_map_workspace workspace_id=workspace.id %}"><span class="ss_sprite ss_book_link">link</span></a></div>
       <!--
       <div class="workspace_new"><span class="ss_sprite ss_page_add">new</span></div>
       <div class="workspace_load"><span class="ss_sprite ss_page_go">load</span></div>

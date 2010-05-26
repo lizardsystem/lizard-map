@@ -8,7 +8,7 @@
 {% block sidebar %}
 
 {% for workspace in workspaces.user %}
-  {% workspace workspace %}
+  {% workspace workspace 0 %}
 {% empty %}
 No workspaces yet
 {% endfor %}

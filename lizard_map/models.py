@@ -194,7 +194,7 @@ class WorkspaceManager:
                     errors += 1
         return errors
 
-    def load_or_create(self):
+    def load_or_create(self, new_workspace=False):
         """load workspaces references by session['workspaces'] or
         create new workspace
 
@@ -236,7 +236,7 @@ class WorkspaceManager:
             for workspace in self.workspaces['temp']:
                 workspace.workspace_items.all().delete()
 
-        if not 'user' in self.workspaces:
+        if new_workspace or not 'user' in self.workspaces:
             workspace_user = Workspace()
             workspace_user.save()
             self.workspaces['user'] = [workspace_user, ]
