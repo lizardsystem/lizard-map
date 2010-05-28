@@ -37,25 +37,29 @@ jQuery.fn.updateWorkspaceBox = function() {
       var url = $("a.url-lizard-map-workspace-items").attr("href");
       var workspace_id = $workspace.attr("workspace_id");
       workspace_items = $workspace.find("ul.workspace_items");
-      $.ajax({
-          url: url,
-          data: {workspace_id: workspace_id},
-          success: function(workspace_items_li) {
-              // prevent looping error: test destroying object before overwrite: does not work
-              //workspace_items.sortable("destroy"); 
-              //workspace_items.droppable("destroy");
-              //workspace_items.find("li.workspace_item").remove();
-              //console.debug($workspace);
-              // replace list items with new list items
-              //alert(workspace_items_li);
-              workspace_items.html(workspace_items_li);
-              workspace_items.bindCheckboxes();
-              //$workspace.workspaceInteraction();
-              stretchOneSidebarBox(); // from lizard_ui
-          },
-          type: "GET",
-          async: false
-      });
+      if (url !== undefined) {
+          $.ajax({
+              url: url,
+              data: {workspace_id: workspace_id},
+              success: function(workspace_items_li) {
+                  // prevent looping error: test destroying object before overwrite: does not work
+                  //workspace_items.sortable("destroy"); 
+                  //workspace_items.droppable("destroy");
+                  //workspace_items.find("li.workspace_item").remove();
+                  //console.debug($workspace);
+                  // replace list items with new list items
+                  //alert(workspace_items_li);
+                  workspace_items.html(workspace_items_li);
+                  workspace_items.bindCheckboxes();
+                  //$workspace.workspaceInteraction();
+                  stretchOneSidebarBox(); // from lizard_ui
+              },
+              type: "GET",
+              async: false
+          });
+      } else {
+          alert("Workspace could not be loaded");
+      }
       
   });
 };
@@ -91,6 +95,8 @@ $("a.url-lizard-map-workspace-item-add").attr("href");
 matching objects require (needs cleanup):
 this.attr("workspace_id");
 <ul> at depth 2
+
+TODO: use jquery live to bind all future workspaces?
 
 */
 jQuery.fn.workspaceInteraction = function() {
@@ -199,5 +205,53 @@ workspace_trash class inside workspace
                   });
               }
           });
+      });
+  }
+
+  /* Load a lizard-map page by only replacing necessary parts
+
+Replaces:
+- breadcrumbs
+- app part
+
+Setup the js of page
+Load workspaces
+
+Then change the url (???)
+
+TODO: function actually loads new page multiple times
+
+*/
+  jQuery.fn.lizardMapLink = function() {
+      $(this).click(function(event) {
+          event.preventDefault(); 
+          var url = event.currentTarget;
+          $.get(
+              url,
+              function(responseText, textStatus, xmlHttpRequest) {
+                  //alert($(responseText).find("div#head-extras").html());
+                  // replace sidebar
+                  $("#sidebar").html($(responseText).find("#sidebar").html());
+                  setUpScreen();
+                  $(".workspace").workspaceInteraction();
+                  $(".workspace").updateWorkspaceBox();
+                  // $("#head-extras").html($(responseText).find("#head-extras").html());
+
+                  var headExtras = $(responseText).find("div#head-extras").html();
+                  $("div#head-extras").html(headExtras);
+
+                  // replace breadcrumbs
+                  $("#breadcrumbs").html($(responseText).find("#breadcrumbs").html());
+                  $("a.lizard-map-link").lizardMapLink(); //affects breadcrumbs AND sidebar
+
+                  // replace title... where is it???
+                  //console.debug($(responseText).find("title"));
+                  //$("title").replaceWith($(responseText).find("title"));
+
+              }
+          );
+          
+          // probeersel, je kunt niet het voorste gedeelte aanpassen
+          window.location.hash = event.currentTarget; 
       });
   }

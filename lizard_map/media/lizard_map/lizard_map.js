@@ -25,4 +25,5 @@ demo_map_click_handler = function(x, y, map) {
 $(document).ready(function(){
     $(".workspace").workspaceInteraction();
     $(".workspace").updateWorkspaceBox();
+    $("a.lizard-map-link").lizardMapLink();
 });
