@@ -140,6 +140,26 @@ class WorkspaceItem(models.Model):
 
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
+class WorkspaceItemBucket(models.Model):
+    """A bucket contains selections/locations from a workspace item"""
+    name = models.CharField(max_length=80,
+                            default='bucket')
+
+    def __unicode__(self):
+        return '%s %s' % (workspace_item, name)
+
+class WorkspaceItemBucketObject(models.Model):
+    """One object in a bucket"""
+    workspace_item = models.ForeignKey(WorkspaceItem, 
+                                       related_name='workspace_item_buckets')
+    workspace_item_bucket = models.ForeignKey(
+        WorkspaceItemBucket,
+        related_name='workspace_item_bucket_objects')
+    identifier = models.TextField() #format depends on workspace_item layer_method
+
+    def __unicode__(self):
+        return '%s %s %s' % (workspace_item, workspace_item_bucket, identifier)
+
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
 

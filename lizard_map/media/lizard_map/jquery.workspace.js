@@ -219,8 +219,6 @@ Load workspaces
 
 Then change the url (???)
 
-TODO: function actually loads new page multiple times
-
 */
   jQuery.fn.lizardMapLink = function() {
       $(this).click(function(event) {
