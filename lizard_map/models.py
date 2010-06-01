@@ -140,25 +140,26 @@ class WorkspaceItem(models.Model):
 
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
-class WorkspaceItemBucket(models.Model):
-    """A bucket contains selections/locations from a workspace item"""
+class WorkspaceCollage(models.Model):
+    """A collage contains selections/locations from a workspace"""
     name = models.CharField(max_length=80,
-                            default='bucket')
+                            default='collage')
+    workspace = models.ForeignKey(Workspace, 
+                                  related_name='collages')
 
     def __unicode__(self):
-        return '%s %s' % (workspace_item, name)
+        return '%s %s' % (self.workspace, self.name)
 
-class WorkspaceItemBucketObject(models.Model):
-    """One object in a bucket"""
-    workspace_item = models.ForeignKey(WorkspaceItem, 
-                                       related_name='workspace_item_buckets')
-    workspace_item_bucket = models.ForeignKey(
-        WorkspaceItemBucket,
-        related_name='workspace_item_bucket_objects')
+class WorkspaceCollageSnippet(models.Model):
+    """One snippet in a collage"""
+    workspace_collage = models.ForeignKey(WorkspaceCollage, 
+                                          related_name='snippets')
+    workspace_item = models.ForeignKey(
+        WorkspaceItem)
     identifier = models.TextField() #format depends on workspace_item layer_method
 
     def __unicode__(self):
-        return '%s %s %s' % (workspace_item, workspace_item_bucket, identifier)
+        return '%s %s %s' % (self.workspace_collage, self.workspace_item, self.identifier)
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
@@ -261,6 +262,10 @@ class WorkspaceManager:
             workspace_user.save()
             self.workspaces['user'] = [workspace_user, ]
             changes = True
+
+        #create collage if necessary, it is stored in the workspace
+        if len(self.workspaces['user'][0].collages.all()) == 0:
+            self.workspaces['user'][0].collages.create()
 
         if changes:
             self.save_workspaces()

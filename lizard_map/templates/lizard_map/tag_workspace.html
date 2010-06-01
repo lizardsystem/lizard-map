@@ -28,5 +28,13 @@
       <div class="workspace_date"><span class="ss_sprite ss_date">period</span></div>
       -->
     </div>
+  </div> 
+  {% for collage in workspace.collages.all %}
+  <h3 class="collapsible">{{ collage.name }}</h3>
+  <div>
+    <ul class="collage_items without-bullets" collage_id="{{ collage.id }}">
+      Snippets not yet loaded
+    </ul>
   </div>
+  {% endfor %}
 </div>

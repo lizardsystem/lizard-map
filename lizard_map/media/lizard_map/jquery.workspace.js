@@ -37,6 +37,7 @@ jQuery.fn.updateWorkspaceBox = function() {
       var url = $("a.url-lizard-map-workspace-items").attr("href");
       var workspace_id = $workspace.attr("workspace_id");
       workspace_items = $workspace.find("ul.workspace_items");
+      
       if (url !== undefined) {
           $.ajax({
               url: url,

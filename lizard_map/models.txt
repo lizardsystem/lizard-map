@@ -70,6 +70,22 @@ A workspace item always has a name:
     >>> workspace_item1.name
     ''
 
+Collages in workspaces
+----------------------
+Collages contain user selected locations from workspace items,
+called snippets.
+
+To get a list of all collages, make collage and add snippet:
+
+    >>> workspace1.collages.all()
+    [...]
+    >>> collage = workspace1.collages.create(name='user collage')
+    >>> collage
+    <...>
+    >>> workspace_item = workspace1.workspace_items.create()
+    >>> snippet = collage.snippets.create(workspace_item=workspace_item, identifier='abcd')
+    >>> snippet
+    <...>
 
 Using workspaces
 ----------------
