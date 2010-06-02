@@ -3,7 +3,6 @@ Workspace plugin
 
 Globally defined requirements:
 
-$("a.url-lizard-map-workspace-items").attr("href");
 $("a.url-lizard-map-workspace-item-edit").attr("href");
 $("a.url-lizard-map-workspace-item-reorder").attr("href");
 $("a.url-lizard-map-workspace-item-add").attr("href");
@@ -20,59 +19,15 @@ workspace_item_checkbox class in ul.workspace_items
 */
 
 
-/*
-updates the workspace box using an ajax call
-globally defined requirements:
 
-$("a.url-lizard-map-workspace-items").attr("href");
-
-requirements:
-
-matched items must have <ul> inside with class workspace_items
-matched items must have attr("workspace_id")
-*/
-jQuery.fn.updateWorkspaceBox = function() {
-  return this.each(function(){
-      $workspace = $(this);
-      var url = $("a.url-lizard-map-workspace-items").attr("href");
-      var workspace_id = $workspace.attr("workspace_id");
-      workspace_items = $workspace.find("ul.workspace_items");
-      
-      if (url !== undefined) {
-          $.ajax({
-              url: url,
-              data: {workspace_id: workspace_id},
-              success: function(workspace_items_li) {
-                  // prevent looping error: test destroying object before overwrite: does not work
-                  //workspace_items.sortable("destroy"); 
-                  //workspace_items.droppable("destroy");
-                  //workspace_items.find("li.workspace_item").remove();
-                  //console.debug($workspace);
-                  // replace list items with new list items
-                  //alert(workspace_items_li);
-                  workspace_items.html(workspace_items_li);
-                  workspace_items.bindCheckboxes();
-                  //$workspace.workspaceInteraction();
-                  stretchOneSidebarBox(); // from lizard_ui
-              },
-              type: "GET",
-              async: false
-          });
-      } else {
-          alert("Workspace could not be loaded");
-      }
-      
-  });
-};
-
-/* Bind checkboxes 
+/* Bind/Live checkboxes 
 
 $("a.url-lizard-map-workspace-item-edit").attr("href");
 */
-  jQuery.fn.bindCheckboxes = function() {
+  jQuery.fn.liveCheckboxes = function() {
       return this.each(function(){
           $workspace = $(this);
-          $workspace.find(".workspace_item_checkbox").bind('click', function() {
+          $workspace.find(".workspace_item_checkbox").live('click', function() {
               var url = $("a.url-lizard-map-workspace-item-edit").attr("href");
               $.ajax({
                   url: url,
@@ -155,6 +110,8 @@ jQuery.fn.workspaceInteraction = function() {
         });
         // Make the trash working
         $workspace.workspaceTrashBox();
+        // Make checkboxes work
+        $workspace.liveCheckboxes();
     });
 }
 
@@ -164,8 +121,10 @@ jQuery.fn.updateWorkspace = function() {
     return this.each(function(){
         var $this = $(this);
         var workspace_id = $this.attr("workspace_id");
+        // reload map layers
         updateLayer(workspace_id); // from lizardgis
-        $this.updateWorkspaceBox();
+        // reload workspace items
+        $(this).find(".workspace_items").load("./ .workspace_item");
     });
 };
 
@@ -198,7 +157,11 @@ workspace_trash class inside workspace
                       url: url,
                       data: { workspace_item_id: workspace_item_id },
                       success: function(workspace_id) {
-                          // $workspace.updateWorkspace(); // vreemde looping bug
+                          // reload workspace items: looping error
+                          //$(this).find(".workspace_items").load("./ .workspace_item");
+                          //$("ul.workspace_items").load("./ .workspace_item");
+                          //$("ul.workspace_items").sortable("destroy");
+                          //$("ul.workspace_items").draggable("destroy");
                           location.reload();
                       },
                       type: "POST",
@@ -233,7 +196,7 @@ Then change the url (???)
                   $("#sidebar").html($(responseText).find("#sidebar").html());
                   setUpScreen();
                   $(".workspace").workspaceInteraction();
-                  $(".workspace").updateWorkspaceBox();
+                  //$(".workspace").updateWorkspaceBox();
                   // $("#head-extras").html($(responseText).find("#head-extras").html());
 
                   var headExtras = $(responseText).find("div#head-extras").html();

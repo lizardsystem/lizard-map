@@ -15,6 +15,10 @@ from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 
 
+"""
+Workspace stuff
+"""
+
 def workspace(request,
               workspace_id,
               template='lizard_map/workspace.html'):
@@ -144,18 +148,9 @@ def session_workspace_edit_item(request,
     return
 
 
-@never_cache
-def workspace_items(request, workspace_id=None):
-    """get workspace items as html list items
-
-    if workspace_id is None, fetch from GET"""
-
-    if workspace_id is None:
-        workspace_id = request.GET['workspace_id']
-
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
-    return render_to_response("lizard_map/workspace_items.html",
-                                  {'workspace': workspace})
+"""
+Map stuff
+"""
 
 
 def wms(request, workspace_id):

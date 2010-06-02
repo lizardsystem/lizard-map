@@ -16,25 +16,55 @@
         class="workspace_items without-bullets"
         workspace_id="{{ workspace.id }}">
       {% comment %} call updateWorkspaceBox to fill workspace {% endcomment %}
-      <li>Workspace not yet loaded</li>
+      {% for workspace_item in workspace.workspace_items.all %}
+      <li id="workspace_items_{{ workspace_item.id }}"
+          value="{{ workspace_item.id }}"
+          class="workspace_item"
+          workspace_id="{{ workspace.id }}">
+        <img src="{{ workspace_item.symbol_url }}"
+             width="16"
+             height="16" />
+        <input id="{{ workspace_item.id }}"
+               class="workspace_item_checkbox"
+               type="checkbox"
+               {% if workspace_item.visible %}
+               checked="true"
+               {% endif %}
+               workspace_id="{{ workspace.id }}" />
+               {% if workspace_item.name %}
+               {{ workspace_item.name }}
+               {% else %}
+               (noname)
+               {% endif %}
+      </li>
+      {% empty %}
+          {# No workspaceitems #}
+          <li class="workspace_item">Drag items here</li>
+      {% endfor %}
     </ul>
-    {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
-    <div class="sidebarbox-actions">
-      <div class="workspace_trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
-      <!--
-      <div class="workspace_new"><span class="ss_sprite ss_page_add">new</span></div>
-      <div class="workspace_load"><span class="ss_sprite ss_page_go">load</span></div>
-      <div class="workspace_save"><span class="ss_sprite ss_page_save">save</span></div>
-      <div class="workspace_date"><span class="ss_sprite ss_date">period</span></div>
-      -->
-    </div>
   </div> 
   {% for collage in workspace.collages.all %}
   <h3 class="collapsible">{{ collage.name }}</h3>
   <div>
-    <ul class="collage_items without-bullets" collage_id="{{ collage.id }}">
-      Snippets not yet loaded
+    <ul class="snippet_list without-bullets" data-collage-id="{{ collage.id }}">
+      {% for snippet in collage.snippets.all %}
+      <li class="snippet">{{ snippet }}</li>
+      {% empty %}
+      <li class="snippet">no snippets...</li>
+      {% endfor %}
     </ul>
   </div>
   {% endfor %}
+
+  {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
+  <div class="sidebarbox-actions">
+    <hr/>
+    <div class="workspace_trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
+    <!--
+        <div class="workspace_new"><span class="ss_sprite ss_page_add">new</span></div>
+        <div class="workspace_load"><span class="ss_sprite ss_page_go">load</span></div>
+        <div class="workspace_save"><span class="ss_sprite ss_page_save">save</span></div>
+        <div class="workspace_date"><span class="ss_sprite ss_date">period</span></div>
+    -->
+  </div>
 </div>
