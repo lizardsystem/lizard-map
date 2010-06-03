@@ -25,6 +25,7 @@ urlpatterns = patterns(
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
 
+
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
     url(r'^workspaceitemreorder/',
@@ -39,6 +40,11 @@ urlpatterns = patterns(
         'lizard_map.views.session_workspace_edit_item',
         {'workspace_category': 'temp'},
         name="lizard_map_session_workspace_add_item_temp"),
+
+    # Actions/services on session collages
+    url(r'^session_collage/',
+        'lizard_map.views.session_collage_snippet_add',
+        name="lizard_map_session_collage_snippet_add"),
 
     # Actions on workspace items
     url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',

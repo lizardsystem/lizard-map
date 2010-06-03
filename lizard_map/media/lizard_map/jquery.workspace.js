@@ -128,6 +128,36 @@ jQuery.fn.updateWorkspace = function() {
     });
 };
 
+/* React on click "add snippet" 
+
+requires
+
+$("a.url-lizard-map-snippet-add").attr("href");
+
+*/
+    jQuery.fn.snippetInteraction = function() {
+        return this.each(function() {
+            $(this).click(function(event) {
+                event.preventDefault(); 
+                console.log("add-snippet");
+                url = $("a.url-lizard-map-snippet-add").attr("href");
+                var workspace_item_id = $(this).attr("data-workspace-item-id");
+                var workspace_item_location_identifier = $(this).attr("data-item-identifier");
+                if (url !== undefined) {
+                    $.post(
+                        url,
+                        {
+                            workspace_item_id: workspace_item_id,
+                            workspace_item_location_identifier: workspace_item_location_identifier
+                        },
+                        function() {
+                            // refresh collage
+                            console.log("added snippet");
+                        });
+                }
+            });
+        });
+    }
 
 /* Make a workspace trashbox 
 

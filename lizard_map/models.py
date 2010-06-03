@@ -161,6 +161,13 @@ class WorkspaceCollageSnippet(models.Model):
     def __unicode__(self):
         return '%s %s %s' % (self.workspace_collage, self.workspace_item, self.identifier)
 
+    def save(self, *args, **kwargs):
+        """check constraint that workspace_item is in workspace of owner collage"""
+        if len(self.workspace_collage.workspace.workspace_items.filter(pk=self.workspace_item.pk)) == 0:
+            raise "workspace_item of snippet not in workspace of collage"
+        super(WorkspaceCollageSnippet, self).save(*args, **kwargs) # Call the "real" save() method.
+        
+
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
 

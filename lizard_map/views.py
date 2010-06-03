@@ -149,6 +149,36 @@ def session_workspace_edit_item(request,
 
 
 """
+Collages stuff
+"""
+
+def session_collage_snippet_add(request, 
+                                workspace_item_id=None,
+                                workspace_item_location_identifier=None,
+                                workspace_collage_id=None, 
+                                workspace_category='user'):
+    """finds session user workspace and add snippet to (only) corresponding
+    collage
+    """
+    if workspace_item_id is None:
+        workspace_item_id = request.POST.get('workspace_item_id')
+    if workspace_item_location_identifier is None:
+        workspace_item_location_identifier = request.POST.get(
+            'workspace_item_location_identifier')
+
+    workspace_id = request.session['workspaces'][workspace_category][0]
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+
+    if len(workspace.collages.all()) == 0:
+        workspace.collages.create()
+    collage = workspace.collages.all()[0]
+    collage.snippets.create(workspace_item=workspace_item,
+                            identifier=workspace_item_location_identifier)
+
+    return HttpResponse(json.dumps(workspace_id))
+
+"""
 Map stuff
 """
 
