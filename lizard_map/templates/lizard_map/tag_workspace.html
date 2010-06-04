@@ -1,8 +1,12 @@
-{# Shows one workspace. Options: show_new_workspace #}
-<div id="workspace_{{ workspace.id }}" class="sidebarbox workspace" workspace_id="{{ workspace.id }}">
-  <h2>{# class="collapsible" weggehaald omdat andere links dan ook linken naar de collapsible #}
+{# Shows one workspace. Options: show_new_workspace. #}
+<div id="workspace_{{ workspace.id }}"
+     class="sidebarbox workspace"
+     workspace_id="{{ workspace.id }}">
+  <h2>
     {{ workspace.name }}
-    <a href="{% url lizard_map_workspace workspace_id=workspace.id %}" title="link to {{ workspace.name }}" class="title">
+    <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
+       title="link to {{ workspace.name }}"
+       class="title">
       <span class="ss_sprite ss_arrow_turn_right">&nbsp;</span>
     </a>
     {% if show_new_workspace %}
@@ -15,7 +19,7 @@
     <ul id="workspace_{{ workspace.id }}"
         class="workspace_items without-bullets"
         workspace_id="{{ workspace.id }}">
-      {% comment %} call updateWorkspaceBox to fill workspace {% endcomment %}
+      {# Call updateWorkspaceBox to fill workspace. #}
       {% for workspace_item in workspace.workspace_items.all %}
       <li id="workspace_items_{{ workspace_item.id }}"
           value="{{ workspace_item.id }}"
@@ -42,7 +46,7 @@
           <li class="workspace_item">Drag items here</li>
       {% endfor %}
     </ul>
-  </div> 
+  </div>
   {% for collage in workspace.collages.all %}
   <h3 class="collapsible">{{ collage.name }}</h3>
   <div>
