@@ -109,9 +109,10 @@ jQuery.fn.workspaceInteraction = function() {
                       );
             }
         });
-        // Snippets
-        snippets = $workspace.find("li.snippet");
-        snippets.draggable({
+        // Snippets. Using sortable instead of draggable because
+        // draggable applies to li and sortable applies to ul element
+        snippet_list = $workspace.find("ul.snippet_list");
+        snippet_list.sortable({
             helper: 'clone'
         });
         // Make the trash working
