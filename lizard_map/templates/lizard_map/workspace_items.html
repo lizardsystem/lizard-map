@@ -2,7 +2,7 @@
   <li id="workspace_items_{{ workspace_item.id }}"
       value="{{ workspace_item.id }}"
       class="workspace_item"
-      workspace_id="{{ workspace.id }}">
+      data-workspace_id="{{ workspace.id }}">
     <img src="{{ workspace_item.symbol_url }}"
          width="16"
          height="16" />
@@ -12,7 +12,7 @@
            {% if workspace_item.visible %}
            checked="true"
            {% endif %}
-           workspace_id="{{ workspace.id }}" />
+           data-workspace_id="{{ workspace.id }}" />
     {% if workspace_item.name %}
     {{ workspace_item.name }}
     {% else %}

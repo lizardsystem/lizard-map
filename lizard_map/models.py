@@ -144,7 +144,7 @@ class WorkspaceCollage(models.Model):
     """A collage contains selections/locations from a workspace"""
     name = models.CharField(max_length=80,
                             default='collage')
-    workspace = models.ForeignKey(Workspace, 
+    workspace = models.ForeignKey(Workspace,
                                   related_name='collages')
 
     def __unicode__(self):
@@ -156,7 +156,7 @@ class WorkspaceCollageSnippet(models.Model):
                             default='snippet')
     shortname = models.CharField(max_length=80,
                                  default='snippet')
-    workspace_collage = models.ForeignKey(WorkspaceCollage, 
+    workspace_collage = models.ForeignKey(WorkspaceCollage,
                                           related_name='snippets')
     workspace_item = models.ForeignKey(
         WorkspaceItem)
@@ -164,9 +164,9 @@ class WorkspaceCollageSnippet(models.Model):
 
     def __unicode__(self):
         return '%s %s %s %s' % (
-            self.name, 
-            self.workspace_collage, 
-            self.workspace_item, 
+            self.name,
+            self.workspace_collage,
+            self.workspace_item,
             self.identifier)
 
     def save(self, *args, **kwargs):
@@ -174,7 +174,7 @@ class WorkspaceCollageSnippet(models.Model):
         if len(self.workspace_collage.workspace.workspace_items.filter(pk=self.workspace_item.pk)) == 0:
             raise "workspace_item of snippet not in workspace of collage"
         super(WorkspaceCollageSnippet, self).save(*args, **kwargs) # Call the "real" save() method.
-        
+
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""
@@ -272,7 +272,9 @@ class WorkspaceManager:
             for workspace in self.workspaces['temp']:
                 workspace.workspace_items.all().delete()
 
-        if new_workspace or not 'user' in self.workspaces:
+        if (new_workspace or
+            not 'user' in self.workspaces or
+            not len(self.workspaces['user'])):
             workspace_user = Workspace()
             workspace_user.save()
             self.workspaces['user'] = [workspace_user, ]

@@ -5,7 +5,10 @@ Changelog of lizard-map
 0.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Switched the custom attributes over to "data-xxxxx" attributes (those are
+  valid html5).
+
+- Added generic draggability of .workspace-acceptable items.
 
 
 0.4 (2010-05-18)

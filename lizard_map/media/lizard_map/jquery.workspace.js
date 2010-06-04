@@ -1,18 +1,19 @@
 /*
 Workspace plugin
 
-Globally defined requirements:
+A workspace needs to have a couple of data items (defined on the <div
+class="workspace>):
 
-$("a.url-lizard-map-workspace-item-edit").attr("href");
-$("a.url-lizard-map-workspace-item-reorder").attr("href");
-$("a.url-lizard-map-workspace-item-add").attr("href");
-$("a.url-lizard-map-workspace-item-delete").attr("href");
+data-url-lizard-map-workspace-item-edit
+data-url-lizard-map-workspace-item-reorder
+data-url-lizard-map-workspace-item-add
+data-url-lizard-map-workspace-item-delete
 
 css class drophover
 
 A workspace needs:
 
-attr("workspace_id")
+attr("data-workspace_id")
 <ul> inside with class workspace_items at depth 2
 workspace_trash class inside workspace
 workspace_item_checkbox class in ul.workspace_items
@@ -20,36 +21,37 @@ workspace_item_checkbox class in ul.workspace_items
 
 
 
-/* Bind/Live checkboxes 
+/* Bind/Live checkboxes
 
 $("a.url-lizard-map-workspace-item-edit").attr("href");
 */
-  jQuery.fn.liveCheckboxes = function() {
-      return this.each(function(){
-          $workspace = $(this);
-          $workspace.find(".workspace_item_checkbox").live('click', function() {
-              var url = $("a.url-lizard-map-workspace-item-edit").attr("href");
-              $.ajax({
-                  url: url,
-                  data: { workspace_item_id: this.id, visible: this.checked },
-                  success: function(workspace_id) {
-                      $workspace.updateWorkspace();
-                  },
-                  type: "POST",
-                  async: false
-              });
-          });
-      });
-  };
+jQuery.fn.liveCheckboxes = function() {
+    return this.each(function(){
+        $workspace = $(this);
+        $workspace.find(".workspace_item_checkbox").live('click', function() {
+            var url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
+            $.ajax({
+                url: url,
+                data: { workspace_item_id: this.id, visible: this.checked },
+                success: function(workspace_id) {
+                    $workspace.updateWorkspace();
+                },
+                type: "POST",
+                async: false
+            });
+        });
+    });
+};
 
 /* Make workspaces sortable and droppable
 
-globally defined requirements:
-$("a.url-lizard-map-workspace-item-reorder").attr("href");
-$("a.url-lizard-map-workspace-item-add").attr("href");
+Needed: data attributes on the <div class="workspace">:
+
+.data.url-lizard-map-workspace-item-reorder
+.data-url-lizard-map-workspace-item-add
 
 matching objects require (needs cleanup):
-this.attr("workspace_id");
+this.attr("data-workspace_id");
 <ul> at depth 2
 
 TODO: use jquery live to bind all future workspaces?
@@ -59,13 +61,13 @@ jQuery.fn.workspaceInteraction = function() {
     return this.each(function(){
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        var workspace_id = $workspace.attr("workspace_id");
-        workspaceItems = $workspace.find("ul.workspace_items");
+        var workspace_id = $workspace.attr("data-workspace_id");
+        var workspaceItems = $workspace.find("ul.workspace_items");
         workspaceItems.sortable({
             update: function (event, ui) {
                 // very strange... $workspace becomes the <ul> element
                 // (which is workspaceItems)...  using workspaceItems
-                var url = $("a.url-lizard-map-workspace-item-reorder").attr("href");
+                var url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
                 var order = workspaceItems.sortable("serialize");
                 $.post(url + "?workspace_id="+workspace_id,
                        order,
@@ -89,17 +91,17 @@ jQuery.fn.workspaceInteraction = function() {
                 // Fade out draggable item.
                 ui.helper.fadeOut();
                 // Get layer_method and parameters from url.
-                name = ui.draggable.attr("name");
+                var name = ui.draggable.attr("data-name");
                 // ^^^ TODO: this attr name might be dangerous.
-                layer_method = ui.draggable.attr("layer_method");
-                layer_method_json = ui.draggable.attr("layer_method_json");
-                var url = $("a.url-lizard-map-workspace-item-add").attr("href");
+                var layer_method = ui.draggable.attr("data-layer_method");
+                var layer_method_json = ui.draggable.attr("data-layer_method_json");
+                var url = $workspace.attr("data-url-lizard-map-workspace-item-add");
                 // Make workspace item out of it.
                 $.post(url,
-                       { workspace_id: workspace_id,
-                         name: name,
-                         layer_method: layer_method,
-                         layer_method_json: layer_method_json
+                       {workspace_id: workspace_id,
+                        name: name,
+                        layer_method: layer_method,
+                        layer_method_json: layer_method_json
                        },
                        function(workspace_id) {
                            // very strange... $workspace becomes the
@@ -127,7 +129,7 @@ jQuery.fn.workspaceInteraction = function() {
 jQuery.fn.updateWorkspace = function() {
     return this.each(function(){
         var $this = $(this);
-        var workspace_id = $this.attr("workspace_id");
+        var workspace_id = $this.attr("data-workspace_id");
         // reload map layers
         updateLayer(workspace_id); // from lizardgis
         // reload workspace items
@@ -135,19 +137,20 @@ jQuery.fn.updateWorkspace = function() {
     });
 };
 
-/* React on click "add snippet" 
+/* React on click "add snippet"
 
 requires
 
-$("a.url-lizard-map-snippet-add").attr("href");
+.data-url-lizard-map-snippet-add
 
 */
     jQuery.fn.snippetInteraction = function() {
         return this.each(function() {
             $(this).click(function(event) {
-                event.preventDefault(); 
+                event.preventDefault();
                 console.log("add-snippet");
-                url = $("a.url-lizard-map-snippet-add").attr("href");
+                var workspace_element = $(this).parents(".workspace")
+                var url = workspace_element.attr("data-url-lizard-map-snippet-add");
                 var workspace_item_id = $(this).attr("data-workspace-item-id");
                 var workspace_item_location_identifier = $(this).attr("data-item-identifier");
                 var workspace_item_location_shortname = $(this).attr("data-item-shortname");
@@ -179,12 +182,12 @@ $("a.url-lizard-map-snippet-add").attr("href");
 //.workspace_item .snippet
     }
 
-/* Make a workspace trashbox 
+/* Make a workspace trashbox
 
 accepts workspace_item classes
 
 globally defined requirements:
-$("a.url-lizard-map-workspace-item-delete").attr("href");
+.data-url-lizard-map-workspace-item-delete
 
 css class drophover
 
@@ -196,21 +199,20 @@ workspace_trash class inside workspace
       return this.each(function(){
           var $workspace = $(this);
           var $workspace_trash = $workspace.find(".workspace_trash");
-
           // delete workspace items
-          var url_workspace_item = $("a.url-lizard-map-workspace-item-delete").attr("href");
-          var url_snippet = $("a.url-lizard-map-snippet-delete").attr("href");
+          var url_workspace_item = $workspace.attr("data-url-lizard-map-workspace-item-delete");
+          var url_snippet = $workspace.attr("data-url-lizard-map-snippet-delete");
           $workspace_trash.droppable({
               accept: workspaceItemOrSnippet,
               hoverClass: 'drophover',
               drop: function(event, ui) {
-                  object_id = ui.draggable.attr("value");
+                  var object_id = ui.draggable.attr("value");
                   ui.draggable.remove();  // for visual snappyness
-                  if ($(this).is(".workspace_item")) { 
-                      url = url_workspace_item;
+                  if ($(this).is(".workspace_item")) {
+                      var url = url_workspace_item;
                   } else {
                       //snippet
-                      url = url_snippet;
+                      var url = url_snippet;
                   }
                   $.ajax({
                       url: url,
@@ -245,7 +247,7 @@ Then change the url (???)
 */
   jQuery.fn.lizardMapLink = function() {
       $(this).click(function(event) {
-          event.preventDefault(); 
+          event.preventDefault();
           var url = event.currentTarget;
           $.get(
               url,
@@ -271,8 +273,8 @@ Then change the url (???)
 
               }
           );
-          
+
           // probeersel, je kunt niet het voorste gedeelte aanpassen
-          window.location.hash = event.currentTarget; 
+          window.location.hash = event.currentTarget;
       });
   }

@@ -1,7 +1,14 @@
 {# Shows one workspace. Options: show_new_workspace. #}
 <div id="workspace_{{ workspace.id }}"
      class="sidebarbox workspace"
-     workspace_id="{{ workspace.id }}">
+     data-workspace_id="{{ workspace.id }}"
+     data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_item_edit %}"
+     data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
+     data-url-lizard-map-workspace-item-add="{% url lizard_map_workspace_item_add %}"
+     data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
+     data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
+     data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_add %}"
+     >
   <h2>
     {{ workspace.name }}
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
@@ -18,13 +25,13 @@
   <div>
     <ul id="workspace_{{ workspace.id }}"
         class="workspace_items without-bullets"
-        workspace_id="{{ workspace.id }}">
+        data-workspace_id="{{ workspace.id }}">
       {# Call updateWorkspaceBox to fill workspace. #}
       {% for workspace_item in workspace.workspace_items.all %}
       <li id="workspace_items_{{ workspace_item.id }}"
           value="{{ workspace_item.id }}"
           class="workspace_item"
-          workspace_id="{{ workspace.id }}">
+          data-workspace_id="{{ workspace.id }}">
         <img src="{{ workspace_item.symbol_url }}"
              width="16"
              height="16" />
@@ -34,7 +41,7 @@
                {% if workspace_item.visible %}
                checked="true"
                {% endif %}
-               workspace_id="{{ workspace.id }}" />
+               data-workspace_id="{{ workspace.id }}" />
                {% firstof workspace_item.name '(noname)' %}
       </li>
       {% empty %}
