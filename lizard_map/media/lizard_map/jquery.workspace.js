@@ -74,6 +74,7 @@ jQuery.fn.workspaceInteraction = function() {
                        }
                       );
             },
+            helper: 'clone',
             connectWith: '.workspace_items',
             cursor: 'move',
             revert: 'true',
@@ -107,6 +108,11 @@ jQuery.fn.workspaceInteraction = function() {
                        }
                       );
             }
+        });
+        // Snippets
+        snippets = $workspace.find("li.snippet");
+        snippets.draggable({
+            helper: 'clone'
         });
         // Make the trash working
         $workspace.workspaceTrashBox();
@@ -143,20 +149,33 @@ $("a.url-lizard-map-snippet-add").attr("href");
                 url = $("a.url-lizard-map-snippet-add").attr("href");
                 var workspace_item_id = $(this).attr("data-workspace-item-id");
                 var workspace_item_location_identifier = $(this).attr("data-item-identifier");
+                var workspace_item_location_shortname = $(this).attr("data-item-shortname");
+                var workspace_item_location_name = $(this).attr("data-item-name");
                 if (url !== undefined) {
                     $.post(
                         url,
                         {
                             workspace_item_id: workspace_item_id,
-                            workspace_item_location_identifier: workspace_item_location_identifier
+                            workspace_item_location_identifier: workspace_item_location_identifier,
+                            workspace_item_location_shortname: workspace_item_location_shortname,
+                            workspace_item_location_name: workspace_item_location_name
                         },
                         function() {
                             // refresh collage
-                            console.log("added snippet");
+                            $(".workspace").find(".snippet_list").load("./ .snippet");
                         });
                 }
             });
         });
+    }
+
+
+    function workspaceItemOrSnippet(object)
+    {
+        if ($(object).is(".workspace_item")) {return true;}
+        if ($(object).is(".snippet")) {return true;}
+        return false;
+//.workspace_item .snippet
     }
 
 /* Make a workspace trashbox 
@@ -176,17 +195,26 @@ workspace_trash class inside workspace
       return this.each(function(){
           var $workspace = $(this);
           var $workspace_trash = $workspace.find(".workspace_trash");
-          var url = $("a.url-lizard-map-workspace-item-delete").attr("href");
+
+          // delete workspace items
+          var url_workspace_item = $("a.url-lizard-map-workspace-item-delete").attr("href");
+          var url_snippet = $("a.url-lizard-map-snippet-delete").attr("href");
           $workspace_trash.droppable({
-              accept: '.workspace_item',
+              accept: workspaceItemOrSnippet,
               hoverClass: 'drophover',
               drop: function(event, ui) {
-                  workspace_item_id = ui.draggable.attr("value");
+                  object_id = ui.draggable.attr("value");
                   ui.draggable.remove();  // for visual snappyness
+                  if ($(this).is(".workspace_item")) { 
+                      url = url_workspace_item;
+                  } else {
+                      //snippet
+                      url = url_snippet;
+                  }
                   $.ajax({
                       url: url,
-                      data: { workspace_item_id: workspace_item_id },
-                      success: function(workspace_id) {
+                      data: { object_id: object_id },
+                      success: function() {
                           // reload workspace items: looping error
                           //$(this).find(".workspace_items").load("./ .workspace_item");
                           //$("ul.workspace_items").load("./ .workspace_item");

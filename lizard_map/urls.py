@@ -42,9 +42,12 @@ urlpatterns = patterns(
         name="lizard_map_session_workspace_add_item_temp"),
 
     # Actions/services on session collages
-    url(r'^session_collage/',
+    url(r'^session_collage/add/',
         'lizard_map.views.session_collage_snippet_add',
         name="lizard_map_session_collage_snippet_add"),
+    url(r'^session_collage/delete/',
+        'lizard_map.views.session_collage_snippet_delete',
+        name="lizard_map_session_collage_snippet_delete"),
 
     # Actions on workspace items
     url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',

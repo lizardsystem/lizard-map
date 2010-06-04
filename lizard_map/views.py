@@ -13,7 +13,7 @@ import simplejson as json
 from lizard_map import coordinates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
-
+from lizard_map.models import WorkspaceCollageSnippet
 
 """
 Workspace stuff
@@ -108,7 +108,7 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 
 
 @never_cache
-def workspace_item_delete(request, workspace_item_id=None):
+def workspace_item_delete(request, object_id=None):
     """delete workspace item from workspace
 
     returns workspace_id
@@ -116,9 +116,9 @@ def workspace_item_delete(request, workspace_item_id=None):
     if workspace_item_id is not provided, it tries to get the variable
     workspace_item_id from the request.POST
     """
-    if workspace_item_id is None:
-        workspace_item_id = request.POST['workspace_item_id']
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    if object_id is None:
+        object_id = request.POST['object_id']
+    workspace_item = get_object_or_404(WorkspaceItem, pk=object_id)
     workspace_id = workspace_item.workspace.id
     workspace_item.delete()
 
@@ -155,6 +155,8 @@ Collages stuff
 def session_collage_snippet_add(request, 
                                 workspace_item_id=None,
                                 workspace_item_location_identifier=None,
+                                workspace_item_location_shortname=None,
+                                workspace_item_location_name=None,
                                 workspace_collage_id=None, 
                                 workspace_category='user'):
     """finds session user workspace and add snippet to (only) corresponding
@@ -165,6 +167,12 @@ def session_collage_snippet_add(request,
     if workspace_item_location_identifier is None:
         workspace_item_location_identifier = request.POST.get(
             'workspace_item_location_identifier')
+    if workspace_item_location_shortname is None:
+        workspace_item_location_shortname = request.POST.get(
+            'workspace_item_location_shortname')
+    if workspace_item_location_name is None:
+        workspace_item_location_name = request.POST.get(
+            'workspace_item_location_name')
 
     workspace_id = request.session['workspaces'][workspace_category][0]
     workspace = get_object_or_404(Workspace, pk=workspace_id)
@@ -174,9 +182,24 @@ def session_collage_snippet_add(request,
         workspace.collages.create()
     collage = workspace.collages.all()[0]
     collage.snippets.create(workspace_item=workspace_item,
-                            identifier=workspace_item_location_identifier)
+                            identifier=workspace_item_location_identifier,
+                            shortname=workspace_item_location_shortname,
+                            name=workspace_item_location_name)
 
     return HttpResponse(json.dumps(workspace_id))
+
+def session_collage_snippet_delete(request,
+                                   object_id=None):
+    """removes snippet
+
+    TODO: check permission of collage, workspace owners
+    """
+    if object_id is None:
+        object_id = request.POST.get('object_id')
+    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=object_id)
+    snippet.delete()
+
+    return HttpResponse()
 
 """
 Map stuff

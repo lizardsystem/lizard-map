@@ -35,11 +35,7 @@
                checked="true"
                {% endif %}
                workspace_id="{{ workspace.id }}" />
-               {% if workspace_item.name %}
-               {{ workspace_item.name }}
-               {% else %}
-               (noname)
-               {% endif %}
+               {% firstof workspace_item.name '(noname)' %}
       </li>
       {% empty %}
           {# No workspaceitems #}
@@ -52,7 +48,9 @@
   <div>
     <ul class="snippet_list without-bullets" data-collage-id="{{ collage.id }}">
       {% for snippet in collage.snippets.all %}
-      <li class="snippet">{{ snippet }}</li>
+      <li class="snippet" title="{{ snippet.name }}" value="{{ snippet.id }}">
+        {% firstof snippet.shortname snippet.name '(noname)' %}
+      </li>
       {% empty %}
       <li class="snippet">no snippets...</li>
       {% endfor %}
@@ -62,7 +60,6 @@
 
   {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
   <div class="sidebarbox-actions">
-    <hr/>
     <div class="workspace_trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
     <!--
         <div class="workspace_new"><span class="ss_sprite ss_page_add">new</span></div>

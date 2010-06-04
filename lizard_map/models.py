@@ -152,6 +152,10 @@ class WorkspaceCollage(models.Model):
 
 class WorkspaceCollageSnippet(models.Model):
     """One snippet in a collage"""
+    name = models.CharField(max_length=80,
+                            default='snippet')
+    shortname = models.CharField(max_length=80,
+                                 default='snippet')
     workspace_collage = models.ForeignKey(WorkspaceCollage, 
                                           related_name='snippets')
     workspace_item = models.ForeignKey(
@@ -159,7 +163,11 @@ class WorkspaceCollageSnippet(models.Model):
     identifier = models.TextField() #format depends on workspace_item layer_method
 
     def __unicode__(self):
-        return '%s %s %s' % (self.workspace_collage, self.workspace_item, self.identifier)
+        return '%s %s %s %s' % (
+            self.name, 
+            self.workspace_collage, 
+            self.workspace_item, 
+            self.identifier)
 
     def save(self, *args, **kwargs):
         """check constraint that workspace_item is in workspace of owner collage"""
