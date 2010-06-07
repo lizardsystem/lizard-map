@@ -42,7 +42,7 @@ setUpWorkspaceAcceptable = function() {
         var name = $(this).attr("data-name");
         var layer_method = $(this).attr("data-layer_method");
         var layer_method_json = $(this).attr("data-layer_method_json");
-        var url_add_item_temp = $(this).attr(
+        var url_add_item_temp = $(".workspace").attr(
             "data-url-lizard-map-session-workspace-add-item-temp");
         $.post(url_add_item_temp,
                { name: name,
