@@ -5,6 +5,8 @@ Changelog of lizard-map
 0.5 (unreleased)
 ----------------
 
+- Added early support for collages/snippets.
+
 - Switched the custom attributes over to "data-xxxxx" attributes (those are
   valid html5).
 
