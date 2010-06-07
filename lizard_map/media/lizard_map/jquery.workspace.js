@@ -132,8 +132,10 @@ jQuery.fn.updateWorkspace = function() {
         var workspace_id = $this.attr("data-workspace_id");
         // reload map layers
         updateLayer(workspace_id); // from lizardgis
-        // reload workspace items
-        $(this).find(".workspace_items").load("./ .workspace_item");
+        // reload workspace items: TODO: works only with a single workspace
+        // item.
+        $(this).find(".workspace_items").load("./ .workspace_item",
+                                             fillSidebar);
     });
 };
 
