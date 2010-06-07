@@ -206,9 +206,9 @@ workspace_trash class inside workspace
               accept: workspaceItemOrSnippet,
               hoverClass: 'drophover',
               drop: function(event, ui) {
-                  var object_id = ui.draggable.attr("value");
+                  var object_id = ui.draggable.attr("data-object_id");
                   ui.draggable.remove();  // for visual snappyness
-                  if ($(this).is(".workspace_item")) {
+                  if (ui.draggable.is(".workspace_item")) {
                       var url = url_workspace_item;
                   } else {
                       //snippet

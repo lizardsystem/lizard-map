@@ -7,7 +7,7 @@
      data-url-lizard-map-workspace-item-add="{% url lizard_map_workspace_item_add %}"
      data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
      data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
-     data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_add %}"
+     data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_delete %}"
      data-url-lizard-map-session-workspace-add-item-temp="{% url lizard_map_session_workspace_add_item_temp %}"
      >
   <h2>
@@ -28,8 +28,8 @@
         data-workspace_id="{{ workspace.id }}">
       {# Call updateWorkspaceBox to fill workspace. #}
       {% for workspace_item in workspace.workspace_items.all %}
-      <li id="workspace_items_{{ workspace_item.id }}"
-          class="workspace_item"
+      <li class="workspace_item"
+          data-object_id="{{ workspace_item.id }}"
           data-workspace_id="{{ workspace.id }}">
         <img src="{{ workspace_item.symbol_url }}"
              width="16"
