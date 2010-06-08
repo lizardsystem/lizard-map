@@ -151,8 +151,8 @@ requires
             $(this).click(function(event) {
                 event.preventDefault();
                 console.log("add-snippet");
-                var workspace_element = $(this).parents(".workspace")
-                var url = workspace_element.attr("data-url-lizard-map-snippet-add");
+                var workspace_id = $(this).attr("data-workspace-id");
+                var url = $("#workspace_" + workspace_id).attr("data-url-lizard-map-snippet-add");
                 var workspace_item_id = $(this).attr("data-workspace-item-id");
                 var workspace_item_location_identifier = $(this).attr("data-item-identifier");
                 var workspace_item_location_shortname = $(this).attr("data-item-shortname");

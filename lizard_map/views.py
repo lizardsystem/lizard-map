@@ -181,10 +181,10 @@ def session_collage_snippet_add(request,
     if len(workspace.collages.all()) == 0:
         workspace.collages.create()
     collage = workspace.collages.all()[0]
-    collage.snippets.create(workspace_item=workspace_item,
-                            identifier=workspace_item_location_identifier,
-                            shortname=workspace_item_location_shortname,
-                            name=workspace_item_location_name)
+    collage.snippets.get_or_create(workspace_item=workspace_item,
+                                   identifier=workspace_item_location_identifier,
+                                   shortname=workspace_item_location_shortname,
+                                   name=workspace_item_location_name)
 
     return HttpResponse(json.dumps(workspace_id))
 

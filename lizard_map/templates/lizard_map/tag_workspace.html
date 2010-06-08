@@ -56,7 +56,7 @@
         data-collage-id="{{ collage.id }}">
       {% for snippet in collage.snippets.all %}
       <li class="snippet" title="{{ snippet.name }}"
-          value="{{ snippet.id }}">
+          data-object_id="{{ snippet.id }}">
         {% firstof snippet.shortname snippet.name '(noname)' %}
       </li>
       {% empty %}

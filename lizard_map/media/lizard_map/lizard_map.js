@@ -62,6 +62,6 @@ $(document).ready(function(){
     setUpWorkspaceAcceptable();
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
-    $(".add-snippet").snippetInteraction();
+    // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
     $("a.lizard-map-link").lizardMapLink();
 });
