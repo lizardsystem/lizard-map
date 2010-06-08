@@ -17,6 +17,7 @@ from lizard_map.symbol_manager import SymbolManager
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 LAYER_ENTRY_POINT = 'lizard_map.layer_method'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
+LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 
 def layer_method_names():
@@ -116,6 +117,13 @@ class WorkspaceItem(models.Model):
                 return entrypoint.load()
         return None
 
+    @property
+    def _location_method_instance(self):
+        for entrypoint in pkg_resources.iter_entry_points(group=LOCATION_ENTRY_POINT):
+            if entrypoint.name == self.layer_method:
+                return entrypoint.load()
+        return None
+
     def layers(self):
         """Return layers and styles for a mapnik map."""
         return self._layer_method_instance(**self.layer_method_arguments)
@@ -126,6 +134,12 @@ class WorkspaceItem(models.Model):
         if not search_method:
             return []
         return search_method(x, y, radius=radius, **self.layer_method_arguments)
+
+    def location(self, **kwargs):
+        """Get a location from the workspace_item, using kwargs
+        """
+        location_method = self._location_method_instance
+        return location_method(self, **kwargs) # add extra self
 
     @property
     def symbol_url(self):
@@ -160,7 +174,7 @@ class WorkspaceCollageSnippet(models.Model):
                                           related_name='snippets')
     workspace_item = models.ForeignKey(
         WorkspaceItem)
-    identifier = models.TextField() #format depends on workspace_item layer_method
+    identifier_json = models.TextField() #format depends on workspace_item layer_method
 
     def __unicode__(self):
         return '%s %s %s %s' % (
@@ -174,6 +188,20 @@ class WorkspaceCollageSnippet(models.Model):
         if len(self.workspace_collage.workspace.workspace_items.filter(pk=self.workspace_item.pk)) == 0:
             raise "workspace_item of snippet not in workspace of collage"
         super(WorkspaceCollageSnippet, self).save(*args, **kwargs) # Call the "real" save() method.
+
+    @property
+    def identifier(self):
+        """Return dict of parsed identifier_json.
+
+        Converts keys to str.
+        """
+        json = self.identifier_json
+        if not json:
+            return {}
+        result = {}
+        for k, v in simplejson.loads(json).items():
+            result[str(k)] = v
+        return result
 
 
 class AttachedPoint(models.Model):

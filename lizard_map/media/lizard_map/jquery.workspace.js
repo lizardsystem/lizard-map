@@ -117,6 +117,13 @@ jQuery.fn.workspaceInteraction = function() {
         snippet_list.sortable({
             helper: 'clone'
         });
+        // make snippets clickable... for eternity
+        snippet_list.find("li.snippet").live('click', function(event) {
+            event.preventDefault();
+            console.log("click-snippet");
+            snippet_id = $(this).attr("data-object_id");
+            snippet(snippet_id, map); // attention: from krw_waternet.js
+        });
         // Make the trash working
         $workspace.workspaceTrashBox();
         // Make checkboxes work
