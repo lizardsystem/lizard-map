@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.5 (unreleased)
+0.5 (2010-06-08)
 ----------------
 
 - Added early support for collages/snippets.
