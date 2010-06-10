@@ -7,8 +7,7 @@ from lizard_map import coordinates
 from workspace import WorkspaceItemAdapter
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
-    @classmethod
-    def layer(cls):
+    def layer(self):
         """Return layer and styles for a shapefile.
 
         Registered as ``shapefile_layer``

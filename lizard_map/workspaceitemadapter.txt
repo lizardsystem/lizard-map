@@ -5,5 +5,6 @@ WMS layer functions are generally defined in layers.py. One can add
 his own in other apps. shapefile_layer is an example function.
 
     >>> from lizard_map.workspaceitemadapter import WorkspaceItemAdapterShapefile
-    >>> workspaceitemadapter = WorkspaceItemAdapterShapefile()
+    >>> mock_workspace = None
+    >>> workspaceitemadapter = WorkspaceItemAdapterShapefile(mock_workspace, layer_arguments={})
     >>> layers, styles = workspaceitemadapter.layer()

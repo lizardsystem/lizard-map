@@ -40,14 +40,14 @@ setUpWorkspaceAcceptable = function() {
         $(".workspace-acceptable").removeClass("selected");
         $(this).addClass("selected");
         var name = $(this).attr("data-name");
-        var layer_method = $(this).attr("data-layer_method");
-        var layer_method_json = $(this).attr("data-layer_method_json");
+        var adapter_class = $(this).attr("data-adapter-class");
+        var adapter_layer_json = $(this).attr("data-adapter-layer-json");
         var url_add_item_temp = $(".workspace").attr(
             "data-url-lizard-map-session-workspace-add-item-temp");
         $.post(url_add_item_temp,
                { name: name,
-                 layer_method: layer_method,
-                 layer_method_json: layer_method_json
+                 adapter_class: adapter_class,
+                 adapter_layer_json: adapter_layer_json
                },
                function(workspace_id) {
                    updateLayer(workspace_id);

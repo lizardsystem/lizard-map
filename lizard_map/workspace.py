@@ -1,5 +1,7 @@
 # 20100610 KKH
 
+from lizard_map.models import Workspace
+
 class WorkspaceManager:
 
     def __init__(self, request):
@@ -92,22 +94,22 @@ class WorkspaceManager:
 
 # The Workspace item adapter implements workspace item behavior of a
 # specific type adapter_class"
-class WorkspaceItemAdapter():
-    def __init__(self, layer_arguments=None):
-        self.layer_arguments = layer_arguments
+class WorkspaceItemAdapter(object):
+    layer_arguments = {}
 
-    @classmethod
-    def layer(cls, *args, **kwargs):
+    def __init__(self, workspace_item, layer_arguments=None):
+        self.workspace_item = workspace_item
+        if layer_arguments is not None:
+            self.layer_arguments = layer_arguments
+
+    def layer(self, *args, **kwargs):
         raise "Not implemented"
 
-    @classmethod
-    def search(cls, *args, **kwargs):
+    def search(self, x, r, radius=None, *args, **kwargs):
         raise "Not implemented"
 
-    @classmethod
-    def location(cls, *args, **kwargs):
+    def location(self, *args, **kwargs):
         raise "Not implemented"
 
-    @classmethod
-    def location_identifier(cls, *args, **kwargs):
+    def location_identifier(self, *args, **kwargs):
         raise "Not implemented"

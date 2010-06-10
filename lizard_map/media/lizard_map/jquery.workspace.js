@@ -93,15 +93,15 @@ jQuery.fn.workspaceInteraction = function() {
                 // Get layer_method and parameters from url.
                 var name = ui.draggable.attr("data-name");
                 // ^^^ TODO: this attr name might be dangerous.
-                var layer_method = ui.draggable.attr("data-layer_method");
-                var layer_method_json = ui.draggable.attr("data-layer_method_json");
+                var adapter_class = ui.draggable.attr("data-adapter-class");
+                var adapter_layer_json = ui.draggable.attr("data-adapter-layer-json");
                 var url = $workspace.attr("data-url-lizard-map-workspace-item-add");
                 // Make workspace item out of it.
                 $.post(url,
                        {workspace_id: workspace_id,
                         name: name,
-                        layer_method: layer_method,
-                        layer_method_json: layer_method_json
+                        adapter_class: adapter_class,
+                        adapter_layer_json: adapter_layer_json
                        },
                        function(workspace_id) {
                            // very strange... $workspace becomes the

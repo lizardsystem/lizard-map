@@ -81,32 +81,21 @@ class WorkspaceItem(models.Model):
     index = models.IntegerField(blank=True, default=0)
     visible = models.BooleanField(default=True)
 
-    def __init__(self, *args, **kwargs):
-        super(WorkspaceItem, self).__init__(*args, **kwargs)
-        self._update_adapter_instance()
-
     def __unicode__(self):
         return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.adapter_class)
 
-    def _update_adapter_instance(self):
-        self.adapter = None
-        if self.adapter_class:
-            self.adapter = self._adapter_class_instance(
-                layer_arguments=self.adapter_layer_arguments
-                )
-
     @property
-    def _adapter_class_instance(self):
+    def adapter(self):
         #search for entrypoint and bind instance
         for entrypoint in pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT):
             if entrypoint.name == self.adapter_class:
-                return entrypoint.load()
+                return entrypoint.load()(self, layer_arguments=self.adapter_layer_arguments)
         raise AdapterClassNotFoundError(
             u'Entry point for %r not found' % self.adapter_class)            
 
     @property
     def adapter_layer_arguments(self):
-        """Return dict of parsed layer_method_json.
+        """Return dict of parsed adapter_layer_json.
 
         Converts keys to str.
         """
@@ -121,33 +110,6 @@ class WorkspaceItem(models.Model):
     def has_adapter(self):
         """Can I provide a adapter class for i.e. WMS layer?"""
         return bool(self.adapter_class)
-
-    @property
-    def _search_method_instance(self):
-        for entrypoint in pkg_resources.iter_entry_points(group=SEARCH_ENTRY_POINT):
-            if entrypoint.name == self.layer_method:
-                return entrypoint.load()
-        return None
-
-    @property
-    def _location_method_instance(self):
-        for entrypoint in pkg_resources.iter_entry_points(group=LOCATION_ENTRY_POINT):
-            if entrypoint.name == self.layer_method:
-                return entrypoint.load()
-        return None
-
-    def search(self, x, y, radius=None):
-        """Return item(s) found at x, y."""
-        search_method = self._search_method_instance
-        if not search_method:
-            return []
-        return search_method(x, y, radius=radius, **self.layer_method_arguments)
-
-    def location(self, **kwargs):
-        """Get a location from the workspace_item, using kwargs
-        """
-        location_method = self._location_method_instance
-        return location_method(self, **kwargs) # add extra self
 
     @property
     def symbol_url(self):
@@ -213,7 +175,7 @@ class WorkspaceCollageSnippet(models.Model):
 
     @property
     def location(self):
-        return self.workspace_item.location(**self.identifier)
+        return self.workspace_item.adapter.location(**self.identifier)
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""

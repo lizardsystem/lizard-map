@@ -66,8 +66,8 @@ def workspace_item_add(request,
         workspace_id = request.POST['workspace_id']        
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     name = request.POST['name']
-    layer_method = request.POST['layer_method']
-    layer_method_json = request.POST['layer_method_json']
+    adapter_class = request.POST['adapter_class']
+    adapter_layer_json = request.POST['adapter_layer_json']
 
     if is_temp_workspace:
         # only one workspace item is used in the temp workspace
@@ -78,9 +78,9 @@ def workspace_item_add(request,
     else:
         max_index = 10
 
-    workspace.workspace_items.create(layer_method=layer_method,
+    workspace.workspace_items.create(adapter_class=adapter_class,
                                      index=max_index + 10,
-                                     layer_method_json=layer_method_json,
+                                     adapter_layer_json=adapter_layer_json,
                                      name=name)
     return HttpResponse(json.dumps(workspace.id))
 
@@ -248,7 +248,7 @@ def wms(request, workspace_id):
     #m.background = mapnik.Color('blue')
 
     for workspace_item in workspace.workspace_items.filter(visible=True):
-        layers, styles = workspace_item.layers()
+        layers, styles = workspace_item.adapter.layer()
         layers.reverse()  # first item should be drawn on top (=last)
         for layer in layers:
             mapnik_map.layers.append(layer)
