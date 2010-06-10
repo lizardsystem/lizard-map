@@ -203,6 +203,9 @@ class WorkspaceCollageSnippet(models.Model):
             result[str(k)] = v
         return result
 
+    @property
+    def location(self):
+        return self.workspace_item.location(**self.identifier)
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""

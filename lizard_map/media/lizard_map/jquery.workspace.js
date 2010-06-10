@@ -111,22 +111,36 @@ jQuery.fn.workspaceInteraction = function() {
                       );
             }
         });
+        // Make collage clickable.
+        $workspace.find(".collage").live('click', function(event) {
+            var url = $workspace.attr("data-url-lizard-map-collage-popup");
+            var collage_id = $(this).attr("data-collage-id");
+            $.get(url,
+                  { collage_id: collage_id },
+                  function(data) { 
+                      alert('yes'); 
+                  });
+        });
         // Snippets. Using sortable instead of draggable because
-        // draggable applies to li and sortable applies to ul element
+        // Draggable applies to li and sortable applies to ul element
         snippet_list = $workspace.find("ul.snippet_list");
         snippet_list.sortable({
             helper: 'clone'
         });
-        // make snippets clickable... for eternity
+        // Make snippets clickable... for eternity.
         snippet_list.find("li.snippet").live('click', function(event) {
-            event.preventDefault();
             console.log("click-snippet");
-            snippet_id = $(this).attr("data-object_id");
-            snippet(snippet_id, map); // attention: from krw_waternet.js
+            url = $workspace.attr("data-url-lizard-map-snippet-popup");
+            snippet_id = $(this).attr("data-object-id");
+            $.getJSON(url,
+                      { snippet_id: snippet_id },
+                      function(data) {show_popup(data, map); }
+                     );
+            //snippet(snippet_id, map); // attention: from krw_waternet.js
         });
-        // Make the trash working
+        // Make the trash working.
         $workspace.workspaceTrashBox();
-        // Make checkboxes work
+        // Make checkboxes work.
         $workspace.liveCheckboxes();
     });
 }
@@ -175,7 +189,8 @@ requires
                         },
                         function() {
                             // refresh collage
-                            $(".workspace").find(".snippet_list").load("./ .snippet");
+                            $(".workspace").find(".snippet_list").load("./ .snippet", 
+                                                                       fillSidebar);
                         });
                 }
             });

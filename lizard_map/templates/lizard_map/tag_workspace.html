@@ -9,6 +9,8 @@
      data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
      data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_delete %}"
      data-url-lizard-map-session-workspace-add-item-temp="{% url lizard_map_session_workspace_add_item_temp %}"
+     data-url-lizard-map-collage-popup="{% url lizard_map_collage_popup %}"
+     data-url-lizard-map-snippet-popup="{% url krw_waternet_snippet %}"
      >
   <h2>
     {{ workspace.name }}
@@ -50,13 +52,14 @@
     </ul>
   </div>
   {% for collage in workspace.collages.all %}
-  <h3 class="collapsible">{{ collage.name }}</h3>
+  <h3 class="collage"
+      data-collage-id="{{ collage.id }}">{{ collage.name }}</h3>
   <div>
     <ul class="snippet_list without-bullets"
         data-collage-id="{{ collage.id }}">
       {% for snippet in collage.snippets.all %}
       <li class="snippet" title="{{ snippet.name }}"
-          data-object_id="{{ snippet.id }}">
+          data-object-id="{{ snippet.id }}">
         {% firstof snippet.shortname snippet.name '(noname)' %}
       </li>
       {% empty %}

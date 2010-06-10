@@ -152,6 +152,27 @@ def session_workspace_edit_item(request,
 Collages stuff
 """
 
+def collage(request,
+              collage_id,
+              template='lizard_map/collage.html'):
+    """Render page with one collage"""
+    return render_to_response(
+        template,
+        {'collage_id': collage_id},
+        context_instance=RequestContext(request))
+
+def collage_popup(request,
+                  collage_id=None,
+                  template='lizard_map/collage.html'):
+    """Render page with one collage in popup format"""
+    if collage_id is None:
+        collage_id = request.GET.get("collage_id")
+    return render_to_response(
+        template,
+        {'collage_id': collage_id},
+        context_instance=RequestContext(request))
+
+
 def session_collage_snippet_add(request, 
                                 workspace_item_id=None,
                                 workspace_item_location_identifier=None,

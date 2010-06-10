@@ -25,6 +25,13 @@ urlpatterns = patterns(
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
 
+    # Collages
+    url(r'^collage/(?P<collage_id>\d+)/',
+        'lizard_map.views.collage',
+        name="lizard_map_collage"),
+    url(r'^collage_popup/$',
+        'lizard_map.views.collage_popup',
+        name="lizard_map_collage_popup"),
 
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
