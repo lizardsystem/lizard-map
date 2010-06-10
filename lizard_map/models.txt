@@ -25,44 +25,47 @@ A workspace can contain workspace items:
 
 A workspace item can point to a method that returns a layer:
 
-    >>> workspace_item1.has_layer()
+    >>> workspace_item1.has_adapter()
     False
-    >>> workspace_item1.layer_method = 'todo'
-    >>> workspace_item1.has_layer()
+    >>> workspace_item1.adapter_class = 'todo'
+    >>> workspace_item1.has_adapter()
     True
 
 That string that identifies a method is looked up as a so-called entry point:
 
     >>> import pkg_resources
-    >>> list(pkg_resources.iter_entry_points(group='lizard_map.layer_method'))
+    >>> list(pkg_resources.iter_entry_points(group='lizard_map.adapter_class'))
     [EntryPoint.parse(...)]
-    >>> workspace_item1._layer_method_instance
+    >>> workspace_item1._adapter_class_instance
     Traceback (most recent call last):
     ...
-    LayerMethodNotFoundError: Entry point for 'todo' not found
-    >>> workspace_item1.layer_method = 'shapefile_layer'
-    >>> workspace_item1._layer_method_instance
-    <function shapefile_layer at ...>
+    AdapterClassNotFoundError: Entry point for 'todo' not found
+    >>> workspace_item1.adapter_class = 'adapter_shapefile'
+    >>> workspace_item1._adapter_class_instance
+    <class lizard_map... at ...>
+
+The workspace item adapter property can be set or updated for use:
+
+    >>> workspace_item1._update_adapter_instance()
+    >>> workspace_item1.adapter
+    <... instance at ...>
 
 The layer method probably needs arguments. You can store them as a json string:
 
-    >>> workspace_item1.layer_method_json
+    >>> workspace_item1.adapter_layer_json
     ''
-    >>> workspace_item1.layer_method_arguments
+    >>> workspace_item1.adapter_layer_arguments
     {}
-    >>> workspace_item1.layer_method_json = '{"bla": "yes"}'
-    >>> workspace_item1.layer_method_arguments
+    >>> workspace_item1.adapter_layer_json = '{"bla": "yes"}'
+    >>> workspace_item1.adapter_layer_arguments
     {'bla': 'yes'}
 
 The method (looked up as a setuptools entry point) is called with the
 parameters (from json):
 
-    >>> workspace_item1.layers()
-    Traceback (most recent call last):
-    ...
-    TypeError: shapefile_layer() takes no arguments (1 given)
-    >>> workspace_item1.layer_method_json =  ''
-    >>> workspace_item1.layers()
+    >>> workspace_item1.adapter_layer_json =  ''
+    >>> workspace_item1._update_adapter_instance()
+    >>> workspace_item1.adapter.layer()
     ([<mapnik._mapnik.Layer object at ...>], {...})
 
 A workspace item always has a name:
@@ -86,21 +89,6 @@ To get a list of all collages, make collage and add snippet:
     >>> snippet = collage.snippets.create(workspace_item=workspace_item, identifier='abcd')
     >>> snippet
     <...>
-
-Using workspaces
-----------------
-
-Multiple workspaces are attached to a session. These workspaces are
-used in several screens. We need a client to use this functionality.
-
-    >>> from django.test.client import Client
-    >>> c = Client()
-
-We use the WorkspaceManager to find and create our workspaces:
-
-    >>> from lizard_map.models import WorkspaceManager
-    >>> mock_request = {}
-    >>> workspace_manager = WorkspaceManager(mock_request)
 
 Attached geometry
 -----------------

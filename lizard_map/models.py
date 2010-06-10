@@ -15,22 +15,22 @@ import simplejson
 from lizard_map.symbol_manager import SymbolManager
 
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
-LAYER_ENTRY_POINT = 'lizard_map.layer_method'
+ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 
-def layer_method_names():
+def adapter_class_names():
     """Return allowed layer method names (from entrypoints)
 
     in tuple of 2-tuples
     """
     entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in
-                   pkg_resources.iter_entry_points(group=LAYER_ENTRY_POINT)]
+                   pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT)]
     return tuple(entrypoints)
 
 
-class LayerMethodNotFoundError(Exception):
+class AdapterClassNotFoundError(Exception):
     pass
 
 
@@ -70,27 +70,47 @@ class WorkspaceItem(models.Model):
                             blank=True)
     workspace = models.ForeignKey(Workspace,
                                   related_name='workspace_items')
-    layer_method = models.SlugField(blank=True,
-                                    choices=layer_method_names())
+    adapter_class = models.SlugField(blank=True,
+                                     choices=adapter_class_names())
     # ^^^ string that identifies a setuptools entry point that points to a
     # specific method that returns (WMS) layers.  Often only one, but it *can*
     # be more than one layer.
-    layer_method_json = models.TextField(blank=True)
+    adapter_layer_json = models.TextField(blank=True)
     # ^^^ Contains json (TODO: add json verification)
 
     index = models.IntegerField(blank=True, default=0)
     visible = models.BooleanField(default=True)
 
+    def __init__(self, *args, **kwargs):
+        super(WorkspaceItem, self).__init__(*args, **kwargs)
+        self._update_adapter_instance()
+
     def __unicode__(self):
-        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.layer_method)
+        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.adapter_class)
+
+    def _update_adapter_instance(self):
+        self.adapter = None
+        if self.adapter_class:
+            self.adapter = self._adapter_class_instance(
+                layer_arguments=self.adapter_layer_arguments
+                )
 
     @property
-    def layer_method_arguments(self):
+    def _adapter_class_instance(self):
+        #search for entrypoint and bind instance
+        for entrypoint in pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT):
+            if entrypoint.name == self.adapter_class:
+                return entrypoint.load()
+        raise AdapterClassNotFoundError(
+            u'Entry point for %r not found' % self.adapter_class)            
+
+    @property
+    def adapter_layer_arguments(self):
         """Return dict of parsed layer_method_json.
 
         Converts keys to str.
         """
-        json = self.layer_method_json
+        json = self.adapter_layer_json
         if not json:
             return {}
         result = {}
@@ -98,17 +118,9 @@ class WorkspaceItem(models.Model):
             result[str(k)] = v
         return result
 
-    def has_layer(self):
-        """Can I provide a WMS layer?"""
-        return bool(self.layer_method)
-
-    @property
-    def _layer_method_instance(self):
-        for entrypoint in pkg_resources.iter_entry_points(group=LAYER_ENTRY_POINT):
-            if entrypoint.name == self.layer_method:
-                return entrypoint.load()
-        raise LayerMethodNotFoundError(
-            u'Entry point for %r not found' % self.layer_method)
+    def has_adapter(self):
+        """Can I provide a adapter class for i.e. WMS layer?"""
+        return bool(self.adapter_class)
 
     @property
     def _search_method_instance(self):
@@ -123,10 +135,6 @@ class WorkspaceItem(models.Model):
             if entrypoint.name == self.layer_method:
                 return entrypoint.load()
         return None
-
-    def layers(self):
-        """Return layers and styles for a mapnik map."""
-        return self._layer_method_instance(**self.layer_method_arguments)
 
     def search(self, x, y, radius=None):
         """Return item(s) found at x, y."""
@@ -226,95 +234,3 @@ class AttachedPoint(models.Model):
     def __unicode__(self):
         return '(%s, %s)' % (self.point.x, self.point.y)
 
-# TODO: move the workspacemanager elsewhere as it is not a model.
-
-
-class WorkspaceManager:
-
-    def __init__(self, request):
-        self.request = request
-        self.workspaces = {}
-
-    def save_workspaces(self):
-        """save workspaces to session"""
-        workspaces_id = {}
-        for k, workspace_list in self.workspaces.items():
-            workspaces_id[k] = [workspace.id for workspace in workspace_list]
-        self.request.session['workspaces'] = workspaces_id
-
-    def load_workspaces(self, workspaces_id=None):
-        """load workspaces from session
-
-        returns number of workspaces that could not be loaded"""
-        errors = 0
-        # TODO: fix up workspaces_id and workspace_ids as those terms are too
-        # similar.  They will lead to coding errors.
-        if workspaces_id is None:
-            workspaces_id = self.request.session['workspaces']
-        for k, workspace_ids in workspaces_id.items():
-            self.workspaces[k] = []
-            for workspace_id in workspace_ids:
-                try:
-                    new_workspace = Workspace.objects.get(pk=workspace_id)
-                    self.workspaces[k].append(new_workspace)
-                except Workspace.DoesNotExist:
-                    errors += 1
-        return errors
-
-    def load_or_create(self, new_workspace=False):
-        """load workspaces references by session['workspaces'] or
-        create new workspace
-
-        workspaces are returned in a dictionary:
-        {
-        'default': [...default layers],
-        'temp': workspace_temp,
-        'user': [...user workspaces]
-        }
-
-        they are stored in the session as a dictionary of ids:
-        {
-        'default': [id1, id2, ...],
-        'temp': [id, ],
-        'user': [id3, id4, ...],
-        }
-        """
-
-        self.workspaces = {}
-        changes = False
-        if self.request.session.has_key('workspaces'):
-            changes = self.load_workspaces()
-
-        #check if components exist, else create them
-        if not 'default' in self.workspaces:
-            try:
-                self.workspaces['default'] = [Workspace.objects.get(name='achtergrond'), ]
-            except Workspace.DoesNotExist:
-                pass
-            changes = True
-
-        if not 'temp' in self.workspaces:
-            workspace_temp = Workspace(name='temp')
-            workspace_temp.save()
-            self.workspaces['temp'] = [workspace_temp, ]
-            changes = True
-        else:
-            #clear all items in temp workspace
-            for workspace in self.workspaces['temp']:
-                workspace.workspace_items.all().delete()
-
-        if (new_workspace or
-            not 'user' in self.workspaces or
-            not len(self.workspaces['user'])):
-            workspace_user = Workspace()
-            workspace_user.save()
-            self.workspaces['user'] = [workspace_user, ]
-            changes = True
-
-        #create collage if necessary, it is stored in the workspace
-        if len(self.workspaces['user'][0].collages.all()) == 0:
-            self.workspaces['user'][0].collages.create()
-
-        if changes:
-            self.save_workspaces()
-        return self.workspaces

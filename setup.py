@@ -42,8 +42,8 @@ setup(name='lizard-map',
       entry_points={
           'console_scripts': [
           ],
-          'lizard_map.layer_method': [
-            'shapefile_layer = lizard_map.layers:shapefile_layer',
+          'lizard_map.adapter_class': [
+            'adapter_shapefile = lizard_map.workspaceitemadapter:WorkspaceItemAdapterShapefile',
             ]
           },
       )
