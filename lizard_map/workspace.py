@@ -110,6 +110,3 @@ class WorkspaceItemAdapter(object):
 
     def location(self, *args, **kwargs):
         raise "Not implemented"
-
-    def location_identifier(self, *args, **kwargs):
-        raise "Not implemented"

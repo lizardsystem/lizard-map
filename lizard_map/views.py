@@ -1,7 +1,9 @@
 import StringIO
+import simplejson
 
 import mapnik
 import PIL.Image
+from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -14,6 +16,15 @@ from lizard_map import coordinates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollageSnippet
+
+"""
+Misc
+"""
+SCREEN_DPI = 72.0
+
+def _inches_from_pixels(pixels):
+    """Return size in inches for matplotlib's benefit"""
+    return pixels / SCREEN_DPI
 
 """
 Workspace stuff
@@ -149,6 +160,49 @@ def session_workspace_edit_item(request,
 
 
 """
+Generic popup
+"""
+def popup_json(found):
+    """Return html with info on closest-matching fews point.
+
+    found: list of dictionaries {'distance': ..., 'timeserie': ...,
+    'workspace_item': ..., 'identifier': ..., 'url_img':...}.
+    """
+
+    # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
+    found.sort(key=lambda item: item['distance'])
+    # Grab the first one
+    timeserie = found[0]['object']
+    workspace_item = found[0]['workspace_item']
+
+    # Compose html header
+    header = '<div><strong>%s</strong><a href="" class="add-snippet" data-workspace-id="%d" data-workspace-item-id="%d" data-item-identifier=\'%s\' data-item-shortname="%s" data-item-name="%s">add snippet</a></div>' % (
+        timeserie.name,
+        workspace_item.workspace.id,
+        workspace_item.id,
+        simplejson.dumps(found[0]['identifier']),
+        timeserie.shortname,
+        timeserie.name
+        )
+    if not timeserie.data_count():
+        body = "<div>Geen gegevens beschikbaar.</div>"
+    else:
+        # img = reverse("lizard_fewsunblobbed.timeserie_graph",
+        #               kwargs={'id': timeserie.pk})
+        body = "<div><img src='%s' /></div>" % found[0]['img_url']
+    html = header + body
+    x_found, y_found = coordinates.rd_to_google(timeserie.locationkey.x,
+                                                timeserie.locationkey.y)
+    result = {'id': 'popup-id',
+              'objects': [{'html': html,
+                           'x': x_found,
+                           'y': y_found}, ]
+              }
+    return HttpResponse(simplejson.dumps(result))
+
+
+
+"""
 Collages stuff
 """
 
@@ -221,6 +275,19 @@ def session_collage_snippet_delete(request,
     snippet.delete()
 
     return HttpResponse()
+
+
+def snippet(request, snippet_id=None):
+    """get snippet/fews location by snippet_id and return data
+
+    """
+    if snippet_id is None:
+        snippet_id = request.GET.get('snippet_id')
+    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
+
+    workspace_item = snippet.workspace_item
+
+    return popup_json([snippet.location, ])
 
 """
 Map stuff

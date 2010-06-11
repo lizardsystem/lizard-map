@@ -5,7 +5,8 @@ Changelog of lizard-map
 0.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Change layer_method and other setuptools registered functions to an
+  adapter class.
 
 
 0.5 (2010-06-08)
