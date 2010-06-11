@@ -6,6 +6,7 @@ import pkg_resources
 from lizard_map import coordinates
 from workspace import WorkspaceItemAdapter
 
+
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     def layer(self):
         """Return layer and styles for a shapefile.
@@ -20,7 +21,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             file=pkg_resources.resource_filename(
                 'lizard_map',
                 'test_shapefiles/KRWwaterlichamen_vlakken.shp'))
-        area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975')) #light brownish
+        area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
+        # ^^^ light brownish
         line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
         area_looks.fill_opacity = 0.5
         layout_rule = mapnik.Rule()
