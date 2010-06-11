@@ -1,6 +1,5 @@
-# 20100610 KKH
-
 from lizard_map.models import Workspace
+
 
 class WorkspaceManager:
 
@@ -55,7 +54,7 @@ class WorkspaceManager:
 
         self.workspaces = {}
         changes = False
-        if self.request.session.has_key('workspaces'):
+        if 'workspaces' in self.request.session:
             changes = self.load_workspaces()
 
         #check if components exist, else create them
