@@ -56,7 +56,7 @@ def workspace_item_reorder(request,
     TODO: check permissions
     """
     if workspace_id is None:
-        workspace_id = request.GET['workspace_id']        
+        workspace_id = request.GET['workspace_id']
 
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     workspace_items = [
@@ -77,7 +77,7 @@ def workspace_item_add(request,
                        template='lizard_map/tag_workspace.html'):
     """add new workspace item to workspace. returns rendered workspace"""
     if workspace_id is None:
-        workspace_id = request.POST['workspace_id']        
+        workspace_id = request.POST['workspace_id']
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
@@ -247,12 +247,12 @@ def collage(request,
         context_instance=RequestContext(request))
 
 
-def session_collage_snippet_add(request, 
+def session_collage_snippet_add(request,
                                 workspace_item_id=None,
                                 workspace_item_location_identifier=None,
                                 workspace_item_location_shortname=None,
                                 workspace_item_location_name=None,
-                                workspace_collage_id=None, 
+                                workspace_collage_id=None,
                                 workspace_category='user'):
     """finds session user workspace and add snippet to (only) corresponding
     collage
@@ -325,12 +325,12 @@ def workspace_item_image(request, workspace_item_id):
 
     identifier_list
     """
-    identifier_json_list = request.GET.getlist('identifier')        
+    identifier_json_list = request.GET.getlist('identifier')
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_end_dates = current_start_end_dates(request)
-    return workspace_item.adapter.image(identifier_list, start_end_dates)             
+    return workspace_item.adapter.image(identifier_list, start_end_dates)
 
 """
 Map stuff

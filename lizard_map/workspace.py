@@ -91,6 +91,7 @@ class WorkspaceManager:
             self.save_workspaces()
         return self.workspaces
 
+
 # The Workspace item adapter implements workspace item behavior of a
 # specific type adapter_class"
 class WorkspaceItemAdapter(object):
@@ -100,6 +101,8 @@ class WorkspaceItemAdapter(object):
         self.workspace_item = workspace_item
         if layer_arguments is not None:
             self.layer_arguments = layer_arguments
+        else:
+            self.layer_arguments = {}
 
     def layer(self, *args, **kwargs):
         raise "Not implemented"

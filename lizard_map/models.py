@@ -1,3 +1,4 @@
+import logging
 import os
 
 import pkg_resources
@@ -18,6 +19,7 @@ ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
+logger = logging.getLogger('lizard_map.models')
 
 def adapter_class_names():
     """Return allowed layer method names (from entrypoints)
@@ -91,7 +93,12 @@ class WorkspaceItem(models.Model):
         for entrypoint in pkg_resources.iter_entry_points(
             group=ADAPTER_ENTRY_POINT):
             if entrypoint.name == self.adapter_class:
-                return entrypoint.load()(
+                try:
+                    real_adapter = entrypoint.load()
+                except ImportError, e:
+                    logger.critical("Invalid entry point: %s", e)
+                    raise
+                return real_adapter(
                     self,
                     layer_arguments=self.adapter_layer_arguments)
         raise AdapterClassNotFoundError(
