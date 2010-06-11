@@ -8,7 +8,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models as gismodels
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 import simplejson
 
@@ -56,7 +55,8 @@ class Workspace(models.Model):
         return u'(%s) %s' % (self.id, self.name)
 
     def get_absolute_url(self):
-        return reverse('lizard_map_workspace', kwargs={'workspace_id': self.id})
+        return reverse('lizard_map_workspace',
+                       kwargs={'workspace_id': self.id})
 
 
 class WorkspaceItem(models.Model):
@@ -82,16 +82,20 @@ class WorkspaceItem(models.Model):
     visible = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace, self.adapter_class)
+        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace,
+                                           self.adapter_class)
 
     @property
     def adapter(self):
-        #search for entrypoint and bind instance
-        for entrypoint in pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT):
+        """Return adapter instance for entrypoint"""
+        for entrypoint in pkg_resources.iter_entry_points(
+            group=ADAPTER_ENTRY_POINT):
             if entrypoint.name == self.adapter_class:
-                return entrypoint.load()(self, layer_arguments=self.adapter_layer_arguments)
+                return entrypoint.load()(
+                    self,
+                    layer_arguments=self.adapter_layer_arguments)
         raise AdapterClassNotFoundError(
-            u'Entry point for %r not found' % self.adapter_class)            
+            u'Entry point for %r not found' % self.adapter_class)
 
     @property
     def adapter_layer_arguments(self):
@@ -118,11 +122,12 @@ class WorkspaceItem(models.Model):
         TODO: not implemented yet
         """
 
-        sm = SymbolManager(ICON_ORIGINALS, os.path.join(settings.MEDIA_ROOT,
-                                                        'generated_icons'))
+        sm = SymbolManager(ICON_ORIGINALS, os.path.join(
+                settings.MEDIA_ROOT,
+                'generated_icons'))
         output_filename = sm.get_symbol_transformed('brug.png')
-
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
+
 
 class WorkspaceCollage(models.Model):
     """A collage contains selections/locations from a workspace"""
@@ -133,7 +138,7 @@ class WorkspaceCollage(models.Model):
 
     def __unicode__(self):
         return '%s %s' % (self.workspace, self.name)
-    
+
     @property
     def locations(self):
         """locations of all snippets
@@ -151,7 +156,8 @@ class WorkspaceCollageSnippet(models.Model):
                                           related_name='snippets')
     workspace_item = models.ForeignKey(
         WorkspaceItem)
-    identifier_json = models.TextField() #format depends on workspace_item layer_method
+    identifier_json = models.TextField()
+    # ^^^ Format depends on workspace_item layer_method
 
     def __unicode__(self):
         return '%s %s %s %s' % (
@@ -161,10 +167,17 @@ class WorkspaceCollageSnippet(models.Model):
             self.identifier)
 
     def save(self, *args, **kwargs):
-        """check constraint that workspace_item is in workspace of owner collage"""
-        if len(self.workspace_collage.workspace.workspace_items.filter(pk=self.workspace_item.pk)) == 0:
+        """Save model and run an extra check.
+
+        Check the constraint that workspace_item is in workspace of owner
+        collage.
+
+        """
+        if len(self.workspace_collage.workspace.workspace_items.filter(
+                pk=self.workspace_item.pk)) == 0:
             raise "workspace_item of snippet not in workspace of collage"
-        super(WorkspaceCollageSnippet, self).save(*args, **kwargs) # Call the "real" save() method.
+        # Call the "real" save() method.
+        super(WorkspaceCollageSnippet, self).save(*args, **kwargs)
 
     @property
     def identifier(self):
@@ -189,7 +202,8 @@ class WorkspaceCollageSnippet(models.Model):
 
         start_end_dates: 2-tuple of datetimes
         """
-        return self.workspace_item.adapter.image([self.identifier, ], start_end_dates)
+        return self.workspace_item.adapter.image([self.identifier],
+                                                 start_end_dates)
 
 
 class AttachedPoint(models.Model):
@@ -210,4 +224,3 @@ class AttachedPoint(models.Model):
 
     def __unicode__(self):
         return '(%s, %s)' % (self.point.x, self.point.y)
-
