@@ -16,7 +16,7 @@
 
 {% for workspace_item in workspace_items %}
 <h3>workspace_item</h3>
-<img src="/timeserie_graph/?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}id={{ snippet.location.object.tkey }}&{% endifequal %}{% endfor %}"/>
+<img src="{% url lizard_fewsunblobbed.timeserie_graph %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}id={{ snippet.location.object.tkey }}&{% endifequal %}{% endfor %}"/>
 {% endfor %}
 
 </div>

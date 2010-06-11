@@ -133,6 +133,13 @@ class WorkspaceCollage(models.Model):
 
     def __unicode__(self):
         return '%s %s' % (self.workspace, self.name)
+    
+    @property
+    def locations(self):
+        """locations of all snippets
+        """
+        return [snippet.location for snippet in self.snippets.all()]
+
 
 class WorkspaceCollageSnippet(models.Model):
     """One snippet in a collage"""
@@ -176,6 +183,14 @@ class WorkspaceCollageSnippet(models.Model):
     @property
     def location(self):
         return self.workspace_item.adapter.location(**self.identifier)
+
+    def image(self, start_end_dates):
+        """return image from adapter,
+
+        start_end_dates: 2-tuple of datetimes
+        """
+        return self.workspace_item.adapter.image([self.identifier, ], start_end_dates)
+
 
 class AttachedPoint(models.Model):
     """Point geometry attached to another model instance."""

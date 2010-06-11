@@ -108,5 +108,8 @@ class WorkspaceItemAdapter(object):
     def search(self, x, r, radius=None, *args, **kwargs):
         raise "Not implemented"
 
-    def location(self, *args, **kwargs):
+    def location(self, id=None):
+        raise "Not implemented"
+
+    def image(self, id_list=None):
         raise "Not implemented"

@@ -43,6 +43,41 @@ jQuery.fn.liveCheckboxes = function() {
     });
 };
 
+
+
+    /* Shows an OpenLayer popup, data must have the following properties:
+data.id
+data.objects[].x
+data.objects[].y
+data.objects[].html
+*/
+    var show_popup = function(data, map) {
+        $("#"+data.id).remove(); // remove existing popup, if exists
+        popup = new OpenLayers.Popup(data.id,
+                                     new OpenLayers.LonLat(data.x, data.y),
+                                     new OpenLayers.Size(400, 310),
+                                     data.html,
+                                     true);
+        popup.panMapIfOutOfView = true;
+        map.addPopup(popup);
+        // make sure that when the window is closed, the object is removed as well
+        $(".olPopupCloseBox").bind("click", function() {
+            $(this).parent().parent().remove();
+        });
+
+        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
+        $(".add-snippet").snippetInteraction();
+    };
+
+jQuery.fn.collagePopup = function() {
+    var url = $workspace.attr("data-url-lizard-map-collage-popup");
+    var collage_id = $(this).attr("data-collage-id");
+    $.getJSON(url,
+              { collage_id: collage_id },
+              function(data) {show_popup(data, map);}
+             );
+}
+
 /* Make workspaces sortable and droppable
 
 Needed: data attributes on the <div class="workspace">:
@@ -112,15 +147,7 @@ jQuery.fn.workspaceInteraction = function() {
             }
         });
         // Make collage clickable.
-        $workspace.find(".collage").live('click', function(event) {
-            var url = $workspace.attr("data-url-lizard-map-collage-popup");
-            var collage_id = $(this).attr("data-collage-id");
-            $.get(url,
-                  { collage_id: collage_id },
-                  function(data) { 
-                      alert('yes'); 
-                  });
-        });
+        $workspace.find(".collage").live('click', $(this).collagePopup);
         // Snippets. Using sortable instead of draggable because
         // Draggable applies to li and sortable applies to ul element
         snippet_list = $workspace.find("ul.snippet_list");
@@ -138,6 +165,7 @@ jQuery.fn.workspaceInteraction = function() {
                      );
             //snippet(snippet_id, map); // attention: from krw_waternet.js
         });
+
         // Make the trash working.
         $workspace.workspaceTrashBox();
         // Make checkboxes work.
@@ -191,6 +219,8 @@ requires
                             // refresh collage
                             $(".workspace").find(".snippet_list").load("./ .snippet", 
                                                                        fillSidebar);
+                            $(".workspace").find(".collage").collagePopup();
+                            $(this).remove(); //remove oneself because he is added to the collagePopup
                         });
                 }
             });
@@ -230,7 +260,7 @@ workspace_trash class inside workspace
               accept: workspaceItemOrSnippet,
               hoverClass: 'drophover',
               drop: function(event, ui) {
-                  var object_id = ui.draggable.attr("data-object_id");
+                  var object_id = ui.draggable.attr("data-object-id");
                   ui.draggable.remove();  // for visual snappyness
                   if (ui.draggable.is(".workspace_item")) {
                       var url = url_workspace_item;

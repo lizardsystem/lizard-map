@@ -13,8 +13,10 @@ from django.views.decorators.cache import never_cache
 import simplejson as json
 
 from lizard_map import coordinates
+from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
+from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 
 """
@@ -25,6 +27,7 @@ SCREEN_DPI = 72.0
 def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
     return pixels / SCREEN_DPI
+
 
 """
 Workspace stuff
@@ -162,41 +165,69 @@ def session_workspace_edit_item(request,
 """
 Generic popup
 """
-def popup_json(found):
-    """Return html with info on closest-matching fews point.
+def popup_json(found, popup_id=None):
+    """Return html with info on list of 'found' objects.
 
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
-    'workspace_item': ..., 'identifier': ..., 'url_img':...}.
+    'workspace_item': ..., 'identifier': ...}.
+
+    TODO: make better
     """
 
-    # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
-    found.sort(key=lambda item: item['distance'])
-    # Grab the first one
-    timeserie = found[0]['object']
-    workspace_item = found[0]['workspace_item']
+    result_html = ''
+    x_found = None
+    y_found = None
 
-    # Compose html header
-    header = '<div><strong>%s</strong><a href="" class="add-snippet" data-workspace-id="%d" data-workspace-item-id="%d" data-item-identifier=\'%s\' data-item-shortname="%s" data-item-name="%s">add snippet</a></div>' % (
-        timeserie.name,
-        workspace_item.workspace.id,
-        workspace_item.id,
-        simplejson.dumps(found[0]['identifier']),
-        timeserie.shortname,
-        timeserie.name
-        )
-    if not timeserie.data_count():
-        body = "<div>Geen gegevens beschikbaar.</div>"
-    else:
-        # img = reverse("lizard_fewsunblobbed.timeserie_graph",
-        #               kwargs={'id': timeserie.pk})
-        body = "<div><img src='%s' /></div>" % found[0]['img_url']
-    html = header + body
-    x_found, y_found = coordinates.rd_to_google(timeserie.locationkey.x,
-                                                timeserie.locationkey.y)
-    result = {'id': 'popup-id',
-              'objects': [{'html': html,
-                           'x': x_found,
-                           'y': y_found}, ]
+    # regroup found list of objects into workspace_items
+    display_groups = {}
+    for display_object in found:
+        workspace_item = display_object['workspace_item']
+        if workspace_item.id not in display_groups:
+            display_groups[workspace_item.id] = []
+        display_groups[workspace_item.id].append(display_object)
+
+    # now display
+    for workspace_item_id, display_group in display_groups.items():
+        identifier_json_list = []
+        header = ''
+        for display_object in display_group:
+            timeserie = display_object['object']
+            workspace_item = display_object['workspace_item']
+            identifier_json = simplejson.dumps(display_object['identifier'])
+            identifier_json_list.append(identifier_json)
+
+            # Add workspace_item on top
+            if not header:
+                header += '<div><strong>%s</strong></div>' % workspace_item.name
+            # Compose html header for each display object (experimental)
+            header += '<li>%s<a href="" class="add-snippet" data-workspace-id="%d" data-workspace-item-id="%d" data-item-identifier=\'%s\' data-item-shortname="%s" data-item-name="%s">add to collage</a></li>' % (
+                timeserie.name,
+                workspace_item.workspace.id,
+                workspace_item.id,
+                identifier_json,
+                timeserie.shortname,
+                timeserie.name
+                )
+        #if not timeserie.data_count():
+        #    body = "<div>Geen gegevens beschikbaar.</div>"
+        #else:
+        img = reverse("lizard_map.workspace_item_image",
+                      kwargs={'workspace_item_id': workspace_item.id
+                              })
+        img = img + '?' + '&'.join(['identifier=%s' % i for i in identifier_json_list])
+        body = "<div><img src='%s' /></div>" % img
+
+        html_per_workspace_item = header + body
+        x_found, y_found = coordinates.rd_to_google(timeserie.locationkey.x,
+                                                    timeserie.locationkey.y)
+        result_html += html_per_workspace_item
+
+    if popup_id is None:
+        popup_id = 'popup-id'
+    result = {'id': popup_id,
+              'x': x_found,
+              'y': y_found,
+              'html': result_html
               }
     return HttpResponse(simplejson.dumps(result))
 
@@ -210,17 +241,6 @@ def collage(request,
               collage_id,
               template='lizard_map/collage.html'):
     """Render page with one collage"""
-    return render_to_response(
-        template,
-        {'collage_id': collage_id},
-        context_instance=RequestContext(request))
-
-def collage_popup(request,
-                  collage_id=None,
-                  template='lizard_map/collage.html'):
-    """Render page with one collage in popup format"""
-    if collage_id is None:
-        collage_id = request.GET.get("collage_id")
     return render_to_response(
         template,
         {'collage_id': collage_id},
@@ -277,7 +297,7 @@ def session_collage_snippet_delete(request,
     return HttpResponse()
 
 
-def snippet(request, snippet_id=None):
+def snippet_popup(request, snippet_id=None):
     """get snippet/fews location by snippet_id and return data
 
     """
@@ -285,9 +305,32 @@ def snippet(request, snippet_id=None):
         snippet_id = request.GET.get('snippet_id')
     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
 
-    workspace_item = snippet.workspace_item
+    popup_id = 'popup-snippet-%s' % snippet_id
+    return popup_json([snippet.location, ], popup_id=popup_id)
 
-    return popup_json([snippet.location, ])
+
+def collage_popup(request,
+                  collage_id=None,
+                  template='lizard_map/collage.html'):
+    """Render page with one collage in popup format"""
+    if collage_id is None:
+        collage_id = request.GET.get('collage_id')
+    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+    popup_id = 'popup-collage'  # only one collage popup allowed, also check jquery.workspace.js
+    return popup_json(collage.locations, popup_id=popup_id)
+
+
+def workspace_item_image(request, workspace_item_id):
+    """Shows image corresponding to workspace item and location identifier(s)
+
+    identifier_list
+    """
+    identifier_json_list = request.GET.getlist('identifier')        
+    identifier_list = [simplejson.loads(json) for json in identifier_json_list]
+
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    start_end_dates = current_start_end_dates(request)
+    return workspace_item.adapter.image(identifier_list, start_end_dates)             
 
 """
 Map stuff
