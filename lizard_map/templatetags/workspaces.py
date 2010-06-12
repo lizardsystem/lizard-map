@@ -18,7 +18,7 @@ def workspace_debug_info(context):
 
 @register.inclusion_tag("lizard_map/tag_workspace.html",
                         takes_context=True)
-def workspace(context, workspace, show_new_workspace=True):
+def workspace(context, workspace, show_new_workspace=False):
     """Display workspace."""
     return {
         'workspace': workspace,
