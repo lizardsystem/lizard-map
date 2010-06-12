@@ -105,13 +105,13 @@ class WorkspaceItemAdapter(object):
             self.layer_arguments = {}
 
     def layer(self, *args, **kwargs):
-        raise "Not implemented"
+        raise NotImplementedError
 
     def search(self, x, r, radius=None, *args, **kwargs):
-        raise "Not implemented"
+        raise NotImplementedError
 
     def location(self, id=None):
-        raise "Not implemented"
+        raise NotImplementedError
 
     def image(self, id_list=None):
-        raise "Not implemented"
+        raise NotImplementedError
