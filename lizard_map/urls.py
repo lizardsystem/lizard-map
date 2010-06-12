@@ -25,6 +25,12 @@ urlpatterns = patterns(
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
 
+    # Date range
+    (r'^set_date_range$',
+     'lizard_map.daterange.set_date_range',
+     {},
+     'lizard_map.set_date_range'),
+
     # Collages and snippets
     url(r'^collage/(?P<collage_id>\d+)/$',
         'lizard_map.views.collage',
