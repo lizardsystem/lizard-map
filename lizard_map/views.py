@@ -20,19 +20,17 @@ from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 
-"""
-Misc
-"""
 SCREEN_DPI = 72.0
+
+# Misc
+
 
 def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
     return pixels / SCREEN_DPI
 
+# Workspace stuff
 
-"""
-Workspace stuff
-"""
 
 def workspace(request,
               workspace_id,
@@ -165,10 +163,9 @@ def session_workspace_edit_item(request,
     #todo: maak functie af
     return
 
+# Generic popup
 
-"""
-Generic popup
-"""
+
 def popup_json(found, popup_id=None):
     """Return html with info on list of 'found' objects.
 
@@ -202,23 +199,29 @@ def popup_json(found, popup_id=None):
 
             # Add workspace_item on top
             if not header:
-                header += '<div><strong>%s</strong></div>' % workspace_item.name
+                header += '<div><strong>%s</strong></div>' % (
+                    workspace_item.name)
             # Compose html header for each display object (experimental)
-            header += '<li>%s<a href="" class="add-snippet" data-workspace-id="%d" data-workspace-item-id="%d" data-item-identifier=\'%s\' data-item-shortname="%s" data-item-name="%s">add to collage</a></li>' % (
+            header += (
+                '<li>%s<a href="" class="add-snippet" ' +
+                'data-workspace-id="%d" data-workspace-item-id="%d" ' +
+                'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
+                'data-item-name="%s">add to collage</a></li>') % (
                 timeserie.name,
                 workspace_item.workspace.id,
                 workspace_item.id,
                 identifier_json,
                 timeserie.shortname,
-                timeserie.name
+                timeserie.name,
                 )
         #if not timeserie.data_count():
         #    body = "<div>Geen gegevens beschikbaar.</div>"
         #else:
         img = reverse("lizard_map.workspace_item_image",
-                      kwargs={'workspace_item_id': workspace_item.id
+                      kwargs={'workspace_item_id': workspace_item.id,
                               })
-        img = img + '?' + '&'.join(['identifier=%s' % i for i in identifier_json_list])
+        img = img + '?' + '&'.join(['identifier=%s' % i for i in
+                                    identifier_json_list])
         body = "<div><img src='%s' /></div>" % img
 
         html_per_workspace_item = header + body
@@ -231,15 +234,13 @@ def popup_json(found, popup_id=None):
     result = {'id': popup_id,
               'x': x_found,
               'y': y_found,
-              'html': result_html
+              'html': result_html,
               }
     return HttpResponse(simplejson.dumps(result))
 
 
+# Collages stuff
 
-"""
-Collages stuff
-"""
 
 def collage(request,
               collage_id,
@@ -280,12 +281,13 @@ def session_collage_snippet_add(request,
     if len(workspace.collages.all()) == 0:
         workspace.collages.create()
     collage = workspace.collages.all()[0]
-    collage.snippets.get_or_create(workspace_item=workspace_item,
-                                   identifier_json=workspace_item_location_identifier,
-                                   shortname=workspace_item_location_shortname,
-                                   name=workspace_item_location_name)
-
+    collage.snippets.get_or_create(
+        workspace_item=workspace_item,
+        identifier_json=workspace_item_location_identifier,
+        shortname=workspace_item_location_shortname,
+        name=workspace_item_location_name)
     return HttpResponse(json.dumps(workspace_id))
+
 
 def session_collage_snippet_delete(request,
                                    object_id=None):
@@ -320,7 +322,8 @@ def collage_popup(request,
     if collage_id is None:
         collage_id = request.GET.get('collage_id')
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-    popup_id = 'popup-collage'  # only one collage popup allowed, also check jquery.workspace.js
+    popup_id = 'popup-collage'
+    # Only one collage popup allowed, also check jquery.workspace.js
     return popup_json(collage.locations, popup_id=popup_id)
 
 
