@@ -107,7 +107,7 @@ class WorkspaceItemAdapter(object):
     def layer(self, *args, **kwargs):
         raise NotImplementedError
 
-    def search(self, x, r, radius=None, *args, **kwargs):
+    def search(self, x, y, radius=None, *args, **kwargs):
         raise NotImplementedError
 
     def location(self, id=None):
