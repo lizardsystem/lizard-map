@@ -14,6 +14,7 @@ import simplejson as json
 
 from lizard_map import coordinates
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
@@ -38,9 +39,12 @@ def workspace(request,
               template='lizard_map/workspace.html'):
     """Render page with one workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
+    date_range_form = DateRangeForm(
+        current_start_end_dates(request, for_form=True))
     return render_to_response(
         template,
-        {'workspaces': {'user': [workspace]}},
+        {'workspaces': {'user': [workspace]},
+         'date_range_form': date_range_form},
         context_instance=RequestContext(request))
 
 

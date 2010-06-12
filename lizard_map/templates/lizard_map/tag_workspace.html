@@ -24,8 +24,26 @@
       <span class="ss_sprite ss_page_add">&nbsp;</span>
     </a>
     {% endif %}
+    {% if date_range_form %}
+    <span class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
+          rel="#summary-datepicker">&nbsp;</span>
+    {% endif %}
   </h2>
   <div>
+    <div class="date-popup"
+         id="summary-datepicker">
+      <h1>Datumkeuze</h1>
+      {% if date_range_form %}
+      <div>
+        <form action="{% url krw_waternet.set_date_range %}"
+              method="post">
+          {% csrf_token %}
+          {{ date_range_form.as_p }}
+          <p><input type="submit" value="Nieuwe periode" /></p>
+        </form>
+      </div>
+      {% endif %}
+    </div>
     <ul class="workspace_items without-bullets"
         data-workspace_id="{{ workspace.id }}">
       {# Call updateWorkspaceBox to fill workspace. #}

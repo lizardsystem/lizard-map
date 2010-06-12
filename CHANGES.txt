@@ -5,7 +5,10 @@ Changelog of lizard-map
 0.6 (unreleased)
 ----------------
 
-- Change layer_method and other setuptools registered functions to an
+- Added the date range popup widget from krw-waternet here.  (Still
+  session-based.  It also doesn't work with multiple workspaces yet.
+
+- Changed layer_method and other setuptools registered functions to an
   adapter class.
 
 

@@ -92,7 +92,6 @@ function setUpDateAjaxForm(overlay) {
 
 function setUpDatePopup() {
     $(".popup-trigger").live('mouseover', function() {
-        alert("init popup");
         if (!$(this).data("popup-initialized")) {
             $(this).data("popup-initialized", true);
             $(this).overlay({
@@ -110,8 +109,8 @@ function setUpDatePopup() {
 // Initialize all workspace actions.
 $(document).ready(function(){
     setUpWorkspaceAcceptable();
-    setUpDatePopup;
-    setUpDateChoice;
+    setUpDatePopup();
+    setUpDateChoice();
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
     // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
