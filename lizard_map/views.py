@@ -211,7 +211,7 @@ def popup_json(found, popup_id=None):
                 workspace_item.workspace.id,
                 workspace_item.id,
                 identifier_json,
-                timeserie.shortname,
+                getattr(timeserie, 'shortname', ''),
                 timeserie.name,
                 )
         #if not timeserie.data_count():
@@ -225,8 +225,14 @@ def popup_json(found, popup_id=None):
         body = "<div><img src='%s' /></div>" % img
 
         html_per_workspace_item = header + body
-        x_found, y_found = coordinates.rd_to_google(timeserie.locationkey.x,
-                                                    timeserie.locationkey.y)
+        if 'google_x' in display_object:
+            x_found, y_found = (display_object['google_x'],
+                                display_object['google_y'])
+        else:
+            # TODO: lizard_fews specific, refactor this.
+            x_found, y_found = coordinates.rd_to_google(
+                timeserie.locationkey.x,
+                timeserie.locationkey.y)
         result_html += html_per_workspace_item
 
     if popup_id is None:
