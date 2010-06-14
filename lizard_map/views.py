@@ -172,6 +172,8 @@ def popup_json(found, popup_id=None):
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
     'workspace_item': ..., 'identifier': ...}.
 
+    Note: identifier must be a dict. {'id': the_real_id}.
+
     TODO: make better
     """
 

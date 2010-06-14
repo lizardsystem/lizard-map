@@ -158,7 +158,9 @@ class WorkspaceCollageSnippet(models.Model):
     name = models.CharField(max_length=80,
                             default='snippet')
     shortname = models.CharField(max_length=80,
-                                 default='snippet')
+                                 default='snippet',
+                                 blank=True,
+                                 null=True)
     workspace_collage = models.ForeignKey(WorkspaceCollage,
                                           related_name='snippets')
     workspace_item = models.ForeignKey(
@@ -167,11 +169,12 @@ class WorkspaceCollageSnippet(models.Model):
     # ^^^ Format depends on workspace_item layer_method
 
     def __unicode__(self):
-        return '%s %s %s %s' % (
-            self.name,
-            self.workspace_collage,
-            self.workspace_item,
-            self.identifier)
+        return 'bla'
+        # return '%s %s %s %s' % (
+        #     self.name,
+        #     self.workspace_collage,
+        #     self.workspace_item,
+        #     self.identifier)
 
     def save(self, *args, **kwargs):
         """Save model and run an extra check.
@@ -191,6 +194,7 @@ class WorkspaceCollageSnippet(models.Model):
         """Return dict of parsed identifier_json.
 
         Converts keys to str.
+
         """
         json = self.identifier_json
         if not json:
@@ -205,9 +209,10 @@ class WorkspaceCollageSnippet(models.Model):
         return self.workspace_item.adapter.location(**self.identifier)
 
     def image(self, start_end_dates):
-        """return image from adapter,
+        """Return image from adapter.
 
         start_end_dates: 2-tuple of datetimes
+
         """
         return self.workspace_item.adapter.image([self.identifier],
                                                  start_end_dates)

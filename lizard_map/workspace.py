@@ -104,14 +104,36 @@ class WorkspaceItemAdapter(object):
         else:
             self.layer_arguments = {}
 
-    def layer(self, *args, **kwargs):
+    def layer(self):
+        """Return xyz"""
         raise NotImplementedError
 
-    def search(self, x, y, radius=None, *args, **kwargs):
+    def search(self, x, y, radius=None):
+        """Return list of dicts for matching items.
+
+        {'distance': <float>,
+        'workspace_item': <...>,
+        'identifier': {...},
+        'google_x': x coordinate in google,
+        'google_y': y coordinate in google,
+        'object': <object>} of closest fews point that matches x, y, radius.
+
+        """
         raise NotImplementedError
 
-    def location(self, id=None):
+    def location(self, identifier=None):
+        """Return fews point representation corresponding to filter_id, location_id and
+        parameter_id in same format as search function
+
+        {'object': <...>,
+        'google_x': x coordinate in google,
+        'google_y': y coordinate in google,
+        'workspace_item': <...>,
+        'identifier': {...}}
+
+        """
         raise NotImplementedError
 
-    def image(self, id_list=None):
+    def image(self, identifiers=None):
+        """Return xyz"""
         raise NotImplementedError
