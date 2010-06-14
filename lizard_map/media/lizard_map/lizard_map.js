@@ -64,6 +64,10 @@ function setUpDateChoice() {
     $("#id_date_end").datepicker();
 }
 
+function reloadGraphs() {
+    // Overridden in krw-waternet...
+    //loadCorrectlySizedImages();
+}
 
 function setUpDateAjaxForm(overlay) {
     var form = $("form", overlay);
@@ -81,7 +85,7 @@ function setUpDateAjaxForm(overlay) {
                 setUpDateAjaxForm(freshForm);
                 if (newForm.html().indexOf("rror") == -1) {
                     // No error/Error, so refresh graphs and close the popup.
-                    loadCorrectlySizedImages();
+                    reloadGraphs();
                     $("div.close", overlay).click();
                 }
             });
