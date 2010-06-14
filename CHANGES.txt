@@ -11,6 +11,7 @@ Changelog of lizard-map
 - Changed layer_method and other setuptools registered functions to an
   adapter class.
 
+- Added fully functioning collages/snippets support.
 
 0.5 (2010-06-08)
 ----------------

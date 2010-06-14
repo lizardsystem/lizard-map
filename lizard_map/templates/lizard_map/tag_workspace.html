@@ -1,7 +1,7 @@
 {# Shows one workspace. Options: show_new_workspace. #}
-<div id="workspace_{{ workspace.id }}"
+<div id="workspace-{{ workspace.id }}"
      class="sidebarbox workspace"
-     data-workspace_id="{{ workspace.id }}"
+     data-workspace-id="{{ workspace.id }}"
      data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_item_edit %}"
      data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
      data-url-lizard-map-workspace-item-add="{% url lizard_map_workspace_item_add %}"
@@ -45,27 +45,28 @@
       {% endif %}
     </div>
     <ul class="workspace_items without-bullets"
-        data-workspace_id="{{ workspace.id }}">
+        data-workspace-id="{{ workspace.id }}">
       {# Call updateWorkspaceBox to fill workspace. #}
       {% for workspace_item in workspace.workspace_items.all %}
-      <li class="workspace_item"
-          data-object_id="{{ workspace_item.id }}"
-          data-workspace_id="{{ workspace.id }}">
+      <li id="workspace-items-{{ workspace_item.id }}" {# necessary for reordering #}
+          class="workspace-item"
+          data-object-id="{{ workspace_item.id }}"
+          data-workspace-id="{{ workspace.id }}">
         <img src="{{ workspace_item.symbol_url }}"
              width="16"
              height="16" />
         <input id="{{ workspace_item.id }}"
-               class="workspace_item_checkbox"
+               class="workspace-item-checkbox"
                type="checkbox"
                {% if workspace_item.visible %}
                checked="checked"
                {% endif %}
-               data-workspace_id="{{ workspace.id }}" />
+               data-workspace-id="{{ workspace.id }}" />
         {% firstof workspace_item.name '(noname)' %}
       </li>
       {% empty %}
       {# No workspaceitems #}
-      <li class="workspace_item">Drag items here</li>
+      <li class="workspace-item">Drag items here</li>
       {% endfor %}
     </ul>
   </div>
@@ -73,11 +74,14 @@
   <h3 class="collage"
       data-collage-id="{{ collage.id }}">{{ collage.name }}</h3>
   <div>
-    <ul class="snippet_list without-bullets"
+    <ul class="snippet-list without-bullets"
         data-collage-id="{{ collage.id }}">
       {% for snippet in collage.snippets.all %}
       <li class="snippet" title="{{ snippet.name }}"
           data-object-id="{{ snippet.id }}">
+        <img src="{{ snippet.workspace_item.symbol_url }}"
+             width="16"
+             height="16" />
         {% firstof snippet.shortname snippet.name '(noname)' %}
       </li>
       {% empty %}
@@ -89,7 +93,7 @@
 
   {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
   <div class="sidebarbox-actions">
-    <div class="workspace_trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
+    <div class="workspace-trash"><span class="ss_sprite ss_bin_empty">trash</span></div>
     <!--
         <div class="workspace_new"><span class="ss_sprite ss_page_add">new</span></div>
         <div class="workspace_load"><span class="ss_sprite ss_page_go">load</span></div>

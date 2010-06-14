@@ -28,7 +28,7 @@ $("a.url-lizard-map-workspace-item-edit").attr("href");
 jQuery.fn.liveCheckboxes = function() {
     return this.each(function(){
         $workspace = $(this);
-        $workspace.find(".workspace_item_checkbox").live('click', function() {
+        $workspace.find(".workspace-item-checkbox").live('click', function() {
             var url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
             $.ajax({
                 url: url,
@@ -96,8 +96,8 @@ jQuery.fn.workspaceInteraction = function() {
     return this.each(function(){
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        var workspace_id = $workspace.attr("data-workspace_id");
-        var workspaceItems = $workspace.find("ul.workspace_items");
+        var workspace_id = $workspace.attr("data-workspace-id");
+        var workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
                 // very strange... $workspace becomes the <ul> element
@@ -112,7 +112,7 @@ jQuery.fn.workspaceInteraction = function() {
                       );
             },
             helper: 'clone',
-            connectWith: '.workspace_items',
+            connectWith: '.workspace-items',
             cursor: 'move',
             revert: 'true',
             placeholder: 'ui-sortable-placeholder'
@@ -150,7 +150,7 @@ jQuery.fn.workspaceInteraction = function() {
         $workspace.find(".collage").live('click', $(this).collagePopup);
         // Snippets. Using sortable instead of draggable because
         // Draggable applies to li and sortable applies to ul element
-        snippet_list = $workspace.find("ul.snippet_list");
+        snippet_list = $workspace.find("ul.snippet-list");
         snippet_list.sortable({
             helper: 'clone'
         });
@@ -178,12 +178,12 @@ jQuery.fn.workspaceInteraction = function() {
 jQuery.fn.updateWorkspace = function() {
     return this.each(function(){
         var $this = $(this);
-        var workspace_id = $this.attr("data-workspace_id");
+        var workspace_id = $this.attr("data-workspace-id");
         // reload map layers
         updateLayer(workspace_id); // from lizardgis
         // reload workspace items: TODO: works only with a single workspace
         // item.
-        $(this).find(".workspace_items").load("./ .workspace_item",
+        $(this).find(".workspace-items").load("./ .workspace-item",
                                              fillSidebar);
     });
 };
@@ -201,7 +201,7 @@ requires
                 event.preventDefault();
                 console.log("add-snippet");
                 var workspace_id = $(this).attr("data-workspace-id");
-                var url = $("#workspace_" + workspace_id).attr("data-url-lizard-map-snippet-add");
+                var url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");
                 var workspace_item_id = $(this).attr("data-workspace-item-id");
                 var workspace_item_location_identifier = $(this).attr("data-item-identifier");
                 var workspace_item_location_shortname = $(this).attr("data-item-shortname");
@@ -217,7 +217,7 @@ requires
                         },
                         function() {
                             // refresh collage
-                            $(".workspace").find(".snippet_list").load("./ .snippet", 
+                            $(".workspace").find(".snippet-list").load("./ .snippet", 
                                                                        fillSidebar);
                             $(".workspace").find(".collage").collagePopup();
                             $(this).remove(); //remove oneself because he is added to the collagePopup
@@ -230,7 +230,7 @@ requires
 
     function workspaceItemOrSnippet(object)
     {
-        if ($(object).is(".workspace_item")) {return true;}
+        if ($(object).is(".workspace-item")) {return true;}
         if ($(object).is(".snippet")) {return true;}
         return false;
 //.workspace_item .snippet
@@ -252,7 +252,7 @@ workspace_trash class inside workspace
   jQuery.fn.workspaceTrashBox = function() {
       return this.each(function(){
           var $workspace = $(this);
-          var $workspace_trash = $workspace.find(".workspace_trash");
+          var $workspace_trash = $workspace.find(".workspace-trash");
           // delete workspace items
           var url_workspace_item = $workspace.attr("data-url-lizard-map-workspace-item-delete");
           var url_snippet = $workspace.attr("data-url-lizard-map-snippet-delete");
@@ -262,7 +262,7 @@ workspace_trash class inside workspace
               drop: function(event, ui) {
                   var object_id = ui.draggable.attr("data-object-id");
                   ui.draggable.remove();  // for visual snappyness
-                  if (ui.draggable.is(".workspace_item")) {
+                  if (ui.draggable.is(".workspace-item")) {
                       var url = url_workspace_item;
                   } else {
                       //snippet
