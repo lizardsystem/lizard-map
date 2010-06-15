@@ -205,7 +205,8 @@ def popup_json(found, popup_id=None):
                     workspace_item.name)
             # Compose html header for each display object (experimental)
             header += (
-                '<li>%s<a href="" class="add-snippet" ' +
+                '<li>%s<a href="" ' +
+                'class="add-snippet ss_chart_line_add ss_sprite" ' +
                 'data-workspace-id="%d" data-workspace-item-id="%d" ' +
                 'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
                 'data-item-name="%s">add to collage</a></li>') % (
