@@ -146,8 +146,9 @@ jQuery.fn.workspaceInteraction = function() {
                       );
             }
         });
-        // Make collage clickable.
-        $workspace.find(".collage").live('click', $(this).collagePopup);
+        // Make collage clickable. (TODO: should be collage-popup)
+        $(".collage", $workspace).live('click',
+                                       $(this).collagePopup);
         // Snippets. Using sortable instead of draggable because
         // Draggable applies to li and sortable applies to ul element
         snippet_list = $workspace.find("ul.snippet-list");
@@ -217,7 +218,7 @@ requires
                         },
                         function() {
                             // refresh collage
-                            $(".workspace").find(".snippet-list").load("./ .snippet", 
+                            $(".workspace").find(".snippet-list").load("./ .snippet",
                                                                        fillSidebar);
                             $(".workspace").find(".collage").collagePopup();
                             $(this).remove(); //remove oneself because he is added to the collagePopup

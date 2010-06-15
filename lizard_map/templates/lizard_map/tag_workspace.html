@@ -14,20 +14,20 @@
      >
   <h2>
     {{ workspace.name }}
-    <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
-       title="link to {{ workspace.name }}"
-       class="title">
-      <span class="ss_sprite ss_arrow_turn_right">&nbsp;</span>
-    </a>
+    {% if date_range_form %}
+    <span class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
+          rel="#summary-datepicker">&nbsp;</span>
+    {% endif %}
     {% if show_new_workspace %}
     <a href="?new_workspace" title="new workspace" class="title">
       <span class="ss_sprite ss_page_add">&nbsp;</span>
     </a>
     {% endif %}
-    {% if date_range_form %}
-    <span class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
-          rel="#summary-datepicker">&nbsp;</span>
-    {% endif %}
+    <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
+       title="link to {{ workspace.name }}"
+       class="title">
+      <span class="ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</span>
+    </a>
   </h2>
   <div>
     <div class="date-popup"
@@ -71,8 +71,13 @@
     </ul>
   </div>
   {% for collage in workspace.collages.all %}
-  <h3 class="collage"
-      data-collage-id="{{ collage.id }}">{{ collage.name }}</h3>
+  <h2 class="collage"
+      data-collage-id="{{ collage.id }}">
+    {{ collage.name }}
+    <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon">
+      &nbsp;
+    </span>
+  </h2>
   <div>
     <ul class="snippet-list without-bullets"
         data-collage-id="{{ collage.id }}">
