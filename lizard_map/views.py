@@ -217,7 +217,7 @@ def popup_json(found, popup_id=None, collage=False):
                     'class="add-snippet ss_chart_line_add ss_sprite" ' +
                     'data-workspace-id="%d" data-workspace-item-id="%d" ' +
                     'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
-                    'data-item-name="%s">add to collage</a></div>') % (
+                    'data-item-name="%s">Voeg toe aan collage</a></div>') % (
                     timeserie.name,
                     workspace_item.workspace.id,
                     workspace_item.id,
