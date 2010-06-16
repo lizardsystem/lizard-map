@@ -166,7 +166,7 @@ def session_workspace_edit_item(request,
 # Generic popup
 
 
-def popup_json(found, popup_id=None):
+def popup_json(found, popup_id=None, collage=False):
     """Return html with info on list of 'found' objects.
 
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
@@ -208,19 +208,23 @@ def popup_json(found, popup_id=None):
                 header += '<div><strong>%s</strong></div>' % (
                     workspace_item.name)
             # Compose html header for each display object (experimental)
-            header += (
-                '<div>%s<a href="" ' +
-                'class="add-snippet ss_chart_line_add ss_sprite" ' +
-                'data-workspace-id="%d" data-workspace-item-id="%d" ' +
-                'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
-                'data-item-name="%s">add to collage</a></div>') % (
-                timeserie.name,
-                workspace_item.workspace.id,
-                workspace_item.id,
-                identifier_json,
-                getattr(timeserie, 'shortname', ''),
-                timeserie.name,
-                )
+            if collage:
+                header += (
+                    '<div>%s</div>') % timeserie.name
+            else:
+                header += (
+                    '<div>%s<a href="" ' +
+                    'class="add-snippet ss_chart_line_add ss_sprite" ' +
+                    'data-workspace-id="%d" data-workspace-item-id="%d" ' +
+                    'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
+                    'data-item-name="%s">add to collage</a></div>') % (
+                    timeserie.name,
+                    workspace_item.workspace.id,
+                    workspace_item.id,
+                    identifier_json,
+                    getattr(timeserie, 'shortname', ''),
+                    timeserie.name,
+                    )
         #if not timeserie.data_count():
         #    body = "<div>Geen gegevens beschikbaar.</div>"
         #else:
@@ -338,7 +342,7 @@ def collage_popup(request,
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
     popup_id = 'popup-collage'
     # Only one collage popup allowed, also check jquery.workspace.js
-    return popup_json(collage.locations, popup_id=popup_id)
+    return popup_json(collage.locations, popup_id=popup_id, collage=True)
 
 
 def workspace_item_image(request, workspace_item_id):
