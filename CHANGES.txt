@@ -5,7 +5,9 @@ Changelog of lizard-map
 0.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- "Add to collage" is now hardcoded NL.
+
+- Collage popup is bigger and doesn't contain "add to collage" links anymore.
 
 
 0.6 (2010-06-15)
