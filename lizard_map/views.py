@@ -189,6 +189,10 @@ def popup_json(found, popup_id=None):
             display_groups[workspace_item.id] = []
         display_groups[workspace_item.id].append(display_object)
 
+    if len(display_groups) > 1:
+        big_popup = True
+    else:
+        big_popup = False
     # now display
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
@@ -244,6 +248,7 @@ def popup_json(found, popup_id=None):
               'x': x_found,
               'y': y_found,
               'html': result_html,
+              'big': big_popup
               }
     return HttpResponse(simplejson.dumps(result))
 

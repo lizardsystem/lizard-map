@@ -47,15 +47,20 @@ jQuery.fn.liveCheckboxes = function() {
 
     /* Shows an OpenLayer popup, data must have the following properties:
 data.id
-data.objects[].x
-data.objects[].y
-data.objects[].html
+data.x
+data.y
+data.html
+data.big
 */
     var show_popup = function(data, map) {
         $("#"+data.id).remove(); // remove existing popup, if exists
+        var size = new OpenLayers.Size(400, 310);
+        if (data.big) {
+            var size = new OpenLayers.Size(420, 610);
+        };
         popup = new OpenLayers.Popup(data.id,
                                      new OpenLayers.LonLat(data.x, data.y),
-                                     new OpenLayers.Size(400, 310),
+                                     size,
                                      data.html,
                                      true);
         popup.panMapIfOutOfView = true;
