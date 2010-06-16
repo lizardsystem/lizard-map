@@ -40,9 +40,3 @@ def collage(collage_id):
         'collage': collage,
         'workspace_items': workspace_items,
         }
-
-
-@register.inclusion_tag("lizard_map/tag_workspace_drag_and_drop.html")
-def workspace_drag_and_drop(workspaces):
-    """inserts javascript for workspaces"""
-    return {'workspaces': workspaces}
