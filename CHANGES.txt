@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.7 (unreleased)
+0.7 (2010-06-16)
 ----------------
 
 - "Add to collage" is now hardcoded NL.
