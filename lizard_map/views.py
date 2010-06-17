@@ -199,7 +199,9 @@ def popup_json(found, popup_id=None, collage=False):
         identifier_json_list = []
         header = ''
         for display_object in display_group:
-            timeserie = display_object['object']
+            # timeserie = display_object['object']
+            name = display_object['name']
+            shortname = display_object['shortname']
             workspace_item = display_object['workspace_item']
             identifier_json = simplejson.dumps(display_object['identifier'])
             identifier_json_list.append(identifier_json)
@@ -219,12 +221,12 @@ def popup_json(found, popup_id=None, collage=False):
                     'data-workspace-id="%d" data-workspace-item-id="%d" ' +
                     'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
                     'data-item-name="%s">Voeg toe aan collage</a></div>') % (
-                    timeserie.name,
+                    name,
                     workspace_item.workspace.id,
                     workspace_item.id,
                     identifier_json,
-                    getattr(timeserie, 'shortname', ''),
-                    timeserie.name,
+                    shortname,
+                    name,
                     )
         #if not timeserie.data_count():
         #    body = "<div>Geen gegevens beschikbaar.</div>"
@@ -237,14 +239,9 @@ def popup_json(found, popup_id=None, collage=False):
         body = "<div><img src='%s' /></div>" % img
 
         html_per_workspace_item = header + body
-        if 'google_x' in display_object:
-            x_found, y_found = (display_object['google_x'],
-                                display_object['google_y'])
-        else:
-            # TODO: lizard_fews specific, refactor this.
-            x_found, y_found = coordinates.rd_to_google(
-                timeserie.locationkey.x,
-                timeserie.locationkey.y)
+
+        x_found, y_found = display_object['coords']
+
         result_html += html_per_workspace_item
 
     if popup_id is None:
@@ -423,14 +420,13 @@ def search_coordinates(request):
     google_x = float(request.GET.get('x'))
     google_y = float(request.GET.get('y'))
     radius = float(request.GET.get('radius'))
-    x, y = coordinates.google_to_rd(google_x, google_y)
 
     found = []
     for workspace_collection in workspace_collections.values():
         for workspace in workspace_collection:
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
-                search_results = workspace_item.adapter.search(x, y, radius=radius)
+                search_results = workspace_item.adapter.search(google_x, google_y, radius=radius)
                 found += search_results
 
     if found:
