@@ -1,3 +1,8 @@
+// jslint configuration
+/*jslint browser: true */
+/*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar, setUpScreen */
+
+
 /*
 Workspace plugin
 
@@ -19,21 +24,21 @@ workspace_trash class inside workspace
 workspace_item_checkbox class in ul.workspace_items
 */
 
-
-
 /* Bind/Live checkboxes
 
 $("a.url-lizard-map-workspace-item-edit").attr("href");
 */
-jQuery.fn.liveCheckboxes = function() {
-    return this.each(function(){
+
+jQuery.fn.liveCheckboxes = function () {
+    return this.each(function () {
+        var $workspace;
         $workspace = $(this);
-        $workspace.find(".workspace-item-checkbox").live('click', function() {
+        $workspace.find(".workspace-item-checkbox").live('click', function () {
             var url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
             $.ajax({
                 url: url,
                 data: { workspace_item_id: this.id, visible: this.checked },
-                success: function(workspace_id) {
+                success: function (workspace_id) {
                     $workspace.updateWorkspace();
                 },
                 type: "POST",
@@ -45,51 +50,56 @@ jQuery.fn.liveCheckboxes = function() {
 
 
 
-    /* Shows an OpenLayer popup, data must have the following properties:
+/* Shows an OpenLayer popup, data must have the following properties:
 data.id
 data.x
 data.y
 data.html
 data.big
 */
-    var show_popup = function(data, map) {
-        if (data.html !== "") {
-            $("#"+data.id).remove(); // remove existing popup, if exists
-            var size = new OpenLayers.Size(400, 310);
-            if (data.big) {
-                var size = new OpenLayers.Size(420, 610);
-            };
-            popup = new OpenLayers.Popup(data.id,
-                                         new OpenLayers.LonLat(data.x, data.y),
-                                         size,
-                                         data.html,
-                                         true);
-            popup.panMapIfOutOfView = true;
-            map.addPopup(popup);
-            // make sure that when the window is closed, the object is removed as well
-            $(".olPopupCloseBox").bind("click", function() {
-                $(this).parent().parent().remove();
-            });
-
-            // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
-            $(".add-snippet").snippetInteraction();
+function show_popup(data, map) {
+    if (data.html !== "") {
+        var size, popup;
+        $("#" + data.id).remove(); // remove existing popup, if exists
+        size = new OpenLayers.Size(400, 310);
+        if (data.big) {
+            size = new OpenLayers.Size(420, 610);
         }
-    };
+        popup = new OpenLayers.Popup(data.id,
+                                     new OpenLayers.LonLat(data.x, data.y),
+                                     size,
+                                     data.html,
+                                     true);
+        popup.panMapIfOutOfView = true;
+        map.addPopup(popup);
+        // make sure that when the window is closed, the object is removed as well
+        $(".olPopupCloseBox").bind("click", function () {
+            $(this).parent().parent().remove();
+        });
 
-jQuery.fn.collagePopup = function() {
-    var url = $workspace.attr("data-url-lizard-map-collage-popup");
-    var collage_id = $(this).attr("data-collage-id");
-    $.getJSON(url,
-              { collage_id: collage_id },
-              function(data) {show_popup(data, map);}
-             );
+        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
+        $(".add-snippet").snippetInteraction();
+    }
 }
+
+jQuery.fn.collagePopup = function () {
+    var url, collage_id;
+    url = $(this).parent().attr("data-url-lizard-map-collage-popup");
+    collage_id = $(this).attr("data-collage-id");
+    $.getJSON(
+        url,
+        { collage_id: collage_id },
+        function (data) {
+            show_popup(data, map);
+        }
+    );
+};
 
 /* Make workspaces sortable and droppable
 
 Needed: data attributes on the <div class="workspace">:
 
-.data.url-lizard-map-workspace-item-reorder
+.data-url-lizard-map-workspace-item-reorder
 .data-url-lizard-map-workspace-item-add
 
 matching objects require (needs cleanup):
@@ -99,24 +109,27 @@ this.attr("data-workspace_id");
 TODO: use jquery live to bind all future workspaces?
 
 */
-jQuery.fn.workspaceInteraction = function() {
-    return this.each(function(){
+jQuery.fn.workspaceInteraction = function () {
+    return this.each(function () {
+        var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        var workspace_id = $workspace.attr("data-workspace-id");
-        var workspaceItems = $workspace.find("ul.workspace-items");
+        workspace_id = $workspace.attr("data-workspace-id");
+        workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
+                var url, order;
                 // very strange... $workspace becomes the <ul> element
                 // (which is workspaceItems)...  using workspaceItems
-                var url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
-                var order = workspaceItems.sortable("serialize");
-                $.post(url + "?workspace_id="+workspace_id,
-                       order,
-                       function(workspace_id) {
-                           workspaceItems.parent().parent().updateWorkspace();
-                       }
-                      );
+                url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
+                order = workspaceItems.sortable("serialize");
+                $.post(
+                    url + "?workspace_id=" + workspace_id,
+                    order,
+                    function (workspace_id) {
+                        workspaceItems.parent().parent().updateWorkspace();
+                    }
+                );
             },
             helper: 'clone',
             connectWith: '.workspace-items',
@@ -129,29 +142,31 @@ jQuery.fn.workspaceInteraction = function() {
         workspaceItems.droppable({
             accept: '.workspace-acceptable',
             hoverClass: 'drophover',
-            drop: function(event, ui) {
+            drop: function (event, ui) {
+                var name, adapter_class, adapter_layer_json, url;
                 // Fade out draggable item.
                 ui.helper.fadeOut();
                 // Get layer_method and parameters from url.
-                var name = ui.draggable.attr("data-name");
+                name = ui.draggable.attr("data-name");
                 // ^^^ TODO: this attr name might be dangerous.
-                var adapter_class = ui.draggable.attr("data-adapter-class");
-                var adapter_layer_json = ui.draggable.attr("data-adapter-layer-json");
-                var url = $workspace.attr("data-url-lizard-map-workspace-item-add");
+                adapter_class = ui.draggable.attr("data-adapter-class");
+                adapter_layer_json = ui.draggable.attr("data-adapter-layer-json");
+                url = $workspace.attr("data-url-lizard-map-workspace-item-add");
                 // Make workspace item out of it.
-                $.post(url,
-                       {workspace_id: workspace_id,
-                        name: name,
-                        adapter_class: adapter_class,
-                        adapter_layer_json: adapter_layer_json
-                       },
-                       function(workspace_id) {
-                           // very strange... $workspace becomes the
-                           // <ul> element, using workspaceItems...
-                           // TODO: empty temp workspace
-                           workspaceItems.parent().parent().updateWorkspace();
-                       }
-                      );
+                $.post(
+                    url,
+                    {workspace_id: workspace_id,
+                     name: name,
+                     adapter_class: adapter_class,
+                     adapter_layer_json: adapter_layer_json
+                    },
+                    function (workspace_id) {
+                        // very strange... $workspace becomes the
+                        // <ul> element, using workspaceItems...
+                        // TODO: empty temp workspace
+                        workspaceItems.parent().parent().updateWorkspace();
+                    }
+                );
             }
         });
         // Make collage clickable. (TODO: should be collage-popup)
@@ -164,14 +179,17 @@ jQuery.fn.workspaceInteraction = function() {
             helper: 'clone'
         });
         // Make snippets clickable... for eternity.
-        snippet_list.find("li.snippet").live('click', function(event) {
-            console.log("click-snippet");
+        snippet_list.find("li.snippet").live('click', function (event) {
+            var url, snippet_id;
             url = $workspace.attr("data-url-lizard-map-snippet-popup");
             snippet_id = $(this).attr("data-object-id");
-            $.getJSON(url,
-                      { snippet_id: snippet_id },
-                      function(data) {show_popup(data, map); }
-                     );
+            $.getJSON(
+                url,
+                { snippet_id: snippet_id },
+                function (data) {
+                    show_popup(data, map);
+                }
+            );
             //snippet(snippet_id, map); // attention: from krw_waternet.js
         });
 
@@ -180,14 +198,15 @@ jQuery.fn.workspaceInteraction = function() {
         // Make checkboxes work.
         $workspace.liveCheckboxes();
     });
-}
+};
 
 
 // Update workspace boxes and their visible layers.
-jQuery.fn.updateWorkspace = function() {
-    return this.each(function(){
-        var $this = $(this);
-        var workspace_id = $this.attr("data-workspace-id");
+jQuery.fn.updateWorkspace = function () {
+    return this.each(function () {
+        var $workspace, workspace_id;
+        $workspace = $(this);
+        workspace_id = $workspace.attr("data-workspace-id");
         // reload map layers
         updateLayer(workspace_id); // from lizardgis
         // reload workspace items: TODO: works only with a single workspace
@@ -204,46 +223,52 @@ requires
 .data-url-lizard-map-snippet-add
 
 */
-    jQuery.fn.snippetInteraction = function() {
-        return this.each(function() {
-            $(this).click(function(event) {
-                event.preventDefault();
-                console.log("add-snippet");
-                var workspace_id = $(this).attr("data-workspace-id");
-                var url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");
-                var workspace_item_id = $(this).attr("data-workspace-item-id");
-                var workspace_item_location_identifier = $(this).attr("data-item-identifier");
-                var workspace_item_location_shortname = $(this).attr("data-item-shortname");
-                var workspace_item_location_name = $(this).attr("data-item-name");
-                if (url !== undefined) {
-                    $.post(
-                        url,
-                        {
-                            workspace_item_id: workspace_item_id,
-                            workspace_item_location_identifier: workspace_item_location_identifier,
-                            workspace_item_location_shortname: workspace_item_location_shortname,
-                            workspace_item_location_name: workspace_item_location_name
-                        },
-                        function() {
-                            // refresh collage
-                            $(".workspace").find(".snippet-list").load("./ .snippet",
-                                                                       fillSidebar);
-                            $(".workspace").find(".collage").collagePopup();
-                            $(this).remove(); //remove oneself because he is added to the collagePopup
-                        });
-                }
-            });
+jQuery.fn.snippetInteraction = function () {
+    return this.each(function () {
+        $(this).click(function (event) {
+            var workspace_id, url, workspace_item_id,
+                workspace_item_location_identifier,
+                workspace_item_location_shortname,
+                workspace_item_location_name;
+            event.preventDefault();
+            workspace_id = $(this).attr("data-workspace-id");
+            url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");
+            workspace_item_id = $(this).attr("data-workspace-item-id");
+            workspace_item_location_identifier = $(this).attr("data-item-identifier");
+            workspace_item_location_shortname = $(this).attr("data-item-shortname");
+            workspace_item_location_name = $(this).attr("data-item-name");
+            if (url !== undefined) {
+                $.post(
+                    url,
+                    {
+                        workspace_item_id: workspace_item_id,
+                        workspace_item_location_identifier: workspace_item_location_identifier,
+                        workspace_item_location_shortname: workspace_item_location_shortname,
+                        workspace_item_location_name: workspace_item_location_name
+                    },
+                    function () {
+                        // refresh collage
+                        $(".workspace").find(".snippet-list").load("./ .snippet",
+                                                                   fillSidebar);
+                        $(".workspace").find(".collage").collagePopup();
+                        $(this).remove(); //remove oneself because he is added to the collagePopup
+                    });
+            }
         });
-    }
+    });
+};
 
 
-    function workspaceItemOrSnippet(object)
-    {
-        if ($(object).is(".workspace-item")) {return true;}
-        if ($(object).is(".snippet")) {return true;}
-        return false;
-//.workspace_item .snippet
+function workspaceItemOrSnippet(object) {
+    if ($(object).is(".workspace-item")) {
+        return true;
     }
+    if ($(object).is(".snippet")) {
+        return true;
+    }
+    return false;
+    //.workspace_item .snippet
+}
 
 /* Make a workspace trashbox
 
@@ -258,45 +283,48 @@ requirements:
 workspace_trash class inside workspace
 
 */
-  jQuery.fn.workspaceTrashBox = function() {
-      return this.each(function(){
-          var $workspace = $(this);
-          var $workspace_trash = $workspace.find(".workspace-trash");
-          // delete workspace items
-          var url_workspace_item = $workspace.attr("data-url-lizard-map-workspace-item-delete");
-          var url_snippet = $workspace.attr("data-url-lizard-map-snippet-delete");
-          $workspace_trash.droppable({
-              accept: workspaceItemOrSnippet,
-              hoverClass: 'drophover',
-              drop: function(event, ui) {
-                  var object_id = ui.draggable.attr("data-object-id");
-                  ui.draggable.remove();  // for visual snappyness
-                  if (ui.draggable.is(".workspace-item")) {
-                      var url = url_workspace_item;
-                  } else {
-                      //snippet
-                      var url = url_snippet;
-                  }
-                  $.ajax({
-                      url: url,
-                      data: { object_id: object_id },
-                      success: function() {
-                          // reload workspace items: looping error
-                          //$(this).find(".workspace_items").load("./ .workspace_item");
-                          //$("ul.workspace_items").load("./ .workspace_item");
-                          //$("ul.workspace_items").sortable("destroy");
-                          //$("ul.workspace_items").draggable("destroy");
-                          location.reload();
-                      },
-                      type: "POST",
-                      async: false
-                  });
-              }
-          });
-      });
-  }
 
-  /* Load a lizard-map page by only replacing necessary parts
+jQuery.fn.workspaceTrashBox = function () {
+    return this.each(function () {
+        var $workspace, workspace_trash, url_workspace_item, url_snippet;
+        $workspace = $(this);
+        workspace_trash = $workspace.find(".workspace-trash");
+        // delete workspace items
+        url_workspace_item = $workspace.attr("data-url-lizard-map-workspace-item-delete");
+        url_snippet = $workspace.attr("data-url-lizard-map-snippet-delete");
+        workspace_trash.droppable({
+            accept: workspaceItemOrSnippet,
+            hoverClass: 'drophover',
+            drop: function (event, ui) {
+                var object_id, url;
+                object_id = ui.draggable.attr("data-object-id");
+                ui.draggable.remove();  // for visual snappyness
+                if (ui.draggable.is(".workspace-item")) {
+                    url = url_workspace_item;
+                } else {
+                    //snippet
+                    url = url_snippet;
+                }
+                $.ajax({
+                    url: url,
+                    data: { object_id: object_id },
+                    success: function () {
+                        // reload workspace items: looping error
+                        //$(this).find(".workspace_items").load("./ .workspace_item");
+                        //$("ul.workspace_items").load("./ .workspace_item");
+                        //$("ul.workspace_items").sortable("destroy");
+                        //$("ul.workspace_items").draggable("destroy");
+                        location.reload();
+                    },
+                    type: "POST",
+                    async: false
+                });
+            }
+        });
+    });
+};
+
+/* Load a lizard-map page by only replacing necessary parts
 
 Replaces:
 - breadcrumbs
@@ -308,36 +336,37 @@ Load workspaces
 Then change the url (???)
 
 */
-  jQuery.fn.lizardMapLink = function() {
-      $(this).click(function(event) {
-          event.preventDefault();
-          var url = event.currentTarget;
-          $.get(
-              url,
-              function(responseText, textStatus, xmlHttpRequest) {
-                  //alert($(responseText).find("div#head-extras").html());
-                  // replace sidebar
-                  $("#sidebar").html($(responseText).find("#sidebar").html());
-                  setUpScreen();
-                  $(".workspace").workspaceInteraction();
-                  //$(".workspace").updateWorkspaceBox();
-                  // $("#head-extras").html($(responseText).find("#head-extras").html());
 
-                  var headExtras = $(responseText).find("div#head-extras").html();
-                  $("div#head-extras").html(headExtras);
+jQuery.fn.lizardMapLink = function () {
+    $(this).click(function (event) {
+        event.preventDefault();
+        var url = event.currentTarget;
+        $.get(
+            url,
+            function (responseText, textStatus, xmlHttpRequest) {
+                //alert($(responseText).find("div#head-extras").html());
+                // replace sidebar
+                $("#sidebar").html($(responseText).find("#sidebar").html());
+                setUpScreen();
+                $(".workspace").workspaceInteraction();
+                //$(".workspace").updateWorkspaceBox();
+                // $("#head-extras").html($(responseText).find("#head-extras").html());
 
-                  // replace breadcrumbs
-                  $("#breadcrumbs").html($(responseText).find("#breadcrumbs").html());
-                  $("a.lizard-map-link").lizardMapLink(); //affects breadcrumbs AND sidebar
+                var headExtras = $(responseText).find("div#head-extras").html();
+                $("div#head-extras").html(headExtras);
 
-                  // replace title... where is it???
-                  //console.debug($(responseText).find("title"));
-                  //$("title").replaceWith($(responseText).find("title"));
+                // replace breadcrumbs
+                $("#breadcrumbs").html($(responseText).find("#breadcrumbs").html());
+                $("a.lizard-map-link").lizardMapLink(); //affects breadcrumbs AND sidebar
 
-              }
-          );
+                // replace title... where is it???
+                //console.debug($(responseText).find("title"));
+                //$("title").replaceWith($(responseText).find("title"));
 
-          // probeersel, je kunt niet het voorste gedeelte aanpassen
-          window.location.hash = event.currentTarget;
-      });
-  }
+            }
+        );
+
+        // probeersel, je kunt niet het voorste gedeelte aanpassen
+        window.location.hash = event.currentTarget;
+    });
+};
