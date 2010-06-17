@@ -19,6 +19,7 @@ from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
+from lizard_map.workspace import WorkspaceManager
 
 SCREEN_DPI = 72.0
 
@@ -407,6 +408,43 @@ def wms(request, workspace_id):
     response = HttpResponse(buf.read())
     response['Content-type'] = 'image/png'
     return response
+
+
+"""
+"""
+
+def search_coordinates(request):
+    """searches for objects near GET x,y,radius returns json_popup
+    of results"""
+    workspace_manager = WorkspaceManager(request)
+    workspace_collections = workspace_manager.load_or_create()
+
+    # xy params from the GET request.
+    google_x = float(request.GET.get('x'))
+    google_y = float(request.GET.get('y'))
+    radius = float(request.GET.get('radius'))
+    x, y = coordinates.google_to_rd(google_x, google_y)
+    print x, y, radius
+
+    found = []
+    for workspace_collection in workspace_collections.values():
+        for workspace in workspace_collection:
+            for workspace_item in workspace.workspace_items.filter(
+                visible=True):
+                search_results = workspace_item.adapter.search(x, y, radius=radius)
+                found += search_results
+
+    if found:
+        # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
+        found.sort(key=lambda item: item['distance'])
+        return popup_json(found)
+    else:
+        result = {'id': 'popup_nothing_found',
+                  'objects': [{'html': 'Niets gevonden.',
+                               'x': google_x,
+                               'y': google_y}],
+                  }
+        return HttpResponse(simplejson.dumps(result))
 
 
 def clickinfo(request, workspace_id):

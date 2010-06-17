@@ -146,6 +146,7 @@ jQuery.fn.workspaceInteraction = function() {
                        function(workspace_id) {
                            // very strange... $workspace becomes the
                            // <ul> element, using workspaceItems...
+                           // TODO: empty temp workspace
                            workspaceItems.parent().parent().updateWorkspace();
                        }
                       );

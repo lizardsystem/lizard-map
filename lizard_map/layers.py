@@ -55,6 +55,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         result = []
         for feature in feature_set.features:
             name_in_shapefile = feature.properties['WGBNAAM']
-            result.append({'name': name_in_shapefile})
+            result.append({
+                    'distance': 0.0,
+                    'name': name_in_shapefile
+                    })
 
         return result
