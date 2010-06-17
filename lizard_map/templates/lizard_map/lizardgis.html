@@ -1,20 +1,21 @@
 {% extends "lizard_ui/lizardbase.html" %}
 
-{% block base-head-extras %}
-  {% comment %}
-    Extra javascript we inject into the special for-other-base-templates
-    block.  For regular javascript/css injection, use the head-extras block.
-  {% endcomment %}
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}openlayers/OpenLayers.js"></script>
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
-  <link type="text/css"
-        href="{{ STATIC_URL }}lizard_map/lizard_map.css"
-        rel="stylesheet" />
-{% endblock base-head-extras %}
+{% block css %}
+{{ block.super }}
+<link type="text/css"
+      href="{{ STATIC_URL }}lizard_map/lizard_map.css"
+      rel="stylesheet" />
+{% endblock css %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}openlayers/OpenLayers.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
+{% endblock javascript %}
 
 {% block content %}
 <div id="map"></div>

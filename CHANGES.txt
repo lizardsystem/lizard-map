@@ -5,7 +5,7 @@ Changelog of lizard-map
 0.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Using lizard-ui's new css/javascript blocks.
 
 
 0.7 (2010-06-16)
