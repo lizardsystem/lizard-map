@@ -424,7 +424,6 @@ def search_coordinates(request):
     google_y = float(request.GET.get('y'))
     radius = float(request.GET.get('radius'))
     x, y = coordinates.google_to_rd(google_x, google_y)
-    print x, y, radius
 
     found = []
     for workspace_collection in workspace_collections.values():
@@ -439,12 +438,7 @@ def search_coordinates(request):
         found.sort(key=lambda item: item['distance'])
         return popup_json(found)
     else:
-        result = {'id': 'popup_nothing_found',
-                  'objects': [{'html': 'Niets gevonden.',
-                               'x': google_x,
-                               'y': google_y}],
-                  }
-        return HttpResponse(simplejson.dumps(result))
+        return popup_json([])
 
 
 def clickinfo(request, workspace_id):

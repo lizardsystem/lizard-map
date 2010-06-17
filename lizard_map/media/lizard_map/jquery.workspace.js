@@ -53,25 +53,27 @@ data.html
 data.big
 */
     var show_popup = function(data, map) {
-        $("#"+data.id).remove(); // remove existing popup, if exists
-        var size = new OpenLayers.Size(400, 310);
-        if (data.big) {
-            var size = new OpenLayers.Size(420, 610);
-        };
-        popup = new OpenLayers.Popup(data.id,
-                                     new OpenLayers.LonLat(data.x, data.y),
-                                     size,
-                                     data.html,
-                                     true);
-        popup.panMapIfOutOfView = true;
-        map.addPopup(popup);
-        // make sure that when the window is closed, the object is removed as well
-        $(".olPopupCloseBox").bind("click", function() {
-            $(this).parent().parent().remove();
-        });
+        if (data.html !== "") {
+            $("#"+data.id).remove(); // remove existing popup, if exists
+            var size = new OpenLayers.Size(400, 310);
+            if (data.big) {
+                var size = new OpenLayers.Size(420, 610);
+            };
+            popup = new OpenLayers.Popup(data.id,
+                                         new OpenLayers.LonLat(data.x, data.y),
+                                         size,
+                                         data.html,
+                                         true);
+            popup.panMapIfOutOfView = true;
+            map.addPopup(popup);
+            // make sure that when the window is closed, the object is removed as well
+            $(".olPopupCloseBox").bind("click", function() {
+                $(this).parent().parent().remove();
+            });
 
-        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
-        $(".add-snippet").snippetInteraction();
+            // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
+            $(".add-snippet").snippetInteraction();
+        }
     };
 
 jQuery.fn.collagePopup = function() {
