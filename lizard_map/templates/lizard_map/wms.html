@@ -2,89 +2,92 @@
 
 {% block map-javascript %}
   <script type="text/javascript">
-    var layers = []
+    var layers, map;
+    layers = [];
 
     //layers is globally defined in wms.html
-    updateLayer = function(workspace_id) {
+    function updateLayer(workspace_id) {
         layers[workspace_id].mergeNewParams({'random': Math.random()});
-    };
+    }
 
-      showMap = function() {
+    function showMap() {
+        var options, openstreetmapLayer, MapClickControl, map_click_control;
+        // Set up projection and bounds.
+        options = {
+            projection: new OpenLayers.Projection("EPSG:900913"),
+            displayProjection: new OpenLayers.Projection("EPSG:4326"),
+            units: "m",
+            numZoomLevels: 18,
+            //maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
+            //                                 20037508, 20037508.34),
+            maxExtent: new OpenLayers.Bounds(129394,6659216,1335570,7306790)
+        };
+        map = new OpenLayers.Map('map', options);
 
-          // Set up projection and bounds.
-          var options = {
-              projection: new OpenLayers.Projection("EPSG:900913"),
-              displayProjection: new OpenLayers.Projection("EPSG:4326"),
-              units: "m",
-              numZoomLevels: 18,
-              //maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
-              //                                 20037508, 20037508.34),
-              maxExtent: new OpenLayers.Bounds(129394,6659216,1335570,7306790)
-          };
-          map = new OpenLayers.Map('map', options);
+        // Set up base layer.
+        openstreetmapLayer = new OpenLayers.Layer.OSM(
+            "Openstreetmap",
+            "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
+            {buffer: 0});
+        map.addLayer(openstreetmapLayer);
 
-          // Set up base layer.
-          var openstreetmapLayer = new OpenLayers.Layer.OSM(
-              "Openstreetmap",
-              "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
-              {buffer: 0});
-          map.addLayer(openstreetmapLayer);
-
-          // Add our own data layers.
-          {% for workspace_list in workspaces.values %}
-            {% for workspace in workspace_list %}
-              layers[{{ workspace.id }}] = new OpenLayers.Layer.WMS(
-                  "{{ workspace.name }}",
-                  "{% url lizard_map_wms workspace_id=workspace.id %}",
-                  {layers: 'basic'},
-                  {singleTile: true,
-                   isBaseLayer: false});
-              map.addLayer(layers[{{ workspace.id }}]);
-            {% endfor %}
+        // Add our own data layers.
+        {% for workspace_list in workspaces.values %}
+          {% for workspace in workspace_list %}
+            layers[{{ workspace.id }}] = new OpenLayers.Layer.WMS(
+                "{{ workspace.name }}",
+                "{% url lizard_map_wms workspace_id=workspace.id %}",
+                {layers: 'basic'},
+                {singleTile: true,
+                 isBaseLayer: false});
+            map.addLayer(layers[{{ workspace.id }}]);
           {% endfor %}
+        {% endfor %}
 
-          // Set up controls, zoom and center.
-          map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
-          // Click handling.
-          {% if javascript_click_handler %}
-            MapClickControl = OpenLayers.Class(OpenLayers.Control, {
-                defaultHandlerOptions: {
-                    'single': true,
-                    'double': false,
-                    'pixelTolerance': 0,
-                    'stopSingle': false,
-                    'stopDouble': false
-                },
+        // Set up controls, zoom and center.
+        map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
+        // Click handling.
+        {% if javascript_click_handler %}
+          MapClickControl = OpenLayers.Class(OpenLayers.Control, {
+              defaultHandlerOptions: {
+                  'single': true,
+                  'double': false,
+                  'pixelTolerance': 0,
+                  'stopSingle': false,
+                  'stopDouble': false
+              },
 
-                initialize: function(options) {
-                    this.handlerOptions = OpenLayers.Util.extend(
-                        {}, this.defaultHandlerOptions
-                    );
-                    OpenLayers.Control.prototype.initialize.apply(
-                        this, arguments
-                    );
-                    this.handler = new OpenLayers.Handler.Click(
-                        this, {
-                            'click': this.trigger
-                        }, this.handlerOptions
-                    );
-                },
+              initialize: function(options) {
+                  this.handlerOptions = OpenLayers.Util.extend(
+                      {}, this.defaultHandlerOptions
+                  );
+                  OpenLayers.Control.prototype.initialize.apply(
+                      this, arguments
+                  );
+                  this.handler = new OpenLayers.Handler.Click(
+                      this, {
+                          'click': this.trigger
+                      }, this.handlerOptions
+                  );
+              },
 
-                trigger: function(e) {
-                    var lonlat = map.getLonLatFromViewPortPx(e.xy);
-                    // map_click_handler comes from lizard_map.js.
-                    {{ javascript_click_handler }}(lonlat.lon, lonlat.lat, map);
-                }
-            });
-            var map_click_control = new MapClickControl();
-            map.addControl(map_click_control);
-            map_click_control.activate();
-          {% endif %}
-          // Extend zooming.
-          map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
+              trigger: function(e) {
+                  var lonlat;
+                  lonlat = map.getLonLatFromViewPortPx(e.xy);
+                  // map_click_handler comes from lizard_map.js.
+                  {{ javascript_click_handler }}(lonlat.lon, lonlat.lat, map);
+              }
+          });
+          map_click_control = new MapClickControl();
+          map.addControl(map_click_control);
+          map_click_control.activate();
+        {% endif %}
+        // Extend zooming.
+        map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
 
-      };
-      $(document).ready(showMap);
+    }
+
+    $(document).ready(showMap);
   </script>
 {% endblock map-javascript %}
 
