@@ -5,7 +5,7 @@ Changelog of lizard-map
 0.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed wms.html's javascript code: long live jslint!
 
 
 0.8 (2010-06-18)
