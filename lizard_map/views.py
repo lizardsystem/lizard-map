@@ -21,15 +21,6 @@ from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.workspace import WorkspaceManager
 
-SCREEN_DPI = 72.0
-
-# Misc
-
-
-def _inches_from_pixels(pixels):
-    """Return size in inches for matplotlib's benefit"""
-    return pixels / SCREEN_DPI
-
 # Workspace stuff
 
 
