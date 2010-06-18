@@ -33,6 +33,11 @@ class WorkspaceManager:
                     errors += 1
         return errors
 
+    def empty(self, category='temp'):
+        #clear all items in workspace category
+        for workspace in self.workspaces[category]:
+            workspace.workspace_items.all().delete()
+
     def load_or_create(self, new_workspace=False):
         """load workspaces references by session['workspaces'] or
         create new workspace
@@ -70,10 +75,6 @@ class WorkspaceManager:
             workspace_temp.save()
             self.workspaces['temp'] = [workspace_temp, ]
             changes = True
-        else:
-            #clear all items in temp workspace
-            for workspace in self.workspaces['temp']:
-                workspace.workspace_items.all().delete()
 
         if (new_workspace or
             not 'user' in self.workspaces or
