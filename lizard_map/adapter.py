@@ -43,7 +43,7 @@ class Graph(object):
         # Figure color
         self.figure.set_facecolor('white')
         # Axes and legend location: full width is "1".
-        self.legend_width = 0.0  # no legend by default
+        self.legend_width = 0.01  # no legend by default
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = FONT_SIZE / self.height
         #top_axis_location = 1 - FONT_SIZE / height
@@ -88,10 +88,9 @@ class Graph(object):
          # TODO: get rid of the border around the legend.
 
     def http_png(self):
-        # -0.01 because the ending graph line falls off
         self.axes.set_position((self.left_label_width, 
                                 self.bottom_axis_location,
-                                1 - self.legend_width - self.left_label_width - 0.01,
+                                1 - self.legend_width - self.left_label_width,
                                 1 - 2 * self.bottom_axis_location))
 
         # Set date range
