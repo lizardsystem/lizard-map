@@ -343,8 +343,8 @@ def workspace_item_image(request, workspace_item_id):
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-    start_end_dates = current_start_end_dates(request)
-    return workspace_item.adapter.image(identifier_list, start_end_dates)
+    start_date, end_date = current_start_end_dates(request)
+    return workspace_item.adapter.image(identifier_list, start_date, end_date)
 
 """
 Map stuff
