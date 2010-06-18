@@ -231,7 +231,7 @@ def popup_json(found, popup_id=None, collage=False):
 
         html_per_workspace_item = header + body
 
-        x_found, y_found = display_object['coords']
+        x_found, y_found = display_object['google_coords']
 
         result_html += html_per_workspace_item
 
