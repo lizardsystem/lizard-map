@@ -7,6 +7,9 @@ Changelog of lizard-map
 
 - Fixed wms.html's javascript code: long live jslint!
 
+- Not emptying the temp workspace anymore: it was happening too often.  Now it
+  isn't happening often enough, though.  Will be fixed later.
+
 
 0.8 (2010-06-18)
 ----------------
