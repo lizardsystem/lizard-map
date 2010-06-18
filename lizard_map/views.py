@@ -213,7 +213,7 @@ def popup_json(found, popup_id=None, collage=False):
             # Compose html header for each display object (experimental)
             if collage:
                 header += (
-                    '<div>%s</div>') % timeserie.name
+                    '<div>%s</div>') % name
             else:
                 header += (
                     '<div>%s<a href="" ' +
