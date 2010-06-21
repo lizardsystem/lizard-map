@@ -58,7 +58,7 @@ data.html
 data.big
 */
 function show_popup(data, map) {
-    if (data.html !== "") {
+    if (data.html !== "" && data.html !== undefined) {
         var size, popup;
         $("#" + data.id).remove(); // remove existing popup, if exists
         size = new OpenLayers.Size(400, 310);
@@ -79,6 +79,9 @@ function show_popup(data, map) {
 
         // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
         $(".add-snippet").snippetInteraction();
+    }
+    else {
+        alert("Niets gevonden");
     }
 }
 
