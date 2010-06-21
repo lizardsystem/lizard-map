@@ -372,7 +372,7 @@ def wms(request, workspace_id):
     #m.background = mapnik.Color('blue')
 
     for workspace_item in workspace.workspace_items.filter(visible=True):
-        layers, styles = workspace_item.adapter.layer()
+        layers, styles = workspace_item.adapter.layer(layer_ids=layers)
         layers.reverse()  # first item should be drawn on top (=last)
         for layer in layers:
             mapnik_map.layers.append(layer)

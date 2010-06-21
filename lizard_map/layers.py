@@ -7,10 +7,18 @@ from lizard_map import coordinates
 from workspace import WorkspaceItemAdapter
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
-    def layer(self):
+    """
+    map layer
+    """
+    def __init__(self, *args, **kwargs):
+        super(WorkspaceItemAdapterShapefile, self).__init__(*args, **kwargs)
+
+    def layer(self, layer_ids=None):
         """Return layer and styles for a shapefile.
 
         Registered as ``shapefile_layer``
+        
+        http://127.0.0.1:8000/map/workspace/1/wms/?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A900913&BBOX=523838.00391791,6818214.5267836,575010.91942212,6869720.7532931&WIDTH=140&HEIGHT=140
         """
         layers = []
         styles = {}
