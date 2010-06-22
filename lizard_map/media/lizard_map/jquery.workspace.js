@@ -253,8 +253,7 @@ jQuery.fn.snippetInteraction = function () {
                         // refresh collage
                         $(".workspace").find(".snippet-list").load("./ .snippet",
                                                                    fillSidebar);
-                        $(".workspace").find(".collage").collagePopup();
-                        $(this).remove(); //remove oneself because he is added to the collagePopup
+                        // Optional: close ourselves?
                     });
             }
         });
