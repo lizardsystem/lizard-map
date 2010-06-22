@@ -4,15 +4,17 @@ Helper classes and functions for adapters
 import datetime
 
 from django.http import HttpResponse
-
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import date2num
 from matplotlib.figure import Figure
+from matplotlib.ticker import MaxNLocator
+
+from lizard_map.matplotlib_settings import FONT_SIZE
 
 SCREEN_DPI = 72.0
 LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
-FONT_SIZE = 16
+BOTTOM_LINE_HEIGHT = FONT_SIZE * 1.5
 
 def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
@@ -48,11 +50,9 @@ class Graph(object):
         # Axes and legend location: full width is "1".
         self.legend_width = 0.01  # no legend by default
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
-        self.bottom_axis_location = FONT_SIZE / self.height
-        #top_axis_location = 1 - FONT_SIZE / height
-
+        self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
         self.axes = self.figure.add_subplot(111)
-
+        self.fixup_axes()
         # Date range
         # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
 
@@ -64,6 +64,22 @@ class Graph(object):
         self.figure.suptitle(title,
                              x=self.left_label_width,
                              horizontalalignment='left')
+
+    def fixup_axes(self):
+        """Fix up the axes by limiting the amount of items."""
+        available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
+        print "available", available_width
+        approximate_characters = int(available_width / (FONT_SIZE / 3))
+        print "approx chars", approximate_characters
+        max_number_of_labels = approximate_characters // 20
+        print "max labels", max_number_of_labels
+        max_number_of_intervals = max_number_of_labels - 1
+        if max_number_of_intervals < 2:
+            max_number_of_intervals = 2
+        print "max intervals", max_number_of_intervals
+        self.axes.xaxis.set_major_locator(MaxNLocator(
+                max_number_of_intervals))
+        # TODO: set a proper date formatter
 
     def legend(self, handles=None, labels=None):
         """
@@ -81,12 +97,10 @@ class Graph(object):
                                 0, # self.bottom_axis_location
                                 self.legend_width,
                                 1),
-                # loc=3,  # Lower left of above bbox.
                 loc=4,  # Lower right of above bbox.
                 fancybox=True,
                 shadow=True,
                 )
-
          #legend.set_size('medium')
          # TODO: get rid of the border around the legend.
 
