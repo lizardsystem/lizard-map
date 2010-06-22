@@ -94,3 +94,11 @@
 
 {% block sidebar %}
 {% endblock sidebar %}
+
+{% block above-content %}
+<div class="map-actions">
+{% for workspace_item in workspaces.temp.0.workspace_items.all %}
+<span class="ss_sprite ss_map_delete action-icon workspace-empty-temp map-action" data-workspace-item-id="{{ workspace_item.id }}">tijdelijke workspace legen</span>
+{% endfor %}
+</div>
+{% endblock above-content %}

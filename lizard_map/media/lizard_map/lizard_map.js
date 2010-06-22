@@ -36,6 +36,8 @@ function setUpWorkspaceAcceptable() {
             },
             function (workspace_id) {
                 updateLayer(workspace_id);
+                $(".map-actions").load("./ .map-action", 
+                                       fillSidebar);
             });
         stretchOneSidebarBox();
     });
@@ -95,11 +97,38 @@ function setUpDatePopup() {
 }
 
 
+/*
+Empty the temp workspace
+*/
+function setUpEmptyTempInteraction() {
+    $("span.workspace-empty-temp").live("click", function() {
+        var $workspace, url, workspace_item_id;
+        $(this).css("cursor", "progress");
+        $workspace = $(".workspace");
+        url = $workspace.attr("data-url-lizard-map-workspace-item-delete");
+        workspace_item_id = $(this).attr("data-workspace-item-id");
+        $.post(
+            url,
+            {object_id: workspace_item_id},
+            function (workspace_id) {
+                updateLayer(workspace_id);
+                // load new map actions
+                $(".map-actions").load("./ .map-action", 
+                                       fillSidebar);
+                // remove highlighting
+                $(".workspace-acceptable").removeClass("selected");
+            }
+        );
+    });
+};
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
     setUpDatePopup();
     setUpDateChoice();
+    setUpEmptyTempInteraction();
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
     // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
