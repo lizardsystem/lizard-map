@@ -8,6 +8,7 @@ from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 from django.http import HttpResponse
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import AutoDateLocator
+from matplotlib.dates import AutoDateFormatter
 from matplotlib.dates import RRuleLocator
 from matplotlib.dates import date2num
 from matplotlib.dates import rrulewrapper
@@ -158,14 +159,15 @@ class Graph(object):
         """Fix up the axes by limiting the amount of items."""
         available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
         print "available", available_width
-        approximate_characters = int(available_width / (FONT_SIZE / 3))
+        approximate_characters = int(available_width / (FONT_SIZE / 2))
         print "approx chars", approximate_characters
         max_number_of_ticks = approximate_characters // 20
         print "max ticks", max_number_of_ticks
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
-        self.axes.xaxis.set_major_locator(LessTicksAutoDateLocator(
-                max_ticks=max_number_of_ticks))
+        locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
+        self.axes.xaxis.set_major_locator(locator)
+        self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
 
     def legend(self, handles=None, labels=None):
         """
