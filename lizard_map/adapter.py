@@ -3,11 +3,15 @@ Helper classes and functions for adapters
 """
 import datetime
 
+from dateutil.relativedelta import relativedelta
+from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 from django.http import HttpResponse
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.dates import AutoDateLocator
+from matplotlib.dates import RRuleLocator
 from matplotlib.dates import date2num
+from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
-from matplotlib.ticker import MaxNLocator
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 
@@ -16,9 +20,94 @@ LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
 BOTTOM_LINE_HEIGHT = FONT_SIZE * 1.5
 
+
 def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
     return pixels / SCREEN_DPI
+
+
+class LessTicksAutoDateLocator(AutoDateLocator):
+    """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""
+
+    def __init__(self, tz=None, max_ticks=5):
+        AutoDateLocator.__init__(self, tz)
+        self.max_ticks = max_ticks
+
+    def get_locator(self, dmin, dmax):
+        'Pick the best locator based on a distance.'
+
+        delta = relativedelta(dmax, dmin)
+
+        numYears = (delta.years * 1.0)
+        numMonths = (numYears * 12.0) + delta.months
+        numDays = (numMonths * 31.0) + delta.days
+        numHours = (numDays * 24.0) + delta.hours
+        numMinutes = (numHours * 60.0) + delta.minutes
+        numSeconds = (numMinutes * 60.0) + delta.seconds
+
+        # numticks = 5
+        # Only difference to original AutoDateLocator: less ticks
+        numticks = self.max_ticks
+
+        # self._freq = YEARLY
+        interval = 1
+        bymonth = 1
+        bymonthday = 1
+        byhour = 0
+        byminute = 0
+        bysecond = 0
+        if (numYears >= numticks):
+            self._freq = YEARLY
+            interval = int(numYears // numticks)
+        elif (numMonths >= numticks):
+            self._freq = MONTHLY
+            bymonth = range(1, 13)
+            interval = int(numMonths // numticks)
+        elif (numDays >= numticks):
+            self._freq = DAILY
+            bymonth = None
+            bymonthday = range(1, 32)
+            interval = int(numDays // numticks)
+        elif (numHours >= numticks):
+            self._freq = HOURLY
+            bymonth = None
+            bymonthday = None
+            byhour = range(0, 24)      # show every hour
+            interval = int(numHours // numticks)
+        elif (numMinutes >= numticks):
+            self._freq = MINUTELY
+            bymonth = None
+            bymonthday = None
+            byhour = None
+            byminute = range(0, 60)
+            interval = int(numMinutes // numticks)
+            # end if
+        elif (numSeconds >= numticks):
+            self._freq = SECONDLY
+            bymonth = None
+            bymonthday = None
+            byhour = None
+            byminute = None
+            bysecond = range(0, 60)
+            interval = int(numSeconds // numticks)
+            # end if
+        else:
+            # do what?
+            #   microseconds as floats, but floats from what reference point?
+            pass
+
+        rrule = rrulewrapper(self._freq, interval=interval,
+                             dtstart=dmin, until=dmax,
+                             bymonth=bymonth, bymonthday=bymonthday,
+                             byhour=byhour, byminute=byminute,
+                             bysecond=bysecond)
+
+        locator = RRuleLocator(rrule, self.tz)
+        locator.set_axis(self.axis)
+
+        locator.set_view_interval(*self.axis.get_view_interval())
+        locator.set_data_interval(*self.axis.get_data_interval())
+        return locator
 
 
 class Graph(object):
@@ -71,15 +160,12 @@ class Graph(object):
         print "available", available_width
         approximate_characters = int(available_width / (FONT_SIZE / 3))
         print "approx chars", approximate_characters
-        max_number_of_labels = approximate_characters // 20
-        print "max labels", max_number_of_labels
-        max_number_of_intervals = max_number_of_labels - 1
-        if max_number_of_intervals < 2:
-            max_number_of_intervals = 2
-        print "max intervals", max_number_of_intervals
-        self.axes.xaxis.set_major_locator(MaxNLocator(
-                max_number_of_intervals))
-        # TODO: set a proper date formatter
+        max_number_of_ticks = approximate_characters // 20
+        print "max ticks", max_number_of_ticks
+        if max_number_of_ticks < 2:
+            max_number_of_ticks = 2
+        self.axes.xaxis.set_major_locator(LessTicksAutoDateLocator(
+                max_ticks=max_number_of_ticks))
 
     def legend(self, handles=None, labels=None):
         """
@@ -94,13 +180,13 @@ class Graph(object):
                 handles,
                 labels,
                 bbox_to_anchor=(1 - self.legend_width,
-                                0, # self.bottom_axis_location
+                                0,  # self.bottom_axis_location
                                 self.legend_width,
                                 1),
                 loc=4,  # Lower right of above bbox.
                 fancybox=True,
                 shadow=True,
-                )
+               )
          #legend.set_size('medium')
          # TODO: get rid of the border around the legend.
 
