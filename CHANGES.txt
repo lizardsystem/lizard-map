@@ -5,7 +5,9 @@ Changelog of lizard-map
 0.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Popup (upon map click) shows popup when nothing's found.
+
+- More feedback (hourglass pointer and so).
 
 
 0.9 (2010-06-18)
