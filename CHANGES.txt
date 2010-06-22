@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.10 (unreleased)
+0.10 (2010-06-22)
 -----------------
 
 - Popup (upon map click) shows popup when nothing's found.
