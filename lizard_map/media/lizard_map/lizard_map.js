@@ -132,5 +132,5 @@ $(document).ready(function () {
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
     // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
-    $("a.lizard-map-link").lizardMapLink();
+    // $("a.lizard-map-link").lizardMapLink();
 });
