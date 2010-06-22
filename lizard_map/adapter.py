@@ -29,8 +29,11 @@ class Graph(object):
     - outputs httpresponse for png
     """
 
-    def __init__(self, start_date, end_date, width=380.0, height=280.0, today=datetime.datetime.now()):
-        self.start_date = start_date 
+    def __init__(self,
+                 start_date, end_date,
+                 width=380.0, height=280.0,
+                 today=datetime.datetime.now()):
+        self.start_date = start_date
         self.end_date = end_date
         self.today = today
 
@@ -49,7 +52,7 @@ class Graph(object):
         #top_axis_location = 1 - FONT_SIZE / height
 
         self.axes = self.figure.add_subplot(111)
-        
+
         # Date range
         # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
 
@@ -75,7 +78,7 @@ class Graph(object):
                 handles,
                 labels,
                 bbox_to_anchor=(1 - self.legend_width,
-                                self.bottom_axis_location,
+                                0, # self.bottom_axis_location
                                 self.legend_width,
                                 1),
                 # loc=3,  # Lower left of above bbox.
@@ -88,7 +91,7 @@ class Graph(object):
          # TODO: get rid of the border around the legend.
 
     def http_png(self):
-        self.axes.set_position((self.left_label_width, 
+        self.axes.set_position((self.left_label_width,
                                 self.bottom_axis_location,
                                 1 - self.legend_width - self.left_label_width,
                                 1 - 2 * self.bottom_axis_location))
