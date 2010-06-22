@@ -43,7 +43,7 @@ setup(name='lizard-map',
           'console_scripts': [
           ],
           'lizard_map.adapter_class': [
-            'adapter_shapefile = lizard_map.workspaceitemadapter:WorkspaceItemAdapterShapefile',
+            'adapter_shapefile = lizard_map.layers:WorkspaceItemAdapterShapefile',
             ]
           },
       )
