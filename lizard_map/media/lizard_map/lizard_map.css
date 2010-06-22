@@ -25,10 +25,3 @@
 .add-snippet
 { float: right;
   }
-
-.sidebarbox-action-icon
-{ /* TODO: move to lizard-ui */
-  float: right;
-  cursor: pointer;
-  margin-top: 4px;
-  }
