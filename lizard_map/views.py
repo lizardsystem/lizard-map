@@ -191,8 +191,8 @@ def popup_json(found, popup_id=None, collage=False):
         header = ''
         for display_object in display_group:
             # timeserie = display_object['object']
-            name = display_object['name']
-            shortname = display_object['shortname']
+            name = display_object.get('name', 'Geen naam')
+            shortname = display_object.get('shortname', '')
             workspace_item = display_object['workspace_item']
             identifier_json = simplejson.dumps(display_object['identifier'])
             identifier_json_list.append(identifier_json)
@@ -228,11 +228,8 @@ def popup_json(found, popup_id=None, collage=False):
         img = img + '?' + '&'.join(['identifier=%s' % i for i in
                                     identifier_json_list])
         body = "<div><img src='%s' /></div>" % img
-
         html_per_workspace_item = header + body
-
         x_found, y_found = display_object['google_coords']
-
         result_html += html_per_workspace_item
 
     if popup_id is None:
