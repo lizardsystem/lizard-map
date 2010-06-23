@@ -45,6 +45,13 @@
       </div>
       {% endif %}
     </div>
+    <div class="hide">
+      <a href="#" rel="#not_found_popup" id="not_found_popup_trigger">hidden</a>
+    </div>
+    <div id="not_found_popup">
+      <h1>Niets gevonden</h1>
+      <p>Er is niets rond deze locatie gevonden.</p>
+    </div>
     <ul class="workspace-items without-bullets"
         data-workspace-id="{{ workspace.id }}">
       {# Call updateWorkspaceBox to fill workspace. #}

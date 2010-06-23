@@ -1,7 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
 /*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
-setUpScreen, alert */
+setUpScreen, nothingFoundPopup */
 
 
 /*
@@ -82,7 +82,7 @@ function show_popup(data, map) {
         $(".add-snippet").snippetInteraction();
     }
     else {
-        alert("Niets gevonden");
+        nothingFoundPopup();
     }
 }
 

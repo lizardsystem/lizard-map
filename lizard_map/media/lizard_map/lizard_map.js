@@ -92,6 +92,17 @@ function setUpDatePopup() {
     });
 }
 
+function setUpNotFoundPopup() {
+    $("#not_found_popup_trigger").overlay();
+}
+
+function nothingFoundPopup() {
+    $("#not_found_popup_trigger").click();
+    setTimeout(function () {
+        $("#not_found_popup div.close").click();
+    },
+              2000);
+}
 
 /*
 Empty the temp workspace
@@ -124,6 +135,7 @@ $(document).ready(function () {
     setUpWorkspaceAcceptable();
     setUpDatePopup();
     setUpDateChoice();
+    setUpNotFoundPopup();
     setUpEmptyTempInteraction();
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
