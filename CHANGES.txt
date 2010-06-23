@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.11 (unreleased)
+0.11 (2010-06-23)
 -----------------
 
 - UI interaction fixes.
