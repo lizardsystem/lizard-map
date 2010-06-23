@@ -347,7 +347,6 @@ def workspace_item_image(request, workspace_item_id):
 Map stuff
 """
 
-
 def wms(request, workspace_id):
     """Return PNG as WMS service."""
 
