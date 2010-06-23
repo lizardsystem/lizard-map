@@ -1,6 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
-/*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar, setUpScreen */
+/*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
+setUpScreen, alert */
 
 
 /*
