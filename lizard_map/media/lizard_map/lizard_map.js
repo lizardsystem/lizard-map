@@ -1,7 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
-reloadGraphs */
+reloadGraphs, fillSidebar */
 
 function setUpWorkspaceAcceptable() {
     // Set up draggability for current and future items.
@@ -97,7 +97,7 @@ function setUpDatePopup() {
 Empty the temp workspace
 */
 function setUpEmptyTempInteraction() {
-    $("span.workspace-empty-temp").live("click", function() {
+    $("span.workspace-empty-temp").live("click", function () {
         var $workspace, url, workspace_item_id;
         $(this).css("cursor", "progress");
         $workspace = $(".workspace");
@@ -116,7 +116,7 @@ function setUpEmptyTempInteraction() {
             }
         );
     });
-};
+}
 
 
 // Initialize all workspace actions.
