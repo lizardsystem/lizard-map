@@ -1,6 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
-/*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox */
+/*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
+reloadGraphs */
 
 function setUpWorkspaceAcceptable() {
     // Set up draggability for current and future items.
@@ -36,7 +37,7 @@ function setUpWorkspaceAcceptable() {
             },
             function (workspace_id) {
                 updateLayer(workspace_id);
-                $(".map-actions").load("./ .map-action", 
+                $(".map-actions").load("./ .map-action",
                                        fillSidebar);
             });
         stretchOneSidebarBox();
@@ -49,11 +50,6 @@ function setUpDateChoice() {
     $.datepicker.setDefaults($.datepicker.regional.nl);
     $("#id_date_start").datepicker();
     $("#id_date_end").datepicker();
-}
-
-function reloadGraphs() {
-    // Overridden in krw-waternet...
-    //loadCorrectlySizedImages();
 }
 
 function setUpDateAjaxForm(overlay) {
@@ -113,7 +109,7 @@ function setUpEmptyTempInteraction() {
             function (workspace_id) {
                 updateLayer(workspace_id);
                 // load new map actions
-                $(".map-actions").load("./ .map-action", 
+                $(".map-actions").load("./ .map-action",
                                        fillSidebar);
                 // remove highlighting
                 $(".workspace-acceptable").removeClass("selected");

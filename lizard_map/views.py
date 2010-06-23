@@ -155,10 +155,8 @@ def session_workspace_edit_item(request,
     #todo: maak functie af
     return
 
-# Generic popup
 
-
-def popup_json(found, popup_id=None, collage=False):
+def popup_json(found, popup_id=None, collage=False, request=None):
     """Return html with info on list of 'found' objects.
 
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
@@ -173,7 +171,7 @@ def popup_json(found, popup_id=None, collage=False):
     x_found = None
     y_found = None
 
-    # regroup found list of objects into workspace_items
+    # Regroup found list of objects into workspace_items.
     display_groups = {}
     for display_object in found:
         workspace_item = display_object['workspace_item']
@@ -185,7 +183,18 @@ def popup_json(found, popup_id=None, collage=False):
         big_popup = True
     else:
         big_popup = False
-    # now display
+
+    # Figure out temp workspace items (we don't want add-to-collage there).
+    temp_workspace_item_ids = []
+    if request is not None:
+        workspace_manager = WorkspaceManager(request)
+        workspace_manager.load_workspaces()
+        temp_workspaces = workspace_manager.workspaces['temp']
+        for temp_workspace in temp_workspaces:
+            for workspace_item in temp_workspace.workspace_items.filter(
+                visible=True):
+                temp_workspace_item_ids.append(workspace_item.id)
+    # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
         header = ''
@@ -202,7 +211,7 @@ def popup_json(found, popup_id=None, collage=False):
                 header += '<div><strong>%s</strong></div>' % (
                     workspace_item.name)
             # Compose html header for each display object (experimental)
-            if collage:
+            if collage or (workspace_item_id in temp_workspace_item_ids):
                 header += (
                     '<div>%s</div>') % name
             else:
@@ -316,7 +325,9 @@ def snippet_popup(request, snippet_id=None):
     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
 
     popup_id = 'popup-snippet-%s' % snippet_id
-    return popup_json([snippet.location, ], popup_id=popup_id)
+    return popup_json([snippet.location, ],
+                      popup_id=popup_id,
+                      request=request)
 
 
 def collage_popup(request,
@@ -328,7 +339,10 @@ def collage_popup(request,
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
     popup_id = 'popup-collage'
     # Only one collage popup allowed, also check jquery.workspace.js
-    return popup_json(collage.locations, popup_id=popup_id, collage=True)
+    return popup_json(collage.locations,
+                      popup_id=popup_id,
+                      collage=True,
+                      request=request)
 
 
 def workspace_item_image(request, workspace_item_id):
@@ -419,7 +433,7 @@ def search_coordinates(request):
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
-        return popup_json(found)
+        return popup_json(found, request=request)
     else:
         return popup_json([])
 

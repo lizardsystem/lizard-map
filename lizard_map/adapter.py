@@ -168,7 +168,7 @@ class Graph(object):
         self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
 
         available_height = self.height - BOTTOM_LINE_HEIGHT
-        approximate_lines = int(available_height / (FONT_SIZE * 1.3))
+        approximate_lines = int(available_height / (FONT_SIZE * 1.5))
         max_number_of_ticks = approximate_lines
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
