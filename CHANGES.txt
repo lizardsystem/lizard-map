@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.12 (unreleased)
+0.12 (2010-06-23)
 -----------------
 
 - Fancier "nothing found" popup.
