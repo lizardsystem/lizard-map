@@ -5,9 +5,9 @@ version = '0.12'
 
 long_description = '\n\n'.join([
     open('README.txt').read(),
-    open(os.path.join('lizard_map', 'USAGE.txt')).read(),
-    open('TODO.txt').read(),
-    open('CREDITS.txt').read(),
+    # open(os.path.join('lizard_map', 'USAGE.txt')).read(),
+    # open('TODO.txt').read(),
+    # open('CREDITS.txt').read(),
     open('CHANGES.txt').read(),
     ])
 
@@ -31,7 +31,7 @@ setup(name='lizard-map',
       keywords=[],
       author='Reinout van Rees',
       author_email='reinout.vanrees@nelen-schuurmans.nl',
-      url='',
+      url='http://www.nelen-schuurmans.nl/lizard/',
       license='GPL',
       packages=['lizard_map'],
       include_package_data=True,

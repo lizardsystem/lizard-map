@@ -1,11 +1,8 @@
 lizard-map
-==========================================
+==========
 
-Introduction
-
-Usage, etc.
-
-More details in src/lizard_map/USAGE.txt .
+**Initial pypi release**.  See http://pypi.python.org/pypi/lizard-ui .
+Documentation is upcoming.
 
 
 Development installation
