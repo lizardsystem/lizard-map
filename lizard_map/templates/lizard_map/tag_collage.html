@@ -1,22 +1,9 @@
-<div class="collage"
-     data-url-graph="/timeserie_graph/">
+<div class="collage">
 
 <h2>{{ collage }}</h2>
-
-{% for workspace_item in workspace_items %}
-<h3>workspace_item</h3>
-<ul>
-{% for snippet in collage.snippets.all %}
-  {% ifequal snippet.workspace_item workspace_item %}
-  <li>{{ snippet }}</li>
-  {% endifequal %}
-{% endfor %}
-</ul>
-{% endfor %}
-
-{% for workspace_item in workspace_items %}
-<h3>workspace_item</h3>
-<img src="{% url lizard_fewsunblobbed.timeserie_graph %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}id={{ snippet.location.object.tkey }}&{% endifequal %}{% endfor %}"/>
+{% for workspace_item in collage.workspace_items %}
+<h3>{{ workspace_item }}</h3>
+<img src="{% url lizard_map.workspace_item_image workspace_item_id=workspace_item.id %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}identifier={{ snippet.identifier_json }}&{% endifequal %}{% endfor %}width=650" />
 {% endfor %}
 
 </div>

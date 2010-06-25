@@ -34,9 +34,6 @@ def collage(collage_id):
     with all corresponding snippets in it
     """
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-    workspace_items = WorkspaceItem.objects.filter(
-        workspacecollagesnippet__in=collage.snippets.all()).distinct()
     return {
         'collage': collage,
-        'workspace_items': workspace_items,
         }

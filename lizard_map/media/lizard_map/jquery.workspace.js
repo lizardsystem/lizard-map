@@ -236,11 +236,13 @@ jQuery.fn.snippetInteraction = function () {
                 workspace_item_location_name;
             event.preventDefault();
             workspace_id = $(this).attr("data-workspace-id");
-            url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");
+            url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");  // should work, but workspace id is wrong
+            // url = $(".workspace").attr("data-url-lizard-map-snippet-add");
             workspace_item_id = $(this).attr("data-workspace-item-id");
             workspace_item_location_identifier = $(this).attr("data-item-identifier");
             workspace_item_location_shortname = $(this).attr("data-item-shortname");
             workspace_item_location_name = $(this).attr("data-item-name");
+            alert("clikie" + url);
             if (url !== undefined) {
                 $.post(
                     url,

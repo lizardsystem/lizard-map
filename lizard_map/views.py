@@ -236,7 +236,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
                               })
         img = img + '?' + '&'.join(['identifier=%s' % i for i in
                                     identifier_json_list])
-        body = "<div><img src='%s' /></div>" % img
+        body = '<div><img src="%s" /></div>' % img
         html_per_workspace_item = header + body
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
@@ -353,9 +353,12 @@ def workspace_item_image(request, workspace_item_id):
     identifier_json_list = request.GET.getlist('identifier')
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
 
+    width = request.GET.get('width', None)
+    height = request.GET.get('height', None)
+
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
-    return workspace_item.adapter.image(identifier_list, start_date, end_date)
+    return workspace_item.adapter.image(identifier_list, start_date, end_date, width, height)
 
 """
 Map stuff

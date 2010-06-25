@@ -152,6 +152,11 @@ class WorkspaceCollage(models.Model):
         """
         return [snippet.location for snippet in self.snippets.all()]
 
+    @property
+    def workspace_items(self):
+        return WorkspaceItem.objects.filter(
+            workspacecollagesnippet__in=self.snippets.all()).distinct()
+
 
 class WorkspaceCollageSnippet(models.Model):
     """One snippet in a collage"""
@@ -169,12 +174,7 @@ class WorkspaceCollageSnippet(models.Model):
     # ^^^ Format depends on workspace_item layer_method
 
     def __unicode__(self):
-        return 'bla'
-        # return '%s %s %s %s' % (
-        #     self.name,
-        #     self.workspace_collage,
-        #     self.workspace_item,
-        #     self.identifier)
+        return u'%s' % self.name
 
     def save(self, *args, **kwargs):
         """Save model and run an extra check.
@@ -208,14 +208,15 @@ class WorkspaceCollageSnippet(models.Model):
     def location(self):
         return self.workspace_item.adapter.location(**self.identifier)
 
-    def image(self, start_end_dates):
+    def image(self, start_end_dates, width=None, height=None):
         """Return image from adapter.
 
         start_end_dates: 2-tuple of datetimes
 
         """
         return self.workspace_item.adapter.image([self.identifier],
-                                                 start_end_dates)
+                                                 start_end_dates,
+                                                 width=width, height=height)
 
 
 class AttachedPoint(models.Model):
