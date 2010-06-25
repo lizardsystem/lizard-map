@@ -13,8 +13,6 @@ DUTCH_DATE_FORMAT = '%d/%m/%Y'
 
 
 class DateRangeForm(forms.Form):
-    # came_from = forms.URLField(
-    #     widget=forms.HiddenInput)
     # TODO: NL date format.  Also hardcoded in the js.
     date_start = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,))
     date_end = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,))
