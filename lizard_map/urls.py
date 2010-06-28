@@ -84,6 +84,12 @@ urlpatterns = patterns(
     url(r'^workspaceitem/edit/',
         'lizard_map.views.workspace_item_edit',
         name="lizard_map_workspace_item_edit"),
+
+    # Search stuff.
+    url(r'^search_coordinates/',
+        'lizard_map.views.search_coordinates',
+        name="lizard_map.search_coordinates"),
+
     )
 
 
