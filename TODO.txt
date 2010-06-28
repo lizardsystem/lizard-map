@@ -1,4 +1,12 @@
 TODO
 ====
 
-- Probably a whole lot of things.
+- Add tests.
+
+- Add example app for stand-alone in-browser testing and trying-out.
+
+- Add possibility for multiple base layers.
+
+- Remove hardcoded Dutch-centric initial map extends.
+
+- More i18n/l10n.
