@@ -26,6 +26,7 @@ from lizard_map.workspace import WorkspaceManager
 
 def workspace(request,
               workspace_id,
+              javascript_click_handler=None,
               template='lizard_map/workspace.html'):
     """Render page with one workspace"""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
@@ -34,6 +35,7 @@ def workspace(request,
     return render_to_response(
         template,
         {'workspaces': {'user': [workspace]},
+         'javascript_click_handler': javascript_click_handler,
          'date_range_form': date_range_form},
         context_instance=RequestContext(request))
 

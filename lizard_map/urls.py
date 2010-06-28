@@ -23,6 +23,8 @@ urlpatterns = patterns(
         name="lizard_map_workspace_item_add"),
     url(r'^workspace/(?P<workspace_id>\d+)/',
         'lizard_map.views.workspace',
+        {'javascript_click_handler': 'popup_click_handler',  # TODO: does not work outside krw yet
+         },
         name="lizard_map_workspace"),
 
     # Date range
