@@ -10,3 +10,5 @@ TODO
 - Remove hardcoded Dutch-centric initial map extends.
 
 - More i18n/l10n.
+
+- Fix reloading when dragging an item to the trash.
