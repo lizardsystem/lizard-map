@@ -14,7 +14,7 @@ long_description = '\n\n'.join([
 install_requires = [
     'Django',
     'django-staticfiles',
-    'lizard-ui >= 1.3',
+    'lizard-ui >= 1.4.1',
     ],
 
 tests_require = [
@@ -31,7 +31,7 @@ setup(name='lizard-map',
       keywords=[],
       author='Reinout van Rees',
       author_email='reinout.vanrees@nelen-schuurmans.nl',
-      url='',
+      url='http://www.nelen-schuurmans.nl/lizard/',
       license='GPL',
       packages=['lizard_map'],
       include_package_data=True,
