@@ -131,9 +131,9 @@ class Graph(object):
         self.today = today
 
         self.figure = Figure()
-        if width is None:
+        if width is None or not width:
             width = 380.0
-        if height is None:
+        if height is None or not height:
             height = 250.0
         self.width = float(width)
         self.height = float(height)
