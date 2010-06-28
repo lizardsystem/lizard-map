@@ -1,7 +1,7 @@
 TODO
 ====
 
-- Add tests.
+- Add tests.  We're sorely lacking in that regard.
 
 - Add example app for stand-alone in-browser testing and trying-out.
 

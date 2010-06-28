@@ -5,7 +5,9 @@ Changelog of lizard-map
 0.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Updated documentation.
+
+- We're now released on pypi!
 
 
 0.12 (2010-06-23)

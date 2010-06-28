@@ -1,11 +1,10 @@
 from setuptools import setup
-import os.path
 
 version = '0.13dev'
 
 long_description = '\n\n'.join([
     open('README.txt').read(),
-    open(os.path.join('lizard_map', 'USAGE.txt')).read(),
+    # open(os.path.join('lizard_map', 'USAGE.txt')).read(),
     open('TODO.txt').read(),
     open('CREDITS.txt').read(),
     open('CHANGES.txt').read(),
