@@ -150,6 +150,23 @@ function loadSizedImages() {
 }
 
 
+function popup_click_handler(x, y, map) {
+    var extent, radius;
+    extent = map.getExtent();
+    radius = Math.abs(extent.top - extent.bottom) / 50;  // experimental, seems to work good
+    $("#map_OpenLayers_ViewPort").css("cursor", "progress");
+    url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
+    $.getJSON(
+        url, 
+        { x: x, y: y, radius: radius },
+        function (data) {
+            $("#map_OpenLayers_ViewPort").css("cursor", "default");
+            show_popup(data, map);
+        }
+    );
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
