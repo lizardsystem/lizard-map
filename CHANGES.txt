@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.13 (unreleased)
+0.13 (2010-06-28)
 -----------------
 
 - Popup graph size fixes.
