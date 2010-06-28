@@ -203,7 +203,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             name = display_object.get('name', 'Geen naam')
             shortname = display_object.get('shortname', '')
             workspace_item = display_object['workspace_item']
-            identifier_json = simplejson.dumps(display_object['identifier'])
+            identifier_json = simplejson.dumps(display_object['identifier']).replace('"', '%22')
             identifier_json_list.append(identifier_json)
 
             # Add workspace_item on top

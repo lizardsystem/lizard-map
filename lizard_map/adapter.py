@@ -124,13 +124,17 @@ class Graph(object):
 
     def __init__(self,
                  start_date, end_date,
-                 width=380.0, height=280.0,
+                 width=None, height=None,
                  today=datetime.datetime.now()):
         self.start_date = start_date
         self.end_date = end_date
         self.today = today
 
         self.figure = Figure()
+        if width is None:
+            width = 380.0
+        if height is None:
+            height = 250.0
         self.width = float(width)
         self.height = float(height)
         self.figure.set_size_inches((_inches_from_pixels(self.width),
