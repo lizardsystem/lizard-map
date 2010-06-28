@@ -1,8 +1,15 @@
 <div class="collage">
 
-<h2>{{ collage }}</h2>
+<h2>{{ collage.name }}</h2>
 {% for workspace_item in collage.workspace_items %}
-<h3>{{ workspace_item }}</h3>
+<h3>{{ workspace_item.name }}</h3>
+<ul>
+  <li>
+    {% for snippet in collage.snippets.all %}
+    {% ifequal snippet.workspace_item workspace_item %}identifier={{ snippet.identifier_json }}&{% endifequal %}
+    {% endfor %}
+  </li>
+</ul>
 <img src="{% url lizard_map.workspace_item_image workspace_item_id=workspace_item.id %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}identifier={{ snippet.identifier_json }}&{% endifequal %}{% endfor %}width=650" />
 {% endfor %}
 

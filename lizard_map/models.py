@@ -191,9 +191,10 @@ class WorkspaceCollageSnippet(models.Model):
         """Return dict of parsed identifier_json.
 
         Converts keys to str.
+        TODO: .replace('%22', '"') in a better way
 
         """
-        json = self.identifier_json
+        json = self.identifier_json.replace('%22', '"')
         if not json:
             return {}
         result = {}

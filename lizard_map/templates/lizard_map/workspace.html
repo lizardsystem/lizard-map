@@ -1,8 +1,12 @@
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
-{% block head-extras %}
-{% workspace_drag_and_drop workspaces %}
+{% block breadcrumbs %}
+<a href="{% url homepage %}">home</a>
+&rarr;
+<a href="{% url analysis_start %}" class="lizard-map-link">analyse</a>
+&rarr;
+<a href="" class="lizard-map-link">workspace</a>
 {% endblock %}
 
 {% block sidebar %}
