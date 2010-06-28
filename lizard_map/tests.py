@@ -11,7 +11,6 @@ def suite():
         'USAGE.txt',
         'models.txt',
         'views.txt',
-        'workspaceitemadapter.txt',
         'workspace.txt',
         #'TODO_several_more_tests.txt',
         module_relative=True,

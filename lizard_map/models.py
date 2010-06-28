@@ -74,9 +74,6 @@ class WorkspaceItem(models.Model):
                                   related_name='workspace_items')
     adapter_class = models.SlugField(blank=True,
                                      choices=adapter_class_names())
-    # ^^^ string that identifies a setuptools entry point that points to a
-    # specific method that returns (WMS) layers.  Often only one, but it *can*
-    # be more than one layer.
     adapter_layer_json = models.TextField(blank=True)
     # ^^^ Contains json (TODO: add json verification)
 
@@ -217,23 +214,3 @@ class WorkspaceCollageSnippet(models.Model):
         return self.workspace_item.adapter.image([self.identifier],
                                                  start_end_dates,
                                                  width=width, height=height)
-
-
-class AttachedPoint(models.Model):
-    """Point geometry attached to another model instance."""
-
-    class Meta:
-        verbose_name = _("Attached point")
-        verbose_name_plural = _("Attached points")
-
-    # The geometry.
-    point = gismodels.PointField()
-    # Three fields needed to attach ourselves to another model instance.
-    content_type = models.ForeignKey(ContentType)
-    object_id = models.PositiveIntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
-
-    objects = gismodels.GeoManager()
-
-    def __unicode__(self):
-        return '(%s, %s)' % (self.point.x, self.point.y)
