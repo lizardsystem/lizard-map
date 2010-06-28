@@ -242,7 +242,6 @@ jQuery.fn.snippetInteraction = function () {
             workspace_item_location_identifier = $(this).attr("data-item-identifier");
             workspace_item_location_shortname = $(this).attr("data-item-shortname");
             workspace_item_location_name = $(this).attr("data-item-name");
-            alert("clikie" + url);
             if (url !== undefined) {
                 $.post(
                     url,
