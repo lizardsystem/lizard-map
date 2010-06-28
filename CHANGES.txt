@@ -5,6 +5,8 @@ Changelog of lizard-map
 0.13 (unreleased)
 -----------------
 
+- Popup graph size fixes.
+
 - Updated documentation.
 
 - We're now released on pypi!
