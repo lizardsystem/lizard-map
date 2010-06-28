@@ -66,7 +66,6 @@ function show_popup(data, map) {
         if (data.big) {
             size = new OpenLayers.Size(420, 610);
         }
-        alert(data.html);
         popup = new OpenLayers.Popup(data.id,
                                      new OpenLayers.LonLat(data.x, data.y),
                                      size,
