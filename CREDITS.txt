@@ -5,5 +5,5 @@ Credits
   <http://reinout.vanrees.org>`_ (`Nelen & Schuurmans
   <http://www.nelen-schuurmans.nl>`_).
 
-- "iphone app" interaction and core workspace concept: Jan-Maarten Verbree and
+- Core workspace interaction concept: Jan-Maarten Verbree and
   Bastiaan Roos (`Nelen & Schuurmans <http://www.nelen-schuurmans.nl>`_).
