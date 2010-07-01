@@ -233,12 +233,13 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         #if not timeserie.data_count():
         #    body = "<div>Geen gegevens beschikbaar.</div>"
         #else:
-        img = reverse("lizard_map.workspace_item_image",
+        img_url = reverse("lizard_map.workspace_item_image",
                       kwargs={'workspace_item_id': workspace_item.id,
                               })
-        img = img + '?' + '&'.join(['identifier=%s' % i for i in
-                                    identifier_json_list])
-        body = '<div><img src="%s" /></div>' % img
+        img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
+                                            identifier_json_list])
+        body = ('<div style="width: 100%%" class="img-use-my-width">' +
+                '<a href="%s" class="replace-with-image" /></div>') % img_url
         html_per_workspace_item = header + body
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
@@ -412,9 +413,6 @@ def wms(request, workspace_id):
     response['Content-type'] = 'image/png'
     return response
 
-
-"""
-"""
 
 def search_coordinates(request):
     """searches for objects near GET x,y,radius returns json_popup

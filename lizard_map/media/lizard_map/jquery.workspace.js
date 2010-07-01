@@ -1,7 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
 /*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
-setUpScreen, nothingFoundPopup */
+setUpScreen, nothingFoundPopup, reloadGraphs */
 
 
 /*
@@ -77,7 +77,7 @@ function show_popup(data, map) {
         $(".olPopupCloseBox").bind("click", function () {
             $(this).parent().parent().remove();
         });
-
+        reloadGraphs();
         // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
         $(".add-snippet").snippetInteraction();
     }

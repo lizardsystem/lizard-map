@@ -1,7 +1,7 @@
 // jslint configuration
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
-reloadGraphs, fillSidebar */
+reloadGraphs, fillSidebar, show_popup */
 
 function setUpWorkspaceAcceptable() {
     // Set up draggability for current and future items.
@@ -136,7 +136,7 @@ function setUpEmptyTempInteraction() {
 
 
 function popup_click_handler(x, y, map) {
-    var extent, radius;
+    var extent, radius, url;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 50;  // experimental, seems to work good
     $("#map_OpenLayers_ViewPort").css("cursor", "progress");
@@ -165,5 +165,4 @@ $(document).ready(function () {
     $(".workspace").workspaceInteraction();
     // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
     // $("a.lizard-map-link").lizardMapLink();
-    //loadSizedImages();
 });
