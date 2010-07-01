@@ -8,7 +8,10 @@
     {% ifequal snippet.workspace_item workspace_item %}<li>{{ snippet }}</li>{% endifequal %}
   {% endfor %}
 </ul>
-<img src="{% url lizard_map.workspace_item_image workspace_item_id=workspace_item.id %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}identifier={{ snippet.identifier_json }}&{% endifequal %}{% endfor %}width=650" />
+<div class="img-use-my-width">
+  <a class="replace-with-image"
+     href="{% url lizard_map.workspace_item_image workspace_item_id=workspace_item.id %}?{% for snippet in collage.snippets.all %}{% ifequal snippet.workspace_item workspace_item %}identifier={{ snippet.identifier_json }}&{% endifequal %}{% endfor %}">image</a>
+</div>
 {% endfor %}
 
 </div>
