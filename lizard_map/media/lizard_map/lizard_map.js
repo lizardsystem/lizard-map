@@ -130,23 +130,9 @@ function setUpEmptyTempInteraction() {
 }
 
 
-// Commented out for now as it interferes with krw-waternet's similar method.
+// Commented out: lizard-ui now has generic support for it (see the
+// in-browser documentation).
 // function loadSizedImages() {
-//     $('a.replace-with-image').each(
-//         function (index) {
-//             var url, timestamp;
-//             $(this).hide();
-//             url = $(this).attr('href');
-//             $('~ img', this).remove();
-//             timestamp = new Date().getTime();  // No cached images.
-//             // dit doet het niet goed bij urls met json {" ... "}
-//             $(this).after('<img src="' + url +
-//                           '?width=' + mainContentWidth +
-//                           '&height=' + '' +
-//                           '&random=' + timestamp + '" />');
-//         }
-//     );
-// }
 
 
 function popup_click_handler(x, y, map) {
