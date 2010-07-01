@@ -130,24 +130,23 @@ function setUpEmptyTempInteraction() {
 }
 
 
-function loadSizedImages() {
-    var height, width;
-    // height = verticalItemHeight;
-    height = '';
-    width = mainContentWidth;
-    $('a.replace-with-image').each(
-        function (index) {
-            var url, timestamp;
-            $(this).hide();
-            url = $(this).attr('href');
-            $('~ img', this).remove();
-            timestamp = new Date().getTime();  // No cached images.
-            // dit doet het niet goed bij urls met json {" ... "}
-            $(this).after('<img src="' + url + '?width=' + width + '&height=' +
-                          height + '&random=' + timestamp + '" />');
-        }
-    );    
-}
+// Commented out for now as it interferes with krw-waternet's similar method.
+// function loadSizedImages() {
+//     $('a.replace-with-image').each(
+//         function (index) {
+//             var url, timestamp;
+//             $(this).hide();
+//             url = $(this).attr('href');
+//             $('~ img', this).remove();
+//             timestamp = new Date().getTime();  // No cached images.
+//             // dit doet het niet goed bij urls met json {" ... "}
+//             $(this).after('<img src="' + url +
+//                           '?width=' + mainContentWidth +
+//                           '&height=' + '' +
+//                           '&random=' + timestamp + '" />');
+//         }
+//     );
+// }
 
 
 function popup_click_handler(x, y, map) {
@@ -158,7 +157,7 @@ function popup_click_handler(x, y, map) {
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     if (url !== undefined) {
         $.getJSON(
-            url, 
+            url,
             { x: x, y: y, radius: radius },
             function (data) {
                 $("#map_OpenLayers_ViewPort").css("cursor", "default");
@@ -180,5 +179,5 @@ $(document).ready(function () {
     $(".workspace").workspaceInteraction();
     // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
     // $("a.lizard-map-link").lizardMapLink();
-    loadSizedImages();
+    //loadSizedImages();
 });
