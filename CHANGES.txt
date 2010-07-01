@@ -5,7 +5,7 @@ Changelog of lizard-map
 0.14 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Using lizard-ui's generic graph resizing and reloading now.
 
 
 0.13 (2010-06-28)
