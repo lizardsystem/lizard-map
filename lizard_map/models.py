@@ -4,9 +4,6 @@ import os
 import pkg_resources
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.contenttypes import generic
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.gis.db import models as gismodels
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
@@ -20,6 +17,7 @@ SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 logger = logging.getLogger('lizard_map.models')
+
 
 def adapter_class_names():
     """Return allowed layer method names (from entrypoints)

@@ -6,14 +6,14 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 from django.http import HttpResponse
-from matplotlib.ticker import MaxNLocator
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.dates import AutoDateLocator
 from matplotlib.dates import AutoDateFormatter
+from matplotlib.dates import AutoDateLocator
 from matplotlib.dates import RRuleLocator
 from matplotlib.dates import date2num
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
+from matplotlib.ticker import MaxNLocator
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 
