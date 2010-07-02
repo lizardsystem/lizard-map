@@ -138,7 +138,7 @@ function setUpEmptyTempInteraction() {
 function popup_click_handler(x, y, map) {
     var extent, radius, url;
     extent = map.getExtent();
-    radius = Math.abs(extent.top - extent.bottom) / 50;  // experimental, seems to work good
+    radius = Math.abs(extent.top - extent.bottom) / 30;  // experimental, seems to work good
     $("#map_OpenLayers_ViewPort").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     if (url !== undefined) {
