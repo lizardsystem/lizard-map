@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.15 (unreleased)
+0.15 (2010-07-02)
 -----------------
 
 - Better empty height/width handling for images.
