@@ -5,7 +5,9 @@ Changelog of lizard-map
 0.15 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Better empty height/width handling for images.
+
+- Slightly bigger search radius when clicking on a map.
 
 
 0.14 (2010-07-01)
