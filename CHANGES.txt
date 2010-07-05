@@ -5,7 +5,8 @@ Changelog of lizard-map
 0.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Compensating for lizard-ui's "use-my-size" instead of "use-my-width/height"
+  class for image replacement.
 
 
 0.15 (2010-07-02)

@@ -238,7 +238,9 @@ def popup_json(found, popup_id=None, collage=False, request=None):
                               })
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifier_json_list])
-        body = ('<div style="width: 100%%" class="img-use-my-width">' +
+        body = ('<div style="width: 100%%; height: 250px;" ' +
+                # Yeah, that's a double %: template escaping.
+                'class="img-use-my-size">' +
                 '<a href="%s" class="replace-with-image" /></div>') % img_url
         html_per_workspace_item = header + body
         x_found, y_found = display_object['google_coords']
@@ -433,14 +435,15 @@ def search_coordinates(request):
     # xy params from the GET request.
     google_x = float(request.GET.get('x'))
     google_y = float(request.GET.get('y'))
-    radius = float(request.GET.get('radius'))
+    google_radius = float(request.GET.get('radius'))
 
     found = []
     for workspace_collection in workspace_collections.values():
         for workspace in workspace_collection:
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
-                search_results = workspace_item.adapter.search(google_x, google_y, radius=radius)
+                search_results = workspace_item.adapter.search(
+                    google_x, google_y, radius=google_radius)
                 found += search_results
 
     if found:
