@@ -135,6 +135,6 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    def image(self, identifiers=None):
+    def image(self, identifiers=None, start_date=None, end_date=None, width=None, height=None):
         """Return xyz"""
         raise NotImplementedError

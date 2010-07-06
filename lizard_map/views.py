@@ -370,7 +370,7 @@ def workspace_item_image(request, workspace_item_id):
     else:
         # We want None, not u''.
         height = None
-    print "%r, %r" % (width, height)
+
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
     return workspace_item.adapter.image(identifier_list, start_date, end_date, width, height)

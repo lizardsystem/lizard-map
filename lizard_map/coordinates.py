@@ -13,11 +13,11 @@ RD = ("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 "
 GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
           '+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
           '+nadgrids=@null +no_defs +over')
-
+WGS84 = ('+proj=latlong +datum=WGS84')
 
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
-
+wgs84_projection = Proj(WGS84)
 
 def google_to_rd(x, y):
     """Return RD coordinates from GOOGLE coordinates."""
@@ -27,3 +27,13 @@ def google_to_rd(x, y):
 def rd_to_google(x, y):
     """Return GOOGLE coordinates from RD coordinates."""
     return transform(rd_projection, google_projection, x, y)
+
+
+def wgs84_to_google(x, y):
+    """Return GOOGLE coordinates from WGS84 coordinates."""
+    return transform(wgs84_projection, google_projection, x, y)
+
+
+def google_to_wgs84(x, y):
+    """Return WGS84 coordinates from GOOGLE coordinates."""
+    return transform(google_projection, wgs84_projection, x, y)
