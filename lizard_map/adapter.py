@@ -16,8 +16,8 @@ from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 
 from lizard_map.matplotlib_settings import FONT_SIZE
+from lizard_map.matplotlib_settings import SCREEN_DPI
 
-SCREEN_DPI = 72.0
 LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
 BOTTOM_LINE_HEIGHT = FONT_SIZE * 1.5

@@ -3,7 +3,7 @@
 import matplotlib
 
 SCREEN_DPI = 72.0
-FONT_SIZE = 10
+FONT_SIZE = 10.0
 
 
 PARAMS = {
