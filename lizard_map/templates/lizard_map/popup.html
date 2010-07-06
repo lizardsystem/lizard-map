@@ -1,0 +1,15 @@
+{# header #}
+{% for header in headers %}
+<div>{% if header.strong %}<strong>{% endif %}{{ header.name }}{% if header.strong %}</strong>{% endif %}{% if header.add_snippet %}<a href="" 
+class="add-snippet ss_chart_line_add ss_sprite" 
+data-workspace-id="{{ header.workspace_id }}" 
+data-workspace-item-id="{{ header.workspace_item_id }}"
+data-item-identifier='{{ header.identifier_json }}' 
+data-item-shortname="{{ header.shortname }}" 
+data-item-name="{{ header.name }}">Voeg toe aan collage</a>{% endif %}</div>
+{% endfor %}
+{# body #}
+<div style="width: 100%; height: 250px;"
+     class="img-use-my-size">
+  <a href="{{ img_url }}" class="replace-with-image" />
+</div>

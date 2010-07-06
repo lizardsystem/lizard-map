@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache
@@ -199,7 +200,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
-        header = ''
+        headers = []
         for display_object in display_group:
             # timeserie = display_object['object']
             name = display_object.get('name', 'Geen naam')
@@ -209,40 +210,36 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             identifier_json_list.append(identifier_json)
 
             # Add workspace_item on top
-            if not header:
-                header += '<div><strong>%s</strong></div>' % (
-                    workspace_item.name)
+            if not headers:
+                headers.append({'name': workspace_item.name,
+                                'add_snippet': False,
+                                'strong': True})
             # Compose html header for each display object (experimental)
+                
             if collage or (workspace_item_id in temp_workspace_item_ids):
-                header += (
-                    '<div>%s</div>') % name
+                headers.append({'name': name, 'add_snippet': False})
             else:
-                header += (
-                    '<div>%s<a href="" ' +
-                    'class="add-snippet ss_chart_line_add ss_sprite" ' +
-                    'data-workspace-id="%d" data-workspace-item-id="%d" ' +
-                    'data-item-identifier=\'%s\' data-item-shortname="%s" ' +
-                    'data-item-name="%s">Voeg toe aan collage</a></div>') % (
-                    name,
-                    workspace_item.workspace.id,
-                    workspace_item.id,
-                    identifier_json,
-                    shortname,
-                    name,
-                    )
-        #if not timeserie.data_count():
-        #    body = "<div>Geen gegevens beschikbaar.</div>"
-        #else:
+                headers.append({
+                        'name': name,
+                        'add_snippet': True,
+                        'workspace_id': workspace_item.workspace.id,
+                        'workspace_item_id': workspace_item_id,
+                        'identifier_json': identifier_json,
+                        'shortname': shortname
+                        })
+
         img_url = reverse("lizard_map.workspace_item_image",
                       kwargs={'workspace_item_id': workspace_item.id,
                               })
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifier_json_list])
-        body = ('<div style="width: 100%%; height: 250px;" ' +
-                # Yeah, that's a double %: template escaping.
-                'class="img-use-my-size">' +
-                '<a href="%s" class="replace-with-image" /></div>') % img_url
-        html_per_workspace_item = header + body
+
+        # html_per_workspace_item = header + body
+        html_per_workspace_item = render_to_string(
+            'lizard_map/popup.html', 
+            {'headers': headers, 'img_url': img_url}
+            )
+
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
 
