@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-0.16 (unreleased)
+0.16 (2010-07-06)
 -----------------
 
 - Compensating for lizard-ui's "use-my-size" instead of "use-my-width/height"
