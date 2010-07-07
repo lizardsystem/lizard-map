@@ -1,5 +1,5 @@
 {# header #}
-<div><strong>{{ header.name }}</strong></div>
+<div><img src="{{ symbol_url }}" /><strong>{{ header.name }}</strong></div>
 {% for display_object in display_group %}
 {% with display_object.header as header %}
 <div>{{ header.name }}{% if header.add_snippet %}<a href="" 

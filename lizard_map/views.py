@@ -200,8 +200,9 @@ def popup_json(found, popup_id=None, collage=False, request=None):
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
-        header = []
+        header = ''
         template = ''
+        icon_url = ''
         for display_object in display_group:
             # timeserie = display_object['object']
             name = display_object.get('name', 'Geen naam')
@@ -209,6 +210,8 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             workspace_item = display_object['workspace_item']
             identifier_json = simplejson.dumps(display_object['identifier']).replace('"', '%22')
             identifier_json_list.append(identifier_json)
+
+            symbol_url = workspace_item.adapter.symbol_url()
 
             # assumption: for each display_group the same template is
             # used for all items in it
@@ -245,7 +248,10 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         # html_per_workspace_item = header + body
         html_per_workspace_item = render_to_string(
             template, 
-            {'header': header, 'img_url': img_url, 'display_group': display_group}
+            {'header': header, 
+             'symbol_url': symbol_url, 
+             'img_url': img_url, 
+             'display_group': display_group}
             )
 
         x_found, y_found = display_object['google_coords']
@@ -379,6 +385,7 @@ def workspace_item_image(request, workspace_item_id):
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
     return workspace_item.adapter.image(identifier_list, start_date, end_date, width, height)
+
 
 """
 Map stuff

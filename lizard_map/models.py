@@ -117,19 +117,6 @@ class WorkspaceItem(models.Model):
         """Can I provide a adapter class for i.e. WMS layer?"""
         return bool(self.adapter_class)
 
-    @property
-    def symbol_url(self):
-        """return url to symbol
-
-        TODO: not implemented yet
-        """
-
-        sm = SymbolManager(ICON_ORIGINALS, os.path.join(
-                settings.MEDIA_ROOT,
-                'generated_icons'))
-        output_filename = sm.get_symbol_transformed('brug.png')
-        return settings.MEDIA_URL + 'generated_icons/' + output_filename
-
 
 class WorkspaceCollage(models.Model):
     """A collage contains selections/locations from a workspace"""

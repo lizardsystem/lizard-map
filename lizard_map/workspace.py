@@ -1,4 +1,10 @@
+import os
+
+from django.conf import settings
+
 from lizard_map.models import Workspace
+from lizard_map.models import ICON_ORIGINALS
+from lizard_map.symbol_manager import SymbolManager
 
 
 class WorkspaceManager:
@@ -138,3 +144,14 @@ class WorkspaceItemAdapter(object):
     def image(self, identifiers=None, start_date=None, end_date=None, width=None, height=None):
         """Return xyz"""
         raise NotImplementedError
+
+    def symbol_url(self, identifier=None, start_date=None, end_date=None, icon_style=None):
+        """Return symbol for identifier"""
+        sm = SymbolManager(ICON_ORIGINALS, os.path.join(
+                settings.MEDIA_ROOT,
+                'generated_icons'))
+        if icon_style is None:
+            icon_style = {'icon': 'brug.png'}
+        output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
+        return settings.MEDIA_URL + 'generated_icons/' + output_filename
+

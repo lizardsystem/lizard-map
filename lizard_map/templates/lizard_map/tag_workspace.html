@@ -61,7 +61,7 @@
           class="workspace-item"
           data-object-id="{{ workspace_item.id }}"
           data-workspace-id="{{ workspace.id }}">
-        <img src="{{ workspace_item.symbol_url }}"
+        <img src="{{ workspace_item.adapter.symbol_url }}"
              width="16"
              height="16" />
         <input id="{{ workspace_item.id }}"
@@ -93,7 +93,7 @@
       {% for snippet in collage.snippets.all %}
       <li class="snippet" title="{{ snippet.name }}"
           data-object-id="{{ snippet.id }}">
-        <img src="{{ snippet.workspace_item.symbol_url }}"
+        <img src="{{ snippet.workspace_item.adapter.symbol_url }}"
              width="16"
              height="16" />
         {% firstof snippet.shortname snippet.name '(noname)' %}
