@@ -200,7 +200,8 @@ def popup_json(found, popup_id=None, collage=False, request=None):
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
-        headers = []
+        header = []
+        template = ''
         for display_object in display_group:
             # timeserie = display_object['object']
             name = display_object.get('name', 'Geen naam')
@@ -209,24 +210,28 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             identifier_json = simplejson.dumps(display_object['identifier']).replace('"', '%22')
             identifier_json_list.append(identifier_json)
 
-            # Add workspace_item on top
-            if not headers:
-                headers.append({'name': workspace_item.name,
-                                'add_snippet': False,
-                                'strong': True})
-            # Compose html header for each display object (experimental)
-                
+            # assumption: for each display_group the same template is
+            # used for all items in it
+            if 'template' in display_object and not template:
+                template = display_object['template']
+
+            # Add workspace_item name on top
+            if not header:
+                header = {'name': workspace_item.name,
+                          'add_snippet': False}
+
+            # Compose html header for each display object 
             if collage or (workspace_item_id in temp_workspace_item_ids):
-                headers.append({'name': name, 'add_snippet': False})
+                display_object['header'] = {'name': name, 'add_snippet': False}
             else:
-                headers.append({
-                        'name': name,
-                        'add_snippet': True,
-                        'workspace_id': workspace_item.workspace.id,
-                        'workspace_item_id': workspace_item_id,
-                        'identifier_json': identifier_json,
-                        'shortname': shortname
-                        })
+                display_object['header'] = {
+                    'name': name,
+                    'add_snippet': True,
+                    'workspace_id': workspace_item.workspace.id,
+                    'workspace_item_id': workspace_item_id,
+                    'identifier_json': identifier_json,
+                    'shortname': shortname
+                    }
 
         img_url = reverse("lizard_map.workspace_item_image",
                       kwargs={'workspace_item_id': workspace_item.id,
@@ -234,10 +239,13 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifier_json_list])
 
+        # default template
+        if not template:
+            template = 'lizard_map/popup.html'
         # html_per_workspace_item = header + body
         html_per_workspace_item = render_to_string(
-            'lizard_map/popup.html', 
-            {'headers': headers, 'img_url': img_url}
+            template, 
+            {'header': header, 'img_url': img_url, 'display_group': display_group}
             )
 
         x_found, y_found = display_object['google_coords']
