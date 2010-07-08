@@ -37,3 +37,8 @@ def wgs84_to_google(x, y):
 def google_to_wgs84(x, y):
     """Return WGS84 coordinates from GOOGLE coordinates."""
     return transform(google_projection, wgs84_projection, x, y)
+
+
+def rd_to_wgs84(x, y):
+    """Return GOOGLE coordinates from RD coordinates."""
+    return transform(rd_projection, wgs84_projection, x, y)

@@ -4,10 +4,20 @@
   <script type="text/javascript">
     var layers, map;
     layers = [];
+    {% block map-javascript-global %}
+    {% endblock %}
 
     //layers is globally defined in wms.html
     function updateLayer(workspace_id) {
         layers[workspace_id].mergeNewParams({'random': Math.random()});
+    }
+
+    function updateLayers() {
+        for (i=0; i<layers.length; i++) {
+            if (layers[i] !== undefined) {
+                updateLayer(i);
+            }
+        }
     }
 
     function showMap() {
@@ -84,7 +94,6 @@
         {% endif %}
         // Extend zooming.
         map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
-
     }
 
     $(document).ready(showMap);
