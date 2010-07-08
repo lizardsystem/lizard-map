@@ -147,6 +147,7 @@ class Graph(object):
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
         self.axes = self.figure.add_subplot(111)
+        self.axes.grid(True)
         self.fixup_axes()
         # Date range
         # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
