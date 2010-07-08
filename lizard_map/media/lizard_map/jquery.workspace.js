@@ -169,6 +169,7 @@ jQuery.fn.workspaceInteraction = function () {
                         // <ul> element, using workspaceItems...
                         // TODO: empty temp workspace
                         workspaceItems.parent().parent().updateWorkspace();
+                        $(".workspace-empty-temp").click(); // "click" the empty temp workspace
                     }
                 );
             }
