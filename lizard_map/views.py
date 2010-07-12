@@ -223,7 +223,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
                 header = {'name': workspace_item.name,
                           'add_snippet': False}
 
-            # Compose html header for each display object 
+            # Compose html header for each display object
             if collage or (workspace_item_id in temp_workspace_item_ids):
                 display_object['header'] = {'name': name, 'add_snippet': False}
             else:
@@ -247,16 +247,17 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             template = 'lizard_map/popup.html'
         # html_per_workspace_item = header + body
         html_per_workspace_item = render_to_string(
-            template, 
-            {'header': header, 
-             'symbol_url': symbol_url, 
-             'img_url': img_url, 
+            template,
+            {'header': header,
+             'symbol_url': symbol_url,
+             'img_url': img_url,
              'display_group': display_group}
             )
 
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
 
+    print result_html
     if popup_id is None:
         popup_id = 'popup-id'
     result = {'id': popup_id,
