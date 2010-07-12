@@ -257,7 +257,6 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
 
-    print result_html
     if popup_id is None:
         popup_id = 'popup-id'
     result = {'id': popup_id,
