@@ -200,59 +200,28 @@ def popup_json(found, popup_id=None, collage=False, request=None):
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         identifier_json_list = []
-        header = ''
+        title = ''
         template = ''
         icon_url = ''
-        for display_object in display_group:
-            # timeserie = display_object['object']
-            name = display_object.get('name', 'Geen naam')
-            shortname = display_object.get('shortname', '')
-            workspace_item = display_object['workspace_item']
-            identifier_json = simplejson.dumps(display_object['identifier']).replace('"', '%22')
-            identifier_json_list.append(identifier_json)
+        if display_group:
+            workspace_item = display_group[0]['workspace_item']
+        # Check if this display object must have the option add_snippet
+        if collage or (workspace_item_id in temp_workspace_item_ids):
+            add_snippet = False
+        else:
+            add_snippet = True
 
-            symbol_url = workspace_item.adapter.symbol_url()
+        # Add workspace_item name on top
+        title = workspace_item.name
 
-            # assumption: for each display_group the same template is
-            # used for all items in it
-            if 'template' in display_object and not template:
-                template = display_object['template']
-
-            # Add workspace_item name on top
-            if not header:
-                header = {'name': workspace_item.name,
-                          'add_snippet': False}
-
-            # Compose html header for each display object
-            if collage or (workspace_item_id in temp_workspace_item_ids):
-                display_object['header'] = {'name': name, 'add_snippet': False}
-            else:
-                display_object['header'] = {
-                    'name': name,
-                    'add_snippet': True,
-                    'workspace_id': workspace_item.workspace.id,
-                    'workspace_item_id': workspace_item_id,
-                    'identifier_json': identifier_json,
-                    'shortname': shortname
-                    }
-
-        img_url = reverse("lizard_map.workspace_item_image",
-                      kwargs={'workspace_item_id': workspace_item.id,
-                              })
+        img_url = reverse(
+            "lizard_map.workspace_item_image",
+            kwargs={'workspace_item_id': workspace_item.id, })
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifier_json_list])
 
-        # default template
-        if not template:
-            template = 'lizard_map/popup.html'
-        # html_per_workspace_item = header + body
-        html_per_workspace_item = render_to_string(
-            template,
-            {'header': header,
-             'symbol_url': symbol_url,
-             'img_url': img_url,
-             'display_group': display_group}
-            )
+        identifiers = [display_object['identifier'] for display_object in display_group]
+        html_per_workspace_item = workspace_item.adapter.html(identifiers, add_snippet=add_snippet)
 
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
@@ -277,7 +246,7 @@ def collage(request,
     """Render page with one collage"""
     return render_to_response(
         template,
-        {'collage_id': collage_id},
+        {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id)},
         context_instance=RequestContext(request))
 
 

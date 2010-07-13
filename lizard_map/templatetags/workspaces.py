@@ -1,5 +1,6 @@
 from django import template
 from django.shortcuts import get_object_or_404
+import simplejson as json
 
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
@@ -27,13 +28,18 @@ def workspace(context, workspace, show_new_workspace=False):
         }
 
 
-@register.inclusion_tag("lizard_map/tag_collage.html")
-def collage(collage_id):
+@register.simple_tag
+def collage_workspace_item(collage, workspace_item):
     """
-    Displays a collage: for each workspace_item a graph is displayed
-    with all corresponding snippets in it
+    Renders a collage/workspace_item combination.
     """
-    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-    return {
-        'collage': collage,
-        }
+    snippets = collage.snippets.filter(workspace_item=workspace_item)
+    identifiers = [snippet.identifier for snippet in snippets]
+    return workspace_item.adapter.html(identifiers)
+
+
+@register.filter
+def json_escaped(value):
+    """converts an object to json and escape quotes
+    """
+    return json.dumps(value).replace('"', '%22')

@@ -3,6 +3,15 @@
 
 {% block content %}
 <div id="textual">
-{% collage collage_id %}
+
+<h2>{{ collage.name }}</h2>
+{% for workspace_item in collage.workspace_items %}
+
+{% autoescape off %}
+{% collage_workspace_item collage workspace_item %}
+{% endautoescape %}
+
+{% endfor %}
+
 </div>
 {% endblock content %}

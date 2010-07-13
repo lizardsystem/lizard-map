@@ -2,13 +2,16 @@ import os
 
 from django.conf import settings
 
+from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
+import simplejson as json
+
 from lizard_map.models import Workspace
 from lizard_map.models import ICON_ORIGINALS
 from lizard_map.symbol_manager import SymbolManager
 
 
 class WorkspaceManager:
-
     def __init__(self, request):
         self.request = request
         self.workspaces = {}
@@ -155,3 +158,41 @@ class WorkspaceItemAdapter(object):
         output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
+    def html(self, identifiers=None, add_snippet=False):
+        return 'html output for this adapter is not implemented'
+
+    def html_default(self, identifiers=None, add_snippet=False):
+        """
+        Returns html representation of given identifier_list.
+        This particular view always renders a list of items, then 1 image
+
+        Use this function if html function behaviour is default:
+        def html(self, identifiers):
+            return super(WorkspaceItemAdapterKrw, self).html_default(
+                identifiers)
+        """
+        title = self.workspace_item.name
+
+        # Make 'display_group'
+        display_group = [self.location(**identifier) for identifier in identifiers]
+
+        # Image url
+        img_url = reverse(
+            "lizard_map.workspace_item_image",
+            kwargs={'workspace_item_id': self.workspace_item.id}
+            )
+        identifiers_escaped = [json.dumps(identifier).replace('"', '%22') for \
+                                   identifier in identifiers]
+        img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
+                                            identifiers_escaped])
+
+        return render_to_string(
+            'lizard_map/popup.html',
+            {
+                'title': title,
+                'display_group': display_group,
+                'img_url': img_url,
+                'symbol_url': self.symbol_url(),
+                'add_snippet': add_snippet,
+                }
+            )
