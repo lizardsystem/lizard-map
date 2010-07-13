@@ -197,14 +197,12 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             for workspace_item in temp_workspace.workspace_items.filter(
                 visible=True):
                 temp_workspace_item_ids.append(workspace_item.id)
+
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
-        identifier_json_list = []
-        title = ''
-        template = ''
-        icon_url = ''
-        if display_group:
-            workspace_item = display_group[0]['workspace_item']
+        # There MUST be at least one item in the group
+        workspace_item = display_group[0]['workspace_item']
+
         # Check if this display object must have the option add_snippet
         if collage or (workspace_item_id in temp_workspace_item_ids):
             add_snippet = False
