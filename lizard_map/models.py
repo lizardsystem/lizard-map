@@ -52,7 +52,7 @@ class Workspace(models.Model):
     visible = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return u'(%s) %s' % (self.id, self.name)
+        return u'%s' % (self.name)
 
     def get_absolute_url(self):
         return reverse('lizard_map_workspace',
@@ -126,7 +126,7 @@ class WorkspaceCollage(models.Model):
                                   related_name='collages')
 
     def __unicode__(self):
-        return '%s %s' % (self.workspace, self.name)
+        return '%s' % (self.name)
 
     @property
     def locations(self):
