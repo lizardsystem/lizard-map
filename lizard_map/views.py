@@ -212,13 +212,16 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         # Add workspace_item name on top
         title = workspace_item.name
 
+        identifiers = [display_object['identifier'] for display_object in display_group]
+        identifier_json_list = [json.dumps(identifier).replace('"', '%22') for \
+                                    identifier in identifiers]
+
         img_url = reverse(
             "lizard_map.workspace_item_image",
             kwargs={'workspace_item_id': workspace_item.id, })
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifier_json_list])
 
-        identifiers = [display_object['identifier'] for display_object in display_group]
         html_per_workspace_item = workspace_item.adapter.html(identifiers, add_snippet=add_snippet)
 
         x_found, y_found = display_object['google_coords']
