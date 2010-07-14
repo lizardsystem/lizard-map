@@ -254,6 +254,9 @@ def session_collage_snippet_add(request,
                                 workspace_category='user'):
     """finds session user workspace and add snippet to (only) corresponding
     collage
+
+    !! updates location_identifier with request.session['graph_edit'],
+       if available
     """
     if workspace_item_id is None:
         workspace_item_id = request.POST.get('workspace_item_id')
@@ -274,11 +277,20 @@ def session_collage_snippet_add(request,
     if len(workspace.collages.all()) == 0:
         workspace.collages.create()
     collage = workspace.collages.all()[0]
-    collage.snippets.get_or_create(
+    snippet, _ = collage.snippets.get_or_create(
         workspace_item=workspace_item,
         identifier_json=workspace_item_location_identifier,
         shortname=workspace_item_location_shortname,
         name=workspace_item_location_name)
+
+    # update snippet with graph_edit
+    if 'graph_edit' in request.session:
+        graph_update = request.session['graph_edit']
+        identifier = snippet.identifier
+        identifier.update(graph_update)
+        snippet.identifier_json = json.dumps(identifier).replace('"', '%22')
+        snippet.save()
+
     return HttpResponse(json.dumps(workspace_id))
 
 
@@ -329,9 +341,17 @@ def workspace_item_image(request, workspace_item_id):
     """Shows image corresponding to workspace item and location identifier(s)
 
     identifier_list
+
+    !! also uses session['graph_edit'] to add data to identifier_list !!
     """
     identifier_json_list = request.GET.getlist('identifier')
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
+
+    # update all identifiers with graph_edit
+    if 'graph_edit' in request.session:
+        graph_update = request.session['graph_edit']
+        for identifier in identifier_list:
+            identifier.update(graph_update)
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -359,6 +379,8 @@ def workspace_item_graph_edit(request, workspace_item_id):
 
     From the adapter, one can define the get_absolute_url of the
     returned object to this function.
+
+    !! (re)sets session['graph_edit']. {}
     """
     identifier_json = request.GET.get('identifier')
     identifier = simplejson.loads(identifier_json)
@@ -368,6 +390,8 @@ def workspace_item_graph_edit(request, workspace_item_id):
     img_url = workspace_item_image_url(workspace_item.id, [identifier, ])
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
+
+    request.session['graph_edit'] = {}
 
     return render_to_response(
         'lizard_map/graph.html',
@@ -379,6 +403,29 @@ def workspace_item_graph_edit(request, workspace_item_id):
          },
         context_instance=RequestContext(request)
         )
+
+
+def session_graph_properties(request, session_key=None):
+    """
+    put (key, value) in request.session['graph_edit']
+
+    key, value in request.POST
+    """
+    if not session_key:
+        session_key = 'graph_edit'
+
+    key = str(request.POST.get('key'))
+    value = request.POST.get('value')
+    if not session_key in request.session:
+        request.session[session_key] = {}
+
+    # Do not access request.session[session_key][key] directly, that
+    # doesn't save the session
+    graph_properties = request.session[session_key]
+    graph_properties[key] = value
+    request.session[session_key] = graph_properties
+
+    return HttpResponse('')
 
 """
 Map stuff

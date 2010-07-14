@@ -2,6 +2,12 @@
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/graph.js"></script>
+{% endblock %}
+
 {% block subtitle %} {{ name }} {% endblock %}
 
 {% block portal-tabs %}
@@ -18,7 +24,7 @@
 &rarr;
 <a href="{% url lizard_map_workspace workspace_id=workspace_item.workspace.id %}" class="lizard-map-link">{{ workspace_item.workspace }}</a>
 &rarr;
-<a href="{% url lizard_map.workspace_item.graph_edit workspace_item_id=workspace_item.id %}?identifier={{ identifier }}" class="lizard-map-link">{{ name }}</a>
+<a href="{% url lizard_map.workspace_item.graph_edit workspace_item_id=workspace_item.id %}?identifier={{ location.identifier }}" class="lizard-map-link">{{ name }}</a>
 {% endblock %}
 
 {% block sidebar %}
@@ -32,7 +38,23 @@
     {% date_popup %}
     uitleg
 
-    TODO: save as snippet (add workspace_item to workspace if workspace_item is temp workspace)
+    <ul>
+      <li>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-maximum">Maximum</span>
+      </li>
+      <li>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-minimum">Minimum</span>
+      </li>
+      <li>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-average">Gemiddelde</span>
+      </li>
+    </ul>
+
+    <ul>
+      <li>
+        <span data-url="{% url lizard_map_session_collage_snippet_add %}" class="graph-save-snippet" data-workspace-item-id="{{ workspace_item.id }}" data-workspace-item-location-identifier="{{ location.identifier|json_escaped }}" data-workspace-item-location-shortname="{{ location.shortname }}" data-workspace-item-location-name="{{ location.name }}">TODO: save as snippet (add workspace_item to workspace if workspace_item is temp workspace)</span>
+      </li>
+    </ul>
   </div>
 </div>
 {# {% workspace workspace_item.workspace %} #}

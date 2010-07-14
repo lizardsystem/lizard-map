@@ -90,6 +90,11 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_edit',
         name="lizard_map_workspace_item_edit"),
 
+    # Session temp data, for graph_edit
+    url(r'^graph_properties/',
+        'lizard_map.views.session_graph_properties',
+        name="lizard_map.session_graph_properties"),
+
     # Search stuff.
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',
