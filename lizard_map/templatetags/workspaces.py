@@ -43,3 +43,12 @@ def json_escaped(value):
     """converts an object to json and escape quotes
     """
     return json.dumps(value).replace('"', '%22')
+
+
+@register.inclusion_tag("lizard_map/tag_date_popup.html",
+                        takes_context=True)
+def date_popup(context):
+    """Displays date popup"""
+    return {
+        'date_range_form': context.get('date_range_form', None),
+        }

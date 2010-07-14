@@ -353,23 +353,28 @@ def workspace_item_image(request, workspace_item_id):
 
 def workspace_item_graph_edit(request, workspace_item_id):
     """
-    Generic graph edit page,
+    Generic graph edit page for single graph.
 
     Can create identifiers with extra parameters -> TODO
 
     From the adapter, one can define the get_absolute_url of the
     returned object to this function.
     """
-    identifiers_json = request.GET.getlist('identifier')
-    identifiers = [simplejson.loads(json) for json in identifiers_json]
+    identifier_json = request.GET.get('identifier')
+    identifier = simplejson.loads(identifier_json)
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-    img_url = workspace_item_image_url(workspace_item.id, identifiers)
+    location = workspace_item.adapter.location(**identifier)
+    img_url = workspace_item_image_url(workspace_item.id, [identifier, ])
+    date_range_form = DateRangeForm(
+        current_start_end_dates(request, for_form=True))
 
     return render_to_response(
         'lizard_map/graph.html',
         {'workspace_item': workspace_item,
-         'name': 'naam',
+         'name': 'Grafiek onderzoeken voor %s' % location['name'],
+         'date_range_form': date_range_form,
+         'location': location,
          'img_url': img_url,
          },
         context_instance=RequestContext(request)

@@ -1,6 +1,7 @@
 {# graph edit screen, first implemented for fews timeserie #}
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
+
 {% block subtitle %} {{ name }} {% endblock %}
 
 {% block portal-tabs %}
@@ -21,7 +22,20 @@
 {% endblock %}
 
 {% block sidebar %}
-{% workspace workspace_item.workspace %}
+<div class="sidebarbox sidebarbox-stretched">
+  <h2>
+    Grafieken
+    <span class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
+          rel="#summary-datepicker">&nbsp;</span>
+  </h2>
+  <div>
+    {% date_popup %}
+    uitleg
+
+    TODO: save as snippet (add workspace_item to workspace if workspace_item is temp workspace)
+  </div>
+</div>
+{# {% workspace workspace_item.workspace %} #}
 {% endblock %}
 
 {% block object-actions %}
