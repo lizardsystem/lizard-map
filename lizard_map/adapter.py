@@ -46,6 +46,49 @@ def workspace_item_image_url(workspace_item_id, identifiers):
                                         identifier_json_list])
     return img_url
 
+
+class GraphProps(object):
+    """Keep track of graph properties in a dict. Can be used to load and safe in session
+
+    properties = {'<hash of workspace_item and identifier>': {graph properties}, ...}
+
+    """
+    def __init__(self, properties=None):
+        if properties is None:
+            self.properties = {}
+        else:
+            self.properties = properties
+
+    def hash_string(self, workspace_item_id, identifier):
+        """make unique string of workspace_item and identifier
+        ignores layout properties
+        """
+        identifier_copy = identifier.copy()
+        if 'layout' in identifier_copy:
+            del identifier_copy['layout']
+        return '%s::%s' % (workspace_item_id, json.dumps(identifier_copy))
+
+    def set(self, workspace_item, identifier, graph_props):
+        """sets graph properties for given workspace_item and identifier
+        """
+        hash_string = self.hash_string(workspace_item, identifier)
+        if not hash_string in self.properties:
+            self.properties[hash_string] = {}
+        self.properties[hash_string].update(graph_props)
+
+    def delete(self, workspace_item, identifier):
+        hash_string = self.hash_string(workspace_item, identifier)
+        if hash_string in self.properties:
+            del self.properties[hash_string]
+
+    def get(self, workspace_item, identifier):
+        """gets graph properties for given workspace_item and identifier
+        return {} if not available
+        """
+        hash_string = self.hash_string(workspace_item, identifier)
+        return self.properties.get(hash_string, {})
+
+
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""
 

@@ -15,6 +15,7 @@ import simplejson as json
 
 from lizard_map import coordinates
 from lizard_map.adapter import workspace_item_image_url
+from lizard_map.adapter import GraphProps
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -285,11 +286,17 @@ def session_collage_snippet_add(request,
 
     # update snippet with graph_edit
     if 'graph_edit' in request.session:
-        graph_update = request.session['graph_edit']
+        graph_props = GraphProps(request.session['graph_edit'])
         identifier = snippet.identifier
-        identifier.update(graph_update)
+        identifier['layout'] = graph_props.get(workspace_item.id, identifier)
+
+        # Apply layout to snippet
         snippet.identifier_json = json.dumps(identifier).replace('"', '%22')
         snippet.save()
+
+        # Empty the properties for this workspace_item and identifier
+        # graph_props.delete(workspace_item.id, identifier)
+        # request.session['graph_edit'] = graph_props.properties
 
     return HttpResponse(json.dumps(workspace_id))
 
@@ -349,9 +356,11 @@ def workspace_item_image(request, workspace_item_id):
 
     # update all identifiers with graph_edit
     if 'graph_edit' in request.session:
-        graph_update = request.session['graph_edit']
+        graph_props = GraphProps(request.session['graph_edit'])
         for identifier in identifier_list:
-            identifier.update(graph_update)
+            if not 'layout' in identifier:
+                identifier['layout'] = {}
+            identifier['layout'].update(graph_props.get(workspace_item_id, identifier))
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -383,7 +392,7 @@ def workspace_item_graph_edit(request, workspace_item_id):
     !! (re)sets session['graph_edit']. {}
     """
     identifier_json = request.GET.get('identifier')
-    identifier = simplejson.loads(identifier_json)
+    identifier = json.loads(identifier_json)
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     location = workspace_item.adapter.location(**identifier)
@@ -391,7 +400,13 @@ def workspace_item_graph_edit(request, workspace_item_id):
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
 
-    request.session['graph_edit'] = {}
+    if not 'graph_edit' in request.session:
+        request.session['graph_edit'] = {}
+
+    # empty the properties for this workspace_item and identifier
+    graph_props = GraphProps(request.session['graph_edit'])
+    graph_props.delete(workspace_item_id, identifier)
+    request.session['graph_edit'] = graph_props.properties
 
     return render_to_response(
         'lizard_map/graph.html',
@@ -416,14 +431,17 @@ def session_graph_properties(request, session_key=None):
 
     key = str(request.POST.get('key'))
     value = request.POST.get('value')
+    workspace_item_id = request.POST.get('workspace_item_id')
+    identifier_json = request.POST.get('identifier_json')
+    identifier = json.loads(identifier_json.replace('%22', '"'))
     if not session_key in request.session:
         request.session[session_key] = {}
 
     # Do not access request.session[session_key][key] directly, that
     # doesn't save the session
-    graph_properties = request.session[session_key]
-    graph_properties[key] = value
-    request.session[session_key] = graph_properties
+    graph_properties = GraphProps(request.session[session_key])
+    graph_properties.set(workspace_item_id, identifier, {key: value})
+    request.session[session_key] = graph_properties.properties
 
     return HttpResponse('')
 

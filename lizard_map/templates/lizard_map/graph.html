@@ -40,19 +40,22 @@
 
     <ul>
       <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-maximum">Maximum</span>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-maximum" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Maximum</span>
       </li>
       <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-minimum">Minimum</span>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-minimum" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Minimum</span>
       </li>
       <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-average">Gemiddelde</span>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-average" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Gemiddelde</span>
+      </li>
+      <li>
+        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-legend" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Legenda</span>
       </li>
     </ul>
 
     <ul>
       <li>
-        <span data-url="{% url lizard_map_session_collage_snippet_add %}" class="graph-save-snippet" data-workspace-item-id="{{ workspace_item.id }}" data-workspace-item-location-identifier="{{ location.identifier|json_escaped }}" data-workspace-item-location-shortname="{{ location.shortname }}" data-workspace-item-location-name="{{ location.name }}">TODO: save as snippet (add workspace_item to workspace if workspace_item is temp workspace)</span>
+        <span data-url="{% url lizard_map_session_collage_snippet_add %}" class="graph-save-snippet" data-workspace-item-id="{{ workspace_item.id }}" data-workspace-item-location-identifier="{{ location.identifier|json_escaped }}" data-workspace-item-location-shortname="{{ location.shortname }}" data-workspace-item-location-name="{{ location.name }}">Save as snippet (TODO: add workspace_item to workspace if workspace_item is temp workspace)</span>
       </li>
     </ul>
   </div>
