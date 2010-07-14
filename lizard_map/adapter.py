@@ -5,7 +5,6 @@ import datetime
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
-from django.http import HttpResponse
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import AutoDateFormatter
 from matplotlib.dates import AutoDateLocator
@@ -14,6 +13,10 @@ from matplotlib.dates import date2num
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
+
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+import simplejson as json
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI
@@ -27,6 +30,21 @@ def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
     return pixels / SCREEN_DPI
 
+
+def workspace_item_image_url(workspace_item_id, identifiers):
+    """
+    Returns image url
+
+    Identifiers is a list of dicts
+    """
+    identifier_json_list = [json.dumps(identifier).replace('"', '%22') for \
+                                identifier in identifiers]
+    img_url = reverse(
+        "lizard_map.workspace_item_image",
+        kwargs={'workspace_item_id': workspace_item_id, })
+    img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
+                                        identifier_json_list])
+    return img_url
 
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""

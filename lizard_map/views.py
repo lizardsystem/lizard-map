@@ -14,6 +14,7 @@ from django.views.decorators.cache import never_cache
 import simplejson as json
 
 from lizard_map import coordinates
+from lizard_map.adapter import workspace_item_image_url
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -213,14 +214,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         title = workspace_item.name
 
         identifiers = [display_object['identifier'] for display_object in display_group]
-        identifier_json_list = [json.dumps(identifier).replace('"', '%22') for \
-                                    identifier in identifiers]
-
-        img_url = reverse(
-            "lizard_map.workspace_item_image",
-            kwargs={'workspace_item_id': workspace_item.id, })
-        img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
-                                            identifier_json_list])
+        img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(identifiers, add_snippet=add_snippet)
 
@@ -356,6 +350,30 @@ def workspace_item_image(request, workspace_item_id):
     start_date, end_date = current_start_end_dates(request)
     return workspace_item.adapter.image(identifier_list, start_date, end_date, width, height)
 
+
+def workspace_item_graph_edit(request, workspace_item_id):
+    """
+    Generic graph edit page,
+
+    Can create identifiers with extra parameters -> TODO
+
+    From the adapter, one can define the get_absolute_url of the
+    returned object to this function.
+    """
+    identifiers_json = request.GET.getlist('identifier')
+    identifiers = [simplejson.loads(json) for json in identifiers_json]
+
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    img_url = workspace_item_image_url(workspace_item.id, identifiers)
+
+    return render_to_response(
+        'lizard_map/graph.html',
+        {'workspace_item': workspace_item,
+         'name': 'naam',
+         'img_url': img_url,
+         },
+        context_instance=RequestContext(request)
+        )
 
 """
 Map stuff

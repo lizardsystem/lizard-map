@@ -1,0 +1,43 @@
+{# graph edit screen, first implemented for fews timeserie #}
+{% extends "lizard_map/wms.html" %}
+{% load workspaces %}
+{% block subtitle %} {{ name }} {% endblock %}
+
+{% block portal-tabs %}
+<ul>
+  <li class="selected"><a href="/">Overzicht</a></li>
+  <li class="last"><a href="/analysis">Analyse</a></li>
+</ul>
+{% endblock portal-tabs %}
+
+{% block breadcrumbs %}
+<a href="{% url homepage %}">home</a>
+&rarr;
+<a href="{% url analysis_start %}" class="lizard-map-link">analyse</a>
+&rarr;
+<a href="{% url lizard_map_workspace workspace_id=workspace_item.workspace.id %}" class="lizard-map-link">{{ workspace_item.workspace }}</a>
+&rarr;
+<a href="{% url lizard_map.workspace_item.graph_edit workspace_item_id=workspace_item.id %}?identifier={{ identifier }}" class="lizard-map-link">{{ name }}</a>
+{% endblock %}
+
+{% block sidebar %}
+{% workspace workspace_item.workspace %}
+{% endblock %}
+
+{% block object-actions %}
+{# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
+<span title="Werkt nog niet" class="notworking ss_sprite ss_printer">Printen</span> |
+<span title="Werkt nog niet" class="notworking ss_sprite ss_application_go">Exporteren</span> |
+<span class="ss_sprite ss_help"><a href="{% url help %}" target="_blank">Help</a></span>
+{% endblock %}
+
+
+{% block content %}
+<div id="textual">
+<h2>{{ name }}</h2>
+<div style="width: 100%; height: 250px;" class="img-use-my-size">
+  <a href="{{ img_url }}" class="replace-with-image">afbeelding nog niet geladen</a>
+</div>
+</div>
+{% endblock %}
+
