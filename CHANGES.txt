@@ -5,7 +5,18 @@ Changelog of lizard-map
 0.17 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Automatically empties temp workspace when adding item to workspace.
+- Add custom graph edit screen.
+- Add layout option to adapter.location for use with custom graphs.
+- Make generic adapter html rendering, for i.e. popups and collage
+  views. Refactored popup_json.
+- Add collage view.
+- Put date_popup in template tag.
+- Update wms.html for custom map-javascript code, for use with
+  lizard-sticky.
+- Add symbol function to adapter.
+- Add wgs84 support in coordinates.
+- Add GraphProps manager for keeping track of customized graphs.
 
 
 0.16 (2010-07-06)
