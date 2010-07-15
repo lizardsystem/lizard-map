@@ -2,8 +2,8 @@ Changelog of lizard-map
 ===================================================
 
 
-0.17 (unreleased)
------------------
+1.0 (2010-07-15)
+----------------
 
 - Automatically empties temp workspace when adding item to workspace.
 - Add custom graph edit screen.
