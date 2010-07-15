@@ -47,11 +47,11 @@ def workspace_item_image_url(workspace_item_id, identifiers,
                                 identifier in identifiers_copy]
     if session_graph_options:
         img_url = reverse(
-            "lizard_map.workspace_item_image",
+            "lizard_map.workspace_item_image_session_graph_options",
             kwargs={'workspace_item_id': workspace_item_id, })
     else:
         img_url = reverse(
-            "lizard_map.workspace_item_image_session_graph_options",
+            "lizard_map.workspace_item_image",
             kwargs={'workspace_item_id': workspace_item_id, })
     img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                         identifier_json_list])

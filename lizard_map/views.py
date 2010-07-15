@@ -254,7 +254,8 @@ def session_collage_snippet_add(request,
                                 workspace_item_location_shortname=None,
                                 workspace_item_location_name=None,
                                 workspace_collage_id=None,
-                                workspace_category='user'):
+                                workspace_category='user',
+                                session_graph_options=False):
     """finds session user workspace and add snippet to (only) corresponding
     collage
 
@@ -287,7 +288,7 @@ def session_collage_snippet_add(request,
         name=workspace_item_location_name)
 
     # update snippet with graph_edit
-    if 'graph_edit' in request.session:
+    if session_graph_options and 'graph_edit' in request.session:
         graph_props = GraphProps(request.session['graph_edit'])
         identifier = snippet.identifier
         identifier['layout'] = graph_props.get(workspace_item.id, identifier)
@@ -396,7 +397,7 @@ def workspace_item_graph_edit(request, workspace_item_id):
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     location = workspace_item.adapter.location(**identifier)
     img_url = workspace_item_image_url(workspace_item.id, [identifier, ], strip_layout=True,
-                                       session_graph_options=False)
+                                       session_graph_options=True)
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
 
