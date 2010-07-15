@@ -296,10 +296,6 @@ def session_collage_snippet_add(request,
         snippet.identifier_json = json.dumps(identifier).replace('"', '%22')
         snippet.save()
 
-        # Empty the properties for this workspace_item and identifier
-        # graph_props.delete(workspace_item.id, identifier)
-        # request.session['graph_edit'] = graph_props.properties
-
     return HttpResponse(json.dumps(workspace_id))
 
 
@@ -346,7 +342,7 @@ def collage_popup(request,
                       request=request)
 
 
-def workspace_item_image(request, workspace_item_id):
+def workspace_item_image(request, workspace_item_id, session_graph_options=False):
     """Shows image corresponding to workspace item and location identifier(s)
 
     identifier_list
@@ -357,12 +353,13 @@ def workspace_item_image(request, workspace_item_id):
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
 
     # update all identifiers with graph_edit
-    if 'graph_edit' in request.session:
-        graph_props = GraphProps(request.session['graph_edit'])
-        for identifier in identifier_list:
-            if not 'layout' in identifier:
-                identifier['layout'] = {}
-            identifier['layout'].update(graph_props.get(workspace_item_id, identifier))
+    if session_graph_options:
+        if 'graph_edit' in request.session:
+            graph_props = GraphProps(request.session['graph_edit'])
+            for identifier in identifier_list:
+                if not 'layout' in identifier:
+                    identifier['layout'] = {}
+                identifier['layout'].update(graph_props.get(workspace_item_id, identifier))
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -398,7 +395,8 @@ def workspace_item_graph_edit(request, workspace_item_id):
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     location = workspace_item.adapter.location(**identifier)
-    img_url = workspace_item_image_url(workspace_item.id, [identifier, ])
+    img_url = workspace_item_image_url(workspace_item.id, [identifier, ], strip_layout=True,
+                                       session_graph_options=False)
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
 
@@ -422,28 +420,47 @@ def workspace_item_graph_edit(request, workspace_item_id):
         )
 
 
-def session_graph_properties(request, session_key=None):
+def session_graph_properties(request):
     """
-    put (key, value) in request.session['graph_edit']
+    set graph properties from request.POST to corresponding workspace_item_id and identifier
 
-    key, value in request.POST
+    graph properties: see options
+    workspace_item_id and identifier_json must be in request.POST
     """
-    if not session_key:
-        session_key = 'graph_edit'
+    options = [('line_max', 'line_max'),
+               ('line_min', 'line_min'),
+               ('line_avg', 'line_avg'),
+               ('line_percentile', 'line_percentile'),
+               ('legend', 'legend'),
+               ('title', 'title_value'),
+               ('y_min', 'y_min_value'),
+               ('y_max', 'y_max_value'),
+               ('colors', 'color_value'),
+               ('y_label', 'y_label_value'),
+               ('x_label', 'x_label_value'),
+               ]
 
-    key = str(request.POST.get('key'))
-    value = request.POST.get('value')
     workspace_item_id = request.POST.get('workspace_item_id')
     identifier_json = request.POST.get('identifier_json')
     identifier = json.loads(identifier_json.replace('%22', '"'))
-    if not session_key in request.session:
-        request.session[session_key] = {}
+    if not 'graph_edit' in request.session:
+        request.session['graph_edit'] = {}
+
+    # Calc graph options
+    graph_options = {}
+    for option, option_value in options:
+        if option in request.POST:
+            values = request.POST.getlist(option_value)
+            if len(values) == 1:
+                graph_options[option] = values[0]
+            elif len(values) > 1:
+                graph_options[option] = values
 
     # Do not access request.session[session_key][key] directly, that
     # doesn't save the session
-    graph_properties = GraphProps(request.session[session_key])
-    graph_properties.set(workspace_item_id, identifier, {key: value})
-    request.session[session_key] = graph_properties.properties
+    graph_properties = GraphProps(request.session['graph_edit'])
+    graph_properties.set(workspace_item_id, identifier, graph_options)
+    request.session['graph_edit'] = graph_properties.properties
 
     return HttpResponse('')
 

@@ -1,35 +1,6 @@
 /* helper functions in graph edit screen */
-
-function graph_post(obj, key, value) {
-    var url, workspace_item_id, identifier_json;
-    url = $(obj).attr("data-url");
-    workspace_item_id = $(obj).attr("data-workspace-item-id");
-    identifier_json = $(obj).attr("data-identifier-json");
-    $.post(url,
-           {key: key, value: value,
-            workspace_item_id: workspace_item_id,
-            identifier_json: identifier_json}, function() {
-               reloadGraphs();
-           });
-}
-
-function graph_add_maximum() {
-    return graph_post(this, 'line_max', 1);
-}
-
-function graph_add_minimum() {
-    return graph_post(this, 'line_min', 1);
-}
-
-function graph_add_average() {
-    return graph_post(this, 'line_avg', 1);
-}
-
-function graph_add_legend() {
-    return graph_post(this, 'legend', 1);
-}
-
 function graph_save_snippet() {
+    // the actual graph props are already stored in session on server
     var url, workspace_item_id, workspace_item_location_identifier;
     var workspace_item_location_shortname, workspace_item_location_name;
     url = $(this).attr("data-url");
@@ -47,10 +18,25 @@ function graph_save_snippet() {
            });
 }
 
+function graph_action() {
+    // send all checked graph properties to server
+    var $form, graph_props, url, workspace_item_id, identifier_json;
+    $form = $("form.graph-options");
+    url = $form.attr("data-url");
+    workspace_item_id = $form.attr("data-workspace-item-id");
+    identifier_json = $form.attr("data-identifier-json");
+    graph_props = $form.serialize() +
+        "&workspace_item_id=" + workspace_item_id +
+        "&identifier_json=" + identifier_json;
+    $.post(url,
+           graph_props,
+           function() {
+               reloadGraphs();
+           });
+}
+
 $(document).ready(function () {
-    $(".graph-add-maximum").bind("click", graph_add_maximum);
-    $(".graph-add-minimum").bind("click", graph_add_minimum);
-    $(".graph-add-average").bind("click", graph_add_average);
-    $(".graph-add-legend").bind("click", graph_add_legend);
     $(".graph-save-snippet").bind("click", graph_save_snippet);
+    $(".graph-action").bind("click", graph_action);
+    graph_action();  // update graph with current options
 });

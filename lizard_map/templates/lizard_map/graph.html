@@ -36,28 +36,73 @@
   </h2>
   <div>
     {% date_popup %}
-    uitleg
+    <form class="graph-options"
+          data-url="{% url lizard_map.session_graph_properties %}"
+          data-workspace-item-id="{{ workspace_item.id }}"
+          data-identifier-json="{{ location.identifier|json_escaped }}">
+      <ul class="automatic-tree">
+        <li>
+          <span class="expandable">Statistische bewerkingen</span>
+          <ul>
+            <li><input class="graph-action" type="checkbox" name="line_max"
+            {% if location.identifier.layout.line_max %}checked{% endif %}/>
+            Maximum</li>
+            <li><input class="graph-action" type="checkbox" name="line_min"
+            {% if location.identifier.layout.line_min %}checked{% endif %}/>
+            Minimum</li>
+            <li><input class="graph-action" type="checkbox" name="line_avg"
+            {% if location.identifier.layout.line_avg %}checked{% endif %}/>
+            Gemiddelde</li>
+            <li><input class="graph-action" type="checkbox" name="line_percentile" value="25"/>25 percentiel</li>
+            <li><input class="graph-action" type="checkbox" name="line_percentile" value="75"/>75 percentiel</li>
+          </ul>
+        </li>
+        <li>
+          <span class="expandable">Opmaak</span>
+          <ul>
+            <li>
+              <input class="graph-action" type="checkbox" name="legend"
+                     {% if location.identifier.layout.legend %}checked{% endif %} />
+            Legenda</li>
+            <li>
+              <input class="graph-action" type="checkbox" name="title"
+                     {% if location.identifier.layout.title %}checked{% endif %} />
+              <input type="text" name="title_value"
+                     {% if location.identifier.layout.title %}value="{{ location.identifier.layout.title }}"{% endif %}
+                />Titel</li>
+            <li>
+              <input class="graph-action" type="checkbox" name="y_max"
+                     {% if location.identifier.layout.y_max %}checked{% endif %} />
+              <input type="text" name="y_max_value"
+                     {% if location.identifier.layout.y_max %}value="{{ location.identifier.layout.y_max }}"{% endif %}
+                />Y-Max</li>
+            <li>
+              <input class="graph-action" type="checkbox" name="y_min"
+                     {% if location.identifier.layout.y_min %}checked{% endif %} />
+              <input type="text" name="y_min_value"
+                     {% if location.identifier.layout.y_min %}value="{{ location.identifier.layout.y_min }}"{% endif %}
+                   />Y-Min</li>
+            <li>
+              <input class="graph-action" type="checkbox" name="x_label"
+                     {% if location.identifier.layout.x_label %}checked{% endif %} />
+              <input type="text" name="x_label_value"
+                     {% if location.identifier.layout.x_label %}value="{{ location.identifier.layout.x_label }}"{% endif %}
+                   />Y-Label</li>
+            <li>
+              <input class="graph-action" type="checkbox" name="y_label"
+                     {% if location.identifier.layout.y_label %}checked{% endif %} />
+              <input type="text" name="y_label_value"
+                     {% if location.identifier.layout.y_label %}value="{{ location.identifier.layout.y_label }}"{% endif %}
+                   />Y-Label</li>
+          </ul>
+        </li>
+      </ul>
+    </form>
+    {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
+    <div class="sidebarbox-actions">
+      <div data-url="{% url lizard_map_session_collage_snippet_add %}" class="graph-save-snippet" data-workspace-item-id="{{ workspace_item.id }}" data-workspace-item-location-identifier="{{ location.identifier|json_escaped }}" data-workspace-item-location-shortname="{{ location.shortname }}*" data-workspace-item-location-name="{{ location.name }}*"><span class="ss_sprite ss_page_save">Sla op in collage</span></div>
+    </div>
 
-    <ul>
-      <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-maximum" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Maximum</span>
-      </li>
-      <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-minimum" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Minimum</span>
-      </li>
-      <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-average" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Gemiddelde</span>
-      </li>
-      <li>
-        <span data-url="{% url lizard_map.session_graph_properties %}" class="graph-add-legend" data-workspace-item-id="{{ workspace_item.id }}" data-identifier-json="{{ location.identifier|json_escaped }}">Legenda</span>
-      </li>
-    </ul>
-
-    <ul>
-      <li>
-        <span data-url="{% url lizard_map_session_collage_snippet_add %}" class="graph-save-snippet" data-workspace-item-id="{{ workspace_item.id }}" data-workspace-item-location-identifier="{{ location.identifier|json_escaped }}" data-workspace-item-location-shortname="{{ location.shortname }}" data-workspace-item-location-name="{{ location.name }}">Save as snippet (TODO: add workspace_item to workspace if workspace_item is temp workspace)</span>
-      </li>
-    </ul>
   </div>
 </div>
 {# {% workspace workspace_item.workspace %} #}

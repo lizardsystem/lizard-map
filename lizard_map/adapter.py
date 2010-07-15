@@ -31,17 +31,28 @@ def _inches_from_pixels(pixels):
     return pixels / SCREEN_DPI
 
 
-def workspace_item_image_url(workspace_item_id, identifiers):
+def workspace_item_image_url(workspace_item_id, identifiers,
+                             strip_layout=False, session_graph_options=False):
     """
     Returns image url
 
     Identifiers is a list of dicts
     """
+    identifiers_copy = identifiers[:]
+    if strip_layout:
+        for identifier in identifiers_copy:
+            if 'layout' in identifier:
+                del identifier['layout']
     identifier_json_list = [json.dumps(identifier).replace('"', '%22') for \
-                                identifier in identifiers]
-    img_url = reverse(
-        "lizard_map.workspace_item_image",
-        kwargs={'workspace_item_id': workspace_item_id, })
+                                identifier in identifiers_copy]
+    if session_graph_options:
+        img_url = reverse(
+            "lizard_map.workspace_item_image",
+            kwargs={'workspace_item_id': workspace_item_id, })
+    else:
+        img_url = reverse(
+            "lizard_map.workspace_item_image_session_graph_options",
+            kwargs={'workspace_item_id': workspace_item_id, })
     img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                         identifier_json_list])
     return img_url
@@ -72,11 +83,11 @@ class GraphProps(object):
         """sets graph properties for given workspace_item and identifier
         """
         hash_string = self.hash_string(workspace_item, identifier)
-        if not hash_string in self.properties:
-            self.properties[hash_string] = {}
-        self.properties[hash_string].update(graph_props)
+        self.properties[hash_string] = graph_props
 
     def delete(self, workspace_item, identifier):
+        """delete graph properties for given workspace_item and identifier
+        """
         hash_string = self.hash_string(workspace_item, identifier)
         if hash_string in self.properties:
             del self.properties[hash_string]
