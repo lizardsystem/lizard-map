@@ -131,9 +131,12 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    def location(self, identifier=None):
+    def location(self, identifier=None, layout=None):
         """Return fews point representation corresponding to filter_id, location_id and
         parameter_id in same format as search function
+
+        layout is a dict with extra optional layout parameters:
+        y_min, y_max, y_label, x_label, line_avg, line_max, line_min
 
         {'object': <...>,
         'google_x': x coordinate in google,

@@ -169,7 +169,6 @@ def popup_json(found, popup_id=None, collage=False, request=None):
 
     Note: identifier must be a dict. {'id': the_real_id}.
 
-    TODO: make better
     """
 
     result_html = ''
@@ -195,10 +194,10 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         workspace_manager = WorkspaceManager(request)
         workspace_manager.load_workspaces()
         temp_workspaces = workspace_manager.workspaces['temp']
-        for temp_workspace in temp_workspaces:
-            for workspace_item in temp_workspace.workspace_items.filter(
-                visible=True):
-                temp_workspace_item_ids.append(workspace_item.id)
+        temp_workspace_items = WorkspaceItem.objects.filter(
+            workspace__in=temp_workspaces, visible=True)
+        temp_workspace_item_ids = [
+            workspace_item.id for workspace_item in temp_workspace_items]
 
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
@@ -515,7 +514,6 @@ def search_coordinates(request):
                 search_results = workspace_item.adapter.search(
                     google_x, google_y, radius=google_radius)
                 found += search_results
-
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
