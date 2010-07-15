@@ -31,7 +31,10 @@ def workspace(request,
               workspace_id,
               javascript_click_handler=None,
               template='lizard_map/workspace.html'):
-    """Render page with one workspace"""
+    """Render page with one workspace.
+
+    workspaces in dictionary, because of ... ?
+    """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
