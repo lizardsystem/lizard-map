@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Changed json decode behaviour: keys are now strings, not unicode.
 
 
 1.0 (2010-07-15)

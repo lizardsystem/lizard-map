@@ -391,8 +391,11 @@ def workspace_item_graph_edit(request, workspace_item_id):
 
     !! (re)sets session['graph_edit']. {}
     """
-    identifier_json = request.GET.get('identifier')
-    identifier = json.loads(identifier_json)
+    identifier_json = str(request.GET.get('identifier'))
+    identifier_unicode = json.loads(identifier_json)
+    identifier = {}
+    for key, value in identifier_unicode.items():
+        identifier[str(key)] = value
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     location = workspace_item.adapter.location(**identifier)
