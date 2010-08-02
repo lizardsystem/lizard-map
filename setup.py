@@ -15,7 +15,6 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui >= 1.6',
     'unittest-xml-reporting',
-    'coverage',
     ],
 
 tests_require = [
