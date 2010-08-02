@@ -16,6 +16,9 @@ INSTALLED_APPS = [
     ]
 ROOT_URLCONF = 'lizard_map.urls'
 
+TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.run_tests'
+TEST_OUTPUT_DIR = 'xmlrunner'
+
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
 TEMPLATE_CONTEXT_PROCESSORS = (
