@@ -3,6 +3,7 @@ omit =
     /home/*/.buildout/*
     /usr/*
     parts/*
+    eggs/*
     */test*
 
 ignore_errors = true
