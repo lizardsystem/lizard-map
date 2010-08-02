@@ -1,0 +1,8 @@
+[report]
+omit =
+    /home/*/.buildout/*
+    /usr/*
+    parts/*
+    */test*
+
+ignore_errors = true
