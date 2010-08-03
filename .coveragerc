@@ -1,6 +1,7 @@
 [report]
 omit =
-    */.buildout/eggs/*
+    /home/*/.buildout/eggs/*
+    /var/lib/hudson/.buildout/*
     /usr/*
     parts/*
     eggs/*
