@@ -1,8 +1,7 @@
 [report]
 omit =
-    /home/*/.buildout/*
+    */.buildout/eggs/*
     /usr/*
-    /var/*
     parts/*
     eggs/*
     */test*
