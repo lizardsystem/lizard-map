@@ -2,6 +2,7 @@
 omit =
     /home/*/.buildout/*
     /usr/*
+    /var/*
     parts/*
     eggs/*
     */test*
