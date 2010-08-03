@@ -1,15 +1,11 @@
 import logging
-import os
 
 import pkg_resources
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 import simplejson
-
-from lizard_map.symbol_manager import SymbolManager
 
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'

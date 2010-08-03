@@ -10,8 +10,8 @@ PARAMS = {
     'font.size': FONT_SIZE,
     'legend.fontsize': FONT_SIZE,
     'text.fontsize': FONT_SIZE,
-    'xtick.labelsize' : FONT_SIZE,
-    'ytick.labelsize' : FONT_SIZE,
+    'xtick.labelsize': FONT_SIZE,
+    'ytick.labelsize': FONT_SIZE,
     }
 
 matplotlib.rcParams.update(PARAMS)

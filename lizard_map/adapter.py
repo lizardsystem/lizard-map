@@ -59,9 +59,12 @@ def workspace_item_image_url(workspace_item_id, identifiers,
 
 
 class GraphProps(object):
-    """Keep track of graph properties in a dict. Can be used to load and safe in session
+    """Keep track of graph properties in a dict.
 
-    properties = {'<hash of workspace_item and identifier>': {graph properties}, ...}
+    Can be used to load and safe in session
+
+    properties = {'<hash of workspace_item and identifier>': {graph
+    properties}, ...}
 
     """
     def __init__(self, properties=None):

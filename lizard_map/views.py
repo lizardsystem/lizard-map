@@ -3,11 +3,9 @@ import simplejson
 
 import mapnik
 import PIL.Image
-from django.core.urlresolvers import reverse
 from django.db.models import Max
 from django.http import HttpResponse
 from django.template import RequestContext
-from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache
@@ -214,10 +212,10 @@ def popup_json(found, popup_id=None, collage=False, request=None):
             add_snippet = True
 
         # Add workspace_item name on top
-        title = workspace_item.name
+        # title = workspace_item.name
 
         identifiers = [display_object['identifier'] for display_object in display_group]
-        img_url = workspace_item_image_url(workspace_item.id, identifiers)
+        # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(identifiers, add_snippet=add_snippet)
 

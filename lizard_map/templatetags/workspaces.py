@@ -1,10 +1,7 @@
 from django import template
-from django.shortcuts import get_object_or_404
 import simplejson as json
 
 from lizard_map.models import Workspace
-from lizard_map.models import WorkspaceItem
-from lizard_map.models import WorkspaceCollage
 
 register = template.Library()
 

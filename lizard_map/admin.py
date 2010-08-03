@@ -9,17 +9,21 @@ from lizard_map.models import WorkspaceCollageSnippet
 class WorkspaceItemInline(admin.TabularInline):
     model = WorkspaceItem
 
+
 class WorkspaceCollageInline(admin.TabularInline):
     model = WorkspaceCollage
 
+
 class WorkspaceCollageSnippetInline(admin.TabularInline):
     model = WorkspaceCollageSnippet
+
 
 class WorkspaceAdmin(admin.ModelAdmin):
     inlines = [
         WorkspaceItemInline,
         WorkspaceCollageInline,
         ]
+
 
 class WorkspaceCollageAdmin(admin.ModelAdmin):
     inlines = [

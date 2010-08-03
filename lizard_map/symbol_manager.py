@@ -1,37 +1,11 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#***********************************************************************
-#*   
-#***********************************************************************
-#*                      All rights reserved                           **
-#*   
-#*   
-#*                                                                    **
-#*   
-#*   
-#*   
-#***********************************************************************
-#* Library    : symbol_manager
-#* Purpose    : Manage image files that are scaled, colorized and rotated. 
-#*              They are stored in 1 particular directory.
-#* Function   : 
-#* Usage      : <function> --help <please use optparse and fill in the --help information>
-#*               
-#* Project    : Lizard Web Presentation (used by Lizard Flooding)
-#*  
-#* $Id: symbol_manager.py 8824 2010-01-05 09:34:12Z Reinout $
-#*
-#* $Name:  $
-#*
-#* initial programmer :  <Name and Surname>
-#* initial date       :  <yyyymmdd>
-#**********************************************************************
-
-__revision__ = "$Rev: 8824 $"[6:-2]
+"""Purpose: Manage image files that are scaled, colorized and rotated.
+"""
 
 import logging
 import os.path
-import Image, ImageFilter
+import Image
+import ImageFilter
 
 log = logging.getLogger('nens.symbol_manager')
 
@@ -42,7 +16,8 @@ class SymbolManager:
         self.symbol_path_original = symbol_path_original
         self.symbol_path_generated = symbol_path_generated
         if not(os.path.exists(self.symbol_path_original)):
-            log.critical('original path %s does not exist' % self.symbol_path_original)
+            log.critical('original path %s does not exist',
+                         self.symbol_path_original)
             raise Exception('SymbolManager failed: original path %s does not exist' % self.symbol_path_original)
         if not(os.path.exists(self.symbol_path_generated)):
             os.makedirs(self.symbol_path_generated)
@@ -92,12 +67,12 @@ class SymbolManager:
         #<orig filename>_<mask>_<hex r><hex g><hex b>_<sx>x<sy>_r<r>.<orig extension>
         fn_orig_base, fn_orig_extension = os.path.splitext(filename_nopath)
         result_filename_nopath = '%s_%s_%02x%02x%02x_%dx%d_r%03d_s%d%s'%(
-            fn_orig_base, os.path.splitext(fn_mask)[0], 
-            min(255,color[0]*256), min(255,color[1]*256), min(255,color[2]*256), 
+            fn_orig_base, os.path.splitext(fn_mask)[0],
+            min(255,color[0]*256), min(255,color[1]*256), min(255,color[2]*256),
             sizex, sizey, rotate, shadow_height, fn_orig_extension)
 
-        result_filename = os.path.join(self.symbol_path_generated, 
-                                       result_filename_nopath) 
+        result_filename = os.path.join(self.symbol_path_generated,
+                                       result_filename_nopath)
         if os.path.isfile(result_filename) and force == False:
             log.debug('image already exists, returning filename')
         else:
@@ -139,9 +114,9 @@ class SymbolManager:
             #see also: http://en.wikipedia.org/wiki/Alpha_compositing, A over B
             if shadow_height > 0:
                 im_shadow = Image.new('RGBA', im.size)
-                im_shadow.paste((192,192,192,255), 
-                                (int(shadow_height*SHADOW_FACTOR_X), 
-                                 int(shadow_height*SHADOW_FACTOR_Y)), 
+                im_shadow.paste((192,192,192,255),
+                                (int(shadow_height*SHADOW_FACTOR_X),
+                                 int(shadow_height*SHADOW_FACTOR_Y)),
                                 im)
                 #now blur the im_shadow a little bit
                 im_shadow = im_shadow.filter(ImageFilter.BLUR)
@@ -158,11 +133,11 @@ class SymbolManager:
                         r_res = r2 * a2 / 256 + r * a * (255-a2) / 256 / 256
                         g_res = g2 * a2 / 256 + g * a * (255-a2) / 256 / 256
                         b_res = b2 * a2 / 256 + b * a * (255-a2) / 256 / 256
-                        a_res = a2 + (255-a2)*a/256                        
+                        a_res = a2 + (255-a2)*a/256
                         pix_shadow[x, y] = (r_res, g_res, b_res, a_res)
-                    
+
                 im = im_shadow
-                
+
             if os.path.isfile(result_filename):
                 log.debug('deleting existing result file')
                 os.remove(result_filename)
@@ -194,11 +169,11 @@ if __name__=='__main__':
     #start testing
     log.info('Testing SymbolManager...')
     sm = SymbolManager(SYMBOLS_DIR)
-    sm.get_symbol_transformed('plus.png', 
-                              force=True, 
+    sm.get_symbol_transformed('plus.png',
+                              force=True,
                               mask='plus.png',
-                              color=(0,1,0.5), 
-                              size=(16,16), 
+                              color=(0,1,0.5),
+                              size=(16,16),
                               rotate=0,
                               shadow_height=0,
                               )
