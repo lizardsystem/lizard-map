@@ -79,7 +79,7 @@ class WorkspaceManager:
                 pass
             changes = True
 
-        if not 'temp' in self.workspaces:
+        if not 'temp' in self.workspaces or not self.workspaces['temp']:
             workspace_temp = Workspace(name='temp')
             workspace_temp.save()
             self.workspaces['temp'] = [workspace_temp, ]
