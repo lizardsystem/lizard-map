@@ -437,9 +437,9 @@ def session_graph_properties(request):
                ('title', 'title_value'),
                ('y_min', 'y_min_value'),
                ('y_max', 'y_max_value'),
-               ('colors', 'color_value'),
                ('y_label', 'y_label_value'),
                ('x_label', 'x_label_value'),
+               ('colors', 'colors_value'),
                ]
 
     workspace_item_id = request.POST.get('workspace_item_id')

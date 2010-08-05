@@ -221,6 +221,7 @@ class Graph(object):
         self.legend_width = 0.01  # no legend by default
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
+        self.x_label_height = 0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
         self.fixup_axes()
@@ -235,6 +236,10 @@ class Graph(object):
         self.figure.suptitle(title,
                              x=self.left_label_width,
                              horizontalalignment='left')
+
+    def set_xlabel(self, xlabel):
+        self.axes.set_xlabel(xlabel)
+        self.x_label_height = BOTTOM_LINE_HEIGHT / self.height
 
     def fixup_axes(self):
         """Fix up the axes by limiting the amount of items."""
@@ -260,10 +265,10 @@ class Graph(object):
         handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)
         labels is list of strings
         """
-        self.legend_width = LEGEND_WIDTH / self.width
         if handles is None and labels is None:
             handles, labels = self.axes.get_legend_handles_labels()
-        if labels:
+        if handles and labels:
+            self.legend_width = LEGEND_WIDTH / self.width
             return self.figure.legend(
                 handles,
                 labels,
@@ -280,9 +285,9 @@ class Graph(object):
 
     def http_png(self):
         self.axes.set_position((self.left_label_width,
-                                self.bottom_axis_location,
+                                self.bottom_axis_location + self.x_label_height,
                                 1 - self.legend_width - self.left_label_width,
-                                1 - 2 * self.bottom_axis_location))
+                                1 - 2 * self.bottom_axis_location - self.x_label_height))
 
         # Set date range
         # Somehow, the range cannot be set in __init__
