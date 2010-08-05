@@ -265,10 +265,13 @@ class Graph(object):
         handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)
         labels is list of strings
         """
+
+        # reserve space for legend. even when there is no legend displayed
+        self.legend_width = LEGEND_WIDTH / self.width
+
         if handles is None and labels is None:
             handles, labels = self.axes.get_legend_handles_labels()
         if handles and labels:
-            self.legend_width = LEGEND_WIDTH / self.width
             return self.figure.legend(
                 handles,
                 labels,
