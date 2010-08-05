@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     'lizard_map',
     'lizard_ui',
     'staticfiles',
+    'django_nose',
     'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -16,9 +17,7 @@ INSTALLED_APPS = [
     ]
 ROOT_URLCONF = 'lizard_map.urls'
 
-TEST_RUNNER = 'xmlrunner.extra.djangotestrunner.run_tests'
-TEST_OUTPUT_DESCRIPTIONS = True
-TEST_OUTPUT_DIR = 'xmlrunner'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
