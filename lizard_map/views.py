@@ -27,7 +27,7 @@ from lizard_map.workspace import WorkspaceManager
 
 def workspace(request,
               workspace_id,
-              javascript_click_handler=None,
+              javascript_click_handler='popup_click_handler',
               template='lizard_map/workspace.html'):
     """Render page with one workspace.
 
