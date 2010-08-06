@@ -1,14 +1,14 @@
 {# loads wms.html because we want to display workspaces. else we would use lizard_ui/lizardbase.html #}
-{% extends "lizard_ui/lizardbase.html" %}
+{% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
 {% block sidebar %}
-Sidebar
+{% workspace collage.workspace %}
 {% endblock %}
 
 {% block object-actions %}
-<a href="{% url lizard_map.collage_edit collage_id=collage.id %}"
-   class="ss_sprite ss_application_form_edit">Edit</a>
+<a href="{% url lizard_map.collage collage_id=collage.id %}"
+   class="ss_sprite ss_application_view_gallery">View</a>
 <a href="javascript:printPage()"
    class="ss_sprite ss_printer">Print</a>
 {% endblock object-actions %}
@@ -19,7 +19,7 @@ Sidebar
 <h2>{{ collage.name }}</h2>
 {% for snippet_group in collage.snippet_groups.all %}
   {% firstof snippet_group.name '' %}
-  {% snippet_group snippet_group 'False' 'False' %}
+  {% snippet_group snippet_group 'False' 'True' %}
 {% endfor %}
 
 </div>
