@@ -2,16 +2,6 @@
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
-{% block breadcrumbs %}
-<a href="{% url homepage %}">home</a>
-&rarr;
-<a href="{% url analysis_start %}" class="lizard-map-link">analyse</a>
-&rarr;
-<a href="{% url lizard_map_workspace workspace_id=collage.workspace.id %}" class="lizard-map-link">{{ collage.workspace }}</a>
-&rarr;
-<a href="{% url lizard_map.collage collage_id=collage.id %}" class="lizard-map-link">{{ collage }}</a>
-{% endblock %}
-
 {% block sidebar %}
 {% workspace collage.workspace %}
 {% endblock %}
