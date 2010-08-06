@@ -95,14 +95,16 @@
   <div>
     <ul class="snippet-list without-bullets"
         data-collage-id="{{ collage.id }}">
-      {% for snippet in collage.snippets.all %}
-      <li class="snippet" title="{{ snippet.name }}"
-          data-object-id="{{ snippet.id }}">
-        <img src="{{ snippet.workspace_item.adapter.symbol_url }}"
-             width="16"
-             height="16" />
-        {% firstof snippet.shortname snippet.name '(noname)' %}
-      </li>
+      {% for snippet_group in collage.snippet_groups.all %}
+        {% for snippet in snippet_group.snippets.all %}
+        <li class="snippet" title="{{ snippet.name }}"
+            data-object-id="{{ snippet.id }}">
+          <img src="{{ snippet.workspace_item.adapter.symbol_url }}"
+               width="16"
+               height="16" />
+          {% firstof snippet.shortname snippet.name '(noname)' %}
+        </li>
+        {% endfor %}
       {% empty %}
       <li class="snippet">Nog geen grafieken.</li>
       {% endfor %}

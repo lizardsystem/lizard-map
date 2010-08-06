@@ -10,12 +10,9 @@
 <div id="textual">
 
 <h2>{{ collage.name }}</h2>
-{% for workspace_item in collage.workspace_items %}
-
-{% autoescape off %}
-{% collage_workspace_item collage workspace_item %}
-{% endautoescape %}
-
+{% for snippet_group in collage.snippet_groups.all %}
+  {% firstof snippet_group.name '' %}
+  {% snippet_group snippet_group 'False' 'True' %}
 {% endfor %}
 
 </div>

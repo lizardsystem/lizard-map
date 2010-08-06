@@ -142,7 +142,8 @@ class WorkspaceItemAdapter(object):
         'google_x': x coordinate in google,
         'google_y': y coordinate in google,
         'workspace_item': <...>,
-        'identifier': {...}}
+        'identifier': {...},
+        'grouping_hint': optional unique group identifier, i.e. unit m3/s}
 
         """
         raise NotImplementedError
@@ -161,10 +162,10 @@ class WorkspaceItemAdapter(object):
         output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
-    def html(self, identifiers=None, add_snippet=False):
+    def html(self, identifiers=None, add_snippet=False, editing=False):
         return 'html output for this adapter is not implemented'
 
-    def html_default(self, identifiers=None, add_snippet=False):
+    def html_default(self, identifiers=None, add_snippet=False, editing=False):
         """
         Returns html representation of given identifier_list.
         This particular view always renders a list of items, then 1 image
@@ -188,7 +189,6 @@ class WorkspaceItemAdapter(object):
                                    identifier in identifiers]
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                             identifiers_escaped])
-
         return render_to_string(
             'lizard_map/popup.html',
             {
@@ -197,5 +197,6 @@ class WorkspaceItemAdapter(object):
                 'img_url': img_url,
                 'symbol_url': self.symbol_url(),
                 'add_snippet': add_snippet,
+                'editing': editing,
                 }
             )

@@ -26,13 +26,26 @@ def workspace(context, workspace, show_new_workspace=False):
 
 
 @register.simple_tag
-def collage_workspace_item(collage, workspace_item):
+def snippet_group(snippet_group, add_snippet=None, editing=None):
     """
-    Renders a collage/workspace_item combination.
+    Renders snippet_group.  All snippets MUST be using the same
+    workspace_item, or output is undefined.
+
+    add_snippet and editing are strings that are 'True' or 'False'
+
+    TODO: make snippets of the same adapter compatible (instead of
+    workspace_item)
     """
-    snippets = collage.snippets.filter(workspace_item=workspace_item)
+    snippets = snippet_group.snippets.all()
     identifiers = [snippet.identifier for snippet in snippets]
-    return workspace_item.adapter.html(identifiers)
+    if snippets:
+        workspace_item = snippets[0].workspace_item
+        return workspace_item.adapter.html(
+            identifiers,
+            add_snippet=add_snippet=='True',
+            editing=editing=='True')
+    else:
+        return 'empty snippet_group (should never happen)'
 
 
 @register.filter

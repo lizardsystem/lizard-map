@@ -31,6 +31,22 @@ def _inches_from_pixels(pixels):
     return pixels / SCREEN_DPI
 
 
+def parse_identifier_json(identifier_json):
+    """Return dict of parsed identifier_json.
+
+    Converts keys to str.
+    TODO: .replace('%22', '"') in a better way
+    """
+
+    identifier_json = identifier_json.replace('%22', '"')
+    if not identifier_json:
+        return {}
+    result = {}
+    for k, v in json.loads(identifier_json).items():
+        result[str(k)] = v
+    return result
+
+
 def workspace_item_image_url(workspace_item_id, identifiers,
                              strip_layout=False, session_graph_options=False):
     """

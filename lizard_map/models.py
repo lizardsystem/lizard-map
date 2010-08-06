@@ -1,12 +1,16 @@
+import itertools
 import logging
-
 import pkg_resources
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 import simplejson
 
+from lizard_map.adapter import parse_identifier_json
+
+GROUPING_HINT = 'grouping_hint'  # Do not change!
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
@@ -128,12 +132,81 @@ class WorkspaceCollage(models.Model):
     def locations(self):
         """locations of all snippets
         """
-        return [snippet.location for snippet in self.snippets.all()]
+        snippets_in_groups = [snippet_group.snippets.all() \
+                                  for snippet_group in self.snippet_groups.all()]
+        snippets = list(itertools.chain(*snippets_in_groups))  # flatten snippets in groups
+        return [snippet.location for snippet in snippets]
 
     @property
     def workspace_items(self):
         return WorkspaceItem.objects.filter(
             workspacecollagesnippet__in=self.snippets.all()).distinct()
+
+    def get_or_create_snippet(self, workspace_item, identifier_json, shortname, name):
+        """
+        Makes snippet in a snippet group. Finds or creates
+        corresponding snippet group (see below)
+        """
+        found_snippet_group = None
+        identifier = parse_identifier_json(identifier_json)
+        snippet_groups = self.snippet_groups.all()
+
+        # Try to find most appropriate snippet group:
+
+        # (1) check for the 'group' property in snippet identifier: if
+        # at least one snippet in a group has this property, then the
+        # group matches. Solves problem with grouping on 'parameter'
+        if GROUPING_HINT in identifier:
+            for snippet_group in snippet_groups:
+                for snippet in snippet_group.snippets.all():
+                    if snippet.identifier.get(GROUPING_HINT) == identifier[GROUPING_HINT]:
+                        found_snippet_group = snippet_group
+                        break
+
+        # (2) find an item in a group with the same
+        # workspace_item. This is a backup grouping mechanism
+        if not found_snippet_group:
+            for snippet_group in snippet_groups:
+                if snippet_group.snippets.filter(workspace_item=workspace_item).exists():
+                    found_snippet_group = snippet_group
+
+        # (3) No existing snippet group: make one.
+        if not found_snippet_group:
+            found_snippet_group = self.snippet_groups.create()
+
+        snippet, snippet_created = found_snippet_group.snippets.get_or_create(
+            workspace_item=workspace_item,
+            identifier_json=identifier_json,
+            shortname=shortname,
+            name=name)
+        return snippet, snippet_created
+
+
+class WorkspaceCollageSnippetGroup(models.Model):
+    """Contains a group of snippets, belongs to one collage"""
+    workspace_collage = models.ForeignKey(WorkspaceCollage,
+                                          related_name='snippet_groups')
+    index = models.IntegerField(default=1000)  # larger = lower in the list
+    name = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = _('Collage snippet group')
+        verbose_name_plural = _('Collage snippet groups')
+        ordering = ['name', ]
+
+    def __unicode__(self):
+        if self.snippets_summary:
+            return self.snippets_summary[:80]
+        else:
+            return '(empty snippet_group)'
+
+    @property
+    def workspace(self):
+        return self.workspace_collage.workspace
+
+    @property
+    def snippets_summary(self):
+        return ', '.join([snippet.__unicode__() for snippet in self.snippets.all()])
 
 
 class WorkspaceCollageSnippet(models.Model):
@@ -144,8 +217,8 @@ class WorkspaceCollageSnippet(models.Model):
                                  default='snippet',
                                  blank=True,
                                  null=True)
-    workspace_collage = models.ForeignKey(WorkspaceCollage,
-                                          related_name='snippets')
+    snippet_group = models.ForeignKey(WorkspaceCollageSnippetGroup,
+                                      related_name='snippets')
     workspace_item = models.ForeignKey(
         WorkspaceItem)
     identifier_json = models.TextField()
@@ -161,27 +234,25 @@ class WorkspaceCollageSnippet(models.Model):
         collage.
 
         """
-        if len(self.workspace_collage.workspace.workspace_items.filter(
+        if len(self.snippet_group.workspace_collage.workspace.workspace_items.filter(
                 pk=self.workspace_item.pk)) == 0:
             raise "workspace_item of snippet not in workspace of collage"
         # Call the "real" save() method.
         super(WorkspaceCollageSnippet, self).save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        """Delete model, also deletes snippet_group if that's empty"""
+        snippet_group = self.snippet_group
+        super(WorkspaceCollageSnippet, self).delete(*args, **kwargs)
+        if not snippet_group.snippets.exists():
+            snippet_group.delete()
+
     @property
     def identifier(self):
         """Return dict of parsed identifier_json.
 
-        Converts keys to str.
-        TODO: .replace('%22', '"') in a better way
-
         """
-        json = self.identifier_json.replace('%22', '"')
-        if not json:
-            return {}
-        result = {}
-        for k, v in simplejson.loads(json).items():
-            result[str(k)] = v
-        return result
+        return parse_identifier_json(self.identifier_json)
 
     @property
     def location(self):

@@ -1,16 +1,26 @@
 {% load workspaces %}
 {# header #}
 <div><img src="{{ symbol_url }}" /><strong>{{ title }}</strong></div>
-{% for display_object in display_group %}
-<div>{% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}">{% endif %}{{ display_object.name }}{% if display_object.object.get_absolute_url %}</a>{% endif %}{% if add_snippet %}<a href=""
-class="add-snippet ss_chart_line_add ss_sprite"
-data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
-data-workspace-item-id="{{ display_object.workspace_item.id }}"
-data-item-identifier='{{ display_object.identifier|json_escaped }}'
-data-item-shortname="{{ display_object.shortname }}"
-data-item-name="{{ display_object.name }}">Voeg toe aan collage</a>{% endif %}</div>
-{% endfor %}
-{# body #}
 <div style="width: 100%; height: 250px;" class="img-use-my-size">
   <a href="{{ img_url }}" class="replace-with-image">afbeelding nog niet geladen</a>
 </div>
+<table>
+  {# icons: see http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
+  {% for display_object in display_group %}
+  <tr>
+    <td><img src="{{ display_object.workspace_item.adapter.symbol_url }}"
+    width="16"
+    height="16" /></td>
+    <td>{{ display_object.name }}</td>
+    {% if editing %}<td>edit{% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}" class="ss_chart_curve_edit ss_sprite">&nbsp;</a>{% endif %}</td>{% endif %}
+    {% if add_snippet %}<td><a href=""
+    class="add-snippet ss_chart_line_add ss_sprite"
+    data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
+    data-workspace-item-id="{{ display_object.workspace_item.id }}"
+    data-item-identifier='{{ display_object.identifier|json_escaped }}'
+    data-item-shortname="{{ display_object.shortname }}"
+    data-item-name="{{ display_object.name }}"
+    title="Voeg toe aan collage"></a></td>{% endif %}
+  </tr>
+  {% endfor %}
+</table>

@@ -233,6 +233,40 @@ def popup_json(found, popup_id=None, collage=False, request=None):
     return HttpResponse(simplejson.dumps(result))
 
 
+def popup_collage_json(collage, popup_id, request=None):
+    """
+    display collage by adding display_groups together
+    TODO: must work with items from same adapter, not only workspace_item
+    """
+
+    result_html = ''
+    snippet_groups = collage.snippet_groups.all()
+    if len(snippet_groups) > 1:
+        big_popup = True
+    else:
+        big_popup = False
+
+    for snippet_group in snippet_groups:
+        snippets = snippet_group.snippets.all()
+        if snippets:
+            workspace_item = snippets[0].workspace_item
+
+            identifiers = [snippet.identifier for snippet in snippets]
+            html_per_workspace_item = workspace_item.adapter.html(
+                identifiers, add_snippet=False, editing=False)
+
+            google_x, google_y = snippets[0].location['google_coords']
+            result_html += html_per_workspace_item
+
+    result = {'id': popup_id,
+              'x': google_x,
+              'y': google_y,
+              'html': result_html,
+              'big': big_popup,
+              }
+    return HttpResponse(simplejson.dumps(result))
+
+
 # Collages stuff
 
 
@@ -273,13 +307,15 @@ def session_collage_snippet_add(request,
             'workspace_item_location_name')
 
     workspace_id = request.session['workspaces'][workspace_category][0]
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    workspace = Workspace.objects.get(pk=workspace_id)
+    workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
 
     if len(workspace.collages.all()) == 0:
         workspace.collages.create()
     collage = workspace.collages.all()[0]
-    snippet, _ = collage.snippets.get_or_create(
+
+    # create snippet using collage function: also finds/makes snippet group
+    snippet, _ = collage.get_or_create_snippet(
         workspace_item=workspace_item,
         identifier_json=workspace_item_location_identifier,
         shortname=workspace_item_location_shortname,
@@ -307,8 +343,9 @@ def session_collage_snippet_delete(request,
     if object_id is None:
         object_id = request.POST.get('object_id')
     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=object_id)
-    snippet.delete()
+    snippet_group = snippet.snippet_group
 
+    snippet.delete()
     return HttpResponse()
 
 
@@ -334,11 +371,12 @@ def collage_popup(request,
         collage_id = request.GET.get('collage_id')
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
     popup_id = 'popup-collage'
+
     # Only one collage popup allowed, also check jquery.workspace.js
-    return popup_json(collage.locations,
-                      popup_id=popup_id,
-                      collage=True,
-                      request=request)
+    return popup_collage_json(
+        collage,
+        popup_id=popup_id,
+        request=request)
 
 
 def workspace_item_image(request, workspace_item_id, session_graph_options=False):
