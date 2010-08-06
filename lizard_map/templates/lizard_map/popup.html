@@ -8,9 +8,7 @@
   {# icons: see http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
   {% for display_object in display_group %}
   <tr>
-    <td><img src="{{ display_object.workspace_item.adapter.symbol_url }}"
-    width="16"
-    height="16" /></td>
+    <td>color</td>
     <td>{{ display_object.name }}</td>
     {% if editing %}<td>edit{% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}" class="ss_chart_curve_edit ss_sprite">&nbsp;</a>{% endif %}</td>{% endif %}
     {% if add_snippet %}<td><a href=""
