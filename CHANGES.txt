@@ -8,6 +8,10 @@ Changelog of lizard-map
 - Added a bit of setup to make xml test reports possible (for integration with
   Hudson).  Similarly for coverage reports, also for Hudson.
 
+- Implemented snippet groups. Snippet groups group similar snippets in
+  a collage.
+
+- Removed specific breadcrumbs.
 
 1.1 (2010-07-16)
 ----------------
