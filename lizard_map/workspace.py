@@ -162,17 +162,17 @@ class WorkspaceItemAdapter(object):
         output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
-    def html(self, identifiers=None, kwargs=None):
+    def html(self, identifiers=None, layout_options=None):
         """
-        Html output for given identifiers. Optionally kwargs can be
-        provided. Default kwargs:
+        Html output for given identifiers. Optionally layout_options
+        can be provided. Default layout_options:
 
-        kwargs = {'add_snippet': False,
-                  'editing': False}
+        layout_options = {'add_snippet': False,
+                          'editing': False}
         """
         return 'html output for this adapter is not implemented'
 
-    def html_default(self, identifiers=None, kwargs=None):
+    def html_default(self, identifiers=None, layout_options=None):
         """
         Returns html representation of given identifier_list.
         This particular view always renders a list of items, then 1 image
@@ -182,11 +182,11 @@ class WorkspaceItemAdapter(object):
             return super(WorkspaceItemAdapterKrw, self).html_default(
                 identifiers)
         """
-        if kwargs is None:
-            kwargs = {}
-        add_snippet = kwargs.get('add_snippet', False)
-        editing = kwargs.get('editing', False)
-        detailed = kwargs.get('detailed', False)
+        if layout_options is None:
+            layout_options = {}
+        add_snippet = layout_options.get('add_snippet', False)
+        editing = layout_options.get('editing', False)
+        detailed = layout_options.get('detailed', False)
 
         title = self.workspace_item.name
 

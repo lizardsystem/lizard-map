@@ -219,7 +219,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
 
         html_per_workspace_item = workspace_item.adapter.html(
             identifiers,
-            kwargs={'add_snippet': add_snippet}
+            layout_options={'add_snippet': add_snippet}
             )
 
         x_found, y_found = display_object['google_coords']

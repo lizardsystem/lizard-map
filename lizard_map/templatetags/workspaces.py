@@ -42,9 +42,9 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, detailed=None):
         workspace_item = snippets[0].workspace_item
         return workspace_item.adapter.html(
             identifiers,
-            kwargs={'add_snippet': add_snippet=='True',
-                    'editing': editing=='True',
-                    'detailed': detailed=='True'}
+            layout_options={'add_snippet': add_snippet=='True',
+                            'editing': editing=='True',
+                            'detailed': detailed=='True'}
             )
     else:
         return 'empty snippet_group (should never happen)'
