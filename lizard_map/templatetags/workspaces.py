@@ -26,7 +26,7 @@ def workspace(context, workspace, show_new_workspace=False):
 
 
 @register.simple_tag
-def snippet_group(snippet_group, add_snippet=None, editing=None):
+def snippet_group(snippet_group, add_snippet=None, editing=None, detailed=None):
     """
     Renders snippet_group.  All snippets MUST be using the same
     workspace_item, or output is undefined.
@@ -43,7 +43,8 @@ def snippet_group(snippet_group, add_snippet=None, editing=None):
         return workspace_item.adapter.html(
             identifiers,
             kwargs={'add_snippet': add_snippet=='True',
-                    'editing': editing=='True'}
+                    'editing': editing=='True',
+                    'detailed': detailed=='True'}
             )
     else:
         return 'empty snippet_group (should never happen)'

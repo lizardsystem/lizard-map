@@ -217,7 +217,10 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         identifiers = [display_object['identifier'] for display_object in display_group]
         # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
-        html_per_workspace_item = workspace_item.adapter.html(identifiers, add_snippet=add_snippet)
+        html_per_workspace_item = workspace_item.adapter.html(
+            identifiers,
+            kwargs={'add_snippet': add_snippet}
+            )
 
         x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
@@ -253,7 +256,7 @@ def popup_collage_json(collage, popup_id, request=None):
 
             identifiers = [snippet.identifier for snippet in snippets]
             html_per_workspace_item = workspace_item.adapter.html(
-                identifiers, add_snippet=False, editing=False)
+                identifiers)
 
             google_x, google_y = snippets[0].location['google_coords']
             result_html += html_per_workspace_item

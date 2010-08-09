@@ -186,6 +186,7 @@ class WorkspaceItemAdapter(object):
             kwargs = {}
         add_snippet = kwargs.get('add_snippet', False)
         editing = kwargs.get('editing', False)
+        detailed = kwargs.get('detailed', False)
 
         title = self.workspace_item.name
 
@@ -210,5 +211,6 @@ class WorkspaceItemAdapter(object):
                 'symbol_url': self.symbol_url(),
                 'add_snippet': add_snippet,
                 'editing': editing,
+                'detailed': detailed
                 }
             )
