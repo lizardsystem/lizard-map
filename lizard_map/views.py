@@ -271,12 +271,14 @@ def popup_collage_json(collage, popup_id, request=None):
 
 
 def collage(request,
-              collage_id,
-              template='lizard_map/collage.html'):
+            collage_id,
+            editable=False,
+            template='lizard_map/collage.html'):
     """Render page with one collage"""
     return render_to_response(
         template,
-        {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id)},
+        {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id),
+         'editable': editable},
         context_instance=RequestContext(request))
 
 

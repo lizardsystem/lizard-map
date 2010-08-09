@@ -162,10 +162,17 @@ class WorkspaceItemAdapter(object):
         output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
-    def html(self, identifiers=None, add_snippet=False, editing=False):
+    def html(self, identifiers=None, kwargs=None):
+        """
+        Html output for given identifiers. Optionally kwargs can be
+        provided. Default kwargs:
+
+        kwargs = {'add_snippet': False,
+                  'editing': False}
+        """
         return 'html output for this adapter is not implemented'
 
-    def html_default(self, identifiers=None, add_snippet=False, editing=False):
+    def html_default(self, identifiers=None, kwargs=None):
         """
         Returns html representation of given identifier_list.
         This particular view always renders a list of items, then 1 image
@@ -175,6 +182,11 @@ class WorkspaceItemAdapter(object):
             return super(WorkspaceItemAdapterKrw, self).html_default(
                 identifiers)
         """
+        if kwargs is None:
+            kwargs = {}
+        add_snippet = kwargs.get('add_snippet', False)
+        editing = kwargs.get('editing', False)
+
         title = self.workspace_item.name
 
         # Make 'display_group'

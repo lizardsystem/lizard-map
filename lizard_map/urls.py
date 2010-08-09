@@ -34,10 +34,12 @@ urlpatterns = patterns(
     # Collages and snippets
     url(r'^collage/(?P<collage_id>\d+)/$',
         'lizard_map.views.collage',
+        {'editable': False},
         name="lizard_map.collage"),
     url(r'^collage/(?P<collage_id>\d+)/edit/$',
         'lizard_map.views.collage',
-        {'template': 'lizard_map/collage-edit.html'},
+        {'editable': True,
+         'template': 'lizard_map/collage_edit.html'},
         name="lizard_map.collage_edit"),
     url(r'^collage/(?P<collage_id>\d+)/popup/$',
         'lizard_map.views.collage_popup',
