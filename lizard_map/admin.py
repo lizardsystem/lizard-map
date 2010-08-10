@@ -37,7 +37,8 @@ class WorkspaceCollageAdmin(admin.ModelAdmin):
 
 
 class WorkspaceCollageSnippetGroupAdmin(admin.ModelAdmin):
-    list_display = ('snippets_summary', 'workspace', 'workspace_collage', 'index', 'name', )
+    list_display = ('snippets_summary', 'workspace', 'workspace_collage',
+                    'index', 'name', )
     inlines = [
         WorkspaceCollageSnippetInline,
         ]
@@ -47,4 +48,5 @@ admin.site.register(Workspace, WorkspaceAdmin)
 admin.site.register(WorkspaceItem)
 admin.site.register(WorkspaceCollage, WorkspaceCollageAdmin)
 admin.site.register(WorkspaceCollageSnippet)
-admin.site.register(WorkspaceCollageSnippetGroup, WorkspaceCollageSnippetGroupAdmin)
+admin.site.register(WorkspaceCollageSnippetGroup,
+                    WorkspaceCollageSnippetGroupAdmin)

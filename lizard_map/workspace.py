@@ -74,7 +74,8 @@ class WorkspaceManager:
         #check if components exist, else create them
         if not 'default' in self.workspaces:
             try:
-                self.workspaces['default'] = [Workspace.objects.get(name='achtergrond'), ]
+                self.workspaces['default'] = [
+                    Workspace.objects.get(name='achtergrond'), ]
             except Workspace.DoesNotExist:
                 pass
             changes = True
@@ -163,8 +164,8 @@ class WorkspaceItemAdapter(object):
         raise NotImplementedError
 
     def location(self, identifier=None, layout=None):
-        """Return fews point representation corresponding to filter_id, location_id and
-        parameter_id in same format as search function
+        """Return fews point representation corresponding to filter_id,
+        location_id and parameter_id in same format as search function
 
         layout is a dict with extra optional layout parameters:
         y_min, y_max, y_label, x_label, line_avg, line_max, line_min
@@ -179,18 +180,21 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    def image(self, identifiers=None, start_date=None, end_date=None, width=None, height=None):
+    def image(self, identifiers=None, start_date=None, end_date=None,
+              width=None, height=None):
         """Return xyz"""
         raise NotImplementedError
 
-    def symbol_url(self, identifier=None, start_date=None, end_date=None, icon_style=None):
+    def symbol_url(self, identifier=None, start_date=None, end_date=None,
+                   icon_style=None):
         """Return symbol for identifier"""
         sm = SymbolManager(ICON_ORIGINALS, os.path.join(
                 settings.MEDIA_ROOT,
                 'generated_icons'))
         if icon_style is None:
             icon_style = {'icon': 'brug.png'}
-        output_filename = sm.get_symbol_transformed(icon_style['icon'], **icon_style)
+        output_filename = sm.get_symbol_transformed(icon_style['icon'],
+                                                    **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
     def html(self, identifiers=None, layout_options=None):
@@ -222,12 +226,13 @@ class WorkspaceItemAdapter(object):
         title = self.workspace_item.name
 
         # Make 'display_group'
-        display_group = [self.location(**identifier) for identifier in identifiers]
+        display_group = [self.location(**identifier) for identifier in
+                         identifiers]
 
         # Image url
         img_url = reverse(
             "lizard_map.workspace_item_image",
-            kwargs={'workspace_item_id': self.workspace_item.id}
+            kwargs={'workspace_item_id': self.workspace_item.id},
             )
 
         # If legend option: add legend to layout of identifiers
@@ -243,12 +248,11 @@ class WorkspaceItemAdapter(object):
                                             identifiers_escaped])
         return render_to_string(
             'lizard_map/popup.html',
-            {
-                'title': title,
-                'display_group': display_group,
-                'img_url': img_url,
-                'symbol_url': self.symbol_url(),
-                'add_snippet': add_snippet,
-                'editing': editing,
-                }
+            {'title': title,
+             'display_group': display_group,
+             'img_url': img_url,
+             'symbol_url': self.symbol_url(),
+             'add_snippet': add_snippet,
+             'editing': editing,
+             },
             )

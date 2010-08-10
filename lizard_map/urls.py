@@ -63,7 +63,8 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_add',
         name="lizard_map_workspace_item_add"),
 
-    # Actions on your session workspace - the system looks for the right workspace
+    # Actions on your session workspace - the system looks for the right
+    # workspace.
     url(r'^session_workspace/',
         'lizard_map.views.session_workspace_edit_item',
         {'workspace_category': 'temp'},

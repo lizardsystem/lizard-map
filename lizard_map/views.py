@@ -217,12 +217,13 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         # Add workspace_item name on top
         # title = workspace_item.name
 
-        identifiers = [display_object['identifier'] for display_object in display_group]
+        identifiers = [display_object['identifier'] for display_object
+                       in display_group]
         # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(
             identifiers,
-            layout_options={'add_snippet': add_snippet}
+            layout_options={'add_snippet': add_snippet},
             )
 
         x_found, y_found = display_object['google_coords']
@@ -234,7 +235,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
               'x': x_found,
               'y': y_found,
               'html': result_html,
-              'big': big_popup
+              'big': big_popup,
               }
     return HttpResponse(simplejson.dumps(result))
 
@@ -352,7 +353,7 @@ def session_collage_snippet_delete(request,
     if object_id is None:
         object_id = request.POST.get('object_id')
     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=object_id)
-    snippet_group = snippet.snippet_group
+    # snippet_group = snippet.snippet_group
 
     snippet.delete()
     return HttpResponse()
@@ -388,7 +389,8 @@ def collage_popup(request,
         request=request)
 
 
-def workspace_item_image(request, workspace_item_id, session_graph_options=False):
+def workspace_item_image(request, workspace_item_id,
+                         session_graph_options=False):
     """Shows image corresponding to workspace item and location identifier(s)
 
     identifier_list
@@ -405,7 +407,8 @@ def workspace_item_image(request, workspace_item_id, session_graph_options=False
             for identifier in identifier_list:
                 if not 'layout' in identifier:
                     identifier['layout'] = {}
-                identifier['layout'].update(graph_props.get(workspace_item_id, identifier))
+                identifier['layout'].update(graph_props.get(workspace_item_id,
+                                                            identifier))
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -422,7 +425,8 @@ def workspace_item_image(request, workspace_item_id, session_graph_options=False
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
-    return workspace_item.adapter.image(identifier_list, start_date, end_date, width, height)
+    return workspace_item.adapter.image(identifier_list, start_date, end_date,
+                                        width, height)
 
 
 def workspace_item_graph_edit(request, workspace_item_id):
@@ -444,7 +448,8 @@ def workspace_item_graph_edit(request, workspace_item_id):
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     location = workspace_item.adapter.location(**identifier)
-    img_url = workspace_item_image_url(workspace_item.id, [identifier, ], strip_layout=True,
+    img_url = workspace_item_image_url(workspace_item.id, [identifier, ],
+                                       strip_layout=True,
                                        session_graph_options=True)
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
@@ -465,13 +470,14 @@ def workspace_item_graph_edit(request, workspace_item_id):
          'location': location,
          'img_url': img_url,
          },
-        context_instance=RequestContext(request)
+        context_instance=RequestContext(request),
         )
 
 
 def session_graph_properties(request):
     """
-    set graph properties from request.POST to corresponding workspace_item_id and identifier
+    set graph properties from request.POST to corresponding workspace_item_id
+    and identifier
 
     graph properties: see options
     workspace_item_id and identifier_json must be in request.POST
@@ -516,6 +522,7 @@ def session_graph_properties(request):
 """
 Map stuff
 """
+
 
 def wms(request, workspace_id):
     """Return PNG as WMS service."""
@@ -620,7 +627,8 @@ Export
 """
 
 
-def export_identifier_csv(request, workspace_item_id=None, identifier_json=None):
+def export_identifier_csv(request, workspace_item_id=None,
+    identifier_json=None):
     """
     Uses adapter.values to get values. Then return these values in csv format.
     """
@@ -647,7 +655,8 @@ def export_snippet_group_statistics_csv(request, snippet_group_id=None):
     """
     if snippet_group_id is None:
         snippet_group_id = request.GET.get('snippet_group_id')
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+        pk=snippet_group_id)
     start_date, end_date = current_start_end_dates(request)
     statistics = snippet_group.statistics(start_date, end_date)
 

@@ -139,9 +139,10 @@ class WorkspaceCollage(models.Model):
     def locations(self):
         """locations of all snippets
         """
-        snippets_in_groups = [snippet_group.snippets.all() \
-                                  for snippet_group in self.snippet_groups.all()]
-        snippets = list(itertools.chain(*snippets_in_groups))  # flatten snippets in groups
+        snippets_in_groups = [snippet_group.snippets.all()
+                              for snippet_group in self.snippet_groups.all()]
+        # Flatten snippets in groups:
+        snippets = list(itertools.chain(*snippets_in_groups))
         return [snippet.location for snippet in snippets]
 
     @property
@@ -149,7 +150,8 @@ class WorkspaceCollage(models.Model):
         return WorkspaceItem.objects.filter(
             workspacecollagesnippet__in=self.snippets.all()).distinct()
 
-    def get_or_create_snippet(self, workspace_item, identifier_json, shortname, name):
+    def get_or_create_snippet(self, workspace_item, identifier_json,
+                              shortname, name):
         """
         Makes snippet in a snippet group. Finds or creates
         corresponding snippet group (see below)
@@ -166,7 +168,8 @@ class WorkspaceCollage(models.Model):
         if GROUPING_HINT in identifier:
             for snippet_group in snippet_groups:
                 for snippet in snippet_group.snippets.all():
-                    if snippet.identifier.get(GROUPING_HINT) == identifier[GROUPING_HINT]:
+                    if snippet.identifier.get(
+                        GROUPING_HINT) == identifier[GROUPING_HINT]:
                         found_snippet_group = snippet_group
                         break
 
@@ -174,7 +177,8 @@ class WorkspaceCollage(models.Model):
         # workspace_item. This is a backup grouping mechanism
         if not found_snippet_group:
             for snippet_group in snippet_groups:
-                if snippet_group.snippets.filter(workspace_item=workspace_item).exists():
+                if snippet_group.snippets.filter(
+                    workspace_item=workspace_item).exists():
                     found_snippet_group = snippet_group
 
         # (3) No existing snippet group: make one.
@@ -207,7 +211,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
     # boundary value for statistics
     boundary_value = models.FloatField(blank=True, null=True)
-    aggregation_period = models.IntegerField(choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
+    aggregation_period = models.IntegerField(
+        choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
     class Meta:
         verbose_name = _('Collage snippet group')
@@ -226,7 +231,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
     @property
     def snippets_summary(self):
-        return ', '.join([snippet.__unicode__() for snippet in self.snippets.all()])
+        return ', '.join([snippet.__unicode__() for snippet
+                          in self.snippets.all()])
 
     def statistics(self, start_date, end_date):
         """
@@ -251,7 +257,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
                 {'percentile': 75},
                 start_date=start_date,
                 end_date=end_date)
-            statistics_row.update({'percentile_75': statistics_percentile75['percentile']})
+            statistics_row.update(
+                {'percentile_75': statistics_percentile75['percentile']})
 
             # add name
             statistics_row['name'] = snippet.name
@@ -284,7 +291,8 @@ class WorkspaceCollageSnippet(models.Model):
         collage.
 
         """
-        if len(self.snippet_group.workspace_collage.workspace.workspace_items.filter(
+        workspace = self.snippet_group.workspace_collage.workspace
+        if len(workspace.workspace_items.filter(
                 pk=self.workspace_item.pk)) == 0:
             raise "workspace_item of snippet not in workspace of collage"
         # Call the "real" save() method.

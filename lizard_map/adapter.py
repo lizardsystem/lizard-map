@@ -303,10 +303,11 @@ class Graph(object):
          # TODO: get rid of the border around the legend.
 
     def http_png(self):
-        self.axes.set_position((self.left_label_width,
-                                self.bottom_axis_location + self.x_label_height,
-                                1 - self.legend_width - self.left_label_width,
-                                1 - 2 * self.bottom_axis_location - self.x_label_height))
+        self.axes.set_position(
+            (self.left_label_width,
+             self.bottom_axis_location + self.x_label_height,
+             1 - self.legend_width - self.left_label_width,
+             1 - 2 * self.bottom_axis_location - self.x_label_height))
 
         # Set date range
         # Somehow, the range cannot be set in __init__

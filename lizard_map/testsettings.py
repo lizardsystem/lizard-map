@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     'lizard_map',
     'lizard_ui',
     'staticfiles',
+    'compressor',
     'django_nose',
     'django.contrib.gis',
     'django.contrib.admin',

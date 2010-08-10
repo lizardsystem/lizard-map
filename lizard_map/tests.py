@@ -23,11 +23,11 @@ class LayersTest(TestCase):
 
 class WorkspaceTest(TestCase):
 
-    def test_workspace_creation(self):
+    def test_smoke(self):
         """We use the WorkspaceManager to find and create our workspaces"""
         mock_request = {}
         workspace_manager = lizard_map.workspace.WorkspaceManager(
             mock_request)
+        self.assertTrue(workspace_manager)  # It exists.
 
 # TODO: re-integrate the doctests from models.txt somehow
-

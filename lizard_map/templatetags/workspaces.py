@@ -43,9 +43,9 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
         workspace_item = snippets[0].workspace_item
         return workspace_item.adapter.html(
             identifiers,
-            layout_options={'add_snippet': add_snippet=='True',
-                            'editing': editing=='True',
-                            'legend': legend=='True'}
+            layout_options={'add_snippet': add_snippet == 'True',
+                            'editing': editing == 'True',
+                            'legend': legend == 'True'},
             )
     else:
         return 'empty snippet_group (should never happen)'
@@ -62,6 +62,7 @@ def snippet_group_statistics(request, snippet_group):
     start_date, end_date = current_start_end_dates(request)
     statistics = snippet_group.statistics(start_date, end_date)
     return {'statistics': statistics, 'snippet_group': snippet_group}
+
 
 @register.filter
 def json_escaped(value):
