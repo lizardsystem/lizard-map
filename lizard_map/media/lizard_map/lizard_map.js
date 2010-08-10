@@ -163,6 +163,6 @@ $(document).ready(function () {
     setUpEmptyTempInteraction();
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
-    // $(".add-snippet").snippetInteraction(); // als het met live werkt kan het hier
+    $(".add-snippet").snippetInteraction(); // voor collage view, nu nog nutteloos voor popup
     // $("a.lizard-map-link").lizardMapLink();
 });

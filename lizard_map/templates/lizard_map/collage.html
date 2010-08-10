@@ -20,8 +20,10 @@
 
 <h2>{{ collage.name }}</h2>
 {% for snippet_group in collage.snippet_groups.all %}
-  {% firstof snippet_group.name '' %}
+  <h3>Grafiek {% firstof snippet_group.name '' %}</h3>
   {% snippet_group snippet_group 'False' 'True' 'True' %}
+  <h3>Statistieken</h3>
+  {% snippet_group_statistics request snippet_group %}
 {% endfor %}
 
 </div>

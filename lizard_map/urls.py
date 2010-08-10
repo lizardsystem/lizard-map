@@ -112,6 +112,13 @@ urlpatterns = patterns(
         'lizard_map.views.search_coordinates',
         name="lizard_map.search_coordinates"),
 
+    # Export.
+    url(r'^adapter/export/csv/',
+        'lizard_map.views.export_identifier_csv',
+        name="lizard_map.export_identifier_csv"),
+    url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
+        'lizard_map.views.export_snippet_group_statistics_csv',
+        name="lizard_map.export_snippet_group_statistics_csv"),
     )
 
 

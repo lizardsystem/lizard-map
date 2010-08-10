@@ -18,6 +18,13 @@ LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 logger = logging.getLogger('lizard_map.models')
 
+ALL = 1
+YEAR = 2
+QUARTER = 3
+MONTH = 4
+WEEK = 5
+DAY = 6
+
 
 def adapter_class_names():
     """Return allowed layer method names (from entrypoints)
@@ -184,10 +191,23 @@ class WorkspaceCollage(models.Model):
 
 class WorkspaceCollageSnippetGroup(models.Model):
     """Contains a group of snippets, belongs to one collage"""
+    AGGREGATION_PERIOD_CHOICES = (
+        (ALL, _('all')),
+        (YEAR, _('year')),
+        (QUARTER, _('quarter')),
+        (MONTH, _('month')),
+        (WEEK, _('week')),
+        (DAY, _('day')),
+        )
+
     workspace_collage = models.ForeignKey(WorkspaceCollage,
                                           related_name='snippet_groups')
     index = models.IntegerField(default=1000)  # larger = lower in the list
     name = models.TextField(blank=True, null=True)
+
+    # boundary value for statistics
+    boundary_value = models.FloatField(blank=True, null=True)
+    aggregation_period = models.IntegerField(choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
     class Meta:
         verbose_name = _('Collage snippet group')
@@ -207,6 +227,36 @@ class WorkspaceCollageSnippetGroup(models.Model):
     @property
     def snippets_summary(self):
         return ', '.join([snippet.__unicode__() for snippet in self.snippets.all()])
+
+    def statistics(self, start_date, end_date):
+        """
+        Calcs standard statistics: min, max, avg, count_lt, count_gte,
+        percentile 25, percentile 75 and return them in a list of dicts
+        """
+        statistics = []
+        for snippet in self.snippets.all():
+            # base statistics
+            statistics_row = snippet.workspace_item.adapter.value_aggregate(
+                snippet.location,
+                {'min': None, 'max': None, 'avg': None,
+                 'count_lt': 0.05,
+                 'count_gte': 0.05,
+                 'percentile': 25},
+                start_date=start_date,
+                end_date=end_date)
+
+            # add 75 percentile
+            statistics_percentile75 = snippet.workspace_item.adapter.value_aggregate(
+                snippet.location,
+                {'percentile': 25},
+                start_date=start_date,
+                end_date=end_date)
+            statistics_row.update({'percentile_75': statistics_percentile75['percentile']})
+
+            # add name
+            statistics_row['name'] = snippet.name
+            statistics.append(statistics_row)
+        return statistics
 
 
 class WorkspaceCollageSnippet(models.Model):

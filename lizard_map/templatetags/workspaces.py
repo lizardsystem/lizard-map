@@ -1,6 +1,7 @@
 from django import template
 import simplejson as json
 
+from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 
 register = template.Library()
@@ -26,7 +27,7 @@ def workspace(context, workspace, show_new_workspace=False):
 
 
 @register.simple_tag
-def snippet_group(snippet_group, add_snippet=None, editing=None, detailed=None):
+def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
     """
     Renders snippet_group.  All snippets MUST be using the same
     workspace_item, or output is undefined.
@@ -44,11 +45,23 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, detailed=None):
             identifiers,
             layout_options={'add_snippet': add_snippet=='True',
                             'editing': editing=='True',
-                            'detailed': detailed=='True'}
+                            'legend': legend=='True'}
             )
     else:
         return 'empty snippet_group (should never happen)'
 
+
+@register.inclusion_tag("lizard_map/tag_statistics.html")
+def snippet_group_statistics(request, snippet_group):
+    """
+    Renders table with statistics. Uses start/enddate from request.
+
+    TODO: use start_date and end_date from workspace
+    """
+    statistics = []
+    start_date, end_date = current_start_end_dates(request)
+    statistics = snippet_group.statistics(start_date, end_date)
+    return {'statistics': statistics, 'snippet_group': snippet_group}
 
 @register.filter
 def json_escaped(value):

@@ -131,6 +131,37 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
+    def value_aggregate(self, identifier, aggregate_functions,
+                        start_date=None, end_date=None):
+        """
+        Calculates aggregated values of identifier. Returns dict with
+        aggregation function as key and value as value. {'avg': 3.5,
+        'min': 1, 'max': 6}.
+
+        The given functions in aggregate_functions will be calculated:
+
+        aggregate_functions = {
+        'avg': None,
+        'min': None,
+        'max': None,
+        'count_lt': <boundary value>,
+        'count_gte': <boundary value>,
+        'percentile': <percentile>     # returns value of given percentile
+        <custom function>: <custom input>  # for special aggregates,
+                                           # such as average in part
+                                           # of a grid
+        }
+
+        all functions are optional.
+
+        """
+        raise NotImplementedError
+
+    def values(self, identifier, start_date, end_date):
+        """Return values in list of 2-tuples (time, value)
+        """
+        raise NotImplementedError
+
     def location(self, identifier=None, layout=None):
         """Return fews point representation corresponding to filter_id, location_id and
         parameter_id in same format as search function
@@ -186,7 +217,7 @@ class WorkspaceItemAdapter(object):
             layout_options = {}
         add_snippet = layout_options.get('add_snippet', False)
         editing = layout_options.get('editing', False)
-        detailed = layout_options.get('detailed', False)
+        legend = layout_options.get('legend', False)
 
         title = self.workspace_item.name
 
@@ -198,6 +229,14 @@ class WorkspaceItemAdapter(object):
             "lizard_map.workspace_item_image",
             kwargs={'workspace_item_id': self.workspace_item.id}
             )
+
+        # If legend option: add legend to layout of identifiers
+        if legend:
+            for identifier in identifiers:
+                if not 'layout' in identifier:
+                    identifier['layout'] = {}
+                identifier['layout']['legend'] = True
+
         identifiers_escaped = [json.dumps(identifier).replace('"', '%22') for \
                                    identifier in identifiers]
         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
@@ -211,6 +250,5 @@ class WorkspaceItemAdapter(object):
                 'symbol_url': self.symbol_url(),
                 'add_snippet': add_snippet,
                 'editing': editing,
-                'detailed': detailed
                 }
             )

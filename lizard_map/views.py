@@ -3,6 +3,7 @@ import simplejson
 
 import mapnik
 import PIL.Image
+import csv
 from django.db.models import Max
 from django.http import HttpResponse
 from django.template import RequestContext
@@ -12,6 +13,7 @@ from django.views.decorators.cache import never_cache
 import simplejson as json
 
 from lizard_map import coordinates
+from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.adapter import GraphProps
 from lizard_map.daterange import current_start_end_dates
@@ -20,6 +22,7 @@ from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
+from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.workspace import WorkspaceManager
 
 # Workspace stuff
@@ -281,7 +284,8 @@ def collage(request,
     return render_to_response(
         template,
         {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id),
-         'editable': editable},
+         'editable': editable,
+         'request': request},
         context_instance=RequestContext(request))
 
 
@@ -609,3 +613,52 @@ def clickinfo(request, workspace_id):
         msg = 'Nothing found'
     # TODO: return json: {msg, x_found, y_found}
     return HttpResponse(msg)
+
+
+"""
+Export
+"""
+
+
+def export_identifier_csv(request, workspace_item_id=None, identifier_json=None):
+    """
+    Uses adapter.values to get values. Then return these values in csv format.
+    """
+    if workspace_item_id is None:
+        workspace_item_id = request.GET.get('workspace_item_id')
+    if identifier_json is None:
+        identifier_json = request.GET.get('identifier_json')
+    workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
+    identifier = parse_identifier_json(identifier_json)
+    start_date, end_date = current_start_end_dates(request)
+    values = workspace_item.adapter.values(identifier, start_date, end_date)
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export.csv'
+    writer = csv.writer(response)
+    for row in values:
+        writer.writerow(row)
+    return response
+
+
+def export_snippet_group_statistics_csv(request, snippet_group_id=None):
+    """
+    Exports snippet_group statistics as csv.
+    """
+    if snippet_group_id is None:
+        snippet_group_id = request.GET.get('snippet_group_id')
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    start_date, end_date = current_start_end_dates(request)
+    statistics = snippet_group.statistics(start_date, end_date)
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export.csv'
+    writer = csv.writer(response)
+    colnames = ['min', 'max', 'avg', 'count_lt', 'count_gte',
+                'percentile', 'percentile_75']
+    colnamesdisplay = ['min', 'max', 'avg', '< boundary', '>= boundary',
+                       'percentile_25', 'percentile_75']
+    writer.writerow(colnamesdisplay)
+    for row in statistics:
+        writer.writerow([row[colname] for colname in colnames])
+    return response
