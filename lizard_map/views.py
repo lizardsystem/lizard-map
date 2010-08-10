@@ -637,7 +637,7 @@ def export_identifier_csv(request, workspace_item_id=None, identifier_json=None)
     response['Content-Disposition'] = 'attachment; filename=export.csv'
     writer = csv.writer(response)
     for row in values:
-        writer.writerow(row)
+        writer.writerow([row['datetime'], row['value'], row['unit']])
     return response
 
 

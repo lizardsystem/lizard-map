@@ -158,7 +158,7 @@ class WorkspaceItemAdapter(object):
         raise NotImplementedError
 
     def values(self, identifier, start_date, end_date):
-        """Return values in list of 2-tuples (time, value)
+        """Return values in list of dictionaries (datetime, value, unit)
         """
         raise NotImplementedError
 

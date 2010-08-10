@@ -237,18 +237,18 @@ class WorkspaceCollageSnippetGroup(models.Model):
         for snippet in self.snippets.all():
             # base statistics
             statistics_row = snippet.workspace_item.adapter.value_aggregate(
-                snippet.location,
+                snippet.identifier,
                 {'min': None, 'max': None, 'avg': None,
-                 'count_lt': 0.05,
-                 'count_gte': 0.05,
+                 'count_lt': self.boundary_value,
+                 'count_gte': self.boundary_value,
                  'percentile': 25},
                 start_date=start_date,
                 end_date=end_date)
 
             # add 75 percentile
             statistics_percentile75 = snippet.workspace_item.adapter.value_aggregate(
-                snippet.location,
-                {'percentile': 25},
+                snippet.identifier,
+                {'percentile': 75},
                 start_date=start_date,
                 end_date=end_date)
             statistics_row.update({'percentile_75': statistics_percentile75['percentile']})
