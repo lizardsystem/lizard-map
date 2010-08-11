@@ -195,7 +195,7 @@ def snippet_group_image(request, snippet_group_id, legend=True):
     return workspace_item.adapter.image(identifiers,
                                         start_date, end_date,
                                         width, height,
-                                        image_layout=snippet_group.layout())
+                                        layout_extra=snippet_group.layout())
 
 @never_cache
 def workspace_item_delete(request, object_id=None):
