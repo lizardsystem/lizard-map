@@ -104,6 +104,10 @@ function nothingFoundPopup() {
               2000);
 }
 
+function setUpGraphEditPopup() {
+    $(".graph_edit_trigger").overlay();
+}
+
 /*
 Empty the temp workspace
 */
@@ -153,7 +157,6 @@ function popup_click_handler(x, y, map) {
     }
 }
 
-
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -161,6 +164,9 @@ $(document).ready(function () {
     setUpDateChoice();
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();
+
+    setUpGraphEditPopup();
+
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
     $(".add-snippet").snippetInteraction(); // voor collage view, nu nog nutteloos voor popup

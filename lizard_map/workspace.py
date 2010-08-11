@@ -197,7 +197,7 @@ class WorkspaceItemAdapter(object):
                                                     **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename
 
-    def html(self, identifiers=None, layout_options=None):
+    def html(self, snippet_group=None, identifiers=None, layout_options=None):
         """
         Html output for given identifiers. Optionally layout_options
         can be provided. Default layout_options:
@@ -207,16 +207,21 @@ class WorkspaceItemAdapter(object):
         """
         return 'html output for this adapter is not implemented'
 
-    def html_default(self, identifiers=None, layout_options=None):
+    def html_default(self, snippet_group=None, identifiers=None, layout_options=None):
         """
-        Returns html representation of given identifier_list.
-        This particular view always renders a list of items, then 1 image
+        Returns html representation of given snippet_group OR
+        identifiers (snippet_group has priority). If a snippet_group
+        is provided, more options are available.
+
+        This particular view always renders a list of items, then 1
+        image
 
         Use this function if html function behaviour is default:
         def html(self, identifiers):
             return super(WorkspaceItemAdapterKrw, self).html_default(
                 identifiers)
         """
+
         if layout_options is None:
             layout_options = {}
         add_snippet = layout_options.get('add_snippet', False)
@@ -226,6 +231,10 @@ class WorkspaceItemAdapter(object):
         title = self.workspace_item.name
 
         # Make 'display_group'
+
+        if snippet_group:
+            snippets = snippet_group.snippets.all()
+            identifiers = [snippet.identifier for snippet in snippets]
         display_group = [self.location(**identifier) for identifier in
                          identifiers]
 
@@ -248,6 +257,17 @@ class WorkspaceItemAdapter(object):
                                             identifiers_escaped])
         return render_to_string(
             'lizard_map/popup.html',
+<<<<<<< .mine
+            {
+                'title': title,
+                'display_group': display_group,
+                'img_url': img_url,
+                'symbol_url': self.symbol_url(),
+                'add_snippet': add_snippet,
+                'editing': editing,
+                'snippet_group': snippet_group,
+                }
+=======
             {'title': title,
              'display_group': display_group,
              'img_url': img_url,
@@ -255,4 +275,5 @@ class WorkspaceItemAdapter(object):
              'add_snippet': add_snippet,
              'editing': editing,
              },
+>>>>>>> .r12801
             )

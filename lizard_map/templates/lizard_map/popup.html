@@ -1,3 +1,10 @@
+{% comment %}
+
+Popup and full-page visualization of snippet group. This popup.html is
+the default template for the html_default method.
+
+{% endcomment %}
+
 {% load workspaces %}
 {# header #}
 <div><img src="{{ symbol_url }}" /><strong>{{ title }}</strong></div>
@@ -15,7 +22,21 @@
   <tr>
     <td>Hele grafiek</td>
     <td></td>
-    <td><a href="{{ display_object.object.get_absolute_url }}" class="ss_chart_curve_edit ss_sprite" title="Bewerk grafiek">&nbsp;</a></td>{# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
+    <td>
+      {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
+      {% if snippet_group %}
+      <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
+            title="Bewerk grafiek"
+            rel="#graph_edit_overlay">
+      </span>
+      <div id="graph_edit_overlay" class="popup" method="post"
+           action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
+        <form>{% csrf_token %}
+        <p><input type="submit" value="Update grafiek" /></p>
+        </form>
+      </div>
+      {% endif %}
+    </td>
     {% if add_snippet %}<td></td>{% endif %}
   </tr>
   {% endif %}

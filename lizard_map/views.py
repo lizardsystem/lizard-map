@@ -125,6 +125,15 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 
 
 @never_cache
+def snippet_group_graph_edit(request, snippet_group_id):
+    """Edits snippet_group properties using post.
+    """
+
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    return HttpResponse('')
+
+
+@never_cache
 def workspace_item_delete(request, object_id=None):
     """delete workspace item from workspace
 
@@ -222,7 +231,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(
-            identifiers,
+            identifiers=identifiers,
             layout_options={'add_snippet': add_snippet},
             )
 

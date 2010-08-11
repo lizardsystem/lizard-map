@@ -38,11 +38,10 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
     workspace_item)
     """
     snippets = snippet_group.snippets.all()
-    identifiers = [snippet.identifier for snippet in snippets]
     if snippets:
         workspace_item = snippets[0].workspace_item
         return workspace_item.adapter.html(
-            identifiers,
+            snippet_group=snippet_group,
             layout_options={'add_snippet': add_snippet == 'True',
                             'editing': editing == 'True',
                             'legend': legend == 'True'},

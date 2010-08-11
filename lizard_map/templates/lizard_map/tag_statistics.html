@@ -17,8 +17,8 @@
     <td>{% ifequal stat.min None %}-{% else %}{{ stat.min|floatformat:2 }}{% endifequal %}</td>
     <td>{% ifequal stat.max None %}-{% else %}{{ stat.max|floatformat:2 }}{% endifequal %}</td>
     <td>{% ifequal stat.avg None %}-{% else %}{{ stat.avg|floatformat:2 }}{% endifequal %}</td>
-    <td>{% ifequal stat.count_lt None %}-{% else %}{{ stat.count_lt|floatformat:2 }}{% endifequal %}</td>
-    <td>{% ifequal stat.count_gte None %}-{% else %}{{ stat.count_gte|floatformat:2 }}{% endifequal %}</td>
+    <td>{% ifequal stat.count_lt None %}-{% else %}{{ stat.count_lt|floatformat:0 }}{% endifequal %}</td>
+    <td>{% ifequal stat.count_gte None %}-{% else %}{{ stat.count_gte|floatformat:0 }}{% endifequal %}</td>
     <td>{% ifequal stat.percentile None %}-{% else %}{{ stat.percentile|floatformat:2 }}{% endifequal %}</td>
     <td>{% ifequal stat.percentile_75 None %}-{% else %}{{ stat.percentile_75|floatformat:2 }}{% endifequal %}</td>
   </tr>

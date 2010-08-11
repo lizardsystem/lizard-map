@@ -214,6 +214,12 @@ class WorkspaceCollageSnippetGroup(models.Model):
     aggregation_period = models.IntegerField(
         choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
+    layout_title = models.CharField(max_length=80, blank=True, null=True)
+    layout_x_label = models.CharField(max_length=80, blank=True, null=True)
+    layout_y_label = models.CharField(max_length=80, blank=True, null=True)
+    layout_y_min = models.FloatField(blank=True, null=True)
+    layout_y_max = models.FloatField(blank=True, null=True)
+
     class Meta:
         verbose_name = _('Collage snippet group')
         verbose_name_plural = _('Collage snippet groups')
@@ -264,6 +270,13 @@ class WorkspaceCollageSnippetGroup(models.Model):
             statistics_row['name'] = snippet.name
             statistics.append(statistics_row)
         return statistics
+
+    def layout(self):
+        """Returns layout properties of this snippet_group. Used in
+        snippet.identifier['layout']"""
+        return {'y_label': self.layout_y_label, 'x_label': self.layout_x_label,
+                'y_min': self.layout_y_min, 'y_max': self.layout_y_max,
+                'title': self.layout_title}
 
 
 class WorkspaceCollageSnippet(models.Model):
