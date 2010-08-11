@@ -4,7 +4,7 @@ import mapnik
 import pkg_resources
 
 from lizard_map import coordinates
-from workspace import WorkspaceItemAdapter
+from lizard_map.workspace import WorkspaceItemAdapter
 
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
