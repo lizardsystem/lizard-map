@@ -100,14 +100,23 @@
   </script>
 {% endblock map-javascript %}
 
-
+{# Should this block be zapped?  It *is* already in lizard-ui... #}
 {% block sidebar %}
 {% endblock sidebar %}
 
 {% block above-content %}
-<div class="map-actions">
-{% for workspace_item in workspaces.temp.0.workspace_items.all %}
-<span class="ss_sprite ss_map_delete action-icon workspace-empty-temp map-action" data-workspace-item-id="{{ workspace_item.id }}">tijdelijke workspace legen</span>
-{% endfor %}
-</div>
+<ul class="map-actions">
+  {% if animation_slider %}
+  <li id="animation-slider" class="map-action">
+  </li>
+  {% endif %}
+  {% for workspace_item in workspaces.temp.0.workspace_items.all %}
+  <li class="workspace-empty-temp map-action"
+      data-workspace-item-id="{{ workspace_item.id }}">
+    <span class="ss_sprite ss_map_delete action-icon">
+      tijdelijke workspace legen
+    </span>
+  </li>
+  {% endfor %}
+</ul>
 {% endblock above-content %}

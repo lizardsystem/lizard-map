@@ -1,7 +1,12 @@
-// jslint configuration
+// jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
 reloadGraphs, fillSidebar, show_popup */
+
+function setUpAnimationSlider() {
+    $("#animation-slider").slider();
+}
+
 
 function setUpWorkspaceAcceptable() {
     // Set up draggability for current and future items.
@@ -37,8 +42,12 @@ function setUpWorkspaceAcceptable() {
             },
             function (workspace_id) {
                 updateLayer(workspace_id);
-                $(".map-actions").load("./ .map-action",
-                                       fillSidebar);
+                $(".map-actions").load(
+                    "./ .map-action",
+                    function () {
+                        fillSidebar();
+                        setUpAnimationSlider();
+                    });
             });
         stretchOneSidebarBox();
     });
@@ -112,7 +121,7 @@ function setUpGraphEditPopup() {
 Empty the temp workspace
 */
 function setUpEmptyTempInteraction() {
-    $("span.workspace-empty-temp").live("click", function () {
+    $(".workspace-empty-temp").live("click", function () {
         var $workspace, url, workspace_item_id;
         $(this).css("cursor", "progress");
         $workspace = $(".workspace");
@@ -124,8 +133,12 @@ function setUpEmptyTempInteraction() {
             function (workspace_id) {
                 updateLayer(workspace_id);
                 // load new map actions
-                $(".map-actions").load("./ .map-action",
-                                       fillSidebar);
+                $(".map-actions").load(
+                    "./ .map-action",
+                    function () {
+                        fillSidebar();
+                        setUpAnimationSlider();
+                    });
                 // remove highlighting
                 $(".workspace-acceptable").removeClass("selected");
             }
@@ -157,6 +170,8 @@ function popup_click_handler(x, y, map) {
     }
 }
 
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -164,7 +179,7 @@ $(document).ready(function () {
     setUpDateChoice();
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();
-
+    setUpAnimationSlider();
     setUpGraphEditPopup();
 
     /* Workspace functions, requires jquery.workspace.js */

@@ -13,6 +13,10 @@ Changelog of lizard-map
 
 - Removed specific breadcrumbs.
 
+- Started with an animation slider for showing map layers at specific points
+  in time.
+
+
 1.1 (2010-07-16)
 ----------------
 
