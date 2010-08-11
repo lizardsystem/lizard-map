@@ -1,7 +1,6 @@
 import os
 
 from django.conf import settings
-
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 import simplejson as json
