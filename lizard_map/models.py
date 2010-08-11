@@ -10,13 +10,16 @@ import simplejson
 
 from lizard_map.adapter import parse_identifier_json
 
-GROUPING_HINT = 'grouping_hint'  # Do not change!
+# Do not change the following items!
+GROUPING_HINT = 'grouping_hint'
+USER_WORKSPACES = 'user'
+DEFAULT_WORKSPACES = 'default'
+TEMP_WORKSPACES = 'temp'
+
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
-
-logger = logging.getLogger('lizard_map.models')
 
 ALL = 1
 YEAR = 2
@@ -24,6 +27,8 @@ QUARTER = 3
 MONTH = 4
 WEEK = 5
 DAY = 6
+
+logger = logging.getLogger('lizard_map.models')
 
 
 def adapter_class_names():

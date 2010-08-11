@@ -5,8 +5,11 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 import simplejson as json
 
-from lizard_map.models import Workspace
+from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
+from lizard_map.models import TEMP_WORKSPACES
+from lizard_map.models import USER_WORKSPACES
+from lizard_map.models import Workspace
 from lizard_map.symbol_manager import SymbolManager
 
 
@@ -31,7 +34,7 @@ class WorkspaceManager:
         # similar.  They will lead to coding errors.
         if workspaces_id is None:
             workspaces_id = self.request.session['workspaces']
-        # Workspaces are grouped by key 'temp', 'user', etc.
+        # Workspaces are grouped by key TEMP_WORKSPACES, USER_WORKSPACES, etc.
         for group, workspace_ids in workspaces_id.items():
             self.workspaces[group] = []
             for workspace_id in workspace_ids:
@@ -42,7 +45,7 @@ class WorkspaceManager:
                     errors += 1
         return errors
 
-    def empty(self, category='temp'):
+    def empty(self, category=TEMP_WORKSPACES):
         #clear all items in workspace category
         for workspace in self.workspaces[category]:
             workspace.workspace_items.all().delete()
@@ -72,31 +75,32 @@ class WorkspaceManager:
             changes = self.load_workspaces()
 
         #check if components exist, else create them
-        if not 'default' in self.workspaces:
+        if not DEFAULT_WORKSPACES in self.workspaces:
             try:
-                self.workspaces['default'] = [
-                    Workspace.objects.get(name='achtergrond'), ]
+                self.workspaces[DEFAULT_WORKSPACES] = [
+                    Workspace.objects.get(name='achtergrond')]
             except Workspace.DoesNotExist:
                 pass
             changes = True
 
-        if not 'temp' in self.workspaces or not self.workspaces['temp']:
-            workspace_temp = Workspace(name='temp')
+        if (not TEMP_WORKSPACES in self.workspaces or
+            not self.workspaces[TEMP_WORKSPACES]):
+            workspace_temp = Workspace(name=TEMP_WORKSPACES)
             workspace_temp.save()
-            self.workspaces['temp'] = [workspace_temp, ]
+            self.workspaces[TEMP_WORKSPACES] = [workspace_temp]
             changes = True
 
         if (new_workspace or
-            not 'user' in self.workspaces or
-            not len(self.workspaces['user'])):
+            not USER_WORKSPACES in self.workspaces or
+            not len(self.workspaces[USER_WORKSPACES])):
             workspace_user = Workspace()
             workspace_user.save()
-            self.workspaces['user'] = [workspace_user, ]
+            self.workspaces[USER_WORKSPACES] = [workspace_user]
             changes = True
 
         #create collage if necessary, it is stored in the workspace
-        if len(self.workspaces['user'][0].collages.all()) == 0:
-            self.workspaces['user'][0].collages.create()
+        if len(self.workspaces[USER_WORKSPACES][0].collages.all()) == 0:
+            self.workspaces[USER_WORKSPACES][0].collages.create()
 
         if changes:
             self.save_workspaces()
