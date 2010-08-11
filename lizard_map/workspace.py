@@ -22,7 +22,8 @@ class WorkspaceManager:
         """save workspaces to session"""
         workspaces_id = {}
         for group, workspace_list in self.workspaces.items():
-            workspaces_id[group] = [workspace.id for workspace in workspace_list]
+            workspaces_id[group] = [workspace.id for workspace in
+                                    workspace_list]
         self.request.session['workspaces'] = workspaces_id
 
     def load_workspaces(self, workspaces_id=None):
@@ -108,10 +109,21 @@ class WorkspaceManager:
         return self.workspaces
 
 
-# The Workspace item adapter implements workspace item behavior of a
-# specific type adapter_class"
 class WorkspaceItemAdapter(object):
+    """Base class for workspace_item adapters.
+
+    Lizard-map needs to display workspace items.  Search in them according to
+    clicks on the map.  And so on.  But workspace items can be anything.  An
+    *adapter* adapts a workspace item to what lizard-map needs.
+
+    So for every new kind of workspace item, you'll need a fresh adapter that
+    subclasses this base adapter.  And you'll need to implement the
+    NotImplementedError'ed methods.
+
+    """
+
     layer_arguments = {}
+    is_animatable = False
 
     def __init__(self, workspace_item, layer_arguments=None):
         self.workspace_item = workspace_item
