@@ -21,8 +21,8 @@ class WorkspaceManager:
     def save_workspaces(self):
         """save workspaces to session"""
         workspaces_id = {}
-        for k, workspace_list in self.workspaces.items():
-            workspaces_id[k] = [workspace.id for workspace in workspace_list]
+        for group, workspace_list in self.workspaces.items():
+            workspaces_id[group] = [workspace.id for workspace in workspace_list]
         self.request.session['workspaces'] = workspaces_id
 
     def load_workspaces(self, workspaces_id=None):
@@ -79,6 +79,7 @@ class WorkspaceManager:
             try:
                 self.workspaces[DEFAULT_WORKSPACES] = [
                     Workspace.objects.get(name='achtergrond')]
+                # ^^^ TODO: use non-Dutch name.
             except Workspace.DoesNotExist:
                 pass
             changes = True
