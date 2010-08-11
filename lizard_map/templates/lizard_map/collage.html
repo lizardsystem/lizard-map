@@ -2,6 +2,12 @@
 {% extends "lizard_map/wms.html" %}
 {% load workspaces %}
 
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/graph.js"></script>
+{% endblock %}
+
 {% block sidebar %}
 {% workspace collage.workspace %}
 {% endblock %}

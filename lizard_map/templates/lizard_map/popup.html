@@ -24,24 +24,49 @@ the default template for the html_default method.
     <td></td>
     <td>
       {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
+      {# to use this popup, one must use lizard_map/graph.js #}
       {% if snippet_group %}
-      {# This popup refers to #graph_edit_overlay. The overlay must be created outside the popup. #}
       <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
             title="Bewerk grafiek"
             rel="#graph_edit_overlay">
       </span>
       <div id="graph_edit_overlay" class="popup">
+        <h1>Grafiek opties</h1>
         <form class="graph-options"
               data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
-          <p>Titel<input class="title" type="text" name="title" /></p>
-          <p>Y-min<input class="title" type="text" name="title" /></p>
-          <p>Y-max<input class="title" type="text" name="title" /></p>
-          <p>Y-label<input class="title" type="text" name="title" /></p>
-          <p>X-label<input class="title" type="text" name="title" /></p>
-          <p>Drempelwaarde<input class="title" type="text" name="title" /></p>
-          <p>25-percentiel<input class="title" type="text" name="title" /></p>
-          <p>75-percentiel<input class="title" type="text" name="title" /></p>
-          <p><input class="graph-action" type="button" value="Update grafiek" /></p>
+          <ul>
+            <li>
+              <label>Titel</label>
+              <div><input class="graph-title" type="text" name="title"
+                          value="{{ snippet_group.layout_title}}" /></div>
+            </li>
+            <li class="left-half">
+              <label>Y-min</label>
+              <div><input class="graph-y-min" type="text" name="y_min"
+                          value="{{ snippet_group.layout_y_min|floatformat }}" /></div>
+            </li>
+            <li class="right-half">
+              <label>Y-max</label>
+              <div><input class="graph-y-max" type="text" name="y_max"
+                          value="{{ snippet_group.layout_y_max|floatformat }}" /></div>
+            </li>
+            <li class="left-half">
+              <label>X-label</label>
+              <div><input class="graph-x-label" type="text" name="x_label"
+                          value="{{ snippet_group.layout_x_label }}" /></div>
+            </li>
+            <li class="right-half">
+              <label>Y-label</label>
+              <div><input class="graph-y-label" type="text" name="y_label"
+                          value="{{ snippet_group.layout_y_label }}" /></div>
+            </li>
+            <li>
+              <label>Drempelwaarde (herlaad pagina voor statistieken)</label>
+              <div><input class="graph-boundary-value" type="text" name="boundary_value"
+                          value="{{ snippet_group.boundary_value|floatformat }}" /></div>
+            </li>
+            <li><input class="graph-action" type="button" value="Update grafiek" /></li>
+          </ul>
         </form>
       </div>
       {% endif %}

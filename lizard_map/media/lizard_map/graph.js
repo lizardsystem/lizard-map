@@ -1,4 +1,5 @@
-/* helper functions in graph edit screen */
+/* Helper functions in graph edit screen.  Needs lizard.js in
+order to function correctly.  */
 function graph_save_snippet() {
     // the actual graph props are already stored in session on server
     var url, workspace_item_id, workspace_item_location_identifier;
@@ -19,17 +20,12 @@ function graph_save_snippet() {
 }
 
 function graph_action() {
-    // send all checked graph properties to server
-    var $form, graph_props, url, workspace_item_id, identifier_json;
+    // send all graph properties to server and reload graphs
+    var $form, url;
     $form = $("form.graph-options");
     url = $form.attr("data-url");
-    workspace_item_id = $form.attr("data-workspace-item-id");
-    identifier_json = $form.attr("data-identifier-json");
-    graph_props = $form.serialize() +
-        "&workspace_item_id=" + workspace_item_id +
-        "&identifier_json=" + identifier_json;
     $.post(url,
-           graph_props,
+           $form.serialize(),
            function() {
                reloadGraphs();
            });

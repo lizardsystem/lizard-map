@@ -248,35 +248,40 @@ class WorkspaceItemAdapter(object):
 
         title = self.workspace_item.name
 
-        # Make 'display_group'
-
         if snippet_group:
             snippets = snippet_group.snippets.all()
             identifiers = [snippet.identifier for snippet in snippets]
-            # add snippet_group layout to identifiers for displaying
-            snippet_group_layout = {'layout': snippet_group.layout()}
-            for identifier in identifiers:
-                identifier.update(snippet_group_layout)
+
+        # Image url: for snippet_group there is a special (dynamic) url.
+        if snippet_group:
+            # Image url for snippet_group: can change if snippet_group
+            # properties are altered.
+            img_url = reverse(
+                "lizard_map.snippet_group_image",
+                kwargs={'snippet_group_id': snippet_group.id}
+                )
+        else:
+            # Image url: static url composed with all options and layout tweaks
+            img_url = reverse(
+                "lizard_map.workspace_item_image",
+                kwargs={'workspace_item_id': self.workspace_item.id},
+                )
+            # If legend option: add legend to layout of identifiers
+            if legend:
+                for identifier in identifiers:
+                    if not 'layout' in identifier:
+                        identifier['layout'] = {}
+                    identifier['layout']['legend'] = True
+
+            identifiers_escaped = [json.dumps(identifier).replace('"', '%22') for \
+                                       identifier in identifiers]
+            img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
+                                                identifiers_escaped])
+
+        # Make 'display_group'
         display_group = [self.location(**identifier) for identifier in
                          identifiers]
 
-        # Image url
-        img_url = reverse(
-            "lizard_map.workspace_item_image",
-            kwargs={'workspace_item_id': self.workspace_item.id},
-            )
-
-        # If legend option: add legend to layout of identifiers
-        if legend:
-            for identifier in identifiers:
-                if not 'layout' in identifier:
-                    identifier['layout'] = {}
-                identifier['layout']['legend'] = True
-
-        identifiers_escaped = [json.dumps(identifier).replace('"', '%22') for \
-                                   identifier in identifiers]
-        img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
-                                            identifiers_escaped])
         return render_to_string(
             'lizard_map/popup.html',
             {

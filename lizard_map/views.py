@@ -128,13 +128,74 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
     """
-    print 'hallo'
+    post = request.POST
+    title = post.get('title', None)
+    x_label = post.get('x_label', None)
+    y_label = post.get('y_label', None)
+    y_min = post.get('y_min', None)
+    y_max = post.get('y_max', None)
+    boundary_value = post.get('boundary_value', None)
+    aggregation_period = post.get('aggregation_period', None)
+
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
-    snippet_group.layout_title = 'test title'
+    changes = False
+    if title is not None:  # empty string is also good! it will force default title
+        snippet_group.layout_title = title
+    if x_label is not None:
+        snippet_group.layout_x_label = x_label
+    if y_label is not None:
+        snippet_group.layout_y_label = y_label
+    try:
+        snippet_group.layout_y_min = float(y_min)
+    except (ValueError, TypeError):
+        snippet_group.layout_y_min = None
+    try:
+        snippet_group.layout_y_max = float(y_max)
+    except (ValueError, TypeError):
+        snippet_group.layout_y_max = None
+    try:
+        snippet_group.boundary_value = float(boundary_value)
+    except (ValueError, TypeError):
+        snippet_group.boundary_value = None
     snippet_group.save()
     return HttpResponse('')
 
+
+def snippet_group_image(request, snippet_group_id, legend=True):
+    """Draws a single image for the snippet_group. The MUST be at
+    least 1 snippet in the group."""
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    snippets = snippet_group.snippets.all()
+    identifiers = [snippet.identifier for snippet in snippets]
+
+    # add legend option
+    if legend:
+        for identifier in identifiers:
+            if not 'layout' in identifier:
+                identifier['layout'] = {}
+            identifier['layout']['legend'] = True
+
+    # get width and height
+    width = request.GET.get('width')
+    height = request.GET.get('height')
+    if width:
+        width = int(width)
+    else:
+        # We want None, not u''.
+        width = None
+    if height:
+        height = int(height)
+    else:
+        # We want None, not u''.
+        height = None
+
+    workspace_item = snippets[0].workspace_item
+    start_date, end_date = current_start_end_dates(request)
+    return workspace_item.adapter.image(identifiers,
+                                        start_date, end_date,
+                                        width, height,
+                                        image_layout=snippet_group.layout())
 
 @never_cache
 def workspace_item_delete(request, object_id=None):

@@ -53,9 +53,12 @@ urlpatterns = patterns(
     url(r'^snippet_popup/',
         'lizard_map.views.snippet_popup',
         name="lizard_map.snippet_popup"),
-    url(r'^snippet_group/(?P<snippet_group_id>\d+)/graph_edit/',
+    url(r'^snippet_group/(?P<snippet_group_id>\d+)/image_edit/',
         'lizard_map.views.snippet_group_graph_edit',
         name="lizard_map.snippet_group_graph_edit"),
+    url(r'^snippet_group/(?P<snippet_group_id>\d+)/image/',
+        'lizard_map.views.snippet_group_image',
+        name="lizard_map.snippet_group_image"),
 
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
