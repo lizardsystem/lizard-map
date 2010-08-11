@@ -92,7 +92,8 @@ urlpatterns = patterns(
     url(r'^workspace_item/(?P<workspace_item_id>\d+)/image/',
         'lizard_map.views.workspace_item_image',
         name="lizard_map.workspace_item_image"),
-    url(r'^workspace_item/(?P<workspace_item_id>\d+)/image_session_graph_options/',
+    url(r'^workspace_item/(?P<workspace_item_id>\d+)/' +
+        'image_session_graph_options/',
         'lizard_map.views.workspace_item_image',
         {'session_graph_options': True},
         name="lizard_map.workspace_item_image_session_graph_options"),

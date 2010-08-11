@@ -207,7 +207,8 @@ class WorkspaceItemAdapter(object):
         """
         return 'html output for this adapter is not implemented'
 
-    def html_default(self, snippet_group=None, identifiers=None, layout_options=None):
+    def html_default(self, snippet_group=None, identifiers=None,
+                     layout_options=None):
         """
         Returns html representation of given snippet_group OR
         identifiers (snippet_group has priority). If a snippet_group
@@ -265,5 +266,5 @@ class WorkspaceItemAdapter(object):
                 'add_snippet': add_snippet,
                 'editing': editing,
                 'snippet_group': snippet_group,
-                }
+                },
             )

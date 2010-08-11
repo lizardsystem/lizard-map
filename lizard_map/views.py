@@ -129,7 +129,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
     """
 
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+        pk=snippet_group_id)
     return HttpResponse('')
 
 
