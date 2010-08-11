@@ -31,12 +31,13 @@ class WorkspaceManager:
         # similar.  They will lead to coding errors.
         if workspaces_id is None:
             workspaces_id = self.request.session['workspaces']
-        for k, workspace_ids in workspaces_id.items():
-            self.workspaces[k] = []
+        # Workspaces are grouped by key 'temp', 'user', etc.
+        for group, workspace_ids in workspaces_id.items():
+            self.workspaces[group] = []
             for workspace_id in workspace_ids:
                 try:
                     new_workspace = Workspace.objects.get(pk=workspace_id)
-                    self.workspaces[k].append(new_workspace)
+                    self.workspaces[group].append(new_workspace)
                 except Workspace.DoesNotExist:
                     errors += 1
         return errors
