@@ -257,7 +257,6 @@ class WorkspaceItemAdapter(object):
                                             identifiers_escaped])
         return render_to_string(
             'lizard_map/popup.html',
-<<<<<<< .mine
             {
                 'title': title,
                 'display_group': display_group,
@@ -267,13 +266,4 @@ class WorkspaceItemAdapter(object):
                 'editing': editing,
                 'snippet_group': snippet_group,
                 }
-=======
-            {'title': title,
-             'display_group': display_group,
-             'img_url': img_url,
-             'symbol_url': self.symbol_url(),
-             'add_snippet': add_snippet,
-             'editing': editing,
-             },
->>>>>>> .r12801
             )
