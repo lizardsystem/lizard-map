@@ -258,7 +258,7 @@ class WorkspaceItemAdapter(object):
             # properties are altered.
             img_url = reverse(
                 "lizard_map.snippet_group_image",
-                kwargs={'snippet_group_id': snippet_group.id}
+                kwargs={'snippet_group_id': snippet_group.id},
                 )
         else:
             # Image url: static url composed with all options and layout tweaks
@@ -273,8 +273,8 @@ class WorkspaceItemAdapter(object):
                         identifier['layout'] = {}
                     identifier['layout']['legend'] = True
 
-            identifiers_escaped = [json.dumps(identifier).replace('"', '%22') for \
-                                       identifier in identifiers]
+            identifiers_escaped = [json.dumps(identifier).replace('"', '%22')
+                                   for identifier in identifiers]
             img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
                                                 identifiers_escaped])
 

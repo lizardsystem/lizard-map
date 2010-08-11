@@ -291,11 +291,13 @@ class WorkspaceCollageSnippetGroup(models.Model):
         if self.layout_title:
             result['title'] = self.layout_title
         if self.boundary_value is not None:
-            result['horizontal_lines'] = [{'name': _('Boundary value'),
-                                           'value': self.boundary_value,
-                                           'style': {'linewidth': 3, 'linestyle': ':',
-                                                     'color': 'green'}
-                                           }, ]
+            result['horizontal_lines'] = [
+                {'name': _('Boundary value'),
+                 'value': self.boundary_value,
+                 'style': {'linewidth': 3,
+                           'linestyle': ':',
+                           'color': 'green'},
+                 }]
         return result
 
 

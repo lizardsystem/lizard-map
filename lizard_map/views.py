@@ -140,7 +140,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
     changes = False
-    if title is not None:  # empty string is also good! it will force default title
+    if title is not None:
+        # Empty string is also good! it will force default title.
         snippet_group.layout_title = title
     if x_label is not None:
         snippet_group.layout_x_label = x_label
@@ -165,7 +166,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
 def snippet_group_image(request, snippet_group_id, legend=True):
     """Draws a single image for the snippet_group. The MUST be at
     least 1 snippet in the group."""
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+        pk=snippet_group_id)
     snippets = snippet_group.snippets.all()
     identifiers = [snippet.identifier for snippet in snippets]
 
@@ -196,6 +198,7 @@ def snippet_group_image(request, snippet_group_id, legend=True):
                                         start_date, end_date,
                                         width, height,
                                         layout_extra=snippet_group.layout())
+
 
 @never_cache
 def workspace_item_delete(request, object_id=None):

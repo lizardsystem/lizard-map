@@ -301,7 +301,9 @@ class Graph(object):
             if self.width < 500:
                 legend_loc = 4  # lower right
                 # approximation of legend height
-                self.legend_on_bottom_height = (len(labels)+1) * BOTTOM_LINE_HEIGHT / self.height
+                self.legend_on_bottom_height = (
+                    (len(labels) + 1) *
+                    BOTTOM_LINE_HEIGHT / self.height)
             else:
                 legend_loc = 1  # Upper right'
 
@@ -311,8 +313,10 @@ class Graph(object):
                 bbox_to_anchor=(1 - self.legend_width,
                                 0,  # self.bottom_axis_location
                                 self.legend_width,
+                                # 1 = Upper right of above bbox. Use 0 for
+                                # 'best'
                                 1),
-                loc=legend_loc,  # 1 = Upper right of above bbox. Use 0 for 'best'
+                loc=legend_loc,
                 fancybox=True,
                 shadow=True,
                )
@@ -320,16 +324,18 @@ class Graph(object):
          # TODO: get rid of the border around the legend.
 
     def http_png(self):
-        """Output plot to png. Also calculates size of plot and put 'now' line."""
+        """Output plot to png. Also calculates size of plot and put 'now'
+        line."""
 
         axes_left = self.left_label_width
-        axes_bottom = self.bottom_axis_location + self.x_label_height + \
-            self.legend_on_bottom_height
+        axes_bottom = (self.bottom_axis_location + self.x_label_height +
+                       self.legend_on_bottom_height)
         axes_width = 1 - self.legend_width - self.left_label_width
-        axes_height = 1 - 2 * self.bottom_axis_location - self.x_label_height - \
-            self.legend_on_bottom_height
+        axes_height = (1 - 2 * self.bottom_axis_location -
+                       self.x_label_height - self.legend_on_bottom_height)
 
-        self.axes.set_position((axes_left, axes_bottom, axes_width, axes_height))
+        self.axes.set_position((axes_left, axes_bottom,
+                                axes_width, axes_height))
 
         # Set date range
         # Somehow, the range cannot be set in __init__
