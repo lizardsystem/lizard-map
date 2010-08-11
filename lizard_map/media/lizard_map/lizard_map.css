@@ -13,6 +13,7 @@
 }
 
 .date-popup .close,
+.popup .close,
 #not_found_popup .close
 { background-image:url(close.png);
   position: absolute;

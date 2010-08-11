@@ -262,7 +262,6 @@ class WorkspaceCollageSnippetGroup(models.Model):
                  'percentile': 25},
                 start_date=start_date,
                 end_date=end_date)
-
             # add 75 percentile
             statistics_percentile75 = snippet_adapter.value_aggregate(
                 snippet.identifier,
@@ -280,9 +279,18 @@ class WorkspaceCollageSnippetGroup(models.Model):
     def layout(self):
         """Returns layout properties of this snippet_group. Used in
         snippet.identifier['layout']"""
-        return {'y_label': self.layout_y_label, 'x_label': self.layout_x_label,
-                'y_min': self.layout_y_min, 'y_max': self.layout_y_max,
-                'title': self.layout_title}
+        result = {}
+        if self.layout_y_label:
+            result['y_label'] = self.layout_y_label
+        if self.layout_x_label:
+            result['x_label'] = self.layout_x_label
+        if self.layout_y_min is not None:
+            result['y_min'] = self.layout_y_min
+        if self.layout_y_max is not None:
+            result['y_max'] = self.layout_y_max
+        if self.layout_title:
+            result['title'] = self.layout_title
+        return result
 
 
 class WorkspaceCollageSnippet(models.Model):

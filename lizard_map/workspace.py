@@ -240,6 +240,10 @@ class WorkspaceItemAdapter(object):
         if snippet_group:
             snippets = snippet_group.snippets.all()
             identifiers = [snippet.identifier for snippet in snippets]
+            # add snippet_group layout to identifiers for displaying
+            snippet_group_layout = {'layout': snippet_group.layout()}
+            for identifier in identifiers:
+                identifier.update(snippet_group_layout)
         display_group = [self.location(**identifier) for identifier in
                          identifiers]
 

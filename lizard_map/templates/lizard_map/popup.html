@@ -8,7 +8,7 @@ the default template for the html_default method.
 {% load workspaces %}
 {# header #}
 <div><img src="{{ symbol_url }}" /><strong>{{ title }}</strong></div>
-<div style="width: 100%; height: 250px;" class="img-use-my-size">
+<div style="width: 100%; height: 200px;" class="img-use-my-size">
   <a href="{{ img_url }}" class="replace-with-image">afbeelding nog niet geladen</a>
 </div>
 <table>
@@ -25,14 +25,23 @@ the default template for the html_default method.
     <td>
       {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
       {% if snippet_group %}
+      {# This popup refers to #graph_edit_overlay. The overlay must be created outside the popup. #}
       <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
             title="Bewerk grafiek"
             rel="#graph_edit_overlay">
       </span>
-      <div id="graph_edit_overlay" class="popup" method="post"
-           action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
-        <form>{% csrf_token %}
-        <p><input type="submit" value="Update grafiek" /></p>
+      <div id="graph_edit_overlay" class="popup">
+        <form class="graph-options"
+              data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
+          <p>Titel<input class="title" type="text" name="title" /></p>
+          <p>Y-min<input class="title" type="text" name="title" /></p>
+          <p>Y-max<input class="title" type="text" name="title" /></p>
+          <p>Y-label<input class="title" type="text" name="title" /></p>
+          <p>X-label<input class="title" type="text" name="title" /></p>
+          <p>Drempelwaarde<input class="title" type="text" name="title" /></p>
+          <p>25-percentiel<input class="title" type="text" name="title" /></p>
+          <p>75-percentiel<input class="title" type="text" name="title" /></p>
+          <p><input class="graph-action" type="button" value="Update grafiek" /></p>
         </form>
       </div>
       {% endif %}

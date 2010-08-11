@@ -237,7 +237,8 @@ class Graph(object):
         self.legend_width = 0.01  # no legend by default
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
-        self.x_label_height = 0
+        self.x_label_height = 0.0
+        self.legend_on_bottom_height = 0.0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
         self.fixup_axes()
@@ -276,18 +277,34 @@ class Graph(object):
         locator = MaxNLocator(nbins=max_number_of_ticks - 1)
         self.axes.yaxis.set_major_locator(locator)
 
+    def legend_space(self):
+        """reserve space for legend (on the right side). even when
+        there is no legend displayed"""
+        self.legend_width = LEGEND_WIDTH / self.width
+
     def legend(self, handles=None, labels=None):
         """
+        Displays legend. Default is right side, but if the width is
+        too small, it will display under the graph.
+
         handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)
         labels is list of strings
         """
-
-        # reserve space for legend. even when there is no legend displayed
-        self.legend_width = LEGEND_WIDTH / self.width
+        # experimental update: do not reserve space for legend by
+        # default, just place over graph. use legend_space to manually
+        # add space
 
         if handles is None and labels is None:
             handles, labels = self.axes.get_legend_handles_labels()
         if handles and labels:
+            # Determine 'small' or 'large'
+            if self.width < 500:
+                legend_loc = 4  # lower right
+                # approximation of legend height
+                self.legend_on_bottom_height = (len(labels)+1) * BOTTOM_LINE_HEIGHT / self.height
+            else:
+                legend_loc = 1  # Upper right'
+
             return self.figure.legend(
                 handles,
                 labels,
@@ -295,7 +312,7 @@ class Graph(object):
                                 0,  # self.bottom_axis_location
                                 self.legend_width,
                                 1),
-                loc=4,  # Lower right of above bbox.
+                loc=legend_loc,  # 1 = Upper right of above bbox. Use 0 for 'best'
                 fancybox=True,
                 shadow=True,
                )
@@ -303,11 +320,16 @@ class Graph(object):
          # TODO: get rid of the border around the legend.
 
     def http_png(self):
-        self.axes.set_position(
-            (self.left_label_width,
-             self.bottom_axis_location + self.x_label_height,
-             1 - self.legend_width - self.left_label_width,
-             1 - 2 * self.bottom_axis_location - self.x_label_height))
+        """Output plot to png. Also calculates size of plot and put 'now' line."""
+
+        axes_left = self.left_label_width
+        axes_bottom = self.bottom_axis_location + self.x_label_height + \
+            self.legend_on_bottom_height
+        axes_width = 1 - self.legend_width - self.left_label_width
+        axes_height = 1 - 2 * self.bottom_axis_location - self.x_label_height - \
+            self.legend_on_bottom_height
+
+        self.axes.set_position((axes_left, axes_bottom, axes_width, axes_height))
 
         # Set date range
         # Somehow, the range cannot be set in __init__

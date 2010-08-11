@@ -128,9 +128,11 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
     """
-
+    print 'hallo'
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
+    snippet_group.layout_title = 'test title'
+    snippet_group.save()
     return HttpResponse('')
 
 
@@ -233,7 +235,8 @@ def popup_json(found, popup_id=None, collage=False, request=None):
 
         html_per_workspace_item = workspace_item.adapter.html(
             identifiers=identifiers,
-            layout_options={'add_snippet': add_snippet},
+            layout_options={'add_snippet': add_snippet,
+                            'legend': True},
             )
 
         x_found, y_found = display_object['google_coords']
@@ -270,7 +273,8 @@ def popup_collage_json(collage, popup_id, request=None):
 
             identifiers = [snippet.identifier for snippet in snippets]
             html_per_workspace_item = workspace_item.adapter.html(
-                identifiers)
+                identifiers=identifiers,
+                layout_options={'legend': True})
 
             google_x, google_y = snippets[0].location['google_coords']
             result_html += html_per_workspace_item
