@@ -1,9 +1,11 @@
+from django.http import HttpRequest
 from django.test import TestCase
 import pkg_resources
 
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.workspace import WorkspaceManager
+from lizard_map.animation import AnimationSettings
 import lizard_map.admin
 import lizard_map.layers
 import lizard_map.models
@@ -131,3 +133,39 @@ class TestCollages(TestCase):
         self.assertFalse(workspace.collages.all())
         workspace.collages.create(name='user collage')
         self.assertTrue(workspace.collages.all())
+
+
+class TestAnimationSettings(TestCase):
+    """Tests for animation.py"""
+
+    def setUp(self):
+
+        class MockRequest(object):
+
+            def __init__(self):
+                self.session = {}
+
+        self.request = MockRequest()
+
+    def test_smoke(self):
+        animation_settings = AnimationSettings(request=self.request)
+        self.assertTrue(animation_settings)  # It exists.
+
+    def test_session_initialisation(self):
+        self.assertFalse('animation_settings' in self.request.session)
+        AnimationSettings(self.request)
+        self.assertTrue('animation_settings' in self.request.session)
+
+    def test_slider_position(self):
+        """Are the getters/setters working?"""
+        animation_settings = AnimationSettings(self.request)
+        animation_settings.slider_position = 42
+        self.assertEquals(animation_settings.slider_position, 42)
+        self.assertEquals(self.request.session[
+                'animation_settings']['slider_position'], 42)
+
+    def test_initial_slider_position(self):
+        """Slider position should be None if not initialised.
+        In any case, it should not return a keyerror."""
+        animation_settings = AnimationSettings(self.request)
+        self.assertEquals(animation_settings.slider_position, None)

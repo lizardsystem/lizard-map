@@ -130,7 +130,7 @@ urlpatterns = patterns(
     )
 
 
-if settings.DEBUG:
+if settings.DEBUG:  # Pragma: no cover
     urlpatterns += patterns(
         '',
         (r'^admin/', include(admin.site.urls)),
