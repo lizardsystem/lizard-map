@@ -22,7 +22,7 @@ function graph_save_snippet() {
 function graph_action() {
     // send all graph properties to server and reload graphs
     var $form, url;
-    $form = $("form.graph-options");
+    $form = $(this).parents("form.graph-options");
     url = $form.attr("data-url");
     $.post(url,
            $form.serialize(),

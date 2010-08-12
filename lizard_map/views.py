@@ -416,7 +416,7 @@ def session_collage_snippet_add(request,
         identifier['layout'] = graph_props.get(workspace_item.id, identifier)
 
         # Apply layout to snippet
-        snippet.identifier_json = json.dumps(identifier).replace('"', '%22')
+        snippet.set_identifier(identifier)
         snippet.save()
 
     return HttpResponse(json.dumps(workspace_id))
@@ -509,7 +509,8 @@ def workspace_item_image(request, workspace_item_id,
 
 def workspace_item_graph_edit(request, workspace_item_id):
     """
-    Generic graph edit page for single graph.
+    Generic graph edit page for single graph. OBSOLETE. Use
+    snippet_graph_edit instead.
 
     Can create identifiers with extra parameters -> TODO
 
@@ -552,10 +553,39 @@ def workspace_item_graph_edit(request, workspace_item_id):
         )
 
 
+def snippet_edit(request, snippet_id):
+    """
+    Edits snippet layout properties.
+    """
+    snippet = WorkspaceCollageSnippet.objects.get(pk=snippet_id)
+
+    post = request.POST
+    layout = {}
+    if post.get('color', None):
+        layout.update({'color': post['color']})
+    if post.__contains__('line_min'):
+        layout.update({'line_min': None})
+    if post.__contains__('line_max'):
+        layout.update({'line_max': None})
+    if post.__contains__('line_avg'):
+        layout.update({'line_avg': None})
+
+    identifier = snippet.identifier
+    if 'layout' in identifier:
+        del identifier['layout']
+    identifier.update({'layout': layout})
+    print identifier
+    snippet.set_identifier(identifier)
+    snippet.save()
+
+    return HttpResponse('')
+
+
 def session_graph_properties(request):
     """
+    MARKED FOR DELETION, DO NOT USE
     set graph properties from request.POST to corresponding workspace_item_id
-    and identifier
+    and identifier.
 
     graph properties: see options
     workspace_item_id and identifier_json must be in request.POST

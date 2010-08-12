@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-import simplejson
+import simplejson as json
 
 from lizard_map.adapter import parse_identifier_json
 
@@ -117,11 +117,11 @@ class WorkspaceItem(models.Model):
 
         Converts keys to str.
         """
-        json = self.adapter_layer_json
-        if not json:
+        layer_json = self.adapter_layer_json
+        if not layer_json:
             return {}
         result = {}
-        for k, v in simplejson.loads(json).items():
+        for k, v in json.loads(layer_json).items():
             result[str(k)] = v
         return result
 
@@ -291,13 +291,12 @@ class WorkspaceCollageSnippetGroup(models.Model):
         if self.layout_title:
             result['title'] = self.layout_title
         if self.boundary_value is not None:
-            result['horizontal_lines'] = [
-                {'name': _('Boundary value'),
-                 'value': self.boundary_value,
-                 'style': {'linewidth': 3,
-                           'linestyle': ':',
-                           'color': 'green'},
-                 }]
+            result['horizontal_lines'] = [{'name': _('Boundary value'),
+                                           'value': self.boundary_value,
+                                           'style': {'linewidth': 3,
+                                                     'linestyle': '--',
+                                                     'color': 'green'}
+                                           }, ]
         return result
 
 
@@ -360,3 +359,7 @@ class WorkspaceCollageSnippet(models.Model):
         return self.workspace_item.adapter.image([self.identifier],
                                                  start_end_dates,
                                                  width=width, height=height)
+
+    def set_identifier(self, identifier):
+        """sets dictionary identifier to property identifier_json"""
+        self.identifier_json = json.dumps(identifier).replace('"', '%22')

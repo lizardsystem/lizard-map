@@ -173,7 +173,7 @@ class WorkspaceItemAdapter(object):
         all functions are optional.
 
         """
-        raise NotImplementedError
+        return {}
 
     def values(self, identifier, start_date, end_date):
         """Return values in list of dictionaries (datetime, value, unit)
