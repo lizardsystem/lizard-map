@@ -3,8 +3,26 @@
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
 reloadGraphs, fillSidebar, show_popup */
 
+var animationTimer;
+
 function setUpAnimationSlider() {
-    $("#animation-slider").slider();
+    $("#animation-slider").slider({
+        //range:$("#animation-slider").attr("data-range"),
+        min:$("#animation-slider").attr("data-min"),
+        max:$("#animation-slider").attr("data-max"),
+        step:$("#animation-slider").attr("data-step"),
+        value:$("#animation-slider").attr("data-value"),
+        change: function(event, ui) {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+            }
+            animationTimer = setTimeout(
+                function () {
+                    console.log(ui.value);
+                },
+                300);
+            }
+    });
 }
 
 
