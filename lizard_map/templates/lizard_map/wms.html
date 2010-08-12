@@ -115,7 +115,7 @@
       data-value="{{ animation_slider.value }}">
   </li>
   <li class="map-action">
-    {{ animation_slider.selected_date|date:"d/m/Y" }}
+    <span id="selected-date">{{ animation_slider.selected_date|date:"d/m/Y" }}</span>
   </li>
   {% endif %}
   {% for workspace_item in workspaces.temp.0.workspace_items.all %}

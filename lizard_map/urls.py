@@ -30,6 +30,9 @@ urlpatterns = patterns(
      'lizard_map.daterange.set_date_range',
      {},
      'lizard_map.set_date_range'),
+    (r'set_animation_date$',
+     'lizard_map.animation.set_animation_date',
+     {}),
 
     # Collages and snippets
     url(r'^collage/(?P<collage_id>\d+)/$',

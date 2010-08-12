@@ -18,7 +18,15 @@ function setUpAnimationSlider() {
             animationTimer = setTimeout(
                 function () {
                     // Do actual work.
-                    console.log(ui.value);
+                    //console.log(ui.value);
+                    $.ajax({
+                        type: "POST",
+                        url: '/map/set_animation_date',
+                        data: "slider_value="+ui.value,
+                        success: function(data) {
+                            console.log("Load was performed");
+                        }
+                    });
                 },
                 300);
         }

@@ -1,19 +1,33 @@
 """Animation scrollbar handling."""
 import datetime
 
+import simplejson
+from django.http import HttpResponse
+
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import DUTCH_DATE_FORMAT
 
 ANIMATION_SETTINGS = 'animation_settings'
 
 
+def set_animation_date(request):
+    """Sets the animation date in the session"""
+    if request.is_ajax():
+        animation_settings = AnimationSettings(request)
+        animation_settings.slider_position = int(request.POST['slider_value'])
+        selected_date = animation_settings.info()['selected_date']
+        return_date = selected_date.strftime(DUTCH_DATE_FORMAT)
+        return HttpResponse(simplejson.dumps(return_date))
+
+        
 class AnimationSettings(object):
     """Handle animation settings in the session."""
 
     def __init__(self, request):
         self.request = request
-        self.session = self.request.session
-        if ANIMATION_SETTINGS not in self.session:
-            self.session[ANIMATION_SETTINGS] = {}
+
+        if ANIMATION_SETTINGS not in self.request.session:
+            self.request.session[ANIMATION_SETTINGS] = {}
         self.start_date, self.end_date = current_start_end_dates(self.request)
         period = self.end_date - self.start_date
         self.period_in_days = period.days
@@ -49,10 +63,11 @@ class AnimationSettings(object):
             value = 0
         if value > self.period_in_days:
             value = self.period_in_days
-        self.session[ANIMATION_SETTINGS]['slider_position'] = value
+        self.request.session[ANIMATION_SETTINGS]['slider_position'] = value
+        self.request.session.modified = True
 
     def _get_slider_position(self):
         """Return value stored in the session."""
-        return self.session[ANIMATION_SETTINGS].get('slider_position', 0)
+        return self.request.session[ANIMATION_SETTINGS].get('slider_position', 0)
 
     slider_position = property(_get_slider_position, _set_slider_position)
