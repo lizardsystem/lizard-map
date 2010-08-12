@@ -7,10 +7,10 @@ var animationTimer;
 
 function setUpAnimationSlider() {
     $("#animation-slider").slider({
-        min: $("#animation-slider").attr("data-min"),
-        max: $("#animation-slider").attr("data-max"),
-        step: $("#animation-slider").attr("data-step"),
-        value: $("#animation-slider").attr("data-value"),
+        min: parseInt($("#animation-slider").attr("data-min")),
+        max: parseInt($("#animation-slider").attr("data-max")),
+        step: parseInt($("#animation-slider").attr("data-step")),
+        value: parseInt($("#animation-slider").attr("data-value")),
         slide: function (event, ui) {
             if (animationTimer) {
                 clearTimeout(animationTimer);
