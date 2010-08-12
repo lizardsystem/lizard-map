@@ -21,7 +21,7 @@ function setUpAnimationSlider() {
                     //console.log(ui.value);
                     $.ajax({
                         type: "POST",
-                        url: '/map/set_animation_date',
+                        url: $("#animation-slider").attr("data-ajax-path"),
                         data: "slider_value="+ui.value,
                         success: function(data) {
                             console.log("Load was performed");

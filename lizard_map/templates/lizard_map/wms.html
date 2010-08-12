@@ -112,7 +112,8 @@
       data-min="{{ animation_slider.min }}"
       data-max="{{ animation_slider.max }}"
       data-step="{{ animation_slider.step }}"
-      data-value="{{ animation_slider.value }}">
+      data-value="{{ animation_slider.value }}"
+      data-ajax-path="{% url lizard_map.set_animation_date %}">
   </li>
   <li class="map-action">
     <span id="selected-date">{{ animation_slider.selected_date|date:"d/m/Y" }}</span>
