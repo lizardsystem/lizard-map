@@ -16,6 +16,7 @@ install_requires = [
     'lizard-ui >= 1.6',
     'django-nose',
     'nosexcover',
+    # TODO for Reinout: ^^^ do we need that nosexcover?
     ],
 
 tests_require = [
