@@ -11,10 +11,15 @@ Changelog of lizard-map
 - Implemented snippet groups. Snippet groups group similar snippets in
   a collage.
 
-- Removed specific breadcrumbs.
+- Removed breadcrumbs for specific sites.
+
+- Refactored collage view. One can now edit graphs in the collage
+  view. The graph-only editor has been removed.
 
 - Started with an animation slider for showing map layers at specific points
   in time.
+
+- Removed graph-properties that were stored in the session.
 
 
 1.1 (2010-07-16)

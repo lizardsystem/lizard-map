@@ -65,6 +65,37 @@ the default template for the html_default method.
               <div><input class="graph-boundary-value" type="text" name="boundary_value"
                           value="{{ snippet_group.boundary_value|floatformat }}" /></div>
             </li>
+            <li>
+              <label>Samenvattingsperiode</label>
+              <div>
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="1"
+                       {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
+                hele periode
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="2"
+                       {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
+                jaar
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="3"
+                       {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
+                kwartaal
+              </div>
+              <div>
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="4"
+                       {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
+                maand
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="5"
+                       {% ifequal snippet_group.aggregation_period 5 %} checked{% endifequal %} />
+                week
+                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                       value="6"
+                       {% ifequal snippet_group.aggregation_period 6 %} checked{% endifequal %} />
+                dag
+              </div>
+            </li>
             <li><input class="graph-action" type="button" value="Update grafiek" /></li>
           </ul>
         </form>

@@ -14,7 +14,6 @@ import simplejson as json
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.adapter import workspace_item_image_url
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -138,7 +137,6 @@ def snippet_group_graph_edit(request, snippet_group_id):
 
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
-    changes = False
     if title is not None:
         # Empty string is also good! it will force default title.
         snippet_group.layout_title = title
@@ -146,6 +144,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
         snippet_group.layout_x_label = x_label
     if y_label is not None:
         snippet_group.layout_y_label = y_label
+    if aggregation_period is not None:
+        snippet_group.aggregation_period = int(aggregation_period)
     try:
         snippet_group.layout_y_min = float(y_min)
     except (ValueError, TypeError):

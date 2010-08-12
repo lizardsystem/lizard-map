@@ -28,6 +28,7 @@ function graph_action() {
            $form.serialize(),
            function() {
                reloadGraphs();
+               $("div.close").click();
            });
 }
 
