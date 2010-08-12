@@ -14,6 +14,7 @@ from lizard_map.symbol_manager import SymbolManager
 
 
 class WorkspaceManager:
+
     def __init__(self, request):
         self.request = request
         self.workspaces = {}
@@ -246,11 +247,12 @@ class WorkspaceItemAdapter(object):
         editing = layout_options.get('editing', False)
         legend = layout_options.get('legend', False)
 
-        title = self.workspace_item.name
-
         if snippet_group:
             snippets = snippet_group.snippets.all()
             identifiers = [snippet.identifier for snippet in snippets]
+            title = str(snippet_group)
+        else:
+            title = self.workspace_item.name
 
         # Image url: for snippet_group there is a special (dynamic) url.
         if snippet_group:

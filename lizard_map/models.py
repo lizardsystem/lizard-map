@@ -232,7 +232,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
     def __unicode__(self):
         if self.snippets_summary:
-            return self.snippets_summary[:80]
+            return self.snippets_summary
         else:
             return '(empty snippet_group)'
 

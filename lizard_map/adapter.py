@@ -74,51 +74,6 @@ def workspace_item_image_url(workspace_item_id, identifiers,
     return img_url
 
 
-class GraphProps(object):
-    """Keep track of graph properties in a dict.
-
-    Can be used to load and safe in session
-
-    properties = {'<hash of workspace_item and identifier>': {graph
-    properties}, ...}
-
-    """
-    def __init__(self, properties=None):
-        if properties is None:
-            self.properties = {}
-        else:
-            self.properties = properties
-
-    def hash_string(self, workspace_item_id, identifier):
-        """make unique string of workspace_item and identifier
-        ignores layout properties
-        """
-        identifier_copy = identifier.copy()
-        if 'layout' in identifier_copy:
-            del identifier_copy['layout']
-        return '%s::%s' % (workspace_item_id, json.dumps(identifier_copy))
-
-    def set(self, workspace_item, identifier, graph_props):
-        """sets graph properties for given workspace_item and identifier
-        """
-        hash_string = self.hash_string(workspace_item, identifier)
-        self.properties[hash_string] = graph_props
-
-    def delete(self, workspace_item, identifier):
-        """delete graph properties for given workspace_item and identifier
-        """
-        hash_string = self.hash_string(workspace_item, identifier)
-        if hash_string in self.properties:
-            del self.properties[hash_string]
-
-    def get(self, workspace_item, identifier):
-        """gets graph properties for given workspace_item and identifier
-        return {} if not available
-        """
-        hash_string = self.hash_string(workspace_item, identifier)
-        return self.properties.get(hash_string, {})
-
-
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""
 
@@ -241,7 +196,6 @@ class Graph(object):
         self.legend_on_bottom_height = 0.0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
-        self.fixup_axes()
         # Date range
         # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
 
@@ -269,7 +223,10 @@ class Graph(object):
         self.axes.xaxis.set_major_locator(locator)
         self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
 
-        available_height = self.height - BOTTOM_LINE_HEIGHT
+        available_height = (self.height -
+                            BOTTOM_LINE_HEIGHT -
+                            self.x_label_height -
+                            self.legend_on_bottom_height)
         approximate_lines = int(available_height / (FONT_SIZE * 1.5))
         max_number_of_ticks = approximate_lines
         if max_number_of_ticks < 2:
@@ -301,9 +258,10 @@ class Graph(object):
             if self.width < 500:
                 legend_loc = 4  # lower right
                 # approximation of legend height
-                self.legend_on_bottom_height = (
-                    (len(labels) + 1) *
-                    BOTTOM_LINE_HEIGHT / self.height)
+                self.legend_on_bottom_height = min(
+                    (len(labels) + 1) * BOTTOM_LINE_HEIGHT / self.height,
+                    0.5)
+
             else:
                 legend_loc = 1  # Upper right'
 
@@ -326,6 +284,7 @@ class Graph(object):
     def http_png(self):
         """Output plot to png. Also calculates size of plot and put 'now'
         line."""
+        self.fixup_axes()
 
         axes_left = self.left_label_width
         axes_bottom = (self.bottom_axis_location + self.x_label_height +

@@ -103,20 +103,12 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_image',
         {'session_graph_options': True},
         name="lizard_map.workspace_item_image_session_graph_options"),
-    url(r'^workspace_item/(?P<workspace_item_id>\d+)/graph_edit/',
-        'lizard_map.views.workspace_item_graph_edit',
-        name="lizard_map.workspace_item.graph_edit"),
     url(r'^workspaceitem/delete/',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
     url(r'^workspaceitem/edit/',
         'lizard_map.views.workspace_item_edit',
         name="lizard_map_workspace_item_edit"),
-
-    # Session temp data, for graph_edit
-    url(r'^graph_properties/',
-        'lizard_map.views.session_graph_properties',
-        name="lizard_map.session_graph_properties"),
 
     # Search stuff.
     url(r'^search_coordinates/',

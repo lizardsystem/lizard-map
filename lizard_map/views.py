@@ -15,7 +15,6 @@ import simplejson as json
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
-from lizard_map.adapter import GraphProps
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -241,7 +240,7 @@ def session_workspace_edit_item(request,
     return
 
 
-def popup_json(found, popup_id=None, collage=False, request=None):
+def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """Return html with info on list of 'found' objects.
 
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
@@ -285,7 +284,7 @@ def popup_json(found, popup_id=None, collage=False, request=None):
         workspace_item = display_group[0]['workspace_item']
 
         # Check if this display object must have the option add_snippet
-        if collage or (workspace_item_id in temp_workspace_item_ids):
+        if hide_add_snippet or (workspace_item_id in temp_workspace_item_ids):
             add_snippet = False
         else:
             add_snippet = True
@@ -333,15 +332,14 @@ def popup_collage_json(collage, popup_id, request=None):
     for snippet_group in snippet_groups:
         snippets = snippet_group.snippets.all()
         if snippets:
+            # Pick workspace_item of first snippet to build html
             workspace_item = snippets[0].workspace_item
-
-            identifiers = [snippet.identifier for snippet in snippets]
             html_per_workspace_item = workspace_item.adapter.html(
-                identifiers=identifiers,
+                snippet_group=snippet_group,
                 layout_options={'legend': True})
-
-            google_x, google_y = snippets[0].location['google_coords']
             result_html += html_per_workspace_item
+            # Pick the location of the first snippet.
+            google_x, google_y = snippets[0].location['google_coords']
 
     result = {'id': popup_id,
               'x': google_x,
@@ -377,13 +375,9 @@ def session_collage_snippet_add(request,
                                 workspace_item_location_shortname=None,
                                 workspace_item_location_name=None,
                                 workspace_collage_id=None,
-                                workspace_category='user',
-                                session_graph_options=False):
+                                workspace_category='user'):
     """finds session user workspace and add snippet to (only) corresponding
     collage
-
-    !! updates location_identifier with request.session['graph_edit'],
-       if available
     """
     if workspace_item_id is None:
         workspace_item_id = request.POST.get('workspace_item_id')
@@ -411,16 +405,6 @@ def session_collage_snippet_add(request,
         identifier_json=workspace_item_location_identifier,
         shortname=workspace_item_location_shortname,
         name=workspace_item_location_name)
-
-    # update snippet with graph_edit
-    if session_graph_options and 'graph_edit' in request.session:
-        graph_props = GraphProps(request.session['graph_edit'])
-        identifier = snippet.identifier
-        identifier['layout'] = graph_props.get(workspace_item.id, identifier)
-
-        # Apply layout to snippet
-        snippet.set_identifier(identifier)
-        snippet.save()
 
     return HttpResponse(json.dumps(workspace_id))
 
@@ -451,7 +435,8 @@ def snippet_popup(request, snippet_id=None):
     popup_id = 'popup-snippet-%s' % snippet_id
     return popup_json([snippet.location, ],
                       popup_id=popup_id,
-                      request=request)
+                      request=request,
+                      hide_add_snippet=True)
 
 
 def collage_popup(request,
@@ -470,26 +455,13 @@ def collage_popup(request,
         request=request)
 
 
-def workspace_item_image(request, workspace_item_id,
-                         session_graph_options=False):
+def workspace_item_image(request, workspace_item_id):
     """Shows image corresponding to workspace item and location identifier(s)
 
     identifier_list
-
-    !! also uses session['graph_edit'] to add data to identifier_list !!
     """
     identifier_json_list = request.GET.getlist('identifier')
     identifier_list = [simplejson.loads(json) for json in identifier_json_list]
-
-    # update all identifiers with graph_edit
-    if session_graph_options:
-        if 'graph_edit' in request.session:
-            graph_props = GraphProps(request.session['graph_edit'])
-            for identifier in identifier_list:
-                if not 'layout' in identifier:
-                    identifier['layout'] = {}
-                identifier['layout'].update(graph_props.get(workspace_item_id,
-                                                            identifier))
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -508,52 +480,6 @@ def workspace_item_image(request, workspace_item_id,
     start_date, end_date = current_start_end_dates(request)
     return workspace_item.adapter.image(identifier_list, start_date, end_date,
                                         width, height)
-
-
-def workspace_item_graph_edit(request, workspace_item_id):
-    """
-    Generic graph edit page for single graph. OBSOLETE. Use
-    snippet_graph_edit instead.
-
-    Can create identifiers with extra parameters -> TODO
-
-    From the adapter, one can define the get_absolute_url of the
-    returned object to this function.
-
-    !! (re)sets session['graph_edit']. {}
-    """
-    identifier_json = str(request.GET.get('identifier'))
-    identifier_unicode = json.loads(identifier_json)
-    identifier = {}
-    for key, value in identifier_unicode.items():
-        identifier[str(key)] = value
-
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-    location = workspace_item.adapter.location(**identifier)
-    img_url = workspace_item_image_url(workspace_item.id, [identifier, ],
-                                       strip_layout=True,
-                                       session_graph_options=True)
-    date_range_form = DateRangeForm(
-        current_start_end_dates(request, for_form=True))
-
-    if not 'graph_edit' in request.session:
-        request.session['graph_edit'] = {}
-
-    # empty the properties for this workspace_item and identifier
-    graph_props = GraphProps(request.session['graph_edit'])
-    graph_props.delete(workspace_item_id, identifier)
-    request.session['graph_edit'] = graph_props.properties
-
-    return render_to_response(
-        'lizard_map/graph.html',
-        {'workspace_item': workspace_item,
-         'name': 'Grafiek onderzoeken voor %s' % location['name'],
-         'date_range_form': date_range_form,
-         'location': location,
-         'img_url': img_url,
-         },
-        context_instance=RequestContext(request),
-        )
 
 
 def snippet_edit(request, snippet_id):
@@ -583,52 +509,6 @@ def snippet_edit(request, snippet_id):
 
     return HttpResponse('')
 
-
-def session_graph_properties(request):
-    """
-    MARKED FOR DELETION, DO NOT USE
-    set graph properties from request.POST to corresponding workspace_item_id
-    and identifier.
-
-    graph properties: see options
-    workspace_item_id and identifier_json must be in request.POST
-    """
-    options = [('line_max', 'line_max'),
-               ('line_min', 'line_min'),
-               ('line_avg', 'line_avg'),
-               ('line_percentile', 'line_percentile'),
-               ('legend', 'legend'),
-               ('title', 'title_value'),
-               ('y_min', 'y_min_value'),
-               ('y_max', 'y_max_value'),
-               ('y_label', 'y_label_value'),
-               ('x_label', 'x_label_value'),
-               ('colors', 'colors_value'),
-               ]
-
-    workspace_item_id = request.POST.get('workspace_item_id')
-    identifier_json = request.POST.get('identifier_json')
-    identifier = json.loads(identifier_json.replace('%22', '"'))
-    if not 'graph_edit' in request.session:
-        request.session['graph_edit'] = {}
-
-    # Calc graph options
-    graph_options = {}
-    for option, option_value in options:
-        if option in request.POST:
-            values = request.POST.getlist(option_value)
-            if len(values) == 1:
-                graph_options[option] = values[0]
-            elif len(values) > 1:
-                graph_options[option] = values
-
-    # Do not access request.session[session_key][key] directly, that
-    # doesn't save the session
-    graph_properties = GraphProps(request.session['graph_edit'])
-    graph_properties.set(workspace_item_id, identifier, graph_options)
-    request.session['graph_edit'] = graph_properties.properties
-
-    return HttpResponse('')
 
 """
 Map stuff

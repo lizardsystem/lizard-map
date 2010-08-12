@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-05-17 09:21-0500\n"
+"POT-Creation-Date: 2010-08-12 07:11-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,29 +16,57 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: models.py:36
+#: models.py:52
 msgid "Workspace"
 msgstr "Workspace"
 
-#: models.py:37
+#: models.py:53
 msgid "Workspaces"
 msgstr "Workspaces"
 
-#: models.py:61
+#: models.py:78
 msgid "Workspace item"
 msgstr "Workspace item"
 
-#: models.py:62
+#: models.py:79
 msgid "Workspace items"
 msgstr "Workspace items"
 
-#: models.py:138
-msgid "Attached point"
-msgstr "Aanhechtpunt"
+#: models.py:204
+msgid "all"
+msgstr ""
 
-#: models.py:139
-msgid "Attached points"
-msgstr "Aanhechtpunten"
+#: models.py:205
+msgid "year"
+msgstr ""
+
+#: models.py:206
+msgid "quarter"
+msgstr ""
+
+#: models.py:207
+msgid "month"
+msgstr ""
+
+#: models.py:208
+msgid "week"
+msgstr ""
+
+#: models.py:209
+msgid "day"
+msgstr ""
+
+#: models.py:229
+msgid "Collage snippet group"
+msgstr ""
+
+#: models.py:230
+msgid "Collage snippet groups"
+msgstr ""
+
+#: models.py:295
+msgid "Boundary value"
+msgstr ""
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
@@ -47,3 +75,9 @@ msgstr "Voorbeelden"
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
+
+#~ msgid "Attached point"
+#~ msgstr "Aanhechtpunt"
+
+#~ msgid "Attached points"
+#~ msgstr "Aanhechtpunten"
