@@ -7,10 +7,10 @@ var animationTimer;
 
 function setUpAnimationSlider() {
     $("#animation-slider").slider({
-        min: parseInt($("#animation-slider").attr("data-min")),
-        max: parseInt($("#animation-slider").attr("data-max")),
-        step: parseInt($("#animation-slider").attr("data-step")),
-        value: parseInt($("#animation-slider").attr("data-value")),
+        min: parseInt($("#animation-slider").attr("data-min"), 10),
+        max: parseInt($("#animation-slider").attr("data-max"), 10),
+        step: parseInt($("#animation-slider").attr("data-step"), 10),
+        value: parseInt($("#animation-slider").attr("data-value"), 10),
         slide: function (event, ui) {
             if (animationTimer) {
                 clearTimeout(animationTimer);
@@ -22,8 +22,8 @@ function setUpAnimationSlider() {
                     $.ajax({
                         type: "POST",
                         url: $("#animation-slider").attr("data-ajax-path"),
-                        data: "slider_value="+ui.value,
-                        success: function(data) {
+                        data: "slider_value=" + ui.value,
+                        success: function (data) {
                             console.log("Load was performed");
                         }
                     });
@@ -31,6 +31,16 @@ function setUpAnimationSlider() {
                 300);
         }
     });
+}
+
+
+function reloadMapActions() {
+    $(".map-actions").load(
+        "./ .map-action",
+        function () {
+            fillSidebar();
+            setUpAnimationSlider();
+        });
 }
 
 
@@ -68,12 +78,7 @@ function setUpWorkspaceAcceptable() {
             },
             function (workspace_id) {
                 updateLayer(workspace_id);
-                $(".map-actions").load(
-                    "./ .map-action",
-                    function () {
-                        fillSidebar();
-                        setUpAnimationSlider();
-                    });
+                reloadMapActions();
             });
         stretchOneSidebarBox();
     });
@@ -159,12 +164,7 @@ function setUpEmptyTempInteraction() {
             function (workspace_id) {
                 updateLayer(workspace_id);
                 // load new map actions
-                $(".map-actions").load(
-                    "./ .map-action",
-                    function () {
-                        fillSidebar();
-                        setUpAnimationSlider();
-                    });
+                reloadMapActions();
                 // remove highlighting
                 $(".workspace-acceptable").removeClass("selected");
             }
