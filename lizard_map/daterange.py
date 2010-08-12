@@ -19,7 +19,7 @@ class DateRangeForm(forms.Form):
 
 
 def set_date_range(request, template='krw_waternet/daterange.html'):
-    """Store the date range in the session and redirect"""
+    """View: store the date range in the session and redirect."""
     if request.method == 'POST':
         form = DateRangeForm(request.POST)
         if form.is_valid():

@@ -56,5 +56,3 @@ class AnimationSettings(object):
         return self.session[ANIMATION_SETTINGS].get('slider_position', 0)
 
     slider_position = property(_get_slider_position, _set_slider_position)
-
-

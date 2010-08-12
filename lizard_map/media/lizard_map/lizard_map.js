@@ -17,6 +17,7 @@ function setUpAnimationSlider() {
             }
             animationTimer = setTimeout(
                 function () {
+                    // Do actual work.
                     console.log(ui.value);
                 },
                 300);
