@@ -360,10 +360,13 @@ def collage(request,
             editable=False,
             template='lizard_map/collage.html'):
     """Render page with one collage"""
+    date_range_form = DateRangeForm(
+        current_start_end_dates(request, for_form=True))
     return render_to_response(
         template,
         {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id),
          'editable': editable,
+         'date_range_form': date_range_form,
          'request': request},
         context_instance=RequestContext(request))
 
