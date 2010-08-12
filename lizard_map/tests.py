@@ -142,12 +142,11 @@ class TestAnimationSettings(TestCase):
 
     def setUp(self):
 
-        class MockRequest(object):
+        class Mock(dict):
+            pass
 
-            def __init__(self):
-                self.session = {}
-
-        self.request = MockRequest()
+        self.request = Mock()
+        self.request.session = Mock()
 
     def _fill_date_range(self):
         """Helper method: fill session with date range info."""
@@ -176,6 +175,7 @@ class TestAnimationSettings(TestCase):
         """Are the getters/setters working?"""
         animation_settings = AnimationSettings(self.request)
         animation_settings.slider_position = 42
+        self.assertTrue(self.request.session.modified)
         self.assertEquals(animation_settings.slider_position, 42)
         self.assertEquals(self.request.session[
                 'animation_settings']['slider_position'], 42)
