@@ -107,7 +107,15 @@
 {% block above-content %}
 <ul class="map-actions">
   {% if animation_slider %}
-  <li id="animation-slider" class="map-action">
+  <li id="animation-slider"
+      class="map-action"
+      data-min="{{ animation_slider.min }}"
+      data-max="{{ animation_slider.max }}"
+      data-step="{{ animation_slider.step }}"
+      data-value="{{ animation_slider.value }}">
+  </li>
+  <li>
+    {{ animation_slider.selected_date|date:"d/m/Y" }}
   </li>
   {% endif %}
   {% for workspace_item in workspaces.temp.0.workspace_items.all %}

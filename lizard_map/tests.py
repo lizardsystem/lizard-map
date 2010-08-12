@@ -1,10 +1,13 @@
+import datetime
+
 from django.test import TestCase
 import pkg_resources
 
+from lizard_map.animation import AnimationSettings
+from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.workspace import WorkspaceManager
-from lizard_map.animation import AnimationSettings
 import lizard_map.admin
 import lizard_map.layers
 import lizard_map.models
@@ -135,7 +138,7 @@ class TestCollages(TestCase):
 
 
 class TestAnimationSettings(TestCase):
-    """Tests for animation.py"""
+    """Tests for animation.py."""
 
     def setUp(self):
 
@@ -145,6 +148,20 @@ class TestAnimationSettings(TestCase):
                 self.session = {}
 
         self.request = MockRequest()
+
+    def _fill_date_range(self):
+        """Helper method: fill session with date range info."""
+        twothousand = datetime.datetime(year=2000, month=1, day=1)
+        twothousandthree = datetime.datetime(year=2003, month=1, day=1)
+        self.request.session['date_start'] = twothousand
+        self.request.session['date_end'] = twothousandthree
+
+    def test_date_range_helper(self):
+        """Make sure _fill_date_range() works."""
+        self._fill_date_range()
+        start, end = current_start_end_dates(self.request)
+        self.assertEquals(start.year, 2000)
+        self.assertEquals(end.year, 2003)
 
     def test_smoke(self):
         animation_settings = AnimationSettings(request=self.request)
@@ -164,7 +181,47 @@ class TestAnimationSettings(TestCase):
                 'animation_settings']['slider_position'], 42)
 
     def test_initial_slider_position(self):
-        """Slider position should be None if not initialised.
+        """Slider position should be 0 if not initialised.
         In any case, it should not return a keyerror."""
         animation_settings = AnimationSettings(self.request)
-        self.assertEquals(animation_settings.slider_position, None)
+        self.assertEquals(animation_settings.slider_position, 0)
+
+    def test_initial_info_gathering(self):
+        """Do we return the correct date range and position?"""
+        self._fill_date_range()
+        animation_settings = AnimationSettings(self.request)
+        result = animation_settings.info()
+        self.assertEquals(result['min'], 0)
+        self.assertEquals(result['max'], 1096)
+        self.assertEquals(result['step'], 1)
+        self.assertEquals(result['value'], 0)
+        self.assertEquals(result['selected_date'].year, 2000)
+
+    def test_info_gathering(self):
+        """Do we return the correct date range and position?"""
+        self._fill_date_range()
+        animation_settings = AnimationSettings(self.request)
+        animation_settings.slider_position = 400
+        result = animation_settings.info()
+        self.assertEquals(result['min'], 0)
+        self.assertEquals(result['max'], 1096)
+        self.assertEquals(result['step'], 1)
+        self.assertEquals(result['value'], 400)
+        self.assertEquals(result['selected_date'].year, 2001)
+
+    def test_impossible_negative_corner_case(self):
+        """Negative dates."""
+        self._fill_date_range()
+        animation_settings = AnimationSettings(self.request)
+        animation_settings.slider_position = -400
+        result = animation_settings.info()
+        self.assertEquals(result['value'], 0)
+
+    def test_impossible_beyond_max_corner_case(self):
+        """Value beyond the max possible."""
+        self._fill_date_range()
+        animation_settings = AnimationSettings(self.request)
+        animation_settings.slider_position = 4000
+        result = animation_settings.info()
+        self.assertEquals(result['value'], 1096)  # Max available.
+
