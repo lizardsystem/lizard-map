@@ -3,6 +3,7 @@ import datetime
 
 import simplejson
 from django.http import HttpResponse
+from django.http import Http404
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DUTCH_DATE_FORMAT
@@ -18,6 +19,8 @@ def set_animation_date(request):
         selected_date = animation_settings.info()['selected_date']
         return_date = selected_date.strftime(DUTCH_DATE_FORMAT)
         return HttpResponse(simplejson.dumps(return_date))
+    else:
+        raise Http404
 
         
 class AnimationSettings(object):
