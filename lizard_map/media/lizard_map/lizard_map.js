@@ -8,10 +8,10 @@ var animationTimer;
 function setUpAnimationSlider() {
     $("#animation-slider").slider({
         //range:$("#animation-slider").attr("data-range"),
-        min:$("#animation-slider").attr("data-min"),
-        max:$("#animation-slider").attr("data-max"),
-        step:$("#animation-slider").attr("data-step"),
-        value:$("#animation-slider").attr("data-value"),
+        min:$("#animation-slider").attr("data-min").value,
+        max:$("#animation-slider").attr("data-max").value,
+        step:$("#animation-slider").attr("data-step").value,
+        value:$("#animation-slider").attr("data-value").value,
         change: function(event, ui) {
             if (animationTimer) {
                 clearTimeout(animationTimer);
