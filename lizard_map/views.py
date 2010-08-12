@@ -170,14 +170,18 @@ def snippet_group_image(request, snippet_group_id, legend=True):
     snippets = snippet_group.snippets.all()
     identifiers = [snippet.identifier for snippet in snippets]
 
-    # add legend option
+    # Add aggregation_period to each identifier
+    for identifier in identifiers:
+        if not 'layout' in identifier:
+            identifier['layout'] = {}
+        identifier['layout']['aggregation_period'] = snippet_group.aggregation_period
+
+    # Add legend option ('layout' is always present).
     if legend:
         for identifier in identifiers:
-            if not 'layout' in identifier:
-                identifier['layout'] = {}
             identifier['layout']['legend'] = True
 
-    # get width and height
+    # Get width and height.
     width = request.GET.get('width')
     height = request.GET.get('height')
     if width:
