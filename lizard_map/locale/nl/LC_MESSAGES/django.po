@@ -34,39 +34,39 @@ msgstr "Workspace items"
 
 #: models.py:204
 msgid "all"
-msgstr ""
+msgstr "alles"
 
 #: models.py:205
 msgid "year"
-msgstr ""
+msgstr "jaar"
 
 #: models.py:206
 msgid "quarter"
-msgstr ""
+msgstr "kwartaal"
 
 #: models.py:207
 msgid "month"
-msgstr ""
+msgstr "maand"
 
 #: models.py:208
 msgid "week"
-msgstr ""
+msgstr "week"
 
 #: models.py:209
 msgid "day"
-msgstr ""
+msgstr "dag"
 
 #: models.py:229
 msgid "Collage snippet group"
-msgstr ""
+msgstr "Collage snippet groep"
 
 #: models.py:230
 msgid "Collage snippet groups"
-msgstr ""
+msgstr "Collage snippet groepen"
 
 #: models.py:295
 msgid "Boundary value"
-msgstr ""
+msgstr "Grenswaarde"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
