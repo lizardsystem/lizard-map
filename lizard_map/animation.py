@@ -22,7 +22,7 @@ def set_animation_date(request):
     else:
         raise Http404
 
-        
+
 class AnimationSettings(object):
     """Handle animation settings in the session."""
 
@@ -53,6 +53,9 @@ class AnimationSettings(object):
         result = {}
         selected_date = self.start_date + datetime.timedelta(
             days=self.slider_position)
+        # Convert the date to datetime as we'll want that later on.
+        selected_date = datetime.datetime.combine(selected_date,
+                                                  datetime.time(0))
         result['min'] = 0
         result['max'] = self.period_in_days
         result['step'] = 1
