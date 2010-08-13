@@ -1,7 +1,8 @@
 // jslint configuration
 /*jslint browser: true */
 /*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
-setUpScreen, nothingFoundPopup, reloadGraphs */
+setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
+setUpAnimationSlider */
 
 
 /*
@@ -209,15 +210,27 @@ jQuery.fn.workspaceInteraction = function () {
 // Update workspace boxes and their visible layers.
 jQuery.fn.updateWorkspace = function () {
     return this.each(function () {
-        var $workspace, workspace_id;
+        var $workspace, workspace_id, $holder;
         $workspace = $(this);
         workspace_id = $workspace.attr("data-workspace-id");
         // reload map layers
         updateLayer(workspace_id); // from lizardgis
         // reload workspace items: TODO: works only with a single workspace
         // item.
-        $(this).find(".workspace-items").load("./ .workspace-item",
-                                             fillSidebar);
+        $holder = $('<div/>');
+        // Holder trick for replacing several items with just one server call:
+        // see http://tinyurl.com/32xacr4 .
+        $holder.load(
+            './ #page',
+            function () {
+                $(".workspace-items", $workspace).html(
+                    $('.workspace-items', $holder).html());
+                fillSidebar();
+                $(".map-actions").html(
+                    $('.map-actions', $holder).html());
+                setUpAnimationSlider();
+            }
+        );
     });
 };
 
@@ -314,7 +327,7 @@ jQuery.fn.workspaceTrashBox = function () {
                     url: url,
                     data: { object_id: object_id },
                     success: function () {
-                        // reload workspace items: looping error
+                        // TODO: reload workspace items: looping error
                         //$(this).find(".workspace_items").load("./ .workspace_item");
                         //$("ul.workspace_items").load("./ .workspace_item");
                         //$("ul.workspace_items").sortable("destroy");

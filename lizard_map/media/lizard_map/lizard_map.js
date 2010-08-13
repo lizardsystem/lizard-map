@@ -1,16 +1,16 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
-reloadGraphs, fillSidebar, show_popup */
+reloadGraphs, fillSidebar, show_popup, console */
 
 var animationTimer;
 
-if(typeof(console) === 'undefined') {
+if (typeof(console) === 'undefined') {
     // Prevents the firebug console from throwing errors in browsers other
     // than Firefox/Chrome/Chromium
     // From http://gist.github.com/384113
-    var console = {}
-    console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
+    var console = {};
+    console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function () {};
 }
 
 function setUpAnimationSlider() {
@@ -32,7 +32,7 @@ function setUpAnimationSlider() {
                         data: "slider_value=" + ui.value,
                         success: function (data) {
                             // Update the date label span with the returned data
-                            $('span#selected-date').html(jQuery.parseJSON(data));
+                            $('span#selected-date').html($.parseJSON(data));
                         }
                     });
                 },
