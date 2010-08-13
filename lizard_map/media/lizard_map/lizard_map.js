@@ -5,6 +5,13 @@ reloadGraphs, fillSidebar, show_popup */
 
 var animationTimer;
 
+if(typeof(console) === 'undefined') {
+    // Prevents the firebug console from throwing errors in browsers other than Firefox/Chrome/Chromium
+    // From http://gist.github.com/384113
+    var console = {}
+    console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function() {};
+}
+
 function setUpAnimationSlider() {
     $("#animation-slider").slider({
         min: parseInt($("#animation-slider").attr("data-min"), 10),
@@ -17,14 +24,14 @@ function setUpAnimationSlider() {
             }
             animationTimer = setTimeout(
                 function () {
-                    // Do actual work.
-                    //console.log(ui.value);
+                    // Every 300th msec:
                     $.ajax({
                         type: "POST",
                         url: $("#animation-slider").attr("data-ajax-path"),
                         data: "slider_value=" + ui.value,
                         success: function (data) {
-                            console.log("Load was performed");
+                            // Update the date label span with the returned data
+                            $('span#selected-date').html(jQuery.parseJSON(data));
                         }
                     });
                 },
