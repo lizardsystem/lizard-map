@@ -198,6 +198,40 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
+    def line_styles(self, identifiers):
+        """
+        Get line styles for given identifiers. For each set of
+        identifiers, the line styles are calculated deterministic.
+
+        EXPERIMENTAL: this function can be used to generate a legend
+        function, seperately of the image function.
+
+        Keys are str(identifiers). Values are dicts with properties
+        'color', 'linestyle', 'linewidth', 'max_linestyle',
+        'max_linewidth', 'min_linestyle', 'min_linewidth', ...
+        """
+        colors_default = ['blue', 'cyan', 'magenta', 'yellow', 'black', 'red',
+                          'lightblue', 'grey', ]
+        styles = {}
+        for index, identifier in enumerate(identifiers):
+            key = str(identifier)
+            style = {'linestyle': '-',
+                     'linewidth': 3,
+                     'color': colors_default[index % len(colors_default)],
+                     'max_linestyle': ':',
+                     'max_linewidth': 2,
+                     'min_linestyle': ':',
+                     'min_linewidth': 2,
+                     'avg_linestyle': ':',
+                     'avg_linewidth': 2,
+                     }  # default
+            if 'layout' in identifier:
+                layout = identifier['layout']
+                if "color" in layout:
+                    style['color'] = layout['color']
+            styles[key] = style
+        return styles
+
     def image(self, identifiers=None, start_date=None, end_date=None,
               width=None, height=None):
         """Return xyz"""
