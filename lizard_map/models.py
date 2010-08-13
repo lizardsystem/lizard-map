@@ -268,8 +268,9 @@ class WorkspaceCollageSnippetGroup(models.Model):
                 {'percentile': 75},
                 start_date=start_date,
                 end_date=end_date)
-            statistics_row.update(
-                {'percentile_75': statistics_percentile75['percentile']})
+            if 'percentile' in statistics_percentile75:
+                statistics_row.update(
+                    {'percentile_75': statistics_percentile75['percentile']})
 
             # add name
             statistics_row['name'] = snippet.name

@@ -247,7 +247,7 @@ class WorkspaceItemAdapter(object):
         editing = layout_options.get('editing', False)
         legend = layout_options.get('legend', False)
 
-        if snippet_group:
+        if snippet_group is not None:
             snippets = snippet_group.snippets.all()
             identifiers = [snippet.identifier for snippet in snippets]
             title = str(snippet_group)

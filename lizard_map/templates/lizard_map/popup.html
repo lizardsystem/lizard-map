@@ -28,9 +28,9 @@ the default template for the html_default method.
       {% if snippet_group %}
       <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
             title="Bewerk grafiek"
-            rel="#graph_edit_overlay">
+            rel="#graph_edit_overlay_{{ snippet_group.id }}">
       </span>
-      <div id="graph_edit_overlay" class="popup noprint">
+      <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
         <h1>Grafiek opties</h1>
         <form class="graph-options"
               data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
@@ -38,7 +38,7 @@ the default template for the html_default method.
             <li>
               <label>Titel</label>
               <div><input class="graph-title" type="text" name="title"
-                          value="{{ snippet_group.layout_title}}" /></div>
+                          value="{% firstof snippet_group.layout_title '' %}" /></div>
             </li>
             <li class="left-half">
               <label>Y-min</label>
@@ -53,12 +53,12 @@ the default template for the html_default method.
             <li class="left-half">
               <label>X-label</label>
               <div><input class="graph-x-label" type="text" name="x_label"
-                          value="{{ snippet_group.layout_x_label }}" /></div>
+                          value="{% firstof snippet_group.layout_x_label '' %}" /></div>
             </li>
             <li class="right-half">
               <label>Y-label</label>
               <div><input class="graph-y-label" type="text" name="y_label"
-                          value="{{ snippet_group.layout_y_label }}" /></div>
+                          value="{% firstof snippet_group.layout_y_label '' %}" /></div>
             </li>
             <li>
               <label>Drempelwaarde (herlaad pagina voor statistieken)</label>
