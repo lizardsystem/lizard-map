@@ -1,9 +1,9 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
-/*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
-reloadGraphs, fillSidebar, show_popup */
+/*global $, OpenLayers, window, updateLayer, updateLayers,
+stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup */
 
-var animationTimer;
+var animationTimer1, animationTimer2;
 
 // if (typeof(console) === 'undefined') {
 //     // Prevents the firebug console from throwing errors in browsers other
@@ -15,18 +15,20 @@ var animationTimer;
 
 
 function setUpAnimationSlider() {
+    var workspace_item_id;
     $("#animation-slider").slider({
         min: parseInt($("#animation-slider").attr("data-min"), 10),
         max: parseInt($("#animation-slider").attr("data-max"), 10),
         step: parseInt($("#animation-slider").attr("data-step"), 10),
         value: parseInt($("#animation-slider").attr("data-value"), 10),
         slide: function (event, ui) {
-            if (animationTimer) {
-                clearTimeout(animationTimer);
+            if (animationTimer1) {
+                clearTimeout(animationTimer1);
+                clearTimeout(animationTimer2);
             }
-            animationTimer = setTimeout(
+            animationTimer1 = setTimeout(
                 function () {
-                    // Every 300th msec:
+                    // Only run after nothing happened for 300ms.
                     $.ajax({
                         type: "POST",
                         url: $("#animation-slider").attr("data-ajax-path"),
@@ -34,6 +36,13 @@ function setUpAnimationSlider() {
                         success: function (data) {
                             // Update the date label span with the returned data
                             $('span#selected-date').html($.parseJSON(data));
+                            // And reload the maps.
+                            animationTimer1 = setTimeout(
+                                function () {
+                                    // Update the map after an extra delay.
+                                    updateLayers();
+                                },
+                                500);
                         }
                     });
                 },
