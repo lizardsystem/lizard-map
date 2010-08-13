@@ -14,7 +14,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     def __init__(self, *args, **kwargs):
         super(WorkspaceItemAdapterShapefile, self).__init__(*args, **kwargs)
 
-    def layer(self, layer_ids=None):
+    def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
 
         Registered as ``shapefile_layer``

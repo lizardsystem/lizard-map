@@ -507,7 +507,7 @@ def snippet_edit(request, snippet_id):
     if 'layout' in identifier:
         del identifier['layout']
     identifier.update({'layout': layout})
-    print identifier
+    # print identifier
     snippet.set_identifier(identifier)
     snippet.save()
 
@@ -540,7 +540,8 @@ def wms(request, workspace_id):
     #m.background = mapnik.Color('blue')
 
     for workspace_item in workspace.workspace_items.filter(visible=True):
-        layers, styles = workspace_item.adapter.layer(layer_ids=layers)
+        layers, styles = workspace_item.adapter.layer(layer_ids=layers,
+                                                      request=request)
         layers.reverse()  # first item should be drawn on top (=last)
         for layer in layers:
             mapnik_map.layers.append(layer)

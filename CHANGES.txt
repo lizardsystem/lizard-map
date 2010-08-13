@@ -21,6 +21,11 @@ Changelog of lizard-map
 
 - Removed graph-properties that were stored in the session.
 
+- Passing extra 'request' keyword argument to all adapter layer() methods.
+  **Warning**:  This needs refactoring in all adapters.  Advance warning:
+  we'll probably refactor the adapters to get the request in their
+  ``__init__()`` method later on.
+
 
 1.1 (2010-07-16)
 ----------------
