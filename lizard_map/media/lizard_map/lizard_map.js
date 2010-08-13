@@ -1,17 +1,18 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, stretchOneSidebarBox,
-reloadGraphs, fillSidebar, show_popup, console */
+reloadGraphs, fillSidebar, show_popup */
 
 var animationTimer;
 
-if (typeof(console) === 'undefined') {
-    // Prevents the firebug console from throwing errors in browsers other
-    // than Firefox/Chrome/Chromium
-    // From http://gist.github.com/384113
-    var console = {};
-    console.log = console.error = console.info = console.debug = console.warn = console.trace = console.dir = console.dirxml = console.group = console.groupEnd = console.time = console.timeEnd = console.assert = console.profile = function () {};
-}
+// if (typeof(console) === 'undefined') {
+//     // Prevents the firebug console from throwing errors in browsers other
+//     // than Firefox/Chrome/Chromium
+//     // From http://gist.github.com/384113
+//     var console = {};
+//     console.log = function () {};
+// }
+
 
 function setUpAnimationSlider() {
     $("#animation-slider").slider({
