@@ -184,8 +184,15 @@ class WorkspaceItemAdapter(object):
     def value_aggregate(self, identifier, aggregate_functions,
                         start_date, end_date):
         """
-        Aggregates values according to aggregate_functions. See super
-        of this function.
+        Aggregates values according to aggregate_functions.
+        """
+
+        raise NotImplementedError
+
+    def value_aggregate_default(self, identifier, aggregate_functions,
+                                start_date, end_date):
+        """
+        Default implementation for value_aggregate.
         """
 
         result = {}
@@ -193,32 +200,38 @@ class WorkspaceItemAdapter(object):
         values_only = [value['value'] for value in values]
         values_only.sort()  # for percentile function
         for key, value in aggregate_functions.items():
-            if key == 'min':
-                result_value = min(values_only)
-            elif key == 'max':
-                result_value = max(values_only)
-            elif key == 'avg':
-                result_value = float(sum(values_only)) / len(values_only)
-            elif key == 'count_lt':
-                if value is None:
-                    result_value = None
+            try:
+                # Values are not always numbers - in case of strings
+                # this will result in a TypeError
+                # the sequence can be empty
+                if key == 'min':
+                    result_value = min(values_only)
+                elif key == 'max':
+                    result_value = max(values_only)
+                elif key == 'avg':
+                    result_value = float(sum(values_only)) / len(values_only)
+                elif key == 'count_lt':
+                    if value is None:
+                        result_value = None
+                    else:
+                        result_value = 0
+                        for v in values_only:
+                            if v < value:  # value is boundary value
+                                result_value += 1
+                elif key == 'count_gte':
+                    if value is None:
+                        result_value = None
+                    else:
+                        result_value = 0
+                        for v in values_only:
+                            if v >= value:  # value is boundary value
+                                result_value += 1
+                elif key == 'percentile':
+                        rank = int(value * len(values_only) / 100.0 + 0.5)
+                        result_value = values_only[rank]
                 else:
-                    result_value = 0
-                    for v in values_only:
-                        if v < value:  # value is boundary value
-                            result_value += 1
-            elif key == 'count_gte':
-                if value is None:
                     result_value = None
-                else:
-                    result_value = 0
-                    for v in values_only:
-                        if v >= value:  # value is boundary value
-                            result_value += 1
-            elif key == 'percentile':
-                rank = int(value * len(values_only) / 100.0 + 0.5)
-                result_value = values_only[rank]
-            else:
+            except (ValueError, IndexError, TypeError, ZeroDivisionError):
                 result_value = None
             result[key] = result_value
         return result

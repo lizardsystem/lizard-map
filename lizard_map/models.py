@@ -253,28 +253,32 @@ class WorkspaceCollageSnippetGroup(models.Model):
         statistics = []
         for snippet in self.snippets.all():
             snippet_adapter = snippet.workspace_item.adapter
-            # base statistics
-            statistics_row = snippet_adapter.value_aggregate(
-                snippet.identifier,
-                {'min': None, 'max': None, 'avg': None,
-                 'count_lt': self.boundary_value,
-                 'count_gte': self.boundary_value,
-                 'percentile': 25},
-                start_date=start_date,
-                end_date=end_date)
-            # add 75 percentile
-            statistics_percentile75 = snippet_adapter.value_aggregate(
-                snippet.identifier,
-                {'percentile': 75},
-                start_date=start_date,
-                end_date=end_date)
-            if 'percentile' in statistics_percentile75:
-                statistics_row.update(
-                    {'percentile_75': statistics_percentile75['percentile']})
+            try:
+                # base statistics
+                statistics_row = snippet_adapter.value_aggregate(
+                    snippet.identifier,
+                    {'min': None, 'max': None, 'avg': None,
+                     'count_lt': self.boundary_value,
+                     'count_gte': self.boundary_value,
+                     'percentile': 25},
+                    start_date=start_date,
+                    end_date=end_date)
+                # add 75 percentile
+                statistics_percentile75 = snippet_adapter.value_aggregate(
+                    snippet.identifier,
+                    {'percentile': 75},
+                    start_date=start_date,
+                    end_date=end_date)
+                if 'percentile' in statistics_percentile75:
+                    statistics_row.update(
+                        {'percentile_75': statistics_percentile75['percentile']})
 
-            # add name
-            statistics_row['name'] = snippet.name
-            statistics.append(statistics_row)
+                # add name
+                statistics_row['name'] = snippet.name
+                statistics.append(statistics_row)
+            except NotImplementedError:
+                # If the function value_aggregate is not implemented, skip
+                pass
         return statistics
 
     def layout(self):
