@@ -5,19 +5,20 @@ Changelog of lizard-map
 1.2 (unreleased)
 ----------------
 
-- Added a bit of setup to make xml test reports possible (for integration with
-  Hudson).  Similarly for coverage reports, also for Hudson.
+- Added a bit of test setup to make xml test reports possible (for integration
+  with Hudson).  Similarly for coverage reports, also for Hudson.  Automatic
+  code quality monitoring!
 
 - Implemented snippet groups. Snippet groups group similar snippets in
   a collage.
 
-- Removed breadcrumbs for specific sites.
+- Removed site-specific breadcrumbs.
 
 - Refactored collage view. One can now edit graphs in the collage
   view. The graph-only editor has been removed.
 
-- Started with an animation slider for showing map layers at specific points
-  in time.
+- Added an animation slider for showing map layers at specific points in
+  time.  Only shown when there are workspace items that support it.
 
 - Removed graph-properties that were stored in the session.
 
