@@ -3,7 +3,7 @@
 /*global $, OpenLayers, window, updateLayer, updateLayers,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup */
 
-var animationTimer1, animationTimer2;
+var animationTimer;
 
 // if (typeof(console) === 'undefined') {
 //     // Prevents the firebug console from throwing errors in browsers other
@@ -14,6 +14,19 @@ var animationTimer1, animationTimer2;
 // }
 
 
+function setSliderDate(slider_value) {
+    $.ajax({
+        type: "POST",
+        url: $("#animation-slider").attr("data-ajax-path"),
+        data: "slider_value=" + slider_value,
+        success: function (data) {
+            // Update the date label span with the returned data
+            $('span#selected-date').html($.parseJSON(data));
+        }
+    });
+}
+
+
 function setUpAnimationSlider() {
     var workspace_item_id;
     $("#animation-slider").slider({
@@ -22,31 +35,19 @@ function setUpAnimationSlider() {
         step: parseInt($("#animation-slider").attr("data-step"), 10),
         value: parseInt($("#animation-slider").attr("data-value"), 10),
         slide: function (event, ui) {
-            if (animationTimer1) {
-                clearTimeout(animationTimer1);
-                clearTimeout(animationTimer2);
+            if (animationTimer) {
+                clearTimeout(animationTimer);
             }
-            animationTimer1 = setTimeout(
+            animationTimer = setTimeout(
                 function () {
                     // Only run after nothing happened for 300ms.
-                    $.ajax({
-                        type: "POST",
-                        url: $("#animation-slider").attr("data-ajax-path"),
-                        data: "slider_value=" + ui.value,
-                        success: function (data) {
-                            // Update the date label span with the returned data
-                            $('span#selected-date').html($.parseJSON(data));
-                            // And reload the maps.
-                            animationTimer1 = setTimeout(
-                                function () {
-                                    // Update the map after an extra delay.
-                                    updateLayers();
-                                },
-                                500);
-                        }
-                    });
+                    setSliderDate(ui.value);
                 },
                 300);
+        },
+        change: function (event, ui) {
+            setSliderDate(ui.value);
+            updateLayers();
         }
     });
 }
