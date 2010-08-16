@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.2 (unreleased)
+1.2 (2010-08-16)
 ----------------
 
 - Added a bit of test setup to make xml test reports possible (for integration
