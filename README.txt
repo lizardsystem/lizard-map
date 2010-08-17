@@ -68,6 +68,33 @@ workspace items can be drag/dropped into a workspace to add them.  Workspace
 items can be reordered.  You can drag them to the trash.
 
 
+Dependencies
+------------
+
+Almost all dependencies are listed in our ``setup.py``, so they get pulled in
+automatically.  Not all of them install as good as eggs, though.  You might be
+better off installing them system-wide with your OS's own packaging system.
+
+You can force buildout to use system-wide installed packages with the
+`osc.recipe.sysegg <http://pypi.python.org/pypi/osc.recipe.sysegg>`_ recipe.
+An example config::
+
+  [buildout]
+  ...
+  parts =
+      sysegg
+      ...
+
+  [sysegg]
+  recipe = osc.recipe.sysegg
+  force-sysegg = true
+  eggs =
+      PIL
+      matplotlib
+      simplejson
+      pyproj
+
+
 Development installation
 ------------------------
 

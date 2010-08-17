@@ -17,6 +17,11 @@ install_requires = [
     'django-nose',
     'nosexcover',
     # TODO for Reinout: ^^^ do we need that nosexcover?
+    'PIL',
+    'matplotlib',
+    'simplejson',
+    'pyproj',
+    # mapnik: sorry, there's no real package for that.  We do need it however.
     ],
 
 tests_require = [
