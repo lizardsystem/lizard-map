@@ -196,6 +196,8 @@ class Graph(object):
         self.legend_on_bottom_height = 0.0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
+        self.fixup_axes()
+
         # Date range
         # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
 
@@ -284,8 +286,6 @@ class Graph(object):
     def http_png(self):
         """Output plot to png. Also calculates size of plot and put 'now'
         line."""
-        self.fixup_axes()
-
         axes_left = self.left_label_width
         axes_bottom = (self.bottom_axis_location + self.x_label_height +
                        self.legend_on_bottom_height)
