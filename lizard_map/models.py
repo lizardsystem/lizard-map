@@ -73,6 +73,7 @@ class Workspace(models.Model):
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
+
     class Meta:
         ordering = ['index']
         verbose_name = _("Workspace item")
@@ -369,3 +370,92 @@ class WorkspaceCollageSnippet(models.Model):
     def set_identifier(self, identifier):
         """sets dictionary identifier to property identifier_json"""
         self.identifier_json = json.dumps(identifier).replace('"', '%22')
+
+
+class Color(models.Model):
+    """Simple color: alpha (optional), r, g, b.
+
+    Use values from 0 .. 255. Values are NOT checked!
+    """
+    a = models.IntegerField(default=255)
+    r = models.IntegerField()
+    g = models.IntegerField()
+    b = models.IntegerField()
+
+    def __unicode__(self):
+        return '(%0x)-%0x-%0x-%0x' % (self.a, self.r, self.g, self.b)
+
+
+class LegendManager(models.Manager):
+    """Implements extra function 'find'
+    """
+
+    def find(self, name):
+        """Tries to find matching legend. Second choice legend
+        'default'. If nothing found, return None"""
+
+        try:
+            found_legend = Legend.objects.get(descriptor__icontains=name)
+        except Legend.DoesNotExist:
+            try:
+                found_legend = Legend.objects.get(descriptor='default')
+            except Legend.DoesNotExist:
+                found_legend = None
+        return found_legend
+
+
+class Legend(models.Model):
+    """Simple lineair interpolated legend with min, max, color-min,
+    color-max, color < min, color > max, number of steps. Legends can
+    be found using the descriptor"""
+
+    descriptor = models.CharField(max_length=80)
+    min_value = models.FloatField(default=0)
+    max_value = models.FloatField(default=100)
+    steps = models.IntegerField(default=10)
+
+    min_color = models.ForeignKey(Color, related_name='min_colors')
+    max_color = models.ForeignKey(Color, related_name='max_colors')
+    too_low_color = models.ForeignKey(Color, related_name='too_low_colors')
+    too_high_color = models.ForeignKey(Color, related_name='too_high_color')
+
+    objects = LegendManager()
+
+    def __unicode__(self):
+        return self.descriptor
+
+    @property
+    def float_format(self):
+        delta = abs(self.max_value - self.min_value) / self.steps
+        if delta < 0.1:
+            return '%.3f'
+        if delta < 1:
+            return '%.2f'
+        if delta < 10:
+            return '%.1f'
+        return '%.0f'
+
+    def legend_values(self):
+        """Makes list of dictionaries: {'color': Color, 'low_value':
+        low value, 'high_value': high value}"""
+        result = []
+        value_per_step = (self.max_value - self.min_value) / self.steps
+        for step in range(self.steps):
+            try:
+                fraction = float(step) / (self.steps - 1)
+            except ZeroDivisionError:
+                fraction = 0
+            alpha = self.min_color.a * (1 - fraction) + self.max_color.a * fraction
+            red = self.min_color.r * (1 - fraction) + self.max_color.r * fraction
+            green = self.min_color.g * (1 - fraction) + self.max_color.g * fraction
+            blue = self.min_color.b * (1 - fraction) + self.max_color.b * fraction
+            color = Color(a=alpha, r=red, g=green, b=blue)
+
+            low_value = self.min_value + step * value_per_step
+            high_value = self.min_value + (step + 1) * value_per_step
+            result.append({
+                    'color': color,
+                    'low_value': low_value,
+                    'high_value': high_value
+                    })
+        return result

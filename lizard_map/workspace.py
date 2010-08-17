@@ -385,3 +385,11 @@ class WorkspaceItemAdapter(object):
                 'snippet_group': snippet_group,
                 },
             )
+
+    def legend():
+        """
+        Returns legend in a list of dictionaries. Dictionary = {'img_url': <url>, 'description':
+        <description>}
+
+        """
+        return []

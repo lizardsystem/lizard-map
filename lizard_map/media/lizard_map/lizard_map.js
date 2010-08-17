@@ -167,6 +167,24 @@ function setUpGraphEditPopup() {
     $(".graph_edit_trigger").overlay();
 }
 
+
+/*
+Shows legend tooltip. Re-initializes after workspace update.
+TODO: show tooltip when mouseover for the first time */
+function setUpLegendTooltip() {
+    $(".legend-tooltip").live('mouseover', function() {
+        if (!$(".legend-tooltip").data("popup-initialized")) {
+            $(".legend-tooltip").data("popup-initialized", true);
+            $(".legend-tooltip").tooltip({
+                position: 'center right',
+                effect: 'fade',
+                offset: [0, 10]
+            });
+        };
+    });
+}
+
+
 /*
 Empty the temp workspace
 */
@@ -216,7 +234,6 @@ function popup_click_handler(x, y, map) {
 }
 
 
-
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -226,6 +243,7 @@ $(document).ready(function () {
     setUpEmptyTempInteraction();
     setUpAnimationSlider();
     setUpGraphEditPopup();
+    setUpLegendTooltip();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
