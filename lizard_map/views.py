@@ -5,7 +5,7 @@ except ImportError:
     import simplejson as json  # Python 2.5-
 
 import mapnik
-import PIL.Image
+import Image
 import csv
 from django.db.models import Max
 from django.http import HttpResponse
@@ -558,7 +558,7 @@ def wms(request, workspace_id):
     img = mapnik.Image(width, height)
     mapnik.render(mapnik_map, img)
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
-    rgba_image = PIL.Image.fromstring('RGBA', (width, height), img.tostring())
+    rgba_image = Image.fromstring('RGBA', (width, height), img.tostring())
     buf = StringIO.StringIO()
     if 'MSIE 6.0' in http_user_agent:
         imgPIL = rgba_image.convert('P')
