@@ -11,6 +11,8 @@ Changelog of lizard-map
 
 - Implemented export csv for snippet_group.
 
+- Add option to show tables in collage view.
+
 1.2 (2010-08-16)
 ----------------
 
