@@ -9,6 +9,7 @@ Changelog of lizard-map
   the osc.recipe.sysegg in our own buildout to grab them from the system.  A
   sample config is included in the readme.
 
+- Implemented export csv for snippet_group.
 
 1.2 (2010-08-16)
 ----------------
