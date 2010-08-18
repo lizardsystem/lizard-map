@@ -28,6 +28,15 @@
 {% for snippet_group in collage.snippet_groups.all %}
   {% snippet_group snippet_group 'False' 'True' 'True' %}
   {% snippet_group_statistics request snippet_group %}
+  {% if show_table %}
+    <a href="./" class="ss_sprite ss_table_delete">Verwijder tabellen</a>
+    {# Show table in a vertically limited space #}
+    <div class="vertical-limited">
+    {% snippet_group_table request snippet_group %}
+    </div>
+  {% else %}
+    <a href="?show_table=1" class="ss_sprite ss_table_add">Laat tabellen zien</a>
+  {% endif %}
 {% endfor %}
 
 </div>

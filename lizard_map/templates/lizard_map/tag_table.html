@@ -1,0 +1,19 @@
+{# Renders table. Accepts 'table' which is a list of lists, and 'head' which is a list of columnnames #}
+<table class="big-table">
+  <tr class="big-table">
+    {% for value in head %}
+    <th class="big-table">
+      {{ value }}
+    </th>
+    {% endfor %}
+  </tr>
+  {% for table_row in table %}
+  <tr class="{% cycle 'even' 'uneven' %} big-table">
+    {% for value in table_row %}
+    <td class="big-table">
+      {{ value }}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>

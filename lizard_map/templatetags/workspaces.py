@@ -63,6 +63,22 @@ def snippet_group_statistics(request, snippet_group):
     return {'statistics': statistics, 'snippet_group': snippet_group}
 
 
+@register.inclusion_tag("lizard_map/tag_table.html")
+def snippet_group_table(request, snippet_group):
+    """
+    Renders table for snippet_group.
+    """
+    start_date, end_date = current_start_end_dates(request)
+    values_table = snippet_group.values_table(start_date, end_date)
+    if len(values_table) > 1:
+        table = values_table[1:]
+    else:
+        table = []
+    head = [value.replace('_', ' ') for value in values_table[0]]
+
+    return {'table': table, 'head': head}
+
+
 @register.filter
 def json_escaped(value):
     """converts an object to json and escape quotes

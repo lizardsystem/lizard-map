@@ -364,12 +364,14 @@ def collage(request,
     """Render page with one collage"""
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
+    show_table = request.GET.get('show_table', False)
     return render_to_response(
         template,
         {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id),
          'editable': editable,
          'date_range_form': date_range_form,
-         'request': request},
+         'request': request,
+         'show_table': show_table},
         context_instance=RequestContext(request))
 
 
