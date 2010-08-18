@@ -172,7 +172,7 @@ function setUpGraphEditPopup() {
 Shows legend tooltip. Re-initializes after workspace update.
 TODO: show tooltip when mouseover for the first time */
 function setUpLegendTooltip() {
-    $(".legend-tooltip").live('mouseover', function() {
+    $(".legend-tooltip").live('mouseover', function () {
         if (!$(".legend-tooltip").data("popup-initialized")) {
             $(".legend-tooltip").data("popup-initialized", true);
             $(".legend-tooltip").tooltip({
@@ -180,7 +180,7 @@ function setUpLegendTooltip() {
                 effect: 'fade',
                 offset: [0, 10]
             });
-        };
+        }
     });
 }
 
