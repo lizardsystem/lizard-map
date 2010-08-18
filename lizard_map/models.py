@@ -1,12 +1,15 @@
 import itertools
 import logging
-import pkg_resources
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
 from django.contrib.auth.models import User
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.db import models
 from django.utils.translation import ugettext as _
-import simplejson as json
+import pkg_resources
 
 from lizard_map.adapter import parse_identifier_json
 

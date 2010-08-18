@@ -1,5 +1,8 @@
 from django import template
-import simplejson as json
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace

@@ -13,6 +13,10 @@ Changelog of lizard-map
 
 - Add option to show tables in collage view.
 
+- Importing the simplejson module in a different way to please windows in
+  combination with python 2.6.
+
+
 1.2 (2010-08-16)
 ----------------
 

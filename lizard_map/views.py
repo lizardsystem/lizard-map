@@ -1,5 +1,8 @@
 import StringIO
-import simplejson
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
 import mapnik
 import PIL.Image
@@ -10,7 +13,6 @@ from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.views.decorators.cache import never_cache
-import simplejson as json
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
@@ -317,7 +319,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               'html': result_html,
               'big': big_popup,
               }
-    return HttpResponse(simplejson.dumps(result))
+    return HttpResponse(json.dumps(result))
 
 
 def popup_collage_json(collage, popup_id, request=None):
@@ -351,7 +353,7 @@ def popup_collage_json(collage, popup_id, request=None):
               'html': result_html,
               'big': big_popup,
               }
-    return HttpResponse(simplejson.dumps(result))
+    return HttpResponse(json.dumps(result))
 
 
 # Collages stuff
@@ -467,7 +469,7 @@ def workspace_item_image(request, workspace_item_id):
     identifier_list
     """
     identifier_json_list = request.GET.getlist('identifier')
-    identifier_list = [simplejson.loads(json) for json in identifier_json_list]
+    identifier_list = [json.loads(json) for json in identifier_json_list]
 
     width = request.GET.get('width')
     height = request.GET.get('height')

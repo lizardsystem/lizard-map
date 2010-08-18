@@ -1,7 +1,10 @@
 """Animation scrollbar handling."""
 import datetime
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
-import simplejson
 from django.http import HttpResponse
 from django.http import Http404
 
@@ -18,7 +21,7 @@ def set_animation_date(request):
         animation_settings.slider_position = int(request.POST['slider_value'])
         selected_date = animation_settings.info()['selected_date']
         return_date = selected_date.strftime(DUTCH_DATE_FORMAT)
-        return HttpResponse(simplejson.dumps(return_date))
+        return HttpResponse(json.dumps(return_date))
     else:
         raise Http404
 

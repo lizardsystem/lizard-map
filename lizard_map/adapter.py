@@ -2,9 +2,15 @@
 Helper classes and functions for adapters
 """
 import datetime
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import AutoDateFormatter
 from matplotlib.dates import AutoDateLocator
@@ -13,10 +19,6 @@ from matplotlib.dates import date2num
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
-
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse
-import simplejson as json
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI

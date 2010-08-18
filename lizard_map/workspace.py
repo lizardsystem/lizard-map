@@ -3,7 +3,10 @@ import os
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-import simplejson as json
+try:
+    import json  # Python 2.6+
+except ImportError:
+    import simplejson as json  # Python 2.5-
 
 from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
