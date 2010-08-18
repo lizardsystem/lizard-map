@@ -622,6 +622,21 @@ def clickinfo(request, workspace_id):
 Export
 """
 
+def export_snippet_group_csv(request, snippet_group_id):
+    """
+    Creates a table with each location as column. Each row is a datetime.
+    """
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    start_date, end_date = current_start_end_dates(request)
+    table = snippet_group.values_table(start_date, end_date)
+
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=export.csv'
+    writer = csv.writer(response)
+    for row in table:
+        writer.writerow(row)
+    return response
+
 
 def export_identifier_csv(request, workspace_item_id=None,
     identifier_json=None):

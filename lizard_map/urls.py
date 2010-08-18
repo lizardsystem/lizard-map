@@ -126,6 +126,9 @@ urlpatterns = patterns(
     url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
         'lizard_map.views.export_snippet_group_statistics_csv',
         name="lizard_map.export_snippet_group_statistics_csv"),
+    url(r'^snippet_group/(?P<snippet_group_id>\d+)/csv/',
+        'lizard_map.views.export_snippet_group_csv',
+        name="lizard_map.export_snippet_group_csv"),
     )
 
 

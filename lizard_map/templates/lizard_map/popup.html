@@ -22,7 +22,10 @@ the default template for the html_default method.
   {% if editing %}
   <tr>
     <td>Hele grafiek</td>
-    <td></td>
+    <td><a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
+           class="ss_table_save ss_sprite"
+           title="Export csv"
+           ></a></td>
     <td>
       {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
       {# to use this popup, one must use lizard_map/graph.js #}
@@ -105,7 +108,7 @@ the default template for the html_default method.
       <td><a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&identifier_json={{ snippet.identifier|json_escaped }}"
              class="ss_table_save ss_sprite"
              title="Export csv"
-             >&nbsp;</a></td>
+             ></a></td>
       {% if editing %}<td>
         <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
               title="Bewerk lijn"

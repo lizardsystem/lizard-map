@@ -282,6 +282,47 @@ class WorkspaceCollageSnippetGroup(models.Model):
                 pass
         return statistics
 
+    def values_table(self, start_date, end_date):
+        """
+        Calculates a table with each location as column, each row as
+        datetime. First row consist of column names. List of lists.
+        """
+        values_table = []
+
+        snippets = self.snippets.all()
+
+        # Add snippet names
+        values_table.append(['datetime'] + [snippet.name for snippet in snippets])
+
+        # Collect all data and found_dates.
+        found_dates = {}
+
+        # Snippet_values is a dict of (dicts of dicts {'datetime': .,
+        # 'value': .., 'unit': ..}, key: 'datetime').
+        snippet_values = {}
+
+        for snippet in snippets:
+            values = snippet.workspace_item.adapter.values(
+                identifier=snippet.identifier, start_date=start_date, end_date=end_date)
+            snippet_values[snippet.id] = {}
+            # Translate list into dict with dates.
+            for row in values:
+                snippet_values[snippet.id][row['datetime']] = row
+            found_dates.update(snippet_values[snippet.id])  # the value doesn't matter
+
+        found_dates_sorted = found_dates.keys()
+        found_dates_sorted.sort()
+
+        # Create each row.
+        for found_date in found_dates_sorted:
+            value_row = [found_date, ]
+            for snippet in snippets:
+                single_value = snippet_values[snippet.id].get(found_date, {})
+                value_row.append(single_value.get('value', None))
+            values_table.append(value_row)
+
+        return values_table
+
     def layout(self):
         """Returns layout properties of this snippet_group. Used in
         snippet.identifier['layout']"""
