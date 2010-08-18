@@ -57,7 +57,7 @@ class Workspace(models.Model):
 
     name = models.CharField(max_length=80,
                             blank=True,
-                            default='workspace')
+                            default='Workspace')
     # TODO below: default extend values for NL?
     extent_north = models.FloatField(blank=True, null=True)
     extent_east = models.FloatField(blank=True, null=True)
@@ -137,7 +137,7 @@ class WorkspaceItem(models.Model):
 class WorkspaceCollage(models.Model):
     """A collage contains selections/locations from a workspace"""
     name = models.CharField(max_length=80,
-                            default='collage')
+                            default='Collage')
     workspace = models.ForeignKey(Workspace,
                                   related_name='collages')
 
@@ -354,9 +354,9 @@ class WorkspaceCollageSnippetGroup(models.Model):
 class WorkspaceCollageSnippet(models.Model):
     """One snippet in a collage"""
     name = models.CharField(max_length=80,
-                            default='snippet')
+                            default='Snippet')
     shortname = models.CharField(max_length=80,
-                                 default='snippet',
+                                 default='Snippet',
                                  blank=True,
                                  null=True)
     snippet_group = models.ForeignKey(WorkspaceCollageSnippetGroup,
