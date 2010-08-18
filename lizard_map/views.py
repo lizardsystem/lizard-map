@@ -469,7 +469,7 @@ def workspace_item_image(request, workspace_item_id):
     identifier_list
     """
     identifier_json_list = request.GET.getlist('identifier')
-    identifier_list = [json.loads(json) for json in identifier_json_list]
+    identifier_list = [json.loads(identifier_json) for identifier_json in identifier_json_list]
 
     width = request.GET.get('width')
     height = request.GET.get('height')
