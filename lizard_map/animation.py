@@ -1,12 +1,9 @@
 """Animation scrollbar handling."""
 import datetime
-try:
-    import json  # Python 2.6+
-except ImportError:
-    import simplejson as json  # Python 2.5-
 
-from django.http import HttpResponse
 from django.http import Http404
+from django.http import HttpResponse
+from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DUTCH_DATE_FORMAT

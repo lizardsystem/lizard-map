@@ -1,13 +1,10 @@
 import itertools
 import logging
-try:
-    import json  # Python 2.6+
-except ImportError:
-    import simplejson as json  # Python 2.5-
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 import pkg_resources
 

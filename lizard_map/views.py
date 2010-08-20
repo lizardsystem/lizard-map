@@ -1,18 +1,15 @@
 import StringIO
-try:
-    import json  # Python 2.6+
-except ImportError:
-    import simplejson as json  # Python 2.5-
 
-import mapnik
-import Image
-import csv
 from django.db.models import Max
 from django.http import HttpResponse
-from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
+from django.template import RequestContext
+from django.utils import simplejson as json
 from django.views.decorators.cache import never_cache
+import Image
+import csv
+import mapnik
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
