@@ -156,6 +156,16 @@ class WorkspaceCollage(models.Model):
 
     @property
     def workspace_items(self):
+        """Return workspace items used by one of our snippets."""
+        # .distinct may not be used on textfields in oracle as oracle stores
+        # them as NCLOB columns...  At least, that was the problem when our
+        # 'name' field was a TextField instead of a CharField.  So I reverted
+        # this change as it didn't turn out to be the problem after all.
+        # Leaving it here in case it turns out to be a recurring problem.
+        # found = set()
+        # for snippet in self.snippets.all():
+        #     found.add(snippet.workspace_item)
+        # return list(found)
         return WorkspaceItem.objects.filter(
             workspacecollagesnippet__in=self.snippets.all()).distinct()
 
@@ -216,7 +226,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
     workspace_collage = models.ForeignKey(WorkspaceCollage,
                                           related_name='snippet_groups')
     index = models.IntegerField(default=1000)  # larger = lower in the list
-    name = models.TextField(blank=True, null=True)
+    name = models.CharField(max_length=80, blank=True, null=True)
 
     # boundary value for statistics
     boundary_value = models.FloatField(blank=True, null=True)

@@ -5,7 +5,10 @@ Changelog of lizard-map
 1.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- WorkspaceCollageSnippetGroup's name was a TextField (=multiline) instead of
+  a simple CharField.  Oracle stores a TextField as a "NCLOB" and has some
+  restrictions on them (no index, no .distinct()).  Anyway, this blew up on
+  an oracle-using installation.  Fixed now.
 
 
 1.3 (2010-08-18)
