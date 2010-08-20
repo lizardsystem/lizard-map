@@ -15,8 +15,6 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui >= 1.6',
     'django-nose',
-    # 'nosexcover',
-    # TODO for Reinout: ^^^ do we need that nosexcover?
     'PIL',
     'matplotlib',
     'pyproj',

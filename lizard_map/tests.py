@@ -37,8 +37,6 @@ class WorkspaceManagerTest(TestCase):
             mock_request)
         self.assertTrue(workspace_manager)  # It exists.
 
-# TODO: re-integrate the doctests from models.txt somehow
-
 
 class WorkspaceTest(TestCase):
 
