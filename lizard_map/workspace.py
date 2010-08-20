@@ -380,8 +380,9 @@ class WorkspaceItemAdapter(object):
 
     def legend():
         """
-        Returns legend in a list of dictionaries. Dictionary = {'img_url': <url>, 'description':
-        <description>}
+        Returns legend in a list of dictionaries.
+
+        Dictionary = {'img_url': <url>, 'description': <description>}
 
         """
         return []

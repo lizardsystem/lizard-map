@@ -173,7 +173,8 @@ def snippet_group_image(request, snippet_group_id, legend=True):
     for identifier in identifiers:
         if not 'layout' in identifier:
             identifier['layout'] = {}
-        identifier['layout']['aggregation_period'] = snippet_group.aggregation_period
+        identifier['layout'][
+            'aggregation_period'] = snippet_group.aggregation_period
 
     # Add legend option ('layout' is always present).
     if legend:
@@ -466,7 +467,8 @@ def workspace_item_image(request, workspace_item_id):
     identifier_list
     """
     identifier_json_list = request.GET.getlist('identifier')
-    identifier_list = [json.loads(identifier_json) for identifier_json in identifier_json_list]
+    identifier_list = [json.loads(identifier_json) for identifier_json in
+                       identifier_json_list]
 
     width = request.GET.get('width')
     height = request.GET.get('height')
@@ -623,11 +625,13 @@ def clickinfo(request, workspace_id):
 Export
 """
 
+
 def export_snippet_group_csv(request, snippet_group_id):
     """
     Creates a table with each location as column. Each row is a datetime.
     """
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(pk=snippet_group_id)
+    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+        pk=snippet_group_id)
     start_date, end_date = current_start_end_dates(request)
     table = snippet_group.values_table(start_date, end_date)
 

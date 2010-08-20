@@ -74,6 +74,7 @@ class AnimationSettings(object):
 
     def _get_slider_position(self):
         """Return value stored in the session."""
-        return self.request.session[ANIMATION_SETTINGS].get('slider_position', 0)
+        return self.request.session[ANIMATION_SETTINGS].get(
+            'slider_position', 0)
 
     slider_position = property(_get_slider_position, _set_slider_position)

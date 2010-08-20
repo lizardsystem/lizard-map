@@ -282,7 +282,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
                     end_date=end_date)
                 if 'percentile' in statistics_percentile75:
                     statistics_row.update(
-                        {'percentile_75': statistics_percentile75['percentile']})
+                        {'percentile_75':
+                             statistics_percentile75['percentile']})
 
                 # add name
                 statistics_row['name'] = snippet.name
@@ -302,7 +303,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
         snippets = self.snippets.all()
 
         # Add snippet names
-        values_table.append(['datetime'] + [snippet.name for snippet in snippets])
+        values_table.append(['datetime'] +
+                            [snippet.name for snippet in snippets])
 
         # Collect all data and found_dates.
         found_dates = {}
@@ -313,12 +315,14 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
         for snippet in snippets:
             values = snippet.workspace_item.adapter.values(
-                identifier=snippet.identifier, start_date=start_date, end_date=end_date)
+                identifier=snippet.identifier, start_date=start_date,
+                end_date=end_date)
             snippet_values[snippet.id] = {}
             # Translate list into dict with dates.
             for row in values:
                 snippet_values[snippet.id][row['datetime']] = row
-            found_dates.update(snippet_values[snippet.id])  # the value doesn't matter
+            found_dates.update(snippet_values[snippet.id])
+            # ^^^ The value doesn't matter.
 
         found_dates_sorted = found_dates.keys()
         found_dates_sorted.sort()
@@ -353,7 +357,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
                     'value': self.boundary_value,
                     'style': {'linewidth': 3,
                               'linestyle': '--',
-                              'color': 'green'}
+                              'color': 'green'},
                     }, ]
         return result
 
@@ -496,10 +500,14 @@ class Legend(models.Model):
                 fraction = float(step) / (self.steps - 1)
             except ZeroDivisionError:
                 fraction = 0
-            alpha = self.min_color.a * (1 - fraction) + self.max_color.a * fraction
-            red = self.min_color.r * (1 - fraction) + self.max_color.r * fraction
-            green = self.min_color.g * (1 - fraction) + self.max_color.g * fraction
-            blue = self.min_color.b * (1 - fraction) + self.max_color.b * fraction
+            alpha = (self.min_color.a * (1 - fraction) +
+                     self.max_color.a * fraction)
+            red = (self.min_color.r * (1 - fraction) +
+                   self.max_color.r * fraction)
+            green = (self.min_color.g * (1 - fraction) +
+                     self.max_color.g * fraction)
+            blue = (self.min_color.b * (1 - fraction) +
+                    self.max_color.b * fraction)
             color = Color(a=alpha, r=red, g=green, b=blue)
 
             low_value = self.min_value + step * value_per_step
@@ -507,6 +515,6 @@ class Legend(models.Model):
             result.append({
                     'color': color,
                     'low_value': low_value,
-                    'high_value': high_value
+                    'high_value': high_value,
                     })
         return result

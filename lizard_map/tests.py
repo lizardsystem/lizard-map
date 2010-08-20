@@ -224,4 +224,3 @@ class TestAnimationSettings(TestCase):
         animation_settings.slider_position = 4000
         result = animation_settings.info()
         self.assertEquals(result['value'], 1096)  # Max available.
-
