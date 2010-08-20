@@ -57,7 +57,7 @@ class WorkspaceTest(TestCase):
     def test_name(self):
         """A workspace always has a name.  It is 'workspace' by default."""
         workspace = Workspace()
-        self.assertEquals(workspace.name, 'workspace')
+        self.assertEquals(workspace.name, u'Workspace')
 
     def test_representation(self):
         workspace = Workspace()
