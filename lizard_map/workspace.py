@@ -181,15 +181,6 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    def value_aggregate(self, identifier, aggregate_functions,
-                        start_date, end_date):
-        """
-        Aggregates values according to aggregate_functions. Returns
-        dictionary with values.
-        """
-
-        raise NotImplementedError
-
     def value_aggregate_default(self, identifier, aggregate_functions,
                                 start_date, end_date):
         """
