@@ -83,7 +83,8 @@ def snippet_group_table(request, snippet_group):
 def json_escaped(value):
     """converts an object to json and escape quotes
     """
-    return json.dumps(value).replace('"', '%22')
+    # TODO: just use one of the available url encoders!
+    return json.dumps(value).replace('"', '%22').replace(' ', '%20')
 
 
 @register.inclusion_tag("lizard_map/tag_date_popup.html",
