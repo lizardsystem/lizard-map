@@ -8,108 +8,129 @@ the default template for the html_default method.
 {% load workspaces %}
 {# header #}
 <h3>Grafiek {% firstof snippet_group.name '' %}</h3>
-<div><img src="{{ symbol_url }}" />&nbsp;<strong>{{ title|truncatewords:8 }}</strong></div>
-<div style="width: 100%; height: 170px;" class="img-use-my-size">
-  <a href="{{ img_url }}" class="replace-with-image">afbeelding nog niet geladen</a>
+<div>
+  <img src="{{ symbol_url }}" />&nbsp;
+  <strong>{{ title|truncatewords:8 }}</strong>
 </div>
-<table class="noprint">
-  <tr>
-    <th>Naam</th>
-    <th>Export</th>
-    {% if editing %}<th>Bewerken</th>{% endif %}
-    {% if add_snippet %}<th>Voeg toe</th>{% endif %}
-  </tr>
-  {% if editing %}
-  <tr>
-    <td>Hele grafiek</td>
-    <td><a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
+<div style="width: 100%; height: 170px;"
+     class="img-use-my-size">
+  <a href="{{ img_url }}"
+     class="replace-with-image">
+    afbeelding nog niet geladen
+  </a>
+</div>
+<br />
+<table class="noprint generic-table">
+  <thead>
+    <tr>
+      <th>Naam</th>
+      <th class="button">Export</th>
+      {% if editing %}
+      <th class="button">Bewerken</th>
+      {% endif %}
+      {% if add_snippet %}
+      <th class="button">Voeg toe</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% if editing %}
+    <tr>
+      <td>Hele grafiek</td>
+      <td class="button">
+        <a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
            class="ss_table_save ss_sprite"
            title="Export csv"
-           ></a></td>
-    <td>
-      {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
-      {# to use this popup, one must use lizard_map/graph.js #}
-      {% if snippet_group %}
-      <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
-            title="Bewerk grafiek"
-            rel="#graph_edit_overlay_{{ snippet_group.id }}">
-      </span>
-      <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
-        <h1>Grafiek opties</h1>
-        <form class="graph-options"
-              data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
-          <ul>
-            <li>
-              <label>Titel</label>
-              <div><input class="graph-title" type="text" name="title"
-                          value="{% firstof snippet_group.layout_title '' %}" /></div>
-            </li>
-            <li class="left-half">
-              <label>Y-min</label>
-              <div><input class="graph-y-min" type="text" name="y_min"
-                          value="{{ snippet_group.layout_y_min|floatformat }}" /></div>
-            </li>
-            <li class="right-half">
-              <label>Y-max</label>
-              <div><input class="graph-y-max" type="text" name="y_max"
-                          value="{{ snippet_group.layout_y_max|floatformat }}" /></div>
-            </li>
-            <li class="left-half">
-              <label>X-label</label>
-              <div><input class="graph-x-label" type="text" name="x_label"
-                          value="{% firstof snippet_group.layout_x_label '' %}" /></div>
-            </li>
-            <li class="right-half">
-              <label>Y-label</label>
-              <div><input class="graph-y-label" type="text" name="y_label"
-                          value="{% firstof snippet_group.layout_y_label '' %}" /></div>
-            </li>
-            <li>
-              <label>Drempelwaarde (herlaad pagina voor statistieken)</label>
-              <div><input class="graph-boundary-value" type="text" name="boundary_value"
-                          value="{{ snippet_group.boundary_value|floatformat }}" /></div>
-            </li>
-            <li>
-              <label>Samenvattingsperiode</label>
-              <div>
-                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
-                       value="1"
-                       {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
-                hele periode
-                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
-                       value="2"
-                       {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
-                jaar
-                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
-                       value="3"
-                       {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
-                kwartaal
-                <input class="graph-aggregation-period" type="radio" name="aggregation_period"
-                       value="4"
-                       {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
-                maand
-              </div>
-            </li>
-            <li><input class="graph-action" type="button" value="Update grafiek" /></li>
-          </ul>
-        </form>
-      </div>
+           ></a>
+      </td>
+      <td class="button">
+        {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
+        {# to use this popup, one must use lizard_map/graph.js #}
+        {% if snippet_group %}
+        <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
+              title="Bewerk grafiek"
+              rel="#graph_edit_overlay_{{ snippet_group.id }}">
+        </span>
+        <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
+          <h1>Grafiek opties</h1>
+          <form class="graph-options"
+                data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
+            <ul>
+              <li>
+                <label>Titel</label>
+                <div><input class="graph-title" type="text" name="title"
+                value="{% firstof snippet_group.layout_title '' %}" /></div>
+              </li>
+              <li class="left-half">
+                <label>Y-min</label>
+                <div><input class="graph-y-min" type="text" name="y_min"
+                value="{{ snippet_group.layout_y_min|floatformat }}" /></div>
+              </li>
+              <li class="right-half">
+                <label>Y-max</label>
+                <div><input class="graph-y-max" type="text" name="y_max"
+                value="{{ snippet_group.layout_y_max|floatformat }}" /></div>
+              </li>
+              <li class="left-half">
+                <label>X-label</label>
+                <div><input class="graph-x-label" type="text" name="x_label"
+                value="{% firstof snippet_group.layout_x_label '' %}" /></div>
+              </li>
+              <li class="right-half">
+                <label>Y-label</label>
+                <div><input class="graph-y-label" type="text" name="y_label"
+                value="{% firstof snippet_group.layout_y_label '' %}" /></div>
+              </li>
+              <li>
+                <label>Drempelwaarde (herlaad pagina voor statistieken)</label>
+                <div><input class="graph-boundary-value" type="text" name="boundary_value"
+                value="{{ snippet_group.boundary_value|floatformat }}" /></div>
+              </li>
+              <li>
+                <label>Samenvattingsperiode</label>
+                <div>
+                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                         value="1"
+                         {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
+                  hele periode
+                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                         value="2"
+                         {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
+                  jaar
+                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                         value="3"
+                         {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
+                  kwartaal
+                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                         value="4"
+                         {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
+                  maand
+                </div>
+              </li>
+              <li><input class="graph-action" type="button" value="Update grafiek" /></li>
+            </ul>
+          </form>
+        </div>
+        {% endif %}
+      </td>
+      {% if add_snippet %}
+      <td></td>
       {% endif %}
-    </td>
-    {% if add_snippet %}<td></td>{% endif %}
-  </tr>
-  {% endif %}
-  {# icons: see http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
-  {% if snippet_group %}
+    </tr>
+    {% endif %}
+    {% if snippet_group %}
     {# snippet group #}
     {% for snippet in snippet_group.snippets.all %}
     <tr>
       <td>{{ snippet.name }}</td>
-      <td><a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&identifier_json={{ snippet.identifier|json_escaped }}"
-             class="ss_table_save ss_sprite"
-             title="Export csv"
-             ></a></td>
-      {% if editing %}<td>
+      <td class="button">
+        <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&identifier_json={{ snippet.identifier|json_escaped }}"
+           class="ss_table_save ss_sprite"
+           title="Export csv"
+           ></a>
+      </td>
+      {% if editing %}
+      <td class="button">
         <span class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
               title="Bewerk lijn"
               rel="#graph_edit_overlay_{{ snippet.id }}">
@@ -122,39 +143,44 @@ the default template for the html_default method.
               <li>
                 <label>Kleur</label>
                 <div><input class="graph-color" type="text" name="color"
-                            value="{{ snippet.identifier.layout.color }}" /></div>
+                value="{{ snippet.identifier.layout.color }}" /></div>
               </li>
               <li>
                 <label>Toon minimum</label>
                 <div><input class="graph-line-min" type="checkbox" name="line_min"
-                            value="{{ snippet.identifier.layout.line_min }}" /></div>
+                value="{{ snippet.identifier.layout.line_min }}" /></div>
               </li>
               <li>
                 <label>Toon maximum</label>
                 <div><input class="graph-line-max" type="checkbox" name="line_max"
-                            value="{{ snippet.identifier.layout.line_max }}" /></div>
+                value="{{ snippet.identifier.layout.line_max }}" /></div>
               </li>
               <li>
                 <label>Toon gemiddelde</label>
                 <div><input class="graph-line-avg" type="checkbox" name="line_avg"
-                            value="{{ snippet.identifier.layout.line_avg }}" /></div>
+                value="{{ snippet.identifier.layout.line_avg }}" /></div>
               </li>
               <li><input class="graph-action" type="button" value="Update grafiek" /></li>
             </ul>
           </form>
         </div>
-      </td>{% endif %}
-      {% if add_snippet %}<td><a href=""
-      class="add-snippet ss_chart_line_add ss_sprite"
-      data-workspace-id="{{ snippet.workspace_item.workspace.id }}"
-      data-workspace-item-id="{{ snippet.workspace_item.id }}"
-      data-item-identifier='{{ snippet.identifier|json_escaped }}'
-      data-item-shortname="{{ snippet.shortname }}"
-      data-item-name="{{ snippet.name }}"
-      title="Voeg toe aan collage"></a></td>{% endif %}
+      </td>
+      {% endif %}
+      {% if add_snippet %}
+      <td class="button">
+        <a href=""
+           class="add-snippet ss_chart_line_add ss_sprite"
+           data-workspace-id="{{ snippet.workspace_item.workspace.id }}"
+           data-workspace-item-id="{{ snippet.workspace_item.id }}"
+           data-item-identifier='{{ snippet.identifier|json_escaped }}'
+           data-item-shortname="{{ snippet.shortname }}"
+           data-item-name="{{ snippet.name }}"
+           title="Voeg toe aan collage"></a>
+      </td>
+      {% endif %}
     </tr>
     {% endfor %}
-  {% else %}
+    {% else %}
     {# no snippet group: #}
     {% for display_object in display_group %}
     <tr>
@@ -174,5 +200,6 @@ the default template for the html_default method.
       title="Voeg toe aan collage"></a></td>{% endif %}
     </tr>
     {% endfor %}
-  {% endif %}
+    {% endif %}
+  </tbody>
 </table>
