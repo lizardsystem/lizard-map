@@ -24,21 +24,20 @@
 {% block content %}
 <div id="textual">
 
-<h2>{{ collage.name }}</h2>
-{% for snippet_group in collage.snippet_groups.all %}
+  <h2>{{ collage.name }}</h2>
+  {% for snippet_group in collage.snippet_groups.all %}
   {% snippet_group snippet_group 'False' 'True' 'True' %}
   {% snippet_group_statistics request snippet_group %}
   {% if show_table %}
-    <h3>Tabel</h3>
-    <p>
-      <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
-    </p>
-    {% snippet_group_table request snippet_group %}
-    </div>
+  <h3>Tabel</h3>
+  <p>
+    <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
+  </p>
+  {% snippet_group_table request snippet_group %}
   {% else %}
-    <a href="?show_table=1" class="ss_sprite ss_table_add">Toon tabellen</a>
+  <a href="?show_table=1" class="ss_sprite ss_table_add">Toon tabellen</a>
   {% endif %}
-{% endfor %}
+  {% endfor %}
 
 </div>
 {% endblock content %}
