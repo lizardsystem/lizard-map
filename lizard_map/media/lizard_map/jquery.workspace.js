@@ -229,6 +229,7 @@ jQuery.fn.updateWorkspace = function () {
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
                 setUpAnimationSlider();
+                setUpLegendTooltips();
             }
         );
     });

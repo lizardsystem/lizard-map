@@ -170,12 +170,12 @@ function setUpGraphEditPopup() {
 
 /*
 Shows legend tooltip. Re-initializes after workspace update.
-TODO: show tooltip when mouseover for the first time */
-function setUpLegendTooltip() {
-    $(".legend-tooltip").live('mouseover', function () {
-        if (!$(".legend-tooltip").data("popup-initialized")) {
-            $(".legend-tooltip").data("popup-initialized", true);
-            $(".legend-tooltip").tooltip({
+*/
+function setUpLegendTooltips() {
+    $(".legend-tooltip").each(function () {
+        if (!$(this).data("popup-initialized")) {
+            $(this).data("popup-initialized", true);
+            $(this).tooltip({
                 position: 'center right',
                 effect: 'fade',
                 offset: [0, 10]
@@ -243,7 +243,7 @@ $(document).ready(function () {
     setUpEmptyTempInteraction();
     setUpAnimationSlider();
     setUpGraphEditPopup();
-    setUpLegendTooltip();
+    setUpLegendTooltips();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
