@@ -54,27 +54,9 @@
   -webkit-box-shadow: 0 0 40px black;
 }
 
-.popup input
-{
-  font-size: 1em;
-}
-
-.popup ul
-{
-  list-style-type: none;
-}
-
-.popup li.right-half
-{
-  float: right;
-  width: 47%;
-}
-
-.popup li.left-half
-{
-  float: left;
-  width: 47%;
-}
+.popup-graph-edit-form
+{ text-align: left;  /* We might be shown inside a centered table column... */
+  }
 
 #animation-slider
 { display: block;

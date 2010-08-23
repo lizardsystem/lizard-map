@@ -137,33 +137,34 @@ the default template for the html_default method.
            title="Bewerk lijn"
            rel="#graph_edit_overlay_{{ snippet.id }}">
         </a>
-        <div id="graph_edit_overlay_{{ snippet.id }}" class="popup noprint">
+        <div id="graph_edit_overlay_{{ snippet.id }}"
+             class="popup noprint popup-graph-edit-form">
           <h2>{% firstof snippet.name snippet.shortname %}</h2>
           <form class="graph-options"
                 data-url="{% url lizard_map.snippet_edit snippet_id=snippet.id %}">
-            <ul>
-              <li>
-                <label>Kleur</label>
-                <div><input class="graph-color" type="text" name="color"
-                value="{{ snippet.identifier.layout.color }}" /></div>
-              </li>
-              <li>
-                <label>Toon minimum</label>
-                <div><input class="graph-line-min" type="checkbox" name="line_min"
-                value="{{ snippet.identifier.layout.line_min }}" /></div>
-              </li>
-              <li>
-                <label>Toon maximum</label>
-                <div><input class="graph-line-max" type="checkbox" name="line_max"
-                value="{{ snippet.identifier.layout.line_max }}" /></div>
-              </li>
-              <li>
-                <label>Toon gemiddelde</label>
-                <div><input class="graph-line-avg" type="checkbox" name="line_avg"
-                value="{{ snippet.identifier.layout.line_avg }}" /></div>
-              </li>
-              <li><input class="graph-action" type="button" value="Update grafiek" /></li>
-            </ul>
+            <p>
+              <label>Kleur</label>
+              <input class="graph-color" type="text" name="color"
+                     value="{{ snippet.identifier.layout.color }}" />
+            </p>
+            <p>
+              <input class="graph-line-min" type="checkbox" name="line_min"
+                     value="{{ snippet.identifier.layout.line_min }}" />
+              <label>Toon minimum</label>
+            </p>
+            <p>
+              <input class="graph-line-max" type="checkbox" name="line_max"
+                     value="{{ snippet.identifier.layout.line_max }}" />
+              <label>Toon maximum</label>
+            </p>
+            <p>
+              <input class="graph-line-avg" type="checkbox" name="line_avg"
+                     value="{{ snippet.identifier.layout.line_avg }}" />
+              <label>Toon gemiddelde</label>
+            </p>
+            <p>
+              <input class="graph-action" type="button" value="Update grafiek" />
+            </p>
           </form>
         </div>
       </td>
