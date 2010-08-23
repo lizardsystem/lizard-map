@@ -118,6 +118,9 @@ urlpatterns = patterns(
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',
         name="lizard_map.search_coordinates"),
+    url(r'^search_name/',
+        'lizard_map.views.search_name',
+        name="lizard_map.search_name"),
 
     # Export.
     url(r'^adapter/export/csv/',

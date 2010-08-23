@@ -570,6 +570,33 @@ def wms(request, workspace_id):
     return response
 
 
+def search_name(request):
+    """Searche for objects near GET x,y,radius then return name,"""
+    workspace_manager = WorkspaceManager(request)
+    workspace_collections = workspace_manager.load_or_create()
+
+    # xy params from the GET request.
+    google_x = float(request.GET.get('x'))
+    google_y = float(request.GET.get('y'))
+    google_radius = float(request.GET.get('radius'))
+
+    found = []
+    for workspace_collection in workspace_collections.values():
+        for workspace in workspace_collection:
+            for workspace_item in workspace.workspace_items.filter(
+                visible=True):
+                search_results = workspace_item.adapter.search(
+                    google_x, google_y, radius=google_radius)
+                found += search_results
+    if found:
+        # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
+        found.sort(key=lambda item: item['distance'])
+        result = {}
+        result['name'] = found[0].name
+        print found[0].name
+        return HttpResponse(simplejson.dumps(result))
+
+
 def search_coordinates(request):
     """searches for objects near GET x,y,radius returns json_popup
     of results"""
