@@ -37,7 +37,7 @@ def parse_identifier_json(identifier_json):
     TODO: .replace('%22', '"') in a better way
     """
 
-    identifier_json = identifier_json.replace('%22', '"')
+    identifier_json = identifier_json.replace('%22', '"').replace('%20', ' ')
     if not identifier_json:
         return {}
     result = {}
