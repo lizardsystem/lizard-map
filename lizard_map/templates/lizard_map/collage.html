@@ -30,9 +30,9 @@
   {% snippet_group_statistics request snippet_group %}
   {% if show_table %}
     <h3>Tabel</h3>
-    <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>
-    {# Show table in a vertically limited space #}
-    <div class="vertical-limited">
+    <p>
+      <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
+    </p>
     {% snippet_group_table request snippet_group %}
     </div>
   {% else %}

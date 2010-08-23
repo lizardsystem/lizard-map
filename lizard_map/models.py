@@ -303,7 +303,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
         snippets = self.snippets.all()
 
         # Add snippet names
-        values_table.append(['datetime'] +
+        values_table.append(['Datum + tijdstip'] +
                             [snippet.name for snippet in snippets])
 
         # Collect all data and found_dates.
