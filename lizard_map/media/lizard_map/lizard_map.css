@@ -90,21 +90,3 @@
   width: 100%;
   overflow: scroll;
 }
-
-/* table stuff */
-table.big-table
-{ border: 1px solid lightgrey;
-}
-
-th.big-table
-{ word-wrap: break-word;
-  width: 10%;
-}
-
-tr.big-table,
-{
-}
-
-td.big-table
-{ text-align: right;
-}
