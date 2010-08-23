@@ -58,6 +58,14 @@
 { text-align: left;  /* We might be shown inside a centered table column... */
   }
 
+.popup-graph-edit-form .fixed-label-width label
+{ width: 5em;
+  margin: 0.5em 0;
+  display: block;
+  float: left;
+  }
+
+
 #animation-slider
 { display: block;
   float: left;

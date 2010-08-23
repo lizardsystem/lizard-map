@@ -54,62 +54,69 @@ the default template for the html_default method.
         </a>
         <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
           <h1>Grafiek opties</h1>
-          <form class="graph-options"
+          <form class="popup-graph-edit-form"
                 data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
-            <ul>
-              <li>
+            <fieldset class="fixed-label-width">
+              <div>
                 <label>Titel</label>
-                <div><input class="graph-title" type="text" name="title"
-                value="{% firstof snippet_group.layout_title '' %}" /></div>
-              </li>
-              <li class="left-half">
+                <input class="graph-title" type="text" name="title"
+                       value="{% firstof snippet_group.layout_title '' %}" />
+              </div>
+              <div>
                 <label>Y-min</label>
-                <div><input class="graph-y-min" type="text" name="y_min"
-                value="{{ snippet_group.layout_y_min|floatformat }}" /></div>
-              </li>
-              <li class="right-half">
+                <input class="graph-y-min" type="text" name="y_min"
+                       value="{{ snippet_group.layout_y_min|floatformat }}" />
+              </div>
+              <div>
                 <label>Y-max</label>
-                <div><input class="graph-y-max" type="text" name="y_max"
-                value="{{ snippet_group.layout_y_max|floatformat }}" /></div>
-              </li>
-              <li class="left-half">
+                <input class="graph-y-max" type="text" name="y_max"
+                       value="{{ snippet_group.layout_y_max|floatformat }}" />
+              </div>
+              <div>
                 <label>X-label</label>
-                <div><input class="graph-x-label" type="text" name="x_label"
-                value="{% firstof snippet_group.layout_x_label '' %}" /></div>
-              </li>
-              <li class="right-half">
+                <input class="graph-x-label" type="text" name="x_label"
+                       value="{% firstof snippet_group.layout_x_label '' %}" />
+              </div>
+              <div>
                 <label>Y-label</label>
-                <div><input class="graph-y-label" type="text" name="y_label"
-                value="{% firstof snippet_group.layout_y_label '' %}" /></div>
-              </li>
-              <li>
-                <label>Drempelwaarde (herlaad pagina voor statistieken)</label>
-                <div><input class="graph-boundary-value" type="text" name="boundary_value"
-                value="{{ snippet_group.boundary_value|floatformat }}" /></div>
-              </li>
-              <li>
-                <label>Samenvattingsperiode</label>
+                <input class="graph-y-label" type="text" name="y_label"
+                       value="{% firstof snippet_group.layout_y_label '' %}" />
+              </div>
+            </fieldset>
+            <fieldset>
+              <div>
+                <label>Drempelwaarde (herlaad pagina voor statistieken)</label><br />
+                <input class="graph-boundary-value" type="text" name="boundary_value"
+                value="{{ snippet_group.boundary_value|floatformat }}" />
+              </div>
+              <div>
+                <label>Samenvattingsperiode</label><br />
                 <div>
-                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                  <input class="graph-aggregation-period"
+                         type="radio" name="aggregation_period"
                          value="1"
                          {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
                   hele periode
-                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                  <input class="graph-aggregation-period"
+                         type="radio" name="aggregation_period"
                          value="2"
                          {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
                   jaar
-                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                  <input class="graph-aggregation-period"
+                         type="radio" name="aggregation_period"
                          value="3"
                          {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
                   kwartaal
-                  <input class="graph-aggregation-period" type="radio" name="aggregation_period"
+                  <input class="graph-aggregation-period"
+                         type="radio" name="aggregation_period"
                          value="4"
                          {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
                   maand
                 </div>
-              </li>
-              <li><input class="graph-action" type="button" value="Update grafiek" /></li>
-            </ul>
+            </fieldset>
+            <p>
+              <input class="graph-action" type="button" value="Update grafiek" />
+            </p>
           </form>
         </div>
         {% endif %}
