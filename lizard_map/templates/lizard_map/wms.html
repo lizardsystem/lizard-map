@@ -92,6 +92,47 @@
           map.addControl(map_click_control);
           map_click_control.activate();
         {% endif %}
+        // Hover handling.
+        {% if javascript_hover_handler %}
+          // TODO Gekopieerd uit http://trac.openlayers.org/browser/trunk/openlayers/examples/hover-handler.html maar nog niet gebruikt.
+          MapHoverControl = OpenLayers.Class(OpenLayers.Control, {
+                defaultHandlerOptions: {
+                    'delay': 500,
+                    'pixelTolerance': null,
+                    'stopMove': false
+                },
+
+                initialize: function(options) {
+                    this.handlerOptions = OpenLayers.Util.extend(
+                        {}, this.defaultHandlerOptions
+                    );
+                    OpenLayers.Control.prototype.initialize.apply(
+                        this, arguments
+                    );
+                    this.handler = new OpenLayers.Handler.Hover(
+                        this,
+                        {'pause': this.onPause, 'move': this.onMove},
+                        this.handlerOptions
+                    );
+                },
+
+                onPause: function(evt) {
+                    var output = document.getElementById(this.key + 'Output');
+                    var msg = 'pause ' + evt.xy;
+                    output.value = output.value + msg + "\r\n";
+                },
+
+                onMove: function(evt) {
+                    // if this control sent an Ajax request (e.g. GetFeatureInfo) when
+                    // the mouse pauses the onMove callback could be used to abort that
+                    // request.
+                }
+            });
+
+          map_hover_control = new MapHoverControl();
+          map.addControl(map_hover_control);
+          map_hover_control.activate();
+        {% endif %}
         // Extend zooming.
         map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
     }
