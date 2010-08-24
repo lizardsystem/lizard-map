@@ -571,7 +571,7 @@ def wms(request, workspace_id):
 
 
 def search_name(request):
-    """Searche for objects near GET x,y,radius then return name,"""
+    """Search for objects near GET x,y,radius then return name,"""
     workspace_manager = WorkspaceManager(request)
     workspace_collections = workspace_manager.load_or_create()
 
@@ -592,9 +592,13 @@ def search_name(request):
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
         result = {}
-        result['name'] = found[0].name
-        print found[0].name
-        return HttpResponse(simplejson.dumps(result))
+        result['name'] = found[0]['name']
+        x, y = found[0]['google_coords']
+        result['x'] = x
+        result['y'] = y
+        return HttpResponse(json.dumps(result))
+    else:
+        return popup_json([])
 
 
 def search_coordinates(request):

@@ -67,11 +67,12 @@ function show_popup(data, map) {
         if (data.big) {
             size = new OpenLayers.Size(420, 610);
         }
-        popup = new OpenLayers.Popup(data.id,
-                                     new OpenLayers.LonLat(data.x, data.y),
-                                     size,
-                                     data.html,
-                                     true);
+        popup = new OpenLayers.Popup(
+            data.id,
+            new OpenLayers.LonLat(data.x, data.y),
+            size,
+            data.html + '<span class="no-hover-popups"></span>',
+            true);
         popup.panMapIfOutOfView = true;
         map.addPopup(popup);
         // make sure that when the window is closed, the object is removed as well
@@ -86,6 +87,31 @@ function show_popup(data, map) {
         nothingFoundPopup();
     }
 }
+
+function hover_popup(data, map) {
+    if (data.name !== "" &&
+        data.name !== undefined &&
+        $('.no-hover-popups').size() == 0) {
+        var size, popup;
+        $("#hover-popup").remove(); // remove existing popup, if exists
+        size = new OpenLayers.Size(300, 80);
+        popup = new OpenLayers.Popup('hover-popup',
+                                     new OpenLayers.LonLat(data.x, data.y),
+                                     size,
+                                     data.name,
+                                     false);
+        popup.autoSize = true;
+        map.addPopup(popup);
+        // make sure that when the window is closed, the object is removed as well
+        $(".olPopupCloseBox").bind("click", function () {
+            $(this).parent().parent().remove();
+        });
+        reloadGraphs();
+        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
+        $(".add-snippet").snippetInteraction();
+    }
+}
+
 
 jQuery.fn.collagePopup = function () {
     var url, collage_id;

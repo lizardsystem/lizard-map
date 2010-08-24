@@ -210,11 +210,6 @@ function setUpEmptyTempInteraction() {
 }
 
 
-// Commented out: lizard-ui now has generic support for it (see the
-// in-browser documentation).
-// function loadSizedImages() {
-
-
 function popup_click_handler(x, y, map) {
     var extent, radius, url;
     extent = map.getExtent();
@@ -228,6 +223,24 @@ function popup_click_handler(x, y, map) {
             function (data) {
                 $("#map_OpenLayers_ViewPort").css("cursor", "default");
                 show_popup(data, map);
+            }
+        );
+    }
+}
+
+
+function popup_hover_handler(x, y, map) {
+    /* Show name of one item when hovering above a map */
+    var extent, radius, url;
+    extent = map.getExtent();
+    radius = Math.abs(extent.top - extent.bottom) / 30;  // experimental, seems to work good
+    url = $(".workspace").attr("data-url-lizard-map-search-name");
+    if (url !== undefined) {
+        $.getJSON(
+            url,
+            { x: x, y: y, radius: radius },
+            function (data) {
+                hover_popup(data, map);
             }
         );
     }

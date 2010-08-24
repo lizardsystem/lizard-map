@@ -92,3 +92,8 @@
   -moz-box-shadow:0 0 10px 5px #aaa;
   -webkit-box-shadow: 0 0 10px #aaa;
   }
+
+#hover-popup_contentDiv
+{ padding: 0.5em 1em 0em 2em;
+  background-color: lightyellow;
+  }
