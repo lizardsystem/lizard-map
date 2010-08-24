@@ -142,9 +142,9 @@ the default template for the html_default method.
         <a href="#"
            class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
            title="Bewerk lijn"
-           rel="#graph_edit_overlay_{{ snippet.id }}">
+           rel="#graph_edit_overlay_snippet_{{ snippet.id }}">
         </a>
-        <div id="graph_edit_overlay_{{ snippet.id }}"
+        <div id="graph_edit_overlay_snippet_{{ snippet.id }}"
              class="popup noprint popup-graph-edit-form">
           <h2>{% firstof snippet.name snippet.shortname %}</h2>
           <form class="graph-options"
