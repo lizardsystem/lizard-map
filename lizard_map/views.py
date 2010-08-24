@@ -675,6 +675,7 @@ def export_identifier_csv(request, workspace_item_id=None,
     """
     Uses adapter.values to get values. Then return these values in csv format.
     """
+    # Collect input.
     if workspace_item_id is None:
         workspace_item_id = request.GET.get('workspace_item_id')
     if identifier_json is None:
@@ -682,11 +683,15 @@ def export_identifier_csv(request, workspace_item_id=None,
     workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
     identifier = parse_identifier_json(identifier_json)
     start_date, end_date = current_start_end_dates(request)
-    values = workspace_item.adapter.values(identifier, start_date, end_date)
+    adapter = workspace_item.adapter
+    values = adapter.values(identifier, start_date, end_date)
+    filename = '%s.csv' % (adapter.location(**identifier).get('name', 'export'))
 
+    # Make the csv output.
     response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=export.csv'
+    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
     writer = csv.writer(response)
+    writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
     for row in values:
         writer.writerow([row['datetime'], row['value'], row['unit']])
     return response
