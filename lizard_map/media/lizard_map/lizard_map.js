@@ -1,7 +1,8 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, updateLayers,
-stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup */
+stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
+hover_popup */
 
 var animationTimer;
 
