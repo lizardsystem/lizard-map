@@ -173,6 +173,7 @@ jQuery.fn.workspaceInteraction = function () {
         workspaceItems.droppable({
             accept: '.workspace-acceptable',
             hoverClass: 'drophover',
+            activeClass: 'dropactive',
             drop: function (event, ui) {
                 var name, adapter_class, adapter_layer_json, url;
                 // Fade out draggable item.
@@ -340,6 +341,7 @@ jQuery.fn.workspaceTrashBox = function () {
         workspace_trash.droppable({
             accept: workspaceItemOrSnippet,
             hoverClass: 'drophover',
+            activeClass: 'dropactive',
             drop: function (event, ui) {
                 var object_id, url;
                 object_id = ui.draggable.attr("data-object-id");
