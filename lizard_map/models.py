@@ -196,6 +196,7 @@ class WorkspaceCollage(models.Model):
                 if snippet_group.snippets.filter(
                     workspace_item=workspace_item).exists():
                     found_snippet_group = snippet_group
+                    break
 
         # (3) No existing snippet group: make one.
         if not found_snippet_group:
