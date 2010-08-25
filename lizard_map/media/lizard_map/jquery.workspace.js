@@ -2,7 +2,7 @@
 /*jslint browser: true */
 /*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
 setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
-setUpAnimationSlider */
+setUpAnimationSlider, setUpLegendTooltips */
 
 
 /*
@@ -91,7 +91,7 @@ function show_popup(data, map) {
 function hover_popup(data, map) {
     if (data.name !== "" &&
         data.name !== undefined &&
-        $('.no-hover-popups').size() == 0) {
+        $('.no-hover-popups').size() === 0) {
         var size, popup;
         $("#hover-popup").remove(); // remove existing popup, if exists
         size = new OpenLayers.Size(300, 80);
