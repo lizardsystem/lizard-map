@@ -1,10 +1,13 @@
+import datetime
 from lizard_map.models import ALL, YEAR, QUARTER, MONTH, WEEK, DAY
+
 
 def next_all(dt):
     """
     Return period that is in the future for sure
     """
     return datetime.date(2100, 1, 1), datetime.date(2200, 1, 1)
+
 
 def next_year(dt):
     """
@@ -13,6 +16,7 @@ def next_year(dt):
     dttuple = dt.timetuple()
     year = dttuple[0] + 1
     return datetime.date(year, 1, 1), datetime.date(year + 1, 1, 1)
+
 
 def next_quarter(dt):
     """
@@ -33,6 +37,7 @@ def next_quarter(dt):
         datetime.date(year, month + 1, 1),
         datetime.date(next_quarter_year, next_quarter_month + 1, 1))
 
+
 def next_month(dt):
     """
     Returns 2-tuple of next month: start/end date
@@ -52,6 +57,7 @@ def next_month(dt):
         datetime.date(year, month + 1, 1),
         datetime.date(next_quarter_year, next_quarter_month + 1, 1))
 
+
 def next_week(dt):
     """
     Returns 2-tuple of next week: start/end date
@@ -63,6 +69,7 @@ def next_week(dt):
     day += datetime.timedelta(days=days_to_next_week)
     return day, day + datetime.timedelta(weeks=1)
 
+
 def next_day(dt):
     """
     Returns 2-tuple of next week: start/end date
@@ -70,6 +77,7 @@ def next_day(dt):
     day = datetime.date(*dt.timetuple()[:3])
     day += datetime.timedelta(days=1)
     return day, day + datetime.timedelta(days=1)
+
 
 def calc_aggregation_periods(start_date, end_date, aggregation_period):
     """Returns list of 2-tuples with startdate/enddates.
