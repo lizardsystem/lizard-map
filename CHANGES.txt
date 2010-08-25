@@ -7,6 +7,8 @@ Changelog of lizard-map
 
 - Add dateperiods: calculate periods.
 
+- Add styling for popups.
+
 
 1.4 (2010-08-23)
 ----------------

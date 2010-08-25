@@ -12,46 +12,8 @@
   -webkit-box-shadow: 0 0 40px black;
 }
 
-.date-popup .close,
-.popup .close,
-#not_found_popup .close
-{ background-image:url(close.png);
-  position: absolute;
-  right: -15px;
-  top: -15px;
-  cursor: pointer;
-  height: 35px;
-  width: 35px;
-}
-
 .icon-action
 { float: right;
-}
-
-#not_found_popup
-{ display: none;
-  z-index: 10000;
-  width: 30em;
-  min-height: 8em;
-  padding: 1em;
-  border: 1px solid black;
-  background-color: white;
-  /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 40px 5px black;
-  -webkit-box-shadow: 0 0 40px black;
-}
-
-.popup
-{ display: none;
-  z-index: 10000;
-  width: 30em;
-  min-height: 8em;
-  padding: 1em;
-  border: 1px solid black;
-  background-color: white;
-  /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 40px 5px black;
-  -webkit-box-shadow: 0 0 40px black;
 }
 
 .popup-graph-edit-form
