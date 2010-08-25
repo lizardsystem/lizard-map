@@ -180,23 +180,24 @@ function setUpLegendTooltips() {
                 position: 'center right',
                 effect: 'fade',
                 offset: [0, 10],
-                onShow: function() {
+                onShow: function () {
                     var offset, pixels_below_screen;
                     // Too high?
                     offset = this.getTip().offset();
                     if (offset.top < 0) {
                         offset.top = 0;
                         this.getTip().offset(offset);
-                    };
+                    }
+                    // Too low?
                     pixels_below_screen = offset.top +
                         this.getTip().height() -
                         $(window).height();
-                    console.log(pixels_below_screen);
                     if (pixels_below_screen > 0) {
                         offset.top = offset.top - pixels_below_screen;
                         this.getTip().offset(offset);
                     }
-	        }
+                    // Repositioning beforehand would be visually nicer.
+                }
             });
         }
     });
