@@ -63,7 +63,7 @@ function show_popup(data, map) {
     if (data.html !== "" && data.html !== undefined) {
         var size, popup;
         $("#" + data.id).remove(); // remove existing popup, if exists
-        size = new OpenLayers.Size(400, 310);
+        size = new OpenLayers.Size(400, 340);
         if (data.big) {
             size = new OpenLayers.Size(420, 610);
         }
