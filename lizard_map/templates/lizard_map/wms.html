@@ -2,6 +2,8 @@
 
 {% block map-javascript %}
   <script type="text/javascript">
+    /*jslint browser: true */
+    /*global $, OpenLayers, popup_click_handler, MapHoverControl, popup_hover_handler */
     var layers, map;
     layers = [];
     {% block map-javascript-global %}
@@ -13,6 +15,7 @@
     }
 
     function updateLayers() {
+        var i;
         for (i=0; i<layers.length; i++) {
             if (layers[i] !== undefined) {
                 updateLayer(i);
@@ -21,7 +24,7 @@
     }
 
     function showMap() {
-        var options, openstreetmapLayer, MapClickControl, map_click_control;
+        var options, openstreetmapLayer, MapClickControl, map_click_control, map_hover_control;
         // Set up projection and bounds.
         options = {
             projection: new OpenLayers.Projection("EPSG:900913"),
