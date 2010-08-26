@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.6 (unreleased)
+1.6 (2010-08-26)
 ----------------
 
 - Animation slider and name-hover are now also working in the default
