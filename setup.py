@@ -12,10 +12,10 @@ long_description = '\n\n'.join([
 
 install_requires = [
     'Django',
-    'django-staticfiles',
-    'lizard-ui >= 1.6',
-    'django-nose',
     'PIL',
+    'django-nose',
+    'django-staticfiles',
+    'lizard-ui >= 1.10',
     'matplotlib',
     'pyproj',
     # mapnik: sorry, there's no real package for that.  We do need it however.
