@@ -13,6 +13,7 @@ import mapnik
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
+from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -28,18 +29,31 @@ from lizard_map.workspace import WorkspaceManager
 def workspace(request,
               workspace_id,
               javascript_click_handler='popup_click_handler',
+              javascript_hover_handler='popup_hover_handler',
               template='lizard_map/workspace.html'):
     """Render page with one workspace.
 
     workspaces in dictionary, because of ... ?
     """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
+
+    # Calculate whether we want animation.
+    # TODO: make custom RequestContext where this code is included
+    animation_slider = False
+    for workspace_item in workspace.workspace_items.filter(
+        visible=True):
+        if workspace_item.adapter.is_animatable:
+            animation_slider = AnimationSettings(request).info()
+            break
+
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
     return render_to_response(
         template,
         {'workspaces': {'user': [workspace]},
          'javascript_click_handler': javascript_click_handler,
+         'javascript_hover_handler': javascript_hover_handler,
+         'animation_slider': animation_slider,
          'date_range_form': date_range_form},
         context_instance=RequestContext(request))
 
