@@ -5,7 +5,15 @@ Changelog of lizard-map
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Animation slider and name-hover are now also working in the default
+  workspace view.
+
+- Name hover is now placed just to the lower right of the cursor.  This way
+  you can still click on the item you hovered above instead of your click
+  being blocked sometimes by the hovering name.
+
+- Added slightly more whitespace to the right of legend-less graphs: this
+  prevents (most) labels from being cut off.
 
 
 1.5 (2010-08-26)
