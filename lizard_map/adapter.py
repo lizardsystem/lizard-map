@@ -188,7 +188,10 @@ class Graph(object):
         # Figure color
         self.figure.set_facecolor('white')
         # Axes and legend location: full width is "1".
-        self.legend_width = 0.04  # no legend by default
+        self.legend_width = 0.04
+        # ^^^ No legend by default, but we *do* allow a little space to the
+        # right of the graph to prevent the rightmost label from being cut off
+        # (at least, in a reasonable percentage of the cases).
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
         self.x_label_height = 0.0
