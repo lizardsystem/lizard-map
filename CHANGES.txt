@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.5 (unreleased)
+1.5 (2010-08-26)
 ----------------
 
 - Added tooltips with name when hovering over clickable map items.
