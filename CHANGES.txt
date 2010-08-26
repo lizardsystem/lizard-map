@@ -5,9 +5,13 @@ Changelog of lizard-map
 1.5 (unreleased)
 ----------------
 
-- Add dateperiods: calculate periods.
+- Added tooltips with name when hovering over clickable map items.
 
-- Add styling for popups.
+- Layout improvements for popups and tables.
+
+- Added dateperiods: calculate periods for use in graphs.
+
+- Added styling for popups.
 
 
 1.4 (2010-08-23)
