@@ -630,8 +630,12 @@ def search_name(request):
         result = {}
         result['name'] = found[0]['name']
         x, y = found[0]['google_coords']
-        result['x'] = x
-        result['y'] = y
+        # result['x'] = x
+        # result['y'] = y
+        # For the x/y we use the original x/y value to position the popup to
+        # the lower right of the cursor to prevent click propagation problems.
+        result['x'] = google_x + (google_radius / 10)
+        result['y'] = google_y - (google_radius / 10)
         return HttpResponse(json.dumps(result))
     else:
         return popup_json([])
