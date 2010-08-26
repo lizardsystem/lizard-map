@@ -176,8 +176,9 @@ def snippet_group_graph_edit(request, snippet_group_id):
 
 
 def snippet_group_image(request, snippet_group_id, legend=True):
-    """Draws a single image for the snippet_group. The MUST be at
+    """Draws a single image for the snippet_group. There MUST be at
     least 1 snippet in the group."""
+
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
     snippets = snippet_group.snippets.all()
@@ -211,10 +212,31 @@ def snippet_group_image(request, snippet_group_id, legend=True):
 
     workspace_item = snippets[0].workspace_item
     start_date, end_date = current_start_end_dates(request)
+    layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
+
+    # Add current position of slider, if available
+    workspace_manager = WorkspaceManager(request)
+    workspace_groups = workspace_manager.load_or_create()
+
+    for workspaces in workspace_groups.values():
+        for workspace in workspaces:
+            for workspace_item in workspace.workspace_items.filter(
+                visible=True):
+                if workspace_item.adapter.is_animatable:
+                    animation_info = AnimationSettings(request).info()
+                    if not 'vertical_lines' in layout_extra:
+                        layout_extra['vertical_lines'] = []
+                    vertical_line = {'name': 'Positie slider',
+                                     'value': animation_info['selected_date'],
+                                     'style': {'linewidth': 3,
+                                               'linestyle': '--',
+                                               'color': 'green'}}
+                    layout_extra['vertical_lines'].append(vertical_line)
+
     return workspace_item.adapter.image(identifiers,
                                         start_date, end_date,
                                         width, height,
-                                        layout_extra=snippet_group.layout())
+                                        layout_extra=layout_extra)
 
 
 @never_cache
@@ -703,7 +725,8 @@ def export_identifier_csv(request, workspace_item_id=None,
     start_date, end_date = current_start_end_dates(request)
     adapter = workspace_item.adapter
     values = adapter.values(identifier, start_date, end_date)
-    filename = '%s.csv' % (adapter.location(**identifier).get('name', 'export'))
+    filename = '%s.csv' % (
+        adapter.location(**identifier).get('name', 'export'))
 
     # Make the csv output.
     response = HttpResponse(mimetype='text/csv')

@@ -280,8 +280,30 @@ class WorkspaceItemAdapter(object):
         return styles
 
     def image(self, identifiers=None, start_date=None, end_date=None,
-              width=None, height=None):
-        """Return xyz"""
+              width=None, height=None, layout_extra=None):
+        """Return image of given parameters.
+
+        layout_extra can have the following parameters (all are optional):
+
+        'y_label' = value y_label
+        'x_label' = value x_label
+        'y_min' = value y_min
+        'y_max' = value self.layout_y_max
+        'title' = title
+        'horizontal_lines' = [{
+          'name': <line name>,
+          'value': <value>,
+          'style': {'linewidth': 3,
+                    'linestyle': '--',
+                    'color': 'green'}, }]
+        'vertical_lines' = [{
+          'name': <line name>,
+          'value': <value (datetime)>,
+          'style': {'linewidth': 3,
+                    'linestyle': '--',
+                    'color': 'green'}, }]
+        """
+
         raise NotImplementedError
 
     def symbol_url(self, identifier=None, start_date=None, end_date=None,
