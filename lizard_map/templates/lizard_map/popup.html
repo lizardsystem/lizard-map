@@ -151,8 +151,12 @@ the default template for the html_default method.
                 data-url="{% url lizard_map.snippet_edit snippet_id=snippet.id %}">
             <p>
               <label>Kleur</label>
-              <input class="graph-color" type="text" name="color"
-                     value="{{ snippet.identifier.layout.color }}" />
+              <select class="graph-color" name="color">
+                <option value="">(kies kleur)</option>
+                {% for color in colors %}
+                <option value="{{ color.mapnik }}"{% ifequal snippet.identifier.layout.color color.mapnik %} selected{% endifequal %}>{{ color.display_name }}</option>
+                {% endfor %}
+              </select>
             </p>
             <p>
               <input class="graph-line-min" type="checkbox" name="line_min"

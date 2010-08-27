@@ -4,6 +4,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils import simplejson as json
+from django.utils.translation import ugettext as _
 
 from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
@@ -11,6 +12,19 @@ from lizard_map.models import TEMP_WORKSPACES
 from lizard_map.models import USER_WORKSPACES
 from lizard_map.models import Workspace
 from lizard_map.symbol_manager import SymbolManager
+
+
+# The colors that are used in graphs
+COLORS_DEFAULT = [
+    {'mapnik': 'blue', 'display_name': _('blue')},
+    {'mapnik': 'magenta', 'display_name': _('magenta')},
+    {'mapnik': 'yellow', 'display_name': _('yellow')},
+    {'mapnik': 'black', 'display_name': _('black')},
+    {'mapnik': 'cyan', 'display_name': _('cyan')},
+    {'mapnik': 'red', 'display_name': _('red')},
+    {'mapnik': 'lightblue', 'display_name': _('lightblue')},
+    {'mapnik': 'grey', 'display_name': _('grey')},
+    ]
 
 
 class WorkspaceManager:
@@ -257,14 +271,13 @@ class WorkspaceItemAdapter(object):
         'color', 'linestyle', 'linewidth', 'max_linestyle',
         'max_linewidth', 'min_linestyle', 'min_linewidth', ...
         """
-        colors_default = ['blue', 'cyan', 'magenta', 'yellow', 'black', 'red',
-                          'lightblue', 'grey', ]
         styles = {}
         for index, identifier in enumerate(identifiers):
             key = str(identifier)
+            color = COLORS_DEFAULT[index % len(COLORS_DEFAULT)]
             style = {'linestyle': '-',
                      'linewidth': 3,
-                     'color': colors_default[index % len(colors_default)],
+                     'color': color['mapnik'],
                      'max_linestyle': ':',
                      'max_linewidth': 2,
                      'min_linestyle': ':',
@@ -397,6 +410,7 @@ class WorkspaceItemAdapter(object):
                 'add_snippet': add_snippet,
                 'editing': editing,
                 'snippet_group': snippet_group,
+                'colors': COLORS_DEFAULT,
                 },
             )
 

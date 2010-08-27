@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-08-12 07:11-0500\n"
+"POT-Creation-Date: 2010-08-27 02:52-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,49 +24,81 @@ msgstr "Workspace"
 msgid "Workspaces"
 msgstr "Workspaces"
 
-#: models.py:78
+#: models.py:79
 msgid "Workspace item"
 msgstr "Workspace item"
 
-#: models.py:79
+#: models.py:80
 msgid "Workspace items"
 msgstr "Workspace items"
 
-#: models.py:204
+#: models.py:227
 msgid "all"
 msgstr "alles"
 
-#: models.py:205
+#: models.py:228
 msgid "year"
 msgstr "jaar"
 
-#: models.py:206
+#: models.py:229
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:207
+#: models.py:230
 msgid "month"
 msgstr "maand"
 
-#: models.py:208
+#: models.py:231
 msgid "week"
 msgstr "week"
 
-#: models.py:209
+#: models.py:232
 msgid "day"
 msgstr "dag"
 
-#: models.py:229
+#: models.py:252
 msgid "Collage snippet group"
 msgstr "Collage snippet groep"
 
-#: models.py:230
+#: models.py:253
 msgid "Collage snippet groups"
 msgstr "Collage snippet groepen"
 
-#: models.py:295
+#: models.py:368
 msgid "Boundary value"
 msgstr "Grenswaarde"
+
+#: workspace.py:19
+msgid "blue"
+msgstr "blauw"
+
+#: workspace.py:20
+msgid "magenta"
+msgstr "magenta"
+
+#: workspace.py:21
+msgid "yellow"
+msgstr "geel"
+
+#: workspace.py:22
+msgid "black"
+msgstr "zwart"
+
+#: workspace.py:23
+msgid "cyan"
+msgstr "cyaan"
+
+#: workspace.py:24
+msgid "red"
+msgstr "rood"
+
+#: workspace.py:25
+msgid "lightblue"
+msgstr "lichtblauw"
+
+#: workspace.py:26
+msgid "grey"
+msgstr "grijs"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
@@ -75,6 +107,10 @@ msgstr "Voorbeelden"
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
+
+#: templates/lizard_map/wms.html:165
+msgid "tijdelijke workspace legen"
+msgstr "tijdelijke workspace legen"
 
 #~ msgid "Attached point"
 #~ msgstr "Aanhechtpunt"
