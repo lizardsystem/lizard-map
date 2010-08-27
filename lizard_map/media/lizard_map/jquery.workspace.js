@@ -69,11 +69,8 @@ function show_popup(data, map) {
         $('#graph-popup-content').html(data.html);
         overlay = $('#graph-popup').overlay();
         overlay.load();
-        // + '<span class="no-hover-popups"></span>',
         reloadGraphs();
-        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
-        $(".add-snippet").snippetInteraction();
-        // ^^^ jquery locally?
+        $(".add-snippet", overlay).snippetInteraction();
     }
     else {
         nothingFoundPopup();
@@ -83,8 +80,7 @@ function show_popup(data, map) {
 
 function hover_popup(data, map) {
     if (data.name !== "" &&
-        data.name !== undefined &&
-        $('.no-hover-popups').size() === 0) {
+        data.name !== undefined) {
         var size, popup;
         $("#hover-popup").remove(); // remove existing popup, if exists
         size = new OpenLayers.Size(300, 80);
@@ -95,13 +91,6 @@ function hover_popup(data, map) {
                                      false);
         popup.autoSize = true;
         map.addPopup(popup);
-        // make sure that when the window is closed, the object is removed as well
-        $(".olPopupCloseBox").bind("click", function () {
-            $(this).parent().parent().remove();
-        });
-        reloadGraphs();
-        // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
-        $(".add-snippet").snippetInteraction();
     }
 }
 
