@@ -130,6 +130,17 @@ class WorkspaceItem(models.Model):
         """Can I provide a adapter class for i.e. WMS layer?"""
         return bool(self.adapter_class)
 
+    def delete(self, *args, **kwargs):
+        """
+        When deleting a WorkspaceItem, delete corresponding snippets
+        """
+        snippets = WorkspaceCollageSnippet.objects.filter(workspace_item=self)
+        # We delete snippets individually because snippets.delete()
+        # will not remove empty snippet_groups.
+        for snippet in snippets:
+            snippet.delete()
+        super(WorkspaceItem, self).delete(*args, **kwargs)
+
 
 class WorkspaceCollage(models.Model):
     """A collage contains selections/locations from a workspace"""
