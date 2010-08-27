@@ -15,7 +15,7 @@ install_requires = [
     'PIL',
     'django-nose',
     'django-staticfiles',
-    'lizard-ui >= 1.10',
+    'lizard-ui >= 1.12',
     'matplotlib',
     'pyproj',
     # mapnik: sorry, there's no real package for that.  We do need it however.
