@@ -56,7 +56,7 @@
   }
 
 #hover-popup_contentDiv
-{ padding: 0.5em 1em 0em 2em;
+{ padding-top: 0.75em;
   background-color: lightyellow;
   }
 
@@ -73,3 +73,7 @@
   -moz-box-shadow:0 0 40px 5px black;
   -webkit-box-shadow: 0 0 40px black;
 }
+
+#graph-popup-content
+{ overflow: auto;
+  }

@@ -81,13 +81,15 @@ function show_popup(data, map) {
 function hover_popup(data, map) {
     if (data.name !== "" &&
         data.name !== undefined) {
-        var size, popup;
+        var size, popup, content;
+        content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
+            '&nbsp;&nbsp;&nbsp;&nbsp;';
         $("#hover-popup").remove(); // remove existing popup, if exists
         size = new OpenLayers.Size(300, 80);
         popup = new OpenLayers.Popup('hover-popup',
                                      new OpenLayers.LonLat(data.x, data.y),
                                      size,
-                                     data.name,
+                                     content,
                                      false);
         popup.autoSize = true;
         map.addPopup(popup);
