@@ -7,8 +7,39 @@ from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DUTCH_DATE_FORMAT
+from lizard_map.workspace import WorkspaceManager
 
 ANIMATION_SETTINGS = 'animation_settings'
+
+
+def slider_layout_extra(request):
+    """
+    Calculates layout_extra (used when drawing graphs) for current
+    animation slider.
+
+    Requires request.
+    """
+
+    layout_extra = {}
+
+    workspace_manager = WorkspaceManager(request)
+    workspace_groups = workspace_manager.load_or_create()
+
+    for workspaces in workspace_groups.values():
+        for workspace in workspaces:
+            for workspace_item in workspace.workspace_items.filter(
+                visible=True):
+                if workspace_item.adapter.is_animatable:
+                    animation_info = AnimationSettings(request).info()
+                    if not 'vertical_lines' in layout_extra:
+                        layout_extra['vertical_lines'] = []
+                    vertical_line = {'name': 'Positie animatie slider',
+                                     'value': animation_info['selected_date'],
+                                     'style': {'linewidth': 3,
+                                               'linestyle': '--',
+                                               'color': 'green'}}
+                    layout_extra['vertical_lines'].append(vertical_line)
+    return layout_extra
 
 
 def set_animation_date(request):

@@ -49,6 +49,7 @@ function setUpAnimationSlider() {
         change: function (event, ui) {
             setSliderDate(ui.value);
             updateLayers();
+            reloadGraphs();
         }
     });
 }

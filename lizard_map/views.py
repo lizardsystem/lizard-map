@@ -14,6 +14,7 @@ import mapnik
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
+from lizard_map.animation import slider_layout_extra
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -215,23 +216,8 @@ def snippet_group_image(request, snippet_group_id, legend=True):
     layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
 
     # Add current position of slider, if available
-    workspace_manager = WorkspaceManager(request)
-    workspace_groups = workspace_manager.load_or_create()
 
-    for workspaces in workspace_groups.values():
-        for workspace in workspaces:
-            for workspace_item in workspace.workspace_items.filter(
-                visible=True):
-                if workspace_item.adapter.is_animatable:
-                    animation_info = AnimationSettings(request).info()
-                    if not 'vertical_lines' in layout_extra:
-                        layout_extra['vertical_lines'] = []
-                    vertical_line = {'name': 'Positie slider',
-                                     'value': animation_info['selected_date'],
-                                     'style': {'linewidth': 3,
-                                               'linestyle': '--',
-                                               'color': 'green'}}
-                    layout_extra['vertical_lines'].append(vertical_line)
+    layout_extra.update(slider_layout_extra(request))
 
     return using_workspace_item.adapter.image(identifiers,
                                               start_date, end_date,
@@ -521,8 +507,13 @@ def workspace_item_image(request, workspace_item_id):
 
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
+
+    # add animation slider position
+    layout_extra = slider_layout_extra(request)
+
     return workspace_item.adapter.image(identifier_list, start_date, end_date,
-                                        width, height)
+                                        width, height,
+                                        layout_extra=layout_extra)
 
 
 def snippet_edit(request, snippet_id):
