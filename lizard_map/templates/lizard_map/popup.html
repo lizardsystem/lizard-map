@@ -199,19 +199,31 @@ the default template for the html_default method.
     {% for display_object in display_group %}
     <tr>
       <td>{{ display_object.name }}</td>
-      <td><a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
-             class="icon-action ss_table_save ss_sprite"
-             title="Export csv"
-             ></a></td>
-      {% if editing %}<td><a href="{{ display_object.object.get_absolute_url }}" class="ss_chart_curve_edit ss_sprite" title="Bewerk lijn"></a></td>{% endif %}
-      {% if add_snippet %}<td><a href=""
-      class="add-snippet icon-action ss_chart_line_add ss_sprite"
-      data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
-      data-workspace-item-id="{{ display_object.workspace_item.id }}"
-      data-item-identifier='{{ display_object.identifier|json_escaped }}'
-      data-item-shortname="{{ display_object.shortname }}"
-      data-item-name="{{ display_object.name }}"
-      title="Voeg toe aan collage"></a></td>{% endif %}
+      <td class="button">
+        <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
+           class="ss_table_save ss_sprite"
+           title="Export csv"
+           ></a>
+      </td>
+      {% if editing %}
+      <td class="button">
+        <a href="{{ display_object.object.get_absolute_url }}"
+           class="ss_chart_curve_edit ss_sprite"
+           title="Bewerk lijn"></a>
+      </td>
+      {% endif %}
+      {% if add_snippet %}
+      <td class="button">
+        <a href=""
+           class="add-snippet ss_chart_line_add ss_sprite"
+           data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
+           data-workspace-item-id="{{ display_object.workspace_item.id }}"
+           data-item-identifier='{{ display_object.identifier|json_escaped }}'
+           data-item-shortname="{{ display_object.shortname }}"
+           data-item-name="{{ display_object.name }}"
+           title="Voeg toe aan collage"></a>
+      </td>
+      {% endif %}
     </tr>
     {% endfor %}
     {% endif %}
