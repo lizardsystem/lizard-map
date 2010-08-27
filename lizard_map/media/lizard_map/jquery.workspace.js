@@ -52,41 +52,34 @@ jQuery.fn.liveCheckboxes = function () {
 
 
 
-/* Shows an OpenLayer popup, data must have the following properties:
+/* Shows an "jquery tools overlay" popup, data must have the following properties:
+data.html
+
+Previously it also needed:
 data.id
 data.x
 data.y
-data.html
 data.big
+But those aren't used anymore.
 */
+
 function show_popup(data, map) {
     if (data.html !== "" && data.html !== undefined) {
-        var size, popup;
-        $("#" + data.id).remove(); // remove existing popup, if exists
-        size = new OpenLayers.Size(400, 340);
-        if (data.big) {
-            size = new OpenLayers.Size(420, 610);
-        }
-        popup = new OpenLayers.Popup(
-            data.id,
-            new OpenLayers.LonLat(data.x, data.y),
-            size,
-            data.html + '<span class="no-hover-popups"></span>',
-            true);
-        popup.panMapIfOutOfView = true;
-        map.addPopup(popup);
-        // make sure that when the window is closed, the object is removed as well
-        $(".olPopupCloseBox").bind("click", function () {
-            $(this).parent().parent().remove();
-        });
+        var overlay;
+        $('#graph-popup-content').html(data.html);
+        overlay = $('#graph-popup').overlay();
+        overlay.load();
+        // + '<span class="no-hover-popups"></span>',
         reloadGraphs();
         // tijdelijk, hoeft niet meer als add-snippet live kan worden gebruikt
         $(".add-snippet").snippetInteraction();
+        // ^^^ jquery locally?
     }
     else {
         nothingFoundPopup();
     }
 }
+
 
 function hover_popup(data, map) {
     if (data.name !== "" &&
@@ -230,6 +223,8 @@ jQuery.fn.workspaceInteraction = function () {
         $workspace.workspaceTrashBox();
         // Make checkboxes work.
         $workspace.liveCheckboxes();
+        // Initialize the graph popup.
+        $('#graph-popup').overlay({});
     });
 };
 
