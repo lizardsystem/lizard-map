@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.7 (unreleased)
+1.7 (2010-08-27)
 ----------------
 
 - Graph and collage popups now use the "regular" jquerytools popup instead of
