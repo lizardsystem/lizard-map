@@ -210,7 +210,7 @@ def snippet_group_image(request, snippet_group_id, legend=True):
         # We want None, not u''.
         height = None
 
-    workspace_item = snippets[0].workspace_item
+    using_workspace_item = snippets[0].workspace_item
     start_date, end_date = current_start_end_dates(request)
     layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
 
@@ -233,10 +233,10 @@ def snippet_group_image(request, snippet_group_id, legend=True):
                                                'color': 'green'}}
                     layout_extra['vertical_lines'].append(vertical_line)
 
-    return workspace_item.adapter.image(identifiers,
-                                        start_date, end_date,
-                                        width, height,
-                                        layout_extra=layout_extra)
+    return using_workspace_item.adapter.image(identifiers,
+                                              start_date, end_date,
+                                              width, height,
+                                              layout_extra=layout_extra)
 
 
 @never_cache
