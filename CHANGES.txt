@@ -5,7 +5,16 @@ Changelog of lizard-map
 1.7 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Graph and collage popups now use the "regular" jquerytools popup instead of
+  the OpenLayers in-the-map popup.  Visually cleaner, clearer and prettier.
+  And easier to maintain and to get right.
+
+- Various visual fixes.
+
+- Deleting a workspace item also deletes the corresponding snippets.
+
+- Added color pulldown for collage view settings (instead of requiring you to
+  know the internal matplotlib color code names :-) )
 
 
 1.6 (2010-08-26)
