@@ -70,7 +70,7 @@ function show_popup(data, map) {
         overlay = $('#graph-popup').overlay();
         overlay.load();
         reloadGraphs();
-        $(".add-snippet", overlay).snippetInteraction();
+        $(".add-snippet").snippetInteraction();
     }
     else {
         nothingFoundPopup();
