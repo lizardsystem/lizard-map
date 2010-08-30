@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Bugfix for when no statistics are available.
 
 
 1.7 (2010-08-27)
