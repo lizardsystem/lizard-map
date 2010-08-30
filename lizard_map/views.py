@@ -274,6 +274,14 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
     Note: identifier must be a dict. {'id': the_real_id}.
 
+    Result format (used by the javascript popup function):
+
+    result = {'id': popup_id,
+              'x': x_found,
+              'y': y_found,
+              'html': result_html,
+              'big': big_popup,
+              }
     """
 
     result_html = ''
