@@ -755,9 +755,12 @@ def export_snippet_group_statistics_csv(request, snippet_group_id=None):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = 'attachment; filename=export.csv'
     writer = csv.writer(response)
-    colnames = ['min', 'max', 'avg', 'count_lt', 'count_gte',
+    colnames = ['min', 'max', 'avg', 'count_lt',
+                'count_gte',
                 'percentile', 'percentile_75']
-    colnamesdisplay = ['min', 'max', 'avg', '< boundary', '>= boundary',
+    colnamesdisplay = ['min', 'max', 'avg',
+                       '# < %s' % snippet_group.boundary_value,
+                       '# >= %s' % snippet_group.boundary_value,
                        'percentile_25', 'percentile_75']
     writer.writerow(colnamesdisplay)
     for row in statistics:
