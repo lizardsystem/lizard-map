@@ -439,8 +439,8 @@ def session_collage_snippet_add(request,
     snippet, _ = collage.get_or_create_snippet(
         workspace_item=workspace_item,
         identifier_json=workspace_item_location_identifier,
-        shortname=workspace_item_location_shortname,
-        name=workspace_item_location_name)
+        shortname=workspace_item_location_shortname[:80],
+        name=workspace_item_location_name[:80])
 
     return HttpResponse(json.dumps(workspace_id))
 
