@@ -22,6 +22,7 @@ from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.models import WorkspaceCollageSnippetGroup
+from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
 
 # Workspace stuff
@@ -415,6 +416,7 @@ def session_collage_snippet_add(request,
     """finds session user workspace and add snippet to (only) corresponding
     collage
     """
+
     if workspace_item_id is None:
         workspace_item_id = request.POST.get('workspace_item_id')
     if workspace_item_location_identifier is None:
@@ -435,12 +437,18 @@ def session_collage_snippet_add(request,
         workspace.collages.create()
     collage = workspace.collages.all()[0]
 
+    # Shorten name to 80 characters
+    workspace_item_location_shortname = short_string(
+        workspace_item_location_shortname, 80)
+    workspace_item_location_name = short_string(
+        workspace_item_location_name, 80)
+
     # create snippet using collage function: also finds/makes snippet group
     snippet, _ = collage.get_or_create_snippet(
         workspace_item=workspace_item,
         identifier_json=workspace_item_location_identifier,
-        shortname=workspace_item_location_shortname[:80],
-        name=workspace_item_location_name[:80])
+        shortname=workspace_item_location_shortname,
+        name=workspace_item_location_name)
 
     return HttpResponse(json.dumps(workspace_id))
 
@@ -545,7 +553,7 @@ def snippet_edit(request, snippet_id):
     if 'layout' in identifier:
         del identifier['layout']
     identifier.update({'layout': layout})
-    # print identifier
+
     snippet.set_identifier(identifier)
     snippet.save()
 

@@ -7,6 +7,7 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
+from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
 import lizard_map.admin
 import lizard_map.layers
@@ -222,3 +223,18 @@ class TestAnimationSettings(TestCase):
         animation_settings.slider_position = 4000
         result = animation_settings.info()
         self.assertEquals(result['value'], 1096)  # Max available.
+
+
+class UtilityTest(TestCase):
+
+    def test_short_string(self):
+        input_names = [
+            'Loosdrechtse Plassen',
+            'wie niet waagt, wie niet wint',
+            'Reinout is een developer bij Nelen & Schuurmans',
+            'Dit is nog een langere zin, deze moet ook goed werken',
+            ]
+        for name in input_names:
+            short = short_string(name, 17)
+            self.assertTrue(len(short) <= 17)
+            self.assertEquals(short[:5], name[:5])
