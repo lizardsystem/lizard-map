@@ -32,7 +32,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         layer.datasource = mapnik.Shapefile(
             file=pkg_resources.resource_filename(
                 'lizard_map',
-                'test_shapefiles/KRWwaterlichamen_vlakken.shp'))
+                'test_shapefiles/KRWwaterlichamen_merge.shp'))
         area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
         # ^^^ light brownish
         line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)

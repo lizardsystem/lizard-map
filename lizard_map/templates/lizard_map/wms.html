@@ -40,7 +40,8 @@
         // Set up base layer.
         openstreetmapLayer = new OpenLayers.Layer.OSM(
             "Openstreetmap",
-            "http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",
+            {#"http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",#}
+            "http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png",
             {buffer: 0});
         map.addLayer(openstreetmapLayer);
 
