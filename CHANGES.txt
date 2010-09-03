@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.9 (unreleased)
+1.9 (2010-09-03)
 ----------------
 
 - Use updated krw shapefiile.
