@@ -103,7 +103,7 @@ class ViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_wms(self):
+    def test_clickinfo(self):
         url = reverse('lizard_map_clickinfo',
                       kwargs={'workspace_id': self.workspace.id})
         url += '?x=430987.5469813&y=6803449.8497827'
@@ -327,12 +327,14 @@ class UtilityTest(TestCase):
             self.assertEquals(short[:5], name[:5])
 
     def test_parse_identifier_json(self):
-        self.assertTrue(parse_identifier_json('{%22testkey%22:%20%22testvalue%22}'))
+        self.assertTrue(parse_identifier_json(
+                '{%22testkey%22:%20%22testvalue%22}'))
 
     def test_workspace_item_image_url(self):
         workspace_item_id = 1  # Does not have to exist.
         identifiers = [{}, {}]
-        self.assertTrue(workspace_item_image_url(workspace_item_id, identifiers))
+        self.assertTrue(workspace_item_image_url(
+                workspace_item_id, identifiers))
 
     def test_graph(self):
         start_date = datetime.datetime(2010, 7, 1)
