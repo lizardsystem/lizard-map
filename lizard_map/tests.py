@@ -6,8 +6,11 @@ import pkg_resources
 from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
+from lizard_map.models import WorkspaceCollage
+from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.models import WorkspaceItem
 from lizard_map.utility import short_string
+from lizard_map.workspace import WorkspaceItemAdapter
 from lizard_map.workspace import WorkspaceManager
 import lizard_map.admin
 import lizard_map.layers
@@ -31,11 +34,11 @@ class LayersTest(TestCase):
 
 class WorkspaceManagerTest(TestCase):
 
-    def setUp(self):
-        class MockRequest(object):
-            session = {}
+    class MockRequest(object):
+        session = {}
 
-        mock_request = MockRequest()
+    def setUp(self):
+        mock_request = self.MockRequest()
         self.workspace_manager = WorkspaceManager(
             mock_request)
 
@@ -58,6 +61,11 @@ class WorkspaceManagerTest(TestCase):
         workspace_groups = self.workspace_manager.load_or_create()
         self.assertTrue(workspace_groups)
         self.workspace_manager.save_workspaces()
+
+    def test_empty(self):
+        workspace_groups = self.workspace_manager.load_or_create()
+        self.assertTrue(workspace_groups)
+        self.workspace_manager.empty()
 
 
 class WorkspaceTest(TestCase):
@@ -259,3 +267,60 @@ class UtilityTest(TestCase):
             short = short_string(name, 17)
             self.assertTrue(len(short) <= 17)
             self.assertEquals(short[:5], name[:5])
+
+
+class WorkspaceItemAdapterTest(TestCase):
+
+    def setUp(self):
+        self.workspace = Workspace()
+        self.workspace.save()
+        workspace_item = WorkspaceItem(workspace=self.workspace)
+        workspace_item.save()
+        layer_arguments = {}
+        self.adapter = WorkspaceItemAdapter(workspace_item, layer_arguments)
+
+    def test_smoke(self):
+        self.assertTrue(self.adapter)
+
+    def test_line_styles(self):
+        identifiers = [{str(i): 'b'} for i in range(10)]
+        line_styles = self.adapter.line_styles(identifiers)
+        self.assertTrue(line_styles)
+        self.assertEquals(len(line_styles.keys()), 10)
+
+    def test_value_aggregate_default(self):
+        # First, implement values function
+        start_date = datetime.datetime(2010, 5, 25)
+        end_date = datetime.datetime(2010, 6, 25)
+        self.adapter.values = (lambda
+                               identifier, start_date, end_date:
+                               [{'datetime': start_date, 'value': 5.0, 'unit': 'none'},
+                                {'datetime': end_date, 'value': 6.0, 'unit': 'none'}])
+        aggregated_values = self.adapter.value_aggregate_default(
+            {},
+            {'min': None, 'max': None, 'avg': None, 'count_lt': 6,
+             'count_gte': 6, 'percentile': 50},
+            start_date,
+            end_date)
+        self.assertEqual(aggregated_values['min'], 5.0)
+        self.assertEqual(aggregated_values['max'], 6.0)
+        self.assertEqual(aggregated_values['avg'], 5.5)
+        self.assertEqual(aggregated_values['count_lt'], 1)
+        self.assertEqual(aggregated_values['count_gte'], 1)
+        # Percentile value depends on definition...
+        self.assertTrue(aggregated_values['percentile'] >= 5.0)
+        self.assertTrue(aggregated_values['percentile'] <= 6.0)
+
+    def test_symbol_url(self):
+        self.assertTrue(self.adapter.symbol_url())
+
+    def test_html_default_identifiers(self):
+        identifiers = {}
+        self.assertTrue(self.adapter.html_default(identifiers=identifiers))
+
+    def test_html_default_snippet_group(self):
+        workspace_collage = WorkspaceCollage(workspace=self.workspace)
+        workspace_collage.save()
+        snippet_group = WorkspaceCollageSnippetGroup(workspace_collage=workspace_collage)
+        snippet_group.save()
+        self.assertTrue(self.adapter.html_default(snippet_group=snippet_group))
