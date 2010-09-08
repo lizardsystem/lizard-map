@@ -1,6 +1,8 @@
 import datetime
 
+from django.core.urlresolvers import reverse
 from django.test import TestCase
+from django.test.client import Client
 import pkg_resources
 
 from lizard_map.animation import AnimationSettings
@@ -66,6 +68,25 @@ class WorkspaceManagerTest(TestCase):
         workspace_groups = self.workspace_manager.load_or_create()
         self.assertTrue(workspace_groups)
         self.workspace_manager.empty()
+
+
+class ViewsTest(TestCase):
+
+    class MockRequest(object):
+        session = {}
+
+    def setUp(self):
+        mock_request = self.MockRequest()
+        self.workspace_manager = WorkspaceManager(
+            mock_request)
+        self.workspace_groups = self.workspace_manager.load_or_create()
+        self.client = Client()
+
+    def test_homepage(self):
+        workspace = self.workspace_groups.values()[0][0]
+        url = reverse('lizard_map_workspace', {'workspace_id': workspace.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
 
 class WorkspaceTest(TestCase):
@@ -292,10 +313,11 @@ class WorkspaceItemAdapterTest(TestCase):
         # First, implement values function
         start_date = datetime.datetime(2010, 5, 25)
         end_date = datetime.datetime(2010, 6, 25)
-        self.adapter.values = (lambda
-                               identifier, start_date, end_date:
-                               [{'datetime': start_date, 'value': 5.0, 'unit': 'none'},
-                                {'datetime': end_date, 'value': 6.0, 'unit': 'none'}])
+        self.adapter.values = (
+            lambda
+            identifier, start_date, end_date:
+                [{'datetime': start_date, 'value': 5.0, 'unit': 'none'},
+                 {'datetime': end_date, 'value': 6.0, 'unit': 'none'}])
         aggregated_values = self.adapter.value_aggregate_default(
             {},
             {'min': None, 'max': None, 'avg': None, 'count_lt': 6,
@@ -321,6 +343,7 @@ class WorkspaceItemAdapterTest(TestCase):
     def test_html_default_snippet_group(self):
         workspace_collage = WorkspaceCollage(workspace=self.workspace)
         workspace_collage.save()
-        snippet_group = WorkspaceCollageSnippetGroup(workspace_collage=workspace_collage)
+        snippet_group = WorkspaceCollageSnippetGroup(
+            workspace_collage=workspace_collage)
         snippet_group.save()
         self.assertTrue(self.adapter.html_default(snippet_group=snippet_group))
