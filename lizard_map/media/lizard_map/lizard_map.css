@@ -25,6 +25,7 @@
   margin: 0.5em 0;
   display: block;
   float: left;
+  clear: left;
   }
 
 #animation-slider
