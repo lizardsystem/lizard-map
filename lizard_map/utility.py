@@ -1,5 +1,6 @@
 """Small utility functions"""
 
+
 def short_string(value, length):
     """
     Shorten string to given length. Length must be >= 5
@@ -16,4 +17,3 @@ def short_string(value, length):
         if length_post > 0:
             result += value[-length_post:]
         return result
-
