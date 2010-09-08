@@ -1,4 +1,5 @@
 import os
+import logging
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -13,6 +14,7 @@ from lizard_map.models import USER_WORKSPACES
 from lizard_map.models import Workspace
 from lizard_map.symbol_manager import SymbolManager
 
+logger = logging.getLogger('lizard_map.workspace')
 
 # The colors that are used in graphs
 COLORS_DEFAULT = [
@@ -35,23 +37,30 @@ class WorkspaceManager:
 
     def save_workspaces(self):
         """save workspaces to session"""
-        workspaces_id = {}
+        workspace_group_ids = {}
         for group, workspace_list in self.workspaces.items():
-            workspaces_id[group] = [workspace.id for workspace in
-                                    workspace_list]
-        self.request.session['workspaces'] = workspaces_id
+            workspace_group_ids[group] = [workspace.id for workspace in
+                                          workspace_list]
+        self.request.session['workspaces'] = workspace_group_ids
+        logger.debug('WorkspaceManager.save_workspaces: saved workspace_group_ids in session.')
 
-    def load_workspaces(self, workspaces_id=None):
+    def load_workspaces(self, workspace_group_ids=None):
         """load workspaces from session
+
+        note: request.session['workspaces'] must be filled before
+        using this function
 
         returns number of workspaces that could not be loaded"""
         errors = 0
-        # TODO: fix up workspaces_id and workspace_ids as those terms are too
-        # similar.  They will lead to coding errors.
-        if workspaces_id is None:
-            workspaces_id = self.request.session['workspaces']
+        if workspace_group_ids is None:
+            if 'workspaces' in self.request.session:
+                workspace_group_ids = self.request.session['workspaces']
+            else:
+                logger.warn(('WorkspaceManager.load_workspaces: no workspaces'
+                             ' in kwargs or in session.'))
+                return 1
         # Workspaces are grouped by key TEMP_WORKSPACES, USER_WORKSPACES, etc.
-        for group, workspace_ids in workspaces_id.items():
+        for group, workspace_ids in workspace_group_ids.items():
             self.workspaces[group] = []
             for workspace_id in workspace_ids:
                 try:
@@ -68,7 +77,7 @@ class WorkspaceManager:
 
     def load_or_create(self, new_workspace=False):
         """load workspaces references by session['workspaces'] or
-        create new workspace
+        create new workspace (saves in case of changes to workspaces)
 
         workspaces are returned in a dictionary:
         {

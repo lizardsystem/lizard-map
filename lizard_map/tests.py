@@ -31,12 +31,33 @@ class LayersTest(TestCase):
 
 class WorkspaceManagerTest(TestCase):
 
+    def setUp(self):
+        class MockRequest(object):
+            session = {}
+
+        mock_request = MockRequest()
+        self.workspace_manager = WorkspaceManager(
+            mock_request)
+
     def test_smoke(self):
         """We use the WorkspaceManager to find and create our workspaces"""
-        mock_request = {}
-        workspace_manager = WorkspaceManager(
-            mock_request)
-        self.assertTrue(workspace_manager)  # It exists.
+        self.assertTrue(self.workspace_manager)  # It exists.
+
+    def test_load_or_create(self):
+        workspace_groups = self.workspace_manager.load_or_create()
+        self.assertTrue(workspace_groups)
+
+    def test_load(self):
+        workspace_groups = self.workspace_manager.load_or_create()
+        self.assertTrue(workspace_groups)
+        self.workspace_manager.save_workspaces()
+        errors = self.workspace_manager.load_workspaces()
+        self.assertEqual(errors, 0)
+
+    def test_save(self):
+        workspace_groups = self.workspace_manager.load_or_create()
+        self.assertTrue(workspace_groups)
+        self.workspace_manager.save_workspaces()
 
 
 class WorkspaceTest(TestCase):
