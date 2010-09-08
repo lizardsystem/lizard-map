@@ -42,7 +42,8 @@ class WorkspaceManager:
             workspace_group_ids[group] = [workspace.id for workspace in
                                           workspace_list]
         self.request.session['workspaces'] = workspace_group_ids
-        logger.debug('WorkspaceManager.save_workspaces: saved workspace_group_ids in session.')
+        logger.debug('WorkspaceManager.save_workspaces: saved '
+                     'workspace_group_ids in session.')
 
     def load_workspaces(self, workspace_group_ids=None):
         """load workspaces from session
