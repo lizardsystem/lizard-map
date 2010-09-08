@@ -41,7 +41,7 @@ the default template for the html_default method.
         <a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
            class="ss_table_save ss_sprite"
            title="Export csv"
-           ></a>
+           >&nbsp;</a>
       </td>
       <td class="button">
         {# na klik komt er een popup met opties voor drempelwaarde, bewerkingsperiode, titel, etc... #}
@@ -135,7 +135,7 @@ the default template for the html_default method.
         <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&amp;identifier_json={{ snippet.identifier|json_escaped }}"
            class="ss_table_save ss_sprite"
            title="Export csv"
-           ></a>
+           >&nbsp;</a>
       </td>
       {% if editing %}
       <td class="button">
@@ -189,7 +189,7 @@ the default template for the html_default method.
            data-item-identifier='{{ snippet.identifier|json_escaped }}'
            data-item-shortname="{{ snippet.shortname }}"
            data-item-name="{{ snippet.name }}"
-           title="Voeg toe aan collage"></a>
+           title="Voeg toe aan collage">&nbsp;</a>
       </td>
       {% endif %}
     </tr>
@@ -199,19 +199,19 @@ the default template for the html_default method.
     {% for display_object in display_group %}
     <tr>
       <td>{{ display_object.name }}
-      {% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}" class="ss_sprite ss_arrow_turn_right"></a>{% endif %}
+      {% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}" class="ss_sprite ss_arrow_turn_right">&nbsp;</a>{% endif %}
       </td>
       <td class="button">
         <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
            class="ss_table_save ss_sprite"
            title="Export csv"
-           ></a>
+           >&nbsp;</a>
       </td>
       {% if editing %}
       <td class="button">
         <a href="{{ display_object.object.get_absolute_url }}"
            class="ss_chart_curve_edit ss_sprite"
-           title="Bewerk lijn"></a>
+           title="Bewerk lijn">&nbsp;</a>
       </td>
       {% endif %}
       {% if add_snippet %}
@@ -223,7 +223,7 @@ the default template for the html_default method.
            data-item-identifier='{{ display_object.identifier|json_escaped }}'
            data-item-shortname="{{ display_object.shortname }}"
            data-item-name="{{ display_object.name }}"
-           title="Voeg toe aan collage"></a>
+           title="Voeg toe aan collage">&nbsp;</a>
       </td>
       {% endif %}
     </tr>
