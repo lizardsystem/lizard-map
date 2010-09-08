@@ -76,7 +76,6 @@ class ViewsTest(TestCase):
         session = {}
 
     def setUp(self):
-        mock_request = self.MockRequest()
         self.client = Client()
 
     def test_homepage(self):
