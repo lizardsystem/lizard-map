@@ -5,6 +5,9 @@ from django.test import TestCase
 from django.test.client import Client
 import pkg_resources
 
+from lizard_map.adapter import Graph
+from lizard_map.adapter import parse_identifier_json
+from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
@@ -307,6 +310,9 @@ class TestAnimationSettings(TestCase):
 
 
 class UtilityTest(TestCase):
+    """
+    Tests utility.py & adapter.py
+    """
 
     def test_short_string(self):
         input_names = [
@@ -319,6 +325,24 @@ class UtilityTest(TestCase):
             short = short_string(name, 17)
             self.assertTrue(len(short) <= 17)
             self.assertEquals(short[:5], name[:5])
+
+    def test_parse_identifier_json(self):
+        self.assertTrue(parse_identifier_json('{%22testkey%22:%20%22testvalue%22}'))
+
+    def test_workspace_item_image_url(self):
+        workspace_item_id = 1  # Does not have to exist.
+        identifiers = [{}, {}]
+        self.assertTrue(workspace_item_image_url(workspace_item_id, identifiers))
+
+    def test_graph(self):
+        start_date = datetime.datetime(2010, 7, 1)
+        end_date = datetime.datetime(2010, 10, 1)
+        today = datetime.datetime(2010, 9, 8)
+        graph = Graph(start_date, end_date, today=today)
+        graph.add_today()
+        graph.suptitle('hallo')
+        graph.legend()
+        self.assertTrue(graph.http_png())
 
 
 class WorkspaceItemAdapterTest(TestCase):
