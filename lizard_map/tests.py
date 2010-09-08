@@ -122,6 +122,18 @@ class ViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
+    def test_search_coordinates(self):
+        url = reverse('lizard_map.search_coordinates')
+        url += '?x=430987.5469813&y=6817896.448126&radius=100'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_search_name(self):
+        url = reverse('lizard_map.search_name')
+        url += '?x=430987.5469813&y=6817896.448126&radius=100'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
 
 class WorkspaceTest(TestCase):
 
