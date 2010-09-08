@@ -177,6 +177,7 @@ def snippet_group_graph_edit(request, snippet_group_id):
     return HttpResponse('')
 
 
+@never_cache
 def snippet_group_image(request, snippet_group_id, legend=True):
     """Draws a single image for the snippet_group. There MUST be at
     least 1 snippet in the group."""
@@ -244,6 +245,7 @@ def workspace_item_delete(request, object_id=None):
     return HttpResponse(json.dumps(workspace_id))
 
 
+@never_cache
 def session_workspace_edit_item(request,
                                 workspace_item_id=None,
                                 workspace_category='user'):
@@ -406,6 +408,7 @@ def collage(request,
         context_instance=RequestContext(request))
 
 
+@never_cache
 def session_collage_snippet_add(request,
                                 workspace_item_id=None,
                                 workspace_item_location_identifier=None,
@@ -468,6 +471,7 @@ def session_collage_snippet_delete(request,
     return HttpResponse()
 
 
+@never_cache
 def snippet_popup(request, snippet_id=None):
     """get snippet/fews location by snippet_id and return data
 
@@ -483,6 +487,7 @@ def snippet_popup(request, snippet_id=None):
                       hide_add_snippet=True)
 
 
+@never_cache
 def collage_popup(request,
                   collage_id=None,
                   template='lizard_map/collage.html'):
@@ -499,6 +504,7 @@ def collage_popup(request,
         request=request)
 
 
+@never_cache
 def workspace_item_image(request, workspace_item_id):
     """Shows image corresponding to workspace item and location identifier(s)
 
