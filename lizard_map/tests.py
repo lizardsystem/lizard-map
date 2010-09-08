@@ -79,12 +79,13 @@ class ViewsTest(TestCase):
         mock_request = self.MockRequest()
         self.client = Client()
 
-    # def test_homepage(self):
-    #     workspace = Workspace()
-    #     workspace.save()
-    #     url = reverse('lizard_map_workspace', {'workspace_id': workspace.id})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, 200)
+    def test_homepage(self):
+        workspace = Workspace()
+        workspace.save()
+        url = reverse('lizard_map_workspace',
+                      kwargs={'workspace_id': workspace.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
 
 
 class WorkspaceTest(TestCase):
