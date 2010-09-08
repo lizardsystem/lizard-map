@@ -365,6 +365,7 @@ def popup_collage_json(collage, popup_id, request=None):
         big_popup = True
     else:
         big_popup = False
+    google_x, google_y = None, None
 
     for snippet_group in snippet_groups:
         snippets = snippet_group.snippets.all()

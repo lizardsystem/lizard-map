@@ -77,12 +77,45 @@ class ViewsTest(TestCase):
 
     def setUp(self):
         self.client = Client()
+        self.workspace = Workspace()
+        self.workspace.save()
+        self.collage = WorkspaceCollage(workspace=self.workspace)
+        self.collage.save()
 
     def test_homepage(self):
-        workspace = Workspace()
-        workspace.save()
         url = reverse('lizard_map_workspace',
-                      kwargs={'workspace_id': workspace.id})
+                      kwargs={'workspace_id': self.workspace.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_wms(self):
+        url = reverse('lizard_map_wms',
+                      kwargs={'workspace_id': self.workspace.id})
+        url += ('?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&'
+                'STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&'
+                'FORMAT=image%2Fjpeg&SRS=EPSG%3A900913&'
+                'BBOX=430987.5469813,6803449.8497827,'
+                '669012.4530187,6896550.1502173&'
+                'WIDTH=1557&HEIGHT=609')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_wms(self):
+        url = reverse('lizard_map_clickinfo',
+                      kwargs={'workspace_id': self.workspace.id})
+        url += '?x=430987.5469813&y=6803449.8497827'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_collage(self):
+        url = reverse('lizard_map.collage',
+                      kwargs={'collage_id': self.collage.id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_collage_popup(self):
+        url = reverse('lizard_map.collage_popup',
+                      kwargs={'collage_id': self.collage.id})
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
