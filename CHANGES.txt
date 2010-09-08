@@ -7,6 +7,9 @@ Changelog of lizard-map
 
 - Add never_cache to several server requests, to prevent caching in IE.
 
+- Fixed graph popup rendering problem for IE7 (empty <a> tags get hidden
+  there, even if there's an icon background).
+
 
 1.9 (2010-09-03)
 ----------------
