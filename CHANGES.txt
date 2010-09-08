@@ -2,7 +2,7 @@ Changelog of lizard-map
 ===================================================
 
 
-1.10 (unreleased)
+1.10 (2010-09-08)
 -----------------
 
 - Add never_cache to several server requests, to prevent caching in IE.
