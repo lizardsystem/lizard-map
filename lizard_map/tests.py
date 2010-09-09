@@ -166,6 +166,61 @@ class WorkspaceTest(TestCase):
         self.assertTrue(workspace.get_absolute_url().endswith('/workspace/1/'))
 
 
+class WorkspaceClientTest(TestCase):
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_workspace_item_add(self):
+        workspace = Workspace()
+        workspace.save()
+        url = reverse('lizard_map_workspace_item_add',
+                      kwargs={'workspace_id': str(workspace.id)})
+        params = {'name': 'test workspace_item',
+                  'adapter_class': 'test adapter_class',
+                  'adapter_layer_json': '{"json"}'}
+        self.client.post(url, params)
+        self.assertTrue(workspace.workspace_items.filter())
+
+    def test_workspace_item_reorder(self):
+        workspace = Workspace()
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create()
+        workspace_item2 = workspace.workspace_items.create()
+        self.assertEqual(workspace.workspace_items.all()[0], workspace_item1)
+        self.assertEqual(workspace.workspace_items.all()[1], workspace_item2)
+
+        url = reverse('lizard_map_workspace_item_reorder',
+                      kwargs={'workspace_id': str(workspace.id)})
+        order = {'workspace-items[]': [
+                str(workspace_item2.id),
+                str(workspace_item1.id)]}
+        self.client.post(url, order)
+
+        self.assertEqual(workspace.workspace_items.all()[0], workspace_item2)
+        self.assertEqual(workspace.workspace_items.all()[1], workspace_item1)
+
+    def test_workspace_item_edit(self):
+        workspace = Workspace()
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create(
+            name='test workspaceitem')
+
+        url = reverse('lizard_map_workspace_item_edit')
+        self.client.post(
+            url,
+            {'workspace_item_id': str(workspace_item1.id), 'visible': 'false'})
+        self.assertEqual(
+            WorkspaceItem.objects.get(name='test workspaceitem').visible,
+            False)
+        self.client.post(
+            url,
+            {'workspace_item_id': str(workspace_item1.id), 'visible': 'true'})
+        self.assertEqual(
+            WorkspaceItem.objects.get(name='test workspaceitem').visible,
+            True)
+
+
 class WorkspaceItemTest(TestCase):
 
     def test_has_adapter(self):
