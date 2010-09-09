@@ -220,6 +220,32 @@ class WorkspaceClientTest(TestCase):
             WorkspaceItem.objects.get(name='test workspaceitem').visible,
             True)
 
+    def test_workspace_item_delete(self):
+        workspace = Workspace()
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create(
+            name='test workspaceitem')
+
+        url = reverse('lizard_map_workspace_item_delete')
+        self.client.post(
+            url,
+            {'object_id': str(workspace_item1.id)})
+        self.assertFalse(workspace.workspace_items.all())
+
+    # Not testable without adapter
+    # def test_workspace_item_image(self):
+    #     workspace = Workspace()
+    #     workspace.save()
+    #     workspace_item1 = workspace.workspace_items.create(
+    #         name='test workspaceitem')
+
+    #     url = reverse('lizard_map_workspace_item_image')
+    #     url += '?identifier={test_identifier}'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, 200)
+
+    # TODO: snippet stuff
+
 
 class WorkspaceItemTest(TestCase):
 
