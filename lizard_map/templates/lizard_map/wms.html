@@ -1,147 +1,8 @@
 {% extends "lizard_map/lizardgis.html" %}{% load i18n %}
 
 {% block map-javascript %}
-  <script type="text/javascript">
-    /*jslint browser: true */
-    /*global $, OpenLayers, popup_click_handler, MapHoverControl, popup_hover_handler */
-    var layers, map;
-    layers = [];
-    {% block map-javascript-global %}
-    {% endblock %}
-
-    //layers is globally defined in wms.html
-    function updateLayer(workspace_id) {
-        layers[workspace_id].mergeNewParams({'random': Math.random()});
-    }
-
-    function updateLayers() {
-        var i;
-        for (i=0; i<layers.length; i++) {
-            if (layers[i] !== undefined) {
-                updateLayer(i);
-            }
-        }
-    }
-
-    function showMap() {
-        var options, openstreetmapLayer, MapClickControl, map_click_control, map_hover_control;
-        // Set up projection and bounds.
-        options = {
-            projection: new OpenLayers.Projection("EPSG:900913"),
-            displayProjection: new OpenLayers.Projection("EPSG:4326"),
-            units: "m",
-            numZoomLevels: 18,
-            //maxExtent: new OpenLayers.Bounds(-20037508, -20037508,
-            //                                 20037508, 20037508.34),
-            maxExtent: new OpenLayers.Bounds(129394,6659216,1335570,7306790)
-        };
-        map = new OpenLayers.Map('map', options);
-
-        // Set up base layer.
-        openstreetmapLayer = new OpenLayers.Layer.OSM(
-            "Openstreetmap",
-            {#"http://tah.openstreetmap.org/Tiles/tile/${z}/${x}/${y}.png",#}
-            "http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png",
-            {buffer: 0});
-        map.addLayer(openstreetmapLayer);
-
-        // Add our own data layers.
-        {% for workspace_list in workspaces.values %}
-          {% for workspace in workspace_list %}
-            layers[{{ workspace.id }}] = new OpenLayers.Layer.WMS(
-                "{{ workspace.name }}",
-                "{% url lizard_map_wms workspace_id=workspace.id %}",
-                {layers: 'basic'},
-                {singleTile: true,
-                 isBaseLayer: false});
-            map.addLayer(layers[{{ workspace.id }}]);
-          {% endfor %}
-        {% endfor %}
-
-        // Set up controls, zoom and center.
-        map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
-        // Click handling.
-        {% if javascript_click_handler %}
-          MapClickControl = OpenLayers.Class(OpenLayers.Control, {
-              defaultHandlerOptions: {
-                  'single': true,
-                  'double': false,
-                  'pixelTolerance': 0,
-                  'stopSingle': false,
-                  'stopDouble': false
-              },
-
-              initialize: function(options) {
-                  this.handlerOptions = OpenLayers.Util.extend(
-                      {}, this.defaultHandlerOptions
-                  );
-                  OpenLayers.Control.prototype.initialize.apply(
-                      this, arguments
-                  );
-                  this.handler = new OpenLayers.Handler.Click(
-                      this, {
-                          'click': this.trigger
-                      }, this.handlerOptions
-                  );
-              },
-
-              trigger: function(e) {
-                  var lonlat;
-                  lonlat = map.getLonLatFromViewPortPx(e.xy);
-                  // map_click_handler comes from lizard_map.js.
-                  {{ javascript_click_handler }}(lonlat.lon, lonlat.lat, map);
-              }
-          });
-          map_click_control = new MapClickControl();
-          map.addControl(map_click_control);
-          map_click_control.activate();
-        {% endif %}
-        // Hover handling.
-        {% if javascript_hover_handler %}
-        // Example code from
-        // http://trac.openlayers.org/browser/trunk/openlayers/examples/hover-handler.html
-        MapHoverControl = OpenLayers.Class(OpenLayers.Control, {
-            defaultHandlerOptions: {
-                'delay': 500,
-                'pixelTolerance': null,
-                'stopMove': false
-            },
-
-            initialize: function(options) {
-                this.handlerOptions = OpenLayers.Util.extend(
-                    {}, this.defaultHandlerOptions
-                );
-                OpenLayers.Control.prototype.initialize.apply(
-                    this, arguments
-                );
-                this.handler = new OpenLayers.Handler.Hover(
-                    this,
-                    {'pause': this.onPause, 'move': this.onMove},
-                    this.handlerOptions
-                );
-            },
-
-            onPause: function(e) {
-                var lonlat;
-                lonlat = map.getLonLatFromViewPortPx(e.xy);
-                {{ javascript_hover_handler }}(lonlat.lon, lonlat.lat, map);
-            },
-
-            onMove: function(evt) {
-                $("#hover-popup").remove();
-            }
-        });
-
-        map_hover_control = new MapHoverControl();
-        map.addControl(map_hover_control);
-        map_hover_control.activate();
-        {% endif %}
-        // Extend zooming.
-        map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
-    }
-
-    $(document).ready(showMap);
-  </script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
 {% endblock map-javascript %}
 
 {% block above-content %}
@@ -168,4 +29,18 @@
   </li>
   {% endfor %}
 </ul>
+{# temp place for data attributes wms #}
+<div id="lizard-map-wms"
+     data-javascript-click-handler="{{ javascript_click_handler }}"
+     data-javascript-hover-handler="{{ javascript_hover_handler }}">
+  {% for workspace_list in workspaces.values %}
+    {% for workspace in workspace_list %}
+    <div class="workspace-layer"
+         data-workspace-id="{{ workspace.id }}"
+         data-workspace-name="{{ workspace.name }}"
+         data-workspace-wms="{% url lizard_map_wms workspace_id=workspace.id %}">
+    </div>
+    {% endfor %}
+  {% endfor %}
+</div>
 {% endblock above-content %}
