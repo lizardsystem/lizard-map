@@ -1,5 +1,6 @@
 /*jslint browser: true */
-/*global $, OpenLayers, popup_click_handler, MapHoverControl, popup_hover_handler */
+/*jslint evil: true */
+/*global $, OpenLayers, popup_click_handler, popup_hover_handler */
 var layers, map;
 layers = [];
 
@@ -11,7 +12,7 @@ function updateLayer(workspace_id) {
 
 function updateLayers() {
     var i;
-    for (i = 0; i < layers.length; i++) {
+    for (i = 0; i < layers.length; i += 1) {
         if (layers[i] !== undefined) {
             updateLayer(i);
         }
@@ -20,7 +21,7 @@ function updateLayers() {
 
 
 function showMap() {
-    var options, openstreetmapLayer, MapClickControl,
+    var options, openstreetmapLayer, MapClickControl, MapHoverControl,
         map_click_control, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
         $lizard_map_wms;
