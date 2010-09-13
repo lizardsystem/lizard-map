@@ -148,6 +148,7 @@ def snippet_group_graph_edit(request, snippet_group_id):
     y_min = post.get('y_min', None)
     y_max = post.get('y_max', None)
     boundary_value = post.get('boundary_value', None)
+    percentile_value = post.get('percentile_value', None)
     aggregation_period = post.get('aggregation_period', None)
 
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
@@ -173,6 +174,10 @@ def snippet_group_graph_edit(request, snippet_group_id):
         snippet_group.boundary_value = float(boundary_value)
     except (ValueError, TypeError):
         snippet_group.boundary_value = None
+    try:
+        snippet_group.percentile_value = float(percentile_value)
+    except (ValueError, TypeError):
+        snippet_group.percentile_value = None
     snippet_group.save()
     return HttpResponse('')
 

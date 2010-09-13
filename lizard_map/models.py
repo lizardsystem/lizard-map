@@ -237,8 +237,10 @@ class WorkspaceCollageSnippetGroup(models.Model):
     index = models.IntegerField(default=1000)  # larger = lower in the list
     name = models.CharField(max_length=80, blank=True, null=True)
 
-    # boundary value for statistics
+    # Boundary value for statistics.
     boundary_value = models.FloatField(blank=True, null=True)
+    # Percentile value for statistics.
+    percentile_value = models.FloatField(blank=True, null=True)
     aggregation_period = models.IntegerField(
         choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
@@ -283,19 +285,9 @@ class WorkspaceCollageSnippetGroup(models.Model):
                 {'min': None, 'max': None, 'avg': None,
                  'count_lt': self.boundary_value,
                  'count_gte': self.boundary_value,
-                 'percentile': 25},
+                 'percentile': self.percentile_value},
                 start_date=start_date,
                 end_date=end_date)
-            # add 75 percentile
-            statistics_percentile75 = snippet_adapter.value_aggregate(
-                snippet.identifier,
-                {'percentile': 75},
-                start_date=start_date,
-                end_date=end_date)
-            if 'percentile' in statistics_percentile75:
-                statistics_row.update(
-                    {'percentile_75':
-                         statistics_percentile75['percentile']})
 
             # add name
             if statistics_row:
@@ -370,6 +362,16 @@ class WorkspaceCollageSnippetGroup(models.Model):
                               'linestyle': '--',
                               'color': 'green'},
                     }, ]
+        # TODO: implement percentile. Start/end date is not known here.
+        # if self.percentile_value is not None:
+        #     calculated_percentile = self.statistics(self.percentile_value, , )
+        #     result['horizontal_lines'] = [{
+        #             'name': _('Percentile value'),
+        #             'value': calculated_percentile,
+        #             'style': {'linewidth': 2,
+        #                       'linestyle': '--',
+        #                       'color': 'green'},
+        #             }, ]
         return result
 
 

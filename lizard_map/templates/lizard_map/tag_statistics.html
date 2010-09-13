@@ -13,8 +13,7 @@
       <th class="number">Gem</th>
       <th class="number">Aantal onder {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
       <th class="number">Aantal boven {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
-      <th class="number">25 Percentiel</th>
-      <th class="number">75 Percentiel</th>
+      <th class="number">Percentiel {{ snippet_group.percentile_value|default_if_none:"(geen)"}}</th>
     </tr>
   </thead>
   <tbody>
@@ -27,7 +26,6 @@
       <td class="number">{{ stat.count_lt|floatformat|default:"-" }}</td>
       <td class="number">{{ stat.count_gte|floatformat|default:"-" }}</td>
       <td class="number">{{ stat.percentile|floatformat:2|default:"-" }}</td>
-      <td class="number">{{ stat.percentile_75|floatformat:2|default:"-" }}</td>
     </tr>
     {% endfor %}
   </tbody>

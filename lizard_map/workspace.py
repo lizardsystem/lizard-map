@@ -243,6 +243,9 @@ class WorkspaceItemAdapter(object):
                             if v >= value:  # value is boundary value
                                 result_value += 1
                 elif key == 'percentile':
+                    if value is None:
+                        result_value = None
+                    else:
                         rank = int(value * len(values_only) / 100.0 + 0.5)
                         result_value = values_only[rank]
                 else:
@@ -288,11 +291,11 @@ class WorkspaceItemAdapter(object):
             style = {'linestyle': '-',
                      'linewidth': 3,
                      'color': color['mapnik'],
-                     'max_linestyle': ':',
+                     'max_linestyle': '--',
                      'max_linewidth': 2,
-                     'min_linestyle': ':',
+                     'min_linestyle': '--',
                      'min_linewidth': 2,
-                     'avg_linestyle': ':',
+                     'avg_linestyle': '--',
                      'avg_linewidth': 2,
                      }  # default
             if 'layout' in identifier:
