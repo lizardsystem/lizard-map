@@ -117,6 +117,25 @@ the default template for the html_default method.
                          {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
                   maand
                 </div>
+              </div>
+              <div>
+                <label>Filter op data</label><br />
+                <select class="graph-filter-month" type="text" name="filter_month">
+                  <option value="no-filter">geen filter</option>
+                  <option value="january-only">alleen januari</option>
+                  <option value="february-only">alleen februari</option>
+                  <option value="march-only">alleen maart</option>
+                  <option value="april-only">alleen april</option>
+                  <option value="may-only">alleen mei</option>
+                  <option value="june-only">alleen juni</option>
+                  <option value="july-only">alleen juli</option>
+                  <option value="august-only">alleen augustus</option>
+                  <option value="september-only">alleen september</option>
+                  <option value="october-only">alleen october</option>
+                  <option value="november-only">alleen november</option>
+                  <option value="december-only">alleen december</option>
+                </select>
+              </div>
             </fieldset>
             <p>
               <input class="graph-action" type="button" value="Update grafiek" />
