@@ -134,7 +134,7 @@ def fancy_period(start_date, end_date, aggregation_period):
         }
 
     period_formats = {
-        ALL: lambda a, b: "ALL",
+        ALL: lambda a, b: _("Whole period"),
         YEAR: lambda a, b: a.strftime("%Y"),
         QUARTER: lambda a, b: "%s %s" % (
             quarters[(a.month - 1) / 3], a.strftime("%Y")),
