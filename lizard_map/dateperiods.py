@@ -137,7 +137,7 @@ def fancy_period(start_date, end_date, aggregation_period):
         ALL: lambda a, b: "ALL",
         YEAR: lambda a, b: a.strftime("%Y"),
         QUARTER: lambda a, b: "%s %s" % (
-            quarters[(a.month-1) / 3], a.strftime("%Y")),
+            quarters[(a.month - 1) / 3], a.strftime("%Y")),
         MONTH: lambda a, b: "%s %s" % (months[a.month], a.strftime("%Y")),
         WEEK: lambda a, b: a.strftime("%Y %m %d"),
         DAY: lambda a, b: a.strftime("%Y %m %d"),
