@@ -350,7 +350,7 @@ class WorkspaceItemAdapter(object):
         can be provided. Default layout_options:
 
         layout_options = {'add_snippet': False,
-                          'editing': False}
+                         'editing': False}
         """
         return 'html output for this adapter is not implemented'
 

@@ -8,6 +8,7 @@
   <thead>
     <tr>
       <th>Naam</th>
+      <th>Periode</th>
       <th class="number">Min</th>
       <th class="number">Max</th>
       <th class="number">Gem</th>
@@ -20,6 +21,7 @@
     {% for stat in statistics %}
     <tr>
       <td>{{ stat.name }}</td>
+      <td>{{ stat.period }}</td>
       <td class="number">{{ stat.min|floatformat:2|default:"-" }}</td>
       <td class="number">{{ stat.max|floatformat:2|default:"-" }}</td>
       <td class="number">{{ stat.avg|floatformat:2|default:"-" }}</td>

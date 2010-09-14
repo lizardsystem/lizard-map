@@ -9,6 +9,14 @@ from django.utils.translation import ugettext as _
 import pkg_resources
 
 from lizard_map.adapter import parse_identifier_json
+from lizard_map.dateperiods import ALL
+from lizard_map.dateperiods import YEAR
+from lizard_map.dateperiods import QUARTER
+from lizard_map.dateperiods import MONTH
+from lizard_map.dateperiods import WEEK
+from lizard_map.dateperiods import DAY
+from lizard_map.dateperiods import calc_aggregation_periods
+from lizard_map.dateperiods import fancy_period
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -20,13 +28,6 @@ ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
-
-ALL = 1
-YEAR = 2
-QUARTER = 3
-MONTH = 4
-WEEK = 5
-DAY = 6
 
 logger = logging.getLogger('lizard_map.models')
 
@@ -279,20 +280,28 @@ class WorkspaceCollageSnippetGroup(models.Model):
         for snippet in self.snippets.all():
             snippet_adapter = snippet.workspace_item.adapter
 
-            # base statistics
-            statistics_row = snippet_adapter.value_aggregate(
-                snippet.identifier,
-                {'min': None, 'max': None, 'avg': None,
-                 'count_lt': self.boundary_value,
-                 'count_gte': self.boundary_value,
-                 'percentile': self.percentile_value},
-                start_date=start_date,
-                end_date=end_date)
+            # Calc periods based on aggregation period setting.
+            periods = calc_aggregation_periods(start_date, end_date,
+                                               self.aggregation_period)
 
-            # add name
-            if statistics_row:
-                statistics_row['name'] = snippet.name
-                statistics.append(statistics_row)
+            for period_start_date, period_end_date in periods:
+                # Base statistics for each period.
+                statistics_row = snippet_adapter.value_aggregate(
+                    snippet.identifier,
+                    {'min': None, 'max': None, 'avg': None,
+                     'count_lt': self.boundary_value,
+                     'count_gte': self.boundary_value,
+                     'percentile': self.percentile_value},
+                    start_date=period_start_date,
+                    end_date=period_end_date)
+
+                # Add name.
+                if statistics_row:
+                    statistics_row['name'] = snippet.name
+                    statistics_row['period'] = fancy_period(
+                        period_start_date, period_end_date,
+                        self.aggregation_period)
+                    statistics.append(statistics_row)
 
         return statistics
 
@@ -364,7 +373,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
                     }, ]
         # TODO: implement percentile. Start/end date is not known here.
         # if self.percentile_value is not None:
-        #     calculated_percentile = self.statistics(self.percentile_value, , )
+        #     calculated_percentile = self.statistics(self.percentile_value,,)
         #     result['horizontal_lines'] = [{
         #             'name': _('Percentile value'),
         #             'value': calculated_percentile,

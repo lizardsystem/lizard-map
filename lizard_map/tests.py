@@ -10,6 +10,14 @@ from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.dateperiods import ALL
+from lizard_map.dateperiods import YEAR
+from lizard_map.dateperiods import QUARTER
+from lizard_map.dateperiods import MONTH
+from lizard_map.dateperiods import WEEK
+from lizard_map.dateperiods import DAY
+from lizard_map.dateperiods import calc_aggregation_periods
+from lizard_map.dateperiods import fancy_period
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
@@ -497,3 +505,59 @@ class WorkspaceItemAdapterTest(TestCase):
             workspace_collage=workspace_collage)
         snippet_group.save()
         self.assertTrue(self.adapter.html_default(snippet_group=snippet_group))
+
+
+class DatePeriodsTest(TestCase):
+
+    def test_calc_aggregation_periods_all(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1980, 4, 15)
+        periods = calc_aggregation_periods(start_date, end_date, ALL)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], end_date)
+
+    def test_calc_aggregation_periods_year(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1980, 4, 15)
+        periods = calc_aggregation_periods(start_date, end_date, YEAR)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], datetime.date(1980, 1, 1))
+        self.assertEqual(periods[1][0], datetime.date(1980, 1, 1))
+        self.assertEqual(periods[1][1], end_date)
+
+    def test_calc_aggregation_periods_quarter(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1980, 4, 15)
+        periods = calc_aggregation_periods(start_date, end_date, QUARTER)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], datetime.date(1979, 7, 1))
+        self.assertEqual(periods[-1][0], datetime.date(1980, 4, 1))
+        self.assertEqual(periods[-1][1], end_date)
+
+    def test_calc_aggregation_periods_week(self):
+        start_date = datetime.date(1979, 5, 25)  # It's a friday.
+        end_date = datetime.date(1979, 7, 15)  # It's a sunday.
+        periods = calc_aggregation_periods(start_date, end_date, WEEK)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], datetime.date(1979, 5, 28))
+        self.assertEqual(periods[-1][0], datetime.date(1979, 7, 9))
+        self.assertEqual(periods[-1][1], end_date)
+
+    def test_calc_aggregation_periods_day(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1979, 7, 15)
+        periods = calc_aggregation_periods(start_date, end_date, DAY)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], datetime.date(1979, 5, 26))
+        self.assertEqual(periods[-1][0], datetime.date(1979, 7, 14))
+        self.assertEqual(periods[-1][1], end_date)
+
+    def test_fancy_period(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1979, 7, 15)
+        self.assertTrue(fancy_period(start_date, end_date, ALL))
+        self.assertTrue(fancy_period(start_date, end_date, YEAR))
+        self.assertTrue(fancy_period(start_date, end_date, QUARTER))
+        self.assertTrue(fancy_period(start_date, end_date, MONTH))
+        self.assertTrue(fancy_period(start_date, end_date, WEEK))
+        self.assertTrue(fancy_period(start_date, end_date, DAY))
