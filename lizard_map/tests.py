@@ -534,6 +534,15 @@ class DatePeriodsTest(TestCase):
         self.assertEqual(periods[-1][0], datetime.date(1980, 4, 1))
         self.assertEqual(periods[-1][1], end_date)
 
+    def test_calc_aggregation_periods_month(self):
+        start_date = datetime.date(1979, 5, 25)
+        end_date = datetime.date(1980, 4, 15)
+        periods = calc_aggregation_periods(start_date, end_date, MONTH)
+        self.assertEqual(periods[0][0], start_date)
+        self.assertEqual(periods[0][1], datetime.date(1979, 6, 1))
+        self.assertEqual(periods[-1][0], datetime.date(1980, 4, 1))
+        self.assertEqual(periods[-1][1], end_date)
+
     def test_calc_aggregation_periods_week(self):
         start_date = datetime.date(1979, 5, 25)  # It's a friday.
         end_date = datetime.date(1979, 7, 15)  # It's a sunday.
