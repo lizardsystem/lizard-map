@@ -33,13 +33,37 @@ function graph_action() {
         url,
         $form.serialize(),
         function () {
-            reloadGraphs();
-            $("div.close").click();
+            // reloadGraphs();
+            // $("div.close").click();
+            // Always reload page: statistics & graphs can be different.
+            location.reload();
         });
+}
+
+function setGraphFilterMonth () {
+    var $form, status;
+    $form = $(".popup-graph-edit-global");
+    $form.each(function () {
+        status = $(this).find("input:radio:checked").attr("value");
+        if (status == 4) {
+            $(this).find(".graph-filter-month").attr('disabled', false);
+        } else {
+            $(this).find(".graph-filter-month").attr('disabled', true);
+        }
+    });
+}
+
+function setUpGraphForm () {
+    // Set current status.
+    setGraphFilterMonth();
+
+    // Setup click.
+    $(".popup-graph-edit-global input:radio").click(setGraphFilterMonth);
 }
 
 $(document).ready(function () {
     $(".graph-save-snippet").bind("click", graph_save_snippet);
     $(".graph-action").bind("click", graph_action);
-    graph_action();  // update graph with current options
+    //graph_action();  // update graph with current options
+    setUpGraphForm();
 });

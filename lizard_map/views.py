@@ -177,8 +177,7 @@ def snippet_group_graph_edit(request, snippet_group_id):
         snippet_group.layout_x_label = x_label
     if y_label is not None:
         snippet_group.layout_y_label = y_label
-    if restrict_to_month is not None:
-        snippet_group.restrict_to_month = restrict_to_month
+    snippet_group.restrict_to_month = restrict_to_month
     if aggregation_period is not None:
         snippet_group.aggregation_period = int(aggregation_period)
     try:
