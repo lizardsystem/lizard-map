@@ -7,6 +7,10 @@ Changelog of lizard-map
 
 - Added more tests (test coverage now at 61%).
 
+- Add restrict-to-month option.
+
+- Percentile in collage screen is now user adjustable.
+
 
 1.10 (2010-09-08)
 -----------------
