@@ -276,7 +276,9 @@ class WorkspaceCollageSnippetGroup(models.Model):
     def statistics(self, start_date, end_date):
         """
         Calcs standard statistics: min, max, avg, count_lt, count_gte,
-        percentile 25, percentile 75 and return them in a list of dicts
+        percentile and return them in a list of dicts
+
+        Can be filtered by option restrict_to_month.
         """
         statistics = []
         for snippet in self.snippets.all():
@@ -287,23 +289,27 @@ class WorkspaceCollageSnippetGroup(models.Model):
                                                self.aggregation_period)
 
             for period_start_date, period_end_date in periods:
-                # Base statistics for each period.
-                statistics_row = snippet_adapter.value_aggregate(
-                    snippet.identifier,
-                    {'min': None, 'max': None, 'avg': None,
-                     'count_lt': self.boundary_value,
-                     'count_gte': self.boundary_value,
-                     'percentile': self.percentile_value},
-                    start_date=period_start_date,
-                    end_date=period_end_date)
+                if not self.restrict_to_month or (
+                    self.aggregation_period == MONTH and
+                    self.restrict_to_month == period_start_date.month):
 
-                # Add name.
-                if statistics_row:
-                    statistics_row['name'] = snippet.name
-                    statistics_row['period'] = fancy_period(
-                        period_start_date, period_end_date,
-                        self.aggregation_period)
-                    statistics.append(statistics_row)
+                    # Base statistics for each period.
+                    statistics_row = snippet_adapter.value_aggregate(
+                        snippet.identifier,
+                        {'min': None, 'max': None, 'avg': None,
+                         'count_lt': self.boundary_value,
+                         'count_gte': self.boundary_value,
+                         'percentile': self.percentile_value},
+                        start_date=period_start_date,
+                        end_date=period_end_date)
+
+                    # Add name.
+                    if statistics_row:
+                        statistics_row['name'] = snippet.name
+                        statistics_row['period'] = fancy_period(
+                            period_start_date, period_end_date,
+                            self.aggregation_period)
+                        statistics.append(statistics_row)
 
         return statistics
 
@@ -311,6 +317,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
         """
         Calculates a table with each location as column, each row as
         datetime. First row consist of column names. List of lists.
+
+        Can be filtered by option restrict_to_month.
         """
         values_table = []
 
@@ -334,7 +342,11 @@ class WorkspaceCollageSnippetGroup(models.Model):
             snippet_values[snippet.id] = {}
             # Translate list into dict with dates.
             for row in values:
-                snippet_values[snippet.id][row['datetime']] = row
+                if not self.restrict_to_month or (
+                    self.aggregation_period == MONTH and
+                    row['datetime'].month == self.restrict_to_month):
+
+                    snippet_values[snippet.id][row['datetime']] = row
             found_dates.update(snippet_values[snippet.id])
             # ^^^ The value doesn't matter.
 
