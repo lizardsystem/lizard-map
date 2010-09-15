@@ -141,6 +141,21 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
     """
+    restrict_to_month_lookup = {
+        'no-restriction': None,
+        'januari': 1,
+        'februari': 2,
+        'march': 3,
+        'april': 4,
+        'may': 5,
+        'june': 6,
+        'july': 7,
+        'august': 8,
+        'september': 9,
+        'october': 10,
+        'november': 11,
+        'december': 12}
+
     post = request.POST
     title = post.get('title', None)
     x_label = post.get('x_label', None)
@@ -150,6 +165,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
     boundary_value = post.get('boundary_value', None)
     percentile_value = post.get('percentile_value', None)
     aggregation_period = post.get('aggregation_period', None)
+    restrict_to_month = restrict_to_month_lookup[
+        post.get('restrict_to_month', 'no-restriction')]
 
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
@@ -160,6 +177,8 @@ def snippet_group_graph_edit(request, snippet_group_id):
         snippet_group.layout_x_label = x_label
     if y_label is not None:
         snippet_group.layout_y_label = y_label
+    if restrict_to_month is not None:
+        snippet_group.restrict_to_month = restrict_to_month
     if aggregation_period is not None:
         snippet_group.aggregation_period = int(aggregation_period)
     try:

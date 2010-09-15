@@ -242,6 +242,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
     boundary_value = models.FloatField(blank=True, null=True)
     # Percentile value for statistics.
     percentile_value = models.FloatField(blank=True, null=True)
+    # Restrict_to_month is used to filter the data.
+    restrict_to_month = models.IntegerField(blank=True, null=True)
     aggregation_period = models.IntegerField(
         choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
@@ -363,6 +365,8 @@ class WorkspaceCollageSnippetGroup(models.Model):
             result['y_max'] = self.layout_y_max
         if self.layout_title:
             result['title'] = self.layout_title
+        if self.restrict_to_month:
+            result['restrict_to_month'] = self.restrict_to_month
         if self.boundary_value is not None:
             result['horizontal_lines'] = [{
                     'name': _('Boundary value'),
