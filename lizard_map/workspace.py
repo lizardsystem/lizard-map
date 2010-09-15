@@ -11,6 +11,8 @@ from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
 from lizard_map.models import TEMP_WORKSPACES
 from lizard_map.models import USER_WORKSPACES
+from lizard_map.models import Color
+from lizard_map.models import Legend
 from lizard_map.models import Workspace
 from lizard_map.symbol_manager import SymbolManager
 
@@ -427,7 +429,7 @@ class WorkspaceItemAdapter(object):
                 },
             )
 
-    def legend():
+    def legend(self):
         """
         Returns legend in a list of dictionaries.
 
@@ -435,3 +437,77 @@ class WorkspaceItemAdapter(object):
 
         """
         return []
+
+    def legend_object_default(self, legend_name):
+        """
+        Get legend object. If no appropriate legend was found, a
+        legend object will be created and returned.
+        """
+        found_legend = Legend.objects.find(legend_name)
+        if found_legend is None:
+            # Fallback if no legend found (should not happen)
+            logger.warn("Could not find legend for key '%s', "
+                        "please configure the legend. "
+                        "Now using fallback (red).")
+            color = Color(r=255, g=0, b=0)
+            found_legend = Legend(descriptor="", min_color=color,
+                                  max_color=color, too_low_color=color,
+                                  too_high_color=color)
+
+        return found_legend
+
+    def legend_default(self, legend_object):
+        """Default implementation for legend. Use a fixed formula to
+        calculate legend descriptor, then find corresponding Legend."""
+
+        icon_style_template = {'icon': 'empty.png',
+                               'mask': ('empty_mask.png', ),
+                               'color': (1, 1, 1, 1)}
+        if legend_object is not None:
+            float_format = legend_object.float_format
+            legend_result = []
+
+            # Add < min
+            icon_style = icon_style_template.copy()
+            icon_style.update({
+                    'color': (legend_object.too_low_color.r / 255.0,
+                              legend_object.too_low_color.g / 255.0,
+                              legend_object.too_low_color.b / 255.0,
+                              legend_object.too_low_color.a / 255.0)})
+            img_url = self.symbol_url(icon_style=icon_style)
+            legend_result.append({'img_url': img_url,
+                                  'description': (('< %s' % float_format) %
+                                                  (legend_object.min_value))})
+
+            # Add range
+            for legend_item in legend_object.legend_values():
+                color = legend_item['color']
+                icon_style = icon_style_template.copy()
+                icon_style.update({'color':
+                                   (color.r / 255.0, color.g / 255.0,
+                                    color.b / 255.0, color.a / 255.0)})
+                img_url = self.symbol_url(icon_style=icon_style)
+                legend_row = {'img_url': img_url,
+                              'description': (
+                        ('%s - %s' % (float_format, float_format)) %
+                        (legend_item['low_value'],
+                         legend_item['high_value']))}
+
+                legend_result.append(legend_row)
+
+            # Add > max
+            icon_style = icon_style_template.copy()
+            icon_style.update({
+                    'color': (legend_object.too_high_color.r / 255.0,
+                              legend_object.too_high_color.g / 255.0,
+                              legend_object.too_high_color.b / 255.0,
+                              legend_object.too_high_color.a / 255.0)})
+            img_url = self.symbol_url(icon_style=icon_style)
+            legend_result.append({'img_url': img_url,
+                                  'description': (('> %s' % float_format) %
+                                                  (legend_object.max_value))})
+
+        else:
+            legend_result = [{'img_url': self.symbol_url(),
+                              'description': 'description'}]
+        return legend_result
