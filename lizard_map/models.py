@@ -290,7 +290,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
             for period_start_date, period_end_date in periods:
                 if not self.restrict_to_month or (
-                    self.aggregation_period <> MONTH) or (
+                    self.aggregation_period != MONTH) or (
                     self.aggregation_period == MONTH and
                     self.restrict_to_month == period_start_date.month):
 
@@ -344,7 +344,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
             # Translate list into dict with dates.
             for row in values:
                 if not self.restrict_to_month or (
-                    self.aggregation_period <> MONTH) or (
+                    self.aggregation_period != MONTH) or (
                     self.aggregation_period == MONTH and
                     row['datetime'].month == self.restrict_to_month):
 
