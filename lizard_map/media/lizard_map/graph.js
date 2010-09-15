@@ -24,6 +24,20 @@ function graph_save_snippet() {
         });
 }
 
+function graph_action_reload() {
+    // send all graph properties to server and reload page
+    var $form, url;
+    $form = $(this).parents("form.graph-options");
+    url = $form.attr("data-url");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            // Always reload page: statistics & graphs can be different.
+            location.reload();
+        });
+}
+
 function graph_action() {
     // send all graph properties to server and reload graphs
     var $form, url;
@@ -33,19 +47,17 @@ function graph_action() {
         url,
         $form.serialize(),
         function () {
-            // reloadGraphs();
-            // $("div.close").click();
-            // Always reload page: statistics & graphs can be different.
-            location.reload();
+            reloadGraphs();
+            $("div.close").click();
         });
 }
 
-function setGraphFilterMonth () {
+function setGraphFilterMonth() {
     var $form, status;
     $form = $(".popup-graph-edit-global");
     $form.each(function () {
         status = $(this).find("input:radio:checked").attr("value");
-        if (status == 4) {
+        if (status === 4) { // 4 is "MONTH"
             $(this).find(".graph-filter-month").attr('disabled', false);
         } else {
             $(this).find(".graph-filter-month").attr('disabled', true);
@@ -53,7 +65,7 @@ function setGraphFilterMonth () {
     });
 }
 
-function setUpGraphForm () {
+function setUpGraphForm() {
     // Set current status.
     setGraphFilterMonth();
 
@@ -64,6 +76,7 @@ function setUpGraphForm () {
 $(document).ready(function () {
     $(".graph-save-snippet").bind("click", graph_save_snippet);
     $(".graph-action").bind("click", graph_action);
+    $(".graph-action-reload").bind("click", graph_action_reload);
     //graph_action();  // update graph with current options
     setUpGraphForm();
 });
