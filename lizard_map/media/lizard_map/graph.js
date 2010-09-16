@@ -57,10 +57,10 @@ function setGraphFilterMonth() {
     $form = $(".popup-graph-edit-global");
     $form.each(function () {
         status = $(this).find("input:radio:checked").attr("value");
-        if (status === 4) { // 4 is "MONTH"
-            $(this).find(".graph-filter-month").attr('disabled', false);
+        if (status === "4") { // 4 is "MONTH"
+            $(this).find(".graph-filter-month").attr("disabled", false);
         } else {
-            $(this).find(".graph-filter-month").attr('disabled', true);
+            $(this).find(".graph-filter-month").attr("disabled", true);
         }
     });
 }
