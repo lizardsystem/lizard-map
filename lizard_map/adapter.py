@@ -170,7 +170,9 @@ class Graph(object):
     def __init__(self,
                  start_date, end_date,
                  width=None, height=None,
-                 today=datetime.datetime.now()):
+                 today=datetime.datetime.now(),
+                 restrict_to_month=None):
+        self.restrict_to_month = restrict_to_month
         self.start_date = start_date
         self.end_date = end_date
         self.today = today
@@ -224,8 +226,9 @@ class Graph(object):
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
         locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
-        self.axes.xaxis.set_major_locator(locator)
-        self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
+        if not self.restrict_to_month:
+            self.axes.xaxis.set_major_locator(locator)
+            self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
 
         available_height = (self.height -
                             BOTTOM_LINE_HEIGHT -
@@ -300,7 +303,8 @@ class Graph(object):
 
         # Set date range
         # Somehow, the range cannot be set in __init__
-        self.axes.set_xlim(date2num((self.start_date, self.end_date)))
+        if not self.restrict_to_month:
+            self.axes.set_xlim(date2num((self.start_date, self.end_date)))
 
         canvas = FigureCanvas(self.figure)
         response = HttpResponse(content_type='image/png')
