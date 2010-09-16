@@ -61,6 +61,17 @@ function showMap() {
         map.addLayer(layers[workspace_id]);
     });
 
+    // Test layer
+    // 'afvoercoef_wgs_mp' "gemeente_wgs"
+    // "http://afvoerkaart.lizardsystem.nl/geoserver/gwc/service/wms",
+    // layers["test"] = new OpenLayers.Layer.WMS(
+    //     "test layer",
+    //     "http://afvoerkaart.lizardsystem.nl/geoserver/wms",
+    //     {layers: 'afvoercoef_wgs_mp'},
+    //     {singleTile: true,
+    //      isBaseLayer: false});
+    // map.addLayer(layers["test"]);
+
     // Set up controls, zoom and center.
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
     // Click handling.
@@ -100,7 +111,7 @@ function showMap() {
         map_click_control.activate();
     }
     // Hover handling.
-    javascript_hover_handler_name = $lizard_map_wms.attr("data-javascript-click-handler");
+    javascript_hover_handler_name = $lizard_map_wms.attr("data-javascript-hover-handler");
     if (javascript_hover_handler_name !== undefined) {
         // Example code from
         // http://trac.openlayers.org/browser/trunk/openlayers/examples/hover-handler.html
