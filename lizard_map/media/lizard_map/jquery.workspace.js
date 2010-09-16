@@ -195,7 +195,7 @@ jQuery.fn.workspaceInteraction = function () {
         snippet_list = $workspace.find("ul.snippet-list");
         snippet_list.sortable({
             helper: 'clone',
-            items: 'li.snippet',
+            items: 'li.snippet'
         });
         // Make snippets clickable... for eternity.
         snippet_list.find("li.snippet").live('click', function (event) {
