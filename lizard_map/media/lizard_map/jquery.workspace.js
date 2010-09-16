@@ -150,7 +150,8 @@ jQuery.fn.workspaceInteraction = function () {
             connectWith: '.workspace-items',
             cursor: 'move',
             revert: 'true',
-            placeholder: 'ui-sortable-placeholder'
+            placeholder: 'ui-sortable-placeholder',
+            items: 'li.workspace-item'
         });
         // Make the workspace droppable, only accept items with the class
         // '.workspace-acceptable'.
@@ -193,7 +194,8 @@ jQuery.fn.workspaceInteraction = function () {
         // Draggable applies to li and sortable applies to ul element
         snippet_list = $workspace.find("ul.snippet-list");
         snippet_list.sortable({
-            helper: 'clone'
+            helper: 'clone',
+            items: 'li.snippet',
         });
         // Make snippets clickable... for eternity.
         snippet_list.find("li.snippet").live('click', function (event) {
