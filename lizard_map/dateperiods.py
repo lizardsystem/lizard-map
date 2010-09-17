@@ -8,6 +8,28 @@ MONTH = 4
 WEEK = 5
 DAY = 6
 
+QUARTERS = {
+    0: _("Quarter 1"),
+    1: _("Quarter 2"),
+    2: _("Quarter 3"),
+    3: _("Quarter 4"),
+    }
+
+MONTHS = {
+    1: _("January"),
+    2: _("February"),
+    3: _("March"),
+    4: _("April"),
+    5: _("May"),
+    6: _("June"),
+    7: _("July"),
+    8: _("August"),
+    9: _("September"),
+    10: _("October"),
+    11: _("November"),
+    12: _("December"),
+    }
+
 
 def next_all(dt):
     """
@@ -111,34 +133,13 @@ def fancy_period(start_date, end_date, aggregation_period):
     """Returns fancy string of (start_date, end_date), format is
     determined by aggregation_period.
     """
-    quarters = {
-        0: _("Quarter 1"),
-        1: _("Quarter 2"),
-        2: _("Quarter 3"),
-        3: _("Quarter 4"),
-        }
-
-    months = {
-        1: _("January"),
-        2: _("February"),
-        3: _("March"),
-        4: _("April"),
-        5: _("May"),
-        6: _("June"),
-        7: _("July"),
-        8: _("August"),
-        9: _("September"),
-        10: _("October"),
-        11: _("November"),
-        12: _("December"),
-        }
 
     period_formats = {
         ALL: lambda a, b: _("Whole period"),
         YEAR: lambda a, b: a.strftime("%Y"),
         QUARTER: lambda a, b: "%s %s" % (
-            quarters[(a.month - 1) / 3], a.strftime("%Y")),
-        MONTH: lambda a, b: "%s %s" % (months[a.month], a.strftime("%Y")),
+            QUARTERS[(a.month - 1) / 3], a.strftime("%Y")),
+        MONTH: lambda a, b: "%s %s" % (MONTHS[a.month], a.strftime("%Y")),
         WEEK: lambda a, b: a.strftime("%Y %m %d"),
         DAY: lambda a, b: a.strftime("%Y %m %d"),
         }
