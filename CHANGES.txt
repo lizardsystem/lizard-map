@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.11 (unreleased)
+1.11 (2010-09-20)
 -----------------
 
 - Added more tests (test coverage now at 62%).
