@@ -1,11 +1,20 @@
 Changelog of lizard-map
-===================================================
+=======================
 
 
 1.11 (unreleased)
 -----------------
 
-- Added more tests (test coverage now at 61%).
+- Added more tests (test coverage now at 62%).
+
+- Various UI and javascript fixes.
+
+- Showing aggregation period data in the statistics table.
+
+- Moved javascript out of map template into a separate javascript file: this
+  way the javascript can be tested automatically (and it is!).
+
+- "Sleep items hierheen" and "Nog geen grafieken" are not draggable anymore.
 
 - Add restrict-to-month option.
 
