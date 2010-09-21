@@ -285,9 +285,9 @@ function legend_action_reload(event) {
 
 
 function setUpLegendColorPickers() {
-    var submit = function(hsb, hex, rgb, el) {
-	$(el).val(hex);
-	$(el).ColorPickerHide();
+    var submit = function (hsb, hex, rgb, el) {
+	    $(el).val(hex);
+	    $(el).ColorPickerHide();
     };
     $("input[name=min_color]").ColorPicker({onSubmit: submit});
     $("input[name=max_color]").ColorPicker({onSubmit: submit});
