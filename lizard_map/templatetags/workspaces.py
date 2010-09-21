@@ -27,8 +27,7 @@ def workspace(context, workspace, show_new_workspace=False):
         'workspace': workspace,
         'date_range_form': context.get('date_range_form', None),
         'show_new_workspace': show_new_workspace,
-        'session': session
-        }
+        'session': session}
 
 
 @register.simple_tag
@@ -127,5 +126,4 @@ def legend(name, adapter, session=None):
         'legend': adapter.legend(updates=updates),
         'name': name,
         'idhash': hash(name),
-        'custom_legend': updates
-        }
+        'custom_legend': updates}

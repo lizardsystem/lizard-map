@@ -621,7 +621,6 @@ def legend_edit(request):
             new_legend[option] = value
 
     # Update session data with new obtained legend.
-    session = request.session
     custom_legends = request.session.get(CUSTOM_LEGENDS, {})
     custom_legends[name] = new_legend
 
