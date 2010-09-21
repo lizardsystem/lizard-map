@@ -429,7 +429,7 @@ class WorkspaceItemAdapter(object):
                 },
             )
 
-    def legend(self):
+    def legend(self, updates=None):
         """
         Returns legend in a list of dictionaries.
 
@@ -458,7 +458,8 @@ class WorkspaceItemAdapter(object):
 
     def legend_default(self, legend_object):
         """Default implementation for legend. Use a fixed formula to
-        calculate legend descriptor, then find corresponding Legend."""
+        calculate legend descriptor, and img_url. Generates image if
+        needed. """
 
         icon_style_template = {'icon': 'empty.png',
                                'mask': ('empty_mask.png', ),

@@ -19,10 +19,15 @@ def workspace_debug_info(context):
                         takes_context=True)
 def workspace(context, workspace, show_new_workspace=False):
     """Display workspace."""
+    if 'request' in context:
+        session = context['request'].session
+    else:
+        session = None
     return {
         'workspace': workspace,
         'date_range_form': context.get('date_range_form', None),
         'show_new_workspace': show_new_workspace,
+        'session': session
         }
 
 
@@ -94,3 +99,28 @@ def date_popup(context):
     return {
         'date_range_form': context.get('date_range_form', None),
         }
+
+
+@register.inclusion_tag("lizard_map/tag_legend.html")
+def legend(name, adapter, session=None):
+    """Shows legend. Optionally updates legend with
+    session['custom_legends'], if it exists.
+
+    session['custom_legends'][<name>] = <updates>
+
+    where updates looks like:
+
+    {'min_value': <min_value>,
+     'max_value': <max_value>,
+     ... (see Legend.update)
+     }
+
+    """
+
+    updates = None
+    if session:
+        custom_legends = session.get('custom_legends', {})
+        custom_legend = custom_legends.get(name, {})
+        if custom_legend:
+            updates = custom_legend
+    return {'legend': adapter.legend(updates=updates), 'name': name}

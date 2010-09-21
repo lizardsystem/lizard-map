@@ -1,0 +1,14 @@
+{# requires 'legend': img_url, description. Uses ss_spite #}
+{% if legend %}
+<span class="ss_sprite ss_table sidebarbox-action-icon legend-tooltip">&nbsp;</span>
+<div class="tooltip">
+  <h4>Legenda voor {{ name }}</h4>
+  <table>
+    {% for legend_item in legend %}
+    <tr>
+      <td><img src="{{ legend_item.img_url }}" /></td><td>{{ legend_item.description }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}

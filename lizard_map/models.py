@@ -558,3 +558,21 @@ class Legend(models.Model):
                     'high_value': high_value,
                     })
         return result
+
+    def update(self, updates):
+        """Updates model with updates dict."""
+        for k, v in updates.items():
+            if k == 'min_value':
+                self.min_value = v
+            elif k == 'max_value':
+                self.max_value = v
+            elif k == 'steps':
+                self.steps = v
+            elif k == 'min_color':
+                self.min_color = v
+            elif k == 'max_color':
+                self.max_color = v
+            elif k == 'too_low_color':
+                self.too_low_color = v
+            elif k == 'too_high_color':
+                self.too_high_color = v

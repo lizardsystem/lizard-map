@@ -1,4 +1,6 @@
 {# Shows one workspace. Options: show_new_workspace. #}
+{% load workspaces %}
+{# Beware: one cannot use workspace template tag here, we are IN the workspace template tag #}
 <div id="workspace-{{ workspace.id }}"
      class="sidebarbox workspace"
      data-workspace-id="{{ workspace.id }}"
@@ -78,21 +80,7 @@
                data-workspace-id="{{ workspace.id }}" />
         {# legend #}
         {% firstof workspace_item.name '(noname)' %}
-        {% with workspace_item.adapter.legend as legend %}
-          {% if legend %}
-          <span class="ss_sprite ss_table sidebarbox-action-icon legend-tooltip">&nbsp;</span>
-          <div class="tooltip">
-            <h4>Legenda voor {{ workspace_item.name }}</h4>
-            <table>
-              {% for legend_item in legend %}
-              <tr>
-                <td><img src="{{ legend_item.img_url }}" /></td><td>{{ legend_item.description }}</td>
-              </tr>
-              {% endfor %}
-            </table>
-          </div>
-          {% endif %}
-        {% endwith %}
+        {% legend workspace_item.name workspace_item.adapter session %}
       </li>
       {% empty %}
       {# No workspaceitems #}
