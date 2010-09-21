@@ -24,9 +24,10 @@ function graph_save_snippet() {
         });
 }
 
-function graph_action_reload() {
+function graph_action_reload(event) {
     // send all graph properties to server and reload page
     var $form, url;
+    event.preventDefault();
     $form = $(this).parents("form.graph-options");
     url = $form.attr("data-url");
     $.post(

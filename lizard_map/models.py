@@ -560,19 +560,26 @@ class Legend(models.Model):
         return result
 
     def update(self, updates):
-        """Updates model with updates dict."""
+        """ Updates model with updates dict. Color values have the
+        following format: string rrggbb in hex """
+
+        def makecolor(c):
+            r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
+            a = 1
+            return Color(a=a, r=r, g=g, b=b)
+
         for k, v in updates.items():
             if k == 'min_value':
-                self.min_value = v
+                self.min_value = float(v)
             elif k == 'max_value':
-                self.max_value = v
+                self.max_value = float(v)
             elif k == 'steps':
-                self.steps = v
+                self.steps = int(v)
             elif k == 'min_color':
-                self.min_color = v
+                self.min_color = makecolor(v)
             elif k == 'max_color':
-                self.max_color = v
+                self.max_color = makecolor(v)
             elif k == 'too_low_color':
-                self.too_low_color = v
+                self.too_low_color = makecolor(v)
             elif k == 'too_high_color':
-                self.too_high_color = v
+                self.too_high_color = makecolor(v)

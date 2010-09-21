@@ -590,6 +590,45 @@ def snippet_edit(request, snippet_id):
     return HttpResponse('')
 
 
+def legend_edit(request):
+    """Updates a session legend.
+
+    POST parameters:
+    name
+    min_value (optional)
+    max_value (optional)
+    steps (optional)
+    min_color (optional): format ...
+    max_color (optional)
+    too_low_color (optional)
+    too_high_color (optional)
+
+    request['session']['custom_legends'][<name>] = {..}
+    """
+
+    # Get new legend from post parameters.
+    options = ['min_value', 'max_value', 'steps',
+               'min_color', 'max_color', 'too_low_color',
+               'too_high_color']
+
+    name = request.POST['name']
+    new_legend = {}
+    for option in options:
+        value = request.POST.get(option, None)
+        if value:
+            new_legend[option] = value
+
+    # Update session data with new obtained legend.
+    session = request.session
+    custom_legends = request.session.get('custom_legends', {})
+    custom_legends[name] = new_legend
+
+    print new_legend
+    request.session['custom_legends'] = custom_legends
+
+    return HttpResponse('')
+
+
 """
 Map stuff
 """

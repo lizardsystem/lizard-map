@@ -123,4 +123,7 @@ def legend(name, adapter, session=None):
         custom_legend = custom_legends.get(name, {})
         if custom_legend:
             updates = custom_legend
-    return {'legend': adapter.legend(updates=updates), 'name': name}
+    return {
+        'legend': adapter.legend(updates=updates),
+        'name': name,
+        'idhash': hash(name)}

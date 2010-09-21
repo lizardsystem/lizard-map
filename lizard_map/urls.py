@@ -114,6 +114,11 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_edit',
         name="lizard_map_workspace_item_edit"),
 
+    # Actions on legends.
+    url(r'^legend/edit/',
+        'lizard_map.views.legend_edit',
+        name='lizard_map_legend_edit'),
+
     # Search stuff.
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',

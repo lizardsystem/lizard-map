@@ -205,6 +205,8 @@ function setUpLegendTooltips() {
 }
 
 
+
+
 /*
 Empty the temp workspace
 */
@@ -267,6 +269,34 @@ function popup_hover_handler(x, y, map) {
 }
 
 
+function legend_action_reload(event) {
+    // send all legend properties to server and reload page
+    var $form, url, name;
+    event.preventDefault();
+    $form = $(this).parents("form.legend-options");
+    url = $form.attr("data-url");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            // Reload page after posting.
+            location.reload();
+        });
+}
+
+
+function setUpLegendColorPickers() {
+    var submit = function(hsb, hex, rgb, el) {
+	$(el).val(hex);
+	$(el).ColorPickerHide();
+    };
+    $("input[name=min_color]").ColorPicker({onSubmit: submit});
+    $("input[name=max_color]").ColorPicker({onSubmit: submit});
+    $("input[name=too_low_color]").ColorPicker({onSubmit: submit});
+    $("input[name=too_high_color]").ColorPicker({onSubmit: submit});
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -276,7 +306,12 @@ $(document).ready(function () {
     setUpEmptyTempInteraction();
     setUpAnimationSlider();
     setUpGraphEditPopup();
+
+    // Set up legend.
     setUpLegendTooltips();
+    $(".legend-edit").overlay();
+    $(".legend-action-reload").bind("click", legend_action_reload);
+    setUpLegendColorPickers();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();

@@ -1,8 +1,14 @@
 {# requires 'legend': img_url, description. Uses ss_spite #}
+{# interaction code in lizard_map.js #}
+{# needs colorpicker from nhi lizard_base #}
 {% if legend %}
 <span class="ss_sprite ss_table sidebarbox-action-icon legend-tooltip">&nbsp;</span>
 <div class="tooltip">
-  <h4>Legenda voor {{ name }}</h4>
+  <h4>Legenda voor {{ name }}
+  <span class="ss_sprite ss_table_edit sidebarbox-action-icon legend-edit"
+        data-name="{{ name }}"
+        rel="#legend-edit-{{ idhash }}">&nbsp;</span>
+  </h4>
   <table>
     {% for legend_item in legend %}
     <tr>
@@ -10,5 +16,20 @@
     </tr>
     {% endfor %}
   </table>
+</div>
+<div id="legend-edit-{{ idhash }}" class="popup popup-fat popup-size-standard">
+  <h1>Persoonlijke legenda</h1>
+  <form class="legend-options"
+        data-url="{% url lizard_map_legend_edit %}">
+    <input type="hidden" name="name" value="{{ name }}" />
+    <input type="text" name="min_value" value="" />
+    <input type="text" name="max_value" value="" />
+    <input type="text" name="steps" value="" />
+    <input type="text" name="min_color" value="" />
+    <input type="text" name="max_color" value="" />
+    <input type="text" name="too_low_color" value="" />
+    <input type="text" name="too_high_color" value="" />
+    <input class="legend-action-reload" type="submit" value="Update legenda" />
+  </form>
 </div>
 {% endif %}
