@@ -18,18 +18,42 @@
   </table>
 </div>
 <div id="legend-edit-{{ idhash }}" class="popup popup-fat popup-size-standard">
-  <h1>Persoonlijke legenda</h1>
-  <form class="legend-options"
+  <h1>{{ name }}</h1>
+  <div>Persoonlijke legenda</div>
+  <form class="legend-options popup-form"
         data-url="{% url lizard_map_legend_edit %}">
     <input type="hidden" name="name" value="{{ name }}" />
-    <input type="text" name="min_value" value="" />
-    <input type="text" name="max_value" value="" />
-    <input type="text" name="steps" value="" />
-    <input type="text" name="min_color" value="" />
-    <input type="text" name="max_color" value="" />
-    <input type="text" name="too_low_color" value="" />
-    <input type="text" name="too_high_color" value="" />
-    <input class="legend-action-reload" type="submit" value="Update legenda" />
+    <fieldset class="fixed-label-width">
+      <div>
+        <label>Min. waarde</label>
+        <input type="text" name="min_value" value="" />
+      </div>
+      <div>
+        <label>Max. waarde</label>
+        <input type="text" name="max_value" value="" />
+      </div>
+      <div>
+        <label>Aantal stappen</label>
+        <input type="text" name="steps" value="" />
+      </div>
+      <div>
+        <label>Kleur min. waarde</label>
+        <input type="text" name="min_color" value="" />
+      </div>
+      <div>
+        <label>Kleur max. waarde</label>
+        <input type="text" name="max_color" value="" />
+      </div>
+      <div>
+        <label>Kleur < min. waarde</label>
+        <input type="text" name="too_low_color" value="" />
+      </div>
+      <div>
+        <label>Kleur > max. waarde</label>
+        <input type="text" name="too_high_color" value="" />
+      </div>
+    </fieldset>
+    <div><input class="legend-action-reload" type="submit" value="Update legenda" /></div>
   </form>
 </div>
 {% endif %}
