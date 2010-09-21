@@ -180,7 +180,6 @@ function setUpLegendTooltips() {
             $(this).tooltip({
                 position: 'center right',
                 effect: 'fade',
-                offset: [0, 10],
                 onShow: function () {
                     var offset, pixels_below_screen;
                     // Too high?
@@ -308,7 +307,7 @@ $(document).ready(function () {
     setUpGraphEditPopup();
 
     // Set up legend.
-    setUpLegendTooltips();
+    setUpLegendTooltips(); // The edit function is on the tooltip.
     $(".legend-edit").overlay();
     $(".legend-action-reload").bind("click", legend_action_reload);
     setUpLegendColorPickers();
