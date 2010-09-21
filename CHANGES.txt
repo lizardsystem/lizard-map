@@ -26,6 +26,8 @@ Changelog of lizard-map
 
 - Percentile in collage screen is now user adjustable.
 
+- Move legend code to template tag. Add custom legend modification possibility.
+
 
 1.10 (2010-09-08)
 -----------------
