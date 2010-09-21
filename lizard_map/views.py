@@ -27,6 +27,8 @@ from lizard_map.workspace import WorkspaceManager
 
 # Workspace stuff
 
+CUSTOM_LEGENDS = 'custom_legends'
+
 
 def workspace(request,
               workspace_id,
@@ -620,11 +622,10 @@ def legend_edit(request):
 
     # Update session data with new obtained legend.
     session = request.session
-    custom_legends = request.session.get('custom_legends', {})
+    custom_legends = request.session.get(CUSTOM_LEGENDS, {})
     custom_legends[name] = new_legend
 
-    print new_legend
-    request.session['custom_legends'] = custom_legends
+    request.session[CUSTOM_LEGENDS] = custom_legends
 
     return HttpResponse('')
 
