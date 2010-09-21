@@ -285,14 +285,19 @@ function legend_action_reload(event) {
 
 
 function setUpLegendColorPickers() {
-    var submit = function (hsb, hex, rgb, el) {
+    var submit, beforeshow;
+    submit = function (hsb, hex, rgb, el) {
 	    $(el).val(hex);
 	    $(el).ColorPickerHide();
     };
-    $("input[name=min_color]").ColorPicker({onSubmit: submit});
-    $("input[name=max_color]").ColorPicker({onSubmit: submit});
-    $("input[name=too_low_color]").ColorPicker({onSubmit: submit});
-    $("input[name=too_high_color]").ColorPicker({onSubmit: submit});
+    beforeshow = function () {
+        $(this).ColorPickerSetColor(this.value);
+    };
+
+    $("input[name=min_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
+    $("input[name=max_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
+    $("input[name=too_low_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
+    $("input[name=too_high_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
 }
 
 

@@ -27,31 +27,31 @@
     <fieldset class="fixed-label-width">
       <div>
         <label>Min. waarde</label>
-        <input type="text" name="min_value" value="" />
+        <input type="text" name="min_value" value="{{ custom_legend.min_value }}" />
       </div>
       <div>
         <label>Max. waarde</label>
-        <input type="text" name="max_value" value="" />
+        <input type="text" name="max_value" value="{{ custom_legend.max_value }}" />
       </div>
       <div>
         <label>Aantal stappen</label>
-        <input type="text" name="steps" value="" />
+        <input type="text" name="steps" value="{{ custom_legend.steps }}" />
       </div>
       <div>
         <label>Kleur min. waarde</label>
-        <input type="text" name="min_color" value="" />
+        <input type="text" name="min_color" value="{{ custom_legend.min_color }}" />
       </div>
       <div>
         <label>Kleur max. waarde</label>
-        <input type="text" name="max_color" value="" />
+        <input type="text" name="max_color" value="{{ custom_legend.max_color }}" />
       </div>
       <div>
         <label>Kleur < min. waarde</label>
-        <input type="text" name="too_low_color" value="" />
+        <input type="text" name="too_low_color" value="{{ custom_legend.too_low_color }}" />
       </div>
       <div>
         <label>Kleur > max. waarde</label>
-        <input type="text" name="too_high_color" value="" />
+        <input type="text" name="too_high_color" value="{{ custom_legend.too_high_color }}" />
       </div>
     </fieldset>
     <div><input class="legend-action-reload" type="submit" value="Update legenda" /></div>

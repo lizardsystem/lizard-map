@@ -3,7 +3,7 @@ from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
-
+from lizard_map.views import CUSTOM_LEGENDS
 register = template.Library()
 
 
@@ -119,11 +119,13 @@ def legend(name, adapter, session=None):
 
     updates = None
     if session:
-        custom_legends = session.get('custom_legends', {})
+        custom_legends = session.get(CUSTOM_LEGENDS, {})
         custom_legend = custom_legends.get(name, {})
         if custom_legend:
             updates = custom_legend
     return {
         'legend': adapter.legend(updates=updates),
         'name': name,
-        'idhash': hash(name)}
+        'idhash': hash(name),
+        'custom_legend': updates
+        }
