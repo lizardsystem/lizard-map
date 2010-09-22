@@ -564,7 +564,11 @@ class Legend(models.Model):
         following format: string rrggbb in hex """
 
         def makecolor(c):
-            r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
+            try:
+                r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
+            except ValueError:
+                r, g, b = [0, 0, 0]
+                logger.warn('Could not parse string %s in r, g, b' % c)
             a = 1
             return Color(a=a, r=r, g=g, b=b)
 

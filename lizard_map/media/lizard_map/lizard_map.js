@@ -301,6 +301,18 @@ function setUpLegendColorPickers() {
 }
 
 
+function setUpLegendEdit() {
+    $(".legend-edit").live("mouseover", function () {
+        if (!$(this).data("popup-initialized")) {
+            $(this).data("popup-initialized", true);
+            $(this).overlay();
+            setUpLegendColorPickers();
+        }
+    });
+    $(".legend-action-reload").live("click", legend_action_reload);
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -313,9 +325,7 @@ $(document).ready(function () {
 
     // Set up legend.
     setUpLegendTooltips(); // The edit function is on the tooltip.
-    $(".legend-edit").overlay();
-    $(".legend-action-reload").bind("click", legend_action_reload);
-    setUpLegendColorPickers();
+    setUpLegendEdit();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
