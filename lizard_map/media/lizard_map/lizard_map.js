@@ -298,6 +298,35 @@ function setUpLegendColorPickers() {
     $("input[name=max_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
     $("input[name=too_low_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
     $("input[name=too_high_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
+
+    // Setup widget colors.
+    $("#colorSelector").each(function () {
+        var div, rel, color;
+        rel = $(this).attr("rel");
+        color = $(rel).attr("value");
+        div = $(this).find("div");
+        div.css('backgroundColor', '#' + color);
+    });
+
+    // Make the widget clickable.
+    $("#colorSelector").ColorPicker({
+        onBeforeShow: function() {
+            var rel, color;
+            rel = $(this).attr("rel");
+            color = $(rel).attr("value");
+            $(this).ColorPickerSetColor(color);
+        },
+        onChange: function(hsb, hex, rgb) {
+            $("#colorSelector div").css('backgroundColor', '#' + hex);
+        },
+        onSubmit: function(hsb, hex, rgb, el) {
+            var rel;
+            rel = $(el).attr("rel");
+            $(rel).val(hex);
+            $(el).ColorPickerHide();
+        }
+    });
+
 }
 
 
