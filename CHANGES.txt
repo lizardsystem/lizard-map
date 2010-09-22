@@ -2,10 +2,11 @@ Changelog of lizard-map
 =======================
 
 
-1.13 (unreleased)
+1.13 (2010-09-22)
 -----------------
 
-- Nothing changed yet.
+- Bugfix data attributes lizard-map-wms. Moved divs from above-content
+  to content.
 
 
 1.12 (2010-09-22)

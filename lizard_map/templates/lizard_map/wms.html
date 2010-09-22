@@ -29,7 +29,10 @@
   </li>
   {% endfor %}
 </ul>
-{# temp place for data attributes wms #}
+{% endblock above-content %}
+
+{% block content %}
+{# data attributes wms #}
 <div id="lizard-map-wms"
      data-javascript-click-handler="{{ javascript_click_handler }}"
      data-javascript-hover-handler="{{ javascript_hover_handler }}">
@@ -43,4 +46,5 @@
     {% endfor %}
   {% endfor %}
 </div>
-{% endblock above-content %}
+<div id="map"></div>
+{% endblock content %}

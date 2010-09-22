@@ -92,3 +92,8 @@
 #graph-popup-content
 { overflow: auto;
   }
+
+/* Data attributes for lizard map wms */
+#lizard-map-wms
+{ display: none;
+  }
