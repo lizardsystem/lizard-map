@@ -207,7 +207,7 @@ class Graph(object):
 
     def add_today(self):
         # Show line for today.
-        self.axes.axvline(self.today, color='blue', lw=1, ls='--')
+        self.axes.axvline(self.today, color='orange', lw=1, ls='--')
 
     def suptitle(self, title):
         self.figure.suptitle(title,
