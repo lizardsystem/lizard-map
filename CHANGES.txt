@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.12 (unreleased)
+1.12 (2010-09-22)
 -----------------
 
 - Make 'now' line orange.
