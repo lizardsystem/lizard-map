@@ -310,16 +310,16 @@ function setUpLegendColorPickers() {
 
     // Make the widget clickable.
     $("#colorSelector").ColorPicker({
-        onBeforeShow: function() {
+        onBeforeShow: function () {
             var rel, color;
             rel = $(this).attr("rel");
             color = $(rel).attr("value");
             $(this).ColorPickerSetColor(color);
         },
-        onChange: function(hsb, hex, rgb) {
+        onChange: function (hsb, hex, rgb) {
             $("#colorSelector div").css('backgroundColor', '#' + hex);
         },
-        onSubmit: function(hsb, hex, rgb, el) {
+        onSubmit: function (hsb, hex, rgb, el) {
             var rel;
             rel = $(el).attr("rel");
             $(rel).val(hex);
