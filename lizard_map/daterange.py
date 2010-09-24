@@ -14,8 +14,10 @@ DUTCH_DATE_FORMAT = '%d/%m/%Y'
 
 class DateRangeForm(forms.Form):
     # TODO: NL date format.  Also hardcoded in the js.
-    date_start = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,))
-    date_end = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,))
+    date_start = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,),
+                                 label='Begindatum')
+    date_end = forms.DateField(input_formats=(DUTCH_DATE_FORMAT,),
+                               label='Einddatum')
 
 
 def set_date_range(request, template='krw_waternet/daterange.html'):
