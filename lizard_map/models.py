@@ -564,11 +564,7 @@ class Legend(models.Model):
         following format: string rrggbb in hex """
 
         def makecolor(c):
-            try:
-                r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
-            except ValueError:
-                r, g, b = [0, 0, 0]
-                logger.warn('Could not parse string %s in r, g, b' % c)
+            r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
             a = 1
             return Color(a=a, r=r, g=g, b=b)
 
@@ -580,10 +576,23 @@ class Legend(models.Model):
             elif k == 'steps':
                 self.steps = int(v)
             elif k == 'min_color':
-                self.min_color = makecolor(v)
+                try:
+                    self.min_color = makecolor(v)
+                except ValueError:
+                    logger.warn('Could not parse min_color (%s)' % v)
             elif k == 'max_color':
-                self.max_color = makecolor(v)
+                try:
+                    self.max_color = makecolor(v)
+                except ValueError:
+                    logger.warn('Could not parse max_color (%s)' % v)
             elif k == 'too_low_color':
-                self.too_low_color = makecolor(v)
+                try:
+                    self.too_low_color = makecolor(v)
+                except ValueError:
+                    logger.warn('Could not parse too_low_color (%s)' % v)
             elif k == 'too_high_color':
-                self.too_high_color = makecolor(v)
+                try:
+                    self.too_high_color = makecolor(v)
+                except ValueError:
+                    logger.warn('Could not parse too_high_color (%s)' % v)
+
