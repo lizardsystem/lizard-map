@@ -5,7 +5,11 @@ Changelog of lizard-map
 1.14 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug in filter-on-month handling.
+
+- Using newer lizard-ui with better print icon handling.
+
+- Using color widget for legend customization.
 
 
 1.13 (2010-09-22)
