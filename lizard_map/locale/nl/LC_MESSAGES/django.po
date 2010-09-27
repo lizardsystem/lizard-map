@@ -70,7 +70,7 @@ msgstr "September"
 
 #: dateperiods.py:131
 msgid "October"
-msgstr "October"
+msgstr "Oktober"
 
 #: dateperiods.py:132
 msgid "November"
