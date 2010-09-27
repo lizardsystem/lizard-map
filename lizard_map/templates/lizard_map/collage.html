@@ -15,10 +15,9 @@
 {% block object-actions %}
 {% if editable %}
 <a href="{% url lizard_map.collage_edit collage_id=collage.id %}"
-   class="ss_sprite ss_application_form_edit">Edit</a>
+   class="ss_sprite ss_application_form_edit">Edit</a> |
 {% endif %}
-<a href="javascript:printPage()"
-   class="ss_sprite ss_printer">Print</a>
+<span id="print-button">Print</span>
 {% endblock object-actions %}
 
 {% block content %}
@@ -35,7 +34,7 @@
   </p>
   {% snippet_group_table request snippet_group %}
   {% else %}
-  <a href="?show_table=1" class="ss_sprite ss_table_add">Toon tabellen</a>
+  <a href="?show_table=1" class="ss_sprite ss_table_add noprint">Toon tabellen</a>
   {% endif %}
   {% endfor %}
 
