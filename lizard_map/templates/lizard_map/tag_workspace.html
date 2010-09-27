@@ -17,7 +17,6 @@
      data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
      >
   <h2>
-    {{ workspace.name }}
     {% if date_range_form %}
     <a href="#"
        class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
@@ -30,9 +29,8 @@
     {% endif %}
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
        title="link to {{ workspace.name }}"
-       class="title">
-      <span class="ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</span>
-    </a>
+       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
+    <span>{{ workspace.name }}</span>
   </h2>
   <div>
     <div class="date-popup popup popup-fat"
@@ -68,6 +66,8 @@
           class="workspace-item"
           data-object-id="{{ workspace_item.id }}"
           data-workspace-id="{{ workspace.id }}">
+        {# legend #}
+        {% legend workspace_item.name workspace_item.adapter session %}
         <img src="{{ workspace_item.adapter.symbol_url }}"
              width="16"
              height="16" />
@@ -78,9 +78,7 @@
                checked="checked"
                {% endif %}
                data-workspace-id="{{ workspace.id }}" />
-        {# legend #}
         {% firstof workspace_item.name '(noname)' %}
-        {% legend workspace_item.name workspace_item.adapter session %}
       </li>
       {% empty %}
       {# No workspaceitems #}
@@ -91,15 +89,13 @@
   {% for collage in workspace.collages.all %}
   <h2 class="collage"
       data-collage-id="{{ collage.id }}">
-    {{ collage.name }}
     <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon">
       &nbsp;
     </span>
     <a href="{% url lizard_map.collage collage_id=collage.id %}"
        title="link to {{ collage.name }}"
-       class="title">
-      <span class="ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</span>
-    </a>
+       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
+    <span>{{ collage.name }}</span>
   </h2>
   <div>
     <ul class="snippet-list without-bullets"
@@ -111,7 +107,7 @@
           <img src="{{ snippet.workspace_item.adapter.symbol_url }}"
                width="16"
                height="16" />
-          {% firstof snippet.shortname snippet.name '(noname)' %}
+          <span>{% firstof snippet.shortname snippet.name '(noname)' %}</span>
         </li>
         {% endfor %}
       {% empty %}
@@ -123,6 +119,6 @@
 
   {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
   <div class="sidebarbox-actions">
-    <div class="workspace-trash"><span class="ss_sprite ss_bin_empty">prullenbak</span></div>
+    <div class="workspace-trash"><span class="ss_sprite ss_bin_empty">Prullenbak</span></div>
   </div>
 </div>
