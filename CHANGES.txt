@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.14 (unreleased)
+1.14 (2010-09-27)
 -----------------
 
 - Fixed bug in filter-on-month handling.
