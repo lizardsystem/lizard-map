@@ -37,6 +37,7 @@ function showMap() {
         numZoomLevels: 18,
         maxExtent: new OpenLayers.Bounds(129394, 6659216, 1335570, 7306790)
     };
+    // Map is globally defined.
     map = new OpenLayers.Map('map', options);
 
     // Set up base layer.

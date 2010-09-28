@@ -42,7 +42,8 @@
   clear: left;
   }
 
-#animation-slider
+#animation-slider,
+#transparency-slider
 { display: block;
   float: left;
   width: 20em;
@@ -96,4 +97,8 @@
 /* Data attributes for lizard map wms */
 #lizard-map-wms
 { display: none;
+  }
+
+.map-action
+{ margin-left: 0.5em;
   }

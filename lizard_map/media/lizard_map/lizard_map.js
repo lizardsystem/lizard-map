@@ -2,9 +2,9 @@
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, updateLayers,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-hover_popup */
+hover_popup, layers */
 
-var animationTimer;
+var animationTimer, transparencyTimer;
 
 // if (typeof(console) === 'undefined') {
 //     // Prevents the firebug console from throwing errors in browsers other
@@ -55,12 +55,37 @@ function setUpAnimationSlider() {
 }
 
 
+function setUpTransparencySlider() {
+    var transparency_slider_value;
+    transparency_slider_value = 100;
+    if ($('#map').data("transparency_slider_value")) {
+        transparency_slider_value = $("#map").data(
+            "transparency_slider_value");
+    }
+    $("#transparency-slider").slider({
+        min: 0,
+        max: 100,
+        step: 1,
+        value: transparency_slider_value,
+        slide: function (event, ui) {
+            $('#map').data("transparency_slider_value", ui.value);
+            $(layers).each(function (i, layer) {
+                if (layer !== undefined) {
+                    layer.setOpacity(ui.value / 100);
+                }
+            });
+        }
+    });
+}
+
+
 function reloadMapActions() {
     $(".map-actions").load(
         "./ .map-action",
         function () {
             fillSidebar();
             setUpAnimationSlider();
+            setUpTransparencySlider();
         });
 }
 
@@ -350,6 +375,7 @@ $(document).ready(function () {
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();
     setUpAnimationSlider();
+    setUpTransparencySlider();
     setUpGraphEditPopup();
 
     // Set up legend.

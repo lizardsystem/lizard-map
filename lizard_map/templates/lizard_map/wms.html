@@ -20,6 +20,14 @@
     <span id="selected-date">{{ animation_slider.selected_date|date:"d/m/Y" }}</span>
   </li>
   {% endif %}
+  {% if transparency_slider %}
+  <li id="transparency-slider"
+      class="map-action">
+  </li>
+  <li class="map-action">
+    Transparantie
+  </li>
+  {% endif %}
   {% for workspace_item in workspaces.temp.0.workspace_items.all %}
   <li class="workspace-empty-temp map-action"
       data-workspace-item-id="{{ workspace_item.id }}">

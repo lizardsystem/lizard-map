@@ -2,7 +2,7 @@
 /*jslint browser: true */
 /*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
 setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
-setUpAnimationSlider, setUpLegendTooltips */
+setUpTransparencySlider, setUpAnimationSlider, setUpLegendTooltips */
 
 
 /*
@@ -244,6 +244,7 @@ jQuery.fn.updateWorkspace = function () {
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
                 setUpAnimationSlider();
+                setUpTransparencySlider();
                 setUpLegendTooltips();
             }
         );
