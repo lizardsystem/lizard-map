@@ -64,16 +64,18 @@ But those aren't used anymore.
 */
 
 function show_popup(data, map) {
-    if (data.html !== "" && data.html !== undefined) {
-        var overlay;
-        $('#graph-popup-content').html(data.html);
-        overlay = $('#graph-popup').overlay();
-        overlay.load();
-        reloadGraphs();
-        $(".add-snippet").snippetInteraction();
-    }
-    else {
-        nothingFoundPopup();
+    if (data !== null) {
+        if (data.html !== "" && data.html !== undefined) {
+            var overlay;
+            $('#graph-popup-content').html(data.html);
+            overlay = $('#graph-popup').overlay();
+            overlay.load();
+            reloadGraphs();
+            $(".add-snippet").snippetInteraction();
+        }
+        else {
+            nothingFoundPopup();
+        }
     }
 }
 
