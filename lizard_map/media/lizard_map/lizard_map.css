@@ -46,11 +46,18 @@
 #transparency-slider
 { display: block;
   float: left;
-  width: 20em;
   line-height: 1.5em;
   margin-top: 0.4em;
   margin-left: 1em;
 }
+
+#animation-slider
+{ width: 20em;
+  }
+
+#transparency-slider
+{ width: 5em;
+  }
 
 .vertical-limited
 { height: 300px;
