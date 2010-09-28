@@ -9,6 +9,8 @@ Changelog of lizard-map
 
 - Added optional transparency slider.
 
+- Fixed bug in graph edit and graph line edit popup forms.
+
 
 1.15 (2010-09-27)
 -----------------

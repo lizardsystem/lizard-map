@@ -54,7 +54,8 @@ the default template for the html_default method.
         <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
           <h1>Grafiek opties</h1>
           <form class="popup-graph-edit-form popup-graph-edit-global graph-options popup-form"
-                data-url="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}">
+                action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}"
+                method="post">
             <fieldset class="fixed-label-width">
               <div>
                 <label>Titel</label>
@@ -138,7 +139,7 @@ the default template for the html_default method.
               </div>
             </fieldset>
             <p>
-              <input class="graph-action-reload" type="submit" value="Update grafiek" />
+              <input class="graph-options-submit" type="submit" value="Update grafiek" />
             </p>
           </form>
         </div>
@@ -169,8 +170,9 @@ the default template for the html_default method.
         <div id="graph_edit_overlay_snippet_{{ snippet.id }}"
              class="popup noprint popup-graph-edit-form popup-form">
           <h2>{% firstof snippet.name snippet.shortname %}</h2>
-          <form class="graph-options"
-                data-url="{% url lizard_map.snippet_edit snippet_id=snippet.id %}">
+          <form class="graph-line-options"
+                action="{% url lizard_map.snippet_edit snippet_id=snippet.id %}"
+                method="post">
             <p>
               <label>Kleur</label>
               <select class="graph-color" name="color">
@@ -196,7 +198,9 @@ the default template for the html_default method.
               <label>Toon gemiddelde</label>
             </p>
             <p>
-              <input class="graph-action" type="button" value="Update grafiek" />
+              <input class="graph-line-options-submit"
+                     type="submit"
+                     value="Update grafiek" />
             </p>
           </form>
         </div>

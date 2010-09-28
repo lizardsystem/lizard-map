@@ -5,7 +5,7 @@
 /* Helper functions in graph edit screen.  Needs lizard.js in
 order to function correctly.  */
 function graph_save_snippet() {
-    // the actual graph props are already stored in session on server
+    // The actual graph props are already stored in session on server
     var url, workspace_item_id, workspace_item_location_identifier,
         workspace_item_location_shortname, workspace_item_location_name;
     url = $(this).attr("data-url");
@@ -24,12 +24,12 @@ function graph_save_snippet() {
         });
 }
 
-function graph_action_reload(event) {
+function graph_options_submit(event) {
     // send all graph properties to server and reload page
     var $form, url;
     event.preventDefault();
     $form = $(this).parents("form.graph-options");
-    url = $form.attr("data-url");
+    url = $form.attr("action");
     $.post(
         url,
         $form.serialize(),
@@ -39,11 +39,12 @@ function graph_action_reload(event) {
         });
 }
 
-function graph_action() {
+function graph_line_options_submit(event) {
     // send all graph properties to server and reload graphs
     var $form, url;
-    $form = $(this).parents("form.graph-options");
-    url = $form.attr("data-url");
+    event.preventDefault();
+    $form = $(this).parents("form.graph-line-options");
+    url = $form.attr("action");
     $.post(
         url,
         $form.serialize(),
@@ -75,9 +76,8 @@ function setUpGraphForm() {
 }
 
 $(document).ready(function () {
-    $(".graph-save-snippet").bind("click", graph_save_snippet);
-    $(".graph-action").bind("click", graph_action);
-    $(".graph-action-reload").bind("click", graph_action_reload);
-    //graph_action();  // update graph with current options
+    $(".graph-save-snippet").click(graph_save_snippet);
+    $("input.graph-line-options-submit").click(graph_line_options_submit);
+    $("input.graph-options-submit").click(graph_options_submit);
     setUpGraphForm();
 });
