@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.16 (unreleased)
+1.16 (2010-09-28)
 -----------------
 
 - Added option: allow_custom_legend in adapter.
