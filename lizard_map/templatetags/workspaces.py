@@ -123,6 +123,7 @@ def legend(name, adapter, session=None):
         if custom_legend:
             updates = custom_legend
     return {
+        'allow_custom_legend': adapter.allow_custom_legend,
         'legend': adapter.legend(updates=updates),
         'name': name,
         'idhash': hash(name),

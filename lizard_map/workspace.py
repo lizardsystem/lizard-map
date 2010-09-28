@@ -151,6 +151,7 @@ class WorkspaceItemAdapter(object):
 
     layer_arguments = {}
     is_animatable = False
+    allow_custom_legend = False
 
     def __init__(self, workspace_item, layer_arguments=None):
         self.workspace_item = workspace_item
