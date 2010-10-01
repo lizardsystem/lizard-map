@@ -2,10 +2,11 @@ Changelog of lizard-map
 =======================
 
 
-1.17 (unreleased)
+1.17 (2010-10-01)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug where graph edit form would fail always unless you switched on
+  summaries per *month*.
 
 
 1.16 (2010-09-28)
