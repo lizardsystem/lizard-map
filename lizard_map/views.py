@@ -153,12 +153,13 @@ def snippet_group_graph_edit(request, snippet_group_id):
     percentile_value = post.get('percentile_value', None)
     aggregation_period = post.get('aggregation_period', None)
     restrict_to_month = post.get('restrict_to_month', None)
-    try:
-        restrict_to_month = int(restrict_to_month)
-        assert restrict_to_month > 0
-        assert restrict_to_month < 13
-    except ValueError:
-        restrict_to_month = None
+    if restrict_to_month is not None:
+        try:
+            restrict_to_month = int(restrict_to_month)
+            assert restrict_to_month > 0
+            assert restrict_to_month < 13
+        except ValueError:
+            restrict_to_month = None
 
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
