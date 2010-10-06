@@ -111,13 +111,6 @@ class ViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
-    def test_clickinfo(self):
-        url = reverse('lizard_map_clickinfo',
-                      kwargs={'workspace_id': self.workspace.id})
-        url += '?x=430987.5469813&y=6803449.8497827'
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-
     def test_collage(self):
         url = reverse('lizard_map.collage',
                       kwargs={'collage_id': self.collage.id})
