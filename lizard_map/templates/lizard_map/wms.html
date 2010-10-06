@@ -1,4 +1,4 @@
-{% extends "lizard_map/lizardgis.html" %}{% load i18n %}
+{% extends "lizard_map/lizardgis.html" %}{% load i18n %}{% load map %}
 
 {% block map-javascript %}
 <script type="text/javascript"
@@ -41,32 +41,24 @@
 
 {% block content %}
 {# data attributes wms #}
+{% map_variables %}{# loads map variables that are used below #}
 <div id="lizard-map-wms"
      data-javascript-click-handler="{{ javascript_click_handler }}"
      data-javascript-hover-handler="{{ javascript_hover_handler }}"
-     data-base-layer-type="OSM" {# OSM or WMS #}
-     data-projection="EPSG:900913"  {# for WMS: EPSG:28992, EPSG:900913 #}
-     data-display-projection="EPSG:4326"  {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
-     data-startlocation-x="550000" {# OSM, google projection #}
-     data-startlocation-y="6850000"
-     data-startlocation-zoom="10"
-     data-base-layer-wms="http://nederlandwms.risicokaart.nl/wmsconnector/com.esri.wms.Esrimap?SERVICENAME=risicokaart_pub_nl_met_ondergrond&"
-     data-base-layer-wms-layers="Outline_nederland,Dissolve_provincies,0,2,12,3,38,5,4,9,10"
-     data-base-layer-osm="http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png"
+     {# OSM or WMS #}
+     data-base-layer-type="{{ base_layer_type }}"
+     {# for WMS: EPSG:28992, EPSG:900913 #}
+     data-projection="{{ projection }}"
+     {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
+     data-display-projection="{{ display_projection }}"
+     {# OSM, google projection #}
+     data-startlocation-x="{{ startlocation_x }}"
+     data-startlocation-y="{{ startlocation_y }}"
+     data-startlocation-zoom="{{ startlocation_zoom }}"
+     data-base-layer-wms="{{ base_layer_wms }}"
+     data-base-layer-wms-layers="{{ base_layer_wms_layers }}"
+     data-base-layer-osm="{{ base_layer_osm }}"
      >
-     <!-- data-base-layer-type="WMS" {# OSM or WMS #} -->
-     <!-- data-projection="EPSG:28992"  {# for WMS: EPSG:28992, EPSG:900913 #} -->
-     <!-- data-display-projection="EPSG:28992"  {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #} -->
-     <!-- data-startlocation-x="127000" {# RD #} -->
-     <!-- data-startlocation-y="473000" -->
-     <!-- data-startlocation-zoom="4" -->
-
-     <!-- data-base-layer-type="OSM" {# OSM or WMS #} -->
-     <!-- data-projection="EPSG:900913"  {# for WMS: EPSG:28992, EPSG:900913 #} -->
-     <!-- data-display-projection="EPSG:4326"  {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #} -->
-     <!-- data-startlocation-x="550000" {# OSM, google projection #} -->
-     <!-- data-startlocation-y="6850000" -->
-     <!-- data-startlocation-zoom="10" -->
   {% for workspace_list in workspaces.values %}
     {% for workspace in workspace_list %}
     <div class="workspace-layer"
