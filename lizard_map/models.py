@@ -595,4 +595,3 @@ class Legend(models.Model):
                     self.too_high_color = makecolor(v)
                 except ValueError:
                     logger.warn('Could not parse too_high_color (%s)' % v)
-
