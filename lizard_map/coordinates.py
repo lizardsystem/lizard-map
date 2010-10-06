@@ -19,6 +19,12 @@ rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
 wgs84_projection = Proj(WGS84)
 
+srs_to_mapnik_projection = {
+    'EPSG:28992': RD,
+    'EPSG:900913': GOOGLE,
+    'EPSG:4326': WGS84,
+    }
+
 
 def google_to_rd(x, y):
     """Return RD coordinates from GOOGLE coordinates."""
@@ -43,3 +49,13 @@ def google_to_wgs84(x, y):
 def rd_to_wgs84(x, y):
     """Return GOOGLE coordinates from RD coordinates."""
     return transform(rd_projection, wgs84_projection, x, y)
+
+
+def srs_to_google(srs, x, y):
+    """Return GOOGLE coordinates from coordinates. Coordinates are in
+    srs (string), i.e. EPSG:28992."""
+    if srs == 'EPSG:28992':
+        google_x, google_y = rd_to_google(x, y)
+    else:
+        google_x, google_y = x, y
+    return google_x, google_y

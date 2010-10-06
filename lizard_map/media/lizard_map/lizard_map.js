@@ -265,7 +265,7 @@ function popup_click_handler(x, y, map) {
     if (url !== undefined) {
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius },
+            { x: x, y: y, radius: radius, srs: map.getProjection() },
             function (data) {
                 $("#map_OpenLayers_ViewPort").css("cursor", "default");
                 show_popup(data, map);
@@ -284,7 +284,7 @@ function popup_hover_handler(x, y, map) {
     if (url !== undefined) {
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius },
+            { x: x, y: y, radius: radius, srs: map.getProjection() },
             function (data) {
                 hover_popup(data, map);
             }

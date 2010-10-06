@@ -21,31 +21,75 @@ function updateLayers() {
 
 
 function showMap() {
-    var options, openstreetmapLayer, MapClickControl, MapHoverControl,
+    var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
-        $lizard_map_wms;
+        $lizard_map_wms, startlocation_x, startlocation_y,
+        startlocation_zoom, projection, display_projection,
+        base_layer_type, wms_url, wms_layers, osm_url;
 
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
 
+    projection = $lizard_map_wms.attr("data-projection");
+    display_projection = $lizard_map_wms.attr("data-display-projection");
+    base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
+
+    startlocation_x = $lizard_map_wms.attr("data-startlocation-x");
+    startlocation_y = $lizard_map_wms.attr("data-startlocation-y");
+    startlocation_zoom = $lizard_map_wms.attr("data-startlocation-zoom");
+
     // Set up projection and bounds.
-    options = {
-        projection: new OpenLayers.Projection("EPSG:900913"),
-        displayProjection: new OpenLayers.Projection("EPSG:4326"),
-        units: "m",
-        numZoomLevels: 18,
-        maxExtent: new OpenLayers.Bounds(129394, 6659216, 1335570, 7306790)
-    };
+    if (projection === "EPSG:900913")
+    {
+        options = {
+            projection: new OpenLayers.Projection(projection),
+            displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
+            units: "m",
+            numZoomLevels: 18,
+            maxExtent: new OpenLayers.Bounds(129394, 6659216, 1335570, 7306790)
+        };
+    }
+    else if (projection === "EPSG:28992")
+    {
+        options = {
+            projection: new OpenLayers.Projection(projection),
+            displayProjection: new OpenLayers.Projection(display_projection),
+            units: "m",
+            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8],
+            maxExtent: new OpenLayers.Bounds(0, 300000, 300000, 600000)
+        };
+    }
+    else
+    {
+        alert("Lizard-map onjuist geconfigureerd. Projection: " + projection);
+    }
+
     // Map is globally defined.
     map = new OpenLayers.Map('map', options);
+    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
     // Set up base layer.
-    openstreetmapLayer = new OpenLayers.Layer.OSM(
+    if (base_layer_type === "OSM")
+    {
+        osm_url = $lizard_map_wms.attr("data-base-layer-osm");
+        base_layer = new OpenLayers.Layer.OSM(
         "Openstreetmap",
-        "http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png",
+        osm_url,
         {buffer: 0});
-    map.addLayer(openstreetmapLayer);
+    }
+    else if (base_layer_type === "WMS")
+    {
+        wms_url = $lizard_map_wms.attr("data-base-layer-wms");
+        wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
+        base_layer = new OpenLayers.Layer.WMS(
+            'Topografische kaart',
+            wms_url,
+	    {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
+            {'isBaseLayer': true, 'buffer': 1}
+        );
+    }
+    map.addLayer(base_layer);
 
     // Add our own data layers.
     $(".workspace-layer").each(function () {
@@ -61,17 +105,6 @@ function showMap() {
              isBaseLayer: false});
         map.addLayer(layers[workspace_id]);
     });
-
-    // Test layer
-    // 'afvoercoef_wgs_mp' "gemeente_wgs"
-    // "http://afvoerkaart.lizardsystem.nl/geoserver/gwc/service/wms",
-    // layers["test"] = new OpenLayers.Layer.WMS(
-    //     "test layer",
-    //     "http://afvoerkaart.lizardsystem.nl/geoserver/wms",
-    //     {layers: 'afvoercoef_wgs_mp'},
-    //     {singleTile: true,
-    //      isBaseLayer: false});
-    // map.addLayer(layers["test"]);
 
     // Set up controls, zoom and center.
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
@@ -152,8 +185,9 @@ function showMap() {
         map.addControl(map_hover_control);
         map_hover_control.activate();
     }
-    // Extend zooming.
-    map.setCenter(new OpenLayers.LonLat(550000, 6850000), 10);
+
+    // Zoom to startpoint.
+    map.setCenter(new OpenLayers.LonLat(startlocation_x, startlocation_y), startlocation_zoom);
 }
 
 

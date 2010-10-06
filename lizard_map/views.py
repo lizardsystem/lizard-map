@@ -637,11 +637,13 @@ def wms(request, workspace_id):
     layers = [layer.strip() for layer in layers.split(',')]
     bbox = request.GET.get('BBOX')
     bbox = tuple([float(i.strip()) for i in bbox.split(',')])
+    srs = request.GET.get('SRS')
     # TODO: check that they're not none
 
     # Map settings
     mapnik_map = mapnik.Map(width, height)
-    mapnik_map.srs = coordinates.GOOGLE
+    # Setup mapnik srs.
+    mapnik_map.srs = coordinates.srs_to_mapnik_projection[srs]
     mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
@@ -674,14 +676,19 @@ def wms(request, workspace_id):
 
 
 def search_name(request):
-    """Search for objects near GET x,y,radius then return name,"""
+    """Search for objects near GET x,y,radius then return
+    name. Optional GET parameter srs, if omitted, assume google.
+    """
     workspace_manager = WorkspaceManager(request)
     workspace_collections = workspace_manager.load_or_create()
 
     # xy params from the GET request.
-    google_x = float(request.GET.get('x'))
-    google_y = float(request.GET.get('y'))
-    google_radius = float(request.GET.get('radius'))
+    x = float(request.GET.get('x'))
+    y = float(request.GET.get('y'))
+    # TODO: convert radius to correct scale (works now for google + rd)
+    radius = float(request.GET.get('radius'))
+    srs = request.GET.get('srs')
+    google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
     found = []
     for workspace_collection in workspace_collections.values():
@@ -689,35 +696,38 @@ def search_name(request):
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
                 search_results = workspace_item.adapter.search(
-                    google_x, google_y, radius=google_radius)
+                    google_x, google_y, radius=radius)
                 found += search_results
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
         result = {}
         result['name'] = found[0]['name']
-        x, y = found[0]['google_coords']
+        # x, y = coordinates.google_to_srs(google_x, google_y, srs)
         # result['x'] = x
         # result['y'] = y
         # For the x/y we use the original x/y value to position the popup to
         # the lower right of the cursor to prevent click propagation problems.
-        result['x'] = google_x + (google_radius / 10)
-        result['y'] = google_y - (google_radius / 10)
+        result['x'] = x + (radius / 10)
+        result['y'] = y - (radius / 10)
         return HttpResponse(json.dumps(result))
     else:
         return popup_json([])
 
 
 def search_coordinates(request):
-    """searches for objects near GET x,y,radius returns json_popup
-    of results"""
+    """searches for objects near GET x,y,radius returns json_popup of
+    results. Optional GET parameter srs, if omitted, assume google."""
     workspace_manager = WorkspaceManager(request)
     workspace_collections = workspace_manager.load_or_create()
 
     # xy params from the GET request.
-    google_x = float(request.GET.get('x'))
-    google_y = float(request.GET.get('y'))
-    google_radius = float(request.GET.get('radius'))
+    x = float(request.GET.get('x'))
+    y = float(request.GET.get('y'))
+    # TODO: convert radius to correct scale (works now for google + rd)
+    radius = float(request.GET.get('radius'))
+    srs = request.GET.get('srs')
+    google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
     found = []
     for workspace_collection in workspace_collections.values():
@@ -725,7 +735,7 @@ def search_coordinates(request):
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
                 search_results = workspace_item.adapter.search(
-                    google_x, google_y, radius=google_radius)
+                    google_x, google_y, radius=radius)
                 found += search_results
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
@@ -733,30 +743,6 @@ def search_coordinates(request):
         return popup_json(found, request=request)
     else:
         return popup_json([])
-
-
-def clickinfo(request, workspace_id):
-    # TODO: this one is mostly for testing, so it can be removed later on.
-    # [reinout]
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
-    # xy params from the GET request.
-    x = float(request.GET.get('x'))
-    y = float(request.GET.get('y'))
-
-    found = None
-    for workspace_item in workspace.workspace_items.filter(visible=True):
-        found_items = workspace_item.search(x, y)
-        if found_items:
-            # Grab first one for now.
-            found = found_items[0]
-            break
-
-    if found:
-        msg = "You found %s at  %s, %s" % (found.name, found.x, found.y)
-    else:
-        msg = 'Nothing found'
-    # TODO: return json: {msg, x_found, y_found}
-    return HttpResponse(msg)
 
 
 """
