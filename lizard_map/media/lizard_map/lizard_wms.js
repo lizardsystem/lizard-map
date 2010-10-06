@@ -1,6 +1,6 @@
 /*jslint browser: true */
 /*jslint evil: true */
-/*global $, OpenLayers, popup_click_handler, popup_hover_handler */
+/*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert */
 var layers, map;
 layers = [];
 
