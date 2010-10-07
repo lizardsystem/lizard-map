@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.18 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug in statistics export when there wasn't a percentile value set.
 
 
 1.17 (2010-10-01)
