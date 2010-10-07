@@ -33,20 +33,7 @@
     <span>{{ workspace.name }}</span>
   </h2>
   <div>
-    <div class="date-popup"
-         id="summary-datepicker">
-      <h1>Datumkeuze</h1>
-      {% if date_range_form %}
-      <div>
-        <form action="{% url lizard_map.set_date_range %}"
-              method="post">
-          {% csrf_token %}
-          {{ date_range_form.as_p }}
-          <p><input type="submit" value="Nieuwe periode" /></p>
-        </form>
-      </div>
-      {% endif %}
-    </div>
+    {% date_popup %}
     <div id="graph-popup">
       <div id="graph-popup-content">
       </div>
