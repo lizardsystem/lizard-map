@@ -813,6 +813,9 @@ def export_snippet_group_statistics_csv(request, snippet_group_id=None):
     colnames = ['min', 'max', 'avg', 'count_lt',
                 'count_gte',
                 'percentile']
+    if snippet_group.percentile_value is None:
+        # TODO: this works around a bug.  "'%f' % None" raises an error.
+        snippet_group.percentile_value = 0
     colnamesdisplay = ['min', 'max', 'avg',
                        '# < %s' % snippet_group.boundary_value,
                        '# >= %s' % snippet_group.boundary_value,
