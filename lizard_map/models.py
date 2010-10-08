@@ -312,6 +312,26 @@ class WorkspaceCollageSnippetGroup(models.Model):
                             self.aggregation_period)
                         statistics.append(statistics_row)
 
+        if len(statistics) > 1:
+            # Also show a 'totals' column.
+            totals = {
+                'min': min([row['min'] for row in statistics]),
+                'max': max([row['max'] for row in statistics]),
+                'avg': float(sum([row['avg'] for row in statistics]) /
+                             len(statistics)),
+                'name': 'Totaal',
+                }
+            if statistics[0]['count_lt'] is not None:
+                totals['count_lt'] = sum(
+                    [row['count_lt'] for row in statistics
+                     if row['count_lt']])
+            if statistics[0]['count_gte'] is not None:
+                totals['count_gte'] = sum(
+                    [row['count_gte'] for row in statistics
+                     if row['count_gte']])
+            # TODO: percentile
+            statistics.append(totals)
+
         return statistics
 
     def values_table(self, start_date, end_date):
