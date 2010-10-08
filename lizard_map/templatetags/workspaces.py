@@ -4,6 +4,7 @@ from django.utils import simplejson as json
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 from lizard_map.views import CUSTOM_LEGENDS
+
 register = template.Library()
 
 
@@ -89,6 +90,13 @@ def json_escaped(value):
     """
     # TODO: just use one of the available url encoders!
     return json.dumps(value).replace('"', '%22').replace(' ', '%20')
+
+
+@register.filter
+def float_or_exp(value):
+    if 0 < abs(value) < 0.01:
+        return '%.2e' % value
+    return '%.2f' % value
 
 
 @register.inclusion_tag("lizard_map/tag_date_popup.html",

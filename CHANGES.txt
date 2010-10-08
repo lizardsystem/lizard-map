@@ -7,6 +7,9 @@ Changelog of lizard-map
 
 - Fixed bug in statistics export when there wasn't a percentile value set.
 
+- Small values in the statistics display don't end up as ``0.00`` anymore, but
+  as, for instance, ``1.02e-03``.
+
 
 1.17 (2010-10-01)
 -----------------

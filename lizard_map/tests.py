@@ -25,6 +25,7 @@ from lizard_map.models import WorkspaceItem
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
 from lizard_map.workspace import WorkspaceManager
+from lizard_map.templatetags import workspaces
 import lizard_map.admin
 import lizard_map.layers
 import lizard_map.models
@@ -563,3 +564,17 @@ class DatePeriodsTest(TestCase):
         self.assertTrue(fancy_period(start_date, end_date, MONTH))
         self.assertTrue(fancy_period(start_date, end_date, WEEK))
         self.assertTrue(fancy_period(start_date, end_date, DAY))
+
+
+class TestTemplateTags(TestCase):
+
+    def test_float_or_exp(self):
+        in_out = {0: '0.00',
+                  0.0: '0.00',
+                  123456: '123456.00',
+                  123456.7891234: '123456.79',
+                  0.01: '0.01',
+                  0.001: '1.00e-03',
+                  }
+        for value, expected in in_out.items():
+            self.assertEquals(workspaces.float_or_exp(value), expected)
