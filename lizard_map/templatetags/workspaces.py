@@ -94,6 +94,12 @@ def json_escaped(value):
 
 @register.filter
 def float_or_exp(value):
+    """Show number with 2 decimals or with an exponent if too small."""
+    try:
+        float(value)
+    except (TypeError, ValueError):
+        # It is not a number so we just pass it on.
+        return value
     if 0 < abs(value) < 0.01:
         return '%.2e' % value
     return '%.2f' % value

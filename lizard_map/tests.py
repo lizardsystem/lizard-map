@@ -576,6 +576,8 @@ class TestTemplateTags(TestCase):
                   123456.7891234: '123456.79',
                   0.01: '0.01',
                   0.001: '1.00e-03',
+                  None: None,
+                  'Reinout': 'Reinout',
                   }
         for value, expected in in_out.items():
             self.assertEquals(workspaces.float_or_exp(value), expected)
