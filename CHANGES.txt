@@ -10,6 +10,9 @@ Changelog of lizard-map
 - Small values in the statistics display don't end up as ``0.00`` anymore, but
   as, for instance, ``1.02e-03``.
 
+- Using custom template tag 'map_variables' to get map settings in
+  your client. The settings are set in settings.py.
+
 
 1.17 (2010-10-01)
 -----------------
