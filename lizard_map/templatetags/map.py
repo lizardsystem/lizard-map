@@ -1,6 +1,10 @@
 from django import template
+from django.conf import settings
+import logging
 
 register = template.Library()
+
+logger = logging.getLogger(__name__)
 
 
 class MapVariablesNode(template.Node):
@@ -11,35 +15,28 @@ class MapVariablesNode(template.Node):
     """
 
     def render(self, context):
-        context['base_layer_type'] = 'OSM'  # OSM or WMS
-        context['projection'] = 'EPSG:900913'  # EPSG:900913, EPSG:28992
-        context['display_projection'] = 'EPSG:4326'  # EPSG:900913, EPSG:28992, EPSG:4326
-        context['startlocation_x'] = '550000'
-        context['startlocation_y'] = '6850000'
-        context['startlocation_zoom'] = '10'
-        context['base_layer_wms'] = (
-            'http://nederlandwms.risicokaart.nl/wmsconnector/'
-            'com.esri.wms.Esrimap?'
-            'SERVICENAME=risicokaart_pub_nl_met_ondergrond&')
-        context['base_layer_wms_layers'] = (
-            'Outline_nederland,Dissolve_provincies,0,2,12,3,38,5,4,9,10')
-        context['base_layer_osm'] = (
-            'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
+        try:
+            map_settings = settings.MAP_SETTINGS
+        except AttributeError:
+            logger.warn(
+                'Could not find MAP_SETTINGS in '
+                'django settings, using default.')
+            map_settings = {
+                'base_layer_type': 'OSM',  # OSM or WMS
+                'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
+                'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
+                'startlocation_x': '550000',
+                'startlocation_y': '6850000',
+                'startlocation_zoom': '10',
+                'base_layer_osm': (
+                    'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
+                }
+
+        for setting, setting_value in map_settings.items():
+            context[setting] = setting_value
+
         return ''
 
-     # <!-- data-base-layer-type="WMS" {# OSM or WMS #} -->
-     # <!-- data-projection="EPSG:28992"  {# for WMS: EPSG:28992, EPSG:900913 #} -->
-     # <!-- data-display-projection="EPSG:28992"  {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #} -->
-     # <!-- data-startlocation-x="127000" {# RD #} -->
-     # <!-- data-startlocation-y="473000" -->
-     # <!-- data-startlocation-zoom="4" -->
-
-     # <!-- data-base-layer-type="OSM" {# OSM or WMS #} -->
-     # <!-- data-projection="EPSG:900913"  {# for WMS: EPSG:28992, EPSG:900913 #} -->
-     # <!-- data-display-projection="EPSG:4326"  {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #} -->
-     # <!-- data-startlocation-x="550000" {# OSM, google projection #} -->
-     # <!-- data-startlocation-y="6850000" -->
-     # <!-- data-startlocation-zoom="10" -->
 
 @register.tag
 def map_variables(parser, token):
