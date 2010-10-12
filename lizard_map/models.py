@@ -297,7 +297,9 @@ class WorkspaceCollageSnippetGroup(models.Model):
                     # Base statistics for each period.
                     statistics_row = snippet_adapter.value_aggregate(
                         snippet.identifier,
-                        {'min': None, 'max': None, 'avg': None,
+                        {'min': None,
+                         'max': None,
+                         'avg': None,
                          'count_lt': self.boundary_value,
                          'count_gte': self.boundary_value,
                          'percentile': self.percentile_value},
@@ -325,11 +327,16 @@ class WorkspaceCollageSnippetGroup(models.Model):
                 totals['count_lt'] = sum(
                     [row['count_lt'] for row in statistics
                      if row['count_lt']])
+            else:
+                totals['count_lt'] = None
             if statistics[0]['count_gte'] is not None:
                 totals['count_gte'] = sum(
                     [row['count_gte'] for row in statistics
                      if row['count_gte']])
-            # TODO: percentile
+            else:
+                totals['count_gte'] = None
+            # We cannot calculate a meaningful total percentile here.
+            totals['percentile'] = None
             statistics.append(totals)
 
         return statistics
