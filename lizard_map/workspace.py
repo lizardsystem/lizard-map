@@ -168,10 +168,11 @@ class WorkspaceItemAdapter(object):
         """Return list of dicts for matching items.
 
         {'distance': <float>,
+        'name': <name>,
+        'shortname': <short name>,
         'workspace_item': <...>,
         'identifier': {...},
-        'google_x': x coordinate in google,
-        'google_y': y coordinate in google,
+        'google_coords': (x, y) coordinate in google,
         'object': <object>} of closest fews point that matches x, y, radius.
 
         """
