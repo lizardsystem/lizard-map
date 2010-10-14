@@ -13,6 +13,8 @@ Changelog of lizard-map
 - Using custom template tag 'map_variables' to get map settings in
   your client. The settings are set in settings.py.
 
+- Added option to set DEFAULT_START_DAYS and DEFAULT_END_DAYS in settings.
+
 
 1.17 (2010-10-01)
 -----------------

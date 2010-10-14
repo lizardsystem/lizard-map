@@ -2,12 +2,17 @@
 import datetime
 
 from django import forms
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 
-DEFAULT_START = datetime.date.today() - datetime.timedelta(days=1000)
-DEFAULT_END = datetime.date.today() + datetime.timedelta(days=10)
+default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
+default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
+
+DEFAULT_START = datetime.date.today() + datetime.timedelta(days=default_start_days)
+DEFAULT_END = datetime.date.today() + datetime.timedelta(days=default_end_days)
+
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
 
