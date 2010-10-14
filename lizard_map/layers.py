@@ -1,5 +1,3 @@
-# TODO: this file is currently unused.  Perhaps we *do* want generic shapefile
-# rendering, though, so it is retained as example code.  2010-05-14.
 import mapnik
 import pkg_resources
 
