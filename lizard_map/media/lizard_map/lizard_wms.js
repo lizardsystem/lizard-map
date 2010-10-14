@@ -67,7 +67,7 @@ function showMap() {
 
     // Map is globally defined.
     map = new OpenLayers.Map('map', options);
-    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+    // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
     // Set up base layer.
     if (base_layer_type === "OSM")
@@ -186,8 +186,11 @@ function showMap() {
         map_hover_control.activate();
     }
 
-    // Zoom to startpoint.
-    map.setCenter(new OpenLayers.LonLat(startlocation_x, startlocation_y), startlocation_zoom);
+    // Zoom to startpoint. Important to parse numbers, else a bug in
+    // OpenLayers will initially prevent "+" from working.
+    map.setCenter(
+        new OpenLayers.LonLat(parseFloat(startlocation_x), parseFloat(startlocation_y)),
+        parseFloat(startlocation_zoom));
 }
 
 
