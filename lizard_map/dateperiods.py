@@ -77,14 +77,14 @@ def next_month(dt):
     if month > 11:
         month %= 12
         year += 1
-    next_quarter_month = month + 1
-    next_quarter_year = year
-    if next_quarter_month > 11:
-        next_quarter_month %= 12
-        next_quarter_year += 1
+    next_month_month = month + 1
+    next_month_year = year
+    if next_month_month > 11:
+        next_month_month %= 12
+        next_month_year += 1
     return (
         datetime.date(year, month + 1, 1),
-        datetime.date(next_quarter_year, next_quarter_month + 1, 1))
+        datetime.date(next_month_year, next_month_month + 1, 1))
 
 
 def next_week(dt):
