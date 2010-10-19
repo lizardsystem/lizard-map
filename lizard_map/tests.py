@@ -18,6 +18,7 @@ from lizard_map.dateperiods import WEEK
 from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
+from lizard_map.layers import WorkspaceItemAdapterShapefile
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
@@ -165,7 +166,11 @@ class WorkspaceTest(TestCase):
     def test_absolute_url(self):
         workspace = Workspace()
         workspace.save()
-        self.assertTrue(workspace.get_absolute_url().endswith('/workspace/1/'))
+        # The initial version of this test asserted that the absolute URL ended
+        # with '/workspace/1', apparantly assuming that the new workspace would
+        # have id 1. However, that does not have to be the case.
+        expected_end = '/workspace/%d/' % workspace.id
+        self.assertTrue(workspace.get_absolute_url().endswith(expected_end))
 
 
 class WorkspaceClientTest(TestCase):
@@ -189,9 +194,6 @@ class WorkspaceClientTest(TestCase):
         workspace.save()
         workspace_item1 = workspace.workspace_items.create()
         workspace_item2 = workspace.workspace_items.create()
-        self.assertEqual(workspace.workspace_items.all()[0], workspace_item1)
-        self.assertEqual(workspace.workspace_items.all()[1], workspace_item2)
-
         url = reverse('lizard_map_workspace_item_reorder',
                       kwargs={'workspace_id': str(workspace.id)})
         order = {'workspace-items[]': [
@@ -565,6 +567,36 @@ class DatePeriodsTest(TestCase):
         self.assertTrue(fancy_period(start_date, end_date, WEEK))
         self.assertTrue(fancy_period(start_date, end_date, DAY))
 
+class WorkspaceItemAdapterShapefileTestSuite(TestCase):
+
+    def test_a(self):
+        """Test the default layer info is initialized correctly."""
+
+        workspace_item = 0 # don't care for this test
+        adapter = WorkspaceItemAdapterShapefile(workspace_item)
+
+        layer_name = lizard_map.layers.default_layer_name
+        resource_module = lizard_map.layers.default_resource_module
+        resource_name = lizard_map.layers.default_resource_name
+
+        self.assertEqual(adapter.layer_name, layer_name)
+        self.assertEqual(adapter.resource_module, resource_module)
+        self.assertEqual(adapter.resource_name, resource_name)
+
+    def test_b(self):
+        """Test the layer info is initialized with the given parameters."""
+
+        workspace_item = 0 # don't care for this test
+        arguments = {'layer_name': 'Layer name',
+                     'resource_module': 'Resource module',
+                     'resource_name': 'Resource name'}
+
+        adapter = WorkspaceItemAdapterShapefile(workspace_item,
+                                                layer_arguments=arguments)
+
+        self.assertEqual(adapter.layer_name, 'Layer name')
+        self.assertEqual(adapter.resource_module, 'Resource module')
+        self.assertEqual(adapter.resource_name, 'Resource name')
 
 class TestTemplateTags(TestCase):
 

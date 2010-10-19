@@ -4,13 +4,41 @@ import pkg_resources
 from lizard_map import coordinates
 from lizard_map.workspace import WorkspaceItemAdapter
 
+# The following three globals define the default name, resource module and
+# shape file of a WorkspaceItemAdapterShapefile.
+default_layer_name = 'Waterlichamen'
+default_resource_module = 'lizard_map'
+default_resource_name = 'test_shapefiles/KRWwaterlichamen_merge.shp'
+
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
-    """
-    map layer
+    """Render a WorkspaceItem using a shape file.
+
+    Instance variables:
+    * layer_name -- name of the WorkspaceItem that is rendered
+    * resource_module -- module that contains the shapefile resource
+    * resource name -- name of the shapefile resource
+
     """
     def __init__(self, *args, **kwargs):
+        """Store the name and location of the shapefile to render.
+
+        kwargs can specify the shapefile to render, see the implementation of
+        this method for details. If kwargs does not specify the shapefile, the
+        object renders the shapefile that is specified by default_layer_name,
+        default_resource_module and default_resource_name.
+
+        """
         super(WorkspaceItemAdapterShapefile, self).__init__(*args, **kwargs)
+        try:
+            layer_arguments = kwargs['layer_arguments']
+            self.layer_name = str(layer_arguments['layer_name'])
+            self.resource_module = str(layer_arguments['resource_module'])
+            self.resource_name = str(layer_arguments['resource_name'])
+        except KeyError:
+            self.layer_name = default_layer_name
+            self.resource_module = default_resource_module
+            self.resource_name = default_resource_name
 
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
@@ -25,12 +53,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         """
         layers = []
         styles = {}
-        layer = mapnik.Layer("Waterlichamen", coordinates.RD)
+        layer = mapnik.Layer(self.layer_name, coordinates.RD)
         # TODO: ^^^ translation!
+
         layer.datasource = mapnik.Shapefile(
-            file=pkg_resources.resource_filename(
-                'lizard_map',
-                'test_shapefiles/KRWwaterlichamen_merge.shp'))
+            file=pkg_resources.resource_filename(self.resource_module,
+                                                 self.resource_name))
         area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
         # ^^^ light brownish
         line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
