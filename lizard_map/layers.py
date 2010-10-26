@@ -4,11 +4,12 @@ import pkg_resources
 from lizard_map import coordinates
 from lizard_map.workspace import WorkspaceItemAdapter
 
-# The following three globals define the default name, resource module and
-# shape file of a WorkspaceItemAdapterShapefile.
+# The following three globals define the default properties of a
+# WorkspaceItemAdapterShapefile.
 default_layer_name = 'Waterlichamen'
 default_resource_module = 'lizard_map'
 default_resource_name = 'test_shapefiles/KRWwaterlichamen_merge.shp'
+default_search_property_name = 'WGBNAAM'
 
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
@@ -18,6 +19,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     * layer_name -- name of the WorkspaceItem that is rendered
     * resource_module -- module that contains the shapefile resource
     * resource name -- name of the shapefile resource
+    * search_property_name -- name of shapefile feature used in search
 
     """
     def __init__(self, *args, **kwargs):
@@ -35,10 +37,13 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             self.layer_name = str(layer_arguments['layer_name'])
             self.resource_module = str(layer_arguments['resource_module'])
             self.resource_name = str(layer_arguments['resource_name'])
+            self.search_property_name = \
+                str(layer_arguments['search_property_name'])
         except KeyError:
             self.layer_name = default_layer_name
             self.resource_module = default_resource_module
             self.resource_name = default_resource_name
+            self.search_property_name = default_search_property_name
 
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
@@ -91,10 +96,10 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             mapnik_map.append_style(name, styles[name])
         # 0 is the first layer.
         feature_set = mapnik_map.query_point(0, x, y)
-
         result = []
         for feature in feature_set.features:
-            name_in_shapefile = feature.properties['WGBNAAM']
+            name_in_shapefile = \
+                feature.properties[self.search_property_name]
             result.append({
                     'distance': 0.0,
                     'name': name_in_shapefile,

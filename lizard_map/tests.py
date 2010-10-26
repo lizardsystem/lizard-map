@@ -578,10 +578,12 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
         layer_name = lizard_map.layers.default_layer_name
         resource_module = lizard_map.layers.default_resource_module
         resource_name = lizard_map.layers.default_resource_name
+        search_property_name = lizard_map.layers.default_search_property_name
 
         self.assertEqual(adapter.layer_name, layer_name)
         self.assertEqual(adapter.resource_module, resource_module)
         self.assertEqual(adapter.resource_name, resource_name)
+        self.assertEqual(adapter.search_property_name, search_property_name)
 
     def test_b(self):
         """Test the layer info is initialized with the given parameters."""
@@ -589,7 +591,8 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
         workspace_item = 0 # don't care for this test
         arguments = {'layer_name': 'Layer name',
                      'resource_module': 'Resource module',
-                     'resource_name': 'Resource name'}
+                     'resource_name': 'Resource name',
+                     'search_property_name': 'Search property name'}
 
         adapter = WorkspaceItemAdapterShapefile(workspace_item,
                                                 layer_arguments=arguments)
@@ -597,6 +600,7 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
         self.assertEqual(adapter.layer_name, 'Layer name')
         self.assertEqual(adapter.resource_module, 'Resource module')
         self.assertEqual(adapter.resource_name, 'Resource name')
+        self.assertEqual(adapter.search_property_name, 'Search property name')
 
 class TestTemplateTags(TestCase):
 
