@@ -316,11 +316,11 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
         if len(statistics) > 1:
             # Also show a 'totals' column.
+            averages = [row['avg'] for row in statistics if row['avg']]
             totals = {
                 'min': min([row['min'] for row in statistics]),
                 'max': max([row['max'] for row in statistics]),
-                'avg': float(sum([row['avg'] for row in statistics]) /
-                             len(statistics)),
+                'avg': float(sum(averages) / len(averages)),
                 'name': 'Totaal',
                 }
             if statistics[0]['count_lt'] is not None:
