@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.19dev'
+version = '1.19'
 
 long_description = '\n\n'.join([
     open('README.txt').read(),

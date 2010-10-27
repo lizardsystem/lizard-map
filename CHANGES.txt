@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.19 (unreleased)
+1.19 (2010-10-27)
 -----------------
 
 - Bugfix in statistics: the average over the rows doesn't crash anymore if
