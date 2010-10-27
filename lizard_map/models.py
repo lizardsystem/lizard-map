@@ -1,5 +1,6 @@
 import itertools
 import logging
+import mapnik
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -622,3 +623,43 @@ class Legend(models.Model):
                     self.too_high_color = makecolor(v)
                 except ValueError:
                     logger.warn('Could not parse too_high_color (%s)' % v)
+
+    def mapnik_linestyle(self):
+        """Return a Mapnik linestyle from Legend object"""
+
+        mapnik_style = mapnik.Style()
+
+        # < min
+        rule = mapnik.Rule()
+        rule.filter = mapnik.Filter("[value] <= %f" % (self.min_value))
+        too_low_color = self.too_low_color
+        mapnik_color = mapnik.Color(too_low_color.r,
+                                    too_low_color.g,
+                                    too_low_color.b)
+        symb = mapnik.LineSymbolizer(mapnik_color, 5)
+        rule.symbols.append(symb)
+        mapnik_style.rules.append(rule)
+
+        # in boundaries
+        for legend_value in self.legend_values():
+            rule = mapnik.Rule()
+            rule.filter = mapnik.Filter("[value] > %f and [value] <= %f" % (
+                    legend_value['low_value'], legend_value['high_value']))
+            color = legend_value['color']
+            mapnik_color = mapnik.Color(int(color.r), int(color.g), int(color.b))
+            symb = mapnik.LineSymbolizer(mapnik_color, 5)
+            rule.symbols.append(symb)
+            mapnik_style.rules.append(rule)
+
+        # > max
+        rule = mapnik.Rule()
+        rule.filter = mapnik.Filter("[value] > %f" % (self.max_value))
+        too_high_color = self.too_high_color
+        mapnik_color = mapnik.Color(too_high_color.r,
+                                    too_high_color.g,
+                                    too_high_color.b)
+        symb = mapnik.LineSymbolizer(mapnik_color, 5)
+        rule.symbols.append(symb)
+        mapnik_style.rules.append(rule)
+
+        return mapnik_style
