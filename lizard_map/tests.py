@@ -19,7 +19,6 @@ from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
 from lizard_map.layers import WorkspaceItemAdapterShapefile
-from lizard_map.mapnik_helper import create_layer_from_query
 from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
@@ -450,7 +449,8 @@ class UtilityTest(TestCase):
 
     def test_database_settings(self):
         """
-        See if correct database settings are fetched when using new style config.
+        See if correct database settings are fetched when using new
+        style config.
         """
         settings = self.MockSettings()
         settings.DATABASES = {
@@ -472,7 +472,8 @@ class UtilityTest(TestCase):
 
     def test_database_settings2(self):
         """
-        See if correct database settings are fetched when using old style config.
+        See if correct database settings are fetched when using old
+        style config.
         """
         settings = self.MockSettings()
         settings.DATABASE_ENGINE = 'postgresql_psycopg2'
@@ -489,7 +490,7 @@ class UtilityTest(TestCase):
                           'dbname': 'database_name'})
         self.assertTrue('PostGIS' in str(datasource))
 
-    def test_database_settings2(self):
+    def test_database_settings3(self):
         """
         Take new style config if both setting styles are present.
         """
@@ -534,8 +535,8 @@ class UtilityTest(TestCase):
 
     #     q = "select * from dummy;"
     #     projection = lizard_map.coordinates.RD
-    #     layer = create_layer_from_query(q, projection, user_settings=settings)
-
+    #     layer = create_layer_from_query(q, projection,
+    #                 user_settings=settings)
 
 
 class WorkspaceItemAdapterTest(TestCase):
@@ -661,12 +662,13 @@ class DatePeriodsTest(TestCase):
         self.assertTrue(fancy_period(start_date, end_date, WEEK))
         self.assertTrue(fancy_period(start_date, end_date, DAY))
 
+
 class WorkspaceItemAdapterShapefileTestSuite(TestCase):
 
     def test_a(self):
         """Test the default layer info is initialized correctly."""
 
-        workspace_item = 0 # don't care for this test
+        workspace_item = 0  # don't care for this test
         adapter = WorkspaceItemAdapterShapefile(workspace_item)
 
         layer_name = lizard_map.layers.default_layer_name
@@ -682,7 +684,7 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
     def test_b(self):
         """Test the layer info is initialized with the given parameters."""
 
-        workspace_item = 0 # don't care for this test
+        workspace_item = 0  # don't care for this test
         arguments = {'layer_name': 'Layer name',
                      'resource_module': 'Resource module',
                      'resource_name': 'Resource name',
@@ -695,6 +697,7 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
         self.assertEqual(adapter.resource_module, 'Resource module')
         self.assertEqual(adapter.resource_name, 'Resource name')
         self.assertEqual(adapter.search_property_name, 'Search property name')
+
 
 class TestTemplateTags(TestCase):
 

@@ -78,4 +78,7 @@ def create_layer_from_query(query, projection, geometry_field=None, srid=None, u
     if srid is not None:
         options['srid'] = srid
     layer.datasource = datasource(table=str(query), **options)
+
+    print query
+
     return layer

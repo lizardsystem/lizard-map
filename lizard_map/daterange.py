@@ -10,8 +10,10 @@ from django.shortcuts import render_to_response
 default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
 default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
 
-DEFAULT_START = datetime.date.today() + datetime.timedelta(days=default_start_days)
-DEFAULT_END = datetime.date.today() + datetime.timedelta(days=default_end_days)
+DEFAULT_START = datetime.date.today() + datetime.timedelta(
+    days=default_start_days)
+DEFAULT_END = datetime.date.today() + datetime.timedelta(
+    days=default_end_days)
 
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
