@@ -23,18 +23,18 @@ def database_settings(name="default", user_settings=None):
         # Multiple databases configuration.
         if name in user_settings.DATABASES:
             database_settings = user_settings.DATABASES[name]
-            if database_settings['DATABASE_ENGINE'] in (
+            if database_settings['ENGINE'] in (
                 'postgresql_psycopg2', 'django.contrib.gis.db.backends.postgis'):
                 datasource = mapnik.PostGIS
                 options = {
-                    'host': database_settings["DATABASE_HOST"],
-                    'user': database_settings["DATABASE_USER"],
-                    'password': database_settings["DATABASE_PASSWORD"],
-                    'dbname': database_settings["DATABASE_NAME"]}
+                    'host': database_settings["HOST"],
+                    'user': database_settings["USER"],
+                    'password': database_settings["PASSWORD"],
+                    'dbname': database_settings["NAME"]}
             else:
                 raise RuntimeError(
                     'Sorry, unconfigured db engine (%s, name=%s) for mapnik integration.' % (
-                        options["DATABASE_ENGINE"], name))
+                        database_settings["ENGINE"], name))
         else:
             raise RuntimeError(
                 'Sorry, db name (%s) not found in multiple db configuration.' % (

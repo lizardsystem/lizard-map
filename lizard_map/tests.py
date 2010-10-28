@@ -455,11 +455,11 @@ class UtilityTest(TestCase):
         settings = self.MockSettings()
         settings.DATABASES = {
             'default': {
-                'DATABASE_ENGINE': 'postgresql_psycopg2',
-                'DATABASE_HOST': 'database_host',
-                'DATABASE_USER': 'database_user',
-                'DATABASE_PASSWORD': 'database_password',
-                'DATABASE_NAME': 'database_name',
+                'ENGINE': 'postgresql_psycopg2',
+                'HOST': 'database_host',
+                'USER': 'database_user',
+                'PASSWORD': 'database_password',
+                'NAME': 'database_name',
                 },
             }
         datasource, options = database_settings(user_settings=settings)
@@ -501,11 +501,11 @@ class UtilityTest(TestCase):
         settings.DATABASE_PASSWORD = 'database_password_old'
         settings.DATABASES = {
             'default': {
-                'DATABASE_ENGINE': 'postgresql_psycopg2',
-                'DATABASE_HOST': 'database_host',
-                'DATABASE_USER': 'database_user',
-                'DATABASE_PASSWORD': 'database_password',
-                'DATABASE_NAME': 'database_name',
+                'ENGINE': 'postgresql_psycopg2',
+                'HOST': 'database_host',
+                'USER': 'database_user',
+                'PASSWORD': 'database_password',
+                'NAME': 'database_name',
                 },
             }
 
@@ -516,9 +516,25 @@ class UtilityTest(TestCase):
                           'password': 'database_password',
                           'dbname': 'database_name'})
         self.assertTrue('PostGIS' in str(datasource))
-        # q = "select * from dummy;"
-        # projection = lizard_map.coordinates.RD
-        # layer = create_layer_from_query(q, projection)
+
+    # def test_create_layer_from_query(self):
+    #     """Difficult to test, just see if it crashes or not. Currently
+    #     crashes when db does not exist
+    #     """
+    #     settings = self.MockSettings()
+    #     settings.DATABASES = {
+    #         'default': {
+    #             'ENGINE': 'postgresql_psycopg2',
+    #             'HOST': 'database_host',
+    #             'USER': 'database_user',
+    #             'PASSWORD': 'database_password',
+    #             'NAME': 'database_name',
+    #             },
+    #         }
+
+    #     q = "select * from dummy;"
+    #     projection = lizard_map.coordinates.RD
+    #     layer = create_layer_from_query(q, projection, user_settings=settings)
 
 
 
