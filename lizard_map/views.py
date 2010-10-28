@@ -655,10 +655,11 @@ def wms(request, workspace_id):
             mapnik_map.layers.append(layer)
         for name in styles:
             mapnik_map.append_style(name, styles[name])
+        # mapnik_map.zoom_to_box(layer.envelope())
 
     #Zoom and create image
     mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
-    # m.zoom_to_box(layer.envelope())
+    # mapnik_map.zoom_to_box(layer.envelope())
     img = mapnik.Image(width, height)
     mapnik.render(mapnik_map, img)
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')

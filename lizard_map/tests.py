@@ -19,6 +19,8 @@ from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
 from lizard_map.layers import WorkspaceItemAdapterShapefile
+from lizard_map.mapnik_helper import create_layer_from_query
+from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
@@ -28,6 +30,7 @@ from lizard_map.workspace import WorkspaceItemAdapter
 from lizard_map.workspace import WorkspaceManager
 from lizard_map.templatetags import workspaces
 import lizard_map.admin
+import lizard_map.coordinates
 import lizard_map.layers
 import lizard_map.models
 import lizard_map.urls
@@ -408,8 +411,10 @@ class TestAnimationSettings(TestCase):
 
 class UtilityTest(TestCase):
     """
-    Tests utility.py & adapter.py
+    Tests utility.py, adapter.py, mapnik_helper.py
     """
+    class MockSettings(object):
+        pass
 
     def test_short_string(self):
         input_names = [
@@ -442,6 +447,79 @@ class UtilityTest(TestCase):
         graph.suptitle('hallo')
         graph.legend()
         self.assertTrue(graph.http_png())
+
+    def test_database_settings(self):
+        """
+        See if correct database settings are fetched when using new style config.
+        """
+        settings = self.MockSettings()
+        settings.DATABASES = {
+            'default': {
+                'DATABASE_ENGINE': 'postgresql_psycopg2',
+                'DATABASE_HOST': 'database_host',
+                'DATABASE_USER': 'database_user',
+                'DATABASE_PASSWORD': 'database_password',
+                'DATABASE_NAME': 'database_name',
+                },
+            }
+        datasource, options = database_settings(user_settings=settings)
+        self.assertEqual(options,
+                         {'host': 'database_host',
+                          'user': 'database_user',
+                          'password': 'database_password',
+                          'dbname': 'database_name'})
+        self.assertTrue('PostGIS' in str(datasource))
+
+    def test_database_settings2(self):
+        """
+        See if correct database settings are fetched when using old style config.
+        """
+        settings = self.MockSettings()
+        settings.DATABASE_ENGINE = 'postgresql_psycopg2'
+        settings.DATABASE_NAME = 'database_name'
+        settings.DATABASE_HOST = 'database_host'
+        settings.DATABASE_USER = 'database_user'
+        settings.DATABASE_PASSWORD = 'database_password'
+
+        datasource, options = database_settings(user_settings=settings)
+        self.assertEqual(options,
+                         {'host': 'database_host',
+                          'user': 'database_user',
+                          'password': 'database_password',
+                          'dbname': 'database_name'})
+        self.assertTrue('PostGIS' in str(datasource))
+
+    def test_database_settings2(self):
+        """
+        Take new style config if both setting styles are present.
+        """
+        settings = self.MockSettings()
+        settings.DATABASE_ENGINE = 'postgresql_psycopg2'
+        settings.DATABASE_NAME = 'database_name_old'
+        settings.DATABASE_HOST = 'database_host_old'
+        settings.DATABASE_USER = 'database_user_old'
+        settings.DATABASE_PASSWORD = 'database_password_old'
+        settings.DATABASES = {
+            'default': {
+                'DATABASE_ENGINE': 'postgresql_psycopg2',
+                'DATABASE_HOST': 'database_host',
+                'DATABASE_USER': 'database_user',
+                'DATABASE_PASSWORD': 'database_password',
+                'DATABASE_NAME': 'database_name',
+                },
+            }
+
+        datasource, options = database_settings(user_settings=settings)
+        self.assertEqual(options,
+                         {'host': 'database_host',
+                          'user': 'database_user',
+                          'password': 'database_password',
+                          'dbname': 'database_name'})
+        self.assertTrue('PostGIS' in str(datasource))
+        # q = "select * from dummy;"
+        # projection = lizard_map.coordinates.RD
+        # layer = create_layer_from_query(q, projection)
+
 
 
 class WorkspaceItemAdapterTest(TestCase):
