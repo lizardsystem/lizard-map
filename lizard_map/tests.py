@@ -676,11 +676,14 @@ class DatePeriodsTest(TestCase):
 class WorkspaceItemAdapterShapefileTestSuite(TestCase):
 
     def test_b(self):
-        """Test the layer info is initialized with the given parameters."""
+        """Test the layer info is initialized with the given parameters.
+
+        Note: the resource_module must exist.
+        """
 
         workspace_item = 0  # don't care for this test
         arguments = {'layer_name': 'Layer name',
-                     'resource_module': 'Resource module',
+                     'resource_module': 'lizard_map',
                      'resource_name': 'Resource name',
                      'search_property_name': 'Search property name'}
 
@@ -688,7 +691,7 @@ class WorkspaceItemAdapterShapefileTestSuite(TestCase):
                                                 layer_arguments=arguments)
 
         self.assertEqual(adapter.layer_name, 'Layer name')
-        self.assertEqual(adapter.resource_module, 'Resource module')
+        self.assertEqual(adapter.resource_module, 'lizard_map')
         self.assertEqual(adapter.resource_name, 'Resource name')
         self.assertEqual(adapter.search_property_name, 'Search property name')
 

@@ -28,8 +28,19 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         layer_arguments = kwargs['layer_arguments']
         self.layer_name = str(layer_arguments['layer_name'])
-        self.resource_module = str(layer_arguments['resource_module'])
-        self.resource_name = str(layer_arguments['resource_name'])
+        layer_filename = layer_arguments.get('layer_filename', None)
+        if layer_filename is not None:
+            self.layer_filename = str(layer_filename)
+            self.resource_module = None
+            self.resource_name = None
+        else:
+            # If layer_filename is not defined, resource_module and
+            # resource_name must be defined.
+            self.resource_module = str(layer_arguments['resource_module'])
+            self.resource_name = str(layer_arguments['resource_name'])
+            self.layer_filename = pkg_resources.resource_filename(
+                self.resource_module,
+                self.resource_name)
         self.search_property_name = \
             str(layer_arguments['search_property_name'])
 
@@ -50,8 +61,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         # TODO: ^^^ translation!
 
         layer.datasource = mapnik.Shapefile(
-            file=pkg_resources.resource_filename(self.resource_module,
-                                                 self.resource_name))
+            file=self.layer_filename)
         area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
         # ^^^ light brownish
         line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
