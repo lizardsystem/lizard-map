@@ -4,13 +4,6 @@ import pkg_resources
 from lizard_map import coordinates
 from lizard_map.workspace import WorkspaceItemAdapter
 
-# The following three globals define the default properties of a
-# WorkspaceItemAdapterShapefile.
-default_layer_name = 'Waterlichamen'
-default_resource_module = 'lizard_map'
-default_resource_name = 'test_shapefiles/KRWwaterlichamen_merge.shp'
-default_search_property_name = 'WGBNAAM'
-
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     """Render a WorkspaceItem using a shape file.
@@ -32,18 +25,13 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         """
         super(WorkspaceItemAdapterShapefile, self).__init__(*args, **kwargs)
-        try:
-            layer_arguments = kwargs['layer_arguments']
-            self.layer_name = str(layer_arguments['layer_name'])
-            self.resource_module = str(layer_arguments['resource_module'])
-            self.resource_name = str(layer_arguments['resource_name'])
-            self.search_property_name = \
-                str(layer_arguments['search_property_name'])
-        except KeyError:
-            self.layer_name = default_layer_name
-            self.resource_module = default_resource_module
-            self.resource_name = default_resource_name
-            self.search_property_name = default_search_property_name
+
+        layer_arguments = kwargs['layer_arguments']
+        self.layer_name = str(layer_arguments['layer_name'])
+        self.resource_module = str(layer_arguments['resource_module'])
+        self.resource_name = str(layer_arguments['resource_name'])
+        self.search_property_name = \
+            str(layer_arguments['search_property_name'])
 
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.

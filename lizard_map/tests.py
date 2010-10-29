@@ -43,8 +43,13 @@ class LayersTest(TestCase):
 
     def test_initialization(self):
         mock_workspace = None
+        layer_arguments = {
+            'layer_name': 'Waterlichamen',
+            'resource_module': 'lizard_map',
+            'resource_name': 'test_shapefiles/KRWwaterlichamen_merge.shp',
+            'search_property_name': 'WGBNAAM'}
         ws_adapter = lizard_map.layers.WorkspaceItemAdapterShapefile(
-            mock_workspace, layer_arguments={})
+            mock_workspace, layer_arguments=layer_arguments)
         layers, styles = ws_adapter.layer()
         # TODO: test output.
 
@@ -278,6 +283,11 @@ class WorkspaceItemTest(TestCase):
                           # assertRaises expects a callable.
                           )
         workspace_item.adapter_class = 'adapter_shapefile'
+        workspace_item.adapter_layer_json = (
+            '{"layer_name": "Waterlichamen", '
+            '"resource_module": "lizard_map", '
+            '"resource_name": "test_shapefiles/KRWwaterlichamen_merge.shp", '
+            '"search_property_name": "WGBNAAM"}')
         self.assertTrue(isinstance(
                 workspace_item.adapter,
                 lizard_map.layers.WorkspaceItemAdapterShapefile))
@@ -664,22 +674,6 @@ class DatePeriodsTest(TestCase):
 
 
 class WorkspaceItemAdapterShapefileTestSuite(TestCase):
-
-    def test_a(self):
-        """Test the default layer info is initialized correctly."""
-
-        workspace_item = 0  # don't care for this test
-        adapter = WorkspaceItemAdapterShapefile(workspace_item)
-
-        layer_name = lizard_map.layers.default_layer_name
-        resource_module = lizard_map.layers.default_resource_module
-        resource_name = lizard_map.layers.default_resource_name
-        search_property_name = lizard_map.layers.default_search_property_name
-
-        self.assertEqual(adapter.layer_name, layer_name)
-        self.assertEqual(adapter.resource_module, resource_module)
-        self.assertEqual(adapter.resource_name, resource_name)
-        self.assertEqual(adapter.search_property_name, search_property_name)
 
     def test_b(self):
         """Test the layer info is initialized with the given parameters."""
