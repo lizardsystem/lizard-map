@@ -10,9 +10,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
     Instance variables:
     * layer_name -- name of the WorkspaceItem that is rendered
+    * search_property_name -- name of shapefile feature used in search
+
+    * layer_filename -- absolute path to shapefile
+    OR
     * resource_module -- module that contains the shapefile resource
     * resource name -- name of the shapefile resource
-    * search_property_name -- name of shapefile feature used in search
 
     """
     def __init__(self, *args, **kwargs):
