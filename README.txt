@@ -132,3 +132,75 @@ libjpeg-dev, python-imaging, python-matplotlib, python-mapnik, python-scipy,
 libapache2-mod-wsgi, python-gdal, spatialite-bin, python-pysqlite2,
 python-pyproj.
 
+
+Site integration
+----------------
+
+The following steps has to be done in order to use the
+lizard_map/workspace concepts.
+
+- Install lizard-map somewhere.
+
+- Add lizard-map to your settings.py: INSTALLED_APPS.
+
+- Add an entry in your urls.py::
+
+    (r'^map/', include('lizard_map.urls')),
+
+- On your page, include the following parameters:
+
+   - javascript_hover_handler (popup_click_handler)
+   - javascript_click_handler (popup_hover_handler)
+   - date_range_form
+   - workspaces
+
+Example view::
+
+    from django.shortcuts import render_to_response
+    from django.template import RequestContext
+
+    from lizard_map.daterange import DateRangeForm
+    from lizard_map.daterange import current_start_end_dates
+    from lizard_map.workspace import WorkspaceManager
+
+
+    def homepage(request,
+                 javascript_click_handler='popup_click_handler',
+                 javascript_hover_handler='popup_hover_handler',
+                 template="lizard_shape/homepage.html"):
+        """
+        Main page for Shape.
+        """
+
+        workspace_manager = WorkspaceManager(request)
+        workspaces = workspace_manager.load_or_create()
+        date_range_form = DateRangeForm(
+            current_start_end_dates(request, for_form=True))
+
+        return render_to_response(
+            template,
+            {'javascript_hover_handler': javascript_hover_handler,
+             'javascript_click_handler': javascript_click_handler,
+             'date_range_form': date_range_form,
+             'workspaces': workspaces},
+            context_instance=RequestContext(request))
+
+
+Example template::
+
+    {% extends "lizard_map/wms.html" %}
+    {% load workspaces %}
+
+    {% block subtitle %} (page name) {% endblock %}
+
+    {% block sidebar %}
+
+    (your own menus or other content)
+
+    {% for workspace in workspaces.user %}
+      {% workspace workspace %}
+    {% empty %}
+    No workspace
+    {% endfor %}
+
+    {% endblock %}
