@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.20 (unreleased)
 -----------------
 
+- Make adapter_shapefile more generic, removed default settings.
+
 - Added mapnik_helper.py for mapnik helper functions.
 
 - Added mapnik_linestyle to Legend object.
