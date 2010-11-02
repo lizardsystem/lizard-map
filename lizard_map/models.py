@@ -30,7 +30,7 @@ ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
-logger = logging.getLogger('lizard_map.models')
+logger = logging.getLogger(__name__)
 
 
 def adapter_class_names():
@@ -624,14 +624,18 @@ class Legend(models.Model):
                 except ValueError:
                     logger.warn('Could not parse too_high_color (%s)' % v)
 
-    def mapnik_linestyle(self):
+    def mapnik_linestyle(self, value_field=None):
         """Return a Mapnik linestyle from Legend object"""
 
         mapnik_style = mapnik.Style()
+        if value_field is None:
+            value_field = "value"
 
         # < min
         rule = mapnik.Rule()
-        rule.filter = mapnik.Filter("[value] <= %f" % (self.min_value))
+        mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
+        logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+        rule.filter = mapnik.Filter(mapnik_filter)
         too_low_color = self.too_low_color
         mapnik_color = mapnik.Color(too_low_color.r,
                                     too_low_color.g,
@@ -643,8 +647,11 @@ class Legend(models.Model):
         # in boundaries
         for legend_value in self.legend_values():
             rule = mapnik.Rule()
-            rule.filter = mapnik.Filter("[value] > %f and [value] <= %f" % (
-                    legend_value['low_value'], legend_value['high_value']))
+            mapnik_filter = "[%s] > %f and [%s] <= %f" % (
+                value_field, legend_value['low_value'],
+                value_field, legend_value['high_value'])
+            logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+            rule.filter = mapnik.Filter(mapnik_filter)
             color = legend_value['color']
             mapnik_color = mapnik.Color(int(color.r), int(color.g), int(color.b))
             symb = mapnik.LineSymbolizer(mapnik_color, 5)
@@ -653,7 +660,9 @@ class Legend(models.Model):
 
         # > max
         rule = mapnik.Rule()
-        rule.filter = mapnik.Filter("[value] > %f" % (self.max_value))
+        mapnik_filter = "[%s] > %f" % (value_field, self.max_value)
+        logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+        rule.filter = mapnik.Filter(mapnik_filter)
         too_high_color = self.too_high_color
         mapnik_color = mapnik.Color(too_high_color.r,
                                     too_high_color.g,

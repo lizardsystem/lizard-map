@@ -2,6 +2,7 @@ import mapnik
 import pkg_resources
 
 from lizard_map import coordinates
+from lizard_map.models import Legend
 from lizard_map.workspace import WorkspaceItemAdapter
 
 
@@ -11,6 +12,10 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     Instance variables:
     * layer_name -- name of the WorkspaceItem that is rendered
     * search_property_name -- name of shapefile feature used in search
+    * legend_id (optional) -- id of legend (takes default legend otherwise)
+        for now: linestyle only!
+    * value_field (optional, with legend) -- value field for legend
+      (takes 'value' if not given)
 
     * layer_filename -- absolute path to shapefile
     OR
@@ -46,6 +51,23 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 self.resource_name)
         self.search_property_name = \
             str(layer_arguments['search_property_name'])
+        self.legend_id = layer_arguments.get('legend_id', None)
+        self.value_field = layer_arguments.get('value_field', None)
+
+    def _default_mapnik_style(self):
+        """
+        Makes default mapnik style
+        """
+        area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
+        # ^^^ light brownish
+        line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
+        area_looks.fill_opacity = 0.5
+        layout_rule = mapnik.Rule()
+        layout_rule.symbols.append(area_looks)
+        layout_rule.symbols.append(line_looks)
+        area_style = mapnik.Style()
+        area_style.rules.append(layout_rule)
+        return area_style
 
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
@@ -65,15 +87,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         layer.datasource = mapnik.Shapefile(
             file=self.layer_filename)
-        area_looks = mapnik.PolygonSymbolizer(mapnik.Color('#ffb975'))
-        # ^^^ light brownish
-        line_looks = mapnik.LineSymbolizer(mapnik.Color('#dd0000'), 1)
-        area_looks.fill_opacity = 0.5
-        layout_rule = mapnik.Rule()
-        layout_rule.symbols.append(area_looks)
-        layout_rule.symbols.append(line_looks)
-        area_style = mapnik.Style()
-        area_style.rules.append(layout_rule)
+        if self.legend_id is None:
+            # Show layer with default legend.
+            area_style = self._default_mapnik_style()
+        else:
+            legend = Legend.objects.get(id=self.legend_id)
+            area_style = legend.mapnik_linestyle(value_field=str(self.value_field))
         styles['Area style'] = area_style
         layer.styles.append('Area style')
         layers = [layer]
