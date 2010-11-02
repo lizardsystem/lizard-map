@@ -508,6 +508,9 @@ class Color(models.Model):
     def __unicode__(self):
         return '(%0x)-%0x-%0x-%0x' % (self.a, self.r, self.g, self.b)
 
+    @property
+    def html(self):
+        return '#%02x%02x%02x' % (self.r, self.g, self.b)
 
 class LegendManager(models.Manager):
     """Implements extra function 'find'
