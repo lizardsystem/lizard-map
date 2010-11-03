@@ -18,6 +18,7 @@ from lizard_map.dateperiods import WEEK
 from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
+from lizard_map.symbol_manager import SymbolManager
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -39,23 +40,20 @@ class Color(str):
     The object is in fact a string with class variables.
     """
     def __init__(self, s):
-        try:
-            self.r = int(s[0:2], 16)
-        except ValueError:
-            self.r = 128
-        try:
-            self.g = int(s[2:4], 16)
-        except ValueError:
-            self.g = 128
-        try:
-            self.b = int(s[4:6], 16)
-        except ValueError:
-            self.b = 128
+        self.r = int(s[0:2], 16)
+        self.g = int(s[2:4], 16)
+        self.b = int(s[4:6], 16)
         try:
             # Alpha is optional.
             self.a = int(s[6:8], 16)
         except ValueError:
             self.a = 255
+
+    def to_tuple(self):
+        """
+        Returns color values in a tuple.
+        """
+        return (self.r, self.g, self.b, self.a)
 
 
 class ColorField(models.CharField):
@@ -614,7 +612,7 @@ class Legend(models.Model):
                      self.max_color.g * fraction)
             blue = (self.min_color.b * (1 - fraction) +
                     self.max_color.b * fraction)
-            color = Color(a=alpha, r=red, g=green, b=blue)
+            color = Color('%02x%02x%02x%02x' % (red, green, blue, alpha))
 
             low_value = self.min_value + step * value_per_step
             high_value = self.min_value + (step + 1) * value_per_step
@@ -733,3 +731,73 @@ class LegendPoint(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.descriptor)
+
+    def mapnik_style(self, value_field=None):
+        """Return a Mapnik style from Legend object. Uses
+        SymbolManager to generate icons."""
+
+        def symbol_filename(icon, mask, color):
+            icon_style = {'icon': icon,
+                          'mask': (mask, ),
+                          'color': color.to_tuple()}
+            symbol_manager = SymbolManager(
+                ICON_ORIGINALS,
+                os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
+            output_filename = symbol_manager.get_symbol_transformed(
+                icon_style['icon'], **icon_style)
+            return output_filename
+
+        def point_rule(mapnik_filter, icon, mask, color):
+            output_filename = symbol_filename(icon, mask, color)
+            output_filename_abs = os.path.join(
+                settings.MEDIA_ROOT, 'generated_icons', output_filename)
+
+            # Use filename in mapnik pointsymbolizer
+            point_looks = mapnik.PointSymbolizer(output_filename_abs, 'png', 16, 16)
+            point_looks.allow_overlap = True
+            layout_rule = mapnik.Rule()
+            layout_rule.symbols.append(point_looks)
+            layout_rule.filter = mapnik.Filter(mapnik_filter)
+
+            return point_style
+
+
+        mapnik_style = mapnik.Style()
+        if value_field is None:
+            value_field = "value"
+
+        # < min
+        mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
+        logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+        mapnik_rule = point_rule(mapnik_filter, self.icon, self.mask, self.too_low_color)
+        mapnik_style.rules.append(mapnik_rule)
+
+        # in boundaries
+        for legend_value in self.legend_values():
+            rule = mapnik.Rule()
+            mapnik_filter = "[%s] > %f and [%s] <= %f" % (
+                value_field, legend_value['low_value'],
+                value_field, legend_value['high_value'])
+            logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+            rule.filter = mapnik.Filter(mapnik_filter)
+            color = legend_value['color']
+            mapnik_color = mapnik.Color(
+                int(color.r), int(color.g), int(color.b))
+            symb = mapnik.LineSymbolizer(mapnik_color, 5)
+            rule.symbols.append(symb)
+            mapnik_style.rules.append(rule)
+
+        # > max
+        rule = mapnik.Rule()
+        mapnik_filter = "[%s] > %f" % (value_field, self.max_value)
+        logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+        rule.filter = mapnik.Filter(mapnik_filter)
+        too_high_color = self.too_high_color
+        mapnik_color = mapnik.Color(too_high_color.r,
+                                    too_high_color.g,
+                                    too_high_color.b)
+        symb = mapnik.LineSymbolizer(mapnik_color, 5)
+        rule.symbols.append(symb)
+        mapnik_style.rules.append(rule)
+
+        return mapnik_style
