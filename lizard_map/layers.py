@@ -103,6 +103,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         if self.legend_id is not None:
             legend = Legend.objects.get(id=self.legend_id)
             style = legend.mapnik_linestyle(value_field=str(self.value_field))
+            # style = self._default_mapnik_style()
         elif self.legend_point_id is not None:
             legend_point = LegendPoint.objects.get(id=self.legend_point_id)
             style = legend_point.mapnik_style(value_field=str(self.value_field))

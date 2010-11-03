@@ -611,7 +611,7 @@ class Legend(models.Model):
     color-max, color < min, color > max, number of steps. Legends can
     be found using the descriptor.
 
-    Used for mapnik lines.
+    Used for mapnik lines and polygons.
     """
 
     descriptor = models.CharField(max_length=80)
@@ -685,51 +685,52 @@ class Legend(models.Model):
                     logger.warn('Could not parse too_high_color (%s)' % v)
 
     def mapnik_linestyle(self, value_field=None):
-        """Return a Mapnik linestyle from Legend object"""
+        """Return a Mapnik line/polystyle from Legend object"""
+
+        def mapnik_rule(color, mapnik_filter=None):
+            """
+            Makes mapnik rule for looks. For lines and polygons.
+            """
+            rule = mapnik.Rule()
+            if mapnik_filter is not None:
+                rule.filter = mapnik.Filter(mapnik_filter)
+            mapnik_color = mapnik.Color(color.r, color.g, color.b)
+
+            symb_line = mapnik.LineSymbolizer(mapnik_color, 3)
+            rule.symbols.append(symb_line)
+
+            symb_poly = mapnik.PolygonSymbolizer(mapnik_color)
+            symb_poly.fill_opacity = 0.5
+            rule.symbols.append(symb_poly)
+            return rule
 
         mapnik_style = mapnik.Style()
         if value_field is None:
             value_field = "value"
 
+        # Default color.
+        # rule = mapnik_rule(self.too_low_color)
+        # mapnik_style.rules.append(rule)
+
         # < min
-        rule = mapnik.Rule()
         mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-        rule.filter = mapnik.Filter(mapnik_filter)
-        too_low_color = self.too_low_color
-        mapnik_color = mapnik.Color(too_low_color.r,
-                                    too_low_color.g,
-                                    too_low_color.b)
-        symb = mapnik.LineSymbolizer(mapnik_color, 5)
-        rule.symbols.append(symb)
+        rule = mapnik_rule(self.too_low_color, mapnik_filter)
         mapnik_style.rules.append(rule)
 
         # in boundaries
         for legend_value in self.legend_values():
-            rule = mapnik.Rule()
             mapnik_filter = "[%s] > %f and [%s] <= %f" % (
                 value_field, legend_value['low_value'],
                 value_field, legend_value['high_value'])
             logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-            rule.filter = mapnik.Filter(mapnik_filter)
-            color = legend_value['color']
-            mapnik_color = mapnik.Color(
-                int(color.r), int(color.g), int(color.b))
-            symb = mapnik.LineSymbolizer(mapnik_color, 5)
-            rule.symbols.append(symb)
+            rule = mapnik_rule(legend_value['color'], mapnik_filter)
             mapnik_style.rules.append(rule)
 
         # > max
-        rule = mapnik.Rule()
         mapnik_filter = "[%s] > %f" % (value_field, self.max_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-        rule.filter = mapnik.Filter(mapnik_filter)
-        too_high_color = self.too_high_color
-        mapnik_color = mapnik.Color(too_high_color.r,
-                                    too_high_color.g,
-                                    too_high_color.b)
-        symb = mapnik.LineSymbolizer(mapnik_color, 5)
-        rule.symbols.append(symb)
+        rule = mapnik_rule(self.too_high_color, mapnik_filter)
         mapnik_style.rules.append(rule)
 
         return mapnik_style
