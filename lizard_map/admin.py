@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from lizard_map.models import Color
 from lizard_map.models import Legend
+from lizard_map.models import LegendPoint
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
@@ -46,8 +46,8 @@ class WorkspaceCollageSnippetGroupAdmin(admin.ModelAdmin):
         ]
 
 
-admin.site.register(Color)
 admin.site.register(Legend)
+admin.site.register(LegendPoint)
 admin.site.register(Workspace, WorkspaceAdmin)
 admin.site.register(WorkspaceItem)
 admin.site.register(WorkspaceCollage, WorkspaceCollageAdmin)

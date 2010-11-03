@@ -93,8 +93,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         else:
             legend = Legend.objects.get(id=self.legend_id)
             area_style = legend.mapnik_linestyle(value_field=str(self.value_field))
-        styles['Area style'] = area_style
-        layer.styles.append('Area style')
+        style_name = str('Area style %s::%s::%s' % (
+                self.layer_filename,
+                self.legend_id,
+                self.value_field))
+        styles[style_name] = area_style
+        layer.styles.append(style_name)
         layers = [layer]
         return layers, styles
 

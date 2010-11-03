@@ -20,6 +20,7 @@ from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
 from lizard_map.layers import WorkspaceItemAdapterShapefile
 from lizard_map.mapnik_helper import database_settings
+from lizard_map.models import Legend
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
@@ -711,3 +712,18 @@ class TestTemplateTags(TestCase):
                   }
         for value, expected in in_out.items():
             self.assertEquals(workspaces.float_or_exp(value), expected)
+
+
+class ModelLegendTest(TestCase):
+
+    def test_make_legend(self):
+        legend = Legend(
+            descriptor='default',
+            min_color='ff0000',
+            max_color='0000ff',
+            too_low_color='111111',
+            too_high_color='999999')
+        legend.save()
+        self.assertEquals(legend.min_color.r, 255)
+        self.assertEquals(legend.max_color.r, 0)
+        self.assertEquals(legend.max_color.b, 255)

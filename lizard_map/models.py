@@ -33,6 +33,52 @@ LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 logger = logging.getLogger(__name__)
 
 
+class Color(str):
+    """Simple color object: r, g, b, a.
+
+    The object is in fact a string with class variables.
+    """
+    def __init__(self, s):
+        print s
+        try:
+            self.r = int(s[0:2], 16)
+        except ValueError:
+            self.r = 128
+        try:
+            self.g = int(s[2:4], 16)
+        except ValueError:
+            self.g = 128
+        try:
+            self.b = int(s[4:6], 16)
+        except ValueError:
+            self.b = 128
+        try:
+            # Alpha is optional.
+            self.a = int(s[6:8], 16)
+        except ValueError:
+            self.a = 255
+
+
+class ColorField(models.CharField):
+    """Custom ColorField for use in Django models. It's an extension of CharField."""
+
+    default_error_messages = {
+        'invalid': _(u'Enter a valid color code rrggbbaa, where aa is optional.'),
+        }
+    description = "Color representation in rgb"
+
+    __metaclass__ = models.SubfieldBase  # Ensures that to_python is always called.
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 8
+        super(ColorField, self).__init__(*args, **kwargs)
+
+    def to_python(self, value):
+        if isinstance(value, Color):
+            return value
+        return Color(value)
+
+
 def adapter_class_names():
     """Return allowed layer method names (from entrypoints)
 
@@ -495,23 +541,6 @@ class WorkspaceCollageSnippet(models.Model):
         self.identifier_json = json.dumps(identifier).replace('"', '%22')
 
 
-class Color(models.Model):
-    """Simple color: alpha (optional), r, g, b.
-
-    Use values from 0 .. 255. Values are NOT checked!
-    """
-    a = models.IntegerField(default=255)
-    r = models.IntegerField()
-    g = models.IntegerField()
-    b = models.IntegerField()
-
-    def __unicode__(self):
-        return '(%0x)-%0x-%0x-%0x' % (self.a, self.r, self.g, self.b)
-
-    @property
-    def html(self):
-        return '#%02x%02x%02x' % (self.r, self.g, self.b)
-
 class LegendManager(models.Manager):
     """Implements extra function 'find'
     """
@@ -540,10 +569,10 @@ class Legend(models.Model):
     max_value = models.FloatField(default=100)
     steps = models.IntegerField(default=10)
 
-    min_color = models.ForeignKey(Color, related_name='min_colors')
-    max_color = models.ForeignKey(Color, related_name='max_colors')
-    too_low_color = models.ForeignKey(Color, related_name='too_low_colors')
-    too_high_color = models.ForeignKey(Color, related_name='too_high_color')
+    min_color = ColorField()
+    max_color = ColorField()
+    too_low_color = ColorField()
+    too_high_color = ColorField()
 
     objects = LegendManager()
 
@@ -675,3 +704,25 @@ class Legend(models.Model):
         mapnik_style.rules.append(rule)
 
         return mapnik_style
+
+
+class LegendPoint(models.Model):
+    """
+    Legend for points.
+    """
+    descriptor = models.CharField(max_length=80)
+    min_value = models.FloatField(default=0)
+    max_value = models.FloatField(default=100)
+    steps = models.IntegerField(default=10)
+
+    min_color = ColorField()
+    max_color = ColorField()
+    too_low_color = ColorField()
+    too_high_color = ColorField()
+
+    icon = models.CharField(max_length=80)
+    mask = models.CharField(max_length=80, null=True, blank=True)
+
+    def __unicode__(self):
+        return '%s' % (self.descriptor)
+
