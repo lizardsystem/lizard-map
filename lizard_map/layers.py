@@ -152,8 +152,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         """
         Returns symbol.
         """
-        icon_style = None
-        if self.legend_point_id is not None:
+        if icon_style is None and self.legend_point_id is not None:
             legend_object = LegendPoint.objects.get(pk=self.legend_point_id)
             icon_style = legend_object.icon_style()
         return super(WorkspaceItemAdapterShapefile, self).symbol_url(

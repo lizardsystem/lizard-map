@@ -338,7 +338,11 @@ class WorkspaceItemAdapter(object):
 
     def symbol_url(self, identifier=None, start_date=None, end_date=None,
                    icon_style=None):
-        """Return symbol for identifier"""
+        """Return symbol for identifier.
+
+        Implementation: respect the fact when icon_style is already
+        given. If it's empty, generate own icon if applicable.
+        """
         sm = SymbolManager(ICON_ORIGINALS, os.path.join(
                 settings.MEDIA_ROOT,
                 'generated_icons'))
