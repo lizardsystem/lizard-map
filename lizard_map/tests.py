@@ -608,6 +608,13 @@ class WorkspaceItemAdapterTest(TestCase):
         snippet_group.save()
         self.assertTrue(self.adapter.html_default(snippet_group=snippet_group))
 
+    def test_legend_object_default(self):
+        self.adapter.legend_object_default('no_name')
+
+    def test_legend_default(self):
+        legend_object = self.adapter.legend_object_default('no_name')
+        self.adapter.legend_default(legend_object)
+
 
 class DatePeriodsTest(TestCase):
 

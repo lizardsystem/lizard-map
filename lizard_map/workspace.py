@@ -451,7 +451,7 @@ class WorkspaceItemAdapter(object):
             logger.warn("Could not find legend for key '%s', "
                         "please configure the legend. "
                         "Now using fallback (red).")
-            color = Color(r=255, g=0, b=0)
+            color = Color('ff0000')
             found_legend = Legend(descriptor="", min_color=color,
                                   max_color=color, too_low_color=color,
                                   too_high_color=color)

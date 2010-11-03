@@ -86,9 +86,10 @@ class Color(str):
 
     def to_tuple(self):
         """
-        Returns color values in a tuple.
+        Returns color values in a tuple. Values are 0..1
         """
-        return (self.r, self.g, self.b, self.a)
+        return (self.r / 255.0, self.g / 255.0,
+                self.b / 255.0, self.a / 255.0)
 
 
 class ColorField(models.CharField):
