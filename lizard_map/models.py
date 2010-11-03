@@ -1,7 +1,9 @@
 import itertools
 import logging
 import mapnik
+import os
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -32,6 +34,39 @@ SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 logger = logging.getLogger(__name__)
+
+
+def legend_values(min_value, max_value, min_color, max_color, steps):
+    """Interpolates colors between min_value and max_value, calc
+    corresponding colors and gives boundary values for each band.
+
+    Makes list of dictionaries: {'color': Color, 'low_value':
+    low value, 'high_value': high value}"""
+    result = []
+    value_per_step = (max_value - min_value) / steps
+    for step in range(steps):
+        try:
+            fraction = float(step) / (steps - 1)
+        except ZeroDivisionError:
+            fraction = 0
+        alpha = (min_color.a * (1 - fraction) +
+                 max_color.a * fraction)
+        red = (min_color.r * (1 - fraction) +
+               max_color.r * fraction)
+        green = (min_color.g * (1 - fraction) +
+                 max_color.g * fraction)
+        blue = (min_color.b * (1 - fraction) +
+                max_color.b * fraction)
+        color = Color('%02x%02x%02x%02x' % (red, green, blue, alpha))
+
+        low_value = min_value + step * value_per_step
+        high_value = min_value + (step + 1) * value_per_step
+        result.append({
+                'color': color,
+                'low_value': low_value,
+                'high_value': high_value,
+                })
+    return result
 
 
 class Color(str):
@@ -595,33 +630,9 @@ class Legend(models.Model):
         return '%.0f'
 
     def legend_values(self):
-        """Makes list of dictionaries: {'color': Color, 'low_value':
-        low value, 'high_value': high value}"""
-        result = []
-        value_per_step = (self.max_value - self.min_value) / self.steps
-        for step in range(self.steps):
-            try:
-                fraction = float(step) / (self.steps - 1)
-            except ZeroDivisionError:
-                fraction = 0
-            alpha = (self.min_color.a * (1 - fraction) +
-                     self.max_color.a * fraction)
-            red = (self.min_color.r * (1 - fraction) +
-                   self.max_color.r * fraction)
-            green = (self.min_color.g * (1 - fraction) +
-                     self.max_color.g * fraction)
-            blue = (self.min_color.b * (1 - fraction) +
-                    self.max_color.b * fraction)
-            color = Color('%02x%02x%02x%02x' % (red, green, blue, alpha))
-
-            low_value = self.min_value + step * value_per_step
-            high_value = self.min_value + (step + 1) * value_per_step
-            result.append({
-                    'color': color,
-                    'low_value': low_value,
-                    'high_value': high_value,
-                    })
-        return result
+        return legend_values(
+            self.min_value, self.max_value,
+            self.min_color, self.max_color, self.steps)
 
     def update(self, updates):
         """ Updates model with updates dict. Color values have the
@@ -732,6 +743,11 @@ class LegendPoint(models.Model):
     def __unicode__(self):
         return '%s' % (self.descriptor)
 
+    def legend_values(self):
+        return legend_values(
+            self.min_value, self.max_value,
+            self.min_color, self.max_color, self.steps)
+
     def mapnik_style(self, value_field=None):
         """Return a Mapnik style from Legend object. Uses
         SymbolManager to generate icons."""
@@ -753,14 +769,14 @@ class LegendPoint(models.Model):
                 settings.MEDIA_ROOT, 'generated_icons', output_filename)
 
             # Use filename in mapnik pointsymbolizer
-            point_looks = mapnik.PointSymbolizer(output_filename_abs, 'png', 16, 16)
+            point_looks = mapnik.PointSymbolizer(
+                str(output_filename_abs), 'png', 16, 16)
             point_looks.allow_overlap = True
             layout_rule = mapnik.Rule()
             layout_rule.symbols.append(point_looks)
             layout_rule.filter = mapnik.Filter(mapnik_filter)
 
-            return point_style
-
+            return layout_rule
 
         mapnik_style = mapnik.Style()
         if value_field is None:
@@ -769,35 +785,25 @@ class LegendPoint(models.Model):
         # < min
         mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-        mapnik_rule = point_rule(mapnik_filter, self.icon, self.mask, self.too_low_color)
+        mapnik_rule = point_rule(
+            mapnik_filter, self.icon, self.mask, self.too_low_color)
         mapnik_style.rules.append(mapnik_rule)
 
         # in boundaries
         for legend_value in self.legend_values():
-            rule = mapnik.Rule()
             mapnik_filter = "[%s] > %f and [%s] <= %f" % (
                 value_field, legend_value['low_value'],
                 value_field, legend_value['high_value'])
             logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-            rule.filter = mapnik.Filter(mapnik_filter)
-            color = legend_value['color']
-            mapnik_color = mapnik.Color(
-                int(color.r), int(color.g), int(color.b))
-            symb = mapnik.LineSymbolizer(mapnik_color, 5)
-            rule.symbols.append(symb)
-            mapnik_style.rules.append(rule)
+            mapnik_rule = point_rule(
+                mapnik_filter, self.icon, self.mask, legend_value['color'])
+            mapnik_style.rules.append(mapnik_rule)
 
         # > max
-        rule = mapnik.Rule()
         mapnik_filter = "[%s] > %f" % (value_field, self.max_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
-        rule.filter = mapnik.Filter(mapnik_filter)
-        too_high_color = self.too_high_color
-        mapnik_color = mapnik.Color(too_high_color.r,
-                                    too_high_color.g,
-                                    too_high_color.b)
-        symb = mapnik.LineSymbolizer(mapnik_color, 5)
-        rule.symbols.append(symb)
-        mapnik_style.rules.append(rule)
+        mapnik_rule = point_rule(
+            mapnik_filter, self.icon, self.mask, self.too_high_color)
+        mapnik_style.rules.append(mapnik_rule)
 
         return mapnik_style

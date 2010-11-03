@@ -3,6 +3,7 @@ import pkg_resources
 
 from lizard_map import coordinates
 from lizard_map.models import Legend
+from lizard_map.models import LegendPoint
 from lizard_map.workspace import WorkspaceItemAdapter
 
 
@@ -96,7 +97,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             style = legend.mapnik_linestyle(value_field=str(self.value_field))
         elif self.legend_point_id is not None:
             legend_point = LegendPoint.objects.get(id=self.legend_point_id)
-            style = legend.mapnik_style(value_field=str(self.value_field))
+            style = legend_point.mapnik_style(value_field=str(self.value_field))
         else:
             # Show layer with default legend.
             style = self._default_mapnik_style()
