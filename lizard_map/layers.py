@@ -12,10 +12,13 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     Instance variables:
     * layer_name -- name of the WorkspaceItem that is rendered
     * search_property_name -- name of shapefile feature used in search
-    * legend_id (optional) -- id of legend (takes default legend otherwise)
-        for now: linestyle only!
     * value_field (optional, with legend) -- value field for legend
       (takes 'value' if not given)
+
+    * legend_id (optional, preferenced) -- id of legend (linestyle)
+    OR
+    * legend_point_id (optional) -- id of legend_point_id (points)
+    ELSE it takes default legend
 
     * layer_filename -- absolute path to shapefile
     OR
@@ -52,6 +55,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         self.search_property_name = \
             str(layer_arguments['search_property_name'])
         self.legend_id = layer_arguments.get('legend_id', None)
+        self.legend_point_id = layer_arguments.get('legend_point_id', None)
         self.value_field = layer_arguments.get('value_field', None)
 
     def _default_mapnik_style(self):
@@ -87,17 +91,20 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         layer.datasource = mapnik.Shapefile(
             file=self.layer_filename)
-        if self.legend_id is None:
-            # Show layer with default legend.
-            area_style = self._default_mapnik_style()
-        else:
+        if self.legend_id is not None:
             legend = Legend.objects.get(id=self.legend_id)
-            area_style = legend.mapnik_linestyle(value_field=str(self.value_field))
+            style = legend.mapnik_linestyle(value_field=str(self.value_field))
+        elif self.legend_point_id is not None:
+            legend_point = LegendPoint.objects.get(id=self.legend_point_id)
+            style = legend.mapnik_style(value_field=str(self.value_field))
+        else:
+            # Show layer with default legend.
+            style = self._default_mapnik_style()
         style_name = str('Area style %s::%s::%s' % (
                 self.layer_filename,
                 self.legend_id,
                 self.value_field))
-        styles[style_name] = area_style
+        styles[style_name] = style
         layer.styles.append(style_name)
         layers = [layer]
         return layers, styles

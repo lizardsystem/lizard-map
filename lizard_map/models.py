@@ -59,14 +59,18 @@ class Color(str):
 
 
 class ColorField(models.CharField):
-    """Custom ColorField for use in Django models. It's an extension of CharField."""
+    """Custom ColorField for use in Django models. It's an extension
+    of CharField."""
 
     default_error_messages = {
-        'invalid': _(u'Enter a valid color code rrggbbaa, where aa is optional.'),
+        'invalid': _(
+            u'Enter a valid color code rrggbbaa, '
+            'where aa is optional.'),
         }
     description = "Color representation in rgb"
 
-    __metaclass__ = models.SubfieldBase  # Ensures that to_python is always called.
+    # Ensures that to_python is always called.
+    __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 8
@@ -561,7 +565,10 @@ class LegendManager(models.Manager):
 class Legend(models.Model):
     """Simple lineair interpolated legend with min, max, color-min,
     color-max, color < min, color > max, number of steps. Legends can
-    be found using the descriptor"""
+    be found using the descriptor.
+
+    Used for mapnik lines.
+    """
 
     descriptor = models.CharField(max_length=80)
     min_value = models.FloatField(default=0)
@@ -684,7 +691,8 @@ class Legend(models.Model):
             logger.debug('adding mapnik_filter: %s' % mapnik_filter)
             rule.filter = mapnik.Filter(mapnik_filter)
             color = legend_value['color']
-            mapnik_color = mapnik.Color(int(color.r), int(color.g), int(color.b))
+            mapnik_color = mapnik.Color(
+                int(color.r), int(color.g), int(color.b))
             symb = mapnik.LineSymbolizer(mapnik_color, 5)
             rule.symbols.append(symb)
             mapnik_style.rules.append(rule)
@@ -709,6 +717,7 @@ class LegendPoint(models.Model):
     """
     Legend for points.
     """
+
     descriptor = models.CharField(max_length=80)
     min_value = models.FloatField(default=0)
     max_value = models.FloatField(default=100)
@@ -724,4 +733,3 @@ class LegendPoint(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.descriptor)
-
