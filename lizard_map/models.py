@@ -621,6 +621,7 @@ class Legend(models.Model):
 
     @property
     def float_format(self):
+        """Determines float format for defined legend. Required by legend_default."""
         delta = abs(self.max_value - self.min_value) / self.steps
         if delta < 0.1:
             return '%.3f'
@@ -631,6 +632,7 @@ class Legend(models.Model):
         return '%.0f'
 
     def legend_values(self):
+        """Determines legend steps and values. Required by legend_default."""
         return legend_values(
             self.min_value, self.max_value,
             self.min_color, self.max_color, self.steps)
@@ -744,7 +746,20 @@ class LegendPoint(models.Model):
     def __unicode__(self):
         return '%s' % (self.descriptor)
 
+    @property
+    def float_format(self):
+        """Determines float format for defined legend. Required by legend_default."""
+        delta = abs(self.max_value - self.min_value) / self.steps
+        if delta < 0.1:
+            return '%.3f'
+        if delta < 1:
+            return '%.2f'
+        if delta < 10:
+            return '%.1f'
+        return '%.0f'
+
     def legend_values(self):
+        """Determines legend steps and values. Required by legend_default."""
         return legend_values(
             self.min_value, self.max_value,
             self.min_color, self.max_color, self.steps)

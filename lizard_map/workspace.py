@@ -433,9 +433,13 @@ class WorkspaceItemAdapter(object):
 
     def legend(self, updates=None):
         """
-        Returns legend in a list of dictionaries.
+        Returns legend in a list of dictionaries. If this method
+        returns a list, then the legend icon will appear in your
+        workspace.
 
         Dictionary = {'img_url': <url>, 'description': <description>}
+
+        updates: ...
 
         """
         return []
@@ -459,9 +463,11 @@ class WorkspaceItemAdapter(object):
         return found_legend
 
     def legend_default(self, legend_object):
-        """Default implementation for legend. Use a fixed formula to
-        calculate legend descriptor, and img_url. Generates image if
-        needed. """
+        """Default implementation for legend. A legend is displayed
+        when the method "legend" is implemented in the adapter.
+
+        Use a fixed formula to calculate legend descriptor, and
+        img_url. Generates image if needed."""
 
         icon_style_template = {'icon': 'empty.png',
                                'mask': ('empty_mask.png', ),
@@ -473,10 +479,7 @@ class WorkspaceItemAdapter(object):
             # Add < min
             icon_style = icon_style_template.copy()
             icon_style.update({
-                    'color': (legend_object.too_low_color.r / 255.0,
-                              legend_object.too_low_color.g / 255.0,
-                              legend_object.too_low_color.b / 255.0,
-                              legend_object.too_low_color.a / 255.0)})
+                    'color': legend_object.too_low_color.to_tuple()})
             img_url = self.symbol_url(icon_style=icon_style)
             legend_result.append({'img_url': img_url,
                                   'description': (('< %s' % float_format) %
@@ -486,9 +489,7 @@ class WorkspaceItemAdapter(object):
             for legend_item in legend_object.legend_values():
                 color = legend_item['color']
                 icon_style = icon_style_template.copy()
-                icon_style.update({'color':
-                                   (color.r / 255.0, color.g / 255.0,
-                                    color.b / 255.0, color.a / 255.0)})
+                icon_style.update({'color': color.to_tuple()})
                 img_url = self.symbol_url(icon_style=icon_style)
                 legend_row = {'img_url': img_url,
                               'description': (
@@ -501,10 +502,7 @@ class WorkspaceItemAdapter(object):
             # Add > max
             icon_style = icon_style_template.copy()
             icon_style.update({
-                    'color': (legend_object.too_high_color.r / 255.0,
-                              legend_object.too_high_color.g / 255.0,
-                              legend_object.too_high_color.b / 255.0,
-                              legend_object.too_high_color.a / 255.0)})
+                    'color': legend_object.too_high_color.to_tuple()})
             img_url = self.symbol_url(icon_style=icon_style)
             legend_result.append({'img_url': img_url,
                                   'description': (('> %s' % float_format) %

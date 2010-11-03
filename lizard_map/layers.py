@@ -74,6 +74,14 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         area_style.rules.append(layout_rule)
         return area_style
 
+    def legend(self, updates=None):
+        if self.legend_id is not None:
+            legend_object = Legend.objects.get(id=self.legend_id)
+        elif self.legend_point_id is not None:
+            legend_object = LegendPoint.objects.get(id=self.legend_point_id)
+        return super(WorkspaceItemAdapterShapefile, self).legend_default(
+            legend_object)
+
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
 
