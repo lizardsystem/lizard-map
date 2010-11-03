@@ -343,7 +343,7 @@ class WorkspaceItemAdapter(object):
                 settings.MEDIA_ROOT,
                 'generated_icons'))
         if icon_style is None:
-            icon_style = {'icon': 'brug.png'}
+            icon_style = {'icon': 'empty.png'}
         output_filename = sm.get_symbol_transformed(icon_style['icon'],
                                                     **icon_style)
         return settings.MEDIA_URL + 'generated_icons/' + output_filename

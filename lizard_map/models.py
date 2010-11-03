@@ -75,9 +75,18 @@ class Color(str):
     The object is in fact a string with class variables.
     """
     def __init__(self, s):
-        self.r = int(s[0:2], 16)
-        self.g = int(s[2:4], 16)
-        self.b = int(s[4:6], 16)
+        try:
+            self.r = int(s[0:2], 16)
+        except ValueError:
+            self.r = 128
+        try:
+            self.g = int(s[2:4], 16)
+        except ValueError:
+            self.b = 128
+        try:
+            self.b = int(s[4:6], 16)
+        except ValueError:
+            self.b = 128
         try:
             # Alpha is optional.
             self.a = int(s[6:8], 16)
@@ -88,8 +97,9 @@ class Color(str):
         """
         Returns color values in a tuple. Values are 0..1
         """
-        return (self.r / 255.0, self.g / 255.0,
-                self.b / 255.0, self.a / 255.0)
+        result = (self.r / 255.0, self.g / 255.0,
+                  self.b / 255.0, self.a / 255.0)
+        return result
 
 
 class ColorField(models.CharField):
@@ -763,6 +773,11 @@ class LegendPoint(models.Model):
         return legend_values(
             self.min_value, self.max_value,
             self.min_color, self.max_color, self.steps)
+
+    def icon_style(self):
+        return {'icon': self.icon,
+                'mask': (self.mask, ),
+                'color': (1.0, 1.0, 1.0, 1.0)}
 
     def mapnik_style(self, value_field=None):
         """Return a Mapnik style from Legend object. Uses

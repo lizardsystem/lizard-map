@@ -146,3 +146,18 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                     })
 
         return result
+
+    def symbol_url(self, identifier=None, start_date=None,
+                   end_date=None, icon_style=None):
+        """
+        Returns symbol.
+        """
+        icon_style = None
+        if self.legend_point_id is not None:
+            legend_object = LegendPoint.objects.get(pk=self.legend_point_id)
+            icon_style = legend_object.icon_style()
+        return super(WorkspaceItemAdapterShapefile, self).symbol_url(
+            identifier=identifier,
+            start_date=start_date,
+            end_date=end_date,
+            icon_style=icon_style)
