@@ -471,6 +471,10 @@ class UtilityTest(TestCase):
         self.assertTrue(len(st) <= 10)
         self.assertEquals(st[:4], '1000')
 
+    def test_float_to_string7(self):
+        """Let's input a string."""
+        self.assertEquals(float_to_string('string'), 'string')
+
     def test_parse_identifier_json(self):
         self.assertTrue(parse_identifier_json(
                 '{%22testkey%22:%20%22testvalue%22}'))

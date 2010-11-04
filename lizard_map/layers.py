@@ -5,6 +5,7 @@ import pkg_resources
 from lizard_map import coordinates
 from lizard_map.models import Legend
 from lizard_map.models import LegendPoint
+from lizard_map.utility import float_to_string
 from lizard_map.workspace import WorkspaceItemAdapter
 
 logger = logging.getLogger(__name__)
@@ -178,7 +179,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 continue
             name = name_in_shapefile
             if value_in_shapefile:
-                name += ' (%r)' % value_in_shapefile
+                name += ' (%s)' % float_to_string(value_in_shapefile)
 
             result.append(
                 {'distance': 0.0,
