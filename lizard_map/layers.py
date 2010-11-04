@@ -164,8 +164,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         lyr = ds.GetLayer()
         lyr.ResetReading()
         feat = lyr.GetNextFeature()
-        field_count = feat.GetFieldCount()
+
         results = []
+
         while feat is not None:
             geom = feat.GetGeometryRef()
             if geom:
@@ -180,8 +181,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                         # valid field in the shapefile dbf.
                         logger.error(
                             ('Search: The field "%s" cannot be found in '
-                             'shapefile "%s". '
-                             'Check your settings in lizard_shape.models.Shape.') %
+                             'shapefile "%s". Check your settings in '
+                             'lizard_shape.models.Shape.') %
                             (self.search_property_name, self.layer_name))
                         break  # You don't have to search other rows.
                     name = feat_items[self.search_property_name]
@@ -197,12 +198,15 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                                 (self.value_field, self.layer_name))
                             break  # You don't have to search other rows.
                         name += ' - %s=%s' % (
-                            self.value_name, float_to_string(feat_items[self.value_field]))
+                            self.value_name,
+                            float_to_string(feat_items[self.value_field]))
                     result = {'distance': distance,
                               'name': name}
-                    if self.search_property_id and self.search_property_id in feat_items:
-                        result.update({'identifier':
-                                       {'id': feat_items[self.search_property_id]}})
+                    if (self.search_property_id and
+                        self.search_property_id in feat_items):
+                        result.update(
+                            {'identifier':
+                                 {'id': feat_items[self.search_property_id]}})
                     results.append(result)
             feat = lyr.GetNextFeature()
         results = sorted(results, key=lambda a: a['distance'])
