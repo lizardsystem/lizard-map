@@ -167,14 +167,14 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         field_count = feat.GetFieldCount()
         results = []
         while feat is not None:
-            # print feat.items()  # de tabel rij
             geom = feat.GetGeometryRef()
             if geom:
                 item = loads(geom.ExportToWkt())
                 distance = query_point.distance(item)
                 feat_items = feat.items()
-                # result = dict(feat.items())
-                if distance < radius:
+
+                if not radius or (radius is not None and distance < radius):
+                    # Found an item.
                     if self.search_property_name not in feat_items:
                         # This means that the search_property_name is not a
                         # valid field in the shapefile dbf.
@@ -199,8 +199,10 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                         name += ' - %s=%s' % (
                             self.value_name, float_to_string(feat_items[self.value_field]))
                     result = {'distance': distance,
-                              'name': name,
-                              'identifier': {'id': feat_items[self.search_property_id]}}
+                              'name': name}
+                    if self.search_property_id and self.search_property_id in feat_items:
+                        result.update({'identifier':
+                                       {'id': feat_items[self.search_property_id]}})
                     results.append(result)
             feat = lyr.GetNextFeature()
         results = sorted(results, key=lambda a: a['distance'])
