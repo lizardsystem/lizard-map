@@ -1,5 +1,8 @@
+from shapely.geometry import Point
+from shapely.wkt import loads
 import logging
 import mapnik
+import osgeo.ogr
 import pkg_resources
 
 from lizard_map import coordinates
@@ -17,11 +20,16 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     Instance variables:
     * layer_name -- name of the WorkspaceItem that is rendered
 
-    * search_property_name -- name of shapefile feature used in search
-      results - must be come kind of id
+    * search_property_name (optional) -- name of shapefile feature
+      used in search results: mouse over, title of popup
 
-    * value_field (optional, with legend) -- value field for legend
+    * search_property_id (optional) -- id of shapefile feature. Used
+      to find the feature back.
+
+    * value_field (optional, used by legend) -- value field for legend
       (takes 'value' if not given)
+
+    * value_name (optional) -- name for value field
 
     Legend:
     * legend_id (optional, preferenced) -- id of legend (linestyle)
@@ -63,10 +71,13 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 self.resource_module,
                 self.resource_name)
         self.search_property_name = \
-            str(layer_arguments.get('search_property_name', ""))
+            layer_arguments.get('search_property_name', "")
+        self.search_property_id = \
+            layer_arguments.get('search_property_id', "")
         self.legend_id = layer_arguments.get('legend_id', None)
         self.legend_point_id = layer_arguments.get('legend_point_id', None)
         self.value_field = layer_arguments.get('value_field', None)
+        self.value_name = layer_arguments.get('value_name', None)
 
     def _default_mapnik_style(self):
         """
@@ -83,13 +94,17 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         area_style.rules.append(layout_rule)
         return area_style
 
-    def legend(self, updates=None):
+    @property
+    def _legend_object(self):
         if self.legend_id is not None:
             legend_object = Legend.objects.get(id=self.legend_id)
         elif self.legend_point_id is not None:
             legend_object = LegendPoint.objects.get(id=self.legend_point_id)
+        return legend_object
+
+    def legend(self, updates=None):
         return super(WorkspaceItemAdapterShapefile, self).legend_default(
-            legend_object)
+            self._legend_object)
 
     def layer(self, layer_ids=None, request=None):
         """Return layer and styles for a shapefile.
@@ -131,62 +146,66 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
     def search(self, x, y, radius=None):
         """
-        Hacky at the moment as searching shapefiles is harder than expected.
+        Search area, line or point.
+
+        Make sure that value_field, search_property_id,
+        search_property_name are valid columns in your shapefile.
 
         x,y are google coordinates
 
         """
-        # Set up a basic map as only map can search...
-        mapnik_map = mapnik.Map(400, 400)
-        mapnik_map.srs = coordinates.GOOGLE
+        if not self.search_property_name:
+            # We don't have anything to return, so don't search.
+            return []
 
-        layers, styles = self.layer()
-        for layer in layers:
-            mapnik_map.layers.append(layer)
-        for name in styles:
-            mapnik_map.append_style(name, styles[name])
-        # 0 is the first layer.
-        feature_set = mapnik_map.query_point(0, x, y)
-        result = []
-        for feature in feature_set.features:
-            try:
-                if self.search_property_name:
-                    name_in_shapefile = \
-                        feature.properties[str(self.search_property_name)]
-            except KeyError:
-                # This means that the search_property_name is not a
-                # valid field in the shapefile dbf.
-                logger.error(
-                    ('Search: The field "%s" cannot be found in '
-                     'shapefile "%s". '
-                     'Check your settings in lizard_shape.models.Shape.') %
-                    (self.search_property_name, self.layer_name))
-                name_in_shapefile = ''
-                continue
-            try:
-                if self.value_field:
-                    value_in_shapefile = \
-                        feature.properties[str(self.value_field)]
-            except KeyError:
-                # This means that the value_field is not a
-                # valid field in the shapefile dbf.
-                logger.error(
-                    ('Search: The field "%s" cannot be found in '
-                     'shapefile "%s". Check value_field in your '
-                     'legend settings.') %
-                    (self.value_field, self.layer_name))
-                value_in_shapefile = ''
-                continue
-            name = name_in_shapefile
-            if value_in_shapefile:
-                name += ' (%s)' % float_to_string(value_in_shapefile)
+        rd_x, rd_y = coordinates.google_to_rd(x, y)
+        query_point = Point(rd_x, rd_y)
+        ds = osgeo.ogr.Open(self.layer_filename)
+        lyr = ds.GetLayer()
+        lyr.ResetReading()
+        feat = lyr.GetNextFeature()
+        field_count = feat.GetFieldCount()
+        results = []
+        while feat is not None:
+            # print feat.items()  # de tabel rij
+            geom = feat.GetGeometryRef()
+            if geom:
+                item = loads(geom.ExportToWkt())
+                distance = query_point.distance(item)
+                feat_items = feat.items()
+                # result = dict(feat.items())
+                if distance < radius:
+                    if self.search_property_name not in feat_items:
+                        # This means that the search_property_name is not a
+                        # valid field in the shapefile dbf.
+                        logger.error(
+                            ('Search: The field "%s" cannot be found in '
+                             'shapefile "%s". '
+                             'Check your settings in lizard_shape.models.Shape.') %
+                            (self.search_property_name, self.layer_name))
+                        break  # You don't have to search other rows.
+                    name = feat_items[self.search_property_name]
 
-            result.append(
-                {'distance': 0.0,
-                 'name': name,
-                 'identifier': {id: name_in_shapefile}})
+                    if self.value_field:
+                        if self.value_field not in feat_items:
+                            # This means that the value_field is not a
+                            # valid field in the shapefile dbf.
+                            logger.error(
+                                ('Search: The field "%s" cannot be found in '
+                                 'shapefile "%s". Check value_field in your '
+                                 'legend settings.') %
+                                (self.value_field, self.layer_name))
+                            break  # You don't have to search other rows.
+                        name += ' - %s=%s' % (
+                            self.value_name, float_to_string(feat_items[self.value_field]))
+                    result = {'distance': distance,
+                              'name': name,
+                              'identifier': {'id': feat_items[self.search_property_id]}}
+                    results.append(result)
+            feat = lyr.GetNextFeature()
+        results = sorted(results, key=lambda a: a['distance'])
 
-        return result
+        return results
 
     def symbol_url(self, identifier=None, start_date=None,
                    end_date=None, icon_style=None):

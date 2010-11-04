@@ -17,6 +17,7 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui >= 1.18',
     'matplotlib',
+    'shapely',
     'pyproj',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],

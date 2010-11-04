@@ -7,6 +7,9 @@ Changelog of lizard-map
 
 - Refactor Colors: removed model, add ColorField.
 
+- Reimplemented search function using shapely. Before it was
+  implemented using Mapnik and it worked only with polygons.
+
 
 1.20 (2010-11-01)
 -----------------
