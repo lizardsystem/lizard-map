@@ -1,3 +1,4 @@
+import logging
 import mapnik
 import pkg_resources
 
@@ -6,21 +7,28 @@ from lizard_map.models import Legend
 from lizard_map.models import LegendPoint
 from lizard_map.workspace import WorkspaceItemAdapter
 
+logger = logging.getLogger(__name__)
+
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     """Render a WorkspaceItem using a shape file.
 
     Instance variables:
     * layer_name -- name of the WorkspaceItem that is rendered
+
     * search_property_name -- name of shapefile feature used in search
+      results - must be come kind of id
+
     * value_field (optional, with legend) -- value field for legend
       (takes 'value' if not given)
 
+    Legend:
     * legend_id (optional, preferenced) -- id of legend (linestyle)
     OR
     * legend_point_id (optional) -- id of legend_point_id (points)
     ELSE it takes default legend
 
+    Shapefile:
     * layer_filename -- absolute path to shapefile
     OR
     * resource_module -- module that contains the shapefile resource
@@ -54,7 +62,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 self.resource_module,
                 self.resource_name)
         self.search_property_name = \
-            str(layer_arguments['search_property_name'])
+            str(layer_arguments.get('search_property_name', ""))
         self.legend_id = layer_arguments.get('legend_id', None)
         self.legend_point_id = layer_arguments.get('legend_point_id', None)
         self.value_field = layer_arguments.get('value_field', None)
@@ -106,7 +114,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             # style = self._default_mapnik_style()
         elif self.legend_point_id is not None:
             legend_point = LegendPoint.objects.get(id=self.legend_point_id)
-            style = legend_point.mapnik_style(value_field=str(self.value_field))
+            style = legend_point.mapnik_style(
+                value_field=str(self.value_field))
         else:
             # Show layer with default legend.
             style = self._default_mapnik_style()
@@ -139,12 +148,42 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         feature_set = mapnik_map.query_point(0, x, y)
         result = []
         for feature in feature_set.features:
-            name_in_shapefile = \
-                feature.properties[self.search_property_name]
-            result.append({
-                    'distance': 0.0,
-                    'name': name_in_shapefile,
-                    })
+            try:
+                if self.search_property_name:
+                    name_in_shapefile = \
+                        feature.properties[str(self.search_property_name)]
+            except KeyError:
+                # This means that the search_property_name is not a
+                # valid field in the shapefile dbf.
+                logger.error(
+                    ('Search: The field "%s" cannot be found in '
+                     'shapefile "%s". '
+                     'Check your settings in lizard_shape.models.Shape.') %
+                    (self.search_property_name, self.layer_name))
+                name_in_shapefile = ''
+                continue
+            try:
+                if self.value_field:
+                    value_in_shapefile = \
+                        feature.properties[str(self.value_field)]
+            except KeyError:
+                # This means that the value_field is not a
+                # valid field in the shapefile dbf.
+                logger.error(
+                    ('Search: The field "%s" cannot be found in '
+                     'shapefile "%s". Check value_field in your '
+                     'legend settings.') %
+                    (self.value_field, self.layer_name))
+                value_in_shapefile = ''
+                continue
+            name = name_in_shapefile
+            if value_in_shapefile:
+                name += ' (%r)' % value_in_shapefile
+
+            result.append(
+                {'distance': 0.0,
+                 'name': name,
+                 'identifier': {id: name_in_shapefile}})
 
         return result
 

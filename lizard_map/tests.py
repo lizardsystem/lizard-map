@@ -25,6 +25,7 @@ from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.models import WorkspaceItem
+from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
 from lizard_map.workspace import WorkspaceManager
@@ -437,6 +438,38 @@ class UtilityTest(TestCase):
             short = short_string(name, 17)
             self.assertTrue(len(short) <= 17)
             self.assertEquals(short[:5], name[:5])
+
+    def test_float_to_string(self):
+        """Let's input some nice floats."""
+        st = float_to_string(1.2345678)
+        self.assertTrue(len(st) <= 10)
+        self.assertEquals(st[:4], '1.23')
+
+    def test_float_to_string2(self):
+        """Let's input some nice floats."""
+        st = float_to_string(12345.678)
+        self.assertTrue(len(st) <= 10)
+        self.assertEquals(st[:4], '1234')
+
+    def test_float_to_string3(self):
+        """Let's input some nice floats."""
+        st = float_to_string(0.00000000012345)
+        self.assertTrue(len(st) <= 10)
+        self.assertEquals(st[:4], '1.23')
+        self.assertTrue('e' in st)
+
+    def test_float_to_string5(self):
+        """Let's input some nice floats."""
+        st = float_to_string(123456789012345)
+        self.assertTrue(len(st) <= 10)
+        self.assertEquals(st[:4], '1.23')
+        self.assertTrue('e' in st)
+
+    def test_float_to_string6(self):
+        """Let's input some nice floats."""
+        st = float_to_string(999999999.99)
+        self.assertTrue(len(st) <= 10)
+        self.assertEquals(st[:4], '1000')
 
     def test_parse_identifier_json(self):
         self.assertTrue(parse_identifier_json(

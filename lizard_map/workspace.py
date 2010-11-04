@@ -160,12 +160,19 @@ class WorkspaceItemAdapter(object):
         else:
             self.layer_arguments = {}
 
-    def layer(self):
-        """Return xyz"""
+    def layer(self, layer_ids=None, request=None):
+        """Generates and returns layers, styles.
+
+        Layers is a list of mapnik layers.
+
+        Styles is a list of mapnik styles (which are used in the
+        layers).
+        """
         raise NotImplementedError
 
     def search(self, x, y, radius=None):
-        """Return list of dicts for matching items.
+        """Search by coordinates. Return list of dicts for matching
+        items.
 
         {'distance': <float>,
         'name': <name>,
