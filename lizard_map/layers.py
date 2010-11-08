@@ -153,6 +153,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         x,y are google coordinates
 
+        assumes the shapefile has RD projection!
+
+        Note: due to mapnik #503 (http://trac.mapnik.org/ticket/503)
+        the search does not work for lines and points. So the
+        implementation was done with shapely.
+
         """
         if not self.search_property_name:
             # We don't have anything to return, so don't search.
@@ -181,7 +187,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                         # valid field in the shapefile dbf.
                         logger.error(
                             ('Search: The field "%s" cannot be found in '
-                             'shapefile "%s". Check your settings in '
+                             'shapefile "%s". '
+                             'Check your settings in '
                              'lizard_shape.models.Shape.') %
                             (self.search_property_name, self.layer_name))
                         break  # You don't have to search other rows.
