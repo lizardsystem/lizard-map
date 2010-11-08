@@ -120,6 +120,9 @@ class ColorField(models.CharField):
         kwargs['max_length'] = 8
         super(ColorField, self).__init__(*args, **kwargs)
 
+    def get_prep_value(self, value):
+        return str(value)
+
     def to_python(self, value):
         if isinstance(value, Color):
             return value
