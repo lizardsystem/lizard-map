@@ -141,7 +141,7 @@ lizard_map/workspace concepts.
 
 - Install lizard-map somewhere.
 
-- Add lizard-map to your settings.py: INSTALLED_APPS.
+- Add 'lizard_map' to your settings.py: INSTALLED_APPS.
 
 - Add an entry in your urls.py::
 
