@@ -204,3 +204,9 @@ Example template::
     {% endfor %}
 
     {% endblock %}
+
+- Add this view to your views.py:
+
+    (r'^$', 'mapdemo.views.homepage'),
+
+- Start testing by running syncdb, then start dev server.
