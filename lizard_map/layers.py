@@ -179,8 +179,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 item = loads(geom.ExportToWkt())
                 distance = query_point.distance(item)
                 feat_items = feat.items()
-                print item.xy[0]
-                print item.xy
+                # print item.xy[0]
+                # print item.xy
                 # print dir(item.xy[0])
 
                 if not radius or (radius is not None and distance < radius):
