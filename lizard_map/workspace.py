@@ -182,6 +182,9 @@ class WorkspaceItemAdapter(object):
         'google_coords': (x, y) coordinate in google,
         'object': <object>} of closest fews point that matches x, y, radius.
 
+        Required: distance, name, workspace_item, google_coords
+        Highly recommended (else some functions will not work):
+        identifier (for popups)
         """
         raise NotImplementedError
 

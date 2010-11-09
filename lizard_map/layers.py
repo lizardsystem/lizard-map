@@ -179,6 +179,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 item = loads(geom.ExportToWkt())
                 distance = query_point.distance(item)
                 feat_items = feat.items()
+                print item.xy[0]
+                print item.xy
+                # print dir(item.xy[0])
 
                 if not radius or (radius is not None and distance < radius):
                     # Found an item.
@@ -208,7 +211,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                             self.value_name,
                             float_to_string(feat_items[self.value_field]))
                     result = {'distance': distance,
-                              'name': name}
+                              'name': name,
+                              # 'google_coords':
+                              'workspace_item': self.workspace_item}
                     if (self.search_property_id and
                         self.search_property_id in feat_items):
                         result.update(
