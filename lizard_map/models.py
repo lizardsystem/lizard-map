@@ -754,8 +754,9 @@ class LegendPoint(models.Model):
     too_low_color = ColorField()
     too_high_color = ColorField()
 
-    icon = models.CharField(max_length=80)
-    mask = models.CharField(max_length=80, null=True, blank=True)
+    icon = models.CharField(max_length=80, default='empty.png')
+    mask = models.CharField(max_length=80, null=True, blank=True,
+                            default='empty_mask.png')
 
     def __unicode__(self):
         return '%s' % (self.descriptor)
