@@ -60,7 +60,7 @@ def database_settings(name="default", user_settings=None):
         else:
             raise RuntimeError(
                 'Sorry, unconfigured db engine (%s) for mapnik integration.' % (
-                    user_settings.DATABASE_ENGINE))
+                   user_settings.DATABASE_ENGINE))
     else:
         raise RuntimeError(
             'Sorry, unconfigured db (%s and %s) for mapnik integration.' % (
