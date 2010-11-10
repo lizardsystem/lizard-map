@@ -261,11 +261,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 break
             feat = lyr.GetNextFeature()
 
-        fields = [{'name': self.value_field, 'field': self.value_field},
-                  {'name': self.value_field, 'field': self.value_field}, ]
         values = []  # contains {'name': <name>, 'value': <value>}
-        for field in fields:
-            values.append({'name': field['name'], 'value': feat_items[field['field']]})
+        for field in self.display_fields:
+            values.append({'name': field['name'], 'value': feat_items[str(field['field'])]})
         return {
             'name': feat_items[self.search_property_name],
             'value_name': self.value_name,
