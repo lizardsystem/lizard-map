@@ -5,6 +5,8 @@ import mapnik
 import osgeo.ogr
 import pkg_resources
 
+from django.template.loader import render_to_string
+
 from lizard_map import coordinates
 from lizard_map.models import Legend
 from lizard_map.models import LegendPoint
@@ -30,6 +32,9 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
       (takes 'value' if not given)
 
     * value_name (optional) -- name for value field
+
+    * display_fields (optional) -- list of which columns to
+      show in a popup.
 
     Legend:
     * legend_id (optional, preferenced) -- id of legend (linestyle)
@@ -78,6 +83,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         self.legend_point_id = layer_arguments.get('legend_point_id', None)
         self.value_field = layer_arguments.get('value_field', None)
         self.value_name = layer_arguments.get('value_name', None)
+        self.display_fields = layer_arguments.get('display_fields', {
+                'name': self.value_name, 'field': self.value_field})
 
     def _default_mapnik_style(self):
         """
@@ -179,9 +186,6 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                 item = loads(geom.ExportToWkt())
                 distance = query_point.distance(item)
                 feat_items = feat.items()
-                # print item.xy[0]
-                # print item.xy
-                # print dir(item.xy[0])
 
                 if not radius or (radius is not None and distance < radius):
                     # Found an item.
@@ -239,3 +243,55 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
             start_date=start_date,
             end_date=end_date,
             icon_style=icon_style)
+
+    def location(self, id):
+        """Find id in shape. Used by html function."""
+        ds = osgeo.ogr.Open(self.layer_filename)
+        lyr = ds.GetLayer()
+        lyr.ResetReading()
+        feat = lyr.GetNextFeature()
+
+        item, google_x, google_y, feat_items = None, None, None, None
+        while feat is not None:
+            geom = feat.GetGeometryRef()
+            feat_items = feat.items()
+            if geom and feat_items[self.search_property_id] == id:
+                item = loads(geom.ExportToWkt())
+                google_x, google_y = coordinates.rd_to_google(*item.coords[0])
+                break
+            feat = lyr.GetNextFeature()
+
+        fields = [{'name': self.value_field, 'field': self.value_field},
+                  {'name': self.value_field, 'field': self.value_field}, ]
+        values = []  # contains {'name': <name>, 'value': <value>}
+        for field in fields:
+            values.append({'name': field['name'], 'value': feat_items[field['field']]})
+        return {
+            'name': feat_items[self.search_property_name],
+            'value_name': self.value_name,
+            'value': feat_items[self.value_field],
+            'values': values,
+            'object': feat_items,
+            'google_x': google_x,
+            'google_y': google_y,
+            'workspace_item': self.workspace_item,
+            'identifier': {'id': id},
+            }
+
+    def html(self, snippet_group=None, identifiers=None, layout_options=None):
+        """
+        Renders table with shape attributes.
+        """
+        if snippet_group:
+            snippets = snippet_group.snippets.all()
+            identifiers = [snippet.identifier for snippet in snippets]
+        display_group = [
+            self.location(**identifier) for identifier in identifiers]
+        add_snippet = False
+        if layout_options and 'add_snippet' in layout_options:
+            add_snippet = layout_options['add_snippet']
+        return render_to_string(
+            'lizard_map/popup_shape.html',
+            {'display_group': display_group,
+             'add_snippet': add_snippet,
+             'symbol_url': self.symbol_url()})

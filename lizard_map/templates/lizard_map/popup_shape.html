@@ -1,0 +1,48 @@
+{% load workspaces %}
+{# header #}
+{% for display_object in display_group %}
+<h3>Attributen - {{ display_object.name }}</h3>
+<table>
+  <tr>
+    <td><img src="{{ symbol_url }}"/>&nbsp;</td>
+    {% if add_snippet %}
+    <td class="sidebarbox-action-icon">
+      {% with display_object.header as header %}
+      <a href=""
+         class="add-snippet ss_chart_line_add ss_sprite"
+         data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
+         data-workspace-item-id="{{ display_object.workspace_item.id }}"
+         data-item-identifier='{{ display_object.identifier|json_escaped }}'
+         data-item-shortname="{{ display_object.shortname }}"
+         data-item-name="{{ header.name }}"></a>
+      {% endwith %}
+    </td>
+    {% endif %}
+  </tr>
+</table>
+{# body #}
+<div>
+  <table class="noprint generic-table">
+    <thead>
+      <tr>
+        <th>
+          Veld
+        </th>
+        <th>
+          Waarde
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in display_object.values %}
+      <tr>
+        <td>
+        {{ row.name }}</td>
+        <td>
+        {{ row.value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
