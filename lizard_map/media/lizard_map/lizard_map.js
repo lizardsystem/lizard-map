@@ -195,38 +195,6 @@ function setUpGraphEditPopup() {
 }
 
 
-/*
-Shows legend tooltip. Re-initializes after workspace update.
-*/
-function setUpLegendTooltips() {
-    $(".legend-tooltip").each(function () {
-        if (!$(this).data("popup-initialized")) {
-            $(this).data("popup-initialized", true);
-            $(this).tooltip({
-                position: 'center right',
-                effect: 'fade',
-                onShow: function () {
-                    var offset, pixels_below_screen;
-                    // Too high?
-                    offset = this.getTip().offset();
-                    if (offset.top < 0) {
-                        offset.top = 0;
-                        this.getTip().offset(offset);
-                    }
-                    // Too low?
-                    pixels_below_screen = offset.top +
-                        this.getTip().height() -
-                        $(window).height();
-                    if (pixels_below_screen > 0) {
-                        offset.top = offset.top - pixels_below_screen;
-                        this.getTip().offset(offset);
-                    }
-                    // Repositioning beforehand would be visually nicer.
-                }
-            });
-        }
-    });
-}
 
 
 
@@ -293,22 +261,7 @@ function popup_hover_handler(x, y, map) {
 }
 
 
-function legend_action_reload(event) {
-    // send all legend properties to server and reload page
-    var $form, url, name;
-    event.preventDefault();
-    $form = $(this).parents("form.legend-options");
-    url = $form.attr("data-url");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            // Reload page after posting.
-            location.reload();
-        });
-}
-
-
+/* Legend edit functions. */
 function setUpLegendColorPickers() {
     var submit, beforeshow;
     submit = function (hsb, hex, rgb, el) {
@@ -355,6 +308,22 @@ function setUpLegendColorPickers() {
 }
 
 
+function legend_action_reload(event) {
+    // send all legend properties to server and reload page
+    var $form, url, name;
+    event.preventDefault();
+    $form = $(this).parents("form.legend-options");
+    url = $form.attr("data-url");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            // Reload page after posting.
+            location.reload();
+        });
+}
+
+
 function setUpLegendEdit() {
     $(".legend-edit").live("mouseover", function () {
         if (!$(this).data("popup-initialized")) {
@@ -378,8 +347,7 @@ $(document).ready(function () {
     setUpTransparencySlider();
     setUpGraphEditPopup();
 
-    // Set up legend.
-    setUpLegendTooltips(); // The edit function is on the tooltip.
+    // Set up legend edit.
     setUpLegendEdit();
 
     /* Workspace functions, requires jquery.workspace.js */

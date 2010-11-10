@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.21 (unreleased)
 -----------------
 
+- Moved js setUpLegendTooltips() to lizard_ui: setUpTooltips().
+
 - Refactor Colors: removed model, add ColorField.
 
 - Reimplemented search function using shapely. Before it was
