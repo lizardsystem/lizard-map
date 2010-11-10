@@ -153,7 +153,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         x,y are google coordinates
 
-        assumes the shapefile has RD projection!
+        !!!assumes the shapefile has RD projection!
 
         Note: due to mapnik #503 (http://trac.mapnik.org/ticket/503)
         the search does not work for lines and points. So the
@@ -212,7 +212,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                             float_to_string(feat_items[self.value_field]))
                     result = {'distance': distance,
                               'name': name,
-                              # 'google_coords':
+                              'google_coords':
+                              coordinates.rd_to_google(*item.coords[0]),
                               'workspace_item': self.workspace_item}
                     if (self.search_property_id and
                         self.search_property_id in feat_items):
