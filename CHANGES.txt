@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.21 (unreleased)
+1.21 (2010-11-11)
 -----------------
 
 - Moved js setUpLegendTooltips() to lizard_ui: setUpTooltips().
