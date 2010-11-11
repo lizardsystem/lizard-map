@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.23 (unreleased)
+1.23 (2010-11-11)
 -----------------
 
 - Remove necessity of google_coords in popup_json and popup_collage_json.
