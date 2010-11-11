@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.24 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Bugfix int in id_field would result in an error.
 
 
 1.23 (2010-11-11)
