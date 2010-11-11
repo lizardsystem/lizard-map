@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.23 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Remove necessity of google_coords in popup_json and popup_collage_json.
+
+- Show snippet name when add to collage.
 
 
 1.22 (2010-11-11)

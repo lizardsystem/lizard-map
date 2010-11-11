@@ -248,6 +248,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
     def location(self, id):
         """Find id in shape. Used by html function."""
+
         ds = osgeo.ogr.Open(self.layer_filename)
         lyr = ds.GetLayer()
         lyr.ResetReading()
@@ -266,14 +267,14 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         values = []  # contains {'name': <name>, 'value': <value>}
         for field in self.display_fields:
             values.append({'name': field['name'], 'value': feat_items[str(field['field'])]})
+        name = feat_items[self.search_property_name]
         return {
-            'name': feat_items[self.search_property_name],
+            'name': name,
+            'shortname': name[:20],
             'value_name': self.value_name,
             'value': feat_items[self.value_field],
             'values': values,
             'object': feat_items,
-            'google_x': google_x,
-            'google_y': google_y,
             'workspace_item': self.workspace_item,
             'identifier': {'id': id},
             }

@@ -355,7 +355,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
                             'legend': True},
             )
 
-        x_found, y_found = display_object['google_coords']
+        if 'google_coords' in display_object:
+            x_found, y_found = display_object['google_coords']
         result_html += html_per_workspace_item
 
     if popup_id is None:
@@ -372,7 +373,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 def popup_collage_json(collage, popup_id, request=None):
     """
     display collage by adding display_groups together
-    TODO: must work with items from same adapter, not only workspace_item
     """
 
     result_html = ''
@@ -392,8 +392,10 @@ def popup_collage_json(collage, popup_id, request=None):
                 snippet_group=snippet_group,
                 layout_options={'legend': True})
             result_html += html_per_workspace_item
+
             # Pick the location of the first snippet.
-            google_x, google_y = snippets[0].location['google_coords']
+            if 'google_coords' in snippets[0].location:
+                google_x, google_y = snippets[0].location['google_coords']
 
     result = {'id': popup_id,
               'x': google_x,
