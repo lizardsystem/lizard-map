@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.22 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Pinned newest lizard-ui version.
 
 
 1.21 (2010-11-11)
