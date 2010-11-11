@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.24 (unreleased)
 -----------------
 
+- Bugfix when name is None.
+
 - Bugfix int in id_field would result in an error.
 
 

@@ -270,7 +270,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         name = feat_items[self.search_property_name]
         return {
             'name': name,
-            'shortname': name[:20],
+            'shortname': name,
             'value_name': self.value_name,
             'value': feat_items[self.value_field],
             'values': values,
