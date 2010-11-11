@@ -7,7 +7,7 @@ Changelog of lizard-map
 
 - Remove necessity of google_coords in popup_json and popup_collage_json.
 
-- Show snippet name when add to collage.
+- Show snippet name when adding shapefile layer to collage.
 
 
 1.22 (2010-11-11)
