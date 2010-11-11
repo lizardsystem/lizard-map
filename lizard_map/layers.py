@@ -201,7 +201,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                              'lizard_shape.models.Shape.') %
                             (self.search_property_name, self.layer_name))
                         break  # You don't have to search other rows.
-                    name = feat_items[self.search_property_name]
+                    name = str(feat_items[self.search_property_name])
 
                     if self.value_field:
                         if self.value_field not in feat_items:
@@ -214,8 +214,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                                 (self.value_field, self.layer_name))
                             break  # You don't have to search other rows.
                         name += ' - %s=%s' % (
-                            self.value_name,
-                            float_to_string(feat_items[self.value_field]))
+                                self.value_name,
+                                str(float_to_string(feat_items[self.value_field])))
                     result = {'distance': distance,
                               'name': name,
                               'google_coords':
