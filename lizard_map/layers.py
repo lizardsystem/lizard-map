@@ -83,8 +83,10 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         self.legend_point_id = layer_arguments.get('legend_point_id', None)
         self.value_field = layer_arguments.get('value_field', None)
         self.value_name = layer_arguments.get('value_name', None)
-        self.display_fields = layer_arguments.get('display_fields', {
-                'name': self.value_name, 'field': self.value_field})
+        self.display_fields = layer_arguments.get('display_fields', [])
+        if not self.display_fields:
+            self.display_fields = [
+                {'name': self.value_name, 'field': self.value_field},]
 
     def _default_mapnik_style(self):
         """
