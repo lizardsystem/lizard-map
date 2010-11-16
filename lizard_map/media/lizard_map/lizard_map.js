@@ -343,7 +343,7 @@ function mapSaveLocation() {
     coordinates = map.center;
     $.post(url,
            {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-           success: function () {}
+           function () {}
           );
     // $.ajax({
     //     url: url, type: 'POST',
