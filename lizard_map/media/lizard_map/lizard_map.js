@@ -336,19 +336,23 @@ function setUpLegendEdit() {
 }
 
 
+function mapSaveLocation() {
+    // Saves the current map location and zoom using a post.
+    var url, coordinates;
+    url = $("#map-save-location").attr("data-url");
+    coordinates = map.center;
+    $.post(
+        url,
+        {x: coordinates.lon,
+         y: coordinates.lat,
+         zoom: map.zoom},
+        function () {}
+    );
+}
+
+
 function setUpMapLoadSaveLocation() {
-    $("#map-save-location").click(function () {
-        var url, coordinates;
-        url = $(this).attr("data-url");
-        coordinates = map.center;
-        $.post(
-            url,
-            {x: coordinates.lon,
-             y: coordinates.lat,
-             zoom: map.zoom},
-            function () {}
-        );
-    });
+    $("#map-save-location").click(mapSaveLocation);
     $("#map-load-location").click(function () {
         var url, coordinates, zoom;
         url = $(this).attr("data-url");
@@ -387,4 +391,12 @@ $(document).ready(function () {
     $(".workspace").workspaceInteraction();
     $(".add-snippet").snippetInteraction(); // voor collage view, nu nog nutteloos voor popup
     // $("a.lizard-map-link").lizardMapLink();
+});
+
+
+// jQuery equivalent to onunload
+$(window).unload(function () {
+    // Does not work correctly: the effect is too slow so the screen
+    // still displays the old location.
+    // mapSaveLocation(); // Save map location when leaving page.
 });
