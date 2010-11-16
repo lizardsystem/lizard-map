@@ -3,6 +3,7 @@ import datetime
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
+from django.utils import simplejson as json
 import pkg_resources
 
 from lizard_map.adapter import Graph
@@ -145,6 +146,26 @@ class ViewsTest(TestCase):
         url += '?x=430987.5469813&y=6817896.448126&radius=100'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_map_location_save(self):
+        """Save map location, see if it doesn't crash
+        """
+        client = Client()
+        url = reverse('lizard_map.map_location_save')
+        response = client.post(url, {'x': 100, 'y': 150, 'zoom': 10})
+        self.assertEqual(response.status_code, 200)
+
+    def test_map_location_save_and_load(self):
+        """Save map location, then load it back.
+        """
+        url = reverse('lizard_map.map_location_save')
+        response = self.client.post(url, {'x': 100, 'y': 150, 'zoom': 10})
+        self.assertEqual(response.status_code, 200)
+        url_load = reverse('lizard_map.map_location_load')
+        response_load = self.client.get(url_load)
+        self.assertEqual(response_load.status_code, 200)
+        result = json.loads(response_load.content)
+        self.assertEqual(result, {'x': '100', 'y': '150', 'zoom': '10'})
 
 
 class WorkspaceTest(TestCase):
