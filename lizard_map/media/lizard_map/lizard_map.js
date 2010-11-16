@@ -341,13 +341,16 @@ function mapSaveLocation() {
     var url, coordinates;
     url = $("#map-save-location").attr("data-url");
     coordinates = map.center;
-    $.post(
-        url,
-        {x: coordinates.lon,
-         y: coordinates.lat,
-         zoom: map.zoom},
-        function () {}
-    );
+    $.post(url,
+           {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+           success: function () {}
+          );
+    // $.ajax({
+    //     url: url, type: 'POST',
+    //     async: false,
+    //     data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+    //     success: function () {}
+    // });
 }
 
 
@@ -397,6 +400,6 @@ $(document).ready(function () {
 // jQuery equivalent to onunload
 $(window).unload(function () {
     // Does not work correctly: the effect is too slow so the screen
-    // still displays the old location.
-    // mapSaveLocation(); // Save map location when leaving page.
+    // still displays the old location. Even when async in post is false.
+    //mapSaveLocation(); // Save map location when leaving page.
 });
