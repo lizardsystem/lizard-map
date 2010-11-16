@@ -32,6 +32,16 @@ urlpatterns = patterns(
      {},
      name="lizard_map.set_animation_date"),
 
+    # Load and save map location
+    (r'^map_location_save$',
+     'lizard_map.views.map_location_save',
+     {},
+     'lizard_map.map_location_save'),
+    (r'^map_location_load$',
+     'lizard_map.views.map_location_load',
+     {},
+     'lizard_map.map_location_load'),
+
     # Collages and snippets
     url(r'^collage/(?P<collage_id>\d+)/$',
         'lizard_map.views.collage',

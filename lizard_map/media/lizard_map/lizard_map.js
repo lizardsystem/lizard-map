@@ -2,7 +2,7 @@
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayer, updateLayers,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-hover_popup, layers */
+hover_popup, layers, map */
 
 var animationTimer, transparencyTimer;
 
@@ -336,6 +336,37 @@ function setUpLegendEdit() {
 }
 
 
+function setUpMapLoadSaveLocation() {
+    $("#map-save-location").click(function () {
+        var url, coordinates;
+        url = $(this).attr("data-url");
+        coordinates = map.center;
+        $.post(
+            url,
+            {x: coordinates.lon,
+             y: coordinates.lat,
+             zoom: map.zoom},
+            function () {}
+        );
+    });
+    $("#map-load-location").click(function () {
+        var url, coordinates, zoom;
+        url = $(this).attr("data-url");
+        $.getJSON(
+            url, function (data) {
+                if ((data.x !== undefined) &&
+                    (data.y !== undefined) &&
+                    (data.zoom !== undefined))
+                {
+                    map.setCenter(
+                        new OpenLayers.LonLat(parseFloat(data.x), parseFloat(data.y)),
+                        parseFloat(data.zoom));
+                }
+            });
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -349,6 +380,8 @@ $(document).ready(function () {
 
     // Set up legend edit.
     setUpLegendEdit();
+
+    setUpMapLoadSaveLocation();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();

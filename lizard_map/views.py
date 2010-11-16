@@ -28,6 +28,7 @@ from lizard_map.workspace import WorkspaceManager
 # Workspace stuff
 
 CUSTOM_LEGENDS = 'custom_legends'
+MAP_LOCATION = 'map_location'
 
 
 def workspace(request,
@@ -831,3 +832,30 @@ def export_snippet_group_statistics_csv(request, snippet_group_id=None):
     for row in statistics:
         writer.writerow([row[colname] for colname in colnames])
     return response
+
+
+"""
+Map locations are stored in the session with key MAP_SESSION. It
+contains a dictionary with fields x, y and zoom.
+"""
+
+def map_location_save(request):
+    """
+    Saves given coordinates as strings (POST x, y, zoom) to session.
+    """
+    x = request.POST['x']
+    y = request.POST['y']
+    zoom = request.POST['zoom']
+    request.session[MAP_LOCATION] = {'x': x, 'y': y, 'zoom': zoom}
+
+    return HttpResponse("")
+
+
+def map_location_load(request):
+    """
+    Returns stored coordinates in a json dict, or empty dict if
+    nothing was saved.
+    """
+    map_location = request.session.get(MAP_LOCATION, {})
+
+    return HttpResponse(json.dumps(map_location))

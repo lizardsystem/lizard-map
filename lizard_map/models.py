@@ -153,11 +153,7 @@ class Workspace(models.Model):
     name = models.CharField(max_length=80,
                             blank=True,
                             default='Workspace')
-    # TODO below: default extend values for NL?
-    extent_north = models.FloatField(blank=True, null=True)
-    extent_east = models.FloatField(blank=True, null=True)
-    extent_south = models.FloatField(blank=True, null=True)
-    extent_west = models.FloatField(blank=True, null=True)
+
     owner = models.ForeignKey(User, blank=True, null=True)
     visible = models.BooleanField(default=False)
 

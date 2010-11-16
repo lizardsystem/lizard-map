@@ -2,6 +2,8 @@ from django import template
 from django.conf import settings
 import logging
 
+from lizard_map.views import MAP_LOCATION
+
 register = template.Library()
 
 logger = logging.getLogger(__name__)
@@ -12,6 +14,15 @@ class MapVariablesNode(template.Node):
     This node adds lizard-map variables to the context; in the
     template those variables are finally inserted into javascript
     code.
+
+    By default it takes coordinates from the django settings. If a
+    user has custom coordinates in his session, it will take those
+    coordinates and zoomlevel.
+
+    Note: user coordinates require
+    'django.core.context_processors.request' in your
+    TEMPLATE_CONTEXT_PROCESSORS.
+
     """
 
     def render(self, context):
@@ -31,6 +42,15 @@ class MapVariablesNode(template.Node):
                 'base_layer_osm': (
                     'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
                 }
+        # Update map_settings with own coordinates and zoomlevel, if applicable
+        if context.has_key('request'):
+            session = context['request'].session
+            if MAP_LOCATION in session:
+                map_location = session[MAP_LOCATION]
+                print map_location
+                map_settings['startlocation_x'] = str(map_location['x'])
+                map_settings['startlocation_y'] = str(map_location['y'])
+                map_settings['startlocation_zoom'] = str(map_location['zoom'])
 
         for setting, setting_value in map_settings.items():
             context[setting] = setting_value

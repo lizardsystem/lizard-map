@@ -5,6 +5,14 @@ Changelog of lizard-map
 1.24 (unreleased)
 -----------------
 
+Attention: You need to add 'django.core.context_processors.request' to
+your TEMPLATE_CONTEXT_PROCESSORS in order to make map-locations work
+correctly. For more information see the README.
+
+- Removed extent coordinates from model Workspace.
+
+- Add actions map-location-save and map-location-load.
+
 - Bugfix when name is None.
 
 - Bugfix int in id_field would result in an error.

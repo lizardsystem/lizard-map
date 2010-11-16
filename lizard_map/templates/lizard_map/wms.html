@@ -7,6 +7,19 @@
 
 {% block above-content %}
 <ul class="map-actions">
+  {# Load and save map locations #}
+  <li id="map-load-location"
+      class="map-action"
+      data-url="{% url lizard_map.map_location_load %}">
+    <span class="ss_sprite ss_arrow_right action-icon"
+          title="{% trans 'load map location' %}"></span>
+  </li>
+  <li id="map-save-location"
+      class="map-action"
+      data-url="{% url lizard_map.map_location_save %}">
+    <span class="ss_sprite ss_star action-icon"
+          title="{% trans 'save map location' %}"></span>
+  </li>
   {% if animation_slider %}
   <li id="animation-slider"
       class="map-action"
