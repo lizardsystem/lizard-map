@@ -335,12 +335,14 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         his = His.objects.all()[0]  # Test: take first object.
         hf = his.hisfile()
-        parameter = hf.parameters()[2]  # Test: take first parameter.
+        # parameter = hf.parameters()[2]  # Test: take first parameter.
+        parameters = hf.parameters()
         location = hf.locations()[0]  # Test: take first location.
 
         start_datetime = datetime.datetime.combine(start_date, datetime.time())
         end_datetime = datetime.datetime.combine(end_date, datetime.time())
-        for identifier in identifiers:
+        for index, identifier in enumerate(identifiers):
+            parameter = parameters[index % len(parameters)]
             timeseries = hf.get_timeseries(
                 location, parameter, start_datetime, end_datetime, list)
 
