@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-16 05:11-0600\n"
+"POT-Creation-Date: 2010-11-16 05:15-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -189,7 +189,7 @@ msgid "save map location"
 msgstr "bewaar kaart locatie"
 
 #: templates/lizard_map/wms.html:48
-msgid "tijdelijke workspace legen"
+msgid "empty temporary workspace"
 msgstr "tijdelijke workspace legen"
 
 #~ msgid "Attached point"
