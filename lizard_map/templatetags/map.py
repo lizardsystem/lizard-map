@@ -47,7 +47,6 @@ class MapVariablesNode(template.Node):
             session = context['request'].session
             if MAP_LOCATION in session:
                 map_location = session[MAP_LOCATION]
-                print map_location
                 map_settings['startlocation_x'] = str(map_location['x'])
                 map_settings['startlocation_y'] = str(map_location['y'])
                 map_settings['startlocation_zoom'] = str(map_location['zoom'])
