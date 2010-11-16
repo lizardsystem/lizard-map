@@ -336,26 +336,34 @@ function setUpLegendEdit() {
 }
 
 
-function mapSaveLocation() {
-    // Saves the current map location and zoom using a post.
-    var url, coordinates;
-    url = $("#map-save-location").attr("data-url");
-    coordinates = map.center;
-    $.post(url,
-           {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-           function () {}
-          );
-    // $.ajax({
-    //     url: url, type: 'POST',
-    //     async: false,
-    //     data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-    //     success: function () {}
-    // });
-}
+// function mapSaveLocation() {
+//     // Saves the current map location and zoom using a post.
+//     var url, coordinates;
+//     url = $("#map-save-location").attr("data-url");
+//     coordinates = map.center;
+//     $.post(url,
+//            {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+//            function () {}
+//           );
+//     // $.ajax({
+//     //     url: url, type: 'POST',
+//     //     async: false,
+//     //     data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+//     //     success: function () {}
+//     // });
+// }
 
 
 function setUpMapLoadSaveLocation() {
-    $("#map-save-location").click(mapSaveLocation);
+    $("#map-save-location").click(function () {
+        var url, coordinates;
+        url = $("#map-save-location").attr("data-url");
+        coordinates = map.center;
+        $.post(url,
+               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+               function () {}
+              );
+    });
     $("#map-load-location").click(function () {
         var url, coordinates, zoom;
         url = $(this).attr("data-url");

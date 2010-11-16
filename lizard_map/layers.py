@@ -5,7 +5,9 @@ import mapnik
 import osgeo.ogr
 import pkg_resources
 
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.utils import simplejson as json
 
 from lizard_map import coordinates
 from lizard_map.models import Legend
@@ -86,7 +88,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         self.display_fields = layer_arguments.get('display_fields', [])
         if not self.display_fields:
             self.display_fields = [
-                {'name': self.value_name, 'field': self.value_field},]
+                {'name': self.value_name, 'field': self.value_field}]
 
     def _default_mapnik_style(self):
         """
@@ -214,8 +216,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
                                 (self.value_field, self.layer_name))
                             break  # You don't have to search other rows.
                         name += ' - %s=%s' % (
-                                self.value_name,
-                                str(float_to_string(feat_items[self.value_field])))
+                            self.value_name,
+                            str(float_to_string(feat_items[self.value_field])))
                     result = {'distance': distance,
                               'name': name,
                               'google_coords':
@@ -266,7 +268,8 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
 
         values = []  # contains {'name': <name>, 'value': <value>}
         for field in self.display_fields:
-            values.append({'name': field['name'], 'value': feat_items[str(field['field'])]})
+            values.append({'name': field['name'],
+                           'value': feat_items[str(field['field'])]})
         name = feat_items[self.search_property_name]
         return {
             'name': name,
@@ -291,8 +294,66 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         add_snippet = False
         if layout_options and 'add_snippet' in layout_options:
             add_snippet = layout_options['add_snippet']
+
+        # Testing: images for timeseries
+        img_url = reverse(
+                "lizard_map.workspace_item_image",
+                kwargs={'workspace_item_id': self.workspace_item.id},
+                )
+        identifiers_escaped = [json.dumps(identifier).replace('"', '%22')
+                               for identifier in identifiers]
+        img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
+                                            identifiers_escaped])
+
         return render_to_string(
             'lizard_map/popup_shape.html',
             {'display_group': display_group,
              'add_snippet': add_snippet,
-             'symbol_url': self.symbol_url()})
+             'symbol_url': self.symbol_url(),
+             'img_url': img_url})
+
+    def image(self, identifiers, start_date, end_date,
+              width=380.0, height=250.0, layout_extra=None):
+        """
+        Displays timeseries graph.
+
+        This function can only be used in combination with
+        lizard-shape. Maybe it's better to move the whole file to
+        lizard-shape.
+        """
+        import datetime
+
+        from lizard_shape.models import His
+        from lizard_map.adapter import Graph
+
+        line_styles = self.line_styles(identifiers)
+
+        today = datetime.datetime.now()
+        graph = Graph(start_date, end_date,
+                      width=width, height=height, today=today)
+        graph.axes.grid(True)
+
+        his = His.objects.all()[0]  # Test: take first object.
+        hf = his.hisfile()
+        parameter = hf.parameters()[2]  # Test: take first parameter.
+        location = hf.locations()[0]  # Test: take first location.
+
+        start_datetime = datetime.datetime.combine(start_date, datetime.time())
+        end_datetime = datetime.datetime.combine(end_date, datetime.time())
+        for identifier in identifiers:
+            timeseries = hf.get_timeseries(
+                location, parameter, start_datetime, end_datetime, list)
+
+            # Plot data.
+            dates = [row[0] for row in timeseries]
+            values = [row[1] for row in timeseries]
+            graph.axes.plot(dates, values,
+                            lw=1,
+                            color=line_styles[str(identifier)]['color'],
+                            label=parameter)
+
+        # if legend:
+        #     graph.legend()
+
+        graph.add_today()
+        return graph.http_png()
