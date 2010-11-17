@@ -339,6 +339,7 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         parameters = hf.parameters()
         location = hf.locations()[0]  # Test: take first location.
 
+        # Convert dates to datetimes
         start_datetime = datetime.datetime.combine(start_date, datetime.time())
         end_datetime = datetime.datetime.combine(end_date, datetime.time())
         for index, identifier in enumerate(identifiers):
