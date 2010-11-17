@@ -9,6 +9,8 @@ Attention: You need to add 'django.core.context_processors.request' to
 your TEMPLATE_CONTEXT_PROCESSORS in order to make map-locations work
 correctly. For more information see the README.
 
+- Moved adapter layers.py to lizard-shape.
+
 - Removed extent coordinates from model Workspace.
 
 - Add actions map-location-save and map-location-load.

@@ -19,7 +19,6 @@ from lizard_map.dateperiods import WEEK
 from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
-from lizard_map.layers import WorkspaceItemAdapterShapefile
 from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Legend
 from lizard_map.models import Workspace
@@ -37,24 +36,6 @@ import lizard_map.layers
 import lizard_map.models
 import lizard_map.urls
 import lizard_map.views
-
-
-class LayersTest(TestCase):
-    """WMS layer functions are generally defined in layers.py. One can add his
-    own in other apps. shapefile_layer is an example function.
-    """
-
-    def test_initialization(self):
-        mock_workspace = None
-        layer_arguments = {
-            'layer_name': 'Waterlichamen',
-            'resource_module': 'lizard_map',
-            'resource_name': 'test_shapefiles/KRWwaterlichamen_merge.shp',
-            'search_property_name': 'WGBNAAM'}
-        ws_adapter = lizard_map.layers.WorkspaceItemAdapterShapefile(
-            mock_workspace, layer_arguments=layer_arguments)
-        layers, styles = ws_adapter.layer()
-        # TODO: test output.
 
 
 class WorkspaceManagerTest(TestCase):
@@ -305,15 +286,11 @@ class WorkspaceItemTest(TestCase):
                           # ^^^ lambda as adapter is a property and
                           # assertRaises expects a callable.
                           )
-        workspace_item.adapter_class = 'adapter_shapefile'
-        workspace_item.adapter_layer_json = (
-            '{"layer_name": "Waterlichamen", '
-            '"resource_module": "lizard_map", '
-            '"resource_name": "test_shapefiles/KRWwaterlichamen_merge.shp", '
-            '"search_property_name": "WGBNAAM"}')
+        workspace_item.adapter_class = 'adapter_dummy'
+        workspace_item.adapter_layer_json = ("{}")
         self.assertTrue(isinstance(
                 workspace_item.adapter,
-                lizard_map.layers.WorkspaceItemAdapterShapefile))
+                lizard_map.layers.AdapterDummy))
 
     def test_adapter_arguments(self):
         """The layer method probably needs arguments. You can store them as a
@@ -737,29 +714,6 @@ class DatePeriodsTest(TestCase):
         self.assertTrue(fancy_period(start_date, end_date, MONTH))
         self.assertTrue(fancy_period(start_date, end_date, WEEK))
         self.assertTrue(fancy_period(start_date, end_date, DAY))
-
-
-class WorkspaceItemAdapterShapefileTestSuite(TestCase):
-
-    def test_b(self):
-        """Test the layer info is initialized with the given parameters.
-
-        Note: the resource_module must exist.
-        """
-
-        workspace_item = 0  # don't care for this test
-        arguments = {'layer_name': 'Layer name',
-                     'resource_module': 'lizard_map',
-                     'resource_name': 'Resource name',
-                     'search_property_name': 'Search property name'}
-
-        adapter = WorkspaceItemAdapterShapefile(workspace_item,
-                                                layer_arguments=arguments)
-
-        self.assertEqual(adapter.layer_name, 'Layer name')
-        self.assertEqual(adapter.resource_module, 'lizard_map')
-        self.assertEqual(adapter.resource_name, 'Resource name')
-        self.assertEqual(adapter.search_property_name, 'Search property name')
 
 
 class TestTemplateTags(TestCase):

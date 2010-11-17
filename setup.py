@@ -17,7 +17,6 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui >= 1.18',
     'matplotlib',
-    'shapely',
     'pyproj',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],
@@ -46,9 +45,9 @@ setup(name='lizard-map',
       extras_require = {'test': tests_require},
       entry_points={
           'console_scripts': [
-          ],
+            ],
           'lizard_map.adapter_class': [
-            'adapter_shapefile = lizard_map.layers:WorkspaceItemAdapterShapefile',
-            ]
+            'adapter_dummy = lizard_map.layers:AdapterDummy',
+            ],
           },
       )
