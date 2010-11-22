@@ -683,7 +683,7 @@ class Legend(models.Model):
                 except ValueError:
                     logger.warn('Could not parse too_high_color (%s)' % v)
 
-    def mapnik_linestyle(self, value_field=None):
+    def mapnik_style(self, value_field=None):
         """Return a Mapnik line/polystyle from Legend object"""
 
         def mapnik_rule(color, mapnik_filter=None):
@@ -733,6 +733,11 @@ class Legend(models.Model):
         mapnik_style.rules.append(rule)
 
         return mapnik_style
+
+    def mapnik_linestyle(self, value_field=None):
+        """Deprecated. Use mapnik_style instead. Return a Mapnik
+        line/polystyle from Legend object"""
+        return mapnik_style(self, value_field=value_field)
 
 
 class LegendPoint(models.Model):
