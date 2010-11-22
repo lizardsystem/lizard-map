@@ -707,9 +707,9 @@ class Legend(models.Model):
         if value_field is None:
             value_field = "value"
 
-        # Default color.
-        # rule = mapnik_rule(self.too_low_color)
-        # mapnik_style.rules.append(rule)
+        # Default color: red.
+        rule = mapnik_rule(Color('ff0000'))
+        mapnik_style.rules.append(rule)
 
         # < min
         mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
@@ -795,7 +795,7 @@ class LegendPoint(models.Model):
                 icon_style['icon'], **icon_style)
             return output_filename
 
-        def point_rule(mapnik_filter, icon, mask, color):
+        def point_rule(icon, mask, color, mapnik_filter=None):
             output_filename = symbol_filename(icon, mask, color)
             output_filename_abs = os.path.join(
                 settings.MEDIA_ROOT, 'generated_icons', output_filename)
@@ -806,7 +806,8 @@ class LegendPoint(models.Model):
             point_looks.allow_overlap = True
             layout_rule = mapnik.Rule()
             layout_rule.symbols.append(point_looks)
-            layout_rule.filter = mapnik.Filter(mapnik_filter)
+            if mapnik_filter:
+                layout_rule.filter = mapnik.Filter(mapnik_filter)
 
             return layout_rule
 
@@ -814,11 +815,16 @@ class LegendPoint(models.Model):
         if value_field is None:
             value_field = "value"
 
+        # Default color: red.
+        mapnik_rule = point_rule(
+            self.icon, self.mask, Color('ff0000'))
+        mapnik_style.rules.append(mapnik_rule)
+
         # < min
         mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
         mapnik_rule = point_rule(
-            mapnik_filter, self.icon, self.mask, self.too_low_color)
+            self.icon, self.mask, self.too_low_color, mapnik_filter=mapnik_filter)
         mapnik_style.rules.append(mapnik_rule)
 
         # in boundaries
@@ -828,14 +834,16 @@ class LegendPoint(models.Model):
                 value_field, legend_value['high_value'])
             logger.debug('adding mapnik_filter: %s' % mapnik_filter)
             mapnik_rule = point_rule(
-                mapnik_filter, self.icon, self.mask, legend_value['color'])
+                self.icon, self.mask, legend_value['color'],
+                mapnik_filter=mapnik_filter)
             mapnik_style.rules.append(mapnik_rule)
 
         # > max
         mapnik_filter = "[%s] > %f" % (value_field, self.max_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
         mapnik_rule = point_rule(
-            mapnik_filter, self.icon, self.mask, self.too_high_color)
+            self.icon, self.mask, self.too_high_color,
+            mapnik_filter=mapnik_filter)
         mapnik_style.rules.append(mapnik_rule)
 
         return mapnik_style
