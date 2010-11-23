@@ -360,9 +360,7 @@ function setUpMapLoadSaveLocation() {
         url = $("#map-save-location").attr("data-url");
         coordinates = map.center;
         $.post(url,
-               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-               function () {}
-              );
+               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom});
     });
     $("#map-load-location").click(function () {
         var url, coordinates, zoom;
