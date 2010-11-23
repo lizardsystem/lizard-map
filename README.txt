@@ -143,9 +143,9 @@ lizard_map/workspace concepts.
 
 - Add 'lizard_map' to your settings.py: INSTALLED_APPS.
 
-- Add 'django.core.context_processors.request' to your settings.py:
-TEMPLATE_CONTEXT_PROCESSORS. Omitting this will not zoom in to your
-saved location when loading the page (= going to another app).
+- Add 'django.core.context_processors.request' to your settings.py's
+  ``TEMPLATE_CONTEXT_PROCESSORS``. Omitting this will not zoom in to your
+  saved location when loading the page (= going to another app).
 
 - Add an entry in your urls.py::
 
