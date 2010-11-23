@@ -741,21 +741,10 @@ class Legend(models.Model):
         return mapnik_style(self, value_field=value_field)
 
 
-class LegendPoint(models.Model):
+class LegendPoint(Legend):
     """
     Legend for points.
     """
-
-    descriptor = models.CharField(max_length=80)
-    min_value = models.FloatField(default=0)
-    max_value = models.FloatField(default=100)
-    steps = models.IntegerField(default=10)
-
-    default_color = ColorField()
-    min_color = ColorField()
-    max_color = ColorField()
-    too_low_color = ColorField()
-    too_high_color = ColorField()
 
     icon = models.CharField(max_length=80, default='empty.png')
     mask = models.CharField(max_length=80, null=True, blank=True,
@@ -763,24 +752,6 @@ class LegendPoint(models.Model):
 
     def __unicode__(self):
         return '%s' % (self.descriptor)
-
-    @property
-    def float_format(self):
-        """Determines float format for defined legend. Required by legend_default."""
-        delta = abs(self.max_value - self.min_value) / self.steps
-        if delta < 0.1:
-            return '%.3f'
-        if delta < 1:
-            return '%.2f'
-        if delta < 10:
-            return '%.1f'
-        return '%.0f'
-
-    def legend_values(self):
-        """Determines legend steps and values. Required by legend_default."""
-        return legend_values(
-            self.min_value, self.max_value,
-            self.min_color, self.max_color, self.steps)
 
     def icon_style(self):
         return {'icon': self.icon,
