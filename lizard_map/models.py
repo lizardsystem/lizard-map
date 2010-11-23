@@ -618,6 +618,7 @@ class Legend(models.Model):
     max_value = models.FloatField(default=100)
     steps = models.IntegerField(default=10)
 
+    default_color = ColorField()
     min_color = ColorField()
     max_color = ColorField()
     too_low_color = ColorField()
@@ -708,7 +709,7 @@ class Legend(models.Model):
             value_field = "value"
 
         # Default color: red.
-        rule = mapnik_rule(Color('ff0000'))
+        rule = mapnik_rule(self.default_color)
         mapnik_style.rules.append(rule)
 
         # < min
@@ -750,6 +751,7 @@ class LegendPoint(models.Model):
     max_value = models.FloatField(default=100)
     steps = models.IntegerField(default=10)
 
+    default_color = ColorField()
     min_color = ColorField()
     max_color = ColorField()
     too_low_color = ColorField()
@@ -822,7 +824,7 @@ class LegendPoint(models.Model):
 
         # Default color: red.
         mapnik_rule = point_rule(
-            self.icon, self.mask, Color('ff0000'))
+            self.icon, self.mask, self.default_color)
         mapnik_style.rules.append(mapnik_rule)
 
         # < min
