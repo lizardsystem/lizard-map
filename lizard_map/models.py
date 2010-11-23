@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
+from south.modelsinspector import add_introspection_rules
 import pkg_resources
 
 from lizard_map.adapter import parse_identifier_json
@@ -34,6 +35,8 @@ SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
 logger = logging.getLogger(__name__)
+# Add introspection rules for ColorField
+add_introspection_rules([], ["lizard_map.models.ColorField"])
 
 
 def legend_values(min_value, max_value, min_color, max_color, steps):

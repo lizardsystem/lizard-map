@@ -18,6 +18,7 @@ install_requires = [
     'lizard-ui >= 1.18',
     'matplotlib',
     'pyproj',
+    'south',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],
 

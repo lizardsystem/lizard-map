@@ -9,6 +9,7 @@ INSTALLED_APPS = [
     'staticfiles',
     'compressor',
     'django_nose',
+    'south',
     'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
