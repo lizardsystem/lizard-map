@@ -9,6 +9,8 @@ Attention: You need to add 'django.core.context_processors.request' to
 your TEMPLATE_CONTEXT_PROCESSORS in order to make map-locations work
 correctly. For more information see the README.
 
+- Add option for Google Maps background layer.
+
 - Model LegendPoint now has parent Legend.
 
 - Add default_color to Legend and LegendPoint models.

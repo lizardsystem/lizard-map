@@ -89,6 +89,12 @@ function showMap() {
             {'isBaseLayer': true, 'buffer': 1}
         );
     }
+    else if (base_layer_type === "GOOGLE")
+    {
+        base_layer = new OpenLayers.Layer.Google(
+            "Google Physical",
+            {type: G_PHYSICAL_MAP});
+    }
     map.addLayer(base_layer);
 
     // Add our own data layers.
