@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.24 (unreleased)
+1.24 (2010-11-24)
 -----------------
 
 Attention: You need to add 'django.core.context_processors.request' to
