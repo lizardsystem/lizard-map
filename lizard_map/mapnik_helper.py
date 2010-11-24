@@ -2,9 +2,12 @@
 Mapnik helper functions
 """
 import logging
+import os
 
 import mapnik
 from django.conf import settings
+
+from lizard_map.symbol_manager import SymbolManager
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +46,8 @@ def database_settings(name="default", user_settings=None):
                         database_settings["ENGINE"], name))
         else:
             raise RuntimeError(
-                'Sorry, db name (%s) not found in multiple db configuration.' % (
+                'Sorry, db name (%s) not found in '
+                'multiple db configuration.' % (
                     name))
     elif getattr(user_settings, "DATABASE_ENGINE", None):
         # Pre django 1.2 style single database configuration.
@@ -59,8 +63,9 @@ def database_settings(name="default", user_settings=None):
                        'dbname': user_settings.DATABASE_NAME}
         else:
             raise RuntimeError(
-                'Sorry, unconfigured db engine (%s) for mapnik integration.' % (
-                   user_settings.DATABASE_ENGINE))
+                'Sorry, unconfigured db engine (%s) for '
+                'mapnik integration.' % (
+                    user_settings.DATABASE_ENGINE))
     else:
         raise RuntimeError(
             'Sorry, unconfigured db (%s and %s) for mapnik integration.' % (
@@ -85,3 +90,48 @@ def create_layer_from_query(query, projection, geometry_field=None, srid=None,
     layer.datasource = datasource(table=str(query), **options)
 
     return layer
+
+
+def symbol_filename(icon, mask, color):
+    """
+    Generates symbol and returns symbol filename. Uses SymbolManager
+    to generate icons.
+
+    TODO: Move ICON_ORIGINALS from lizard_map.models to here?
+
+    Input:
+    icon: icon filename, i.e. empty.png
+    mask: mask filename,
+    color: color tuple, i.e. (1.0, 1.0, 1.0, 1.0)
+    """
+    from lizard_map.models import ICON_ORIGINALS
+
+    icon_style = {'icon': icon,
+                  'mask': (mask, ),
+                  'color': color.to_tuple()}
+    symbol_manager = SymbolManager(
+        ICON_ORIGINALS,
+        os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
+    output_filename = symbol_manager.get_symbol_transformed(
+        icon_style['icon'], **icon_style)
+    return output_filename
+
+
+def point_rule(icon, mask, color, mapnik_filter=None):
+    """
+    Makes mapnik point rule.
+    """
+    output_filename = symbol_filename(icon, mask, color)
+    output_filename_abs = os.path.join(
+        settings.MEDIA_ROOT, 'generated_icons', output_filename)
+
+    # Use filename in mapnik pointsymbolizer
+    point_looks = mapnik.PointSymbolizer(
+        str(output_filename_abs), 'png', 16, 16)
+    point_looks.allow_overlap = True
+    layout_rule = mapnik.Rule()
+    layout_rule.symbols.append(point_looks)
+    if mapnik_filter:
+        layout_rule.filter = mapnik.Filter(mapnik_filter)
+
+    return layout_rule

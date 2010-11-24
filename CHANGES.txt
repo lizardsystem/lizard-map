@@ -9,6 +9,8 @@ Attention: You need to add 'django.core.context_processors.request' to
 your TEMPLATE_CONTEXT_PROCESSORS in order to make map-locations work
 correctly. For more information see the README.
 
+- Moved some functions to mapnik_helper.
+
 - Add tests for Color, bugfix Color.
 
 - Add South for database migrations.

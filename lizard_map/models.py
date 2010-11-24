@@ -1,9 +1,7 @@
 import itertools
 import logging
 import mapnik
-import os
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -21,7 +19,7 @@ from lizard_map.dateperiods import WEEK
 from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
-from lizard_map.symbol_manager import SymbolManager
+from lizard_map.mapnik_helper import point_rule
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -29,7 +27,9 @@ USER_WORKSPACES = 'user'
 DEFAULT_WORKSPACES = 'default'
 TEMP_WORKSPACES = 'temp'
 
+# TODO: Can this property be moved to mapnik_helper?
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
+
 ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
@@ -767,35 +767,7 @@ class LegendPoint(Legend):
                 'color': (1.0, 1.0, 1.0, 1.0)}
 
     def mapnik_style(self, value_field=None):
-        """Return a Mapnik style from Legend object. Uses
-        SymbolManager to generate icons."""
-
-        def symbol_filename(icon, mask, color):
-            icon_style = {'icon': icon,
-                          'mask': (mask, ),
-                          'color': color.to_tuple()}
-            symbol_manager = SymbolManager(
-                ICON_ORIGINALS,
-                os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
-            output_filename = symbol_manager.get_symbol_transformed(
-                icon_style['icon'], **icon_style)
-            return output_filename
-
-        def point_rule(icon, mask, color, mapnik_filter=None):
-            output_filename = symbol_filename(icon, mask, color)
-            output_filename_abs = os.path.join(
-                settings.MEDIA_ROOT, 'generated_icons', output_filename)
-
-            # Use filename in mapnik pointsymbolizer
-            point_looks = mapnik.PointSymbolizer(
-                str(output_filename_abs), 'png', 16, 16)
-            point_looks.allow_overlap = True
-            layout_rule = mapnik.Rule()
-            layout_rule.symbols.append(point_looks)
-            if mapnik_filter:
-                layout_rule.filter = mapnik.Filter(mapnik_filter)
-
-            return layout_rule
+        """Return a Mapnik style from Legend object. """
 
         mapnik_style = mapnik.Style()
         if value_field is None:
