@@ -20,6 +20,7 @@ from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import database_settings
+from lizard_map.models import Color
 from lizard_map.models import Legend
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
@@ -751,3 +752,16 @@ class ModelLegendTest(TestCase):
         self.assertEquals(legend.min_color.r, 255)
         self.assertEquals(legend.max_color.r, 0)
         self.assertEquals(legend.max_color.b, 255)
+
+    def test_color(self):
+        """Testing the color object"""
+        c = Color('ff8000')
+        self.assertEquals(c.r, 255)
+        self.assertEquals(c.g, 128)
+        self.assertEquals(c.b, 0)
+
+    def test_color2(self):
+        c = Color(None)
+        self.assertEquals(c.r, None)
+        self.assertEquals(c.g, None)
+        self.assertEquals(c.b, None)
