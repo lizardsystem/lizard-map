@@ -199,7 +199,17 @@ Example template::
 
     {% block sidebar %}
 
-    (your own menus or other content)
+<div id="iconbox" class="sidebarbox sidebarbox-stretched iconlist">
+  <h2>Apps</h2>
+  <ul>
+      <li>
+        <a href="/address/" class="lizard-map-link">
+          <img src="{{ STATIC_URL }}lizard_ui/app_icons/meetgegevens.png" />
+          <div>App</div>
+        </a>
+      </li>
+  </ul>
+</div>
 
     {% for workspace in workspaces.user %}
       {% workspace workspace %}
