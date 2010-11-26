@@ -46,8 +46,8 @@ function showMap() {
             projection: new OpenLayers.Projection(projection),
             displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
             units: "m",
-            numZoomLevels: 18,
-            maxExtent: new OpenLayers.Bounds(129394, 6659216, 1335570, 7306790)
+            numZoomLevels: 18
+            //maxExtent: new OpenLayers.Bounds(129394, 6659216, 1335570, 7306790)
         };
     }
     else if (projection === "EPSG:28992")

@@ -699,12 +699,13 @@ class Legend(models.Model):
                 rule.filter = mapnik.Filter(mapnik_filter)
             mapnik_color = mapnik.Color(color.r, color.g, color.b)
 
-            symb_line = mapnik.LineSymbolizer(mapnik_color, 3)
+            symb_line = mapnik.LineSymbolizer(mapnik_color, 1)
             rule.symbols.append(symb_line)
 
-            symb_poly = mapnik.PolygonSymbolizer(mapnik_color)
-            symb_poly.fill_opacity = 0.5
-            rule.symbols.append(symb_poly)
+            #symb_poly = mapnik.PolygonSymbolizer(mapnik_color)
+            #symb_poly.fill_opacity = 0.5
+            #rule.symbols.append(symb_poly)
+            # ^^^ TODO: Dirty hack - Ask Jack
             return rule
 
         mapnik_style = mapnik.Style()

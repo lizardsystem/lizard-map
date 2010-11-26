@@ -15,6 +15,18 @@ from lizard_map.workspace import WorkspaceItemAdapter
 
 logger = logging.getLogger(__name__)
 
+LAYER_STYLES = {
+    'default_point_icon': {'icon': 'meetpuntPeil.png',
+                           'mask': ('meetpuntPeil_mask.png', ),
+                           'color': (1, 1, 1, 0)},
+    'default_line_icon': {'icon': 'line.png',
+                          'mask': ('mask.png', ),
+                          'color': (1, 1, 1, 0)},
+    'default_grid_icon': {'icon': 'grid.png',
+                          'mask': ('grid_mask.png', ),
+                          'color': (1, 1, 1, 0)},
+    }
+
 
 class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
     """Render a WorkspaceItem using a shape file.
@@ -128,11 +140,12 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         """
         layers = []
         styles = {}
-        layer = mapnik.Layer(self.layer_name, coordinates.RD)
+        layer = mapnik.Layer(self.layer_name, coordinates.GOOGLE)
         # TODO: ^^^ translation!
 
         layer.datasource = mapnik.Shapefile(
             file=self.layer_filename)
+
         if self.legend_id is not None:
             legend = Legend.objects.get(id=self.legend_id)
             style = legend.mapnik_linestyle(value_field=str(self.value_field))
@@ -240,6 +253,11 @@ class WorkspaceItemAdapterShapefile(WorkspaceItemAdapter):
         if icon_style is None and self.legend_point_id is not None:
             legend_object = LegendPoint.objects.get(pk=self.legend_point_id)
             icon_style = legend_object.icon_style()
+        if 'river' in self.layer_filename.lower():
+            icon_style = LAYER_STYLES['default_line_icon']
+        else:
+            icon_style = LAYER_STYLES['default_grid_icon']
+
         return super(WorkspaceItemAdapterShapefile, self).symbol_url(
             identifier=identifier,
             start_date=start_date,
