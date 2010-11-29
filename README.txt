@@ -139,7 +139,8 @@ Site integration
 The following steps has to be done in order to use the
 lizard_map/workspace concepts.
 
-- Install lizard-map somewhere.
+- Install lizard-map somewhere. (Add 'lizard-map' in your setup.py:
+  install_requires)
 
 - Add 'lizard_map' to your settings.py: INSTALLED_APPS.
 
