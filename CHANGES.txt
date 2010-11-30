@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.26 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Moved tooltip css to lizard_ui.
 
 
 1.25 (2010-11-25)
