@@ -26,6 +26,11 @@ from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.models import WorkspaceItem
+from lizard_map.operations import AnchestorRegistration
+from lizard_map.operations import CycleError
+from lizard_map.operations import named_list
+from lizard_map.operations import tree_from_list
+from lizard_map.operations import unique_list
 from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
@@ -765,3 +770,131 @@ class ModelLegendTest(TestCase):
         self.assertEquals(c.r, None)
         self.assertEquals(c.g, None)
         self.assertEquals(c.b, None)
+
+
+class TestOperations(TestCase):
+
+    def test_anchestor_registration(self):
+        """Check basic functionality"""
+        anchestors = AnchestorRegistration()
+        self.assertFalse(anchestors.anchestor_of('child', 'parent'))
+        anchestors.register_parent('child', 'parent')
+        self.assertTrue(anchestors.anchestor_of('child', 'parent'))
+        anchestors.register_parent('grandchild', 'child')
+        self.assertTrue(anchestors.anchestor_of('grandchild', 'parent'))
+        self.assertFalse(anchestors.anchestor_of('parent', 'grandchild'))
+
+    def test_anchestor_registration2(self):
+        """The anchestor registration doesn't mind cycles"""
+        anchestors = AnchestorRegistration()
+        anchestors.register_parent('child', 'parent')
+        anchestors.register_parent('parent', 'child')
+        self.assertTrue(anchestors.anchestor_of('child', 'parent'))
+        self.assertTrue(anchestors.anchestor_of('parent', 'child'))
+
+    def test_tree_from_list1(self):
+        rows = []
+        result_good = []
+        result_function = tree_from_list(rows)
+        self.assertEqual(result_function, result_good)
+
+    def test_tree_from_list2(self):
+        rows = [{'name': 'parent_name', 'parent': None},
+                {'name': 'child_name', 'parent': 'parent_name'}]
+        result_good = [
+                {'name': 'parent_name',
+                 'parent': None,
+                 'children': [
+                    {'name': 'child_name',
+                     'parent': 'parent_name',
+                     'children': []}]}]
+        result_function = tree_from_list(
+            rows,
+            id_field='name',
+            parent_field='parent',
+            children_field='children',
+            root_parent=None)
+        self.assertEqual(result_function, result_good)
+
+    def test_tree_from_list3(self):
+        rows = [{'name': 'parent_name', 'parent': None},
+                {'name': 'child_name', 'parent': 'parent_name'},
+                {'name': 'child_name2', 'parent': 'parent_name'},
+                {'name': 'child_name3', 'parent': 'parent_name'},
+                {'name': 'child_child', 'parent': 'child_name3'}]
+        result_good = [
+                {'name': 'parent_name',
+                 'parent': None,
+                 'children': [
+                    {'name': 'child_name',
+                     'parent': 'parent_name',
+                     'children': []},
+                    {'name': 'child_name2',
+                     'parent': 'parent_name',
+                     'children': []},
+                    {'name': 'child_name3',
+                     'parent': 'parent_name',
+                     'children': [
+                         {'name': 'child_child',
+                          'parent': 'child_name3',
+                          'children': []}]},
+                     ]}]
+        result_function = tree_from_list(
+            rows,
+            id_field='name',
+            parent_field='parent',
+            children_field='children',
+            root_parent=None)
+        self.assertEqual(result_function, result_good)
+
+    def test_tree_from_list_cyclic(self):
+        """
+        Cycle detection 1
+        """
+        rows = [{'name': 'child_name', 'parent': 'parent_name'},
+                {'name': 'parent_name', 'parent': 'child_name'}]
+        self.assertRaises(
+            CycleError,
+            tree_from_list,
+            rows,
+            id_field='name',
+            parent_field='parent',
+            children_field='children',
+            root_parent='parent_name')
+
+    def test_tree_from_list_cyclic2(self):
+        """
+        Cycle detection 2
+        """
+        rows = [{'name': 'parent_name', 'parent': 'parent_name'}, ]
+        self.assertRaises(
+            CycleError,
+            tree_from_list,
+            rows,
+            id_field='name',
+            parent_field='parent',
+            children_field='children',
+            root_parent='child_name')
+
+    def test_named_list(self):
+        rows = [
+            ['a', 'b', 'c', 'd'],
+            ['f', 'g', 'h', 'i']]
+        names = ['name1', 'name2', 'name3', 'name4']
+        result = named_list(rows, names)
+        result_good = [
+            {'name1': 'a', 'name2': 'b', 'name3': 'c', 'name4': 'd'},
+            {'name1': 'f', 'name2': 'g', 'name3': 'h', 'name4': 'i'}]
+        self.assertEqual(result, result_good)
+
+    def test_unique_list(self):
+        rows = [1, 2, 2, 3, 4, 5, 5, 7, 2, 5]
+        result = unique_list(rows)
+        result_good = [1, 2, 3, 4, 5, 7]
+        self.assertEqual(result, result_good)
+
+    def test_unique_list2(self):
+        rows = [[1, 2], [2, 2], [3, 4], [2, 2], [1, 2]]
+        result = unique_list(rows)
+        result_good = [[1, 2], [2, 2], [3, 4]]
+        self.assertEqual(result, result_good)
