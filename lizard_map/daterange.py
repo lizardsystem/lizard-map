@@ -46,7 +46,7 @@ def set_date_range(request, template='krw_waternet/daterange.html'):
 
 
 def current_start_end_dates(request, for_form=False):
-    """Return the current start/end date, either default or from session.
+    """Return the current start/end date strings, either default or from session.
 
     If for_form is True, return it as a dict so that we can pass it directly
     into a form class.  Otherwise return it as a tuple.
@@ -61,3 +61,4 @@ def current_start_end_dates(request, for_form=False):
                     date_end=date_end)
     else:
         return (date_start, date_end)
+
