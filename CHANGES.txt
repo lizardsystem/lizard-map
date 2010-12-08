@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.27 (unreleased)
+1.27 (2010-12-08)
 -----------------
 
 - Added list operations coming from fewsjdbc.
