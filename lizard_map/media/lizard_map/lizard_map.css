@@ -24,6 +24,13 @@
   min-height: 15em;
 }
 
+/* OpenLayers popup*/
+.olPopup
+{
+  -moz-box-shadow:0 0 10px 1px black;
+  -webkit-box-shadow: 0 0 10px black;
+}
+
 .icon-action
 { float: right;
 }

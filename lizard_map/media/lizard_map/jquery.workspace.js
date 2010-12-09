@@ -83,16 +83,17 @@ function show_popup(data, map) {
 function hover_popup(data, map) {
     if (data.name !== "" &&
         data.name !== undefined) {
-        var size, popup, content;
+        var popup, content;
         content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
             '&nbsp;&nbsp;&nbsp;&nbsp;';
         $("#hover-popup").remove(); // remove existing popup, if exists
-        size = new OpenLayers.Size(300, 80);
         popup = new OpenLayers.Popup('hover-popup',
                                      new OpenLayers.LonLat(data.x, data.y),
-                                     size,
+                                     new OpenLayers.Size(300, 35),
                                      content,
                                      false);
+        popup.maxSize = new OpenLayers.Size(300, 35);
+        popup.border = "1px solid black";
         popup.autoSize = true;
         map.addPopup(popup);
     }

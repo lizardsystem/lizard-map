@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.28 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Finetuning hover popup.
+
+- Added point icons.
 
 
 1.27 (2010-12-08)
