@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.28 (unreleased)
+1.28 (2010-12-09)
 -----------------
 
 - Finetuning hover popup.
