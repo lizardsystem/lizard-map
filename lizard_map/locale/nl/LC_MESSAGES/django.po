@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-13 03:29-0600\n"
+"POT-Creation-Date: 2010-12-13 06:15-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,19 +182,24 @@ msgstr "Voorbeeld met vormbestand"
 
 #: templates/lizard_map/tag_workspace.html:26
 msgid "adjust datetime"
-msgstr ""
+msgstr "pas datum-tijd aan"
 
 #: templates/lizard_map/tag_workspace.html:30
 msgid "new workspace"
 msgstr "nieuwe workspace"
 
 #: templates/lizard_map/tag_workspace.html:36
+#: templates/lizard_map/tag_workspace.html:92
 msgid "link to"
 msgstr "link naar"
 
 #: templates/lizard_map/tag_workspace.html:39
 msgid "empty"
 msgstr "leeg"
+
+#: templates/lizard_map/tag_workspace.html:99
+msgid "popup"
+msgstr "popup"
 
 #: templates/lizard_map/wms.html:19
 msgid "load map location"
