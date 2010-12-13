@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.29 (unreleased)
+1.29 (2010-12-13)
 -----------------
 
 - Fixed load/save map location after altering map-actions.
