@@ -30,6 +30,9 @@
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
        title="link to {{ workspace.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
+    <a href="#" title="empty workspace"
+       class="title ss_sprite ss_bin_empty sidebarbox-action-icon workspace-empty-trigger">
+    </a>
     <span>{{ workspace.name }}</span>
   </h2>
   <div>

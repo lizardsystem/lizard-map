@@ -119,6 +119,18 @@ def workspace_item_add(request,
 
 
 @never_cache
+def workspace_item_empty(request,
+                       workspace_id,
+                       is_temp_workspace=False,
+                       template='lizard_map/tag_workspace.html'):
+    """Clear workspace items for given workspace."""
+    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    workspace.workspace_items.all().delete()
+
+    return HttpResponse("")
+
+
+@never_cache
 def workspace_item_edit(request, workspace_item_id=None, visible=None):
     """edits a workspace_item
 

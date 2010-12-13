@@ -79,6 +79,34 @@ function setUpTransparencySlider() {
 }
 
 
+function setUpMapLoadSaveLocation() {
+    $("#map-save-location").click(function () {
+        var url, coordinates;
+        url = $("#map-save-location").attr("data-url");
+        coordinates = map.center;
+        $.post(url,
+               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom});
+    });
+    $("#map-load-location").click(function () {
+        var url, coordinates, zoom;
+        url = $(this).attr("data-url");
+        $.getJSON(
+            url, function (data) {
+                if ((data.x !== undefined) &&
+                    (data.y !== undefined) &&
+                    (data.zoom !== undefined))
+                {
+                    map.setCenter(
+                        new OpenLayers.LonLat(parseFloat(data.x), parseFloat(data.y)),
+                        parseFloat(data.zoom));
+                }
+            });
+    });
+}
+
+
+/* Reload map-actions: put all initialization functions here for map actions
+(above map, load/save location/ empty temp workspace) */
 function reloadMapActions() {
     $(".map-actions").load(
         "./ .map-action",
@@ -86,6 +114,7 @@ function reloadMapActions() {
             fillSidebar();
             setUpAnimationSlider();
             setUpTransparencySlider();
+            setUpMapLoadSaveLocation();
         });
 }
 
@@ -129,6 +158,17 @@ function setUpWorkspaceAcceptable() {
         stretchOneSidebarBox();
     });
 }
+
+
+function setUpWorkspaceEmpty() {
+    var workspace_id;
+    $(".workspace-empty-trigger").live('click', function () {
+        console.log($(this).parents("div.workspace"));
+        workspace_id = $(this).parents("div.workspace").attr("data-workspace-id");
+        alert(workspace_id);
+    });
+}
+
 
 // Date selector: only support for ONE date selector at the moment.
 
@@ -336,53 +376,10 @@ function setUpLegendEdit() {
 }
 
 
-// function mapSaveLocation() {
-//     // Saves the current map location and zoom using a post.
-//     var url, coordinates;
-//     url = $("#map-save-location").attr("data-url");
-//     coordinates = map.center;
-//     $.post(url,
-//            {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-//            function () {}
-//           );
-//     // $.ajax({
-//     //     url: url, type: 'POST',
-//     //     async: false,
-//     //     data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
-//     //     success: function () {}
-//     // });
-// }
-
-
-function setUpMapLoadSaveLocation() {
-    $("#map-save-location").click(function () {
-        var url, coordinates;
-        url = $("#map-save-location").attr("data-url");
-        coordinates = map.center;
-        $.post(url,
-               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom});
-    });
-    $("#map-load-location").click(function () {
-        var url, coordinates, zoom;
-        url = $(this).attr("data-url");
-        $.getJSON(
-            url, function (data) {
-                if ((data.x !== undefined) &&
-                    (data.y !== undefined) &&
-                    (data.zoom !== undefined))
-                {
-                    map.setCenter(
-                        new OpenLayers.LonLat(parseFloat(data.x), parseFloat(data.y)),
-                        parseFloat(data.zoom));
-                }
-            });
-    });
-}
-
-
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
+    setUpWorkspaceEmpty();
     setUpDatePopup();
     setUpDateChoice();
     setUpNotFoundPopup();
