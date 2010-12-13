@@ -161,11 +161,16 @@ function setUpWorkspaceAcceptable() {
 
 
 function setUpWorkspaceEmpty() {
-    var workspace_id;
+    var $workspace, workspace_id, url;
     $(".workspace-empty-trigger").live('click', function () {
-        console.log($(this).parents("div.workspace"));
-        workspace_id = $(this).parents("div.workspace").attr("data-workspace-id");
-        alert(workspace_id);
+        $workspace = $(this).parents("div.workspace");
+        workspace_id = $workspace.attr("data-workspace-id");
+        url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
+        $.post(
+            url, {workspace_id: workspace_id},
+            function (data) {
+                $workspace.updateWorkspace();
+            });
     });
 }
 

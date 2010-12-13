@@ -20,7 +20,7 @@ urlpatterns = patterns(
         name="lizard_map_workspace_item_add"),
     url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/empty/',
         'lizard_map.views.workspace_item_empty',
-        name="lizard_map_workspace_item_add"),
+        name="lizard_map_workspace_item_empty"),
     url(r'^workspace/(?P<workspace_id>\d+)/',
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),

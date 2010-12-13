@@ -4,6 +4,7 @@
 <div id="workspace-{{ workspace.id }}"
      class="sidebarbox workspace"
      data-workspace-id="{{ workspace.id }}"
+     data-url-lizard-map-workspace-item-empty="{% url lizard_map_workspace_item_empty workspace_id=workspace.id %}"
      data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_item_edit %}"
      data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
      data-url-lizard-map-workspace-item-add="{% url lizard_map_workspace_item_add %}"
