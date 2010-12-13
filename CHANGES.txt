@@ -5,7 +5,11 @@ Changelog of lizard-map
 1.29 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed load/save map location after altering map-actions.
+
+- Added 'Empty workspace' button.
+
+- Added translations.
 
 
 1.28 (2010-12-09)

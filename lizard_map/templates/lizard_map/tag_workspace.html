@@ -1,5 +1,6 @@
 {# Shows one workspace. Options: show_new_workspace. #}
 {% load workspaces %}
+{% load i18n %}
 {# Beware: one cannot use workspace template tag here, we are IN the workspace template tag #}
 <div id="workspace-{{ workspace.id }}"
      class="sidebarbox workspace"
@@ -21,17 +22,21 @@
     {% if date_range_form %}
     <a href="#"
        class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
-       rel="#summary-datepicker"></a>
+       rel="#summary-datepicker"
+       title="{% trans 'adjust datetime' %}"></a>
     {% endif %}
     {% if show_new_workspace %}
-    <a href="?new_workspace" title="new workspace" class="title">
+    <a href="?new_workspace"
+       title="{% trans 'new workspace' %}"
+       class="title">
       <span class="ss_sprite ss_page_add">&nbsp;</span>
     </a>
     {% endif %}
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
-       title="link to {{ workspace.name }}"
+       title="{% trans 'link to' %} {{ workspace.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
-    <a href="#" title="empty workspace"
+    <a href="#"
+       title="{% trans 'empty' %} {{ workspace.name }}"
        class="title ss_sprite ss_bin_empty sidebarbox-action-icon workspace-empty-trigger">
     </a>
     <span>{{ workspace.name }}</span>
@@ -84,13 +89,14 @@
       &nbsp;
     </span>
     <a href="{% url lizard_map.collage collage_id=collage.id %}"
-       title="link to {{ collage.name }}"
+       title="{% trans 'link to' %} {{ collage.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
     <span>{{ collage.name }}</span>
   </h2>
   <div>
     <ul class="snippet-list without-bullets"
-        data-collage-id="{{ collage.id }}">
+        data-collage-id="{{ collage.id }}"
+        title="{% trans 'popup' %} {{ collage.name }}">
       {% for snippet_group in collage.snippet_groups.all %}
         {% for snippet in snippet_group.snippets.all %}
         <li class="snippet" title="{{ snippet.name }}"

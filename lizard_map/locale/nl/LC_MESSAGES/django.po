@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-11-16 05:15-0600\n"
+"POT-Creation-Date: 2010-12-13 03:29-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,59 +84,59 @@ msgstr "December"
 msgid "Whole period"
 msgstr "Hele periode"
 
-#: models.py:111
+#: models.py:119
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: models.py:150
+#: models.py:158
 msgid "Workspace"
 msgstr "Workspace"
 
-#: models.py:151
+#: models.py:159
 msgid "Workspaces"
 msgstr "Workspaces"
 
-#: models.py:173
+#: models.py:181
 msgid "Workspace item"
 msgstr "Workspace item"
 
-#: models.py:174
+#: models.py:182
 msgid "Workspace items"
 msgstr "Workspace items"
 
-#: models.py:321
+#: models.py:329
 msgid "all"
 msgstr "alles"
 
-#: models.py:322
+#: models.py:330
 msgid "year"
 msgstr "jaar"
 
-#: models.py:323
+#: models.py:331
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:324
+#: models.py:332
 msgid "month"
 msgstr "maand"
 
-#: models.py:325
+#: models.py:333
 msgid "week"
 msgstr "week"
 
-#: models.py:326
+#: models.py:334
 msgid "day"
 msgstr "dag"
 
-#: models.py:350
+#: models.py:358
 msgid "Collage snippet group"
 msgstr "Collage snippet groep"
 
-#: models.py:351
+#: models.py:359
 msgid "Collage snippet groups"
 msgstr "Collage snippet groepen"
 
-#: models.py:506
+#: models.py:514
 msgid "Boundary value"
 msgstr "Grenswaarde"
 
@@ -180,15 +180,31 @@ msgstr "Voorbeelden"
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
 
-#: templates/lizard_map/wms.html:15
+#: templates/lizard_map/tag_workspace.html:26
+msgid "adjust datetime"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace.html:30
+msgid "new workspace"
+msgstr "nieuwe workspace"
+
+#: templates/lizard_map/tag_workspace.html:36
+msgid "link to"
+msgstr "link naar"
+
+#: templates/lizard_map/tag_workspace.html:39
+msgid "empty"
+msgstr "leeg"
+
+#: templates/lizard_map/wms.html:19
 msgid "load map location"
 msgstr "laad kaart locatie"
 
-#: templates/lizard_map/wms.html:21
+#: templates/lizard_map/wms.html:25
 msgid "save map location"
 msgstr "bewaar kaart locatie"
 
-#: templates/lizard_map/wms.html:48
+#: templates/lizard_map/wms.html:52
 msgid "empty temporary workspace"
 msgstr "tijdelijke workspace legen"
 
