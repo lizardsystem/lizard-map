@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.30 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added initial South migration.
 
 
 1.29 (2010-12-13)
