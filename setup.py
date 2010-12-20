@@ -14,6 +14,7 @@ install_requires = [
     'Django',
     'PIL',
     'django-nose',
+    'django-extensions',
     'django-staticfiles',
     'lizard-ui >= 1.18',
     'matplotlib',
