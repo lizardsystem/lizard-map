@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     'compressor',
     'django_nose',
     'south',
+    'django_extensions',
     'django.contrib.gis',
     'django.contrib.admin',
     'django.contrib.auth',
