@@ -12,6 +12,9 @@
 {{ block.super }}
 <script type="text/javascript"
         src="{{ STATIC_URL }}openlayers/OpenLayers.js"></script>
+{# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/touch.js"></script>
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
 <script type="text/javascript"

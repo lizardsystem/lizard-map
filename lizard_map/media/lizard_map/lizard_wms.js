@@ -1,7 +1,7 @@
 /*jslint browser: true */
 /*jslint evil: true */
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
-G_PHYSICAL_MAP */
+G_PHYSICAL_MAP, TouchHandler */
 var layers, map;
 layers = [];
 
@@ -198,6 +198,9 @@ function showMap() {
     map.setCenter(
         new OpenLayers.LonLat(parseFloat(startlocation_x), parseFloat(startlocation_y)),
         parseFloat(startlocation_zoom));
+
+    // Add touch handler for iPad, iPhone, Android
+    this.touchhandler = new TouchHandler( map, 4 );
 }
 
 
