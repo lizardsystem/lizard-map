@@ -21,6 +21,40 @@ function updateLayers() {
 }
 
 
+function positionUpdate( position ) {
+    lastPosition = position;
+    myLocation.move( new OpenLayers.LonLat( lastPosition.coords.longitude, lastPosition.coords.latitude ).transform( map.displayProjection, map.getProjectionObject( ) ) );
+    if ( recenter ) {
+        map.setCenter( new OpenLayers.LonLat( lastPosition.coords.longitude, lastPosition.coords.latitude ).transform( map.displayProjection, map.getProjectionObject( ) ) );
+
+    }
+    setRecenter( recenter );
+
+}
+
+function positionUpdateFail( error ) {
+    document.getElementById( "notes" ).innerHTML = error.message;
+
+}
+
+function setRecenter( value ) {
+    var html;
+    recenter = value;
+    if ( recenter ) {
+        map.setCenter( new OpenLayers.LonLat( lastPosition.coords.longitude, lastPosition.coords.latitude ).transform( map.displayProjection, map.getProjectionObject( ) ) );
+        html = "<a href='javascript:setRecenter( false );'><img src='images/location.png' width=18 height=18 border=0></a> Autocenter " +
+            lastPosition.coords.longitude +  "&deg; " + lastPosition.coords.latitude + "&deg;";
+
+    }
+    else {
+        html = "<a href='javascript:setRecenter( true );'><img src='images/location-bw.png' width=18 height=18 border=0></a> Autocenter";
+
+    }
+    document.getElementById( "notes" ).innerHTML = html;
+
+}
+
+
 function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, map_hover_control,
@@ -113,6 +147,16 @@ function showMap() {
         map.addLayer(layers[workspace_id]);
     });
 
+    // Or... zoom to current location
+    if ( navigator.geolocation != undefined ) {
+        var myLocationLayer = new OpenLayers.Layer.Vector( "Location" );
+        myLocation = new OpenLayers.Feature.Vector( new OpenLayers.Geometry.Point( -100, 40 ).transform( map.displayProjection, map.getProjectionObject( ) ), { isBaseLayer: false }, { externalGraphic: '/static_media/lizard_map/location.png', graphicHeight: 18, graphicWidth: 18 } );
+        myLocationLayer.addFeatures( myLocation );
+        map.addLayer( myLocationLayer );
+
+        navigator.geolocation.watchPosition( positionUpdate, positionUpdateFail );
+    }
+
     // Set up controls, zoom and center.
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
     // Click handling.
@@ -201,6 +245,7 @@ function showMap() {
 
     // Add touch handler for iPad, iPhone, Android
     this.touchhandler = new TouchHandler( map, 4 );
+
 }
 
 
