@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.30 (unreleased)
+1.30 (2011-01-04)
 -----------------
 
 - Added browser detection as custom template tag.
