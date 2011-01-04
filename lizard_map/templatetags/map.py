@@ -67,15 +67,15 @@ class DetectBrowserNode(template.Node):
     """
 
     def render(self, context):
-        request_meta = context['request'].META
-        http_user_agent = request_meta['HTTP_USER_AGENT']
-
-        print 'http_user_agent: %s' % http_user_agent
-
         result = 'other'  # default answer
-        if 'iPad' in http_user_agent:
-            result = 'iPad'
-            print 'iPad!'
+
+        if context.has_key('request'):
+            request_meta = context['request'].META
+            http_user_agent = request_meta['HTTP_USER_AGENT']
+
+            if 'iPad' in http_user_agent:
+                result = 'iPad'
+                print 'iPad!'
 
         context['detected_browser'] = result
 
