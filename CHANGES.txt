@@ -5,10 +5,11 @@ Changelog of lizard-map
 1.30 (unreleased)
 -----------------
 
-- Added location awareness (but not yet activated).
+- Added browser detection as custom template tag.
 
-- Added touch gestures for map (iPad, iPhone, android support) (but
-  not yet activated).
+- Added location awareness.
+
+- Added touch gestures for map (iPad, iPhone, android support).
 
 - Added initial South migration.
 

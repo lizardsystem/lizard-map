@@ -2,10 +2,18 @@
 
 {% block map-javascript %}
 {% map_variables %}{# loads map variables #}
+{% detect_browser %}{# detects map variables #}
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
 {% ifequal base_layer_type "GOOGLE" %}
 <script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAjpkAC9ePGem0lIq5XcMiuhR_wWLPFku8Ix9i2SXYRVK3e45q1BQUd_beF8dtzKET_EteAjPdGDwqpQ'></script>
+{% endifequal %}
+{% ifequal detected_browser 'iPad' %}
+{# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}touch/touch.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_touch.js"></script>
 {% endifequal %}
 {% endblock map-javascript %}
 

@@ -57,7 +57,41 @@ class MapVariablesNode(template.Node):
         return ''
 
 
+class DetectBrowserNode(template.Node):
+    """
+    This node detects the browser and adds a variable detected_browser
+    to the context. Possible values:
+
+    'iPad'
+    'other'
+    """
+
+    def render(self, context):
+        request_meta = context['request'].META
+        http_user_agent = request_meta['HTTP_USER_AGENT']
+
+        print 'http_user_agent: %s' % http_user_agent
+
+        result = 'other'  # default answer
+        if 'iPad' in http_user_agent:
+            result = 'iPad'
+            print 'iPad!'
+
+        context['detected_browser'] = result
+
+        return ''
+
+
 @register.tag
 def map_variables(parser, token):
     """Display debug info on workspaces."""
     return MapVariablesNode()
+
+
+@register.tag
+def detect_browser(parser, token):
+    """Detects browser and sets variable "detected_browser".
+
+    See DetectBrowserNode.
+    """
+    return DetectBrowserNode()
