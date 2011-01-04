@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.31 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Improved touch.js: now we pan instantly. If we pan very little, it
+  will now click.
 
 
 1.30 (2011-01-04)

@@ -4,6 +4,10 @@
  * ommented out "event.preventDefault()" for OpenLayers-PopUp-Feature support by: Julian from Germany
  */
 
+
+const PAN_MINIMUM = 10;  // Minimum number of pixels to pan before actually panning. If it doesn't pan, it'll click instead!
+
+
 TouchHandler = OpenLayers.Class( {
     touchStartX: null,
     touchStartY: null,
@@ -95,15 +99,19 @@ TouchHandler = OpenLayers.Class( {
 	},
 
     pan_touch: function ( ) {
-	    var obj = this;
+	var obj, dx, dy = this;
 	    return function ( e ) {
         	dec_debug( event );
 		e.preventDefault( );
 		if ( e.touches.length == 1 ) {
 		    var touch = e.touches[0];
+                    dx = obj.touchStartX - touch.clientX;
+                    dy = obj.touchStartY - touch.clientY;
 		    //hack - limit number of calls to pan
-		    if ( obj.skip++ % obj.limitPansPerMove === 0 ) {
-            		obj.map.pan( obj.touchStartX - touch.clientX, obj.touchStartY - touch.clientY );
+		    if ((Math.abs(dx) > PAN_MINIMUM) &&
+                        (Math.abs(dy) > PAN_MINIMUM) &&
+                        ( obj.skip++ % obj.limitPansPerMove === 0 )) {
+            		obj.map.pan( dx, dy, {animate: false} );
 
             	}
 
