@@ -99,7 +99,8 @@ TouchHandler = OpenLayers.Class( {
 	},
 
     pan_touch: function ( ) {
-	var obj, dx, dy = this;
+	var obj = this;
+        var dx, dy;
 	    return function ( e ) {
         	dec_debug( event );
 		e.preventDefault( );
