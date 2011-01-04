@@ -2,10 +2,12 @@ Changelog of lizard-map
 =======================
 
 
-1.33 (unreleased)
+1.33 (2011-01-04)
 -----------------
 
-- Nothing changed yet.
+- Make clicking less sensitive for iPad.
+
+- Introduced analyze_http_user_agent in utility.py.
 
 
 1.32 (2011-01-04)

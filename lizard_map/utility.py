@@ -33,3 +33,13 @@ def float_to_string(value):
     if abs_float_value >= 10000000:
         return '%.0f' % float_value
     return '%.2f' % float_value
+
+
+def analyze_http_user_agent(http_user_agent):
+    """Analyzes http_user_agent and return dictionary of properties."""
+    device = 'other'
+
+    if 'iPad' in http_user_agent:
+        device = 'iPad'
+
+    return {'device': device}

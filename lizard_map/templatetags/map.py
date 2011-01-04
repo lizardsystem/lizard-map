@@ -2,6 +2,7 @@ from django import template
 from django.conf import settings
 import logging
 
+from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_LOCATION
 
 register = template.Library()
@@ -73,9 +74,9 @@ class DetectBrowserNode(template.Node):
             request_meta = context['request'].META
             http_user_agent = request_meta['HTTP_USER_AGENT']
 
-            if 'iPad' in http_user_agent:
+            analyzed = analyze_http_user_agent(http_user_agent)
+            if analyzed['device'] == 'iPad':
                 result = 'iPad'
-                print 'iPad!'
 
         context['detected_browser'] = result
 

@@ -22,6 +22,7 @@ from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.models import WorkspaceCollageSnippetGroup
+from lizard_map.utility import analyze_http_user_agent
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
 
@@ -743,6 +744,12 @@ def search_coordinates(request):
     y = float(request.GET.get('y'))
     # TODO: convert radius to correct scale (works now for google + rd)
     radius = float(request.GET.get('radius'))
+    radius_search = radius
+    analyzed_user_agent = analyze_http_user_agent(
+        request.META['HTTP_USER_AGENT'])
+    # It's more difficult to point with your finger than with the mouse.
+    if analyzed_user_agent['device'] == 'iPad':
+        radius_search = radius_search * 3
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
@@ -752,7 +759,7 @@ def search_coordinates(request):
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
                 search_results = workspace_item.adapter.search(
-                    google_x, google_y, radius=radius)
+                    google_x, google_y, radius=radius_search)
                 found += search_results
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
