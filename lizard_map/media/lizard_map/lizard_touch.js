@@ -22,7 +22,7 @@ function setRecenter(value) {
         html = "<a href='javascript:setRecenter( true );'><img src='images/location-bw.png' width=18 height=18 border=0></a> Autocenter";
 
     }
-    document.getElementById("notes").innerHTML = html;
+    // document.getElementById("notes").innerHTML = html;
 }
 
 
@@ -52,7 +52,7 @@ function positionUpdateFail(error) {
 function initializeTouch() {
 
     // Add touch handler for iPad, iPhone, Android
-    this.touchhandler = new TouchHandler(map, 4);
+    this.touchhandler = new TouchHandler(map, 10);
 
     // Zoom to current location, add handler for following current location
     if (navigator.geolocation !== undefined) {

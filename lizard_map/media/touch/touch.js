@@ -14,7 +14,7 @@ TouchHandler = OpenLayers.Class( {
     /*
      * parameters
      * limitPansPerMove - {Number} experimenting if we can less jerky panning by
-     * limiting the number of pan calls. the higher the number the more pan calls skipped.  
+     * limiting the number of pan calls. the higher the number the more pan calls skipped.
      */
 
     initialize: function( map, limitPansPerMove ) {
@@ -28,10 +28,10 @@ TouchHandler = OpenLayers.Class( {
 
 	    // monkey-p map to include limitZoomOut
 	    map.constructor.prototype['limitZoomOut'] = function( ) {
-            if ( this.getZoom( ) <= 2 ) {
-                return true;
+            // if ( this.getZoom( ) <= 2 ) {
+            //     return true;
 
-            }
+            // }
             return false;
 
 	    };
