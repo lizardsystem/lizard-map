@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.32 (unreleased)
+1.32 (2011-01-04)
 -----------------
 
 - Bugfix touch.js: now we can pan again.
