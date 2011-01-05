@@ -72,11 +72,12 @@ class DetectBrowserNode(template.Node):
 
         if context.has_key('request'):
             request_meta = context['request'].META
-            http_user_agent = request_meta['HTTP_USER_AGENT']
+            if 'HTTP_USER_AGENT' in request_meta:
+                http_user_agent = request_meta['HTTP_USER_AGENT']
 
-            analyzed = analyze_http_user_agent(http_user_agent)
-            if analyzed['device'] == 'iPad':
-                result = 'iPad'
+                analyzed = analyze_http_user_agent(http_user_agent)
+                if analyzed['device'] == 'iPad':
+                    result = 'iPad'
 
         context['detected_browser'] = result
 
