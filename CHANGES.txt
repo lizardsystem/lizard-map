@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.33 (2011-01-04)
+1.33 (2011-01-05)
 -----------------
 
 - Make clicking less sensitive for iPad.
