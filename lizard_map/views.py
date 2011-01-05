@@ -745,11 +745,12 @@ def search_coordinates(request):
     # TODO: convert radius to correct scale (works now for google + rd)
     radius = float(request.GET.get('radius'))
     radius_search = radius
-    analyzed_user_agent = analyze_http_user_agent(
-        request.META['HTTP_USER_AGENT'])
-    # It's more difficult to point with your finger than with the mouse.
-    if analyzed_user_agent['device'] == 'iPad':
-        radius_search = radius_search * 3
+    if 'HTTP_USER_AGENT' in request.META:
+        analyzed_user_agent = analyze_http_user_agent(
+            request.META['HTTP_USER_AGENT'])
+        # It's more difficult to point with your finger than with the mouse.
+        if analyzed_user_agent['device'] == 'iPad':
+            radius_search = radius_search * 3
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
@@ -857,6 +858,7 @@ def export_snippet_group_statistics_csv(request, snippet_group_id=None):
 Map locations are stored in the session with key MAP_SESSION. It
 contains a dictionary with fields x, y and zoom.
 """
+
 
 def map_location_save(request):
     """
