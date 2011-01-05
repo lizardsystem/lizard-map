@@ -2,10 +2,10 @@ Changelog of lizard-map
 =======================
 
 
-1.34 (unreleased)
+1.34 (2011-01-05)
 -----------------
 
-- Nothing changed yet.
+- Bugfix http_user_agent in test client.
 
 
 1.33 (2011-01-05)
