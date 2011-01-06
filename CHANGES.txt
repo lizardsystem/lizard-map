@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.36 (unreleased)
+1.36 (2011-01-06)
 -----------------
 
 - Added function detect_prj in coordinates.
