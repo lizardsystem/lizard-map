@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.35 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Bugfix ZeroDivisionError in statistics.
 
 
 1.34 (2011-01-05)
