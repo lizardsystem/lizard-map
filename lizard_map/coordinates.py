@@ -59,3 +59,15 @@ def srs_to_google(srs, x, y):
     else:
         google_x, google_y = x, y
     return google_x, google_y
+
+
+def detect_prj(prj):
+    """
+    Inputs a prj string, output is the Proj4 projection string. If the
+    string somehow cannot be parsed, we assume it is RD.
+    """
+    if not prj:
+        return RD
+    if 'GCS_WGS_1984' in prj:
+        return WGS84
+    return RD

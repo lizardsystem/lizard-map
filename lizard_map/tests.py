@@ -911,3 +911,39 @@ class TestOperations(TestCase):
         result = unique_list(rows)
         result_good = [[1, 2], [2, 2], [3, 4]]
         self.assertEqual(result, result_good)
+
+
+class CoordinatesTest(TestCase):
+
+    def test_detect_prj1(self):
+        prj = None
+        self.assertEquals(
+            lizard_map.coordinates.detect_prj(prj),
+            lizard_map.coordinates.RD)
+
+    def test_detect_prj2(self):
+        prj = ('PROJCS["RD_New",GEOGCS["GCS_Amersfoort",'
+               'DATUM["D_Amersfoort",'
+               'SPHEROID["Bessel_1841",6377397.155,299.1528128]],'
+               'PRIMEM["Greenwich",0.0],'
+               'UNIT["Degree",0.0174532925199433]],'
+               'PROJECTION["Double_Stereographic"],'
+               'PARAMETER["False_Easting",155000.0],'
+               'PARAMETER["False_Northing",463000.0],'
+               'PARAMETER["Central_Meridian",5.38763888888889],'
+               'PARAMETER["Scale_Factor",0.9999079],'
+               'PARAMETER["Latitude_Of_Origin",52.15616055555555],'
+               'UNIT["Meter",1.0]]')
+        self.assertEquals(
+            lizard_map.coordinates.detect_prj(prj),
+            lizard_map.coordinates.RD)
+
+    def test_detect_prj3(self):
+        prj = ('GEOGCS["GCS_WGS_1984",'
+               'DATUM["D_WGS_1984",'
+               'SPHEROID["WGS_1984",6378137.0,298.257223563]],'
+               'PRIMEM["Greenwich",0.0],'
+               'UNIT["Degree",0.0174532925199433]]')
+        self.assertEquals(
+            lizard_map.coordinates.detect_prj(prj),
+            lizard_map.coordinates.WGS84)
