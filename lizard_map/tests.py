@@ -150,7 +150,11 @@ class ViewsTest(TestCase):
         response_load = self.client.get(url_load)
         self.assertEqual(response_load.status_code, 200)
         result = json.loads(response_load.content)
-        self.assertEqual(result, {'x': '100', 'y': '150', 'zoom': '10'})
+        self.assertEqual(
+            result,
+            {'x': '550000',
+             'y': '6850000',
+             'zoom': '10'})
 
 
 class WorkspaceTest(TestCase):

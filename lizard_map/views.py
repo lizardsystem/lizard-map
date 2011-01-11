@@ -10,6 +10,7 @@ from django.utils import simplejson as json
 from django.views.decorators.cache import never_cache
 import Image
 import csv
+import logging
 import mapnik
 
 from lizard_map import coordinates
@@ -31,6 +32,8 @@ from lizard_map.workspace import WorkspaceManager
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
+
+logger = logging.getLogger(__name__)
 
 
 def workspace(request,
@@ -882,7 +885,6 @@ def map_location_load_default(request):
         x = map_settings['startlocation_x']
         y = map_settings['startlocation_y']
         zoom = map_settings['startlocation_zoom']
-        print map_settings
     except AttributeError:
         logger.warn(
             'Could not find MAP_SETTINGS in '
@@ -891,6 +893,5 @@ def map_location_load_default(request):
         x, y, zoom = '550000', '6850000', '10'
 
     map_location = {'x': x, 'y': y, 'zoom': zoom}
-    print map_location
 
     return HttpResponse(json.dumps(map_location))

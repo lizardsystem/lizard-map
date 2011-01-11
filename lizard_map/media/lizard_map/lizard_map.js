@@ -107,7 +107,7 @@ function reloadMapActions() {
             fillSidebar();
             setUpAnimationSlider();
             setUpTransparencySlider();
-            setUpMapLoadSaveLocation();
+            setUpMapLoadDefaultLocation();
         });
 }
 
