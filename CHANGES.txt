@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.38 (unreleased)
+1.38 (2011-01-11)
 -----------------
 
 - Google Maps API key in wms.html is now a variable.
