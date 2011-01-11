@@ -12,14 +12,12 @@ Changelog of lizard-map
 - The map automatically saves its position when leaving the page.
 
 
-=======
 1.36 (2011-01-06)
 -----------------
 
 - Added function detect_prj in coordinates.
 
 
->>>>>>> .r16829
 1.35 (2011-01-06)
 -----------------
 
