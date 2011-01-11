@@ -2,8 +2,10 @@ Changelog of lizard-map
 =======================
 
 
-1.37 (unreleased)
+1.37 (2011-01-11)
 -----------------
+
+- Added debugging info in custom templatetag map.
 
 - Changed 'load map location' to 'load default map location'.
 

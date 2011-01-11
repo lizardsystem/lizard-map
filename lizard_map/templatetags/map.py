@@ -29,6 +29,11 @@ class MapVariablesNode(template.Node):
     def render(self, context):
         try:
             map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
+            logger.debug('Loaded MAP_SETTINGS.')
+            logger.debug('Startlocation: %s, %s, %s' %
+                         (map_settings['startlocation_x'],
+                          map_settings['startlocation_y'],
+                          map_settings['startlocation_zoom']))
         except AttributeError:
             logger.warn(
                 'Could not find MAP_SETTINGS in '
@@ -51,6 +56,11 @@ class MapVariablesNode(template.Node):
                 map_settings['startlocation_x'] = str(map_location['x'])
                 map_settings['startlocation_y'] = str(map_location['y'])
                 map_settings['startlocation_zoom'] = str(map_location['zoom'])
+                logger.debug('Fetched map coordinates from session: '
+                             '%s, %s, %s' % (
+                        str(map_location['x']),
+                        str(map_location['y']),
+                        str(map_location['zoom'])))
 
         for setting, setting_value in map_settings.items():
             context[setting] = setting_value

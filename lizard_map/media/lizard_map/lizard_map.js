@@ -150,6 +150,15 @@ function setUpWorkspaceAcceptable() {
             });
         stretchOneSidebarBox();
     });
+    // Add action buttons if applicable. Generic way to add buttons
+    // etc to workspace-acceptables.
+    //
+    // $(".workspace-acceptable").each(function () {
+    //     var html;
+    //     html = $(this).html();
+    //     html = html + '<a href="" class="ss_sprite ss_magnifier sidebarbox-action-icon"></a>';
+    //     $(this).html(html);
+    // });
 }
 
 
