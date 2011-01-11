@@ -40,10 +40,10 @@ urlpatterns = patterns(
      'lizard_map.views.map_location_save',
      {},
      'lizard_map.map_location_save'),
-    (r'^map_location_load$',
-     'lizard_map.views.map_location_load',
+    (r'^map_location_load_default$',
+     'lizard_map.views.map_location_load_default',
      {},
-     'lizard_map.map_location_load'),
+     'lizard_map.map_location_load_default'),
 
     # Collages and snippets
     url(r'^collage/(?P<collage_id>\d+)/$',

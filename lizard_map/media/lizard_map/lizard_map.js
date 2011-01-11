@@ -79,15 +79,8 @@ function setUpTransparencySlider() {
 }
 
 
-function setUpMapLoadSaveLocation() {
-    $("#map-save-location").click(function () {
-        var url, coordinates;
-        url = $("#map-save-location").attr("data-url");
-        coordinates = map.center;
-        $.post(url,
-               {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom});
-    });
-    $("#map-load-location").click(function () {
+function setUpMapLoadDefaultLocation() {
+    $("#map-load-default-location").click(function () {
         var url, coordinates, zoom;
         url = $(this).attr("data-url");
         $.getJSON(
@@ -381,6 +374,20 @@ function setUpLegendEdit() {
 }
 
 
+function mapSaveLocation() {
+    var url, coordinates;
+    url = $("#lizard-map-wms").attr("data-save-location-url");
+    coordinates = map.center;
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+        async: false,
+        success: function() {}
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpWorkspaceAcceptable();
@@ -396,7 +403,7 @@ $(document).ready(function () {
     // Set up legend edit.
     setUpLegendEdit();
 
-    setUpMapLoadSaveLocation();
+    setUpMapLoadDefaultLocation();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
@@ -404,10 +411,9 @@ $(document).ready(function () {
     // $("a.lizard-map-link").lizardMapLink();
 });
 
-
-// jQuery equivalent to onunload
-$(window).unload(function () {
-    // Does not work correctly: the effect is too slow so the screen
-    // still displays the old location. Even when async in post is false.
-    //mapSaveLocation(); // Save map location when leaving page.
+// Beforeunload: this function is called just before leaving the page
+// and loading the new page. Unload however is called after loading
+// the new page.
+$(window).bind('beforeunload', function () {
+    mapSaveLocation(); // Save map location when 'before' leaving page.
 });

@@ -1,5 +1,6 @@
 import StringIO
 
+from django.conf import settings
 from django.db.models import Max
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -868,15 +869,28 @@ def map_location_save(request):
     y = request.POST['y']
     zoom = request.POST['zoom']
     request.session[MAP_LOCATION] = {'x': x, 'y': y, 'zoom': zoom}
-
     return HttpResponse("")
 
 
-def map_location_load(request):
+def map_location_load_default(request):
     """
     Returns stored coordinates in a json dict, or empty dict if
     nothing was saved.
     """
-    map_location = request.session.get(MAP_LOCATION, {})
+    try:
+        map_settings = settings.MAP_SETTINGS
+        x = map_settings['startlocation_x']
+        y = map_settings['startlocation_y']
+        zoom = map_settings['startlocation_zoom']
+        print map_settings
+    except AttributeError:
+        logger.warn(
+            'Could not find MAP_SETTINGS in '
+            'django settings or MAP_SETTINGS '
+            'not properly configured, using default coordinates.')
+        x, y, zoom = '550000', '6850000', '10'
+
+    map_location = {'x': x, 'y': y, 'zoom': zoom}
+    print map_location
 
     return HttpResponse(json.dumps(map_location))

@@ -28,7 +28,7 @@ class MapVariablesNode(template.Node):
 
     def render(self, context):
         try:
-            map_settings = settings.MAP_SETTINGS
+            map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
         except AttributeError:
             logger.warn(
                 'Could not find MAP_SETTINGS in '

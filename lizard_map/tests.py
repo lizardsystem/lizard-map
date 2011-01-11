@@ -143,13 +143,10 @@ class ViewsTest(TestCase):
         response = client.post(url, {'x': 100, 'y': 150, 'zoom': 10})
         self.assertEqual(response.status_code, 200)
 
-    def test_map_location_save_and_load(self):
+    def test_map_location_load_default(self):
         """Save map location, then load it back.
         """
-        url = reverse('lizard_map.map_location_save')
-        response = self.client.post(url, {'x': 100, 'y': 150, 'zoom': 10})
-        self.assertEqual(response.status_code, 200)
-        url_load = reverse('lizard_map.map_location_load')
+        url_load = reverse('lizard_map.map_location_load_default')
         response_load = self.client.get(url_load)
         self.assertEqual(response_load.status_code, 200)
         result = json.loads(response_load.content)

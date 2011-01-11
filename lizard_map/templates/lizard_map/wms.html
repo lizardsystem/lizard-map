@@ -20,17 +20,11 @@
 {% block above-content %}
 <ul class="map-actions">
   {# Load and save map locations #}
-  <li id="map-load-location"
+  <li id="map-load-default-location"
       class="map-action"
-      data-url="{% url lizard_map.map_location_load %}">
+      data-url="{% url lizard_map.map_location_load_default %}">
     <span class="ss_sprite ss_map_go action-icon"
-          title="{% trans 'load map location' %}"></span>
-  </li>
-  <li id="map-save-location"
-      class="map-action"
-      data-url="{% url lizard_map.map_location_save %}">
-    <span class="ss_sprite ss_star action-icon"
-          title="{% trans 'save map location' %}"></span>
+          title="{% trans 'load default map location' %}"></span>
   </li>
   {% if animation_slider %}
   <li id="animation-slider"
@@ -83,6 +77,9 @@
      data-base-layer-wms="{{ base_layer_wms }}"
      data-base-layer-wms-layers="{{ base_layer_wms_layers }}"
      data-base-layer-osm="{{ base_layer_osm }}"
+     {# URLS for saving, loading map locations #}
+     data-save-location-url="{% url lizard_map.map_location_save %}"
+     data-load-location-url="{% url lizard_map.map_location_load_default %}"
      >
   {% for workspace_list in workspaces.values %}
     {% for workspace in workspace_list %}
