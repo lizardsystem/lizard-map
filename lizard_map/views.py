@@ -316,9 +316,12 @@ def session_workspace_edit_item(request,
 def session_workspace_extent(request, workspace_category='user'):
     """Returns extent for the workspace in json.
     """
-    workspace_id = request.session['workspaces'][workspace_category][0]
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
-    return HttpResponse(json.dumps(workspace.extent()))
+    if 'workspaces' in request.session:
+        workspace_id = request.session['workspaces'][workspace_category][0]
+        workspace = get_object_or_404(Workspace, pk=workspace_id)
+        return HttpResponse(json.dumps(workspace.extent()))
+    else:
+        return HttpResponse(json.dumps(''))
 
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):

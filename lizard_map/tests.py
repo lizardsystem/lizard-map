@@ -256,24 +256,31 @@ class WorkspaceClientTest(TestCase):
             {'object_id': str(workspace_item1.id)})
         self.assertFalse(workspace.workspace_items.all())
 
-    def test_workspace_extent(self):
+    def test_workspace_extent_temp(self):
         """
-        Tests if the workspace extent gives a response in the right
-        form (although the content will be meaningless).
+        Tests if the workspace extent does not crash (although the
+        content will be meaningless).
         """
-        workspace = Workspace()
-        workspace.save()
-        url = reverse('lizard_map_workspace_extent',
-                      kwargs={'workspace_id': str(workspace.id)})
-        params = {'name': 'test workspace_item',
-                  'adapter_class': 'test adapter_class',
-                  'adapter_layer_json': '{"json"}'}
-        result = self.client.post(url, params)
+        url = reverse('lizard_map_session_workspace_extent_temp')
+        result = self.client.get(url, {})
         self.assertEqual(result.status_code, 200)
-        self.assertTrue('east' in result.content)
-        self.assertTrue('west' in result.content)
-        self.assertTrue('north' in result.content)
-        self.assertTrue('south' in result.content)
+
+    # Not testable without adapter
+    # def test_workspace_extent(self):
+    #     """
+    #     Tests if the workspace extent does not crash (although the
+    #     content will be meaningless).
+    #     """
+    #     workspace = Workspace()
+    #     workspace.save()
+    #     workspace_item1 = workspace.workspace_items.create(
+    #         name='test workspaceitem')
+    #     url = reverse('lizard_map_workspace_item_extent')
+    #     result = self.client.get(url, {
+    #             'workspace_item_id': workspace_item1.id})
+    #     self.assertEqual(result.status_code, 200)
+    #     self.assertTrue('north' in result.content)
+
 
     # Not testable without adapter
     # def test_workspace_item_image(self):

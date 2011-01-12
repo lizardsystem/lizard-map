@@ -171,18 +171,10 @@ function setUpWorkspaceAcceptable() {
             });
         stretchOneSidebarBox();
     });
-    // Add action buttons to workspace acceptables. The workspace
-    // acceptables are generated in different apps and we want all
-    // apps to have these buttons, therefore we add the buttons here.
-    //
-    $(".workspace-acceptable").each(function () {
-        var html;
-        html = $(this).html();
-        html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Add layer to workspace"></span>';
-        $(this).html(html);
-    });
 
-    // Add action to buttons next to workspace acceptables.
+    // Add action to button 'add-workspace-item' in workspace
+    // acceptables. This class is added by
+    // setUpWorkspaceAcceptableButtons in lizard-ui: lizard.js.
     $(".add-workspace-item").live("click", function (event) {
         // Fetch workspace acceptable properties and add workspace item.
         var wa_name, adapter_class, adapter_layer_json, url,
