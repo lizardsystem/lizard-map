@@ -385,7 +385,6 @@ function setUpWorkspaceItemPanToLayer() {
             "data-object-id");
         url = $(this).parents(".workspace").attr(
             "data-url-lizard-map-workspace-item-extent");
-        alert(workspace_item_id + url);
         $.getJSON(
             url,
             {workspace_item_id: workspace_item_id},
