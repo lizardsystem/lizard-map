@@ -90,7 +90,8 @@ function setUpMapLoadDefaultLocation() {
                     (data.zoom !== undefined))
                 {
                     map.setCenter(
-                        new OpenLayers.LonLat(parseFloat(data.x), parseFloat(data.y)),
+                        new OpenLayers.LonLat(parseFloat(data.x),
+                                              parseFloat(data.y)),
                         parseFloat(data.zoom));
                 }
             });
@@ -145,9 +146,28 @@ function setUpWorkspaceAcceptable() {
              adapter_layer_json: adapter_layer_json
             },
             function (workspace_id) {
+                var url, center_x, center_y;
                 updateLayer(workspace_id);
                 reloadMapActions();
                 // Load extent from workspace and zoom to it.
+                url = $(".workspace").attr(
+                    "data-url-lizard-map-workspace-extent-temp");
+                $.getJSON(url, {}, function (extent) {
+                    // If we do not get extent, just forget it.
+                    if ((extent.north !== null) &&
+                        (extent.south !== null) &&
+                        (extent.east !== null) &&
+                        (extent.west !== null))
+                    {
+                        // Convert bbox to center coordinates
+                        center_x = (extent.east + extent.west) / 2;
+                        center_y = (extent.north + extent.south) / 2;
+                        // Now pan
+                        map.panTo(
+                            new OpenLayers.LonLat(parseFloat(center_x),
+                                                  parseFloat(center_y)));
+                    }
+                });
             });
         stretchOneSidebarBox();
     });

@@ -21,9 +21,6 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/empty/',
         'lizard_map.views.workspace_item_empty',
         name="lizard_map_workspace_item_empty"),
-    url(r'^workspace/(?P<workspace_id>\d+)/extent/',
-        'lizard_map.views.workspace_extent',
-        name="lizard_map_workspace_extent"),
     url(r'^workspace/(?P<workspace_id>\d+)/',
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
@@ -91,10 +88,14 @@ urlpatterns = patterns(
 
     # Actions on your session workspace - the system looks for the right
     # workspace.
-    url(r'^session_workspace/',
+    url(r'^session_workspace/$',
         'lizard_map.views.session_workspace_edit_item',
         {'workspace_category': 'temp'},
         name="lizard_map_session_workspace_add_item_temp"),
+    url(r'^session_workspace/temp/extent/$',
+        'lizard_map.views.session_workspace_extent',
+        {'workspace_category': 'temp'},
+        name="lizard_map_session_workspace_extent_temp"),
 
     # Actions/services on session collages
     url(r'^session_collage/add/',

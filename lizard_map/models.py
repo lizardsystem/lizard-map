@@ -182,6 +182,7 @@ class Workspace(models.Model):
         west = None
         for workspace_item in self.workspace_items.all():
             wsi_extent = workspace_item.adapter.extent()
+            print workspace_item, wsi_extent
             if wsi_extent['east'] > east or east is None:
                 east = wsi_extent['east']
             if wsi_extent['west'] < west or west is None:
