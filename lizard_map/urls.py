@@ -79,10 +79,10 @@ urlpatterns = patterns(
 
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
-    url(r'^workspaceitemreorder/',
+    url(r'^workspaceitemreorder/$',
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
-    url(r'^workspaceitemadd/',
+    url(r'^workspaceitemadd/$',
         'lizard_map.views.workspace_item_add',
         name="lizard_map_workspace_item_add"),
     url(r'^workspaceitem/extent/$',

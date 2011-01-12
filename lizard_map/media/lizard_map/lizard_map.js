@@ -171,15 +171,49 @@ function setUpWorkspaceAcceptable() {
             });
         stretchOneSidebarBox();
     });
-    // Add action buttons if applicable. Generic way to add buttons
-    // etc to workspace-acceptables.
+    // Add action buttons to workspace acceptables. The workspace
+    // acceptables are generated in different apps and we want all
+    // apps to have these buttons, therefore we add the buttons here.
     //
-    // $(".workspace-acceptable").each(function () {
-    //     var html;
-    //     html = $(this).html();
-    //     html = html + '<a href="" class="ss_sprite ss_magnifier sidebarbox-action-icon"></a>';
-    //     $(this).html(html);
-    // });
+    $(".workspace-acceptable").each(function () {
+        var html;
+        html = $(this).html();
+        html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Add layer to workspace"></span>';
+        $(this).html(html);
+    });
+
+    // Add action to buttons next to workspace acceptables.
+    $(".add-workspace-item").live("click", function (event) {
+        // Fetch workspace acceptable properties and add workspace item.
+        var wa_name, adapter_class, adapter_layer_json, url,
+            $workspace_acceptable, $workspace, workspace_id;
+        // Get adapter class and parameters.
+        $workspace_acceptable = $(this).parents(".workspace-acceptable");
+        $workspace = $(".workspace");  // Assumes there is only 1.
+        workspace_id = $workspace.attr("data-workspace-id");
+
+        wa_name = $workspace_acceptable.attr("data-name");
+        adapter_class = $workspace_acceptable.attr("data-adapter-class");
+        adapter_layer_json = $workspace_acceptable.attr("data-adapter-layer-json");
+        url = $workspace.attr("data-url-lizard-map-workspace-item-add");
+
+        // Request to make workspace item and update workspace.
+        $.post(
+            url,
+            {workspace_id: workspace_id,
+             name: wa_name,
+             adapter_class: adapter_class,
+             adapter_layer_json: adapter_layer_json
+            },
+            function (workspace_id) {
+                // Update all workspaces.
+                $(".workspace").updateWorkspace();
+                // "click" the empty temp workspace
+                $(".workspace-empty-temp").click();
+            }
+        );
+        return false; // Same as .preventDefault and .stopPropagation
+    });
 }
 
 

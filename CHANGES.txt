@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.39 (unreleased)
 -----------------
 
+- Added add-to-workspace button next to workspace acceptables.
+
 - Added pan-to function to workspace items.
 
 - Added panning when selecting a workspace-acceptable.
