@@ -66,7 +66,8 @@
           data-workspace-id="{{ workspace.id }}">
         {# pan to layer #}
         <span class="ss_sprite ss_map_go sidebarbox-action-icon
-                     workspace-item-pan-to"></span>
+                     workspace-item-pan-to"
+              title="{% trans 'Pan to this layer' %}"></span>
         {# legend #}
         {% legend workspace_item.name workspace_item.adapter session %}
         <img src="{{ workspace_item.adapter.symbol_url }}"
