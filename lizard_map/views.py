@@ -158,6 +158,15 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 
 
 @never_cache
+def workspace_item_extent(request, workspace_item_id=None):
+    """Returns extent for the workspace in json.
+    """
+    workspace_item_id = request.GET['workspace_item_id']
+    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    return HttpResponse(json.dumps(workspace_item.adapter.extent()))
+
+
+@never_cache
 def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
     """

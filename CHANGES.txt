@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.39 (unreleased)
 -----------------
 
+- Added pan-to function to workspace items.
+
 - Added panning when selecting a workspace-acceptable.
 
 - Changed default workspace name from "Workspace" to "My Workspace".

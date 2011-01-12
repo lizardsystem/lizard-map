@@ -85,6 +85,9 @@ urlpatterns = patterns(
     url(r'^workspaceitemadd/',
         'lizard_map.views.workspace_item_add',
         name="lizard_map_workspace_item_add"),
+    url(r'^workspaceitem/extent/$',
+        'lizard_map.views.workspace_item_extent',
+        name="lizard_map_workspace_item_extent"),
 
     # Actions on your session workspace - the system looks for the right
     # workspace.

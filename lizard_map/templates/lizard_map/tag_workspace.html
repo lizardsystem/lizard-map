@@ -13,7 +13,8 @@
      data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
      data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_delete %}"
      data-url-lizard-map-session-workspace-add-item-temp="{% url lizard_map_session_workspace_add_item_temp %}"
-     data-url-lizard-map-workspace-extent-temp="{% url lizard_map_session_workspace_extent_temp %}"
+     data-url-lizard-map-session-workspace-extent-temp="{% url lizard_map_session_workspace_extent_temp %}"
+     data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
      data-url-lizard-map-collage-popup="{% url lizard_map.collage_popup %}"
      data-url-lizard-map-snippet-popup="{% url lizard_map.snippet_popup %}"
      data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates %}"
@@ -63,6 +64,9 @@
           class="workspace-item"
           data-object-id="{{ workspace_item.id }}"
           data-workspace-id="{{ workspace.id }}">
+        {# pan to layer #}
+        <span class="ss_sprite ss_map_go sidebarbox-action-icon
+                     workspace-item-pan-to"></span>
         {# legend #}
         {% legend workspace_item.name workspace_item.adapter session %}
         <img src="{{ workspace_item.adapter.symbol_url }}"

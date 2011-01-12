@@ -151,7 +151,7 @@ function setUpWorkspaceAcceptable() {
                 reloadMapActions();
                 // Load extent from workspace and zoom to it.
                 url = $(".workspace").attr(
-                    "data-url-lizard-map-workspace-extent-temp");
+                    "data-url-lizard-map-session-workspace-extent-temp");
                 $.getJSON(url, {}, function (extent) {
                     // If we do not get extent, just forget it.
                     if ((extent.north !== null) &&
@@ -376,6 +376,39 @@ function setUpLegendColorPickers() {
 }
 
 
+/* Pans to workspace item. Only works if extent function is
+implemented for that particilar workspace item. */
+function setUpWorkspaceItemPanToLayer() {
+    $(".workspace-item-pan-to").live("click", function () {
+        var url, workspace_item_id;
+        workspace_item_id = $(this).parent().attr(
+            "data-object-id");
+        url = $(this).parents(".workspace").attr(
+            "data-url-lizard-map-workspace-item-extent");
+        alert(workspace_item_id + url);
+        $.getJSON(
+            url,
+            {workspace_item_id: workspace_item_id},
+            function (extent) {
+                // If we do not get extent, just forget it.
+                if ((extent.north !== null) &&
+                    (extent.south !== null) &&
+                    (extent.east !== null) &&
+                    (extent.west !== null))
+                {
+                    // Convert bbox to center coordinates
+                    center_x = (extent.east + extent.west) / 2;
+                    center_y = (extent.north + extent.south) / 2;
+                    // Now pan
+                    map.panTo(
+                        new OpenLayers.LonLat(parseFloat(center_x),
+                                              parseFloat(center_y)));
+                }
+            });
+    });
+}
+
+
 function legend_action_reload(event) {
     // send all legend properties to server and reload page
     var $form, url, name;
@@ -429,6 +462,7 @@ $(document).ready(function () {
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();
+    setUpWorkspaceItemPanToLayer();
 
     // Set up legend edit.
     setUpLegendEdit();
