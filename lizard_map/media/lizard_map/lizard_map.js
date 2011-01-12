@@ -389,6 +389,7 @@ function setUpWorkspaceItemPanToLayer() {
             url,
             {workspace_item_id: workspace_item_id},
             function (extent) {
+                var center_x, center_y;
                 // If we do not get extent, just forget it.
                 if ((extent.north !== null) &&
                     (extent.south !== null) &&
