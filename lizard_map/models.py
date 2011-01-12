@@ -160,7 +160,7 @@ class Workspace(models.Model):
 
     name = models.CharField(max_length=80,
                             blank=True,
-                            default='Workspace')
+                            default='My Workspace')
 
     owner = models.ForeignKey(User, blank=True, null=True)
     visible = models.BooleanField(default=False)
@@ -172,6 +172,25 @@ class Workspace(models.Model):
         return reverse('lizard_map_workspace',
                        kwargs={'workspace_id': self.id})
 
+    def extent(self):
+        """
+        Returns workspace extent, using extents from workspace items.
+        """
+        north = None
+        south = None
+        east = None
+        west = None
+        for workspace_item in self.workspace_items.all():
+            wsi_extent = workspace_item.adapter.extent()
+            if wsi_extent['east'] > east or east is None:
+                east = wsi_extent['east']
+            if wsi_extent['west'] < west or west is None:
+                west = wsi_extent['west']
+            if wsi_extent['south'] < south or south is None:
+                south = wsi_extent['south']
+            if wsi_extent['north'] > north or north is None:
+                north = wsi_extent['north']
+        return {'north': north, 'south': south, 'east': east, 'west': west}
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""

@@ -172,9 +172,10 @@ class WorkspaceTest(TestCase):
         self.assertTrue(workspace_item2 in workspace1.workspace_items.all())
 
     def test_name(self):
-        """A workspace always has a name.  It is 'workspace' by default."""
+        """A workspace always has a name.  It is 'My Workspace' by
+        default."""
         workspace = Workspace()
-        self.assertEquals(workspace.name, u'Workspace')
+        self.assertEquals(workspace.name, u'My Workspace')
 
     def test_representation(self):
         workspace = Workspace()
@@ -254,6 +255,25 @@ class WorkspaceClientTest(TestCase):
             url,
             {'object_id': str(workspace_item1.id)})
         self.assertFalse(workspace.workspace_items.all())
+
+    def test_workspace_extent(self):
+        """
+        Tests if the workspace extent gives a response in the right
+        form (although the content will be meaningless).
+        """
+        workspace = Workspace()
+        workspace.save()
+        url = reverse('lizard_map_workspace_extent',
+                      kwargs={'workspace_id': str(workspace.id)})
+        params = {'name': 'test workspace_item',
+                  'adapter_class': 'test adapter_class',
+                  'adapter_layer_json': '{"json"}'}
+        result = self.client.post(url, params)
+        self.assertEqual(result.status_code, 200)
+        self.assertTrue('east' in result.content)
+        self.assertTrue('west' in result.content)
+        self.assertTrue('north' in result.content)
+        self.assertTrue('south' in result.content)
 
     # Not testable without adapter
     # def test_workspace_item_image(self):

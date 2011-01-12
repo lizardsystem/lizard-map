@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.39 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Changed default workspace name from "Workspace" to "My Workspace".
+
+- Added workspace.extent function and corresponding url.
 
 
 1.38 (2011-01-11)

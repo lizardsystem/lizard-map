@@ -172,12 +172,13 @@ class WorkspaceItemAdapter(object):
 
     def extent(self, identifiers=None):
         """
-        Returns extent (West, North, East, South) in google projection.
+        Returns extent {'west':.., 'north':.., 'east':.., 'south':..}
+        in google projection. None for each key means unknown.
 
         Optional: If identifiers is given, return extent for those
         identifiers only.
         """
-        raise NotImplementedError
+        return {'north': None, 'south': None, 'east': None, 'west': None}
 
     def search(self, x, y, radius=None):
         """Search by coordinates. Return list of dicts for matching

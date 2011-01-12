@@ -147,6 +147,7 @@ function setUpWorkspaceAcceptable() {
             function (workspace_id) {
                 updateLayer(workspace_id);
                 reloadMapActions();
+                // Load extent from workspace and zoom to it.
             });
         stretchOneSidebarBox();
     });
@@ -392,7 +393,7 @@ function mapSaveLocation() {
         url: url,
         data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
         async: false,
-        success: function() {}
+        success: function () {}
     });
 }
 
