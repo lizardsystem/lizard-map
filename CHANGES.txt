@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.40 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Improved css for workspace acceptable. Minor change, but it looks
+  good.
 
 
 1.39 (2011-01-13)

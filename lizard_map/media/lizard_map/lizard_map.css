@@ -127,6 +127,7 @@
 .workspace-acceptable
 {
   min-height: 2em;
+  line-height: 2em;
   }
 
 .workspace-item-name
