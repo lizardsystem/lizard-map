@@ -145,9 +145,9 @@ def add_datasource_point(datasource, x, y, name, info):
     # Use these coordinates to put points 'around' actual
     # coordinates, to compensate for bug #402 in mapnik.
     around = [(0,0),
-              (0.00001,0),
-              (-0.00001,0),
-              (0,0.00001),
-              (0,-0.00001)]
+              (0.000001,0),
+              (-0.000001,0),
+              (0,0.000001),
+              (0,-0.000001)]
     for offset_x, offset_y in around:
         datasource.add_point(x+offset_x, y+offset_y, name, info)
