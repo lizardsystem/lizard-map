@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.40 (unreleased)
+1.40 (2011-01-13)
 -----------------
 
 - Improved css for workspace acceptable. Minor change, but it looks
