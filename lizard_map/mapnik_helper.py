@@ -135,3 +135,19 @@ def point_rule(icon, mask, color, mapnik_filter=None):
         layout_rule.filter = mapnik.Filter(mapnik_filter)
 
     return layout_rule
+
+
+def add_datasource_point(datasource, x, y, name, info):
+    """
+    Use this function to compensate for Mapnik bug #402 where some
+    points are lost.
+    """
+    # Use these coordinates to put points 'around' actual
+    # coordinates, to compensate for bug #402 in mapnik.
+    around = [(0,0),
+              (0.00001,0),
+              (-0.00001,0),
+              (0,0.00001),
+              (0,-0.00001)]
+    for offset_x, offset_y in around:
+        datasource.add_point(x+offset_x, y+offset_y, name, info)
