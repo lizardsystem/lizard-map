@@ -292,12 +292,12 @@ def workspace_item_delete(request, object_id=None):
 def session_workspace_edit_item(request,
                                 workspace_item_id=None,
                                 workspace_category='user'):
-    """edits workspace item, the function automatically finds best appropriate
-    workspace
+    """edits workspace item, the function automatically finds best
+    appropriate workspace
 
-    if workspace_item_id is None, a new workspace_item will be created using
-    workspace_item_add TODO if workspace_item_id is filled in, apply edits and
-    save
+    if workspace_item_id is None, a new workspace_item will be created
+    using workspace_item_add TODO if workspace_item_id is filled in,
+    apply edits and save
 
     """
     workspace_id = request.session['workspaces'][workspace_category][0]
