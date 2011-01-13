@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.39 (unreleased)
 -----------------
 
+- Improved css for workspace items.
+
 - Added add_datasource_point to compensate for Mapnik bug #402.
 
 - Added add-to-workspace button next to workspace acceptables.

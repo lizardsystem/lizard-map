@@ -64,13 +64,15 @@
           class="workspace-item"
           data-object-id="{{ workspace_item.id }}"
           data-workspace-id="{{ workspace.id }}">
-        {# pan to layer #}
+        {# Legend. #}
+        {% legend workspace_item.name workspace_item.adapter session %}
+        {# Pan to layer. #}
         <span class="ss_sprite ss_bullet_go sidebarbox-action-icon
                      workspace-item-pan-to"
               title="{% trans 'Pan to this layer' %}"></span>
-        {# legend #}
-        {% legend workspace_item.name workspace_item.adapter session %}
-        <img src="{{ workspace_item.adapter.symbol_url }}"
+        {# Symbol, appears left. #}
+        <img class="workspace-item-image"
+             src="{{ workspace_item.adapter.symbol_url }}"
              width="16"
              height="16" />
         <input id="{{ workspace_item.id }}"
@@ -80,7 +82,7 @@
                checked="checked"
                {% endif %}
                data-workspace-id="{{ workspace.id }}" />
-        {% firstof workspace_item.name '(noname)' %}
+        <div class="workspace-item-name">{% firstof workspace_item.name '(noname)' %}</div>
       </li>
       {% empty %}
       {# No workspaceitems #}

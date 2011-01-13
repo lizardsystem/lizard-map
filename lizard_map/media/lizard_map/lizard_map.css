@@ -101,3 +101,37 @@
 .map-action
 { margin-left: 0.5em;
   }
+
+.workspace-item-image
+{ float: left;
+  display: block;
+  font-weight: normal;
+  margin: 4px 0 auto 0;
+  }
+
+.workspace-item
+{
+  overflow: visible;
+  width: 100%;
+  min-height: 2em;
+  }
+
+.workspace-item-checkbox
+{
+  float: left;
+  display: block;
+  font-weight: normal;
+  margin: 2px 0.75em auto 0.75em;
+  }
+
+.workspace-acceptable
+{
+  min-height: 2em;
+  }
+
+.workspace-item-name
+{ margin: auto;
+  display: block;
+  width: 15em;
+  line-height: 2em;
+  }
