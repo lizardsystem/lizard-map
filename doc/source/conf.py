@@ -23,10 +23,11 @@ def _egg_info(path_to_egg='../../'):
     version = '%s.%s' % tuple([int(x) for x in parsed_version[0:2]])
     return egg_info.name, egg_info.author, version, release
 
+
 project, author, version, release = _egg_info()
 this_year = datetime.date.today().year
 copyright = '%s, %s' % (this_year, author)
-
+os.environ['DJANGO_SETTINGS_MODULE'] = 'lizard_map.testsettings'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
