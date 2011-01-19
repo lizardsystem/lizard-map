@@ -11,6 +11,7 @@ long_description = '\n\n'.join([
     ])
 
 install_requires = [
+    'pkginfo',
     'Django',
     'PIL',
     'django-nose',
