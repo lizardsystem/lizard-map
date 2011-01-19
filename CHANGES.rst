@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.41 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Started sphinx documentation setup.
 
 
 1.40 (2011-01-13)

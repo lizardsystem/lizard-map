@@ -10,8 +10,4 @@ Basic map setup for lizard web sites.
    code
 
 
-.. include:: ../../README.txt
-
-
-
-
+.. include:: ../../README.rst

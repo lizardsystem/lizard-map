@@ -1,9 +1,9 @@
 Project documentation
 =====================
 
-.. include:: ../../CHANGES.txt
+.. include:: ../../CHANGES.rst
 
-.. include:: ../../TODO.txt
+.. include:: ../../TODO.rst
 
-.. include:: ../../CREDITS.txt
+.. include:: ../../CREDITS.rst
 
