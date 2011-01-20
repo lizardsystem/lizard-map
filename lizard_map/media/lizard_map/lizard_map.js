@@ -498,7 +498,7 @@ $(document).ready(function () {
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
     $(".add-snippet").snippetInteraction(); // voor collage view, nu nog nutteloos voor popup
-    // $("a.lizard-map-link").lizardMapLink();
+    $("a.lizard-map-link").lizardMapLink();
 });
 
 // Beforeunload: this function is called just before leaving the page

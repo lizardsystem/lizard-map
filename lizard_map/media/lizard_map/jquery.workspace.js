@@ -378,34 +378,16 @@ Then change the url (???)
 
 jQuery.fn.lizardMapLink = function () {
     $(this).click(function (event) {
-        event.preventDefault();
-        var url = event.currentTarget;
-        $.get(
-            url,
-            function (responseText, textStatus, xmlHttpRequest) {
-                //alert($(responseText).find("div#head-extras").html());
-                // replace sidebar
-                $("#sidebar").html($(responseText).find("#sidebar").html());
-                setUpScreen();
-                $(".workspace").workspaceInteraction();
-                //$(".workspace").updateWorkspaceBox();
-                // $("#head-extras").html($(responseText).find("#head-extras").html());
-
-                var headExtras = $(responseText).find("div#head-extras").html();
-                $("div#head-extras").html(headExtras);
-
-                // replace breadcrumbs
-                $("#breadcrumbs").html($(responseText).find("#breadcrumbs").html());
-                $("a.lizard-map-link").lizardMapLink(); //affects breadcrumbs AND sidebar
-
-                // replace title... where is it???
-                //console.debug($(responseText).find("title"));
-                //$("title").replaceWith($(responseText).find("title"));
-
-            }
-        );
-
-        // probeersel, je kunt niet het voorste gedeelte aanpassen
-        window.location.hash = event.currentTarget;
+        var popup_login, next;
+        popup_login = $(this).attr("data-popup-login");
+        if (popup_login !== undefined) {
+            // So we need login.
+            event.preventDefault();
+            // Fill "next" field.
+            next = $(this).attr("href");
+            $("#login-form-next").attr("value", next);
+            // "Click" on it.
+            $("#login-button").click();
+        }
     });
 };
