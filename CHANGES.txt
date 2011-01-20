@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.41 (unreleased)
+1.41 (2011-01-20)
 -----------------
 
 - Added option "data-popup-login" to "lizard-map-link", which pops up
