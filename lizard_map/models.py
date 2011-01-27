@@ -109,6 +109,13 @@ class Color(str):
                   self.b / 255.0, self.a / 255.0)
         return result
 
+    @property
+    def html(self):
+        """
+        Returns color in html format.
+        """
+        return '#%02x%02x%02x' % (self.r, self.g, self.b)
+
 
 class ColorField(models.CharField):
     """Custom ColorField for use in Django models. It's an extension

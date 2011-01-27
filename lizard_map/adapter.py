@@ -246,7 +246,7 @@ class Graph(object):
         there is no legend displayed"""
         self.legend_width = LEGEND_WIDTH / self.width
 
-    def legend(self, handles=None, labels=None):
+    def legend(self, handles=None, labels=None, ncol=1):
         """
         Displays legend. Default is right side, but if the width is
         too small, it will display under the graph.
@@ -266,9 +266,9 @@ class Graph(object):
                 legend_loc = 4  # lower right
                 # approximation of legend height
                 self.legend_on_bottom_height = min(
-                    (len(labels) + 1) * BOTTOM_LINE_HEIGHT / self.height,
+                    (len(labels) / ncol + 2) * BOTTOM_LINE_HEIGHT /
+                    self.height,
                     0.5)
-
             else:
                 legend_loc = 1  # Upper right'
 
@@ -282,6 +282,7 @@ class Graph(object):
                                 # 'best'
                                 1),
                 loc=legend_loc,
+                ncol=ncol,
                 fancybox=True,
                 shadow=True,
                )

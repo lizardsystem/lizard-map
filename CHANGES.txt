@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.42 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added extra logging for missing TEMPLATE_CONTEXT_PROCESSORS.
+
+- Started sphinx documentation setup.
 
 
 1.41 (2011-01-20)

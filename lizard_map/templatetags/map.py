@@ -48,7 +48,9 @@ class MapVariablesNode(template.Node):
                 'base_layer_osm': (
                     'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
                 }
-        # Update map_settings with own coordinates and zoomlevel, if applicable
+        # Update map_settings with own coordinates and zoomlevel, if
+        # applicable.
+
         if context.has_key('request'):
             session = context['request'].session
             if MAP_LOCATION in session:
@@ -61,6 +63,11 @@ class MapVariablesNode(template.Node):
                         str(map_location['x']),
                         str(map_location['y']),
                         str(map_location['zoom'])))
+        else:
+            logger.warn(
+                'Could not find request in context. Did you add '
+                '"django.core.context_processors.request" '
+                'to your TEMPLATE_CONTEXT_PROCESSORS?')
 
         for setting, setting_value in map_settings.items():
             context[setting] = setting_value

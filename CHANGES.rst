@@ -2,10 +2,21 @@ Changelog of lizard-map
 =======================
 
 
-1.41 (unreleased)
+1.42 (unreleased)
 -----------------
 
+- Added option ncol to Graph legend.
+
+- Added extra logging for missing TEMPLATE_CONTEXT_PROCESSORS.
+
 - Started sphinx documentation setup.
+
+
+1.41 (2011-01-20)
+-----------------
+
+- Added option "data-popup-login" to "lizard-map-link", which pops up
+  a login screen before following the link.
 
 
 1.40 (2011-01-13)
