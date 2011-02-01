@@ -5,6 +5,10 @@ Changelog of lizard-map
 1.42 (unreleased)
 -----------------
 
+- Added default view for apps homepage, including example homepage.
+
+- Added function html to color object.
+
 - Added option ncol to Graph legend.
 
 - Added extra logging for missing TEMPLATE_CONTEXT_PROCESSORS.

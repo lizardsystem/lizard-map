@@ -12,7 +12,6 @@ import Image
 import csv
 import logging
 import mapnik
-import logging
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
@@ -33,8 +32,37 @@ from lizard_map.workspace import WorkspaceManager
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
+CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
 
 logger = logging.getLogger(__name__)
+
+
+def homepage(request,
+             template='lizard_map/example_homepage.html',
+             crumbs_prepend=None):
+    """Default apps screen, make your own template.
+    """
+    date_range_form = DateRangeForm(
+        current_start_end_dates(request, for_form=True))
+
+    workspace_manager = WorkspaceManager(request)
+    workspaces = workspace_manager.load_or_create()
+    date_range_form = DateRangeForm(
+        current_start_end_dates(request, for_form=True))
+
+    if crumbs_prepend is not None:
+        crumbs = crumbs_prepend
+    else:
+        crumbs = [CRUMBS_HOMEPAGE]
+
+    return render_to_response(
+        template,
+        {'date_range_form': date_range_form,
+         'workspaces': workspaces,
+         'javascript_hover_handler': 'popup_hover_handler',
+         'javascript_click_handler': 'popup_click_handler',
+         'crumbs': crumbs},
+        context_instance=RequestContext(request))
 
 
 def workspace(request,
@@ -457,9 +485,12 @@ def collage(request,
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
     show_table = request.GET.get('show_table', False)
+
+    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+
     return render_to_response(
         template,
-        {'collage': get_object_or_404(WorkspaceCollage, pk=collage_id),
+        {'collage': collage,
          'editable': editable,
          'date_range_form': date_range_form,
          'request': request,

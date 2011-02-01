@@ -1,0 +1,38 @@
+{# Example homepage. Make your own and use this page as an example. #}
+{% extends "lizard_map/wms.html" %}
+{% load workspaces %}
+
+{% block subtitle %} Example homepage {% endblock %}
+
+{% block sidebar %}
+<div id="iconbox" class="sidebarbox sidebarbox-stretched iconlist">
+  <h2>Apps</h2>
+  <ul>
+      <li>
+        <a class="notworking">
+          <img src="{{ STATIC_URL }}lizard_ui/app_icons/meetgegevens.png" />
+          <div>Meetgegevens</div>
+        </a>
+      </li>
+      <li>
+        <a class="notworking">
+          <img src="{{ STATIC_URL }}lizard_ui/app_icons/kaartlagen.png" />
+          <div>Kaartlagen</div>
+        </a>
+      </li>
+      <li>
+        <a class="notworking">
+          <img src="{{ STATIC_URL }}lizard_ui/app_icons/modelresultaten.png" />
+          <div>Rapportage</div>
+        </a>
+      </li>
+  </ul>
+</div>
+
+{% for workspace in workspaces.user %}
+  {% workspace workspace %}
+{% empty %}
+No workspace
+{% endfor %}
+
+{% endblock %}
