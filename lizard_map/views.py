@@ -12,6 +12,7 @@ import Image
 import csv
 import logging
 import mapnik
+import logging
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
@@ -690,6 +691,7 @@ def wms(request, workspace_id):
 
     workspace_items = workspace.workspace_items.filter(visible=True).reverse()
     for workspace_item in workspace_items:
+        logger.debug("Drawing layer for %s..." % workspace_item)
         layers, styles = workspace_item.adapter.layer(layer_ids=layers,
                                                       request=request)
         layers.reverse()  # first item should be drawn on top (=last)
@@ -700,11 +702,15 @@ def wms(request, workspace_id):
         # mapnik_map.zoom_to_box(layer.envelope())
 
     #Zoom and create image
+    logger.debug("Zooming to box...")
     mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
     # mapnik_map.zoom_to_box(layer.envelope())
     img = mapnik.Image(width, height)
+    logger.debug("Rendering map...")
     mapnik.render(mapnik_map, img)
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
+
+    logger.debug("Converting image to rgba...")
     rgba_image = Image.fromstring('RGBA', (width, height), img.tostring())
     buf = StringIO.StringIO()
     if 'MSIE 6.0' in http_user_agent:
