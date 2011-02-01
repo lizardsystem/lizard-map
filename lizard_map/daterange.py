@@ -27,7 +27,7 @@ class DateRangeForm(forms.Form):
                                label='Einddatum')
 
 
-def set_date_range(request, template='krw_waternet/daterange.html'):
+def set_date_range(request, template='lizard_map/daterange.html'):
     """View: store the date range in the session and redirect."""
     if request.method == 'POST':
         form = DateRangeForm(request.POST)

@@ -1,0 +1,23 @@
+{# Error/test view for date range selector #}
+{% extends "lizard_ui/lizardbase.html" %}
+{% block subtitle %} Date range selector {% endblock %}
+
+{% block portal-tabs %}
+<ul>
+  <li class="selected"><a href="/">Overzicht</a></li
+  ><li class="last"><a href="/analysis">Analyse</a></li>
+</ul>
+{% endblock portal-tabs %}
+
+
+{% block content %}
+  <h1>Datumkeuze</h1>
+  <div>
+    <form action="{% url lizard_map.set_date_range %}"
+          method="post">
+      {% csrf_token %}
+      {{ date_range_form.as_p }}
+      <p><input type="submit" value="Nieuwe periode" /></p>
+    </form>
+  </div>
+{% endblock %}
