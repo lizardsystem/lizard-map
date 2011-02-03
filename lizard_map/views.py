@@ -51,7 +51,7 @@ def homepage(request,
         current_start_end_dates(request, for_form=True))
 
     if crumbs_prepend is not None:
-        crumbs = crumbs_prepend
+        crumbs = list(crumbs_prepend)
     else:
         crumbs = [CRUMBS_HOMEPAGE]
 

@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.42 (unreleased)
 -----------------
 
+- Fixed bug with breadcrumbs on homepage.
+
 - Fixed bug with daterange template.
 
 - Added default view for apps homepage, including example homepage.
