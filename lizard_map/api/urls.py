@@ -1,9 +1,14 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
+from piston.authentication import HttpBasicAuthentication
+
 from lizard_map.api.handlers import MapPluginsHandler
 
 
-map_plugins_handler = Resource(MapPluginsHandler)
+auth = HttpBasicAuthentication(realm="Fews jdbc")
+ad = { 'authentication': auth }
+
+map_plugins_handler = Resource(MapPluginsHandler, **ad)
 
 urlpatterns = patterns(
     '',
