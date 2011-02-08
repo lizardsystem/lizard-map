@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.45 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added fool proof checking on Color object.
 
 
 1.44 (2011-02-08)

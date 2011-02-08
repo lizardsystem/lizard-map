@@ -78,10 +78,10 @@ class Color(str):
     The object is in fact a string with class variables.
     """
     def __init__(self, s):
+        self.r = None
+        self.g = None
+        self.b = None
         if s is None:
-            self.r = None
-            self.g = None
-            self.b = None
             return
         try:
             self.r = int(s[0:2], 16)
@@ -114,7 +114,10 @@ class Color(str):
         """
         Returns color in html format.
         """
-        return '#%02x%02x%02x' % (self.r, self.g, self.b)
+        if self.r and self.g and self.b:
+            return '#%02x%02x%02x' % (self.r, self.g, self.b)
+        else:
+            return '#ff0000'  # Red as alarm color
 
 
 class ColorField(models.CharField):
