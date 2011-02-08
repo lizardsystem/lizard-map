@@ -7,7 +7,7 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-
+    (r'^api/', include('lizard_map.api.urls')),
     # Actions/services on/from workspaces
     url(r'^workspace/(?P<workspace_id>\d+)/wms/',
         'lizard_map.views.wms',
