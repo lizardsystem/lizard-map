@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.44 (unreleased)
+1.44 (2011-02-08)
 -----------------
 
 - Added **experimental** django-piston REST api.
