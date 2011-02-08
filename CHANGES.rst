@@ -2,7 +2,19 @@ Changelog of lizard-map
 =======================
 
 
-1.42 (unreleased)
+1.44 (unreleased)
+-----------------
+
+- Added **experimental** django-piston REST api.
+
+
+1.43 (2011-02-03)
+-----------------
+
+- Fixed breadcrumbs bug.
+
+
+1.42 (2011-02-01)
 -----------------
 
 - Fixed bug with breadcrumbs on homepage.
