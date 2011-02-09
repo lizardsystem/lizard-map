@@ -117,7 +117,6 @@ class Color(str):
         if self.r is not None and self.g is not None and self.b is not None:
             return '#%02x%02x%02x' % (self.r, self.g, self.b)
         else:
-            print self.r, self.g, self.b
             return '#ff0000'  # Red as alarm color
 
 
