@@ -161,6 +161,9 @@ class AdapterClassNotFoundError(Exception):
     pass
 
 
+###### Models start here ######
+
+
 class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
 

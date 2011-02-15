@@ -39,8 +39,12 @@ logger = logging.getLogger(__name__)
 
 def homepage(request,
              template='lizard_map/example_homepage.html',
-             crumbs_prepend=None):
+             crumbs_prepend=None,
+             application_screen_slug=None):
     """Default apps screen, make your own template.
+
+    Optionally, if application_screen_slug is None, try to fetch GET
+    parameter 'screen' from url.
     """
     date_range_form = DateRangeForm(
         current_start_end_dates(request, for_form=True))
@@ -55,13 +59,17 @@ def homepage(request,
     else:
         crumbs = [CRUMBS_HOMEPAGE]
 
+    if application_screen_slug is None:
+        application_screen_slug = request.GET.get('screen', None)
+
     return render_to_response(
         template,
         {'date_range_form': date_range_form,
          'workspaces': workspaces,
          'javascript_hover_handler': 'popup_hover_handler',
          'javascript_click_handler': 'popup_click_handler',
-         'crumbs': crumbs},
+         'crumbs': crumbs,
+         'application_screen_slug': application_screen_slug},
         context_instance=RequestContext(request))
 
 

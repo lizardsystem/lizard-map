@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.45 (unreleased)
 -----------------
 
+- Added support for ApplicationScreens.
+
 - Added fool proof checking on Color object.
 
 
