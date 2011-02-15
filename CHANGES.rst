@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.45 (unreleased)
+1.50 (2011-02-15)
 -----------------
 
 - Added support for ApplicationScreens.
