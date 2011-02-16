@@ -15,6 +15,19 @@ DEFAULT_START = datetime.date.today() + datetime.timedelta(
 DEFAULT_END = datetime.date.today() + datetime.timedelta(
     days=default_end_days)
 
+# Sorry, but these ^^^ need to be methods so that the default start
+# date is not calculated from the start date.
+def default_start():
+    return datetime.date.today() + datetime.timedelta(
+        days=default_start_days)
+
+def default_end():
+    return datetime.date.today() + datetime.timedelta(
+        days=default_end_days)
+
+
+
+
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
 

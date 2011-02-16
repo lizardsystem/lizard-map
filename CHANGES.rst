@@ -5,7 +5,10 @@ Changelog of lizard-map
 1.51 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug in date range handling: the default start/end dates would
+  be calculated JUST ONCE at system startup.  So the "2 weeks before
+  today" would really be "2 weeks before the date apache restarted".
+  Fixed it by adding two methods that do the proper thing.
 
 
 1.50 (2011-02-15)
