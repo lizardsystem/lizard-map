@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.51 (unreleased)
+1.51 (2011-02-16)
 -----------------
 
 - Fixed bug in date range handling: the default start/end dates would
