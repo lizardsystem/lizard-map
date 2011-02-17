@@ -34,6 +34,9 @@ ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
+# WMS is a special kind of adapter: the client side behaves different.
+ADAPTER_CLASS_WMS = 'wms'
+
 logger = logging.getLogger(__name__)
 # Add introspection rules for ColorField
 add_introspection_rules([], ["lizard_map.models.ColorField"])
@@ -204,6 +207,26 @@ class Workspace(models.Model):
             if wsi_extent['north'] > north or north is None:
                 north = wsi_extent['north']
         return {'north': north, 'south': south, 'east': east, 'west': west}
+
+    def wms_layers(self):
+        """
+        Returns a list of wms_layers. Each wms_layer is a dict with keys:
+        wms_id, name, url, params, options. They are used in wms.html
+        """
+        result = []
+        for workspace_item in self.workspace_items.filter(
+            adapter_class=ADAPTER_CLASS_WMS):
+
+            # The special WMS layer arguments provides name, url,
+            # params, options.
+            layer_arguments = workspace_item.adapter_layer_arguments
+            print layer_arguments
+            layer_arguments.update(
+                {'wms_id': '%d_%d' % (self.id, workspace_item.id)})
+            result.append(layer_arguments)
+
+        return result
+
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""

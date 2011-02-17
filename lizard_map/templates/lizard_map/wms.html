@@ -81,6 +81,7 @@
      data-save-location-url="{% url lizard_map.map_location_save %}"
      data-load-location-url="{% url lizard_map.map_location_load_default %}"
      >
+  {# Make a layer for every workspace #}
   {% for workspace_list in workspaces.values %}
     {% for workspace in workspace_list %}
     <div class="workspace-layer"
@@ -88,6 +89,19 @@
          data-workspace-name="{{ workspace.name }}"
          data-workspace-wms="{% url lizard_map_wms workspace_id=workspace.id %}">
     </div>
+    {# Add wms layers from every workspace #}
+      {% for wms_layer in workspace.wms_layers %}
+      {% autoescape off %}
+      <div class="workspace-wms-layer"
+           data-workspace-wms-id="{{ wms_layer.wms_id }}"
+           data-workspace-wms-name="{{ wms_layer.name }}"
+           data-workspace-wms-url="{{ wms_layer.url }}"
+           {# json uses "" #}
+           data-workspace-wms-params='{{ wms_layer.params }}'
+           data-workspace-wms-options='{{ wms_layer.options }}'>
+      </div>
+      {% endautoescape %}
+      {% endfor %}
     {% endfor %}
   {% endfor %}
 </div>

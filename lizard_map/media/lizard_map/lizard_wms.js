@@ -98,6 +98,7 @@ function showMap() {
     }
     map.addLayer(base_layer);
 
+
     // Add our own data layers.
     $(".workspace-layer").each(function () {
         var workspace_id, workspace_name, workspace_wms;
@@ -111,6 +112,35 @@ function showMap() {
             {singleTile: true,
              isBaseLayer: false});
         map.addLayer(layers[workspace_id]);
+    });
+
+    // wms_layer = new OpenLayers.Layer.WMS(
+    //     "Afvoerkaart",
+    //     "http://afvoerkaart.lizardsystem.nl/geoserver/gwc/service/wms",
+    //     {
+    //         transparent: 'TRUE',
+    //         height: '256',
+    //         width: '256',
+    //         layers: 'gemeente_wgs',
+    //         styles: '',
+    //         format: 'image/png'
+    //     },
+    //     {buffer: 0, 'reproject': true});
+    // console.log(wms_layer);
+    // map.addLayer(wms_layer);
+
+    $(".workspace-wms-layer").each(function() {
+        var name, url, params, options, id;
+        // WMS id, different than workspace ids.
+        id = $(this).attr("data-workspace-wms-id");
+        name = $(this).attr("data-workspace-wms-name");
+        url = $(this).attr("data-workspace-wms-url");
+        params = $(this).attr("data-workspace-wms-params");
+        options = $(this).attr("data-workspace-wms-options");
+        layers[id] = new OpenLayers.Layer.WMS(
+            name, url, $.parseJSON(params), $.parseJSON(options));
+        console.log(layers[id]);
+        map.addLayer(layers[id]);
     });
 
     // Set up controls, zoom and center.
