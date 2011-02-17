@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.53 (unreleased)
+1.53 (2011-02-17)
 -----------------
 
 - Added app_screen template for pages with apps, workspace and map.
