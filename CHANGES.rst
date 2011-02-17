@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.52 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Switched off mandatory authentication for the experimental API.
 
 
 1.51 (2011-02-16)
