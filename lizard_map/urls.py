@@ -2,12 +2,17 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 
+from lizard_map.tasty import MapPlugin
+
+map_plugin = MapPlugin()
+
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
     (r'^api/', include('lizard_map.api.urls')),
+    (r'^api2/', include(map_plugin.urls)),
     # Actions/services on/from workspaces
     url(r'^workspace/(?P<workspace_id>\d+)/wms/',
         'lizard_map.views.wms',

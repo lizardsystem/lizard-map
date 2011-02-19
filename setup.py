@@ -22,6 +22,7 @@ install_requires = [
     'pyproj',
     'django-piston',
     'south',
+    'django-tastypie',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],
 
