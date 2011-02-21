@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.54 (unreleased)
+1.54 (2011-02-21)
 -----------------
 
 - Removed example_homepage.html, updated app_screen.html and
