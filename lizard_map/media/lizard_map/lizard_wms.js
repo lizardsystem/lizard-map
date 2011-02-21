@@ -129,7 +129,7 @@ function showMap() {
     // console.log(wms_layer);
     // map.addLayer(wms_layer);
 
-    $(".workspace-wms-layer").each(function() {
+    $(".workspace-wms-layer").each(function () {
         var name, url, params, options, id;
         // WMS id, different than workspace ids.
         id = $(this).attr("data-workspace-wms-id");
@@ -139,7 +139,6 @@ function showMap() {
         options = $(this).attr("data-workspace-wms-options");
         layers[id] = new OpenLayers.Layer.WMS(
             name, url, $.parseJSON(params), $.parseJSON(options));
-        console.log(layers[id]);
         map.addLayer(layers[id]);
     });
 
