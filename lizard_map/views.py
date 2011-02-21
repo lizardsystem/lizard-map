@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 
 
 def homepage(request,
-             template='lizard_map/example_homepage.html',
+             template='lizard_map/app_screen.html',
              crumbs_prepend=None,
              application_screen_slug=None):
     """Default apps screen, make your own template.
