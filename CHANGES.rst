@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.55 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added support for client-side wms adapter. This will add, remove,
+  reload wms layers client-side without reloading the page.
 
 
 1.54 (2011-02-21)

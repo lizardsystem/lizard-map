@@ -1,8 +1,9 @@
 // jslint configuration
 /*jslint browser: true */
-/*global $, jQuery, OpenLayers, window, map, updateLayer, fillSidebar,
+/*global $, jQuery, OpenLayers, window, map, fillSidebar,
 setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
-setUpTransparencySlider, setUpAnimationSlider, setUpTooltips */
+setUpTransparencySlider, setUpAnimationSlider, setUpTooltips,
+refreshLayers */
 
 
 /*
@@ -181,11 +182,12 @@ jQuery.fn.workspaceInteraction = function () {
                      adapter_layer_json: adapter_layer_json
                     },
                     function (workspace_id) {
+                        // "click" the empty temp workspace. To be removed.
+                        $(".workspace-empty-temp").click();
                         // very strange... $workspace becomes the
                         // <ul> element, using workspaceItems...
                         // TODO: empty temp workspace
                         workspaceItems.parent().parent().updateWorkspace();
-                        $(".workspace-empty-temp").click(); // "click" the empty temp workspace
                     }
                 );
             }
@@ -231,8 +233,6 @@ jQuery.fn.updateWorkspace = function () {
         var $workspace, workspace_id, $holder;
         $workspace = $(this);
         workspace_id = $workspace.attr("data-workspace-id");
-        // reload map layers
-        updateLayer(workspace_id); // from lizardgis
         // reload workspace items: TODO: works only with a single workspace
         // item.
         $holder = $('<div/>');
@@ -246,6 +246,11 @@ jQuery.fn.updateWorkspace = function () {
                 fillSidebar();
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
+                $("#lizard-map-wms").html(
+                    $('#lizard-map-wms', $holder).html());
+                // reload map layers
+                refreshLayers(); // from lizard_wms.js
+                // Is this enough? See also refreshMapActionsDivs in lizard_map
                 setUpAnimationSlider();
                 setUpTransparencySlider();
                 setUpTooltips();

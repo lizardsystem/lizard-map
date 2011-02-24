@@ -215,16 +215,16 @@ class Workspace(models.Model):
         """
         result = []
         for workspace_item in self.workspace_items.filter(
-            adapter_class=ADAPTER_CLASS_WMS):
+            adapter_class=ADAPTER_CLASS_WMS, visible=True):
 
             # The special WMS layer arguments provides name, url,
             # params, options.
             layer_arguments = workspace_item.adapter_layer_arguments
-            print layer_arguments
             layer_arguments.update(
                 {'wms_id': '%d_%d' % (self.id, workspace_item.id)})
             result.append(layer_arguments)
 
+        result.reverse()
         return result
 
 

@@ -61,6 +61,7 @@
 {% block content %}
 {# data attributes wms #}
 {% map_variables %}{# loads map variables #}
+{# All contents of lizard-map-wms must have class lizard-map-wms-item #}
 <div id="lizard-map-wms"
      data-javascript-click-handler="{{ javascript_click_handler }}"
      data-javascript-hover-handler="{{ javascript_hover_handler }}"
@@ -84,7 +85,7 @@
   {# Make a layer for every workspace #}
   {% for workspace_list in workspaces.values %}
     {% for workspace in workspace_list %}
-    <div class="workspace-layer"
+    <div class="workspace-layer lizard-map-wms-item"
          data-workspace-id="{{ workspace.id }}"
          data-workspace-name="{{ workspace.name }}"
          data-workspace-wms="{% url lizard_map_wms workspace_id=workspace.id %}">
@@ -92,7 +93,7 @@
     {# Add wms layers from every workspace #}
       {% for wms_layer in workspace.wms_layers %}
       {% autoescape off %}
-      <div class="workspace-wms-layer"
+      <div class="workspace-wms-layer lizard-map-wms-item"
            data-workspace-wms-id="{{ wms_layer.wms_id }}"
            data-workspace-wms-name="{{ wms_layer.name }}"
            data-workspace-wms-url="{{ wms_layer.url }}"

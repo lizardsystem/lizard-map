@@ -3,7 +3,8 @@
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
 G_PHYSICAL_MAP, TouchHandler */
 var layers, map;
-layers = [];
+layers = []; // used in an assicoative way
+//layer_names = []; // stores all names, so we can loop through the layers
 
 //layers is globally defined
 function updateLayer(workspace_id) {
@@ -21,20 +22,93 @@ function updateLayers() {
 }
 
 
+/* Adds all layers (base + workspaces) to map */
+function refreshLayers() {
+    var $lizard_map_wms, base_layer,
+        base_layer_type, wms_url, wms_layers, osm_url;
+
+    // Remove all old layers.
+    layers = [];
+    while (map.layers.length > 0) {
+        map.removeLayer(map.layers[0]);
+    }
+
+    // Set up all layers.
+    $lizard_map_wms = $("#lizard-map-wms");
+    base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
+
+    // Set up base layer.
+    if (base_layer_type === "OSM")
+    {
+        osm_url = $lizard_map_wms.attr("data-base-layer-osm");
+        base_layer = new OpenLayers.Layer.OSM(
+        "Openstreetmap",
+        osm_url,
+        {buffer: 0});
+    }
+    else if (base_layer_type === "WMS")
+    {
+        wms_url = $lizard_map_wms.attr("data-base-layer-wms");
+        wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
+        base_layer = new OpenLayers.Layer.WMS(
+            'Topografische kaart',
+            wms_url,
+	    {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
+            {'isBaseLayer': true, 'buffer': 1}
+        );
+    }
+    else if (base_layer_type === "GOOGLE")
+    {
+        base_layer = new OpenLayers.Layer.Google(
+            "Google Physical",
+            {type: G_PHYSICAL_MAP, sphericalMercator: true});
+    }
+    layers.base_layer = base_layer;
+    map.addLayer(base_layer);
+
+    // Add our own data layers.
+    $(".workspace-layer").each(function () {
+        var workspace_id, workspace_name, workspace_wms;
+        workspace_id = $(this).attr("data-workspace-id");
+        workspace_name = $(this).attr("data-workspace-name");
+        workspace_wms = $(this).attr("data-workspace-wms");
+        layers[workspace_id] = new OpenLayers.Layer.WMS(
+            workspace_name,
+            workspace_wms,
+            {layers: 'basic'},
+            {singleTile: true,
+             isBaseLayer: false});
+        map.addLayer(layers[workspace_id]);
+    });
+
+    // Add wms layers from workspace items.
+    $(".workspace-wms-layer").each(function () {
+        var name, url, params, options, id;
+        // WMS id, different than workspace ids.
+        id = $(this).attr("data-workspace-wms-id");
+        name = $(this).attr("data-workspace-wms-name");
+        url = $(this).attr("data-workspace-wms-url");
+        params = $(this).attr("data-workspace-wms-params");
+        options = $(this).attr("data-workspace-wms-options");
+        layers[id] = new OpenLayers.Layer.WMS(
+            name, url, $.parseJSON(params), $.parseJSON(options));
+        map.addLayer(layers[id]);
+    });
+}
+
+
 function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
         $lizard_map_wms, startlocation_x, startlocation_y,
-        startlocation_zoom, projection, display_projection,
-        base_layer_type, wms_url, wms_layers, osm_url;
+        startlocation_zoom, projection, display_projection;
 
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
 
     projection = $lizard_map_wms.attr("data-projection");
     display_projection = $lizard_map_wms.attr("data-display-projection");
-    base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
 
     startlocation_x = $lizard_map_wms.attr("data-startlocation-x");
     startlocation_y = $lizard_map_wms.attr("data-startlocation-y");
@@ -70,77 +144,7 @@ function showMap() {
     map = new OpenLayers.Map('map', options);
     // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
-    // Set up base layer.
-    if (base_layer_type === "OSM")
-    {
-        osm_url = $lizard_map_wms.attr("data-base-layer-osm");
-        base_layer = new OpenLayers.Layer.OSM(
-        "Openstreetmap",
-        osm_url,
-        {buffer: 0});
-    }
-    else if (base_layer_type === "WMS")
-    {
-        wms_url = $lizard_map_wms.attr("data-base-layer-wms");
-        wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
-        base_layer = new OpenLayers.Layer.WMS(
-            'Topografische kaart',
-            wms_url,
-	    {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
-            {'isBaseLayer': true, 'buffer': 1}
-        );
-    }
-    else if (base_layer_type === "GOOGLE")
-    {
-        base_layer = new OpenLayers.Layer.Google(
-            "Google Physical",
-            {type: G_PHYSICAL_MAP, sphericalMercator: true});
-    }
-    map.addLayer(base_layer);
-
-
-    // Add our own data layers.
-    $(".workspace-layer").each(function () {
-        var workspace_id, workspace_name, workspace_wms;
-        workspace_id = $(this).attr("data-workspace-id");
-        workspace_name = $(this).attr("data-workspace-name");
-        workspace_wms = $(this).attr("data-workspace-wms");
-        layers[workspace_id] = new OpenLayers.Layer.WMS(
-            workspace_name,
-            workspace_wms,
-            {layers: 'basic'},
-            {singleTile: true,
-             isBaseLayer: false});
-        map.addLayer(layers[workspace_id]);
-    });
-
-    // wms_layer = new OpenLayers.Layer.WMS(
-    //     "Afvoerkaart",
-    //     "http://afvoerkaart.lizardsystem.nl/geoserver/gwc/service/wms",
-    //     {
-    //         transparent: 'TRUE',
-    //         height: '256',
-    //         width: '256',
-    //         layers: 'gemeente_wgs',
-    //         styles: '',
-    //         format: 'image/png'
-    //     },
-    //     {buffer: 0, 'reproject': true});
-    // console.log(wms_layer);
-    // map.addLayer(wms_layer);
-
-    $(".workspace-wms-layer").each(function () {
-        var name, url, params, options, id;
-        // WMS id, different than workspace ids.
-        id = $(this).attr("data-workspace-wms-id");
-        name = $(this).attr("data-workspace-wms-name");
-        url = $(this).attr("data-workspace-wms-url");
-        params = $(this).attr("data-workspace-wms-params");
-        options = $(this).attr("data-workspace-wms-options");
-        layers[id] = new OpenLayers.Layer.WMS(
-            name, url, $.parseJSON(params), $.parseJSON(options));
-        map.addLayer(layers[id]);
-    });
+    refreshLayers();
 
     // Set up controls, zoom and center.
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));

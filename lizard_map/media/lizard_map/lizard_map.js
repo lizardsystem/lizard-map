@@ -1,8 +1,8 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
-/*global $, OpenLayers, window, updateLayer, updateLayers,
+/*global $, OpenLayers, window, updateLayers,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-hover_popup, layers, map */
+hover_popup, layers, map, refreshLayers */
 
 var animationTimer, transparencyTimer;
 
@@ -99,17 +99,42 @@ function setUpMapLoadDefaultLocation() {
 }
 
 
+/* set up map actions */
+function setUpMapActions() {
+    fillSidebar();
+    setUpAnimationSlider();
+    setUpTransparencySlider();
+    setUpMapLoadDefaultLocation();
+}
+
+
+/* Refreshes map-actions and lizard-map-wms divs, then inits js. */
+/* Looks a bit like jQuery.fn.updateWorkspace part. Needs refactoring. */
+function refreshMapActionsDivs() {
+    var $holder;
+    $holder = $('<div/>');
+    $holder.load(
+        './ #page',
+        function () {
+            $(".map-actions").html(
+                $('.map-actions', $holder).html());
+            $("#lizard-map-wms").html(
+                $('#lizard-map-wms', $holder).html());
+            refreshLayers();
+            setUpMapActions();
+        });
+}
+
 /* Reload map-actions: put all initialization functions here for map actions
-(above map, load/save location/ empty temp workspace) */
+(above map, load/save location/ empty temp workspace)
+
+OBSOLETE, should be integrated with other load functions
+*/
 function reloadMapActions() {
     $(".map-actions").load(
         "./ .map-action",
-        function () {
-            fillSidebar();
-            setUpAnimationSlider();
-            setUpTransparencySlider();
-            setUpMapLoadDefaultLocation();
-        });
+        setUpMapActions
+    );
 }
 
 
@@ -131,13 +156,14 @@ function setUpWorkspaceAcceptable() {
     });
     // Clicking a workspace-acceptable shows it in the 'temp' workspace.
     $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp;
+        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace;
         $(".workspace-acceptable").removeClass("selected");
         $(this).addClass("selected");
         name = $(this).attr("data-name");
         adapter_class = $(this).attr("data-adapter-class");
         adapter_layer_json = $(this).attr("data-adapter-layer-json");
-        url_add_item_temp = $(".workspace").attr(
+        $workspace = $(".workspace");
+        url_add_item_temp = $workspace.attr(
             "data-url-lizard-map-session-workspace-add-item-temp");
         $.post(
             url_add_item_temp,
@@ -147,8 +173,7 @@ function setUpWorkspaceAcceptable() {
             },
             function (workspace_id) {
                 var url, center_x, center_y;
-                updateLayer(workspace_id);
-                reloadMapActions();
+                refreshMapActionsDivs();
                 // Load extent from workspace and zoom to it.
                 url = $(".workspace").attr(
                     "data-url-lizard-map-session-workspace-extent-temp");
@@ -307,9 +332,7 @@ function setUpEmptyTempInteraction() {
             url,
             {object_id: workspace_item_id},
             function (workspace_id) {
-                updateLayer(workspace_id);
-                // load new map actions
-                reloadMapActions();
+                refreshMapActionsDivs();
                 // remove highlighting
                 $(".workspace-acceptable").removeClass("selected");
             }
