@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.56 (unreleased)
+1.56 (2011-02-28)
 -----------------
 
 - Fixed update workspace bug.
