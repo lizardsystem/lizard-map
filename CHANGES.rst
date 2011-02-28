@@ -2,8 +2,11 @@ Changelog of lizard-map
 =======================
 
 
-1.55 (unreleased)
+1.55 (2011-02-28)
 -----------------
+
+- Added coordinates.MapSettings. It makes life easier when reading
+  from your django setting MAP_SETTINGS.
 
 - Added support for client-side wms adapter. This will add, remove,
   reload wms layers client-side without reloading the page.

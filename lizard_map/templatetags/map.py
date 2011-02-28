@@ -2,6 +2,7 @@ from django import template
 from django.conf import settings
 import logging
 
+from lizard_map.coordinates import MapSettings
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_LOCATION
 
@@ -27,27 +28,7 @@ class MapVariablesNode(template.Node):
     """
 
     def render(self, context):
-        try:
-            map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
-            logger.debug('Loaded MAP_SETTINGS.')
-            logger.debug('Startlocation: %s, %s, %s' %
-                         (map_settings['startlocation_x'],
-                          map_settings['startlocation_y'],
-                          map_settings['startlocation_zoom']))
-        except AttributeError:
-            logger.warn(
-                'Could not find MAP_SETTINGS in '
-                'django settings, using default.')
-            map_settings = {
-                'base_layer_type': 'OSM',  # OSM or WMS
-                'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
-                'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
-                'startlocation_x': '550000',
-                'startlocation_y': '6850000',
-                'startlocation_zoom': '10',
-                'base_layer_osm': (
-                    'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
-                }
+        map_settings = MapSettings().map_settings
         # Update map_settings with own coordinates and zoomlevel, if
         # applicable.
 

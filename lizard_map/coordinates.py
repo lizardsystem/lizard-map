@@ -1,6 +1,10 @@
 """Coordinates and projection constants and helpers"""
+import logging
+from django.conf import settings
 from pyproj import Proj
 from pyproj import transform
+
+logger = logging.getLogger(__name__)
 
 # Proj4 projection strings.  Note: no commas between the concatenated
 # strings!
@@ -14,6 +18,18 @@ GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
           '+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
           '+nadgrids=@null +no_defs +over')
 WGS84 = ('+proj=latlong +datum=WGS84')
+
+# Default map settings. Take this when no MAP_SETTINGS in django settings.
+DEFAULT_MAP_SETTINGS = {
+    'base_layer_type': 'OSM',  # OSM or WMS
+    'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
+    'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
+    'startlocation_x': '550000',
+    'startlocation_y': '6850000',
+    'startlocation_zoom': '10',
+    'base_layer_osm': (
+        'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
+    }
 
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
@@ -71,3 +87,28 @@ def detect_prj(prj):
     if 'GCS_WGS_1984' in prj:
         return WGS84
     return RD
+
+
+class MapSettings(object):
+    """
+    MAP_SETTINGS parser
+    """
+
+    def __init__(self):
+        try:
+            self.map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
+            logger.debug('Loaded MAP_SETTINGS.')
+            logger.debug('Startlocation: %s, %s, %s' %
+                         (self.map_settings['startlocation_x'],
+                          self.map_settings['startlocation_y'],
+                          self.map_settings['startlocation_zoom']))
+        except AttributeError:
+            logger.warn(
+                'Could not find MAP_SETTINGS in '
+                'django settings, using default.')
+            self.map_settings = DEFAULT_MAP_SETTINGS
+
+    def mapnik_projection(self):
+        """Returns the mapnik projection.
+        """
+        return srs_to_mapnik_projection[self.map_settings['projection']]
