@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.56 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed update workspace bug.
 
 
 1.55 (2011-02-28)

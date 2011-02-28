@@ -22,7 +22,8 @@ function updateLayers() {
 }
 
 
-/* Adds all layers (base + workspaces) to map */
+/* Adds all layers (base + workspaces) to map. Refreshes all
+workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
     var $lizard_map_wms, base_layer,
         base_layer_type, wms_url, wms_layers, osm_url;
@@ -78,6 +79,7 @@ function refreshLayers() {
             {layers: 'basic'},
             {singleTile: true,
              isBaseLayer: false});
+        layers[workspace_id].mergeNewParams({'random': Math.random()});
         map.addLayer(layers[workspace_id]);
     });
 
