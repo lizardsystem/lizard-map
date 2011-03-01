@@ -90,7 +90,7 @@
 }
 
 #graph-popup-content
-{ overflow: auto;
+{ overflow: hidden;
   }
 
 /* Data attributes for lizard map wms */
