@@ -72,8 +72,9 @@
 
 #hover-popup_contentDiv
 { padding-top: 0.75em;
+  overflow: hidden;
   background-color: lightyellow;
-  }
+}
 
 
 #graph-popup
@@ -90,7 +91,7 @@
 }
 
 #graph-popup-content
-{ overflow: hidden;
+{ overflow: auto;
   }
 
 /* Data attributes for lizard map wms */

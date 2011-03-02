@@ -90,10 +90,10 @@ function hover_popup(data, map) {
         $("#hover-popup").remove(); // remove existing popup, if exists
         popup = new OpenLayers.Popup('hover-popup',
                                      new OpenLayers.LonLat(data.x, data.y),
-                                     new OpenLayers.Size(300, 35),
+                                     new OpenLayers.Size(300, 300),
                                      content,
                                      false);
-        popup.maxSize = new OpenLayers.Size(300, 35);
+        popup.maxSize = new OpenLayers.Size(300, 300);
         popup.border = "1px solid black";
         popup.autoSize = true;
         map.addPopup(popup);
