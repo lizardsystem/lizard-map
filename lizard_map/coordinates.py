@@ -112,3 +112,16 @@ class MapSettings(object):
         """Returns the mapnik projection.
         """
         return srs_to_mapnik_projection[self.map_settings['projection']]
+
+    @property
+    def srid(self):
+        """
+        Return srid.
+
+        """
+        try:
+            if self.map_settings['projection'][:5] == 'EPSG:':
+                return int(self.map_settings['projection'][5:])
+        except ValueError:
+            pass
+        return 4326  # wgs84 is the default
