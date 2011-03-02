@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.57 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added srid property to MapSettings.
 
 
 1.56 (2011-02-28)
