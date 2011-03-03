@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.57 (unreleased)
+1.57 (2011-03-03)
 -----------------
 
 - Added tests for MapSettings.
