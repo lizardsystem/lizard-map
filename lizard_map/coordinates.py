@@ -94,7 +94,10 @@ class MapSettings(object):
     MAP_SETTINGS parser
     """
 
-    def __init__(self):
+    def __init__(self, map_settings=None):
+        if map_settings is not None:
+            self.map_settings = map_settings
+            return
         try:
             self.map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
             logger.debug('Loaded MAP_SETTINGS.')
