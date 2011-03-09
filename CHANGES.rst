@@ -5,7 +5,11 @@ Changelog of lizard-map
 1.58 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added tests for google_to_srs and srs_to_google.
+
+- Added WorkspaceItem.has_extent.
+
+- Added transformation of projection on extent function.
 
 
 1.57 (2011-03-03)

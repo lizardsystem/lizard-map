@@ -77,6 +77,17 @@ def srs_to_google(srs, x, y):
     return google_x, google_y
 
 
+def google_to_srs(x, y, srs):
+    """Return coordinates in srs from GOOGLE coordinates.
+
+    Coordinates are in srs (string), i.e. EPSG:28992."""
+    if srs == 'EPSG:28992':
+        srs_x, srs_y = google_to_rd(x, y)
+    else:
+        srs_x, srs_y = x, y
+    return srs_x, srs_y
+
+
 def detect_prj(prj):
     """
     Inputs a prj string, output is the Proj4 projection string. If the
@@ -128,3 +139,11 @@ class MapSettings(object):
         except ValueError:
             pass
         return 4326  # wgs84 is the default
+
+
+    @property
+    def srs(self):
+        """
+        Return srs / projection.
+        """
+        return self.map_settings['projection']

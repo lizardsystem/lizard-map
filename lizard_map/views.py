@@ -17,6 +17,8 @@ from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
 from lizard_map.animation import slider_layout_extra
+from lizard_map.coordinates import MapSettings
+from lizard_map.coordinates import google_to_srs
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
@@ -197,10 +199,21 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 @never_cache
 def workspace_item_extent(request, workspace_item_id=None):
     """Returns extent for the workspace in json.
+
+    Transform to correct client-side projection, then return coordinates.
     """
     workspace_item_id = request.GET['workspace_item_id']
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-    return HttpResponse(json.dumps(workspace_item.adapter.extent()))
+    extent = workspace_item.adapter.extent()
+
+    # TODO: make prettier.
+    map_settings = MapSettings()
+    extent_converted = {}
+    extent_converted['east'], extent_converted['north'] = google_to_srs(
+        extent['east'], extent['north'], map_settings.srs)
+    extent_converted['west'], extent_converted['south'] = google_to_srs(
+        extent['west'], extent['south'], map_settings.srs)
+    return HttpResponse(json.dumps(extent_converted))
 
 
 @never_cache

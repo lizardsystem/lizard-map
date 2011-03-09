@@ -1009,3 +1009,15 @@ class CoordinatesTest(TestCase):
         self.assertTrue(map_settings.mapnik_projection(),
                         lizard_map.coordinates.RD)
         self.assertTrue(map_settings.srid, 28992)
+
+    def test_srs_to_google(self):
+        x, y = lizard_map.coordinates.srs_to_google(
+            'EPSG:28992', 35219, 467574)
+        self.assertTrue(abs(x - 404721) < 1)
+        self.assertTrue(abs(y - 6833334) < 1)
+
+    def test_google_to_srs(self):
+        x, y = lizard_map.coordinates.google_to_srs(
+            579427, 6860742, 'EPSG:28992')
+        self.assertTrue(abs(x - 142586) < 1)
+        self.assertTrue(abs(y - 482911) < 1)

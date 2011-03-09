@@ -67,9 +67,11 @@
         {# Legend. #}
         {% legend workspace_item.name workspace_item.adapter session %}
         {# Pan to layer. #}
-        <span class="ss_sprite ss_bullet_go sidebarbox-action-icon
-                     workspace-item-pan-to"
-              title="{% trans 'Pan to this layer' %}"></span>
+        {% if workspace_item.has_extent %}
+          <span class="ss_sprite ss_bullet_go sidebarbox-action-icon
+                       workspace-item-pan-to"
+                title="{% trans 'Pan to this layer' %}"></span>
+        {% endif %}
         {# Symbol, appears left. #}
         <img class="workspace-item-image"
              src="{{ workspace_item.adapter.symbol_url }}"

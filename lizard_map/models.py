@@ -287,6 +287,16 @@ class WorkspaceItem(models.Model):
         """Can I provide a adapter class for i.e. WMS layer?"""
         return bool(self.adapter_class)
 
+    def has_extent(self):
+        """
+        Return true if workspace item has a extent that makes sense.
+        """
+        extent = self.adapter.extent()
+        if None in extent.values():
+            return False
+        else:
+            return True
+
     def delete(self, *args, **kwargs):
         """
         When deleting a WorkspaceItem, delete corresponding snippets
