@@ -5,6 +5,11 @@ Changelog of lizard-map
 1.58 (unreleased)
 -----------------
 
+- Moved WSGIImportScript outside VirtualHost in apache config template.
+
+- Removed add-workspace-item button by default. It appears after
+  clicking an item.
+
 - Changed arrow to magnifier. Only shows magnifier if
   WorkspaceItem.has_extent is True.
 

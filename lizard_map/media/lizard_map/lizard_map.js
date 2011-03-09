@@ -156,7 +156,7 @@ function setUpWorkspaceAcceptable() {
     });
     // Clicking a workspace-acceptable shows it in the 'temp' workspace.
     $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace;
+        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace, html;
         $(".workspace-acceptable").removeClass("selected");
         $(this).addClass("selected");
         name = $(this).attr("data-name");
@@ -165,6 +165,14 @@ function setUpWorkspaceAcceptable() {
         $workspace = $(".workspace");
         url_add_item_temp = $workspace.attr(
             "data-url-lizard-map-session-workspace-add-item-temp");
+
+        // Remove "old" add to workspace button.
+        $(".add-workspace-item").remove();
+        // Add the "add to workspace button"
+        html = $(this).html();
+        html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>';
+        $(this).html(html);
+
         $.post(
             url_add_item_temp,
             {name: name,
