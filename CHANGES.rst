@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.58 (unreleased)
 -----------------
 
+- Changed arrow to magnifier. Only shows magnifier if
+  WorkspaceItem.has_extent is True.
+
 - Added tests for google_to_srs and srs_to_google.
 
 - Added WorkspaceItem.has_extent.
