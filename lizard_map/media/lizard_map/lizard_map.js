@@ -138,72 +138,7 @@ function reloadMapActions() {
 }
 
 
-function setUpWorkspaceAcceptable() {
-    // Set up draggability for current and future items.
-    // See http://tinyurl.com/29lg4y3 .
-    $(".workspace-acceptable").live("mouseover", function () {
-        if (!$(this).data("draggable-initialized")) {
-            $(this).data("draggable-initialized", true);
-            $(this).draggable({
-                scroll: 'false',
-                cursor: 'move',
-                helper: 'clone',
-                appendTo: 'body',
-                revert: 'true',
-                placeholder: 'ui-sortable-placeholder'
-            });
-        }
-    });
-    // Clicking a workspace-acceptable shows it in the 'temp' workspace.
-    $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace, html;
-        $(".workspace-acceptable").removeClass("selected");
-        $(this).addClass("selected");
-        name = $(this).attr("data-name");
-        adapter_class = $(this).attr("data-adapter-class");
-        adapter_layer_json = $(this).attr("data-adapter-layer-json");
-        $workspace = $(".workspace");
-        url_add_item_temp = $workspace.attr(
-            "data-url-lizard-map-session-workspace-add-item-temp");
-
-        // Remove "old" add to workspace button.
-        $(".add-workspace-item").remove();
-        // Add the "add to workspace button"
-        html = $(this).html();
-        html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>';
-        $(this).html(html);
-
-        $.post(
-            url_add_item_temp,
-            {name: name,
-             adapter_class: adapter_class,
-             adapter_layer_json: adapter_layer_json
-            },
-            function (workspace_id) {
-                var url, center_x, center_y;
-                refreshMapActionsDivs();
-                // Load extent from workspace and zoom to it.
-                url = $(".workspace").attr(
-                    "data-url-lizard-map-session-workspace-extent-temp");
-                $.getJSON(url, {}, function (extent) {
-                    // If we do not get extent, just forget it.
-                    if ((extent.north !== null) &&
-                        (extent.south !== null) &&
-                        (extent.east !== null) &&
-                        (extent.west !== null))
-                    {
-                        // Convert bbox to center coordinates
-                        center_x = (extent.east + extent.west) / 2;
-                        center_y = (extent.north + extent.south) / 2;
-                        // Now pan
-                        map.panTo(
-                            new OpenLayers.LonLat(parseFloat(center_x),
-                                                  parseFloat(center_y)));
-                    }
-                });
-            });
-        stretchOneSidebarBox();
-    });
+function setUpAddWorkspaceItem() {
 
     // Add action to button 'add-workspace-item' in workspace
     // acceptables. This class is added by
@@ -238,6 +173,85 @@ function setUpWorkspaceAcceptable() {
             }
         );
         return false; // Same as .preventDefault and .stopPropagation
+    });
+}
+
+
+function setUpWorkspaceAcceptable() {
+    // Set up draggability for current and future items.
+    // See http://tinyurl.com/29lg4y3 .
+    $(".workspace-acceptable").live("mouseover", function () {
+        if (!$(this).data("draggable-initialized")) {
+            $(this).data("draggable-initialized", true);
+            $(this).draggable({
+                scroll: 'false',
+                cursor: 'move',
+                helper: 'clone',
+                appendTo: 'body',
+
+                revert: 'true',
+                placeholder: 'ui-sortable-placeholder'
+            });
+        }
+        if (!$(this).data("add-workspace-item-initialized")) {
+            // Add the "add to workspace" button
+            $(this).data("add-workspace-item-initialized", true);
+            html = $(this).html();
+            html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>';
+            $(this).html(html);
+        }
+    });
+    // Do not use mouseout: Mouseout is also activated when moving to
+    // the "add-workspace-item" button.
+    $(".workspace-acceptable").live("mouseleave", function () {
+        //  Remove all "add to workspace" button(s).
+        $(".add-workspace-item").remove();
+        $(".workspace-acceptable").removeData(
+            "add-workspace-item-initialized");
+    });
+
+    // Clicking a workspace-acceptable shows it in the 'temp' workspace.
+    $(".workspace-acceptable").live("click", function (event) {
+        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace, html;
+        $(".workspace-acceptable").removeClass("selected");
+        $(this).addClass("selected");
+        name = $(this).attr("data-name");
+        adapter_class = $(this).attr("data-adapter-class");
+        adapter_layer_json = $(this).attr("data-adapter-layer-json");
+        $workspace = $(".workspace");
+        url_add_item_temp = $workspace.attr(
+            "data-url-lizard-map-session-workspace-add-item-temp");
+        $.post(
+            url_add_item_temp,
+            {name: name,
+             adapter_class: adapter_class,
+             adapter_layer_json: adapter_layer_json
+            },
+            function (workspace_id) {
+                var url, center_x, center_y;
+                refreshMapActionsDivs();
+                // Load extent from workspace and zoom to it.
+                url = $(".workspace").attr(
+                    "data-url-lizard-map-session-workspace-extent-temp");
+                $.getJSON(url, {}, function (extent) {
+                    // If we do not get extent, just forget it.
+                    if ((extent.north !== null) &&
+                        (extent.south !== null) &&
+                        (extent.east !== null) &&
+                        (extent.west !== null))
+                    {
+                        // Convert bbox to center coordinates
+                        center_x = (extent.east + extent.west) / 2;
+                        center_y = (extent.north + extent.south) / 2;
+                        // Now pan
+                        map.panTo(
+                            new OpenLayers.LonLat(parseFloat(center_x),
+                                                  parseFloat(center_y)));
+                    }
+                });
+            });
+        stretchOneSidebarBox();
+        return false;
     });
 }
 
@@ -510,6 +524,7 @@ function mapSaveLocation() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
+    setUpAddWorkspaceItem();
     setUpWorkspaceAcceptable();
     setUpWorkspaceEmpty();
     setUpDatePopup();

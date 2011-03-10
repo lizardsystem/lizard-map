@@ -2,10 +2,11 @@ Changelog of lizard-map
 =======================
 
 
-1.59 (unreleased)
+1.59 (2011-03-10)
 -----------------
 
-- Nothing changed yet.
+- (+) shows up when hovering above a workspace-acceptable. Previous it
+  appeared only when clicking on a workspace-acceptable.
 
 
 1.58 (2011-03-10)
