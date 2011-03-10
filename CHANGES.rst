@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.58 (unreleased)
+1.58 (2011-03-10)
 -----------------
 
 - Moved WSGIImportScript outside VirtualHost in apache config template.
