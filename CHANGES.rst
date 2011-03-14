@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.60 (unreleased)
 -----------------
 
-- Jslint.
+- Added var html in lizard_map.js (Jslint).
 
 
 1.59 (2011-03-10)
