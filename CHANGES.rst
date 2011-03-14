@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.60 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Jslint.
 
 
 1.59 (2011-03-10)

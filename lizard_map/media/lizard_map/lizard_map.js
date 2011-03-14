@@ -181,6 +181,7 @@ function setUpWorkspaceAcceptable() {
     // Set up draggability for current and future items.
     // See http://tinyurl.com/29lg4y3 .
     $(".workspace-acceptable").live("mouseover", function () {
+        var html;
         if (!$(this).data("draggable-initialized")) {
             $(this).data("draggable-initialized", true);
             $(this).draggable({
