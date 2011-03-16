@@ -48,10 +48,6 @@ def homepage(request,
     Optionally, if application_screen_slug is None, try to fetch GET
     parameter 'screen' from url.
     """
-    workspace_manager = WorkspaceManager(request)
-    workspaces = workspace_manager.load_or_create()
-    date_range_form = DateRangeForm(
-        current_start_end_dates(request, for_form=True))
 
     if crumbs_prepend is not None:
         crumbs = list(crumbs_prepend)
@@ -63,9 +59,7 @@ def homepage(request,
 
     return render_to_response(
         template,
-        {'date_range_form': date_range_form,
-         'workspaces': workspaces,
-         'javascript_hover_handler': 'popup_hover_handler',
+        {'javascript_hover_handler': 'popup_hover_handler',
          'javascript_click_handler': 'popup_click_handler',
          'crumbs': crumbs,
          'application_screen_slug': application_screen_slug},
@@ -83,24 +77,12 @@ def workspace(request,
     """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
 
-    # Calculate whether we want animation.
-    # TODO: make custom RequestContext where this code is included
-    animation_slider = False
-    for workspace_item in workspace.workspace_items.filter(
-        visible=True):
-        if workspace_item.adapter.is_animatable:
-            animation_slider = AnimationSettings(request).info()
-            break
-
-    date_range_form = DateRangeForm(
-        current_start_end_dates(request, for_form=True))
     return render_to_response(
         template,
         {'workspaces': {'user': [workspace]},
          'javascript_click_handler': javascript_click_handler,
          'javascript_hover_handler': javascript_hover_handler,
-         'animation_slider': animation_slider,
-         'date_range_form': date_range_form},
+         },
         context_instance=RequestContext(request))
 
 
