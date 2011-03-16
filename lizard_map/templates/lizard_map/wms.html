@@ -1,8 +1,6 @@
 {% extends "lizard_map/lizardgis.html" %}{% load i18n %}{% load map %}
 
 {% block map-javascript %}
-{% map_variables %}{# loads map variables #}
-{% detect_browser %}{# detects map variables #}
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
 {% ifequal base_layer_type "GOOGLE" %}
@@ -60,7 +58,6 @@
 
 {% block content %}
 {# data attributes wms #}
-{% map_variables %}{# loads map variables #}
 {# All contents of lizard-map-wms must have class lizard-map-wms-item #}
 <div id="lizard-map-wms"
      data-javascript-click-handler="{{ javascript_click_handler }}"

@@ -148,6 +148,10 @@ lizard_map/workspace concepts.
   ``TEMPLATE_CONTEXT_PROCESSORS``. Omitting this will not zoom in to your
   saved location when loading the page (= going to another app).
 
+- Add 'lizard_map.context_processors.processor.processor' to your
+  settings.py's ``TEMPLATE_CONTEXT_PROCESSORS``. REQUIRED for all map
+  related functionality.
+
 - Add an entry in your urls.py::
 
     (r'^map/', include('lizard_map.urls')),

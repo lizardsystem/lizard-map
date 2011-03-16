@@ -1,3 +1,7 @@
+"""
+Deprecated. Use context_processors.processor.processor instead.
+Will be removed in next release of lizard_map.
+"""
 from django import template
 from django.conf import settings
 import logging

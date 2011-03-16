@@ -139,7 +139,7 @@ function showMap() {
     }
     else
     {
-        alert("Lizard-map onjuist geconfigureerd. Projection: " + projection);
+        alert("Lizard-map onjuist geconfigureerd. Staat 'lizard_map.context_processors.processor.processor' in je context processors?");
     }
 
     // Map is globally defined.

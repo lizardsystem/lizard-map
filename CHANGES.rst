@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.60 (unreleased)
 -----------------
 
+- Added context_processors.processor. This replaces the custom
+  templatetags.map. See README for usage (TEMPLATE_CONTEXT_PROCESSORS).
+
 - Added var html in lizard_map.js (Jslint).
 
 
