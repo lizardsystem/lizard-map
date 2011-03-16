@@ -59,15 +59,20 @@ def workspace_variables(request):
     add_to_context = {}
 
     workspace_manager = WorkspaceManager(request)
-    add_to_context['workspaces'] = workspace_manager.load_or_create()
+    workspaces = workspace_manager.load_or_create()
+    add_to_context['workspaces'] = workspaces
 
     add_to_context['date_range_form'] = DateRangeForm(
         current_start_end_dates(request, for_form=True))
 
     # Add animation slider? Default: no.
-    add_to_context['animation_slider'] = None  # default
-    #animation_slider = AnimationSettings(request).info()
-    #add_to_context['animation_slider'] = animation_slider
+    animation_slider = None  # default
+    for k, ws_list in workspaces.items():
+        for ws in ws_list:
+            if ws.is_animatable:
+                animation_slider = AnimationSettings(request).info()
+                break
+    add_to_context['animation_slider'] = animation_slider
 
     return add_to_context
 

@@ -227,6 +227,14 @@ class Workspace(models.Model):
         result.reverse()
         return result
 
+    @property
+    def is_animatable(self):
+        """Determine if any visible workspace_item is animatable."""
+        for workspace_item in self.workspace_items.filter(visible=True):
+            if workspace_item.adapter.is_animatable:
+                return True
+        return False
+
 
 class WorkspaceItem(models.Model):
     """Can show things on a map based on configuration in a url."""
