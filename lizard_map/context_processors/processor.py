@@ -39,7 +39,7 @@ def map_variables(request):
         try:
             map_location['x']
             map_location['y']
-            map_location['z']
+            map_location['zoom']
             add_to_context['startlocation_x'] = str(map_location['x'])
             add_to_context['startlocation_y'] = str(map_location['y'])
             add_to_context['startlocation_zoom'] = str(map_location['zoom'])
@@ -56,6 +56,13 @@ def map_variables(request):
 
 
 def workspace_variables(request):
+    """Add workspace variables.
+
+    workspaces
+    date_range_form
+    animation_slider
+    use_workspaces: used in template to view certain parts
+    """
     add_to_context = {}
 
     workspace_manager = WorkspaceManager(request)
@@ -73,6 +80,8 @@ def workspace_variables(request):
                 animation_slider = AnimationSettings(request).info()
                 break
     add_to_context['animation_slider'] = animation_slider
+
+    add_to_context['use_workspaces'] = True
 
     return add_to_context
 

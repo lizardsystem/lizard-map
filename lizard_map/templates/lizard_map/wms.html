@@ -24,7 +24,7 @@
     <span class="ss_sprite ss_map_go action-icon"
           title="{% trans 'load default map location' %}"></span>
   </li>
-  {% if animation_slider %}
+  {% if animation_slider %}{% if use_workspaces %}
   <li id="animation-slider"
       class="map-action"
       data-min="{{ animation_slider.min }}"
@@ -36,7 +36,7 @@
   <li class="map-action">
     <span id="selected-date">{{ animation_slider.selected_date|date:"d/m/Y" }}</span>
   </li>
-  {% endif %}
+  {% endif %}{% endif %}
   {% if transparency_slider %}
   <li id="transparency-slider"
       class="map-action">
