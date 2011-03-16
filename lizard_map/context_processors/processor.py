@@ -38,18 +38,26 @@ def processor(request):
 
     if MAP_LOCATION in session:
         map_location = session[MAP_LOCATION]
-        add_to_context['startlocation_x'] = str(map_location['x'])
-        add_to_context['startlocation_y'] = str(map_location['y'])
-        add_to_context['startlocation_zoom'] = str(map_location['zoom'])
-        logger.debug('Fetched map coordinates from session: '
-                     '%s, %s, %s' % (
-                str(map_location['x']),
-                str(map_location['y']),
-                str(map_location['zoom'])))
+        try:
+            map_location['x']
+            map_location['y']
+            map_location['z']
+            add_to_context['startlocation_x'] = str(map_location['x'])
+            add_to_context['startlocation_y'] = str(map_location['y'])
+            add_to_context['startlocation_zoom'] = str(map_location['zoom'])
+            logger.debug('Fetched map coordinates from session: '
+                         '%s, %s, %s' % (
+                    str(map_location['x']),
+                    str(map_location['y']),
+                    str(map_location['zoom'])))
+        except:
+            logger.error(
+                'Error fetching map coordinates from session: %s'
+                % map_location)
 
     # Add animation slider? Default: no.
-    animation_slider = AnimationSettings(request).info()
-    add_to_context['animation_slider'] = animation_slider
+    #animation_slider = AnimationSettings(request).info()
+    #add_to_context['animation_slider'] = animation_slider
 
     # Add detected browser
     add_to_context.update(detect_browser(request))
