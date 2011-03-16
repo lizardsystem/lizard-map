@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.60 (unreleased)
+1.60 (2011-03-16)
 -----------------
 
 - Added workspaces and date_range_form to context processor. In your
