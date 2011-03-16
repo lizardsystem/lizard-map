@@ -5,6 +5,11 @@ Changelog of lizard-map
 1.60 (unreleased)
 -----------------
 
+- Added workspaces and date_range_form to context processor. In your
+  view you do not need to add these variables anymore. You can still
+  provide your own workspaces or date_range_form by adding them in
+  your view.
+
 - Added context_processors.processor. This replaces the custom
   templatetags.map. See README for usage (TEMPLATE_CONTEXT_PROCESSORS).
 

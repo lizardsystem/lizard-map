@@ -48,9 +48,6 @@ def homepage(request,
     Optionally, if application_screen_slug is None, try to fetch GET
     parameter 'screen' from url.
     """
-    date_range_form = DateRangeForm(
-        current_start_end_dates(request, for_form=True))
-
     workspace_manager = WorkspaceManager(request)
     workspaces = workspace_manager.load_or_create()
     date_range_form = DateRangeForm(
