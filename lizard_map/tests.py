@@ -374,8 +374,6 @@ class TestAnimationSettings(TestCase):
 
         self.request = Mock()
         self.request.session = Mock()
-        self.date_start_days = 730119
-        self.date_end_days = 731215
         self._date_range_helper()  # Set the request datetimes
 
     def _fill_date_range(self):
@@ -388,6 +386,9 @@ class TestAnimationSettings(TestCase):
         twothousandthree = datetime.date(year=2003, month=1, day=1)
         self.request.session['date_start'] = twothousand
         self.request.session['date_end'] = twothousandthree
+        day_one = datetime.date(1979, 5, 25)
+        self.date_start_days = (twothousand-day_one).days
+        self.date_end_days = (twothousandthree-day_one).days
 
     def _date_range_helper(self):
         """Make sure _fill_date_range() works."""
@@ -395,9 +396,6 @@ class TestAnimationSettings(TestCase):
         start, end = current_start_end_dates(self.request)
         self.assertEquals(start.year, 2000)
         self.assertEquals(end.year, 2003)
-        day_one = datetime.date(1, 1, 1)
-        self.assertEquals((start-day_one).days, self.date_start_days)
-        self.assertEquals((end-day_one).days, self.date_end_days)
 
     def test_smoke(self):
         animation_settings = AnimationSettings(request=self.request)

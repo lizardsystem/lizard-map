@@ -58,7 +58,8 @@ class AnimationSettings(object):
     """Handle animation settings in the session.
 
     animation_slider has the value of [days from day_one], where
-    day_one is defined as year 1, 1st of January.
+    day_one is defined as year 1979, 25th of May (negative values are
+    allowed).
     """
 
     def __init__(self, request):
@@ -73,7 +74,7 @@ class AnimationSettings(object):
             start_date.year, start_date.month, start_date.day)
         self.end_date = datetime.date(
             end_date.year, end_date.month, end_date.day)
-        self.day_one = datetime.date(1, 1, 1)
+        self.day_one = datetime.date(1979, 5, 25)
         self.start_date_days = (self.start_date - self.day_one).days
         self.end_date_days = (self.end_date - self.day_one).days
 
