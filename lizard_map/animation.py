@@ -55,7 +55,11 @@ def set_animation_date(request):
 
 
 class AnimationSettings(object):
-    """Handle animation settings in the session."""
+    """Handle animation settings in the session.
+
+    animation_slider has the value of [days from day_one], where
+    day_one is defined as year 1, 1st of January.
+    """
 
     def __init__(self, request):
         self.request = request
@@ -84,7 +88,7 @@ class AnimationSettings(object):
         The step is hardcoded to 1 (day) for now.
 
         The value is the current position of the slider (in days from
-        1900, just like the step size).
+        day_one, just like the step size).
 
         For visualisation, we also pass the current value as a datetime.
 
