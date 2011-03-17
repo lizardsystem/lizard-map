@@ -62,9 +62,17 @@ class AnimationSettings(object):
 
         if ANIMATION_SETTINGS not in self.request.session:
             self.request.session[ANIMATION_SETTINGS] = {}
-        self.start_date, self.end_date = current_start_end_dates(self.request)
-        period = self.end_date - self.start_date
-        self.period_in_days = period.days
+        start_date, end_date = current_start_end_dates(self.request)
+
+        # Make sure start_date and end_dates are dates.
+        self.start_date = datetime.date(
+            start_date.year, start_date.month, start_date.day)
+        self.end_date = datetime.date(
+            end_date.year, end_date.month, end_date.day)
+        self.day_one = datetime.date(1, 1, 1)
+        self.start_date_days = (self.start_date - self.day_one).days
+        self.end_date_days = (self.end_date - self.day_one).days
+
 
     def info(self):
         """Return info for creating the slider.
@@ -75,20 +83,20 @@ class AnimationSettings(object):
 
         The step is hardcoded to 1 (day) for now.
 
-        The value is the current position of the slider (in days, just like
-        the step).
+        The value is the current position of the slider (in days from
+        1900, just like the step size).
 
         For visualisation, we also pass the current value as a datetime.
 
         """
         result = {}
-        selected_date = self.start_date + datetime.timedelta(
-            days=self.slider_position)
+        selected_date = self.day_one + datetime.timedelta(
+            self.slider_position)
         # Convert the date to datetime as we'll want that later on.
         selected_date = datetime.datetime.combine(selected_date,
                                                   datetime.time(0))
-        result['min'] = 0
-        result['max'] = self.period_in_days
+        result['min'] = self.start_date_days
+        result['max'] = self.end_date_days
         result['step'] = 1
         result['value'] = self.slider_position
         result['selected_date'] = selected_date
@@ -96,16 +104,17 @@ class AnimationSettings(object):
 
     def _set_slider_position(self, value):
         """Store value in the session."""
-        if value < 0:
-            value = 0
-        if value > self.period_in_days:
-            value = self.period_in_days
+        #value = min(max(self.start_date_days, value), self.end_date_days)
+        print value, self.start_date_days, self.end_date_days
+        value = min(max(self.start_date_days, value), self.end_date_days)
+        print value
         self.request.session[ANIMATION_SETTINGS]['slider_position'] = value
         self.request.session.modified = True
+        # ^^^ .modified is only used in tests.
 
     def _get_slider_position(self):
         """Return value stored in the session."""
         return self.request.session[ANIMATION_SETTINGS].get(
-            'slider_position', 0)
+            'slider_position', self.end_date_days)
 
     slider_position = property(_get_slider_position, _set_slider_position)

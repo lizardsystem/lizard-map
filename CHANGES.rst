@@ -5,7 +5,10 @@ Changelog of lizard-map
 1.61 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug with animation slider. Previously it would not jump to the
+  correct date/time when start_date is changed.
+
+- Added waterbalance icon.
 
 
 1.60 (2011-03-16)

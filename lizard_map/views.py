@@ -15,7 +15,6 @@ import mapnik
 
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.animation import AnimationSettings
 from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import MapSettings
 from lizard_map.coordinates import google_to_srs

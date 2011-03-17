@@ -374,20 +374,30 @@ class TestAnimationSettings(TestCase):
 
         self.request = Mock()
         self.request.session = Mock()
+        self.date_start_days = 730119
+        self.date_end_days = 731215
+        self._date_range_helper()  # Set the request datetimes
 
     def _fill_date_range(self):
-        """Helper method: fill session with date range info."""
-        twothousand = datetime.datetime(year=2000, month=1, day=1)
-        twothousandthree = datetime.datetime(year=2003, month=1, day=1)
+        """Helper method: fill session with date range info.
+
+        date_start is 730119 days from day_one
+        date_end is 731215 days from day_one
+        """
+        twothousand = datetime.date(year=2000, month=1, day=1)
+        twothousandthree = datetime.date(year=2003, month=1, day=1)
         self.request.session['date_start'] = twothousand
         self.request.session['date_end'] = twothousandthree
 
-    def test_date_range_helper(self):
+    def _date_range_helper(self):
         """Make sure _fill_date_range() works."""
         self._fill_date_range()
         start, end = current_start_end_dates(self.request)
         self.assertEquals(start.year, 2000)
         self.assertEquals(end.year, 2003)
+        day_one = datetime.date(1, 1, 1)
+        self.assertEquals((start-day_one).days, self.date_start_days)
+        self.assertEquals((end-day_one).days, self.date_end_days)
 
     def test_smoke(self):
         animation_settings = AnimationSettings(request=self.request)
@@ -401,39 +411,43 @@ class TestAnimationSettings(TestCase):
     def test_slider_position(self):
         """Are the getters/setters working?"""
         animation_settings = AnimationSettings(self.request)
-        animation_settings.slider_position = 42
+        animation_settings.slider_position = self.date_start_days + 100
+        print current_start_end_dates(self.request)
         self.assertTrue(self.request.session.modified)
-        self.assertEquals(animation_settings.slider_position, 42)
-        self.assertEquals(self.request.session[
-                'animation_settings']['slider_position'], 42)
+        self.assertEquals(
+            animation_settings.slider_position, self.date_start_days + 100)
+        self.assertEquals(
+            self.request.session['animation_settings']['slider_position'],
+            self.date_start_days + 100)
 
     def test_initial_slider_position(self):
-        """Slider position should be 0 if not initialised.
+        """Slider position should be [max] if not initialised.
         In any case, it should not return a keyerror."""
         animation_settings = AnimationSettings(self.request)
-        self.assertEquals(animation_settings.slider_position, 0)
+        self.assertEquals(animation_settings.slider_position,
+                          self.date_end_days)
 
     def test_initial_info_gathering(self):
         """Do we return the correct date range and position?"""
         self._fill_date_range()
         animation_settings = AnimationSettings(self.request)
         result = animation_settings.info()
-        self.assertEquals(result['min'], 0)
-        self.assertEquals(result['max'], 1096)
+        self.assertEquals(result['min'], self.date_start_days)
+        self.assertEquals(result['max'], self.date_end_days)
         self.assertEquals(result['step'], 1)
-        self.assertEquals(result['value'], 0)
-        self.assertEquals(result['selected_date'].year, 2000)
+        self.assertEquals(result['value'], self.date_end_days)
+        self.assertEquals(result['selected_date'].year, 2003)
 
     def test_info_gathering(self):
         """Do we return the correct date range and position?"""
         self._fill_date_range()
         animation_settings = AnimationSettings(self.request)
-        animation_settings.slider_position = 400
+        animation_settings.slider_position = self.date_start_days + 375
         result = animation_settings.info()
-        self.assertEquals(result['min'], 0)
-        self.assertEquals(result['max'], 1096)
+        self.assertEquals(result['min'], self.date_start_days)
+        self.assertEquals(result['max'], self.date_end_days)
         self.assertEquals(result['step'], 1)
-        self.assertEquals(result['value'], 400)
+        self.assertEquals(result['value'], self.date_start_days + 375)
         self.assertEquals(result['selected_date'].year, 2001)
 
     def test_impossible_negative_corner_case(self):
@@ -442,15 +456,16 @@ class TestAnimationSettings(TestCase):
         animation_settings = AnimationSettings(self.request)
         animation_settings.slider_position = -400
         result = animation_settings.info()
-        self.assertEquals(result['value'], 0)
+        self.assertEquals(result['value'], self.date_start_days)
 
     def test_impossible_beyond_max_corner_case(self):
         """Value beyond the max possible."""
         self._fill_date_range()
         animation_settings = AnimationSettings(self.request)
-        animation_settings.slider_position = 4000
+        animation_settings.slider_position = 1000000
         result = animation_settings.info()
-        self.assertEquals(result['value'], 1096)  # Max available.
+        # Max available.
+        self.assertEquals(result['value'], self.date_end_days)
 
 
 class UtilityTest(TestCase):
