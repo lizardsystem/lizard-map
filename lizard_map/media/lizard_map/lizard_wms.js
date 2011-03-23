@@ -133,7 +133,7 @@ function showMap() {
             projection: new OpenLayers.Projection(projection),
             displayProjection: new OpenLayers.Projection(display_projection),
             units: "m",
-            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8],
+            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
             maxExtent: new OpenLayers.Bounds(0, 300000, 300000, 600000)
         };
     }
