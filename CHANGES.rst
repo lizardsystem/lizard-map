@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.61 (unreleased)
 -----------------
 
+- Extended adapter.html_default options with template and
+  extra_render_kwargs.
+
 - Fixed bug with animation slider. Previously it would not jump to the
   correct date/time when start_date is changed.
 

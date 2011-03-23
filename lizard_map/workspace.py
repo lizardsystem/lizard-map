@@ -383,7 +383,8 @@ class WorkspaceItemAdapter(object):
         return 'html output for this adapter is not implemented'
 
     def html_default(self, snippet_group=None, identifiers=None,
-                     layout_options=None):
+                     layout_options=None, template=None,
+                     extra_render_kwargs=None):
         """
         Returns html representation of given snippet_group OR
         identifiers (snippet_group has priority). If a snippet_group
@@ -441,18 +442,25 @@ class WorkspaceItemAdapter(object):
         display_group = [self.location(**identifier) for identifier in
                          identifiers]
 
-        return render_to_string(
-            'lizard_map/popup.html',
-            {
-                'title': title,
-                'display_group': display_group,
-                'img_url': img_url,
-                'symbol_url': self.symbol_url(),
-                'add_snippet': add_snippet,
-                'editing': editing,
-                'snippet_group': snippet_group,
+        if template is None:
+            template = 'lizard_map/popup.html'
+        render_kwargs = {
+            'title': title,
+            'display_group': display_group,
+            'img_url': img_url,
+            'symbol_url': self.symbol_url(),
+            'add_snippet': add_snippet,
+            'editing': editing,
+            'snippet_group': snippet_group,
                 'colors': COLORS_DEFAULT,
-                },
+            }
+
+        if extra_render_kwargs is not None:
+            render_kwargs.update(extra_render_kwargs)
+
+        return render_to_string(
+            template,
+            render_kwargs
             )
 
     def legend(self, updates=None):
