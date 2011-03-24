@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.61 (unreleased)
+1.61 (2011-03-24)
 -----------------
 
 - Extended adapter.html_default options with template and
