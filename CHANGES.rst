@@ -2,6 +2,12 @@ Changelog of lizard-map
 =======================
 
 
+1.63 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
 1.62 (2011-03-28)
 -----------------
 
