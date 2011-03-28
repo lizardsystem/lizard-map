@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.62 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Turning offset off in adapter using ticker.ScalarFormater.
+
 
 
 1.61 (2011-03-24)
