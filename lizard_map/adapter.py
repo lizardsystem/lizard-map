@@ -16,6 +16,7 @@ from matplotlib.dates import date2num
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import ScalarFormatter
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI
@@ -240,6 +241,7 @@ class Graph(object):
             max_number_of_ticks = 2
         locator = MaxNLocator(nbins=max_number_of_ticks - 1)
         self.axes.yaxis.set_major_locator(locator)
+        self.axes.yaxis.set_major_formatter(ScalarFormatter(useOffset=False))
 
     def legend_space(self):
         """reserve space for legend (on the right side). even when
