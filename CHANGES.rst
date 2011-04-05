@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.64 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added twitter icon.
 
 
 1.63 (2011-04-05)
