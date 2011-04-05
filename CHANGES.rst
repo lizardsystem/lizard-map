@@ -2,17 +2,16 @@ Changelog of lizard-map
 =======================
 
 
-1.63 (unreleased)
+1.63 (2011-04-05)
 -----------------
 
-- Nothing changed yet.
+- Added support for a second vertical axis in Graph.
 
 
 1.62 (2011-03-28)
 -----------------
 
 - Turning offset off in adapter using ticker.ScalarFormater.
-
 
 
 1.61 (2011-03-24)
