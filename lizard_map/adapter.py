@@ -201,11 +201,13 @@ class Graph(object):
         self.legend_on_bottom_height = 0.0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
+        
+        # Fixup_axes in init, so axes can be customised (for example set_ylim).
         self.fixup_axes()
-
-        # Date range
-        # self.axes.set_xlim(date2num((self.start_date, self.end_date)))
-
+        
+        #deze kan je zelf zetten
+        self.ax2 = None
+        
     def add_today(self):
         # Show line for today.
         self.axes.axvline(self.today, color='orange', lw=1, ls='--')
@@ -219,8 +221,16 @@ class Graph(object):
         self.axes.set_xlabel(xlabel)
         self.x_label_height = BOTTOM_LINE_HEIGHT / self.height
 
-    def fixup_axes(self):
+    def fixup_axes(self, second=False):
         """Fix up the axes by limiting the amount of items."""
+        
+        axes_to_change = self.axes
+        if second:
+            if self.ax2 is None:
+                return
+            else:
+                axes_to_change = self.ax2
+        
         available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
         approximate_characters = int(available_width / (FONT_SIZE / 2))
         max_number_of_ticks = approximate_characters // 20
@@ -228,8 +238,9 @@ class Graph(object):
             max_number_of_ticks = 2
         locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
         if not self.restrict_to_month:
-            self.axes.xaxis.set_major_locator(locator)
-            self.axes.xaxis.set_major_formatter(AutoDateFormatter(locator))
+            axes_to_change.xaxis.set_major_locator(locator)
+            axes_to_change.xaxis.set_major_formatter(AutoDateFormatter(locator))
+              
 
         available_height = (self.height -
                             BOTTOM_LINE_HEIGHT -
@@ -240,9 +251,10 @@ class Graph(object):
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
         locator = MaxNLocator(nbins=max_number_of_ticks - 1)
-        self.axes.yaxis.set_major_locator(locator)
-        self.axes.yaxis.set_major_formatter(ScalarFormatter(useOffset=False))
-
+        if not second:
+            axes_to_change.yaxis.set_major_locator(locator)
+            axes_to_change.yaxis.set_major_formatter(ScalarFormatter(useOffset=False))
+        
     def legend_space(self):
         """reserve space for legend (on the right side). even when
         there is no legend displayed"""
@@ -290,7 +302,13 @@ class Graph(object):
                )
          #legend.set_size('medium')
          # TODO: get rid of the border around the legend.
-
+         
+    def init_second_axes(self):
+        """ init second axes """
+        self.ax2 = self.axes.twinx()
+        self.fixup_axes(second=True)
+        
+        
     def http_png(self):
         """Output plot to png. Also calculates size of plot and put 'now'
         line."""
@@ -302,6 +320,10 @@ class Graph(object):
                        self.x_label_height - self.legend_on_bottom_height)
 
         self.axes.set_position((axes_left, axes_bottom,
+                                axes_width, axes_height))
+
+        if self.ax2 is not None:
+            self.ax2.set_position((axes_left, axes_bottom,
                                 axes_width, axes_height))
 
         # Set date range
