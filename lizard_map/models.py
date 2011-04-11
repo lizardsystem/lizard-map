@@ -716,7 +716,9 @@ class Legend(models.Model):
 
     @property
     def float_format(self):
-        """Determines float format for defined legend. Required by legend_default."""
+        """Determine float format for defined legend.
+
+        Required by legend_default."""
         delta = abs(self.max_value - self.min_value) / self.steps
         if delta < 0.1:
             return '%.3f'
@@ -823,7 +825,7 @@ class Legend(models.Model):
     def mapnik_linestyle(self, value_field=None):
         """Deprecated. Use mapnik_style instead. Return a Mapnik
         line/polystyle from Legend object"""
-        return mapnik_style(self, value_field=value_field)
+        return self.mapnik_style(self, value_field=value_field)
 
 
 class LegendPoint(Legend):
@@ -859,7 +861,8 @@ class LegendPoint(Legend):
         mapnik_filter = "[%s] <= %f" % (value_field, self.min_value)
         logger.debug('adding mapnik_filter: %s' % mapnik_filter)
         mapnik_rule = point_rule(
-            self.icon, self.mask, self.too_low_color, mapnik_filter=mapnik_filter)
+            self.icon, self.mask, self.too_low_color,
+            mapnik_filter=mapnik_filter)
         mapnik_style.rules.append(mapnik_rule)
 
         # in boundaries
@@ -882,3 +885,84 @@ class LegendPoint(Legend):
         mapnik_style.rules.append(mapnik_rule)
 
         return mapnik_style
+
+
+class BackgroundMap(models.Model):
+    """
+    Defines background maps.
+    """
+    LAYER_TYPE_GOOGLE = 1
+    LAYER_TYPE_OSM = 2
+    LAYER_TYPE_WMS = 3
+
+    LAYER_TYPE_CHOICES = (
+        (LAYER_TYPE_GOOGLE, 'GOOGLE'),
+        (LAYER_TYPE_OSM, 'OSM'),
+        (LAYER_TYPE_WMS, 'WMS'),
+        )
+
+    GOOGLE_TYPE_DEFAULT = 1
+    GOOGLE_TYPE_PHYSICAL = 2
+    GOOGLE_TYPE_HYBRID = 3
+    GOOGLE_TYPE_SATELLITE = 4
+
+    GOOGLE_TYPE_CHOICES = (
+        (GOOGLE_TYPE_DEFAULT, 'google default'),
+        (GOOGLE_TYPE_PHYSICAL, 'google physical'),
+        (GOOGLE_TYPE_HYBRID, 'google hybrid'),
+        (GOOGLE_TYPE_SATELLITE, 'google satellite'),
+        )
+
+    default = models.BooleanField(default=False)
+    layer_type = models.IntegerField(choices=LAYER_TYPE_CHOICES)
+    google_type = models.IntegerField(
+        choices=GOOGLE_TYPE_CHOICES,
+        null=True, blank=True
+        help_text='Choose map type in case of GOOGLE maps.')
+    base_layer_url = models.CharField(
+        max_length=200,
+        null=True, blank=True,
+        help_text='Tile url for use with OSM or WMS',
+        default='http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
+    base_layer_names = models.TextField(
+        null=True, blank=True,
+        help_text='Fill in layer names in case of WMS')
+
+    def __unicode__(self):
+        return '%s' % self.layer_type
+
+
+class Setting(models.Model):
+    """
+    Global settings.
+
+    Available keys with default values:
+    startlocation_x
+    startlocation_y
+    startlocation_zoom
+    projection 'EPSG:900913'
+    display_projection 'EPSG:4326'
+    max_extent_west 0
+    max_extent_north 300000
+    max_extent_east 300000
+    max_extent_south 600000
+    googlemaps_api_key
+    """
+    key = models.CharField(max_length=20, unique=True)
+    value = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return '%s = %s' % (self.key, self.value)
+
+    @classmethod
+    def get(cls, key):
+        """
+        Return value from given key.
+
+        If the key does not exist, return None
+        """
+        try:
+            setting = cls.objects.get(key=key)
+            return setting.value
+        except cls.DoesNotExist:
+            return None
