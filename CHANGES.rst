@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.64 (unreleased)
+1.64 (2011-04-12)
 -----------------
 
 - Added migration for BackgroundMap and Setting models.
