@@ -8,7 +8,8 @@ Changelog of lizard-map
 - Added BackgroundMap and Setting models. Model BackgroundMap used to
   store the configuration of single background maps and if the map is
   the default one. Setting is to store global, end-user changeable
-  settings, such as startlocation_x, startlocation_y, etc.
+  settings, such as startlocation_x, startlocation_y, etc. This change
+  also removes dependencies of settings.MAP_SETTINGS.
 
 - Added twitter icon.
 

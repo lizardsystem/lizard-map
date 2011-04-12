@@ -72,14 +72,14 @@ function refreshLayers() {
         }
         else if (layer_type === "OSM")
         {
-            url = $lizard_map_wms.attr("data-layer-osm");
+            url = $(this).attr("data-layer-url");
             base_layer = new OpenLayers.Layer.OSM(
                 layer_name, url, {buffer: 0});
         }
         else if (layer_type === "WMS")
         {
-            url = $lizard_map_wms.attr("data-layer-url");
-            layer_names = $lizard_map_wms.attr("data-layer-layer-names");
+            url = $(this).attr("data-layer-url");
+            layer_names = $(this).attr("data-layer-layer-names");
             base_layer = new OpenLayers.Layer.WMS(
                 layer_name, wms_url,
                 {'layers': layer_names, 'format': 'image/png',

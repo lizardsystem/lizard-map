@@ -169,7 +169,7 @@ class MapSettings(object):
         """
         extent_converted = {}
         extent_converted['east'], extent_converted['north'] = google_to_srs(
-            east, north, self._srs)
+            east, north, self.srs)
         extent_converted['west'], extent_converted['south'] = google_to_srs(
-            west, south, self._srs)
+            west, south, self.srs)
         return extent_converted

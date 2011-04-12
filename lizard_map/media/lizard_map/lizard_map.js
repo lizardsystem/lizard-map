@@ -236,19 +236,18 @@ function setUpWorkspaceAcceptable() {
                 url = $(".workspace").attr(
                     "data-url-lizard-map-session-workspace-extent-temp");
                 $.getJSON(url, {}, function (extent) {
+                    var ol_extent;
                     // If we do not get extent, just forget it.
                     if ((extent.north !== null) &&
                         (extent.south !== null) &&
                         (extent.east !== null) &&
                         (extent.west !== null))
                     {
-                        // Convert bbox to center coordinates
-                        center_x = (extent.east + extent.west) / 2;
-                        center_y = (extent.north + extent.south) / 2;
-                        // Now pan
-                        map.panTo(
-                            new OpenLayers.LonLat(parseFloat(center_x),
-                                                  parseFloat(center_y)));
+                        ol_extent = new OpenLayers.Bounds(
+                            extent.west, extent.north,
+                            extent.east, extent.south);
+                        map.setCenter(ol_extent.getCenterLonLat(),
+                                      map.getZoomForExtent(ol_extent));
                     }
                 });
             });
@@ -462,20 +461,18 @@ function setUpWorkspaceItemPanToLayer() {
             url,
             {workspace_item_id: workspace_item_id},
             function (extent) {
-                var center_x, center_y;
+                var center_x, center_y, ol_extent;
                 // If we do not get extent, just forget it.
                 if ((extent.north !== null) &&
                     (extent.south !== null) &&
                     (extent.east !== null) &&
                     (extent.west !== null))
                 {
-                    // Convert bbox to center coordinates
-                    center_x = (extent.east + extent.west) / 2;
-                    center_y = (extent.north + extent.south) / 2;
-                    // Now pan
-                    map.panTo(
-                        new OpenLayers.LonLat(parseFloat(center_x),
-                                              parseFloat(center_y)));
+                    ol_extent = new OpenLayers.Bounds(
+                        extent.west, extent.north,
+                        extent.east, extent.south);
+                    map.setCenter(ol_extent.getCenterLonLat(),
+                                  map.getZoomForExtent(ol_extent));
                 }
             });
     });

@@ -49,7 +49,8 @@ class WorkspaceCollageSnippetGroupAdmin(admin.ModelAdmin):
 
 
 class BackgroundMapAdmin(admin.ModelAdmin):
-    list_display = ('name', 'default', )
+    list_display = ('name', 'default', 'index', )
+    list_editable = ('default', 'index', )
 
 
 admin.site.register(BackgroundMap, BackgroundMapAdmin)
