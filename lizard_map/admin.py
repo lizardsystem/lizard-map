@@ -1,12 +1,14 @@
 from django.contrib import admin
 
+from lizard_map.models import BackgroundMap
 from lizard_map.models import Legend
 from lizard_map.models import LegendPoint
+from lizard_map.models import Setting
 from lizard_map.models import Workspace
-from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.models import WorkspaceCollageSnippetGroup
+from lizard_map.models import WorkspaceItem
 
 
 class WorkspaceItemInline(admin.TabularInline):
@@ -46,11 +48,17 @@ class WorkspaceCollageSnippetGroupAdmin(admin.ModelAdmin):
         ]
 
 
+class BackgroundMapAdmin(admin.ModelAdmin):
+    list_display = ('name', 'default', )
+
+
+admin.site.register(BackgroundMap, BackgroundMapAdmin)
 admin.site.register(Legend)
 admin.site.register(LegendPoint)
+admin.site.register(Setting)
 admin.site.register(Workspace, WorkspaceAdmin)
-admin.site.register(WorkspaceItem)
 admin.site.register(WorkspaceCollage, WorkspaceCollageAdmin)
 admin.site.register(WorkspaceCollageSnippet)
 admin.site.register(WorkspaceCollageSnippetGroup,
                     WorkspaceCollageSnippetGroupAdmin)
+admin.site.register(WorkspaceItem)

@@ -85,14 +85,15 @@ function setUpMapLoadDefaultLocation() {
         url = $(this).attr("data-url");
         $.getJSON(
             url, function (data) {
-                if ((data.x !== undefined) &&
-                    (data.y !== undefined) &&
-                    (data.zoom !== undefined))
-                {
-                    map.setCenter(
-                        new OpenLayers.LonLat(parseFloat(data.x),
-                                              parseFloat(data.y)),
-                        parseFloat(data.zoom));
+                var extent;
+                if (data.extent !== undefined) {
+                    extent = new OpenLayers.Bounds(
+                        data.extent[0],
+                        data.extent[1],
+                        data.extent[2],
+                        data.extent[3]);
+                    map.setCenter(extent.getCenterLonLat(),
+                                  map.getZoomForExtent(extent));
                 }
             });
     });
@@ -510,13 +511,16 @@ function setUpLegendEdit() {
 
 
 function mapSaveLocation() {
-    var url, coordinates;
+    var url, extent;
     url = $("#lizard-map-wms").attr("data-save-location-url");
-    coordinates = map.center;
+    extent = map.getExtent();
     $.ajax({
         type: 'POST',
         url: url,
-        data: {x: coordinates.lon, y: coordinates.lat, zoom: map.zoom},
+        data: {bottom: extent.bottom,
+               left: extent.left,
+               right: extent.right,
+               top: extent.top},
         async: false,
         success: function () {}
     });

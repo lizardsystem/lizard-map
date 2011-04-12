@@ -99,3 +99,12 @@ def detect_browser(parser, token):
     See DetectBrowserNode.
     """
     return DetectBrowserNode()
+
+
+@register.inclusion_tag('lizard_map/tag_background_map.html')
+def background_map(background_map):
+    """Render a div tag for a background layer
+
+    The div tag is picked up by lizard-wms.js
+    """
+    return {'background_map': background_map}

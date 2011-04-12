@@ -1,6 +1,5 @@
 import StringIO
 
-from django.conf import settings
 from django.db.models import Max
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -17,9 +16,9 @@ from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import MapSettings
-from lizard_map.coordinates import google_to_srs
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
+from lizard_map.models import Setting
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
@@ -184,13 +183,10 @@ def workspace_item_extent(request, workspace_item_id=None):
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     extent = workspace_item.adapter.extent()
 
-    # TODO: make prettier.
     map_settings = MapSettings()
-    extent_converted = {}
-    extent_converted['east'], extent_converted['north'] = google_to_srs(
-        extent['east'], extent['north'], map_settings.srs)
-    extent_converted['west'], extent_converted['south'] = google_to_srs(
-        extent['west'], extent['south'], map_settings.srs)
+    extent_converted = map_settings.convert_google_extent_map_srs(
+        extent['east'], extent['north'],
+        extent['west'], extent['south'])
     return HttpResponse(json.dumps(extent_converted))
 
 
@@ -923,32 +919,28 @@ contains a dictionary with fields x, y and zoom.
 
 def map_location_save(request):
     """
-    Saves given coordinates as strings (POST x, y, zoom) to session.
+    Save extent as strings (POST top, left, right, bottom) to session.
     """
-    x = request.POST['x']
-    y = request.POST['y']
-    zoom = request.POST['zoom']
-    request.session[MAP_LOCATION] = {'x': x, 'y': y, 'zoom': zoom}
+    top = request.POST['top']
+    left = request.POST['left']
+    right = request.POST['right']
+    bottom = request.POST['bottom']
+    request.session[MAP_LOCATION] = {
+        'top': top,
+        'left': left,
+        'right': right,
+        'bottom': bottom}
     return HttpResponse("")
 
 
 def map_location_load_default(request):
     """
-    Returns stored coordinates in a json dict, or empty dict if
-    nothing was saved.
+    Return start_extent
     """
-    try:
-        map_settings = settings.MAP_SETTINGS
-        x = map_settings['startlocation_x']
-        y = map_settings['startlocation_y']
-        zoom = map_settings['startlocation_zoom']
-    except AttributeError:
-        logger.warn(
-            'Could not find MAP_SETTINGS in '
-            'django settings or MAP_SETTINGS '
-            'not properly configured, using default coordinates.')
-        x, y, zoom = '550000', '6850000', '10'
-
-    map_location = {'x': x, 'y': y, 'zoom': zoom}
+    extent = Setting.get('start_extent').split(',')
+    if not extent:
+        logger.warn('Could not find start_extent in your setttings. '
+                    'i.e. -14675, 6964942, 1254790, 6668977')
+    map_location = {'extent': extent}
 
     return HttpResponse(json.dumps(map_location))

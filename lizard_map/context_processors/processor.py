@@ -4,6 +4,8 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import DateRangeForm
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.models import BackgroundMap
+from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
@@ -28,7 +30,8 @@ def detect_browser(request):
 def map_variables(request):
     # Map variables.
     session = request.session
-    add_to_context = MapSettings().map_settings
+    add_to_context = {}
+    add_to_context.update(MapSettings().map_settings)
 
     # By default it takes coordinates from the django settings. If a
     # user has custom coordinates in his session, it will take those
@@ -36,22 +39,9 @@ def map_variables(request):
 
     if MAP_LOCATION in session:
         map_location = session[MAP_LOCATION]
-        try:
-            map_location['x']
-            map_location['y']
-            map_location['zoom']
-            add_to_context['startlocation_x'] = str(map_location['x'])
-            add_to_context['startlocation_y'] = str(map_location['y'])
-            add_to_context['startlocation_zoom'] = str(map_location['zoom'])
-            logger.debug('Fetched map coordinates from session: '
-                         '%s, %s, %s' % (
-                    str(map_location['x']),
-                    str(map_location['y']),
-                    str(map_location['zoom'])))
-        except:
-            logger.error(
-                'Error fetching map coordinates from session: %s'
-                % map_location)
+        add_to_context['start_extent'] = map_location
+        logger.debug('Fetched map coordinates from session: '
+                     '%s' % (map_location))
     return add_to_context
 
 

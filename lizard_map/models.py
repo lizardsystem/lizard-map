@@ -913,23 +913,30 @@ class BackgroundMap(models.Model):
         (GOOGLE_TYPE_SATELLITE, 'google satellite'),
         )
 
+    name = models.CharField(max_length=20)
+    index = models.IntegerField(default=100)
     default = models.BooleanField(default=False)
+    active = models.BooleanField(default=True)
+
     layer_type = models.IntegerField(choices=LAYER_TYPE_CHOICES)
     google_type = models.IntegerField(
         choices=GOOGLE_TYPE_CHOICES,
         null=True, blank=True,
         help_text='Choose map type in case of GOOGLE maps.')
-    base_layer_url = models.CharField(
+    layer_url = models.CharField(
         max_length=200,
         null=True, blank=True,
         help_text='Tile url for use with OSM or WMS',
         default='http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
-    base_layer_names = models.TextField(
+    layer_names = models.TextField(
         null=True, blank=True,
         help_text='Fill in layer names in case of WMS')
 
+    class Meta:
+        ordering = ('index', )
+
     def __unicode__(self):
-        return '%s' % self.layer_type
+        return '%s' % self.name
 
 
 class Setting(models.Model):
@@ -965,4 +972,15 @@ class Setting(models.Model):
             setting = cls.objects.get(key=key)
             return setting.value
         except cls.DoesNotExist:
+            return None
+
+    @classmethod
+    def get_dict(cls, key):
+        """
+        Return {key: value} for given key
+        """
+        value = cls.get(key)
+        if value is not None:
+            return {key: value}
+        else:
             return None

@@ -1,8 +1,11 @@
 """Coordinates and projection constants and helpers"""
 import logging
-from django.conf import settings
 from pyproj import Proj
 from pyproj import transform
+
+from lizard_map.models import BackgroundMap
+from lizard_map.models import Setting
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,16 +23,16 @@ GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
 WGS84 = ('+proj=latlong +datum=WGS84')
 
 # Default map settings. Take this when no MAP_SETTINGS in django settings.
-DEFAULT_MAP_SETTINGS = {
-    'base_layer_type': 'OSM',  # OSM or WMS
-    'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
-    'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
-    'startlocation_x': '550000',
-    'startlocation_y': '6850000',
-    'startlocation_zoom': '10',
-    'base_layer_osm': (
-        'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
-    }
+# DEFAULT_MAP_SETTINGS = {
+#     'base_layer_type': 'OSM',  # OSM or WMS
+#     'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
+#     'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
+#     'startlocation_x': '550000',
+#     'startlocation_y': '6850000',
+#     'startlocation_zoom': '10',
+#     'base_layer_osm': (
+#         'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
+#     }
 
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
@@ -106,21 +109,34 @@ class MapSettings(object):
     """
 
     def __init__(self, map_settings=None):
-        if map_settings is not None:
-            self.map_settings = map_settings
-            return
-        try:
-            self.map_settings = dict(settings.MAP_SETTINGS)  # Make a copy.
-            logger.debug('Loaded MAP_SETTINGS.')
-            logger.debug('Startlocation: %s, %s, %s' %
-                         (self.map_settings['startlocation_x'],
-                          self.map_settings['startlocation_y'],
-                          self.map_settings['startlocation_zoom']))
-        except AttributeError:
-            logger.warn(
-                'Could not find MAP_SETTINGS in '
-                'django settings, using default.')
-            self.map_settings = DEFAULT_MAP_SETTINGS
+        self.global_settings = {}
+
+        extent_names = ['left', 'top', 'right', 'bottom']
+        # convert "xx0,yy0,xx1,yy1" to dictionary with extent_names
+        start_extent = dict([
+                (extent_names[i], s.strip())
+                for i, s in enumerate(Setting.get('start_extent').split(','))])
+        self.global_settings.update({'start_extent': start_extent})
+
+        max_extent = dict([
+                (extent_names[i], s.strip())
+                for i, s in enumerate(Setting.get('max_extent').split(','))])
+        self.global_settings.update({'max_extent': max_extent})
+
+        self.global_settings.update(Setting.get_dict('googlemaps_api_key'))
+        self.global_settings.update(Setting.get_dict('projection'))
+        self.global_settings.update(Setting.get_dict('display_projection'))
+
+        self.background_maps = BackgroundMap.objects.filter(active=True)
+
+        # For the client side to determine is there is a google map.
+        if self.background_maps.filter(
+            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
+
+            self.global_settings.update({'has_google': True})
+
+        self.map_settings = dict(self.global_settings)
+        self.map_settings.update({'background_maps': self.background_maps})
 
     def mapnik_projection(self):
         """Returns the mapnik projection.
@@ -140,10 +156,20 @@ class MapSettings(object):
             pass
         return 4326  # wgs84 is the default
 
-
     @property
     def srs(self):
         """
         Return srs / projection.
         """
         return self.map_settings['projection']
+
+    def convert_google_extent_map_srs(self, east, north, west, south):
+        """
+        Convert extent in google coordinates to srs of map settings.
+        """
+        extent_converted = {}
+        extent_converted['east'], extent_converted['north'] = google_to_srs(
+            east, north, self._srs)
+        extent_converted['west'], extent_converted['south'] = google_to_srs(
+            west, south, self._srs)
+        return extent_converted

@@ -1,9 +1,11 @@
 /*jslint browser: true */
 /*jslint evil: true */
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
-G_PHYSICAL_MAP, TouchHandler */
+G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
+
+
 var layers, map;
-layers = []; // used in an assicoative way
+layers = []; // used in an associative way
 //layer_names = []; // stores all names, so we can loop through the layers
 
 //layers is globally defined
@@ -36,36 +38,92 @@ function refreshLayers() {
 
     // Set up all layers.
     $lizard_map_wms = $("#lizard-map-wms");
-    base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
 
-    // Set up base layer.
-    if (base_layer_type === "OSM")
-    {
-        osm_url = $lizard_map_wms.attr("data-base-layer-osm");
-        base_layer = new OpenLayers.Layer.OSM(
-        "Openstreetmap",
-        osm_url,
-        {buffer: 0});
+    // Error checking
+    if ($lizard_map_wms.find(".background-layer").length == 0) {
+        alert("Geen achtergrondlagen actief. Raadpleeg beheerder om deze in te stellen.");
     }
-    else if (base_layer_type === "WMS")
-    {
-        wms_url = $lizard_map_wms.attr("data-base-layer-wms");
-        wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
-        base_layer = new OpenLayers.Layer.WMS(
-            'Topografische kaart',
-            wms_url,
-	    {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
-            {'isBaseLayer': true, 'buffer': 1}
-        );
-    }
-    else if (base_layer_type === "GOOGLE")
-    {
-        base_layer = new OpenLayers.Layer.Google(
-            "Google Physical",
-            {type: G_PHYSICAL_MAP, sphericalMercator: true});
-    }
-    layers.base_layer = base_layer;
-    map.addLayer(base_layer);
+
+    $lizard_map_wms.find(".background-layer").each(function () {
+        var google_type, data_google_type, layer_name, layer_type, url,
+            is_default, layer_names;
+        layer_type = $(this).attr("data-layer-type");
+        layer_name = $(this).attr("data-layer-name");
+        is_default = $(this).attr("data-default");
+
+        if (layer_type === "GOOGLE")
+        {
+            // default=1, physical=2, hybrid=3, satellite=4
+            data_google_type = $(this).attr("data-google-layer-type");
+            if (data_google_type === "2") {
+                google_type = G_PHYSICAL_MAP;
+            }
+            else if (data_google_type === "3") {
+                google_type = G_HYBRID_MAP;
+            }
+            else if (data_google_type === "4") {
+                google_type = G_SATELLITE_MAP;
+            } else {
+                google_type = G_NORMAL_MAP;
+            }
+            base_layer = new OpenLayers.Layer.Google(
+                layer_name,
+                {type: google_type, sphericalMercator: true});
+        }
+        else if (layer_type === "OSM")
+        {
+            url = $lizard_map_wms.attr("data-layer-osm");
+            base_layer = new OpenLayers.Layer.OSM(
+                layer_name, url, {buffer: 0});
+        }
+        else if (layer_type === "WMS")
+        {
+            url = $lizard_map_wms.attr("data-layer-url");
+            layer_names = $lizard_map_wms.attr("data-layer-layer-names");
+            base_layer = new OpenLayers.Layer.WMS(
+                layer_name, wms_url,
+                {'layers': layer_names, 'format': 'image/png',
+                 'maxResolution': 364},
+                {'isBaseLayer': true, 'buffer': 1}
+            );
+        }
+        // layers.base_layer
+        map.addLayer(base_layer);
+        // Set base layer if is_default.
+        if (is_default === "True") {
+            map.setBaseLayer(base_layer);
+        }
+    });
+    // base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
+
+    // // Set up base layer.
+    // if (base_layer_type === "OSM")
+    // {
+    //     osm_url = $lizard_map_wms.attr("data-base-layer-osm");
+    //     base_layer = new OpenLayers.Layer.OSM(
+    //     "Openstreetmap",
+    //     osm_url,
+    //     {buffer: 0});
+    // }
+    // else if (base_layer_type === "WMS")
+    // {
+    //     wms_url = $lizard_map_wms.attr("data-base-layer-wms");
+    //     wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
+    //     base_layer = new OpenLayers.Layer.WMS(
+    //         'Topografische kaart',
+    //         wms_url,
+    //         {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
+    //         {'isBaseLayer': true, 'buffer': 1}
+    //     );
+    // }
+    // else if (base_layer_type === "GOOGLE")
+    // {
+    //     base_layer = new OpenLayers.Layer.Google(
+    //         "Google Physical",
+    //         {type: G_PHYSICAL_MAP, sphericalMercator: true});
+    // }
+    // layers.base_layer = base_layer;
+    // map.addLayer(base_layer);
 
     // Add our own data layers.
     $(".workspace-layer").each(function () {
@@ -103,8 +161,10 @@ function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
-        $lizard_map_wms, startlocation_x, startlocation_y,
-        startlocation_zoom, projection, display_projection;
+        $lizard_map_wms, projection, display_projection, start_extent,
+        start_extent_left, start_extent_top, start_extent_right,
+        start_extent_bottom, max_extent, max_extent_left, max_extent_top,
+        max_extent_right, max_extent_bottom;
 
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
@@ -112,9 +172,21 @@ function showMap() {
     projection = $lizard_map_wms.attr("data-projection");
     display_projection = $lizard_map_wms.attr("data-display-projection");
 
-    startlocation_x = $lizard_map_wms.attr("data-startlocation-x");
-    startlocation_y = $lizard_map_wms.attr("data-startlocation-y");
-    startlocation_zoom = $lizard_map_wms.attr("data-startlocation-zoom");
+    start_extent_left = $lizard_map_wms.attr("data-start-extent-left");
+    start_extent_top = $lizard_map_wms.attr("data-start-extent-top");
+    start_extent_right = $lizard_map_wms.attr("data-start-extent-right");
+    start_extent_bottom = $lizard_map_wms.attr("data-start-extent-bottom");
+    start_extent = new OpenLayers.Bounds(
+        parseFloat(start_extent_left), parseFloat(start_extent_top),
+        parseFloat(start_extent_right), parseFloat(start_extent_bottom));
+
+    max_extent_left = $lizard_map_wms.attr("data-max-extent-left");
+    max_extent_top = $lizard_map_wms.attr("data-max-extent-top");
+    max_extent_right = $lizard_map_wms.attr("data-max-extent-right");
+    max_extent_bottom = $lizard_map_wms.attr("data-max-extent-bottom");
+    max_extent = new OpenLayers.Bounds(
+        parseFloat(max_extent_left), parseFloat(max_extent_top),
+        parseFloat(max_extent_right), parseFloat(max_extent_bottom));
 
     // Set up projection and bounds.
     if (projection === "EPSG:900913")
@@ -124,7 +196,7 @@ function showMap() {
             displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
             units: "m",
             numZoomLevels: 18,
-            maxExtent: new OpenLayers.Bounds(-20037508.34, -20037508.34, 20037508.34, 20037508.34)
+            maxExtent: max_extent
         };
     }
     else if (projection === "EPSG:28992")
@@ -134,7 +206,7 @@ function showMap() {
             displayProjection: new OpenLayers.Projection(display_projection),
             units: "m",
             resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
-            maxExtent: new OpenLayers.Bounds(0, 300000, 300000, 600000)
+            maxExtent: max_extent
         };
     }
     else
@@ -149,7 +221,7 @@ function showMap() {
     refreshLayers();
 
     // Set up controls, zoom and center.
-    map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': false}));
+    map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': true}));
     // Click handling.
     javascript_click_handler_name = $lizard_map_wms.attr("data-javascript-click-handler");
     if (javascript_click_handler_name !== undefined) {
@@ -230,10 +302,8 @@ function showMap() {
 
     // Zoom to startpoint. Important to parse numbers, else a bug in
     // OpenLayers will initially prevent "+" from working.
-    map.setCenter(
-        new OpenLayers.LonLat(parseFloat(startlocation_x), parseFloat(startlocation_y)),
-        parseFloat(startlocation_zoom));
-
+    map.setCenter(start_extent.getCenterLonLat(),
+                  map.getZoomForExtent(start_extent));
 
 }
 
