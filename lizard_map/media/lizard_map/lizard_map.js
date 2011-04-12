@@ -93,7 +93,7 @@ function setUpMapLoadDefaultLocation() {
                         data.extent[2],
                         data.extent[3]);
                     map.setCenter(extent.getCenterLonLat(),
-                                  map.getZoomForExtent(extent));
+                                  map.getZoomForExtent(extent) - 1);
                 }
             });
     });
@@ -472,7 +472,7 @@ function setUpWorkspaceItemPanToLayer() {
                         extent.west, extent.north,
                         extent.east, extent.south);
                     map.setCenter(ol_extent.getCenterLonLat(),
-                                  map.getZoomForExtent(ol_extent));
+                                  map.getZoomForExtent(ol_extent) - 1);
                 }
             });
     });
