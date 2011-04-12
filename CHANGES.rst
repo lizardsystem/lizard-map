@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.64 (unreleased)
 -----------------
 
+- Changed "zoom to box" instead of "pan to center" when clicking
+  workspace-acceptable or workspace-item magnifying glass.
+
 - Added BackgroundMap and Setting models. Model BackgroundMap used to
   store the configuration of single background maps and if the map is
   the default one. Setting is to store global, end-user changeable
