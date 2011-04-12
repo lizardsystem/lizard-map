@@ -937,7 +937,7 @@ def map_location_load_default(request):
     """
     Return start_extent
     """
-    extent = Setting.get('start_extent').split(',')
+    extent = [s.strip() for s in Setting.get('start_extent').split(',')]
     if not extent:
         logger.warn('Could not find start_extent in your setttings. '
                     'i.e. -14675, 6964942, 1254790, 6668977')

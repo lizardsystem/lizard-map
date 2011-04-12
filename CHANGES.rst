@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.64 (unreleased)
 -----------------
 
+- Added migration for BackgroundMap and Setting models.
+
 - Changed "zoom to box" instead of "pan to center" when clicking
   workspace-acceptable or workspace-item magnifying glass.
 

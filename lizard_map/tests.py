@@ -82,6 +82,7 @@ class WorkspaceManagerTest(TestCase):
 
 
 class ViewsTest(TestCase):
+    fixtures = ('lizard_map', )
 
     class MockRequest(object):
         session = {}
@@ -140,7 +141,8 @@ class ViewsTest(TestCase):
         """
         client = Client()
         url = reverse('lizard_map.map_location_save')
-        response = client.post(url, {'x': 100, 'y': 150, 'zoom': 10})
+        response = client.post(url, {'left': 100, 'top': 100,
+                                     'right': 150, 'bottom': 150})
         self.assertEqual(response.status_code, 200)
 
     def test_map_location_load_default(self):
@@ -151,10 +153,8 @@ class ViewsTest(TestCase):
         self.assertEqual(response_load.status_code, 200)
         result = json.loads(response_load.content)
         self.assertEqual(
-            result,
-            {'x': '550000',
-             'y': '6850000',
-             'zoom': '10'})
+            result, {'extent': ['-14675', '6964942', '1254790', '6668977']}
+            )
 
 
 class WorkspaceTest(TestCase):
@@ -955,6 +955,7 @@ class TestOperations(TestCase):
 
 
 class CoordinatesTest(TestCase):
+    fixtures = ('lizard_map', )
 
     def test_detect_prj1(self):
         prj = None
