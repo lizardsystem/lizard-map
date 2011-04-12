@@ -917,7 +917,7 @@ class BackgroundMap(models.Model):
     layer_type = models.IntegerField(choices=LAYER_TYPE_CHOICES)
     google_type = models.IntegerField(
         choices=GOOGLE_TYPE_CHOICES,
-        null=True, blank=True
+        null=True, blank=True,
         help_text='Choose map type in case of GOOGLE maps.')
     base_layer_url = models.CharField(
         max_length=200,
