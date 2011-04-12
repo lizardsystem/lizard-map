@@ -100,7 +100,6 @@ function hover_popup(data, map) {
     }
 }
 
-
 jQuery.fn.collagePopup = function () {
     var url, collage_id;
     url = $(this).parent().attr("data-url-lizard-map-collage-popup");
@@ -313,6 +312,12 @@ function workspaceItemOrSnippet(object) {
     //.workspace_item .snippet
 }
 
+
+function addProgressAnimationIntoWorkspace () {
+  $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
+}
+
+
 /* Make a workspace trashbox
 
 accepts workspace_item classes
@@ -341,6 +346,7 @@ jQuery.fn.workspaceTrashBox = function () {
             activeClass: 'dropactive',
             drop: function (event, ui) {
                 var object_id, url;
+	        addProgressAnimationIntoWorkspace();
                 object_id = ui.draggable.attr("data-object-id");
                 ui.draggable.remove();  // for visual snappyness
                 if (ui.draggable.is(".workspace-item")) {

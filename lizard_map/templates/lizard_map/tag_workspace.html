@@ -37,7 +37,8 @@
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
        title="{% trans 'link to' %} {{ workspace.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
-    <a href="#"
+    <a id="trash1"
+       href="#"
        title="{% trans 'empty' %} {{ workspace.name }}"
        class="title ss_sprite ss_bin_empty sidebarbox-action-icon workspace-empty-trigger">
     </a>

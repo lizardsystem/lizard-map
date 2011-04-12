@@ -263,10 +263,13 @@ function setUpWorkspaceEmpty() {
         $workspace = $(this).parents("div.workspace");
         workspace_id = $workspace.attr("data-workspace-id");
         url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
+	addProgressAnimationIntoWorkspace();
         $.post(
             url, {workspace_id: workspace_id},
-            function (data) {
-                $workspace.updateWorkspace();
+	    function (data) {
+	      //remove progress
+	      $workspace.find(".sidebarbox-action-progress").remove();
+              $workspace.updateWorkspace();
             });
     });
 }
