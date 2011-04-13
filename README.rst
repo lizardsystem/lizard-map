@@ -10,7 +10,7 @@ information websites (with water management information).
 It provides:
 
 - Openlayers (map javascript libary) map display and server-side map
-  generation (mapnik's WMS functionality).
+  generation (mapnik's WMS functionality). Background maps are configurable.
 
 - A "workspace" interaction model: drag mappable items into a workspace and
   they'll get displayed.  The workspace is stored in the Django database.
@@ -144,10 +144,6 @@ lizard_map/workspace concepts.
 
 - Add 'lizard_map' to your settings.py: INSTALLED_APPS.
 
-- Add 'django.core.context_processors.request' to your settings.py's
-  ``TEMPLATE_CONTEXT_PROCESSORS``. Omitting this will not zoom in to your
-  saved location when loading the page (= going to another app).
-
 - Add 'lizard_map.context_processors.processor.processor' to your
   settings.py's ``TEMPLATE_CONTEXT_PROCESSORS``. REQUIRED for all map
   related functionality.
@@ -228,4 +224,8 @@ Example template::
 
     (r'^$', 'mapdemo.views.homepage'),
 
-- Start testing by running syncdb, then start dev server.
+- Start testing by running syncdb.
+
+- Add and configure background maps by loading "background_maps" fixture.
+
+- Start dev server.

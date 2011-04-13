@@ -7,9 +7,11 @@ Changelog of lizard-map
 
 - Added default settings to MapSettings, improved code a bit.
 
+- Renamed fixture lizard_map to background_maps.
+
 - Added progress animation (zandloper) on delete workspece item(s) by
   click on the trash icon and by dragging/draopping the item into
-  trach.
+  trash.
 
 
 1.64 (2011-04-12)
