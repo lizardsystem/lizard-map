@@ -944,15 +944,8 @@ class Setting(models.Model):
     Global settings.
 
     Available keys with default values:
-    startlocation_x
-    startlocation_y
-    startlocation_zoom
     projection 'EPSG:900913'
     display_projection 'EPSG:4326'
-    max_extent_west 0
-    max_extent_north 300000
-    max_extent_east 300000
-    max_extent_south 600000
     googlemaps_api_key
     """
     key = models.CharField(max_length=20, unique=True)
@@ -962,7 +955,7 @@ class Setting(models.Model):
         return '%s = %s' % (self.key, self.value)
 
     @classmethod
-    def get(cls, key):
+    def get(cls, key, default=None):
         """
         Return value from given key.
 
@@ -972,15 +965,11 @@ class Setting(models.Model):
             setting = cls.objects.get(key=key)
             return setting.value
         except cls.DoesNotExist:
-            return None
+            return default
 
     @classmethod
-    def get_dict(cls, key):
+    def get_dict(cls, key, default=None):
         """
         Return {key: value} for given key
         """
-        value = cls.get(key)
-        if value is not None:
-            return {key: value}
-        else:
-            return None
+        return {key: cls.get(key, default)}

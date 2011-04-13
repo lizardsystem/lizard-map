@@ -33,6 +33,21 @@ WGS84 = ('+proj=latlong +datum=WGS84')
 #     'base_layer_osm': (
 #         'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
 #     }
+DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
+DEFAULT_MAP_SETTINGS = {
+    'start_extent': '-14675, 6964942, 1254790, 6668977',
+    'max_extent': '-20037508.34, -20037508.34, 20037508.34, 20037508.34',
+    'projection': 'EPSG:900913',
+    'display_projection': 'EPSG:4326',
+    'googlemaps_api_key': '',  # Must be defined.
+    'background_maps': [BackgroundMap(
+            name='Openstreetmap',
+            default=True,
+            active=True,
+            layer_type=BackgroundMap.LAYER_TYPE_OSM,
+            layer_url=DEFAULT_OSM_LAYER_URL)],  # OSM
+    }
+
 
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
@@ -105,27 +120,33 @@ def detect_prj(prj):
 
 class MapSettings(object):
     """
-    MAP_SETTINGS parser
+    Read background map information.
+
+    Uses models BackgroundMap and Setting.
     """
 
     def __init__(self, map_settings=None):
+        def setting(key):
+            return Setting.get_dict(key, DEFAULT_MAP_SETTINGS[key])
+
+        def extent_setting(key):
+            """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
+            extent_names = ['left', 'top', 'right', 'bottom']
+            extent_list = Setting.get(
+                key, DEFAULT_MAP_SETTINGS[key]).split(',')
+            extent = dict(
+                [(extent_names[i], s.strip())
+                 for i, s in enumerate(extent_list)])
+            return {key: extent}
+
         self.global_settings = {}
 
-        extent_names = ['left', 'top', 'right', 'bottom']
-        # convert "xx0,yy0,xx1,yy1" to dictionary with extent_names
-        start_extent = dict([
-                (extent_names[i], s.strip())
-                for i, s in enumerate(Setting.get('start_extent').split(','))])
-        self.global_settings.update({'start_extent': start_extent})
+        self.global_settings.update(extent_setting('start_extent'))
+        self.global_settings.update(extent_setting('max_extent'))
 
-        max_extent = dict([
-                (extent_names[i], s.strip())
-                for i, s in enumerate(Setting.get('max_extent').split(','))])
-        self.global_settings.update({'max_extent': max_extent})
-
-        self.global_settings.update(Setting.get_dict('googlemaps_api_key'))
-        self.global_settings.update(Setting.get_dict('projection'))
-        self.global_settings.update(Setting.get_dict('display_projection'))
+        self.global_settings.update(setting('googlemaps_api_key'))
+        self.global_settings.update(setting('projection'))
+        self.global_settings.update(setting('display_projection'))
 
         self.background_maps = BackgroundMap.objects.filter(active=True)
 
@@ -134,6 +155,9 @@ class MapSettings(object):
             layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
 
             self.global_settings.update({'has_google': True})
+
+        if not self.background_maps:
+            self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
 
         self.map_settings = dict(self.global_settings)
         self.map_settings.update({'background_maps': self.background_maps})

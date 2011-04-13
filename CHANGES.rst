@@ -5,7 +5,11 @@ Changelog of lizard-map
 1.65 (unreleased)
 -----------------
 
-- Added progress animation (zandloper) on delete workspece item(s) by click on the trash icon and by dragging/draopping the item into trach.
+- Added default settings to MapSettings, improved code a bit.
+
+- Added progress animation (zandloper) on delete workspece item(s) by
+  click on the trash icon and by dragging/draopping the item into
+  trach.
 
 
 1.64 (2011-04-12)
