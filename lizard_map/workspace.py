@@ -9,6 +9,7 @@ from django.utils.translation import ugettext as _
 
 from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
+from lizard_map.models import OTHER_WORKSPACES
 from lizard_map.models import TEMP_WORKSPACES
 from lizard_map.models import USER_WORKSPACES
 from lizard_map.models import Color
@@ -134,6 +135,28 @@ class WorkspaceManager:
         if changes:
             self.save_workspaces()
         return self.workspaces
+
+    def _in_collection(self, workspace):
+        """Check if given workspace is already in current collection.
+        """
+        for group, workspaces in self.workspaces.items():
+            if workspace in workspaces:
+                return True
+        return False
+
+    def add_other(self, workspace_id):
+        """
+        Add a workspace in "other",
+
+        if the workspace is not already in your collection.
+
+        Sometimes you want to add workspaces from others
+        """
+        workspace = Workspace.objects.get(pk=workspace_id)
+        if not self._in_collection(workspace):
+            if OTHER_WORKSPACES not in self.workspaces:
+                self.workspaces[OTHER_WORKSPACES] = []
+            self.workspaces[OTHER_WORKSPACES].append(workspace)
 
 
 class WorkspaceItemAdapter(object):

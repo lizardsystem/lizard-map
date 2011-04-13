@@ -26,6 +26,7 @@ GROUPING_HINT = 'grouping_hint'
 USER_WORKSPACES = 'user'
 DEFAULT_WORKSPACES = 'default'
 TEMP_WORKSPACES = 'temp'
+OTHER_WORKSPACES = 'other'  # for flexible adding workspaces of others
 
 # TODO: Can this property be moved to mapnik_helper?
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')

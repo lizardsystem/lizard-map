@@ -765,6 +765,12 @@ def search_name(request):
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
+    # Add a workspace, if it's not already in your own workspaces.
+    user_workspace_id = request.GET.get('user_workspace_id', None)
+    if user_workspace_id is not None:
+        workspace_manager.add_other(user_workspace_id)
+        workspace_collections = workspace_manager.workspaces
+
     found = []
     for workspace_collection in workspace_collections.values():
         for workspace in workspace_collection:
@@ -810,6 +816,12 @@ def search_coordinates(request):
             radius_search = radius_search * 3
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
+
+    # Add a workspace, if it's not already in your own workspaces.
+    user_workspace_id = request.GET.get('user_workspace_id', None)
+    if user_workspace_id is not None:
+        workspace_manager.add_other(user_workspace_id)
+        workspace_collections = workspace_manager.workspaces
 
     found = []
     for workspace_collection in workspace_collections.values():

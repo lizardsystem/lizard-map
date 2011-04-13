@@ -367,16 +367,20 @@ function setUpEmptyTempInteraction() {
 }
 
 
+/* Handle a click */
+/* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
 function popup_click_handler(x, y, map) {
-    var extent, radius, url;
+    var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
     $("#map_OpenLayers_ViewPort").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
+    user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius, srs: map.getProjection() },
+            { x: x, y: y, radius: radius, srs: map.getProjection(),
+              user_workspace_id: user_workspace_id},
             function (data) {
                 $("#map_OpenLayers_ViewPort").css("cursor", "default");
                 show_popup(data, map);
@@ -386,16 +390,20 @@ function popup_click_handler(x, y, map) {
 }
 
 
+/* Handle a hover */
+/* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
 function popup_hover_handler(x, y, map) {
     /* Show name of one item when hovering above a map */
-    var extent, radius, url;
+    var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // experimental, seems to work good
     url = $(".workspace").attr("data-url-lizard-map-search-name");
+    user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius, srs: map.getProjection() },
+            { x: x, y: y, radius: radius, srs: map.getProjection(),
+              user_workspace_id: user_workspace_id},
             function (data) {
                 hover_popup(data, map);
             }

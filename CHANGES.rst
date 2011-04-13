@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.65 (unreleased)
 -----------------
 
+- Added feature to click on workspaces of other users than yourself.
+
 - Improved zoom to layer (it was zoomed in too much).
 
 - Added default settings to MapSettings, improved code a bit.
