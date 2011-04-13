@@ -23,16 +23,6 @@ GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
 WGS84 = ('+proj=latlong +datum=WGS84')
 
 # Default map settings. Take this when no MAP_SETTINGS in django settings.
-# DEFAULT_MAP_SETTINGS = {
-#     'base_layer_type': 'OSM',  # OSM or WMS
-#     'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
-#     'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
-#     'startlocation_x': '550000',
-#     'startlocation_y': '6850000',
-#     'startlocation_zoom': '10',
-#     'base_layer_osm': (
-#         'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
-#     }
 DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
 DEFAULT_MAP_SETTINGS = {
     'start_extent': '-14675, 6964942, 1254790, 6668977',
@@ -41,7 +31,7 @@ DEFAULT_MAP_SETTINGS = {
     'display_projection': 'EPSG:4326',
     'googlemaps_api_key': '',  # Must be defined.
     'background_maps': [BackgroundMap(
-            name='Openstreetmap',
+            name='Default map',
             default=True,
             active=True,
             layer_type=BackgroundMap.LAYER_TYPE_OSM,
