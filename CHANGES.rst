@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.65 (unreleased)
 -----------------
 
+- Improved zoom to layer (it was zoomed in too much).
+
 - Added default settings to MapSettings, improved code a bit.
 
 - Renamed fixture lizard_map to background_maps.
