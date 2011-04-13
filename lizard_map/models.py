@@ -965,6 +965,8 @@ class Setting(models.Model):
             setting = cls.objects.get(key=key)
             return setting.value
         except cls.DoesNotExist:
+            logger.warn('Setting "%s" does not exist, taking default '
+                        'value "%s"' % (key, default))
             return default
 
     @classmethod

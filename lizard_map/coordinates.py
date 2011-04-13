@@ -157,10 +157,12 @@ class MapSettings(object):
             self.global_settings.update({'has_google': True})
 
         if not self.background_maps:
+            logger.warn("No background maps are active. Taking default.")
             self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
 
         self.map_settings = dict(self.global_settings)
         self.map_settings.update({'background_maps': self.background_maps})
+
 
     def mapnik_projection(self):
         """Returns the mapnik projection.
