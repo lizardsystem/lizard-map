@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.65 (unreleased)
+1.65 (2011-04-14)
 -----------------
 
 - Removed header from standard popup (looks better).
