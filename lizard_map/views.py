@@ -436,7 +436,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               'x': x_found,
               'y': y_found,
               'html': result_html,
-              'number_of_items': len(result_html),
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))
@@ -449,7 +448,7 @@ def popup_collage_json(collage, popup_id, request=None):
     TODO: see popup_json
     """
 
-    result_html = ''
+    html = []
     snippet_groups = collage.snippet_groups.all()
     if len(snippet_groups) > 1:
         big_popup = True
@@ -465,7 +464,7 @@ def popup_collage_json(collage, popup_id, request=None):
             html_per_workspace_item = workspace_item.adapter.html(
                 snippet_group=snippet_group,
                 layout_options={'legend': True})
-            result_html += html_per_workspace_item
+            html.append(html_per_workspace_item)
 
             # Pick the location of the first snippet.
             if 'google_coords' in snippets[0].location:
@@ -474,7 +473,7 @@ def popup_collage_json(collage, popup_id, request=None):
     result = {'id': popup_id,
               'x': google_x,
               'y': google_y,
-              'html': result_html,
+              'html': html,
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))

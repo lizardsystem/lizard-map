@@ -70,7 +70,7 @@ function show_popup(data, map) {
         if (data.html !== "" && data.html !== undefined) {
             var overlay;
             // Generates pages with handlers. First only page 0 is visible.
-            if (data.number_of_items === 1) {
+            if (data.html.length === 1) {
                 $("#graph-popup-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
@@ -87,12 +87,12 @@ function show_popup(data, map) {
                 }
 
                 $("#graph-popup-content").html(html);
+                $("#graph-popup-content").tabs(".panes > div");
             }
             overlay = $('#graph-popup').overlay();
             overlay.load();
             reloadGraphs();
             $(".add-snippet").snippetInteraction();
-            $("#graph-popup-content").tabs(".panes > div");
         }
         else {
             nothingFoundPopup();
