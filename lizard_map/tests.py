@@ -10,6 +10,7 @@ from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
+from lizard_map.coordinates import DEFAULT_MAP_SETTINGS
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import YEAR
@@ -153,7 +154,9 @@ class ViewsTest(TestCase):
         self.assertEqual(response_load.status_code, 200)
         result = json.loads(response_load.content)
         self.assertEqual(
-            result, {'extent': ['-14675', '6964942', '1254790', '6668977']}
+            result['extent'],
+            {'top': '6964942', 'right': '1254790',
+             'left': '-14675', 'bottom': '6668977'}
             )
 
 
