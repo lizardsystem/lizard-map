@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.66 (unreleased)
+1.66 (2011-04-14)
 -----------------
 
 - Fixed collage popup.
