@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.65 (unreleased)
 -----------------
 
+- Removed header from standard popup (looks better).
+
 - Added feature to click on workspaces of other users than yourself.
 
 - Improved zoom to layer (it was zoomed in too much).

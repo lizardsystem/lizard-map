@@ -1,5 +1,13 @@
 {% extends "lizard_map/lizardgis.html" %}{% load i18n %}{% load map %}
 
+{% block css %}
+{{ block.super }}
+<!-- tab styling -->
+<link rel="stylesheet"
+      type="text/css"
+      href="{{ STATIC_URL }}lizard_ui/tabs.css" />
+{% endblock %}
+
 {% block map-javascript %}
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>

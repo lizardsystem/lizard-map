@@ -351,6 +351,9 @@ def session_workspace_extent(request, workspace_category='user'):
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """Return html with info on list of 'found' objects.
 
+    Optionally give pagenumber (starts at 0). If omitted, just join
+    everything.
+
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
     'workspace_item': ..., 'identifier': ...}.
 
@@ -366,17 +369,20 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               }
     """
 
-    result_html = ''
+    html = {}
     x_found = None
     y_found = None
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
+    display_group_order = []
     for display_object in found:
         workspace_item = display_object['workspace_item']
         if workspace_item.id not in display_groups:
             display_groups[workspace_item.id] = []
         display_groups[workspace_item.id].append(display_object)
+        if workspace_item.id not in display_group_order:
+            display_group_order.append(workspace_item.id)
 
     if len(display_groups) > 1:
         big_popup = True
@@ -420,7 +426,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
         if 'google_coords' in display_object:
             x_found, y_found = display_object['google_coords']
-        result_html += html_per_workspace_item
+        html[workspace_item.id] = html_per_workspace_item
+
+    result_html = [html[index] for index in display_group_order][:3]
 
     if popup_id is None:
         popup_id = 'popup-id'
@@ -428,6 +436,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               'x': x_found,
               'y': y_found,
               'html': result_html,
+              'number_of_items': len(result_html),
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))
@@ -436,6 +445,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 def popup_collage_json(collage, popup_id, request=None):
     """
     display collage by adding display_groups together
+
+    TODO: see popup_json
     """
 
     result_html = ''

@@ -65,14 +65,34 @@ But those aren't used anymore.
 */
 
 function show_popup(data, map) {
+    var html;
     if (data !== null) {
         if (data.html !== "" && data.html !== undefined) {
             var overlay;
-            $('#graph-popup-content').html(data.html);
+            // Generates pages with handlers. First only page 0 is visible.
+            if (data.number_of_items === 1) {
+                $("#graph-popup-content").html(data.html[0]);
+            } else {
+                // Build up html with tabs.
+                html = "<ul class=\"tabs css-tabs\">";
+                for (var i=0; i<data.html.length; i++) {
+                    html += "<li><a href=\"tab-" + (i + 1) + "\">Resultaat ";
+                    html += (i + 1) + "</a></li>";
+                }
+                html += "</ul>";
+                for (var i=0; i<data.html.length; i++) {
+                    html += "<div class=\"panes\"><div>";
+                    html += data.html[i];
+                    html += "</div></div>";
+                }
+
+                $("#graph-popup-content").html(html);
+            }
             overlay = $('#graph-popup').overlay();
             overlay.load();
             reloadGraphs();
             $(".add-snippet").snippetInteraction();
+            $("#graph-popup-content").tabs(".panes > div");
         }
         else {
             nothingFoundPopup();

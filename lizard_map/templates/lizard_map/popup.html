@@ -7,7 +7,6 @@ the default template for the html_default method.
 
 {% load workspaces %}
 {# header #}
-<h3>Grafiek {% firstof snippet_group.name '' %}</h3>
 <div>
   <img src="{{ symbol_url }}" />&nbsp;
   <strong>{{ title|truncatewords:8 }}</strong>
