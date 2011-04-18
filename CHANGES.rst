@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.67 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Jslint jquery.workspace.js.
 
 
 1.66 (2011-04-14)

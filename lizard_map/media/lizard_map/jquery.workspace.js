@@ -65,22 +65,21 @@ But those aren't used anymore.
 */
 
 function show_popup(data, map) {
-    var html;
+    var html, overlay, i;
     if (data !== null) {
         if (data.html !== "" && data.html !== undefined) {
-            var overlay;
             // Generates pages with handlers. First only page 0 is visible.
             if (data.html.length === 1) {
                 $("#graph-popup-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
                 html = "<ul class=\"tabs css-tabs\">";
-                for (var i=0; i<data.html.length; i++) {
+                for (i = 0; i < data.html.length; i += 1) {
                     html += "<li><a href=\"tab-" + (i + 1) + "\">Resultaat ";
                     html += (i + 1) + "</a></li>";
                 }
                 html += "</ul>";
-                for (var i=0; i<data.html.length; i++) {
+                for (i = 0; i < data.html.length; i += 1) {
                     html += "<div class=\"panes\"><div>";
                     html += data.html[i];
                     html += "</div></div>";
@@ -333,8 +332,8 @@ function workspaceItemOrSnippet(object) {
 }
 
 
-function addProgressAnimationIntoWorkspace () {
-  $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
+function addProgressAnimationIntoWorkspace() {
+    $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
 }
 
 
@@ -366,7 +365,7 @@ jQuery.fn.workspaceTrashBox = function () {
             activeClass: 'dropactive',
             drop: function (event, ui) {
                 var object_id, url;
-	        addProgressAnimationIntoWorkspace();
+                addProgressAnimationIntoWorkspace();
                 object_id = ui.draggable.attr("data-object-id");
                 ui.draggable.remove();  // for visual snappyness
                 if (ui.draggable.is(".workspace-item")) {
