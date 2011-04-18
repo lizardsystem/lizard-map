@@ -11,8 +11,10 @@ from django.utils import simplejson as json
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import AutoDateFormatter
 from matplotlib.dates import AutoDateLocator
+from matplotlib.dates import DateFormatter
 from matplotlib.dates import RRuleLocator
 from matplotlib.dates import date2num
+from matplotlib.dates import num2date
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
@@ -158,6 +160,155 @@ class LessTicksAutoDateLocator(AutoDateLocator):
         return locator
 
 
+class MultilineAutoDateFormatter(AutoDateFormatter):
+    """Multiline version of AutoDateFormatter.
+
+    This class needs the axes to initialize. When called, the ticks need to
+    be known as well. For some scales, instead of showing a predetermined
+    date label at any tick, the labels are chosen dependent of the tick
+    position. Note that some labels are multiline, so make sure there is
+    space for them in your figure."""
+
+    def __init__(self, locator, axes, tz=None):
+        self._locator = locator
+        self._formatter = DateFormatter("%b %d %Y %H:%M:%S %Z", tz)
+        self._tz = tz
+        self.axes = axes
+        self.tickinfo = None
+
+    def __call__(self, x, pos=0):
+
+        scale = float(self._locator._get_unit())
+        if not self.tickinfo:
+            print 'scale:'
+            print scale
+            self.tickinfo = self.Tickinfo(self.axes.get_xticks())
+
+        if (scale == 365.0):
+            self._formatter = DateFormatter("%Y", self._tz)
+        elif (scale == 30.0):
+            if self.tickinfo.show_year(x):
+                self._formatter = DateFormatter("%b\n%Y", self._tz)
+            else:
+                self._formatter = DateFormatter("%b", self._tz)
+        elif ((scale == 1.0) or (scale == 7.0)):
+            if self.tickinfo.show_month(x):
+                self._formatter = DateFormatter("%d\n%b %Y", self._tz)
+            else:
+                self._formatter = DateFormatter("%d", self._tz)
+        elif (scale == (1.0 / 24.0)):
+            if x == self.tickinfo.max:
+                # don't show
+                self._formatter = DateFormatter("%H", self._tz)
+            elif self.tickinfo.show_day(x):
+                self._formatter = DateFormatter("%H\n%d %b %Y", self._tz)
+            else:
+                self._formatter = DateFormatter("%H", self._tz)
+        elif (scale == (1.0 / (24 * 60))):
+            self._formatter = DateFormatter("%H:%M:%S %Z", self._tz)
+        elif (scale == (1.0 / (24 * 3600))):
+            self._formatter = DateFormatter("%H:%M:%S %Z", self._tz)
+        else:
+            self._formatter = DateFormatter("%b %d %Y %H:%M:%S %Z", self._tz)
+
+        return self._formatter(x, pos)
+
+    class Tickinfo(object):
+        """ Class with tick information.
+
+        The methods are used to determine what kind of label to put at a
+        particular tick."""
+
+        def __init__(self, ticks):
+            self.ticks = ticks
+            self.min = ticks[0]
+            self.max = ticks[-1]
+            self.step = ticks[1] - ticks[0]
+            self.span = ticks[-1] - ticks[0]
+            self.mid = ticks[int((len(ticks) - 1) / 2)]
+
+        def show_day(self, tick):
+            """ Return true or false to show day at this tick."""
+
+            # If there is only one day in the ticks, show it at the center
+            if (num2date(self.min).day == num2date(self.max).day):
+                if tick == self.mid:
+                    return True
+                else:
+                    return False
+
+            # If there are more days in the ticks, show a label for that
+            # tick that is closest to the center of their day.
+            else:
+                middle_of_day = self.middle_of_day(tick)
+                if (abs(tick - middle_of_day) < self.step / 2 or
+                    (middle_of_day < self.min and tick == self.min) or
+                    (middle_of_day > self.max) and tick == self.max):
+                    return True
+                else:
+                    return False
+
+        def show_month(self, tick):
+            """ Return true or false to show month at this tick."""
+
+            # If there is only one month in the ticks, show it at the center
+            if (num2date(self.min).month == num2date(self.max).month):
+                if tick == self.mid:
+                    return True
+                else:
+                    return False
+
+            # If there are more months in the ticks, show a label for that
+            # tick that is closest to the center of their month.
+            else:
+                middle_of_month = self.middle_of_month(tick)
+                if (abs(tick - middle_of_month) < self.step / 2 or
+                    (middle_of_month < self.min and tick == self.min) or
+                    (middle_of_month > self.max) and tick == self.max):
+                    return True
+                else:
+                    return False
+
+        def show_year(self, tick):
+            """ Return true or false to show year at this tick."""
+
+            # If there is only one year in the ticks, show it at the center
+            if (num2date(self.min).year == num2date(self.max).year):
+                if tick == self.mid:
+                    return True
+                else:
+                    return False
+
+            # If there are more years in the ticks, show a label for that
+            # tick that is closest to the center of their year.
+            else:
+                middle_of_year = self.middle_of_year(tick)
+                if (abs(tick - middle_of_year) < self.step / 2 or
+                    (middle_of_year < self.min and tick == self.min) or
+                    (middle_of_year > self.max) and tick == self.max):
+                    return True
+                else:
+                    return False
+
+        def middle_of_day(self, tick):
+            """ Return the middle of the day as matplotlib number. """
+            dt = num2date(tick)
+            middle_of_day = datetime.datetime(dt.year, dt.month, dt.day, 12)
+            return date2num(middle_of_day)
+
+        def middle_of_month(self, tick):
+            """ Return the middle of the month as matplotlib number. """
+            dt = num2date(tick)
+            middle_of_month = datetime.datetime(dt.year, dt.month, 16)
+            return date2num(middle_of_month)
+
+        def middle_of_year(self, tick):
+            """ Return the middle of the year as matplotlib number. """
+            dt = num2date(tick)
+            middle_of_year = datetime.datetime(dt.year, 7, 1)
+            return date2num(middle_of_year)
+
+
 class Graph(object):
     """
     Class for matplotlib graphs, i.e. for popups, krw graphs
@@ -191,23 +342,23 @@ class Graph(object):
         # Figure color
         self.figure.set_facecolor('white')
         # Axes and legend location: full width is "1".
-        self.legend_width = 0.04
+        self.legend_width = 0.08
         # ^^^ No legend by default, but we *do* allow a little space to the
         # right of the graph to prevent the rightmost label from being cut off
         # (at least, in a reasonable percentage of the cases).
         self.left_label_width = LEFT_LABEL_WIDTH / self.width
         self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height
-        self.x_label_height = 0.0
+        self.x_label_height = 0.08
         self.legend_on_bottom_height = 0.0
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
-        
+
         # Fixup_axes in init, so axes can be customised (for example set_ylim).
         self.fixup_axes()
-        
+
         #deze kan je zelf zetten
         self.ax2 = None
-        
+
     def add_today(self):
         # Show line for today.
         self.axes.axvline(self.today, color='orange', lw=1, ls='--')
@@ -223,14 +374,14 @@ class Graph(object):
 
     def fixup_axes(self, second=False):
         """Fix up the axes by limiting the amount of items."""
-        
+
         axes_to_change = self.axes
         if second:
             if self.ax2 is None:
                 return
             else:
                 axes_to_change = self.ax2
-        
+
         available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
         approximate_characters = int(available_width / (FONT_SIZE / 2))
         max_number_of_ticks = approximate_characters // 20
@@ -238,9 +389,12 @@ class Graph(object):
             max_number_of_ticks = 2
         locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
         if not self.restrict_to_month:
-            axes_to_change.xaxis.set_major_locator(locator)
-            axes_to_change.xaxis.set_major_formatter(AutoDateFormatter(locator))
-              
+            major_locator = AutoDateLocator()
+            axes_to_change.xaxis.set_major_locator(major_locator)
+
+            major_formatter = MultilineAutoDateFormatter(
+                major_locator, axes_to_change)
+            axes_to_change.xaxis.set_major_formatter(major_formatter)
 
         available_height = (self.height -
                             BOTTOM_LINE_HEIGHT -
@@ -253,8 +407,9 @@ class Graph(object):
         locator = MaxNLocator(nbins=max_number_of_ticks - 1)
         if not second:
             axes_to_change.yaxis.set_major_locator(locator)
-            axes_to_change.yaxis.set_major_formatter(ScalarFormatter(useOffset=False))
-        
+            axes_to_change.yaxis.set_major_formatter(
+                ScalarFormatter(useOffset=False))
+
     def legend_space(self):
         """reserve space for legend (on the right side). even when
         there is no legend displayed"""
@@ -298,20 +453,19 @@ class Graph(object):
                 loc=legend_loc,
                 ncol=ncol,
                 fancybox=True,
-                shadow=True,
-               )
+                shadow=True,)
          #legend.set_size('medium')
          # TODO: get rid of the border around the legend.
-         
+
     def init_second_axes(self):
         """ init second axes """
         self.ax2 = self.axes.twinx()
         self.fixup_axes(second=True)
-        
-        
+
     def http_png(self):
         """Output plot to png. Also calculates size of plot and put 'now'
         line."""
+
         axes_left = self.left_label_width
         axes_bottom = (self.bottom_axis_location + self.x_label_height +
                        self.legend_on_bottom_height)

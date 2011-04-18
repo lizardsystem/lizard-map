@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.67 (unreleased)
 -----------------
 
+- Changed x-axis layout for graphs to have more ticks with no overlapping
+  
+
 - Jslint jquery.workspace.js.
 
 
