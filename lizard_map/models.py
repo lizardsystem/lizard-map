@@ -165,6 +165,16 @@ class AdapterClassNotFoundError(Exception):
     pass
 
 
+class WorkspaceItemError(Exception):
+    """ To be raised when a WorkspaceItem is out of date.
+    
+    A WorkspaceItem can represent something that does no longer exist.
+    For example, it may refer to a shape that has been deleted from
+    the database. This error may trigger deletion of such orphans.
+    """
+    pass
+
+
 ###### Models start here ######
 
 
@@ -269,12 +279,16 @@ class WorkspaceItem(models.Model):
             if entrypoint.name == self.adapter_class:
                 try:
                     real_adapter = entrypoint.load()
+                    real_adapter = real_adapter(self,
+                        layer_arguments=self.adapter_layer_arguments)
                 except ImportError, e:
                     logger.critical("Invalid entry point: %s", e)
                     raise
-                return real_adapter(
-                    self,
-                    layer_arguments=self.adapter_layer_arguments)
+                except WorkspaceItemError:
+                    logger.warning("Deleting problematic WorkspaceItem: %s", self)
+                    # Trac #2470. Return a NullAdapter instead?
+                    self.delete()
+                return real_adapter
         raise AdapterClassNotFoundError(
             u'Entry point for %r not found' % self.adapter_class)
 
