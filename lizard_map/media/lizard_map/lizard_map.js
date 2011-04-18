@@ -1,6 +1,6 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
-/*global $, OpenLayers, window, updateLayers,
+/*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
 hover_popup, layers, map, refreshLayers */
 
@@ -263,13 +263,13 @@ function setUpWorkspaceEmpty() {
         $workspace = $(this).parents("div.workspace");
         workspace_id = $workspace.attr("data-workspace-id");
         url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
-	addProgressAnimationIntoWorkspace();
+        addProgressAnimationIntoWorkspace();
         $.post(
             url, {workspace_id: workspace_id},
 	    function (data) {
-	      //remove progress
-	      $workspace.find(".sidebarbox-action-progress").remove();
-              $workspace.updateWorkspace();
+	        //remove progress
+                $workspace.find(".sidebarbox-action-progress").remove();
+                $workspace.updateWorkspace();
             });
     });
 }
