@@ -10,8 +10,10 @@
 
 {% block javascript %}
 {{ block.super }}
-<script type="text/javascript"
-        src="{{ STATIC_URL }}openlayers/OpenLayers.js"></script>
+<script id="openlayers-script"
+        type="text/javascript"
+        src="{{ STATIC_URL }}openlayers/OpenLayers.js"
+        data-openlayers-url="{{ STATIC_URL }}openlayers/"></script>
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
 <script type="text/javascript"

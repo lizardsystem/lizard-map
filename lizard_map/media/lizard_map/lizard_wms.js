@@ -1,5 +1,6 @@
 /*jslint browser: true */
 /*jslint evil: true */
+/*jslint nomen: false */
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
 G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
 
@@ -160,6 +161,14 @@ function showMap() {
         start_extent_left, start_extent_top, start_extent_right,
         start_extent_bottom, max_extent, max_extent_left, max_extent_top,
         max_extent_right, max_extent_bottom;
+
+    // Make custom OpenLayers._getScriptLocation
+    // OpenLayers (OL) cannot get its script location if the filename
+    // OpenLayers.js has been changed.
+    // This function is needed when loading images etc for OL.
+    OpenLayers._getScriptLocation = function () {
+        return $("#openlayers-script").attr("data-openlayers-url");
+    };
 
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
