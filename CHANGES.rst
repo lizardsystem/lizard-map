@@ -13,6 +13,10 @@ Changelog of lizard-map
 
 - Jslint jquery.workspace.js.
 
+- Fixed blank nothingFoundPopup.
+
+- Added WorkspaceItemError class.
+
 
 1.66 (2011-04-14)
 -----------------
