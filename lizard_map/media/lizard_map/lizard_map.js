@@ -88,10 +88,10 @@ function setUpMapLoadDefaultLocation() {
                 var extent;
                 if (data.extent !== undefined) {
                     extent = new OpenLayers.Bounds(
-                        data.extent[0],
-                        data.extent[1],
-                        data.extent[2],
-                        data.extent[3]);
+                        data.extent.left,
+                        data.extent.top,
+                        data.extent.right,
+                        data.extent.bottom);
                     map.setCenter(extent.getCenterLonLat(),
                                   map.getZoomForExtent(extent) - 1);
                 }

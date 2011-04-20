@@ -2,12 +2,10 @@ Changelog of lizard-map
 =======================
 
 
-1.69 (unreleased)
+1.69 (2011-04-20)
 -----------------
 
-- Added dependency on lizard-map >= 1.68 (WorkspaceItemError).
-
-- Removed lizard-ui 1.56 pin (Jack says OK).
+- Fixed #2582: fixed load default map location.
 
 
 1.68 (2011-04-20)
