@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.67 (unreleased)
+1.67 (2011-04-20)
 -----------------
 
 - Added custom OpenLayers._getScriptLocation.
