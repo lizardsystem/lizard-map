@@ -283,6 +283,31 @@ function setUpDateChoice() {
     $("#id_date_end").datepicker();
 }
 
+
+/* Updates the date popup from a select or input tag */
+function updateDateSelectOrInput() {
+    var url, $form;
+    $form = $(this).parents("form");
+    url = $form.attr("action");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            $("#summary-datepicker").load(
+                "./ #summary-datepicker-contents");
+        });
+}
+
+
+// Updates date div from server when fields change.
+function setUpDateUpdate() {
+    $("#summary-datepicker form input").live(
+        'change', updateDateSelectOrInput);
+    $("#summary-datepicker form select").live(
+        'change', updateDateSelectOrInput);
+}
+
+
 function setUpDateAjaxForm(overlay) {
     var form = $("form", overlay);
     form.submit(function () {
@@ -542,6 +567,7 @@ $(document).ready(function () {
     setUpWorkspaceEmpty();
     setUpDatePopup();
     setUpDateChoice();
+    setUpDateUpdate();
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();
     setUpAnimationSlider();

@@ -1,12 +1,16 @@
 <div class="date-popup popup popup-fat"
      id="summary-datepicker">
-  <h1>Datumkeuze</h1>
-  <div>
-    <form action="{% url lizard_map.set_date_range %}"
-          method="post">
-      {% csrf_token %}
-      {{ date_range_form.as_p }}
-      <p><input type="submit" value="Nieuwe periode" /></p>
-    </form>
+  {# The inner div is handy when using $ load function. #}
+  <div id="summary-datepicker-contents">
+    <h1>Datumkeuze</h1>
+    <div>
+      <form action="{% url lizard_map.set_date_range %}"
+            method="post">
+        {% csrf_token %}
+        {{ date_range_form.as_p }}
+        <p><input type="submit" value="Nieuwe periode" /></p>
+      </form>
+    </div>
   </div>
 </div>
+

@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.71 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Started making new date popup (unfinished, the close button
+  disappears when you change something).
 
 
 1.70 (2011-04-20)

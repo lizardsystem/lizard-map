@@ -4,6 +4,7 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import DateRangeForm
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import current_period
 from lizard_map.models import BackgroundMap
 from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
@@ -59,8 +60,10 @@ def workspace_variables(request):
     workspaces = workspace_manager.load_or_create()
     add_to_context['workspaces'] = workspaces
 
-    add_to_context['date_range_form'] = DateRangeForm(
-        current_start_end_dates(request, for_form=True))
+    current_date_range = current_start_end_dates(request, for_form=True)
+    current_date_range.update({'period': current_period(request)})
+    date_range_form = DateRangeForm(current_date_range)
+    add_to_context['date_range_form'] = date_range_form
 
     # Add animation slider? Default: no.
     animation_slider = None  # default
