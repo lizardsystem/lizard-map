@@ -67,7 +67,7 @@ But those aren't used anymore.
 function show_popup(data, map) {
     var html, overlay, i;
     if (data !== null) {
-        if (data.html !== "" && data.html !== undefined) {
+        if (data.html && data.html != "") {
             // Generates pages with handlers. First only page 0 is visible.
             if (data.html.length === 1) {
                 $("#graph-popup-content").html(data.html[0]);
