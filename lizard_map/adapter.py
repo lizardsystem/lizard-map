@@ -377,11 +377,6 @@ class Graph(object):
         data_span = data_high - data_low
         view_low = data_low - data_span * margin
         view_high = data_high + data_span * margin
-        print data_high
-        print data_low
-        print data_span
-        print view_low
-        print view_high
         self.axes.set_ylim(view_low, view_high)
         return None
 
