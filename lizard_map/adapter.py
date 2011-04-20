@@ -361,7 +361,7 @@ class Graph(object):
         # Show line for today.
         self.axes.axvline(self.today, color='orange', lw=1, ls='--')
 
-    def set_ylim_margin(self, margin=0.1):
+    def set_ylim_margin(self, top=0.1, bottom=0.0):
         """Adjust y-margin of axes.
 
         The standard margin is sometimes zero. This method sets the margin
@@ -370,13 +370,13 @@ class Graph(object):
 
         Note that it is assumed here that the y-axis is not reversed.
 
-        From matplotlib 1.0 there is a set_ymargin method
+        From matplotlib 1.0 on there is a set_ymargin method
         like this already."""
 
         data_low, data_high = self.axes.dataLim.get_points()[:, 1]
         data_span = data_high - data_low
-        view_low = data_low - data_span * margin
-        view_high = data_high + data_span * margin
+        view_low = data_low - data_span * bottom
+        view_high = data_high + data_span * top
         self.axes.set_ylim(view_low, view_high)
         return None
 
@@ -501,6 +501,7 @@ class Graph(object):
         # Somehow, the range cannot be set in __init__
         if not self.restrict_to_month:
             self.axes.set_xlim(date2num((self.start_date, self.end_date)))
+            self.set_ylim_margin(top=0.1, bottom=0.0)
 
         canvas = FigureCanvas(self.figure)
         response = HttpResponse(content_type='image/png')
