@@ -8,6 +8,8 @@ Changelog of lizard-map
 - Started making new date popup (unfinished, the close button
   disappears when you change something).
 
+- Modified adapter.py so that graphs always have a top margin
+
 
 1.70 (2011-04-20)
 -----------------
