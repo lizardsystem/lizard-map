@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.70 (unreleased)
+1.70 (2011-04-20)
 -----------------
 
 - Rewritten loop to remove all openlayers layers to prevent error in
