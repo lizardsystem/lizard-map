@@ -180,8 +180,6 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
 
         scale = float(self._locator._get_unit())
         if not self.tickinfo:
-            print 'scale:'
-            print scale
             self.tickinfo = self.Tickinfo(self.axes.get_xticks())
 
         if (scale == 365.0):
@@ -363,6 +361,30 @@ class Graph(object):
         # Show line for today.
         self.axes.axvline(self.today, color='orange', lw=1, ls='--')
 
+    def set_ylim_margin(self, margin=0.1):
+        """Adjust y-margin of axes.
+
+        The standard margin is sometimes zero. This method sets the margin
+        based on already present data in the plot, so call it after plotting
+        and before http_png().
+
+        Note that it is assumed here that the y-axis is not reversed.
+
+        From matplotlib 1.0 there is a set_ymargin method
+        like this already."""
+
+        data_low, data_high = self.axes.dataLim.get_points()[:, 1]
+        data_span = data_high - data_low
+        view_low = data_low - data_span * margin
+        view_high = data_high + data_span * margin
+        print data_high
+        print data_low
+        print data_span
+        print view_low
+        print view_high
+        self.axes.set_ylim(view_low, view_high)
+        return None
+
     def suptitle(self, title):
         self.figure.suptitle(title,
                              x=self.left_label_width,
@@ -382,12 +404,12 @@ class Graph(object):
             else:
                 axes_to_change = self.ax2
 
-        available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
-        approximate_characters = int(available_width / (FONT_SIZE / 2))
-        max_number_of_ticks = approximate_characters // 20
-        if max_number_of_ticks < 2:
-            max_number_of_ticks = 2
-        locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
+#        available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
+#        approximate_characters = int(available_width / (FONT_SIZE / 2))
+#        max_number_of_ticks = approximate_characters // 20
+#        if max_number_of_ticks < 2:
+#            max_number_of_ticks = 2
+#        locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
         if not self.restrict_to_month:
             major_locator = AutoDateLocator()
             axes_to_change.xaxis.set_major_locator(major_locator)
