@@ -29,12 +29,12 @@ function updateLayers() {
 workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
     var $lizard_map_wms, base_layer,
-        base_layer_type, wms_url, wms_layers, osm_url;
+        base_layer_type, wms_url, wms_layers, osm_url, i;
 
     // Remove all old layers.
     layers = [];
-    while (map.layers.length > 0) {
-        map.removeLayer(map.layers[0]);
+    for (i = map.layers.length - 1; i >= 0; i--) {
+        map.removeLayer(map.layers[i]);
     }
 
     // Set up all layers.
@@ -90,36 +90,6 @@ function refreshLayers() {
             map.setBaseLayer(base_layer);
         }
     });
-    // base_layer_type = $lizard_map_wms.attr("data-base-layer-type");
-
-    // // Set up base layer.
-    // if (base_layer_type === "OSM")
-    // {
-    //     osm_url = $lizard_map_wms.attr("data-base-layer-osm");
-    //     base_layer = new OpenLayers.Layer.OSM(
-    //     "Openstreetmap",
-    //     osm_url,
-    //     {buffer: 0});
-    // }
-    // else if (base_layer_type === "WMS")
-    // {
-    //     wms_url = $lizard_map_wms.attr("data-base-layer-wms");
-    //     wms_layers = $lizard_map_wms.attr("data-base-layer-wms-layers");
-    //     base_layer = new OpenLayers.Layer.WMS(
-    //         'Topografische kaart',
-    //         wms_url,
-    //         {'layers': wms_layers, 'format': 'image/png', 'maxResolution': 364},
-    //         {'isBaseLayer': true, 'buffer': 1}
-    //     );
-    // }
-    // else if (base_layer_type === "GOOGLE")
-    // {
-    //     base_layer = new OpenLayers.Layer.Google(
-    //         "Google Physical",
-    //         {type: G_PHYSICAL_MAP, sphericalMercator: true});
-    // }
-    // layers.base_layer = base_layer;
-    // map.addLayer(base_layer);
 
     // Add our own data layers.
     $(".workspace-layer").each(function () {
@@ -167,7 +137,8 @@ function showMap() {
     // OpenLayers.js has been changed.
     // This function is needed when loading images etc for OL.
     OpenLayers._getScriptLocation = function () {
-        return $("#openlayers-script").attr("data-openlayers-url");
+        //return $("#openlayers-script").attr("data-openlayers-url");
+        return "/static_media/openlayers/";
     };
 
     // Find client-side extra data.

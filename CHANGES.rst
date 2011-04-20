@@ -5,7 +5,10 @@ Changelog of lizard-map
 1.70 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Rewritten loop to remove all openlayers layers to prevent error in
+  newest openlayers.
+
+- Fixed OpenLayers location to /static_media/openlayers/.
 
 
 1.69 (2011-04-20)
