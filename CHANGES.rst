@@ -9,6 +9,8 @@ Changelog of lizard-map
 
 - Changed x-axis layout for graphs to have more ticks with no overlapping
 
+- Added method to set_ylim_margin() to adapter.Graph.
+
 - Jslint jquery.workspace.js.
 
 
