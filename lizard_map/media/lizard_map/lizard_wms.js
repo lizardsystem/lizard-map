@@ -33,7 +33,7 @@ function refreshLayers() {
 
     // Remove all old layers.
     layers = [];
-    for (i = map.layers.length - 1; i >= 0; i--) {
+    for (i = map.layers.length - 1; i >= 0; i -= 1) {
         map.removeLayer(map.layers[i]);
     }
 
