@@ -41,6 +41,7 @@ def map_variables(request):
         add_to_context['start_extent'] = map_location
         logger.debug('Fetched map coordinates from session: '
                      '%s' % (map_location))
+
     return add_to_context
 
 

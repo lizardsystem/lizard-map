@@ -39,7 +39,6 @@ from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
 from lizard_map.workspace import WorkspaceManager
-from lizard_map.templatetags import map as map_functions
 from lizard_map.templatetags import workspaces
 import lizard_map.admin
 import lizard_map.coordinates
@@ -791,18 +790,6 @@ class TestTemplateTags(TestCase):
                   }
         for value, expected in in_out.items():
             self.assertEquals(workspaces.float_or_exp(value), expected)
-
-    def test_map_variables(self):
-        """Just see if map_variables crashes"""
-        parser = None
-        token = None
-        map_functions.map_variables(parser, token)
-
-    def test_detect_browser(self):
-        """Just see if detect_browser crashes"""
-        parser = None
-        token = None
-        map_functions.detect_browser(parser, token)
 
 
 class ModelLegendTest(TestCase):

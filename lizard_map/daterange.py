@@ -112,20 +112,25 @@ def set_date_range(request, template='lizard_map/daterange.html'):
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
             data = form.cleaned_data
-            today = datetime.datetime.now()
+            now = datetime.datetime.now()
             period = int(data['period'])
 
             # Calculate relative start/end dates from given period.
             if period == PERIOD_OTHER:
                 try:
                     dt_start = data.get('dt_start', None)
-                    timedelta_start = dt_start - today
+                    timedelta_start = dt_start - now
                 except TypeError:
                     timedelta_start = default_start()
 
                 try:
+                    # Since we select on day basis, we want to include
+                    # the end day.
                     dt_end = data.get('dt_end', None)
-                    timedelta_end = dt_end - today
+                    timedelta_end = (
+                        dt_end +
+                        datetime.timedelta(hours=23, minutes=59, seconds=59) -
+                        now)
                 except TypeError:
                     timedelta_end = default_end()
             else:
