@@ -84,11 +84,11 @@ class DateRangeForm(forms.Form):
         label='',)
     # TODO: NL date format.  Also hardcoded in the js.
     dt_start = forms.DateTimeField(
-        label='Van',
+        label='van',
         widget=SelectDateWidget(years=years_choices),
         required=False)
     dt_end = forms.DateTimeField(
-        label='Tot',
+        label='t/m',
         widget=SelectDateWidget(years=years_choices),
         required=False)
 
