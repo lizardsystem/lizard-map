@@ -105,18 +105,25 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def set_date_range(request, template='lizard_map/daterange.html'):
-    """View: store the date range in the session and redirect."""
+def set_date_range(request, template='lizard_map/daterange.html',
+                   now=None):
+    """View: store the date range in the session and redirect.
+
+    POST must contain DateRangeForm fields.
+    """
     if request.method == 'POST':
         form = DateRangeForm(request.POST)
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
             data = form.cleaned_data
-            now = datetime.datetime.now()
+            if now is None:
+                now = datetime.datetime.now()
             period = int(data['period'])
 
             # Calculate relative start/end dates from given period.
             if period == PERIOD_OTHER:
+                almost_one_day = datetime.timedelta(
+                    hours=23, minutes=59, seconds=59)
                 try:
                     dt_start = data.get('dt_start', None)
                     timedelta_start = dt_start - now
@@ -129,10 +136,14 @@ def set_date_range(request, template='lizard_map/daterange.html'):
                     dt_end = data.get('dt_end', None)
                     timedelta_end = (
                         dt_end +
-                        datetime.timedelta(hours=23, minutes=59, seconds=59) -
+                        almost_one_day -
                         now)
                 except TypeError:
                     timedelta_end = default_end()
+
+                # Make sure start is before end
+                if timedelta_start > timedelta_end:
+                    timedelta_start = timedelta_end - almost_one_day
             else:
                 timedelta_start, timedelta_end = PERIOD_DAYS[period]
 

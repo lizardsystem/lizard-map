@@ -11,6 +11,9 @@ from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import DEFAULT_MAP_SETTINGS
+from lizard_map.daterange import PERIOD_DAY
+from lizard_map.daterange import PERIOD_OTHER
+from lizard_map.daterange import PERIOD_DAYS
 from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_START
 from lizard_map.daterange import SESSION_DT_END
@@ -383,6 +386,19 @@ class TestDateRange(TestCase):
         self.request = Mock()
         self.request.session = Mock()
         self.today = datetime.datetime(2011, 4, 21)
+        self.almost_one_day = datetime.timedelta(
+            hours=23, minutes=59, seconds=59)
+
+    def _test_set_date_range(self, request):
+
+        set_date_range(self.request, now=self.today)
+
+        # Get current period, dt_start, dt_end
+        period = current_period(self.request)
+        dt_start, dt_end = current_start_end_dates(
+            self.request, today=self.today)
+
+        return period, dt_start, dt_end
 
     def test_current_start_end_dates(self):
         dt_start, dt_end = current_start_end_dates(
@@ -392,6 +408,63 @@ class TestDateRange(TestCase):
 
         self.assertEquals(dt_start, dt_start_expected)
         self.assertEquals(dt_end, dt_end_expected)
+
+    def test_current_period(self):
+        """Test default period."""
+        period = current_period(self.request)
+        self.assertEquals(period, PERIOD_DAY)
+
+    def test_set_date_range(self):
+        """Set date range to period_day, then retrieve it back"""
+        # Fake Post
+        self.request.method = 'POST'
+        self.request.POST = {
+            'period': str(PERIOD_DAY)}
+        self.request.META = {}
+
+        period, dt_start, dt_end = self._test_set_date_range(self.request)
+
+        self.assertEquals(period, PERIOD_DAY)
+        self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
+        self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
+
+    def test_set_date_range2(self):
+        """Set custom date range, then retrieve it back"""
+        timedelta_start = datetime.timedelta(days=-20)
+        timedelta_end = datetime.timedelta(days=15)
+
+        # Fake Post
+        self.request.method = 'POST'
+        self.request.POST = {
+            'period': str(PERIOD_OTHER),
+            'dt_start': self.today + timedelta_start,
+            'dt_end': self.today + timedelta_end}
+        self.request.META = {}
+
+        period, dt_start, dt_end = self._test_set_date_range(self.request)
+
+        self.assertEquals(period, PERIOD_OTHER)
+        self.assertEquals(dt_start, self.today + timedelta_start)
+        self.assertEquals(
+            dt_end, self.today + timedelta_end + self.almost_one_day)
+
+    def test_set_date_range3(self):
+        """Set start date after end date: result must have dt_start<dt_end"""
+        timedelta_start = datetime.timedelta(days=20)
+        timedelta_end = datetime.timedelta(days=-15)
+
+        # Fake Post
+        self.request.method = 'POST'
+        self.request.POST = {
+            'period': str(PERIOD_OTHER),
+            'dt_start': self.today + timedelta_start,
+            'dt_end': self.today + timedelta_end}
+        self.request.META = {}
+
+        period, dt_start, dt_end = self._test_set_date_range(self.request)
+
+        self.assertEquals(period, PERIOD_OTHER)
+        self.assertTrue(dt_start < dt_end)
 
 
 class TestAnimationSettings(TestCase):
