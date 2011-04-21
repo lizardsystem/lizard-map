@@ -275,15 +275,6 @@ function setUpWorkspaceEmpty() {
 }
 
 
-// Date selector: only support for ONE date selector at the moment.
-
-function setUpDateChoice() {
-    $.datepicker.setDefaults($.datepicker.regional.nl);
-    $("#id_date_start").datepicker();
-    $("#id_date_end").datepicker();
-}
-
-
 /* Updates the date popup from a select or input tag */
 function updateDateSelectOrInput() {
     var url, $form;
@@ -293,11 +284,12 @@ function updateDateSelectOrInput() {
         url,
         $form.serialize(),
         function () {
-            // Update the popup
-            // Note: We cannot use load, because the overlay properties will get lost
-            $.get("./", {}, function(data) {
+            // Update the popup. Note: We cannot use load, because the
+            // overlay properties will get lost
+            $.get("./", {}, function (data) {
                 var new_contents;
-                new_contents = $(data).find("#summary-datepicker-contents").html();
+                new_contents = $(data).find(
+                    "#summary-datepicker-contents").html();
                 $("#summary-datepicker-contents").html(new_contents);
             });
             reloadGraphs();
@@ -314,50 +306,20 @@ function setUpDateUpdate() {
 }
 
 
-// function setUpDateAjaxForm(overlay) {
-//     var form = $("form", overlay);
-//     form.submit(function () {
-//         $.post(
-//             form.attr('action'),
-//             form.serialize(),
-//             function (data) {
-//                 // This is the success handler.  Form can contain errors,
-//                 // though.
-//                 var newForm, freshForm;
-//                 newForm = $(data).find('form');
-//                 form.html(newForm);
-//                 // setUpDateChoice();
-//                 freshForm = $("form", overlay);
-//                 setUpDateAjaxForm(freshForm);
-//                 if (newForm.html().indexOf("rror") === -1) {
-//                     // No error/Error, so refresh graphs and close the popup.
-//                     reloadGraphs();
-//                     $("div.close", overlay).click();
-//                 }
-//             });
-//         return false;
-//     });
-// }
-
-
 function setUpDatePopup() {
     $(".popup-trigger").live('mouseover', function () {
         if (!$(this).data("popup-initialized")) {
             $(this).data("popup-initialized", true);
             $(this).overlay();
-            // $(this).overlay({
-            //     onLoad: function () {
-            //         var overlay = this.getOverlay();
-            //         setUpDateAjaxForm(overlay);
-            //     }
-            // });
         }
     });
 }
 
+
 function setUpNotFoundPopup() {
     $("#not_found_popup_trigger").overlay();
 }
+
 
 function nothingFoundPopup() {
     $("#not_found_popup_trigger").click();
@@ -367,13 +329,10 @@ function nothingFoundPopup() {
               2000);
 }
 
+
 function setUpGraphEditPopup() {
     $(".graph_edit_trigger").overlay();
 }
-
-
-
-
 
 
 /*
@@ -573,7 +532,6 @@ $(document).ready(function () {
     setUpWorkspaceAcceptable();
     setUpWorkspaceEmpty();
     setUpDatePopup();
-    // setUpDateChoice();
     setUpDateUpdate();
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();
@@ -589,7 +547,9 @@ $(document).ready(function () {
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
-    $(".add-snippet").snippetInteraction(); // voor collage view, nu nog nutteloos voor popup
+
+    // voor collage view, nu nog nutteloos voor popup
+    $(".add-snippet").snippetInteraction();
     $("a.lizard-map-link").lizardMapLink();
 });
 
