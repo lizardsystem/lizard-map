@@ -15,6 +15,10 @@ from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_START
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import current_period
+from lizard_map.daterange import default_start
+from lizard_map.daterange import default_end
+from lizard_map.daterange import set_date_range
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import YEAR
 from lizard_map.dateperiods import QUARTER
@@ -369,6 +373,27 @@ class TestCollages(TestCase):
         self.assertTrue(workspace.collages.all())
 
 
+class TestDateRange(TestCase):
+    """Test daterange.py"""
+
+    def setUp(self):
+        class Mock(dict):
+            pass
+
+        self.request = Mock()
+        self.request.session = Mock()
+        self.today = datetime.datetime(2011, 4, 21)
+
+    def test_current_start_end_dates(self):
+        dt_start, dt_end = current_start_end_dates(
+            self.request, today=self.today)
+        dt_start_expected = self.today + default_start()
+        dt_end_expected = self.today + default_end()
+
+        self.assertEquals(dt_start, dt_start_expected)
+        self.assertEquals(dt_end, dt_end_expected)
+
+
 class TestAnimationSettings(TestCase):
     """Tests for animation.py."""
 
@@ -394,7 +419,6 @@ class TestAnimationSettings(TestCase):
         self.assertEquals(end.year, 2003)
 
     def setUp(self):
-
         class Mock(dict):
             pass
 
