@@ -374,7 +374,7 @@ function popup_click_handler(x, y, map) {
               user_workspace_id: user_workspace_id},
             function (data) {
                 $("#map_OpenLayers_ViewPort").css("cursor", "default");
-                show_popup(data, map);
+                show_popup(data);
             }
         );
     }

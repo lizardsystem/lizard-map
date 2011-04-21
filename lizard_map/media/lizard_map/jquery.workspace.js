@@ -64,7 +64,7 @@ data.big
 But those aren't used anymore.
 */
 
-function show_popup(data, map) {
+function show_popup(data) {
     var html, overlay, i;
     if (data !== null) {
         if (data.html && data.html.length !== 0) {
@@ -127,7 +127,7 @@ jQuery.fn.collagePopup = function () {
         url,
         { collage_id: collage_id },
         function (data) {
-            show_popup(data, map);
+            show_popup(data);
         }
     );
 };
@@ -229,7 +229,7 @@ jQuery.fn.workspaceInteraction = function () {
                 url,
                 { snippet_id: snippet_id },
                 function (data) {
-                    show_popup(data, map);
+                    show_popup(data);
                 }
             );
             //snippet(snippet_id, map); // attention: from krw_waternet.js
