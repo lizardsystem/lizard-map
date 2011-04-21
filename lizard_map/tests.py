@@ -10,11 +10,9 @@ from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
-from lizard_map.coordinates import DEFAULT_MAP_SETTINGS
 from lizard_map.daterange import PERIOD_DAY
 from lizard_map.daterange import PERIOD_OTHER
 from lizard_map.daterange import PERIOD_DAYS
-from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_START
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import current_start_end_dates
@@ -481,8 +479,8 @@ class TestAnimationSettings(TestCase):
         self.request.session[SESSION_DT_START] = twothousand - today
         self.request.session[SESSION_DT_END] = twothousandthree - today
         day_one = datetime.datetime(1979, 5, 25)
-        self.date_start_days = (twothousand-day_one).days
-        self.date_end_days = (twothousandthree-day_one).days
+        self.date_start_days = (twothousand - day_one).days
+        self.date_end_days = (twothousandthree - day_one).days
 
     def _date_range_helper(self, today):
         """Make sure _fill_date_range() works."""

@@ -153,7 +153,6 @@ class MapSettings(object):
         self.map_settings = dict(self.global_settings)
         self.map_settings.update({'background_maps': self.background_maps})
 
-
     def mapnik_projection(self):
         """Returns the mapnik projection.
         """
