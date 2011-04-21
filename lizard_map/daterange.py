@@ -110,6 +110,7 @@ def set_date_range(request, template='lizard_map/daterange.html',
     """View: store the date range in the session and redirect.
 
     POST must contain DateRangeForm fields.
+    now is a datetime field, used for testing.
     """
     if request.method == 'POST':
         form = DateRangeForm(request.POST)
@@ -170,6 +171,7 @@ def current_start_end_dates(request, for_form=False, today=None):
     If for_form is True, return it as a dict so that we can pass it directly
     into a form class.  Otherwise return it as a tuple.
 
+    today is a datetime field, used for testing.
     """
     if today is None:
         today = datetime.datetime.now()
