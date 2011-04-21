@@ -121,8 +121,8 @@ function hover_popup(data, map) {
 
 jQuery.fn.collagePopup = function () {
     var url, collage_id;
-    url = $(this).parent().attr("data-url-lizard-map-collage-popup");
-    collage_id = $(this).attr("data-collage-id");
+    url = $(this).closest("[data-url-lizard-map-collage-popup]").attr("data-url-lizard-map-collage-popup");
+    collage_id = $(this).closest("[data-collage-id]").attr("data-collage-id");
     $.getJSON(
         url,
         { collage_id: collage_id },
@@ -210,8 +210,8 @@ jQuery.fn.workspaceInteraction = function () {
                 );
             }
         });
-        // Make collage clickable. (TODO: should be collage-popup)
-        $(".collage", $workspace).live('click',
+        // Make collage clickable. (DONE: should be collage-popup)
+        $(".collage-popup", $workspace).live('click',
                                        $(this).collagePopup);
         // Snippets. Using sortable instead of draggable because
         // Draggable applies to li and sortable applies to ul element
