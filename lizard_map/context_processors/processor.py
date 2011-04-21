@@ -5,8 +5,6 @@ from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import DateRangeForm
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
-from lizard_map.models import BackgroundMap
-from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
@@ -62,6 +60,7 @@ def workspace_variables(request):
 
     current_date_range = current_start_end_dates(request, for_form=True)
     current_date_range.update({'period': current_period(request)})
+
     date_range_form = DateRangeForm(current_date_range)
     add_to_context['date_range_form'] = date_range_form
 
@@ -84,8 +83,6 @@ def processor(request):
     A context processor to add the lizard_map variables to the current
     context.
     """
-    session = request.session
-
     add_to_context = {}
 
     # Add map variables.

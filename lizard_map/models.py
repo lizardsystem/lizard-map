@@ -166,8 +166,8 @@ class AdapterClassNotFoundError(Exception):
 
 
 class WorkspaceItemError(Exception):
-    """ To be raised when a WorkspaceItem is out of date.
-    
+    """To be raised when a WorkspaceItem is out of date.
+
     A WorkspaceItem can represent something that does no longer exist.
     For example, it may refer to a shape that has been deleted from
     the database. This error may trigger deletion of such orphans.
@@ -285,7 +285,8 @@ class WorkspaceItem(models.Model):
                     logger.critical("Invalid entry point: %s", e)
                     raise
                 except WorkspaceItemError:
-                    logger.warning("Deleting problematic WorkspaceItem: %s", self)
+                    logger.warning(
+                        "Deleting problematic WorkspaceItem: %s", self)
                     # Trac #2470. Return a NullAdapter instead?
                     self.delete()
                 return real_adapter

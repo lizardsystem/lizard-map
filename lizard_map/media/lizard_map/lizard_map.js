@@ -293,8 +293,14 @@ function updateDateSelectOrInput() {
         url,
         $form.serialize(),
         function () {
-            $("#summary-datepicker").load(
-                "./ #summary-datepicker-contents");
+            // Update the popup
+            // Note: We cannot use load, because the overlay properties will get lost
+            $.get("./", {}, function(data) {
+                var new_contents;
+                new_contents = $(data).find("#summary-datepicker-contents").html();
+                $("#summary-datepicker-contents").html(new_contents);
+            });
+            reloadGraphs();
         });
 }
 
@@ -308,42 +314,43 @@ function setUpDateUpdate() {
 }
 
 
-function setUpDateAjaxForm(overlay) {
-    var form = $("form", overlay);
-    form.submit(function () {
-        $.post(
-            form.attr('action'),
-            form.serialize(),
-            function (data) {
-                // This is the success handler.  Form can contain errors,
-                // though.
-                var newForm, freshForm;
-                newForm = $(data).find('form');
-                form.html(newForm);
-                setUpDateChoice();
-                freshForm = $("form", overlay);
-                setUpDateAjaxForm(freshForm);
-                if (newForm.html().indexOf("rror") === -1) {
-                    // No error/Error, so refresh graphs and close the popup.
-                    reloadGraphs();
-                    $("div.close", overlay).click();
-                }
-            });
-        return false;
-    });
-}
+// function setUpDateAjaxForm(overlay) {
+//     var form = $("form", overlay);
+//     form.submit(function () {
+//         $.post(
+//             form.attr('action'),
+//             form.serialize(),
+//             function (data) {
+//                 // This is the success handler.  Form can contain errors,
+//                 // though.
+//                 var newForm, freshForm;
+//                 newForm = $(data).find('form');
+//                 form.html(newForm);
+//                 // setUpDateChoice();
+//                 freshForm = $("form", overlay);
+//                 setUpDateAjaxForm(freshForm);
+//                 if (newForm.html().indexOf("rror") === -1) {
+//                     // No error/Error, so refresh graphs and close the popup.
+//                     reloadGraphs();
+//                     $("div.close", overlay).click();
+//                 }
+//             });
+//         return false;
+//     });
+// }
 
 
 function setUpDatePopup() {
     $(".popup-trigger").live('mouseover', function () {
         if (!$(this).data("popup-initialized")) {
             $(this).data("popup-initialized", true);
-            $(this).overlay({
-                onLoad: function () {
-                    var overlay = this.getOverlay();
-                    setUpDateAjaxForm(overlay);
-                }
-            });
+            $(this).overlay();
+            // $(this).overlay({
+            //     onLoad: function () {
+            //         var overlay = this.getOverlay();
+            //         setUpDateAjaxForm(overlay);
+            //     }
+            // });
         }
     });
 }
@@ -566,7 +573,7 @@ $(document).ready(function () {
     setUpWorkspaceAcceptable();
     setUpWorkspaceEmpty();
     setUpDatePopup();
-    setUpDateChoice();
+    // setUpDateChoice();
     setUpDateUpdate();
     setUpNotFoundPopup();
     setUpEmptyTempInteraction();

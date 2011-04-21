@@ -98,6 +98,7 @@ def float_or_exp(value):
     """Show number with 2 decimals or with an exponent if too small."""
     return float_to_string(value)
 
+
 @register.inclusion_tag("lizard_map/tag_date_popup.html",
                         takes_context=True)
 def date_popup(context):

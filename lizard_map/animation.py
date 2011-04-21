@@ -78,7 +78,6 @@ class AnimationSettings(object):
         self.start_date_days = (self.start_date - self.day_one).days
         self.end_date_days = (self.end_date - self.day_one).days
 
-
     def info(self):
         """Return info for creating the slider.
 

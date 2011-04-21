@@ -1,6 +1,6 @@
 <div class="date-popup popup popup-fat"
      id="summary-datepicker">
-  {# The inner div is handy when using $ load function. #}
+  {# The inner div is handy when replacing content without losing overlay properties. #}
   <div id="summary-datepicker-contents">
     <h1>Datumkeuze</h1>
     <div>
@@ -8,7 +8,6 @@
             method="post">
         {% csrf_token %}
         {{ date_range_form.as_p }}
-        <p><input type="submit" value="Nieuwe periode" /></p>
       </form>
     </div>
   </div>

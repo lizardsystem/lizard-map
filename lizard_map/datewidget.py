@@ -9,13 +9,15 @@
 import datetime
 import re
 
-from django.forms.widgets import Widget, Select, TextInput
+from django.forms.widgets import Select
+from django.forms.widgets import Widget
 from django.utils.dates import MONTHS
 from django.utils.safestring import mark_safe
 
 __all__ = ('SelectDateWidget',)
 
 RE_DATE = re.compile(r'(\d{4})-(\d\d?)-(\d\d?)$')
+
 
 class SelectDateWidget(Widget):
     """
@@ -30,7 +32,8 @@ class SelectDateWidget(Widget):
     year_field = '%s_year'
 
     def __init__(self, attrs=None, years=None, required=True, value=None):
-        # years is an optional list/tuple of years to use in the "year" select box.
+        # years is an optional list/tuple of years to use in the
+        # "year" select box.
         self.attrs = attrs or {}
         self.required = required
         self.value = value
@@ -38,7 +41,7 @@ class SelectDateWidget(Widget):
             self.years = years
         else:
             this_year = datetime.date.today().year
-            self.years = range(this_year, this_year+10)
+            self.years = range(this_year, this_year + 10)
 
     def render(self, name, value, attrs=None):
         try:
@@ -48,7 +51,8 @@ class SelectDateWidget(Widget):
             if isinstance(value, basestring):
                 match = RE_DATE.match(value)
                 if match:
-                    year_val, month_val, day_val = [int(v) for v in match.groups()]
+                    year_val, month_val, day_val = [
+                        int(v) for v in match.groups()]
 
         output = []
 

@@ -11,7 +11,6 @@ def documentation(handler):
     """Return dict with documentation on handler.
 
     Intended for injection into the handler's answer.
-   
     """
     result = {}
     doc = generate_doc(handler)
@@ -22,21 +21,23 @@ def documentation(handler):
 
 class MapPluginsHandler(BaseHandler):
     """List of available lizard-map plugins."""
-    allowed_methods = ('GET',)
-    #model = Blogpost   
+    allowed_methods = ('GET', )
+    # model = Blogpost
 
     def read(self, request):
         """Return list of available REST-api capable lizard-map plugins.
 
-        REST-api capability is detected by looking for an ``plugin_api_url_name``
-        attribute on the adapter.  If available, it should point at a named url
-        that provides information on the plugin's api capabilities.
+        REST-api capability is detected by looking for an
+        ``plugin_api_url_name`` attribute on the adapter.  If
+        available, it should point at a named url that provides
+        information on the plugin's api capabilities.
 
         """
         result = {}
         result['info'] = documentation(self.__class__)
 
-        entrypoints = pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT)
+        entrypoints = pkg_resources.iter_entry_points(
+            group=ADAPTER_ENTRY_POINT)
         data = []
         for entrypoint in entrypoints:
             adapter = entrypoint.load()
