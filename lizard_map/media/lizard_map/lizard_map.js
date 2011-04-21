@@ -355,7 +355,7 @@ function setUpNotFoundPopup() {
 function nothingFoundPopup() {
     $("#not_found_popup_trigger").click();
     setTimeout(function () {
-        $("#not_found_popup div.close").click();
+        $("#not_found_popup .close").click();
     },
               2000);
 }
