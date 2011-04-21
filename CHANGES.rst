@@ -5,8 +5,9 @@ Changelog of lizard-map
 1.71 (unreleased)
 -----------------
 
-- Started making new date popup (unfinished, the close button
-  disappears when you change something).
+- Implemented new date popup (day, 2 days, week, ...). It now stores
+  relative datetimes in the session. It submits and updates on
+  changes. Added tests for daterange.
 
 - Modified adapter.py so that graphs always have a top margin
 
