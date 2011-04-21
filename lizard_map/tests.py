@@ -11,6 +11,9 @@ from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import DEFAULT_MAP_SETTINGS
+from lizard_map.daterange import SESSION_DT_PERIOD
+from lizard_map.daterange import SESSION_DT_START
+from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import YEAR
@@ -370,6 +373,27 @@ class TestCollages(TestCase):
 class TestAnimationSettings(TestCase):
     """Tests for animation.py."""
 
+    def _fill_date_range(self, today):
+        """Helper method: fill session with date range info.
+
+        date_start is 730119 days from day_one
+        date_end is 731215 days from day_one
+        """
+        twothousand = datetime.datetime(year=2000, month=1, day=1)
+        twothousandthree = datetime.datetime(year=2003, month=1, day=1)
+        self.request.session[SESSION_DT_START] = twothousand - today
+        self.request.session[SESSION_DT_END] = twothousandthree - today
+        day_one = datetime.datetime(1979, 5, 25)
+        self.date_start_days = (twothousand-day_one).days
+        self.date_end_days = (twothousandthree-day_one).days
+
+    def _date_range_helper(self, today):
+        """Make sure _fill_date_range() works."""
+        self._fill_date_range(today=today)
+        start, end = current_start_end_dates(self.request, today=today)
+        self.assertEquals(start.year, 2000)
+        self.assertEquals(end.year, 2003)
+
     def setUp(self):
 
         class Mock(dict):
@@ -377,28 +401,8 @@ class TestAnimationSettings(TestCase):
 
         self.request = Mock()
         self.request.session = Mock()
-        self._date_range_helper()  # Set the request datetimes
-
-    def _fill_date_range(self):
-        """Helper method: fill session with date range info.
-
-        date_start is 730119 days from day_one
-        date_end is 731215 days from day_one
-        """
-        twothousand = datetime.date(year=2000, month=1, day=1)
-        twothousandthree = datetime.date(year=2003, month=1, day=1)
-        self.request.session['date_start'] = twothousand
-        self.request.session['date_end'] = twothousandthree
-        day_one = datetime.date(1979, 5, 25)
-        self.date_start_days = (twothousand-day_one).days
-        self.date_end_days = (twothousandthree-day_one).days
-
-    def _date_range_helper(self):
-        """Make sure _fill_date_range() works."""
-        self._fill_date_range()
-        start, end = current_start_end_dates(self.request)
-        self.assertEquals(start.year, 2000)
-        self.assertEquals(end.year, 2003)
+        self.today = datetime.datetime(2011, 4, 21)
+        self._date_range_helper(today=self.today)  # Set the request datetimes
 
     def test_smoke(self):
         animation_settings = AnimationSettings(request=self.request)
@@ -430,7 +434,7 @@ class TestAnimationSettings(TestCase):
 
     def test_initial_info_gathering(self):
         """Do we return the correct date range and position?"""
-        self._fill_date_range()
+        self._fill_date_range(self.today)
         animation_settings = AnimationSettings(self.request)
         result = animation_settings.info()
         self.assertEquals(result['min'], self.date_start_days)
@@ -441,7 +445,7 @@ class TestAnimationSettings(TestCase):
 
     def test_info_gathering(self):
         """Do we return the correct date range and position?"""
-        self._fill_date_range()
+        self._fill_date_range(self.today)
         animation_settings = AnimationSettings(self.request)
         animation_settings.slider_position = self.date_start_days + 375
         result = animation_settings.info()
@@ -453,7 +457,7 @@ class TestAnimationSettings(TestCase):
 
     def test_impossible_negative_corner_case(self):
         """Negative dates."""
-        self._fill_date_range()
+        self._fill_date_range(self.today)
         animation_settings = AnimationSettings(self.request)
         animation_settings.slider_position = -400
         result = animation_settings.info()
@@ -461,7 +465,7 @@ class TestAnimationSettings(TestCase):
 
     def test_impossible_beyond_max_corner_case(self):
         """Value beyond the max possible."""
-        self._fill_date_range()
+        self._fill_date_range(self.today)
         animation_settings = AnimationSettings(self.request)
         animation_settings.slider_position = 1000000
         result = animation_settings.info()

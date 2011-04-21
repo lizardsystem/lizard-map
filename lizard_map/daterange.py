@@ -83,11 +83,11 @@ class DateRangeForm(forms.Form):
         choices=PERIOD_CHOICES,
         label='',)
     # TODO: NL date format.  Also hardcoded in the js.
-    dt_start = forms.DateField(
+    dt_start = forms.DateTimeField(
         label='Van',
         widget=SelectDateWidget(years=years_choices),
         required=False)
-    dt_end = forms.DateField(
+    dt_end = forms.DateTimeField(
         label='Tot',
         widget=SelectDateWidget(years=years_choices),
         required=False)
@@ -112,15 +112,21 @@ def set_date_range(request, template='lizard_map/daterange.html'):
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
             data = form.cleaned_data
+            today = datetime.datetime.now()
             period = int(data['period'])
 
-            # Calculate start/end dates from given period.
+            # Calculate relative start/end dates from given period.
             if period == PERIOD_OTHER:
-                timedelta_start = data.get(SESSION_DT_START, None)
-                timedelta_end = data.get(SESSION_DT_END, None)
-                if timedelta_start is None:
+                try:
+                    dt_start = data.get('dt_start', None)
+                    timedelta_start = dt_start - today
+                except TypeError:
                     timedelta_start = default_start()
-                if timedelta_end is None:
+
+                try:
+                    dt_end = data.get('dt_end', None)
+                    timedelta_end = dt_end - today
+                except TypeError:
                     timedelta_end = default_end()
             else:
                 timedelta_start, timedelta_end = PERIOD_DAYS[period]
@@ -142,14 +148,15 @@ def set_date_range(request, template='lizard_map/daterange.html'):
         context_instance=RequestContext(request))
 
 
-def current_start_end_dates(request, for_form=False):
+def current_start_end_dates(request, for_form=False, today=None):
     """Return the current start/end dates.
 
     If for_form is True, return it as a dict so that we can pass it directly
     into a form class.  Otherwise return it as a tuple.
 
     """
-    today = datetime.datetime.now()
+    if today is None:
+        today = datetime.datetime.now()
     dt_start = request.session.get(
         SESSION_DT_START, default_start()) + today
     dt_end = request.session.get(
