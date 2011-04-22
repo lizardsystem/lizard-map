@@ -11,6 +11,12 @@ Changelog of lizard-map
 
 - Modified adapter.py so that graphs always have a top margin
 
+- Fixed timeout on nothingFoundPopup (#2585).
+
+- Fixed nothingFoundPopup on collage class (#2557).
+
+- Removed map parameter from show_popup function.
+
 
 1.70 (2011-04-20)
 -----------------
