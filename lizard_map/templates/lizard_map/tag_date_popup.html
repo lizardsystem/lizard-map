@@ -2,7 +2,7 @@
      id="summary-datepicker">
   {# The inner div is handy when replacing content without losing overlay properties. #}
   <div id="summary-datepicker-contents">
-    <h1>Datumkeuze</h1>
+    <div class="action-icon ss_sprite ss_calendar_view_day"></div>
     <div>
       <form action="{% url lizard_map.set_date_range %}"
             method="post">
@@ -12,4 +12,3 @@
     </div>
   </div>
 </div>
-

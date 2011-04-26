@@ -21,8 +21,44 @@
 .popup-size-standard,
 .date-popup
 { width: 30em;
-  min-height: 15em;
+  min-height: 10em;
 }
+
+.date-popup select
+{ display: block;
+  float: left;
+}
+
+.date-popup p
+{ height: 2em;
+}
+
+.date-popup label[for="id_dt_start_month"],
+.date-popup label[for="id_dt_end_month"]
+{ display: block;
+  float: left;
+  clear: left;
+  width: 60px;
+  text-align: right;
+  height: 100%;
+  padding-top: 7px;
+}
+
+.date-popup #id_dt_start_day,
+.date-popup #id_dt_end_day
+{ margin-left: 20px;
+}
+
+.date-popup #id_dt_start_month,
+.date-popup #id_dt_end_month
+{ margin-left: 10px;
+}
+
+.date-popup #id_dt_start_year,
+.date-popup #id_dt_end_year
+{ margin-left: 10px;
+}
+
 
 /* OpenLayers popup*/
 .olPopup
