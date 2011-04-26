@@ -100,7 +100,7 @@ class DateRangeForm(forms.Form):
         super(DateRangeForm, self).__init__(*args, **kwargs)
 
         # Set initial dt_start/end on disabled when not selected.
-        if 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
+        if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
             self.fields['dt_start'].widget.attrs['disabled'] = True
             self.fields['dt_end'].widget.attrs['disabled'] = True
 

@@ -65,6 +65,9 @@ def workspace_variables(request):
     add_to_context['date_start_period'] = current_date_range["dt_start"]
     add_to_context['date_end_period'] = current_date_range["dt_end"]
 
+    date_range_form = DateRangeForm(current_date_range)
+    add_to_context['date_range_form'] = date_range_form
+
     # Add animation slider? Default: no.
     animation_slider = None  # default
     for k, ws_list in workspaces.items():
