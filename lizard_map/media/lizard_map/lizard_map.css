@@ -126,7 +126,8 @@
   -webkit-box-shadow: 0 0 40px black;
 }
 
-#graph-popup-content
+#graph-popup-content,
+.popup-content
 { overflow: auto;
   }
 

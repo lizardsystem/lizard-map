@@ -51,96 +51,98 @@ the default template for the html_default method.
            title="Bewerk grafiek"
            rel="#graph_edit_overlay_{{ snippet_group.id }}">&nbsp;</a>
         <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
-          <h1>Grafiek opties</h1>
-          <form class="popup-graph-edit-form popup-graph-edit-global graph-options popup-form"
-                action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}"
-                method="post">
-            <fieldset class="fixed-label-width">
-              <div>
-                <label>Titel</label>
-                <input class="graph-title" type="text" name="title"
-                       value="{% firstof snippet_group.layout_title '' %}" />
-              </div>
-              <div>
-                <label>Y-min</label>
-                <input class="graph-y-min" type="text" name="y_min"
-                       value="{{ snippet_group.layout_y_min|floatformat }}" />
-              </div>
-              <div>
-                <label>Y-max</label>
-                <input class="graph-y-max" type="text" name="y_max"
-                       value="{{ snippet_group.layout_y_max|floatformat }}" />
-              </div>
-              <div>
-                <label>X-label</label>
-                <input class="graph-x-label" type="text" name="x_label"
-                       value="{% firstof snippet_group.layout_x_label '' %}" />
-              </div>
-              <div>
-                <label>Y-label</label>
-                <input class="graph-y-label" type="text" name="y_label"
-                       value="{% firstof snippet_group.layout_y_label '' %}" />
-              </div>
-            </fieldset>
-            <fieldset>
-              <div>
-                <label>Drempelwaarde</label><br />
-                <input class="graph-boundary-value" type="text" name="boundary_value"
-                value="{{ snippet_group.boundary_value|floatformat }}" />
-              </div>
-              <div>
-                <label>Percentiel</label><br />
-                <input class="graph-percentile-value" type="text" name="percentile_value"
-                value="{{ snippet_group.percentile_value|floatformat }}" />
-              </div>
-              <div>
-                <label>Samenvattingsperiode</label><br />
+          <div class="popup-content">
+            <h1>Grafiek opties</h1>
+            <form class="popup-graph-edit-form popup-graph-edit-global graph-options popup-form"
+                  action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}"
+                  method="post">
+              <fieldset class="fixed-label-width">
                 <div>
-                  <input class="graph-aggregation-period"
-                         type="radio" name="aggregation_period"
-                         value="1"
-                         {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
-                  hele periode
-                  <input class="graph-aggregation-period"
-                         type="radio" name="aggregation_period"
-                         value="2"
-                         {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
-                  jaar
-                  <input class="graph-aggregation-period"
-                         type="radio" name="aggregation_period"
-                         value="3"
-                         {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
-                  kwartaal
-                  <input class="graph-aggregation-period"
-                         type="radio" name="aggregation_period"
-                         value="4"
-                         {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
-                  maand
+                  <label>Titel</label>
+                  <input class="graph-title" type="text" name="title"
+                         value="{% firstof snippet_group.layout_title '' %}" />
                 </div>
-              </div>
-              <div>
-                <label>Filter op maand</label><br />
-                <select class="graph-filter-month" type="text" name="restrict_to_month">
-                  <option value="no-restriction">Geen filter</option>
-                  <option value="1">Alleen januari</option>
-                  <option value="2">Alleen februari</option>
-                  <option value="3">Alleen maart</option>
-                  <option value="4">Alleen april</option>
-                  <option value="5">Alleen mei</option>
-                  <option value="6">Alleen juni</option>
-                  <option value="7">Alleen juli</option>
-                  <option value="8">Alleen augustus</option>
-                  <option value="9">Alleen september</option>
-                  <option value="10">Alleen oktober</option>
-                  <option value="11">Alleen november</option>
-                  <option value="12">Alleen december</option>
-                </select>
-              </div>
-            </fieldset>
-            <p>
-              <input class="graph-options-submit" type="submit" value="Update grafiek" />
-            </p>
-          </form>
+                <div>
+                  <label>Y-min</label>
+                  <input class="graph-y-min" type="text" name="y_min"
+                         value="{{ snippet_group.layout_y_min|floatformat }}" />
+                </div>
+                <div>
+                  <label>Y-max</label>
+                  <input class="graph-y-max" type="text" name="y_max"
+                         value="{{ snippet_group.layout_y_max|floatformat }}" />
+                </div>
+                <div>
+                  <label>X-label</label>
+                  <input class="graph-x-label" type="text" name="x_label"
+                         value="{% firstof snippet_group.layout_x_label '' %}" />
+                </div>
+                <div>
+                  <label>Y-label</label>
+                  <input class="graph-y-label" type="text" name="y_label"
+                         value="{% firstof snippet_group.layout_y_label '' %}" />
+                </div>
+              </fieldset>
+              <fieldset>
+                <div>
+                  <label>Drempelwaarde</label><br />
+                  <input class="graph-boundary-value" type="text" name="boundary_value"
+                         value="{{ snippet_group.boundary_value|floatformat }}" />
+                </div>
+                <div>
+                  <label>Percentiel</label><br />
+                  <input class="graph-percentile-value" type="text" name="percentile_value"
+                        value="{{ snippet_group.percentile_value|floatformat }}" />
+                </div>
+                <div>
+                  <label>Samenvattingsperiode</label><br />
+                  <div>
+                    <input class="graph-aggregation-period"
+                           type="radio" name="aggregation_period"
+                           value="1"
+                           {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
+                    hele periode
+                    <input class="graph-aggregation-period"
+                           type="radio" name="aggregation_period"
+                           value="2"
+                           {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
+                    jaar
+                    <input class="graph-aggregation-period"
+                           type="radio" name="aggregation_period"
+                           value="3"
+                           {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
+                    kwartaal
+                    <input class="graph-aggregation-period"
+                           type="radio" name="aggregation_period"
+                           value="4"
+                           {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
+                    maand
+                  </div>
+                </div>
+                <div>
+                  <label>Filter op maand</label><br />
+                  <select class="graph-filter-month" type="text" name="restrict_to_month">
+                    <option value="no-restriction">Geen filter</option>
+                    <option value="1">Alleen januari</option>
+                    <option value="2">Alleen februari</option>
+                    <option value="3">Alleen maart</option>
+                    <option value="4">Alleen april</option>
+                    <option value="5">Alleen mei</option>
+                    <option value="6">Alleen juni</option>
+                    <option value="7">Alleen juli</option>
+                    <option value="8">Alleen augustus</option>
+                    <option value="9">Alleen september</option>
+                    <option value="10">Alleen oktober</option>
+                    <option value="11">Alleen november</option>
+                    <option value="12">Alleen december</option>
+                  </select>
+                </div>
+              </fieldset>
+              <p>
+                <input class="graph-options-submit" type="submit" value="Update grafiek" />
+              </p>
+            </form>
+          </div>
         </div>
         {% endif %}
       </td>
@@ -168,40 +170,42 @@ the default template for the html_default method.
            rel="#graph_edit_overlay_snippet_{{ snippet.id }}">&nbsp;</a>
         <div id="graph_edit_overlay_snippet_{{ snippet.id }}"
              class="popup noprint popup-graph-edit-form popup-form">
-          <h2>{% firstof snippet.name snippet.shortname %}</h2>
-          <form class="graph-line-options"
-                action="{% url lizard_map.snippet_edit snippet_id=snippet.id %}"
-                method="post">
-            <p>
-              <label>Kleur</label>
-              <select class="graph-color" name="color">
-                <option value="">(kies kleur)</option>
-                {% for color in colors %}
-                <option value="{{ color.mapnik }}"{% ifequal snippet.identifier.layout.color color.mapnik %} selected{% endifequal %}>{{ color.display_name }}</option>
-                {% endfor %}
-              </select>
-            </p>
-            <p>
-              <input class="graph-line-min" type="checkbox" name="line_min"
-                     value="{{ snippet.identifier.layout.line_min }}" />
-              <label>Toon minimum</label>
-            </p>
-            <p>
-              <input class="graph-line-max" type="checkbox" name="line_max"
-                     value="{{ snippet.identifier.layout.line_max }}" />
-              <label>Toon maximum</label>
-            </p>
-            <p>
-              <input class="graph-line-avg" type="checkbox" name="line_avg"
-                     value="{{ snippet.identifier.layout.line_avg }}" />
-              <label>Toon gemiddelde</label>
-            </p>
-            <p>
-              <input class="graph-line-options-submit"
-                     type="submit"
-                     value="Update grafiek" />
-            </p>
-          </form>
+          <div class="popup-content">
+            <h2>{% firstof snippet.name snippet.shortname %}</h2>
+            <form class="graph-line-options"
+                  action="{% url lizard_map.snippet_edit snippet_id=snippet.id %}"
+                  method="post">
+              <p>
+                <label>Kleur</label>
+                <select class="graph-color" name="color">
+                  <option value="">(kies kleur)</option>
+                  {% for color in colors %}
+                  <option value="{{ color.mapnik }}"{% ifequal snippet.identifier.layout.color color.mapnik %} selected{% endifequal %}>{{ color.display_name }}</option>
+                  {% endfor %}
+                </select>
+              </p>
+              <p>
+                <input class="graph-line-min" type="checkbox" name="line_min"
+                       value="{{ snippet.identifier.layout.line_min }}" />
+                <label>Toon minimum</label>
+              </p>
+              <p>
+                <input class="graph-line-max" type="checkbox" name="line_max"
+                       value="{{ snippet.identifier.layout.line_max }}" />
+                <label>Toon maximum</label>
+              </p>
+              <p>
+                <input class="graph-line-avg" type="checkbox" name="line_avg"
+                       value="{{ snippet.identifier.layout.line_avg }}" />
+                <label>Toon gemiddelde</label>
+              </p>
+              <p>
+                <input class="graph-line-options-submit"
+                       type="submit"
+                       value="Update grafiek" />
+              </p>
+            </form>
+          </div>
         </div>
       </td>
       {% endif %}
