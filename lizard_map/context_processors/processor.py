@@ -62,8 +62,8 @@ def workspace_variables(request):
     current_date_range = current_start_end_dates(request, for_form=True)
     current_date_range.update({'period': current_period(request)})
 
-    date_range_form = DateRangeForm(current_date_range)
-    add_to_context['date_range_form'] = date_range_form
+    add_to_context['date_start_period'] = current_date_range["dt_start"]
+    add_to_context['date_end_period'] = current_date_range["dt_end"]
 
     # Add animation slider? Default: no.
     animation_slider = None  # default
