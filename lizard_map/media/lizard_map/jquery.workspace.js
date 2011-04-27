@@ -80,13 +80,13 @@ function show_popup(data) {
                 }
                 html += "</ul>";
                 for (i = 0; i < data.html.length; i += 1) {
-                    html += "<div class=\"panes\"><div>";
+                    html += "<div class=\"pane\"><div class=\"pane-content\">";
                     html += data.html[i];
                     html += "</div></div>";
                 }
 
                 $("#graph-popup-content").html(html);
-                $("#graph-popup-content").tabs(".panes > div");
+                $("#graph-popup-content").tabs(".pane > div");
             }
             overlay = $('#graph-popup').overlay();
             overlay.load();
