@@ -90,7 +90,8 @@ function show_popup(data) {
                 }
 
                 $("#graph-popup-content").html(html);
-                $("#graph-popup-content").tabs(".pane > div");
+                $(".tabs").tabs("div.pane > div.pane-content");
+                // #graph-popup-content
             }
             overlay = $('#graph-popup').overlay();
             overlay.load();

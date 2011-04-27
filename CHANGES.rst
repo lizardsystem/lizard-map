@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.73 (unreleased)
 -----------------
 
+- Fixed "Export" and "Voeg toe" in popup with tabs.
+
 - Changed x-axes label formatting. At periods > 10 year, not every
   year gets a label anymore.
 
