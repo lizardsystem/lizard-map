@@ -62,12 +62,13 @@ class AnimationSettings(object):
     allowed).
     """
 
-    def __init__(self, request):
+    def __init__(self, request, today=None):
         self.request = request
 
         if ANIMATION_SETTINGS not in self.request.session:
             self.request.session[ANIMATION_SETTINGS] = {}
-        start_date, end_date = current_start_end_dates(self.request)
+        start_date, end_date = current_start_end_dates(
+            self.request, today=today)
 
         self.day_one = datetime.datetime(1979, 5, 25)
         self.start_date_days = (start_date - self.day_one).days

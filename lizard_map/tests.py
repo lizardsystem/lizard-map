@@ -499,17 +499,19 @@ class TestAnimationSettings(TestCase):
         self._date_range_helper(today=self.today)  # Set the request datetimes
 
     def test_smoke(self):
-        animation_settings = AnimationSettings(request=self.request)
+        animation_settings = AnimationSettings(
+            request=self.request, today=self.today)
         self.assertTrue(animation_settings)  # It exists.
 
     def test_session_initialisation(self):
         self.assertFalse('animation_settings' in self.request.session)
-        AnimationSettings(self.request)
+        AnimationSettings(self.request, today=self.today)
         self.assertTrue('animation_settings' in self.request.session)
 
     def test_slider_position(self):
         """Are the getters/setters working?"""
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         animation_settings.slider_position = self.date_start_days + 100
         print current_start_end_dates(self.request)
         self.assertTrue(self.request.session.modified)
@@ -522,14 +524,16 @@ class TestAnimationSettings(TestCase):
     def test_initial_slider_position(self):
         """Slider position should be [max] if not initialised.
         In any case, it should not return a keyerror."""
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         self.assertEquals(animation_settings.slider_position,
                           self.date_end_days)
 
     def test_initial_info_gathering(self):
         """Do we return the correct date range and position?"""
         self._fill_date_range(self.today)
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         result = animation_settings.info()
         self.assertEquals(result['min'], self.date_start_days)
         self.assertEquals(result['max'], self.date_end_days)
@@ -540,7 +544,8 @@ class TestAnimationSettings(TestCase):
     def test_info_gathering(self):
         """Do we return the correct date range and position?"""
         self._fill_date_range(self.today)
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         animation_settings.slider_position = self.date_start_days + 375
         result = animation_settings.info()
         self.assertEquals(result['min'], self.date_start_days)
@@ -552,7 +557,8 @@ class TestAnimationSettings(TestCase):
     def test_impossible_negative_corner_case(self):
         """Negative dates."""
         self._fill_date_range(self.today)
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         animation_settings.slider_position = -400
         result = animation_settings.info()
         self.assertEquals(result['value'], self.date_start_days)
@@ -560,7 +566,8 @@ class TestAnimationSettings(TestCase):
     def test_impossible_beyond_max_corner_case(self):
         """Value beyond the max possible."""
         self._fill_date_range(self.today)
-        animation_settings = AnimationSettings(self.request)
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
         animation_settings.slider_position = 1000000
         result = animation_settings.info()
         # Max available.
@@ -808,60 +815,60 @@ class WorkspaceItemAdapterTest(TestCase):
 class DatePeriodsTest(TestCase):
 
     def test_calc_aggregation_periods_all(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1980, 4, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1980, 4, 15)
         periods = calc_aggregation_periods(start_date, end_date, ALL)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], end_date)
 
     def test_calc_aggregation_periods_year(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1980, 4, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1980, 4, 15)
         periods = calc_aggregation_periods(start_date, end_date, YEAR)
         self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.date(1980, 1, 1))
-        self.assertEqual(periods[1][0], datetime.date(1980, 1, 1))
+        self.assertEqual(periods[0][1], datetime.datetime(1980, 1, 1))
+        self.assertEqual(periods[1][0], datetime.datetime(1980, 1, 1))
         self.assertEqual(periods[1][1], end_date)
 
     def test_calc_aggregation_periods_quarter(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1980, 4, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1980, 4, 15)
         periods = calc_aggregation_periods(start_date, end_date, QUARTER)
         self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.date(1979, 7, 1))
-        self.assertEqual(periods[-1][0], datetime.date(1980, 4, 1))
+        self.assertEqual(periods[0][1], datetime.datetime(1979, 7, 1))
+        self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
         self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_month(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1980, 4, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1980, 4, 15)
         periods = calc_aggregation_periods(start_date, end_date, MONTH)
         self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.date(1979, 6, 1))
-        self.assertEqual(periods[-1][0], datetime.date(1980, 4, 1))
+        self.assertEqual(periods[0][1], datetime.datetime(1979, 6, 1))
+        self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
         self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_week(self):
-        start_date = datetime.date(1979, 5, 25)  # It's a friday.
-        end_date = datetime.date(1979, 7, 15)  # It's a sunday.
+        start_date = datetime.datetime(1979, 5, 25)  # It's a friday.
+        end_date = datetime.datetime(1979, 7, 15)  # It's a sunday.
         periods = calc_aggregation_periods(start_date, end_date, WEEK)
         self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.date(1979, 5, 28))
-        self.assertEqual(periods[-1][0], datetime.date(1979, 7, 9))
+        self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 28))
+        self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 9))
         self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_day(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1979, 7, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1979, 7, 15)
         periods = calc_aggregation_periods(start_date, end_date, DAY)
         self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.date(1979, 5, 26))
-        self.assertEqual(periods[-1][0], datetime.date(1979, 7, 14))
+        self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 26))
+        self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 14))
         self.assertEqual(periods[-1][1], end_date)
 
     def test_fancy_period(self):
-        start_date = datetime.date(1979, 5, 25)
-        end_date = datetime.date(1979, 7, 15)
+        start_date = datetime.datetime(1979, 5, 25)
+        end_date = datetime.datetime(1979, 7, 15)
         self.assertTrue(fancy_period(start_date, end_date, ALL))
         self.assertTrue(fancy_period(start_date, end_date, YEAR))
         self.assertTrue(fancy_period(start_date, end_date, QUARTER))
