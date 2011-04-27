@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.73 (unreleased)
+1.73 (2011-04-27)
 -----------------
 
 - Fixed "Export" and "Voeg toe" in popup with tabs.
