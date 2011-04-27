@@ -21,12 +21,6 @@
      data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
      >
   <h2>
-    {% if date_range_form %}
-    <a href="#"
-       class="ss_sprite ss_calendar_view_day sidebarbox-action-icon popup-trigger"
-       rel="#summary-datepicker"
-       title="{% trans 'adjust datetime' %}"></a>
-    {% endif %}
     {% if show_new_workspace %}
     <a href="?new_workspace"
        title="{% trans 'new workspace' %}"
@@ -45,7 +39,6 @@
     <span>{{ workspace.name }}</span>
   </h2>
   <div>
-    {% date_popup %}
     <div id="graph-popup">
       <div id="graph-popup-content">
       </div>

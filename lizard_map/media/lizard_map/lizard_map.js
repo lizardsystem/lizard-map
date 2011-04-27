@@ -277,7 +277,7 @@ function setUpWorkspaceEmpty() {
 
 /* Updates the date popup from a select or input tag */
 function updateDateSelectOrInput() {
-    var url, $form;
+  var url, $form, curr_period_title;
     $form = $(this).parents("form");
     url = $form.attr("action");
     $.post(
@@ -291,26 +291,11 @@ function updateDateSelectOrInput() {
                 new_contents = $(data).find(
                     "#summary-datepicker-contents").html();
                 $("#summary-datepicker-contents").html(new_contents);
-		$("#summary-datepicker-a").attr("title",
-						getCurrentPeriod($(data).find("form")));
+		curr_period_title = $(data).find("#summary-datepicker-a").attr("title");
+		$("#summary-datepicker-a").attr("title", curr_period_title);
             });
             reloadGraphs();
         });
-}
-
-/* Retrieves the period from popup date form */
-function getCurrentPeriod(form) {
-  var start_year, start_month, start_day;
-  var end_year, end_month, end_day;
-  var sep = "-";
-  start_year = form.children("p").children("#id_dt_start_year").val();
-  start_month = form.children("p").children("#id_dt_start_month").val();
-  start_day = form.children("p").children("#id_dt_start_day").val();
-  end_year = form.children("p").children("#id_dt_end_year").val();
-  end_month = form.children("p").children("#id_dt_end_month").val();
-  end_day = form.children("p").children("#id_dt_end_day").val();
-  return "van " + start_day + sep + start_month + sep + start_year +
-    " tot " + end_day + sep + end_month + sep + end_year;
 }
 
 

@@ -4,6 +4,13 @@ Changelog of lizard-map
 
 1.71 (unreleased)
 -----------------
+- Replaced action-icon 'calendar' and date_popup block to block above-content
+  in lizardgis.html and wms.html.
+
+- Added function updateDateSelectOrInput() in lizard_map.js to update title of
+  action-icon 'calendar'
+
+- Deleted action-icon 'calendar' and date_popup block from tag_workspace.html
 
 - Fixed bug with updating snippet-list when pressing trashcan.
 
