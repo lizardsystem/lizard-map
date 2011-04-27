@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.72 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added tag_date_trigger.
 
 
 1.71 (2011-04-27)
