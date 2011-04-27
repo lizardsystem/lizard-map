@@ -1,17 +1,4 @@
 """Handle the date range setting and remembering
-
-settings.py:
-
-START_YEAR = 2000
-END_YEAR = 2010
-
-# Define default period 1..5
-DEFAULT_PERIOD = 5
-
-# If DEFAULT_PERIOD = 6, define these
-DEFAULT_START_DAYS = -20
-DEFAULT_END_DAYS = 1
-
 """
 import datetime
 import logging

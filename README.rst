@@ -229,3 +229,20 @@ Example template::
 - Add and configure background maps by loading "background_maps" fixture.
 
 - Start dev server.
+
+
+Settings
+--------
+
+Some default date range settings can be set in settings.py. All
+settings are optional::
+
+    START_YEAR = 2000  # Defaults to today - 7 years
+    END_YEAR = 2010  # Defaults to today + 3 years.
+
+    # Define default period 1..5 (see daterange.py)
+    DEFAULT_PERIOD = 5  # Defaults to 1
+
+    # If DEFAULT_PERIOD = 6, define these
+    DEFAULT_START_DAYS = -20  # Defaults to -1000
+    DEFAULT_END_DAYS = 1  # Defaults to 10
