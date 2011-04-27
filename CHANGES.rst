@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.73 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed default period. It now takes the period depending on
+  DEFAULT_PERIOD.
 
 
 1.72 (2011-04-27)

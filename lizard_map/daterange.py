@@ -1,4 +1,18 @@
-"""Handle the date range setting and remembering"""
+"""Handle the date range setting and remembering
+
+settings.py:
+
+START_YEAR = 2000
+END_YEAR = 2010
+
+# Define default period 1..5
+DEFAULT_PERIOD = 5
+
+# If DEFAULT_PERIOD = 6, define these
+DEFAULT_START_DAYS = -20
+DEFAULT_END_DAYS = 1
+
+"""
 import datetime
 import logging
 
@@ -47,10 +61,12 @@ default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
 
 
 def default_start():
+    """Default period when period is PERIOD_OTHER"""
     return datetime.timedelta(days=default_start_days)
 
 
 def default_end():
+    """Default period when period is PERIOD_OTHER"""
     return datetime.timedelta(days=default_end_days)
 
 
@@ -96,13 +112,57 @@ class DateRangeForm(forms.Form):
         # # Add argument period, if not available.
         # if 'period' not in args[0]:
         #     args[0]['period'] = PERIOD_DAY
-
         super(DateRangeForm, self).__init__(*args, **kwargs)
 
         # Set initial dt_start/end on disabled when not selected.
         if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
             self.fields['dt_start'].widget.attrs['disabled'] = True
             self.fields['dt_end'].widget.attrs['disabled'] = True
+
+
+def deltatime_range(daterange, now=None):
+    """
+    Put daterange into session, revert to defaults.
+
+    daterange is {'dt_start': xx, 'dt_end': xx, 'period': int}
+    """
+    if now is None:
+        now = datetime.datetime.now()
+
+    period = int(daterange['period'])
+
+    # Calculate relative start/end dates from given period.
+    if period == PERIOD_OTHER:
+        almost_one_day = datetime.timedelta(
+            hours=23, minutes=59, seconds=59)
+        try:
+            dt_start = daterange.get('dt_start', None)
+            timedelta_start = dt_start - now
+        except TypeError:
+            timedelta_start = default_start()
+
+        try:
+            # Since we select on day basis, we want to include
+            # the end day.
+            dt_end = daterange.get('dt_end', None)
+            timedelta_end = (dt_end + almost_one_day - now)
+        except TypeError:
+            timedelta_end = default_end()
+
+        # Make sure start is before end
+        if timedelta_start > timedelta_end:
+            timedelta_start = timedelta_end - almost_one_day
+    else:
+        timedelta_start, timedelta_end = PERIOD_DAYS[period]
+
+    return period, timedelta_start, timedelta_end
+
+
+def store_timedelta_range(request, period, timedelta_start, timedelta_end):
+    """Store relative start/end dates in session."""
+    request.session[SESSION_DT_PERIOD] = period
+    request.session[SESSION_DT_START] = timedelta_start
+    request.session[SESSION_DT_END] = timedelta_end
 
 
 def set_date_range(request, template='lizard_map/daterange.html',
@@ -116,42 +176,13 @@ def set_date_range(request, template='lizard_map/daterange.html',
         form = DateRangeForm(request.POST)
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
-            data = form.cleaned_data
-            if now is None:
-                now = datetime.datetime.now()
-            period = int(data['period'])
+            date_range = form.cleaned_data
 
-            # Calculate relative start/end dates from given period.
-            if period == PERIOD_OTHER:
-                almost_one_day = datetime.timedelta(
-                    hours=23, minutes=59, seconds=59)
-                try:
-                    dt_start = data.get('dt_start', None)
-                    timedelta_start = dt_start - now
-                except TypeError:
-                    timedelta_start = default_start()
+            period, timedelta_start, timedelta_end = deltatime_range(
+                date_range, now=now)
+            store_timedelta_range(
+                request, period, timedelta_start, timedelta_end)
 
-                try:
-                    # Since we select on day basis, we want to include
-                    # the end day.
-                    dt_end = data.get('dt_end', None)
-                    timedelta_end = (
-                        dt_end +
-                        almost_one_day -
-                        now)
-                except TypeError:
-                    timedelta_end = default_end()
-
-                # Make sure start is before end
-                if timedelta_start > timedelta_end:
-                    timedelta_start = timedelta_end - almost_one_day
-            else:
-                timedelta_start, timedelta_end = PERIOD_DAYS[period]
-
-            # Store relative start/end dates.
-            request.session[SESSION_DT_START] = timedelta_start
-            request.session[SESSION_DT_END] = timedelta_end
-            request.session[SESSION_DT_PERIOD] = period
             return HttpResponseRedirect(came_from)
     else:
         # Invalid, should never happen. You're probably surfing to the
@@ -165,6 +196,18 @@ def set_date_range(request, template='lizard_map/daterange.html',
         context_instance=RequestContext(request))
 
 
+def current_period(request):
+    """
+    Return the current period, either default or from session.
+
+    TODO: mix together with current_start_end_dates (but is has a lot
+    of impact)
+    """
+    default_period = getattr(settings, 'DEFAULT_PERIOD', PERIOD_DAY)
+
+    return request.session.get(SESSION_DT_PERIOD, default_period)
+
+
 def current_start_end_dates(request, for_form=False, today=None):
     """Return the current start/end dates.
 
@@ -175,22 +218,19 @@ def current_start_end_dates(request, for_form=False, today=None):
     """
     if today is None:
         today = datetime.datetime.now()
+
+    period = current_period(request)
+    if period == PERIOD_OTHER:
+        period_start, period_end = default_start(), default_end()
+    else:
+        period_start, period_end = PERIOD_DAYS[period]
+
     dt_start = request.session.get(
-        SESSION_DT_START, default_start()) + today
+        SESSION_DT_START, period_start) + today
     dt_end = request.session.get(
-        SESSION_DT_END, default_end()) + today
+        SESSION_DT_END, period_end) + today
     if for_form:
         return dict(dt_start=dt_start,
                     dt_end=dt_end)
     else:
         return (dt_start, dt_end)
-
-
-def current_period(request):
-    """
-    Return the current period, either default or from session.
-
-    TODO: mix together with current_start_end_dates (but is has a lot
-    of impact)
-    """
-    return request.session.get(SESSION_DT_PERIOD, PERIOD_DAY)
