@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.73 (unreleased)
 -----------------
 
+- Changed x-axes label formatting. At periods > 10 year, not every
+  year gets a label anymore.
+
 - Fixed default period. It now takes the period depending on
   DEFAULT_PERIOD.
 

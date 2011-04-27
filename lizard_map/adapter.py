@@ -79,9 +79,9 @@ def workspace_item_image_url(workspace_item_id, identifiers,
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""
 
-    def __init__(self, tz=None, max_ticks=5):
+    def __init__(self, tz=None, numticks=7):
         AutoDateLocator.__init__(self, tz)
-        self.max_ticks = max_ticks
+        self.numticks = numticks
 
     def get_locator(self, dmin, dmax):
         'Pick the best locator based on a distance.'
@@ -96,8 +96,8 @@ class LessTicksAutoDateLocator(AutoDateLocator):
         numSeconds = (numMinutes * 60.0) + delta.seconds
 
         # numticks = 5
-        # Only difference to original AutoDateLocator: less ticks
-        numticks = self.max_ticks
+        # Difference to original AutoDateLocator: less ticks
+        numticks = self.numticks
 
         # self._freq = YEARLY
         interval = 1
@@ -163,11 +163,11 @@ class LessTicksAutoDateLocator(AutoDateLocator):
 class MultilineAutoDateFormatter(AutoDateFormatter):
     """Multiline version of AutoDateFormatter.
 
-    This class needs the axes to initialize. When called, the ticks need to
-    be known as well. For some scales, instead of showing a predetermined
-    date label at any tick, the labels are chosen dependent of the tick
-    position. Note that some labels are multiline, so make sure there is
-    space for them in your figure."""
+    This class needs the axes to be able to initialize. When called, the
+    ticks need to be known as well. For some scales, instead of showing a
+    predetermined date label at any tick, the labels are chosen dependent of
+    the tick position. Note that some labels are multiline, so make sure
+    there is space for them in your figure."""
 
     def __init__(self, locator, axes, tz=None):
         self._locator = locator
@@ -404,9 +404,8 @@ class Graph(object):
 #        max_number_of_ticks = approximate_characters // 20
 #        if max_number_of_ticks < 2:
 #            max_number_of_ticks = 2
-#        locator = LessTicksAutoDateLocator(max_ticks=max_number_of_ticks)
         if not self.restrict_to_month:
-            major_locator = AutoDateLocator()
+            major_locator = LessTicksAutoDateLocator()
             axes_to_change.xaxis.set_major_locator(major_locator)
 
             major_formatter = MultilineAutoDateFormatter(
