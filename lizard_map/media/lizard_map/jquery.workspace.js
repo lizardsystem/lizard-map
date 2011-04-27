@@ -56,6 +56,10 @@ jQuery.fn.liveCheckboxes = function () {
 /* Shows an "jquery tools overlay" popup, data must have the following properties:
 data.html
 
+Uses customized "default" effect to make tabs work correctly. See
+bottom of this file. It works, but it loads graphs 2 times in case of
+tabs. Needs fixing.
+
 Previously it also needed:
 data.id
 data.x
@@ -423,3 +427,14 @@ jQuery.fn.lizardMapLink = function () {
         }
     });
 };
+
+
+$(document).ready(function () {
+    // Change "default" effect: reload graphs to fix layout.
+    $.tools.tabs.addEffect("default", function(tabIndex, done) {
+        // hide all panes and show the one that is clicked
+	this.getPanes().hide().eq(tabIndex).show();
+        reloadGraphs();
+        done.call();
+    });
+});
