@@ -26,15 +26,7 @@
 
 {% block above-content %}
 <ul class="map-actions">
-  {% if date_range_form %}
-  <li>
-    <a id="summary-datepicker-a"
-       href="#"
-       class="ss_sprite ss_calendar_view_day action-icon popup-trigger"
-       rel="#summary-datepicker"
-       title= "van {{ date_start_period|date:"d-m-Y" }} tot {{ date_end_period|date:"d-m-Y" }} "></a>
-  </li>
-  {% endif %}
+  {% date_trigger %}
   {% date_popup %}
   {# Load and save map locations #}
   <li id="map-load-default-location"

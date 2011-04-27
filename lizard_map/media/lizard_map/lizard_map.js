@@ -277,7 +277,7 @@ function setUpWorkspaceEmpty() {
 
 /* Updates the date popup from a select or input tag */
 function updateDateSelectOrInput() {
-  var url, $form, curr_period_title;
+    var url, $form;
     $form = $(this).parents("form");
     url = $form.attr("action");
     $.post(
@@ -287,12 +287,13 @@ function updateDateSelectOrInput() {
             // Update the popup. Note: We cannot use load, because the
             // overlay properties will get lost
             $.get("./", {}, function (data) {
-                var new_contents;
+                var new_contents, curr_period_title;
                 new_contents = $(data).find(
                     "#summary-datepicker-contents").html();
                 $("#summary-datepicker-contents").html(new_contents);
-		curr_period_title = $(data).find("#summary-datepicker-a").attr("title");
-		$("#summary-datepicker-a").attr("title", curr_period_title);
+                curr_period_title = $(data).find(
+                    "#summary-datepicker-a").attr("title");
+                $("#summary-datepicker-a").attr("title", curr_period_title);
             });
             reloadGraphs();
         });
