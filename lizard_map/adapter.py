@@ -365,23 +365,25 @@ class Graph(object):
         """Adjust y-margin of axes.
 
         The standard margin is sometimes zero. This method sets the margin
-        based on already present data in the plot, so call it after plotting
-        and before http_png().
+        based on already present data in the visible part of the plot, so
+        call it after plotting and before http_png().
 
         Note that it is assumed here that the y-axis is not reversed.
 
         From matplotlib 1.0 on there is a set_ymargin method
         like this already."""
-        data_list = [numpy.array(l.get_data()) for l in self.axes.lines]
-        data = numpy.concatenate(data_list, axis=1)
-        index_in_daterange = ((data[0] < self.end_date) &
-                          (data[0] > self.start_date))
-        data_low = numpy.min(data[1,index_in_daterange])
-        data_high = numpy.max(data[1,index_in_daterange])
-        data_span = data_high - data_low
-        view_low = data_low - data_span * bottom
-        view_high = data_high + data_span * top
-        self.axes.set_ylim(view_low, view_high)
+        if len(self.axes.lines) > 0:
+            data_list = [numpy.array(l.get_data()) for l in self.axes.lines]
+            data = numpy.concatenate(data_list, axis=1)
+            index_in_daterange = ((data[0] < self.end_date) &
+                                  (data[0] > self.start_date))
+            if index_in_daterange.any():
+                data_low = numpy.min(data[1,index_in_daterange])
+                data_high = numpy.max(data[1,index_in_daterange])
+                data_span = data_high - data_low
+                view_low = data_low - data_span * bottom
+                view_high = data_high + data_span * top
+                self.axes.set_ylim(view_low, view_high)
         return None
 
     def suptitle(self, title):

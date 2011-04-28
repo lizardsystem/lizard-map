@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.74 (unreleased)
 -----------------
 
+
+- Changed set_ylim_method so that it doesn't crash on no data.
+
 - Changed set_ylim_method so that it autoscales to visible data only.
 
 
