@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.75 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Made javascript jslint-approved again.
 
 
 1.74 (2011-04-28)

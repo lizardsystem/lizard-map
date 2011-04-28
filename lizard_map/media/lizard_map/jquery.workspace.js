@@ -1,5 +1,9 @@
 // jslint configuration
 /*jslint browser: true */
+/*jslint white: false */
+// ^^^ Needed because jslint doesn't like
+// this.getPanes().hide().eq(tabIndex).show();...
+
 /*global $, jQuery, OpenLayers, window, map, fillSidebar,
 setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
 setUpTransparencySlider, setUpAnimationSlider, setUpTooltips,
@@ -432,10 +436,12 @@ jQuery.fn.lizardMapLink = function () {
 
 $(document).ready(function () {
     // Change "default" effect: reload graphs to fix layout.
-    $.tools.tabs.addEffect("default", function(tabIndex, done) {
-        // hide all panes and show the one that is clicked
-	this.getPanes().hide().eq(tabIndex).show();
-        reloadGraphs();
-        done.call();
-    });
+    $.tools.tabs.addEffect(
+        "default",
+        function (tabIndex, done) {
+            // hide all panes and show the one that is clicked.
+	    this.getPanes().hide().eq(tabIndex).show();
+            reloadGraphs();
+            done.call();
+        });
 });
