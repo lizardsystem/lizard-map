@@ -372,9 +372,16 @@ class Graph(object):
 
         From matplotlib 1.0 on there is a set_ymargin method
         like this already."""
-        if len(self.axes.lines) > 0:
-            data_list = [numpy.array(l.get_data()) for l in self.axes.lines]
-            data = numpy.concatenate(data_list, axis=1)
+
+        lines = self.axes.lines
+        arrays = [numpy.array(l.get_data()) for l in lines]
+
+        # axhline and axvline give trouble - remove short lines from list
+        print arrays
+
+        big_arrays = [a for a in arrays if a.size > 4]
+        if len(big_arrays) > 0:
+            data = numpy.concatenate(big_arrays, axis=1)
             index_in_daterange = ((data[0] < self.end_date) &
                                   (data[0] > self.start_date))
             if index_in_daterange.any():
@@ -507,7 +514,6 @@ class Graph(object):
         if not self.restrict_to_month:
             self.axes.set_xlim(date2num((self.start_date, self.end_date)))
             self.set_ylim_margin(top=0.1, bottom=0.0)
-            pass
 
         canvas = FigureCanvas(self.figure)
         response = HttpResponse(content_type='image/png')
