@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.74 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Changed set_ylim_method so that it autoscales to visible data only.
 
 
 1.73 (2011-04-27)
