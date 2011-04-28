@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.74 (unreleased)
+1.74 (2011-04-28)
 -----------------
 
 - Changed set_ylim_method so that it doesn't crash on axhlims.
