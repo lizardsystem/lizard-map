@@ -383,8 +383,8 @@ class Graph(object):
             index_in_daterange = ((data[0] < self.end_date) &
                                   (data[0] > self.start_date))
             if index_in_daterange.any():
-                data_low = numpy.min(data[1,index_in_daterange])
-                data_high = numpy.max(data[1,index_in_daterange])
+                data_low = numpy.min(data[1, index_in_daterange])
+                data_high = numpy.max(data[1, index_in_daterange])
                 data_span = data_high - data_low
                 view_low = data_low - data_span * bottom
                 view_high = data_high + data_span * top
