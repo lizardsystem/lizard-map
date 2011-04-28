@@ -377,8 +377,6 @@ class Graph(object):
         arrays = [numpy.array(l.get_data()) for l in lines]
 
         # axhline and axvline give trouble - remove short lines from list
-        print arrays
-
         big_arrays = [a for a in arrays if a.size > 4]
         if len(big_arrays) > 0:
             data = numpy.concatenate(big_arrays, axis=1)
