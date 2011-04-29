@@ -6,6 +6,7 @@ Changelog of lizard-map
 -----------------
 
 - Made javascript jslint-approved again.
+- Disabled auto zoom in lizard_map.js setUpWorkspaceAcceptable().
 
 
 1.74 (2011-04-28)

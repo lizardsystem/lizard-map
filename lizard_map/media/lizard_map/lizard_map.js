@@ -233,6 +233,8 @@ function setUpWorkspaceAcceptable() {
                 var url, center_x, center_y;
                 refreshMapActionsDivs();
                 // Load extent from workspace and zoom to it.
+	        // Disabled to avoid auto zoom
+	        /*
                 url = $(".workspace").attr(
                     "data-url-lizard-map-session-workspace-extent-temp");
                 $.getJSON(url, {}, function (extent) {
@@ -250,6 +252,7 @@ function setUpWorkspaceAcceptable() {
                                       map.getZoomForExtent(ol_extent) - 3);
                     }
                 });
+		*/
             });
         stretchOneSidebarBox();
         return false;
