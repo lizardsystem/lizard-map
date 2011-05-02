@@ -5,7 +5,12 @@ Changelog of lizard-map
 1.75 (unreleased)
 -----------------
 
+- Removed default controls from OpenLayers map.
+
+- Added slider zoom control to OpenLayers map.
+
 - Made javascript jslint-approved again.
+
 - Disabled auto zoom in lizard_map.js setUpWorkspaceAcceptable().
 
 
