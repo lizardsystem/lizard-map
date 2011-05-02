@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.75 (unreleased)
 -----------------
 
+- Added base_layer to map_location_save. It now remembers not only the
+  extent of the view, but also which base layer was selected.
+
 - Removed default controls from OpenLayers map.
 
 - Added slider zoom control to OpenLayers map.

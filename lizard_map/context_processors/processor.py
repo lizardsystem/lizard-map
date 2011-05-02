@@ -7,6 +7,7 @@ from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_LOCATION
+from lizard_map.views import MAP_BASE_LAYER
 from lizard_map.workspace import WorkspaceManager
 
 logger = logging.getLogger(__name__)
@@ -41,6 +42,10 @@ def map_variables(request):
         add_to_context['start_extent'] = map_location
         logger.debug('Fetched map coordinates from session: '
                      '%s' % (map_location))
+    if MAP_BASE_LAYER in session:
+        add_to_context['base_layer_name'] = session[MAP_BASE_LAYER]
+    else:
+        add_to_context['base_layer_name'] = ""
 
     return add_to_context
 

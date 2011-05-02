@@ -29,7 +29,8 @@ function updateLayers() {
 workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
     var $lizard_map_wms, base_layer,
-        base_layer_type, wms_url, wms_layers, osm_url, i;
+        base_layer_type, wms_url, wms_layers, osm_url, i,
+        selected_base_layer_name;
 
     // Remove all old layers.
     layers = [];
@@ -39,6 +40,7 @@ function refreshLayers() {
 
     // Set up all layers.
     $lizard_map_wms = $("#lizard-map-wms");
+    selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
 
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,
@@ -86,7 +88,11 @@ function refreshLayers() {
         // layers.base_layer
         map.addLayer(base_layer);
         // Set base layer if is_default.
-        if (is_default === "True") {
+        if ((selected_base_layer_name === "") &&
+            (is_default === "True")) {
+
+            map.setBaseLayer(base_layer);
+        } else if (selected_base_layer_name === layer_name) {
             map.setBaseLayer(base_layer);
         }
     });

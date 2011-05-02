@@ -31,6 +31,7 @@ from lizard_map.workspace import WorkspaceManager
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
+MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
 
 logger = logging.getLogger(__name__)
@@ -937,17 +938,24 @@ contains a dictionary with fields x, y and zoom.
 
 def map_location_save(request):
     """
-    Save extent as strings (POST top, left, right, bottom) to session.
+    Save map layout in session.
+
+    - extent as strings (POST top, left, right, bottom).
+    - selected base layer name.
+
+
     """
     top = request.POST['top']
     left = request.POST['left']
     right = request.POST['right']
     bottom = request.POST['bottom']
+    base_layer_name = request.POST['base_layer_name']
     request.session[MAP_LOCATION] = {
         'top': top,
         'left': left,
         'right': right,
         'bottom': bottom}
+    request.session[MAP_BASE_LAYER] = base_layer_name
     return HttpResponse("")
 
 
@@ -958,5 +966,7 @@ def map_location_load_default(request):
     map_settings = MapSettings()
     extent = map_settings.map_settings['start_extent']
     map_location = {'extent': extent}
+
+    request.session[MAP_BASE_LAYER] = ''  # Reset selected base layer.
 
     return HttpResponse(json.dumps(map_location))

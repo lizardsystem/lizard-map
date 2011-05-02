@@ -89,6 +89,8 @@
      {# URLS for saving, loading map locations #}
      data-save-location-url="{% url lizard_map.map_location_save %}"
      data-load-location-url="{% url lizard_map.map_location_load_default %}"
+     {# Selected base layer #}
+     data-selected-base-layer="{{ base_layer_name }}"
      >
   {# Make a layer for every background map #}
   {% for background_map in background_maps %}
