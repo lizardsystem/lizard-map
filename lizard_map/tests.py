@@ -152,7 +152,8 @@ class ViewsTest(TestCase):
         client = Client()
         url = reverse('lizard_map.map_location_save')
         response = client.post(url, {'left': 100, 'top': 100,
-                                     'right': 150, 'bottom': 150})
+                                     'right': 150, 'bottom': 150,
+                                     'base_layer_name': 'Google standard'})
         self.assertEqual(response.status_code, 200)
 
     def test_map_location_load_default(self):
