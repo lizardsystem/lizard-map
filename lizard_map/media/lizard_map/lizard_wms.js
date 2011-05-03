@@ -285,8 +285,7 @@ function showMap() {
 
     zoom_panel = new OpenLayers.Control.Panel();
 	 	zoom_panel.addControls([
-		new zoomSlider({zoomStopHeight:3}),
-				  ]);
+		new zoomSlider({zoomStopHeight:3})]);
     map.addControl(zoom_panel);
     map.addControl(new OpenLayers.Control.Navigation());
 
