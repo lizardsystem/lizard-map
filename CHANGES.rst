@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.75 (unreleased)
+1.75 (2011-05-03)
 -----------------
 
 - Fixed jslint error.
