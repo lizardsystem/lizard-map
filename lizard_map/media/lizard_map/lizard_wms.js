@@ -129,9 +129,35 @@ function refreshLayers() {
 }
 
 
+function ZoomSlider(options) {
+    this.control = new OpenLayers.Control.PanZoomBar(options);
+
+    OpenLayers.Util.extend(this.control, {
+        draw: function (px) {
+            // initialize our internal div
+            OpenLayers.Control.prototype.draw.apply(this, arguments);
+            px = this.position.clone();
+
+            // place the controls
+            this.buttons = [];
+
+            var sz, centered;
+            sz = new OpenLayers.Size(18, 18);
+            centered = new OpenLayers.Pixel(px.x + sz.w / 2, px.y);
+
+            this._addButton("zoomin", "zoom-plus-mini.png", centered.add(0, 5), sz);
+            centered = this._addZoomBar(centered.add(0, sz.h + 5));
+            this._addButton("zoomout", "zoom-minus-mini.png", centered, sz);
+            return this.div;
+        }
+    });
+    return this.control;
+}
+
+
 function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
-        map_click_control,zoom_panel, map_hover_control,
+        map_click_control, zoom_panel, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
         $lizard_map_wms, projection, display_projection, start_extent,
         start_extent_left, start_extent_top, start_extent_right,
@@ -178,7 +204,7 @@ function showMap() {
             units: "m",
             numZoomLevels: 18,
             maxExtent: max_extent,
-	    controls: []
+            controls: []
         };
     }
     else if (projection === "EPSG:28992")
@@ -189,7 +215,7 @@ function showMap() {
             units: "m",
             resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
             maxExtent: max_extent,
-	    controls: []
+            controls: []
         };
     }
     else
@@ -284,8 +310,7 @@ function showMap() {
     }
 
     zoom_panel = new OpenLayers.Control.Panel();
-	 	zoom_panel.addControls([
-		new zoomSlider({zoomStopHeight:3})]);
+    zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
     map.addControl(zoom_panel);
     map.addControl(new OpenLayers.Control.Navigation());
 
@@ -294,31 +319,6 @@ function showMap() {
     map.setCenter(start_extent.getCenterLonLat(),
                   map.getZoomForExtent(start_extent));
 
-}
-
-
-function zoomSlider(options) {
-    this.control = new OpenLayers.Control.PanZoomBar(options);
-
-    OpenLayers.Util.extend(this.control,{
-        draw: function(px) {
-            // initialize our internal div
-            OpenLayers.Control.prototype.draw.apply(this, arguments);
-            px = this.position.clone();
-
-            // place the controls
-            this.buttons = [];
-
-            var sz = new OpenLayers.Size(18,18);
-            var centered = new OpenLayers.Pixel(px.x+sz.w/2, px.y);
-
-            this._addButton("zoomin", "zoom-plus-mini.png", centered.add(0, 5), sz);
-            centered = this._addZoomBar(centered.add(0, sz.h + 5));
-            this._addButton("zoomout", "zoom-minus-mini.png", centered, sz);
-            return this.div;
-        }
-    });
-    return this.control;
 }
 
 
