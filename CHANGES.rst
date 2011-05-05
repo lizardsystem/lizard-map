@@ -20,6 +20,8 @@ Changelog of lizard-map
 
 - TODO: test on iPad (wifi connectivity was bad).
 
+- Fixed untransformed radius (#2663).
+
 
 1.75 (2011-05-03)
 -----------------
