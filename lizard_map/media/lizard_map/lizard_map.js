@@ -260,9 +260,17 @@ function setUpWorkspaceAcceptable() {
 }
 
 
-function setUpWorkspaceEmpty() {
-    var $workspace, workspace_id, url;
+/* Make the following workspace buttons work:
+- Trashcan next to "My Workspace" (workspace-empty-trigger)
+- Trashcan next to "Collage" (collage-empty-trigger)
+- (-) next to workspace-items (workspace-item-delete)
+- (-) next to snippet-items (snippet-delete)
+- Clickable snippets
+*/
+function setUpWorkspaceButtons() {
+    // Trashcan next to "My Workspace"
     $(".workspace-empty-trigger").live('click', function () {
+        var $workspace, workspace_id, url;
         $workspace = $(this).parents("div.workspace");
         workspace_id = $workspace.attr("data-workspace-id");
         url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
@@ -274,6 +282,67 @@ function setUpWorkspaceEmpty() {
                 $workspace.find(".sidebarbox-action-progress").remove();
                 $workspace.updateWorkspace();
             });
+    });
+    // Delete workspace item
+    $(".workspace-item-delete").live('click', function () {
+        var $workspace, workspace_id, url, object_id;
+        $workspace = $(this).parents("div.workspace");
+        workspace_id = $workspace.attr("data-workspace-id");
+        url = $workspace.attr(
+            "data-url-lizard-map-workspace-item-delete");
+        object_id = $(this).parents(".workspace-item").attr("data-object-id");
+        $.post(
+            url,
+            { object_id: object_id },
+            function () {
+                $workspace.updateWorkspace();
+            });
+        return false;
+    });
+    // Trashcan next to "Collage"
+    $(".collage-empty-trigger").live('click', function () {
+        var $workspace, collage_id, url;
+        $workspace = $(this).parents("div.workspace");
+        collage_id = $(this).attr("data-collage-id");
+        url = $workspace.attr("data-url-lizard-map-collage-empty");
+        addProgressAnimationIntoWorkspace();
+        $.post(
+            url, {collage_id: collage_id},
+	    function (data) {
+	        //remove progress
+                $workspace.find(".sidebarbox-action-progress").remove();
+                $workspace.updateWorkspace();
+            });
+    });
+    // Delete snippet
+    $(".snippet-delete").live('click', function () {
+        var $workspace, workspace_id, url, object_id;
+        $workspace = $(this).parents("div.workspace");
+        workspace_id = $workspace.attr("data-workspace-id");
+        url = $workspace.attr(
+            "data-url-lizard-map-snippet-delete");
+        object_id = $(this).parents(".snippet").attr("data-object-id");
+        $.post(
+            url,
+            { object_id: object_id },
+            function () {
+                $workspace.updateWorkspace();
+            });
+        return false;
+    });
+    // Make snippets clickable.
+    $("li.snippet").live('click', function (event) {
+        var $workspace, url, snippet_id;
+        $workspace = $(this).parents("div.workspace");
+        url = $workspace.attr("data-url-lizard-map-snippet-popup");
+        snippet_id = $(this).attr("data-object-id");
+        $.getJSON(
+            url,
+            { snippet_id: snippet_id },
+            function (data) {
+                show_popup(data);
+            }
+        );
     });
 }
 
@@ -549,7 +618,7 @@ function mapSaveLocation() {
 $(document).ready(function () {
     setUpAddWorkspaceItem();
     setUpWorkspaceAcceptable();
-    setUpWorkspaceEmpty();
+    setUpWorkspaceButtons();
     setUpDatePopup();
     setUpDateUpdate();
     setUpNotFoundPopup();

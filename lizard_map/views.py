@@ -583,7 +583,10 @@ def snippet_popup(request, snippet_id=None):
 def collage_popup(request,
                   collage_id=None,
                   template='lizard_map/collage.html'):
-    """Render page with one collage in popup format"""
+    """Render page with one collage in popup format
+
+    collage_id in GET parameter.
+    """
     if collage_id is None:
         collage_id = request.GET.get('collage_id')
     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
@@ -594,6 +597,21 @@ def collage_popup(request,
         collage,
         popup_id=popup_id,
         request=request)
+
+
+@never_cache
+def collage_empty(request):
+    """Clear collage for given collage_id.
+
+    collage_id is in POST parameter
+
+    TODO: check if workspace is actually yours
+    """
+    collage_id = request.POST.get('collage_id')
+    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+    collage.delete()
+
+    return HttpResponse("")
 
 
 @never_cache

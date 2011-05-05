@@ -186,6 +186,7 @@ jQuery.fn.workspaceInteraction = function () {
         });
         // Make the workspace droppable, only accept items with the class
         // '.workspace-acceptable'.
+        // This is not needed anymore, because you can click the (+).
         workspaceItems.droppable({
             accept: '.workspace-acceptable',
             hoverClass: 'drophover',
@@ -229,23 +230,7 @@ jQuery.fn.workspaceInteraction = function () {
             helper: 'clone',
             items: 'li.snippet'
         });
-        // Make snippets clickable... for eternity.
-        snippet_list.find("li.snippet").live('click', function (event) {
-            var url, snippet_id;
-            url = $workspace.attr("data-url-lizard-map-snippet-popup");
-            snippet_id = $(this).attr("data-object-id");
-            $.getJSON(
-                url,
-                { snippet_id: snippet_id },
-                function (data) {
-                    show_popup(data);
-                }
-            );
-            //snippet(snippet_id, map); // attention: from krw_waternet.js
-        });
 
-        // Make the trash working.
-        $workspace.workspaceTrashBox();
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.
@@ -331,6 +316,7 @@ jQuery.fn.snippetInteraction = function () {
 };
 
 
+// Obsolete
 function workspaceItemOrSnippet(object) {
     if ($(object).is(".workspace-item")) {
         return true;
@@ -347,62 +333,6 @@ function addProgressAnimationIntoWorkspace() {
     $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
 }
 
-
-/* Make a workspace trashbox
-
-accepts workspace_item classes
-
-globally defined requirements:
-.data-url-lizard-map-workspace-item-delete
-
-css class drophover
-
-requirements:
-workspace_trash class inside workspace
-
-*/
-
-jQuery.fn.workspaceTrashBox = function () {
-    return this.each(function () {
-        var $workspace, workspace_trash, url_workspace_item, url_snippet;
-        $workspace = $(this);
-        workspace_trash = $workspace.find(".workspace-trash");
-        // delete workspace items
-        url_workspace_item = $workspace.attr("data-url-lizard-map-workspace-item-delete");
-        url_snippet = $workspace.attr("data-url-lizard-map-snippet-delete");
-        workspace_trash.droppable({
-            accept: workspaceItemOrSnippet,
-            hoverClass: 'drophover',
-            activeClass: 'dropactive',
-            drop: function (event, ui) {
-                var object_id, url;
-                addProgressAnimationIntoWorkspace();
-                object_id = ui.draggable.attr("data-object-id");
-                ui.draggable.remove();  // for visual snappyness
-                if (ui.draggable.is(".workspace-item")) {
-                    url = url_workspace_item;
-                } else {
-                    //snippet
-                    url = url_snippet;
-                }
-                $.ajax({
-                    url: url,
-                    data: { object_id: object_id },
-                    success: function () {
-                        // TODO: reload workspace items: looping error
-                        //$(this).find(".workspace_items").load("./ .workspace_item");
-                        //$("ul.workspace_items").load("./ .workspace_item");
-                        //$("ul.workspace_items").sortable("destroy");
-                        //$("ul.workspace_items").draggable("destroy");
-                        location.reload();
-                    },
-                    type: "POST",
-                    async: false
-                });
-            }
-        });
-    });
-};
 
 /* Load a lizard-map page by only replacing necessary parts
 

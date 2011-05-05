@@ -12,6 +12,7 @@
      data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
      data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
      data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_delete %}"
+     data-url-lizard-map-collage-empty="{% url lizard_map_collage_empty %}"
      data-url-lizard-map-session-workspace-add-item-temp="{% url lizard_map_session_workspace_add_item_temp %}"
      data-url-lizard-map-session-workspace-extent-temp="{% url lizard_map_session_workspace_extent_temp %}"
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
@@ -36,7 +37,9 @@
        title="{% trans 'empty' %} {{ workspace.name }}"
        class="title ss_sprite ss_bin_empty sidebarbox-action-icon workspace-empty-trigger">
     </a>
-    <span>{{ workspace.name }}</span>
+    <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
+    {{ workspace.name }}
+    </span>
   </h2>
   <div>
     <div id="graph-popup">
@@ -57,15 +60,21 @@
       <li id="workspace-items-{{ workspace_item.id }}" {# necessary for reordering #}
           class="workspace-item"
           data-object-id="{{ workspace_item.id }}"
-          data-workspace-id="{{ workspace.id }}">
+          data-workspace-id="{{ workspace.id }}"
+          title="{{ workspace_item.name }}">
         {# Legend. #}
         {% legend workspace_item.name workspace_item.adapter session %}
         {# Pan to layer. #}
         {% if workspace_item.has_extent %}
           <span class="ss_sprite ss_magnifier sidebarbox-action-icon
                        workspace-item-pan-to"
-                title="{% trans 'Pan to this layer' %}"></span>
+                title="Zoom"></span>
         {% endif %}
+        {# Delete workspace item #}
+        <span class="ss_sprite ss_delete sidebarbox-action-icon
+                     workspace-item-delete"
+              title="Verwijder">
+        </span>
         {# Symbol, appears left. #}
         <img class="workspace-item-image"
              src="{{ workspace_item.adapter.symbol_url }}"
@@ -77,6 +86,7 @@
                {% if workspace_item.visible %}
                checked="checked"
                {% endif %}
+               title="Zichtbaar"
                data-workspace-id="{{ workspace.id }}" />
         <div class="workspace-item-name">{% firstof workspace_item.name '(noname)' %}</div>
       </li>
@@ -95,11 +105,20 @@
     <a href="{% url lizard_map.collage collage_id=collage.id %}"
        title="{% trans 'link to' %} {{ collage.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
-    <span>{{ collage.name }}</span>
+    <a id="collage-trash"
+       href="#"
+       title="{% trans 'empty' %} {{ collage.name }}"
+       data-collage-id="{{ collage.id }}"
+       class="title ss_sprite ss_bin_empty sidebarbox-action-icon
+              collage-empty-trigger">
+    </a>
+    <span title="Dit is je collage. Ga met de muis over de elementen heen om opties te zien.">
+    {{ collage.name }}
+    </span>
   </h2>
   <div>
     <ul class="snippet-list without-bullets"
-        data-collage-id="{{ collage.id }}"
+        data-collage-id="{{ collage.id }}" {# Is this actually used? #}
         title="{% trans 'popup' %} {{ collage.name }}">
       {% for snippet_group in collage.snippet_groups.all %}
         {% for snippet in snippet_group.snippets.all %}
@@ -107,8 +126,14 @@
             data-object-id="{{ snippet.id }}">
           <img src="{{ snippet.workspace_item.adapter.symbol_url }}"
                width="16"
-               height="16" />
-          <span>{% firstof snippet.shortname snippet.name '(noname)' %}</span>
+               height="16"
+               class="snippet-image" />
+          <span class="ss_sprite ss_delete sidebarbox-action-icon
+                       snippet-delete"
+                title="Verwijder">
+          </span>
+          <div class="snippet-name">
+          {% firstof snippet.shortname snippet.name '(noname)' %}</div>
         </li>
         {% endfor %}
       {% empty %}
@@ -117,9 +142,4 @@
     </ul>
   </div>
   {% endfor %}
-
-  {# Look up icon classes in http://www.ajaxbestiary.com/Labs/SilkSprite/ #}
-  <div class="sidebarbox-actions">
-    <div class="workspace-trash"><span class="ss_sprite ss_bin_empty">Prullenbak</span></div>
-  </div>
 </div>

@@ -7,6 +7,17 @@ Changelog of lizard-map
 
 - Fixed layout of date_popup form for IE7.
 
+- Added css to only show workspace items when you hover it.
+
+- Added 'remove workspace-item' and 'remove snippet' buttons.
+
+- Removed trashcan on bottom of screen. Before the buttons we dragged
+  items into this trashcan.
+
+- Added titles to various workspace items.
+
+- TODO: test on iPad (wifi connectivity was bad).
+
 
 1.75 (2011-05-03)
 -----------------

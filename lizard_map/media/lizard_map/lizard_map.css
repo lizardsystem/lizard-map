@@ -159,8 +159,56 @@
   }
 
 .workspace-item-name
-{ margin: auto;
+{ margin: 0 0 0 4.2em;
   display: block;
-  width: 15em;
+  width: 14em;
   line-height: 2em;
   }
+
+.snippet
+{ overflow: visible;
+  width: 100%;
+  min-height: 2em;
+}
+
+.snippet-name
+{ margin: 0 0 0 2em;
+  display: block;
+  width: 17em;
+  line-height: 2em;
+}
+
+.snippet-image
+{ float: left;
+  display: block;
+  font-weight: normal;
+  margin: 4px 0 auto 0;
+  }
+
+
+/* Workspace items and snippets have icons that only show up when you
+hover over the item */
+
+.workspace-item:hover .sidebarbox-action-icon
+{ display: block;
+}
+
+.workspace-item .sidebarbox-action-icon
+{ display: None;
+}
+
+.snippet:hover .sidebarbox-action-icon
+{ display: block;
+}
+
+.snippet .sidebarbox-action-icon
+{ display: None;
+}
+
+.workspace h2 .sidebarbox-action-icon
+{ display: None;
+}
+
+.workspace:hover h2 .sidebarbox-action-icon
+{ display: block;
+}
