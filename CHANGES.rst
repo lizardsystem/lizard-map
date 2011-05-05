@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.76 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed layout of date_popup form for IE7.
 
 
 1.75 (2011-05-03)

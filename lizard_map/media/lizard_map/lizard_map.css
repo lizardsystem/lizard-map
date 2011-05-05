@@ -17,20 +17,10 @@
   -webkit-box-shadow: 0 0 10px #aaa;
 }
 
-/* Datepicker popup styling */
-.popup-size-standard,
-.date-popup
-{ width: 30em;
-  min-height: 10em;
-}
-
-.date-popup select
-{ display: block;
-  float: left;
-}
-
+/* Datepicker popup styling*/
 .date-popup p
-{ height: 2em;
+{ margin: 0px;
+  vertical-align: top;
 }
 
 .date-popup label[for="id_dt_start_month"],
