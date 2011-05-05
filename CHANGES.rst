@@ -16,6 +16,8 @@ Changelog of lizard-map
 
 - Added titles to various workspace items.
 
+- Added empty-collage.
+
 - TODO: test on iPad (wifi connectivity was bad).
 
 
