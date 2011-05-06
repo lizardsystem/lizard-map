@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.76 (unreleased)
+1.76 (2011-05-06)
 -----------------
 
 - Fixed pylint errors.
