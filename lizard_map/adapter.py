@@ -380,8 +380,17 @@ class Graph(object):
         big_arrays = [a for a in arrays if a.size > 4]
         if len(big_arrays) > 0:
             data = numpy.concatenate(big_arrays, axis=1)
-            index_in_daterange = ((data[0] < self.end_date) &
-                                  (data[0] > self.start_date))
+            if len(data[0]) > 0:
+                # Datatimes from database may have timezone information.
+                # In that case, start_date and end_date cannot be naive.
+                # Assume all datetimes do have the same timezone, so we
+                # can do the comparison.
+                start_date_tz =\
+                    self.start_date.replace(tzinfo=data[0][0].tzinfo)
+                end_date_tz =\
+                    self.end_date.replace(tzinfo=data[0][0].tzinfo)
+            index_in_daterange = ((data[0] < end_date_tz) &
+                                  (data[0] > start_date_tz))
             if index_in_daterange.any():
                 data_low = numpy.min(data[1, index_in_daterange])
                 data_high = numpy.max(data[1, index_in_daterange])
