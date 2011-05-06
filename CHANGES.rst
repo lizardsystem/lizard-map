@@ -20,7 +20,7 @@ Changelog of lizard-map
 
 - Added empty-collage.
 
-- TODO: test on iPad (wifi connectivity was bad).
+- NOTE: controls for add and remove workspace items not working on iPad .
 
 
 1.75 (2011-05-03)
