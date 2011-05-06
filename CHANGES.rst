@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.77 (unreleased)
+1.77 (2011-05-06)
 -----------------
 
 - Fixed timezone bug when comparing dates.
