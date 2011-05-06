@@ -75,10 +75,11 @@
 
 #animation-slider,
 #transparency-slider
-{ display: block;
+{ display: inline;
   float: left;
   line-height: 1.5em;
   margin-top: 0.4em;
+  width: 150px;
   margin-left: 1em;
 }
 
@@ -128,6 +129,7 @@
 
 .map-action
 { margin-left: 0.5em;
+  float: left;
   }
 
 .workspace-item-image
