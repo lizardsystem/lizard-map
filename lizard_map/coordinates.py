@@ -116,6 +116,7 @@ class MapSettings(object):
     """
 
     def __init__(self, map_settings=None):
+
         def setting(key):
             return Setting.get_dict(key, DEFAULT_MAP_SETTINGS[key])
 

@@ -17,7 +17,6 @@ from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.daterange import DateRangeForm
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage

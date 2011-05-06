@@ -483,8 +483,7 @@ class WorkspaceItemAdapter(object):
 
         return render_to_string(
             template,
-            render_kwargs
-            )
+            render_kwargs)
 
     def legend(self, updates=None):
         """

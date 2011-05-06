@@ -61,6 +61,7 @@ class HorizontalRadioRenderer(forms.RadioSelect.renderer):
     """ this overrides widget method to put radio buttons horizontally
         instead of vertically.
     """
+
     def render(self):
         """Outputs radios"""
         return (u'\n'.join([u'%s\n' % widget for widget in self]))

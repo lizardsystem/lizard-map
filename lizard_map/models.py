@@ -81,6 +81,7 @@ class Color(str):
 
     The object is in fact a string with class variables.
     """
+
     def __init__(self, s):
         self.r = None
         self.g = None

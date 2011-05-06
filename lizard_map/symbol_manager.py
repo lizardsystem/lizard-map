@@ -11,6 +11,7 @@ log = logging.getLogger('nens.symbol_manager')
 
 
 class SymbolManager:
+
     def __init__(self, symbol_path_original, symbol_path_generated):
         log.debug('Initializing SymbolManager')
         self.symbol_path_original = symbol_path_original

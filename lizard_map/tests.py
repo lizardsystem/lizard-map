@@ -18,8 +18,6 @@ from lizard_map.daterange import SESSION_DT_START
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
-from lizard_map.daterange import default_start
-from lizard_map.daterange import default_end
 from lizard_map.daterange import deltatime_range
 from lizard_map.daterange import set_date_range
 from lizard_map.dateperiods import ALL
@@ -166,8 +164,7 @@ class ViewsTest(TestCase):
         self.assertEqual(
             result['extent'],
             {'top': '6964942', 'right': '1254790',
-             'left': '-14675', 'bottom': '6668977'}
-            )
+             'left': '-14675', 'bottom': '6668977'})
 
 
 class WorkspaceTest(TestCase):
@@ -381,6 +378,7 @@ class TestDateRange(TestCase):
     """Test daterange.py"""
 
     def setUp(self):
+
         class Mock(dict):
             pass
 
@@ -536,6 +534,7 @@ class TestAnimationSettings(TestCase):
         self.assertEquals(end.year, 2003)
 
     def setUp(self):
+
         class Mock(dict):
             pass
 
@@ -624,6 +623,7 @@ class UtilityTest(TestCase):
     """
     Tests utility.py, adapter.py, mapnik_helper.py
     """
+
     class MockSettings(object):
         pass
 

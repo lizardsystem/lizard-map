@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.76 (unreleased)
 -----------------
 
+- Fixed pylint errors.
+
 - Fixed layout of date_popup form for IE7.
 
 - Added css to only show workspace items when you hover it.
