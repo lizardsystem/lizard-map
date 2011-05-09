@@ -520,7 +520,10 @@ class Graph(object):
         # Somehow, the range cannot be set in __init__
         if not self.restrict_to_month:
             self.axes.set_xlim(date2num((self.start_date, self.end_date)))
-            self.set_ylim_margin(top=0.1, bottom=0.0)
+            try:
+                self.set_ylim_margin(top=0.1, bottom=0.0)
+            except:
+                pass
 
         canvas = FigureCanvas(self.figure)
         response = HttpResponse(content_type='image/png')
