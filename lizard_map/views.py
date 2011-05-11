@@ -389,15 +389,18 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         big_popup = False
 
     # Figure out temp workspace items (we don't want add-to-collage there).
-    temp_workspace_item_ids = []
+    non_user_workspace_item_ids = []
     if request is not None:
         workspace_manager = WorkspaceManager(request)
         workspace_manager.load_workspaces()
-        temp_workspaces = workspace_manager.workspaces['temp']
-        temp_workspace_items = WorkspaceItem.objects.filter(
-            workspace__in=temp_workspaces, visible=True)
-        temp_workspace_item_ids = [
-            workspace_item.id for workspace_item in temp_workspace_items]
+        workspace_ids = dict([(ws.id, None) for ws in
+                              workspace_manager.workspaces['user']])
+        # Add workspace_items of items not in workspace.
+        non_user_workspace_item_ids = []
+        for f in found:
+            ws_item = f['workspace_item']
+            if ws_item.workspace.id not in workspace_ids:
+                non_user_workspace_item_ids.append(ws_item.id)
 
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
@@ -405,7 +408,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         workspace_item = display_group[0]['workspace_item']
 
         # Check if this display object must have the option add_snippet
-        if hide_add_snippet or (workspace_item_id in temp_workspace_item_ids):
+        if (hide_add_snippet or
+            (workspace_item_id in non_user_workspace_item_ids)):
+
             add_snippet = False
         else:
             add_snippet = True
@@ -776,7 +781,12 @@ def wms(request, workspace_id):
 
 def search_name(request):
     """Search for objects near GET x,y,radius then return
-    name. Optional GET parameter srs, if omitted, assume google.
+    name.
+
+    Optional GET parameter srs, if omitted, assume google.
+
+    Optional GET parameter user_workspace_id: a workspace that is
+    currently shown.
     """
     workspace_manager = WorkspaceManager(request)
     workspace_collections = workspace_manager.load_or_create()
@@ -822,7 +832,14 @@ def search_name(request):
 
 def search_coordinates(request):
     """searches for objects near GET x,y,radius returns json_popup of
-    results. Optional GET parameter srs, if omitted, assume google."""
+    results.
+
+    Optional GET parameter srs, if omitted, assume google.
+
+    Optional GET parameter user_workspace_id: a workspace that is
+    currently shown.
+    """
+
     workspace_manager = WorkspaceManager(request)
     workspace_collections = workspace_manager.load_or_create()
 

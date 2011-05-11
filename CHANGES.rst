@@ -5,6 +5,10 @@ Changelog of lizard-map
 1.78 (unreleased)
 -----------------
 
+- Fixed add to collage option in workspace view when viewing others
+  workspaces. You are not allowed to add snippets in what
+  workspace. #2707.
+
 - Fixed layout problem of animation sliders in block above -r20937
   #2503 .
 
