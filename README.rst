@@ -240,7 +240,15 @@ settings are optional::
     START_YEAR = 2000  # Defaults to today - 7 years
     END_YEAR = 2010  # Defaults to today + 3 years.
 
-    # Define default period 1..5 (see daterange.py)
+    # Define default period 1..5
+    # From daterange.py:
+    # PERIOD_DAY = 1
+    # PERIOD_TWO_DAYS = 2
+    # PERIOD_WEEK = 3
+    # PERIOD_MONTH = 4
+    # PERIOD_YEAR = 5
+    # PERIOD_OTHER = 6
+
     DEFAULT_PERIOD = 5  # Defaults to 1
 
     # If DEFAULT_PERIOD = 6, define these
