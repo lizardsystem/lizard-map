@@ -75,7 +75,7 @@
 
 #animation-slider,
 #transparency-slider
-{ display: inline;
+{ display: block;
   float: left;
   line-height: 1.5em;
   margin-top: 0.4em;
@@ -84,7 +84,7 @@
 }
 
 #animation-slider
-{ width: 20em;
+{ width: 5em;
   }
 
 #transparency-slider
