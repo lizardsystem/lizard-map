@@ -199,7 +199,7 @@ function setUpWorkspaceAcceptable() {
             // Add the "add to workspace" button
             $(this).data("add-workspace-item-initialized", true);
             html = $(this).html();
-            html = html + '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>';
+            html = '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>' + html;
             $(this).html(html);
         }
     });
