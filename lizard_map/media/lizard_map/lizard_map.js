@@ -549,7 +549,9 @@ function setUpWorkspaceItemPanToLayer() {
                         extent.west, extent.north,
                         extent.east, extent.south);
                     map.setCenter(ol_extent.getCenterLonLat(),
-                                  map.getZoomForExtent(ol_extent) - 3);
+                                  map.getZoomForExtent(ol_extent));
+                                  // map.getZoomForExtent(ol_extent) - 3);
+                                  // ^^^ - 3 was not nice in Deltaportaal
                 }
             });
     });
