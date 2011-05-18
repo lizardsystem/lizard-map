@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.78 (unreleased)
+1.78 (2011-05-18)
 -----------------
 
 - Various UI fixes and IE7 glitches.
