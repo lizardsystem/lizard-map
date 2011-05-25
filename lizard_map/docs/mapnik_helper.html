@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>mapnik_helper.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>mapnik_helper.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Mapnik helper functions</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">mapnik</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+
+<span class="kn">from</span> <span class="nn">lizard_map.symbol_manager</span> <span class="kn">import</span> <span class="n">SymbolManager</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Fetch database settings for given database name. Can also handle
+pre django 1.2 style single database configuration (this case
+ignores name).</p>
+<p>Returns datasource and options dictionary with relevant info.</p>
+<p>If old AND new config styles are used, the new config style
+overrules.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">database_settings</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;default&quot;</span><span class="p">,</span> <span class="n">user_settings</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Multiple databases configuration.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">:</span>
+            <span class="n">database_settings</span> <span class="o">=</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">database_settings</span><span class="p">[</span><span class="s">&#39;ENGINE&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s">&#39;postgresql_psycopg2&#39;</span><span class="p">,</span>
+                <span class="s">&#39;django.contrib.gis.db.backends.postgis&#39;</span><span class="p">):</span>
+                <span class="n">datasource</span> <span class="o">=</span> <span class="n">mapnik</span><span class="o">.</span><span class="n">PostGIS</span>
+                <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s">&#39;host&#39;</span><span class="p">:</span> <span class="n">database_settings</span><span class="p">[</span><span class="s">&quot;HOST&quot;</span><span class="p">],</span>
+                    <span class="s">&#39;user&#39;</span><span class="p">:</span> <span class="n">database_settings</span><span class="p">[</span><span class="s">&quot;USER&quot;</span><span class="p">],</span>
+                    <span class="s">&#39;password&#39;</span><span class="p">:</span> <span class="n">database_settings</span><span class="p">[</span><span class="s">&quot;PASSWORD&quot;</span><span class="p">],</span>
+                    <span class="s">&#39;dbname&#39;</span><span class="p">:</span> <span class="n">database_settings</span><span class="p">[</span><span class="s">&quot;NAME&quot;</span><span class="p">]}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                    <span class="s">&#39;Sorry, unconfigured db engine (</span><span class="si">%s</span><span class="s">, name=</span><span class="si">%s</span><span class="s">) for &#39;</span>
+                    <span class="s">&#39;mapnik integration.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                        <span class="n">database_settings</span><span class="p">[</span><span class="s">&quot;ENGINE&quot;</span><span class="p">],</span> <span class="n">name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s">&#39;Sorry, db name (</span><span class="si">%s</span><span class="s">) not found in &#39;</span>
+                <span class="s">&#39;multiple db configuration.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">name</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">user_settings</span><span class="p">,</span> <span class="s">&quot;DATABASE_ENGINE&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Pre django 1.2 style single database configuration.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_ENGINE</span> <span class="o">==</span> <span class="s">&#39;sqlite3&#39;</span><span class="p">:</span>
+            <span class="n">datasource</span> <span class="o">=</span> <span class="n">mapnik</span><span class="o">.</span><span class="n">SQLite</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;file&#39;</span><span class="p">:</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_NAME</span><span class="p">}</span>
+        <span class="k">elif</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_ENGINE</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="s">&#39;postgresql_psycopg2&#39;</span><span class="p">,</span> <span class="s">&#39;django.contrib.gis.db.backends.postgis&#39;</span><span class="p">):</span>
+            <span class="n">datasource</span> <span class="o">=</span> <span class="n">mapnik</span><span class="o">.</span><span class="n">PostGIS</span>
+            <span class="n">options</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;host&#39;</span><span class="p">:</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_HOST</span><span class="p">,</span>
+                       <span class="s">&#39;user&#39;</span><span class="p">:</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_USER</span><span class="p">,</span>
+                       <span class="s">&#39;password&#39;</span><span class="p">:</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_PASSWORD</span><span class="p">,</span>
+                       <span class="s">&#39;dbname&#39;</span><span class="p">:</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_NAME</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s">&#39;Sorry, unconfigured db engine (</span><span class="si">%s</span><span class="s">) for &#39;</span>
+                <span class="s">&#39;mapnik integration.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                    <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_ENGINE</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+            <span class="s">&#39;Sorry, unconfigured db (</span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s">) for mapnik integration.&#39;</span> <span class="o">%</span> <span class="p">(</span>
+                <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASE_ENGINE</span><span class="p">,</span> <span class="n">user_settings</span><span class="o">.</span><span class="n">DATABASES</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">datasource</span><span class="p">,</span> <span class="n">options</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Return layer for the given table_view and projection.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">create_layer_from_query</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">projection</span><span class="p">,</span> <span class="n">geometry_field</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">srid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                            <span class="n">user_settings</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>layer = mapnik.Layer('Geometry from DB', projection)
+layer.srs = projection
+if user_settings is None:
+<pre>user_settings = settings
+</pre>
+datasource, options = database_settings(user_settings=user_settings)
+if geometry_field is not None:
+options['geometry_field'] = geometry_field
+if srid is not None:
+options['srid'] = srid
+layer.datasource = datasource(table=str(query), **options)</p>
+<p>return layer</p>
+<p>def symbol_filename(icon, mask, color):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Generates</span> <span class="n">symbol</span> <span class="ow">and</span> <span class="n">returns</span> <span class="n">symbol</span> <span class="n">filename</span><span class="o">.</span> <span class="n">Uses</span> <span class="n">SymbolManager</span>
+    <span class="n">to</span> <span class="n">generate</span> <span class="n">icons</span><span class="o">.</span>
+
+    <span class="n">TODO</span><span class="p">:</span> <span class="n">Move</span> <span class="n">ICON_ORIGINALS</span> <span class="kn">from</span> <span class="nn">lizard_map.models</span><span class="err"> </span><span class="nn">to</span><span class="err"> </span><span class="nn">here</span><span class="err">?</span>
+
+    <span class="n">Input</span><span class="p">:</span>
+    <span class="n">icon</span><span class="p">:</span> <span class="n">icon</span> <span class="n">filename</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">empty</span><span class="o">.</span><span class="n">png</span>
+    <span class="n">mask</span><span class="p">:</span> <span class="n">mask</span> <span class="n">filename</span><span class="p">,</span>
+    <span class="n">color</span><span class="p">:</span> <span class="n">color</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>from lizard_map.models import ICON_ORIGINALS</p>
+<p>icon_style = {'icon': icon,
+<pre>'mask': (mask, ),
+'color': color.to_tuple()}
+symbol_manager = SymbolManager(
+ICON_ORIGINALS,
+os.path.join(settings.MEDIA_ROOT, 'generated_icons'))
+output_filename = symbol_manager.get_symbol_transformed(
+icon_style['icon'], **icon_style)
+return output_filename
+</pre></p>
+<p>def point_rule(icon, mask, color, mapnik_filter=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Makes</span> <span class="n">mapnik</span> <span class="n">point</span> <span class="n">rule</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>output_filename = symbol_filename(icon, mask, color)
+output_filename_abs = os.path.join(
+<pre>settings.MEDIA_ROOT, 'generated_icons', output_filename)
+</pre></p>
+<h1>Use filename in mapnik pointsymbolizer</h1>
+<p>point_looks = mapnik.PointSymbolizer(
+str(output_filename_abs), 'png', 16, 16)
+point_looks.allow_overlap = True
+layout_rule = mapnik.Rule()
+layout_rule.symbols.append(point_looks)
+if mapnik_filter:
+layout_rule.filter = mapnik.Filter(mapnik_filter)</p>
+<p>return layout_rule</p>
+<p>def add_datasource_point(datasource, x, y, name, info):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Use</span> <span class="n">this</span> <span class="n">function</span> <span class="n">to</span> <span class="n">compensate</span> <span class="k">for</span> <span class="n">Mapnik</span> <span class="n">bug</span> <span class="c">#402 where some</span>
+    <span class="n">points</span> <span class="n">are</span> <span class="n">lost</span><span class="o">.</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>operations.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>operations.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Post-processing utility operations on (list of lists) data structures.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Keeps track of anchestors. Used by tree_from_list. Simple
+implementation, does not handle corner cases.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">AnchestorRegistration</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>self.anchestors consists of ids and a dict of ids that one
+cannot have as a parent</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="bp">self</span><span class="o">.</span><span class="n">anchestors</span> <span class="o">=</span> <span class="p">{}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Check if row_anchestor is an anchestor of row</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">anchestor_of</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_id</span><span class="p">,</span> <span class="n">row_anchestor_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Register row_id under row_parent.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">register_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_id</span><span class="p">,</span> <span class="n">row_parent_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Makes a hierarchical tree structure from list of lists. The</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">tree_from_list</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span>
+                   <span class="n">id_field</span><span class="o">=</span><span class="s">&#39;id&#39;</span><span class="p">,</span>
+                   <span class="n">parent_field</span><span class="o">=</span><span class="s">&#39;parent_id&#39;</span><span class="p">,</span>
+                   <span class="n">children_field</span><span class="o">=</span><span class="s">&#39;children&#39;</span><span class="p">,</span>
+                   <span class="n">root_parent</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>resulting tree structure is a recursive list of dicts (with lists
+of dicts in it).</p>
+<p>rows is a list with dicts.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>rows = [{'id': 'name', 'parent_id': None},
+<pre>{'id': 'child', 'parent_id': 'name'},
+{'id': 'name2', 'parent_id': None}]
+tree_from_list(rows)
+[{'id': 'name', 'parent_id': None, 'children': [
+{'id': 'child', 'parent_id': 'name', 'children': []}, ],
+{'id': 'name2', 'parent_id': None, 'children': [],
+]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">anchestors</span> <span class="o">=</span> <span class="n">AnchestorRegistration</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">root_parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">root_parent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">children_field</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="n">row_id</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">id_field</span><span class="p">]</span>
+        <span class="n">row_parent</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">parent_field</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">row_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">row_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">children_field</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="n">result</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="n">id_field</span><span class="p">]]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">row_parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">row_parent</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">children_field</span><span class="p">:</span> <span class="p">[]}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Prevent cycles: check if row_id is now already an anchestor
+of (future) parent.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">anchestors</span><span class="o">.</span><span class="n">anchestor_of</span><span class="p">(</span><span class="n">row_parent</span><span class="p">,</span> <span class="n">row_id</span><span class="p">):</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">row_parent</span><span class="p">][</span><span class="n">children_field</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">row_id</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Register current row_id under row_parent.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">anchestors</span><span class="o">.</span><span class="n">register_parent</span><span class="p">(</span><span class="n">row_id</span><span class="p">,</span> <span class="n">row_parent</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">CycleError</span><span class="p">(</span><span class="s">&#39;cycle detected while building tree from list&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="n">root_parent</span><span class="p">][</span><span class="n">children_field</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Converts list of lists to list of dicts, with given name.
+</pre>
+Assumes that len(names) == len(single row) and that rows are of
+equal length.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>named_list([['name1', 'parameter1'],
+<pre>['name2', 'parameter2']],
+['name', 'parameter'])
+[{'name': 'name1', 'parameter': 'parameter1'},
+{'name': 'name2', 'parameter': 'parameter2'}</p>
+</blockquote>
+</blockquote>
+</blockquote>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">named_list</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p></pre>Makes a new list with unique items from input list. Order is preserved.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>unique_list([6, 4, 45, 7, 4, 5, 6, 7, 3, 5, 6, 74, 5, 5])
+[6, 4, 45, 7, 5, 3, 74]</p>
+</blockquote>
+</blockquote>
+</blockquote>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">unique_list</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

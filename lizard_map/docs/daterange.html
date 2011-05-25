@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>daterange.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>daterange.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Handle the date range setting and remembering</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">django.template</span> <span class="kn">import</span> <span class="n">RequestContext</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render_to_response</span>
+
+<span class="kn">from</span> <span class="nn">datewidget</span> <span class="kn">import</span> <span class="n">SelectDateWidget</span>
+<span class="kn">from</span> <span class="nn">django.forms.widgets</span> <span class="kn">import</span> <span class="n">RadioSelect</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">PERIOD_DAY</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">PERIOD_TWO_DAYS</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">PERIOD_WEEK</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">PERIOD_MONTH</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">PERIOD_YEAR</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">PERIOD_OTHER</span> <span class="o">=</span> <span class="mi">6</span>
+
+<span class="n">PERIOD_DAYS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">PERIOD_DAY</span><span class="p">:</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+    <span class="n">PERIOD_TWO_DAYS</span><span class="p">:</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+    <span class="n">PERIOD_WEEK</span><span class="p">:</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="o">-</span><span class="mi">7</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+    <span class="n">PERIOD_MONTH</span><span class="p">:</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">)),</span>
+    <span class="n">PERIOD_YEAR</span><span class="p">:</span> <span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="o">-</span><span class="mi">365</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="mi">0</span><span class="p">))}</span>
+
+<span class="n">PERIOD_CHOICES</span> <span class="o">=</span> <span class="p">[[</span><span class="n">PERIOD_DAY</span><span class="p">,</span> <span class="s">&#39;dg&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="n">PERIOD_TWO_DAYS</span><span class="p">,</span> <span class="s">&#39;2dg&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="n">PERIOD_WEEK</span><span class="p">,</span> <span class="s">&#39;wk&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="n">PERIOD_MONTH</span><span class="p">,</span> <span class="s">&#39;mnd&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="n">PERIOD_YEAR</span><span class="p">,</span> <span class="s">&#39;jr&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="n">PERIOD_OTHER</span><span class="p">,</span> <span class="s">&#39;anders&#39;</span><span class="p">]]</span>
+
+<span class="n">SESSION_DT_PERIOD</span> <span class="o">=</span> <span class="s">&#39;dt_period&#39;</span>
+<span class="n">SESSION_DT_START</span> <span class="o">=</span> <span class="s">&#39;dt_start&#39;</span>
+<span class="n">SESSION_DT_END</span> <span class="o">=</span> <span class="s">&#39;dt_end&#39;</span>
+
+<span class="n">DUTCH_DATE_FORMAT</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">/%m/%Y&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>^^^ This is what jquery ui with the Dutch locale does for Reinout.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">default_start_days</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s">&#39;DEFAULT_START_DAYS&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">default_end_days</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="s">&#39;DEFAULT_END_DAYS&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Default period when period is PERIOD_OTHER</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">default_start</span><span class="p">():</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>return datetime.timedelta(days=default_start_days)</p>
+<p>def default_end():
+Default period when period is PERIOD_OTHER</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">default_end_days</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>this overrides widget method to put radio buttons horizontally</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">HorizontalRadioRenderer</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">RadioSelect</span><span class="o">.</span><span class="n">renderer</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>instead of vertically.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Outputs radios</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>return (u'n'.join([u'%sn' % widget for widget in self]))</p>
+<p>class DateRangeForm(forms.Form):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Date</span> <span class="nb">range</span> <span class="n">form</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <h1>Settings</h1>
+<p>start_year = getattr(settings,
+<pre>'START_YEAR',
+datetime.date.today().year - 7)
+end_year = getattr(settings,
+'END_YEAR',
+datetime.date.today().year + 3)
+years_choices = range(start_year, end_year + 1)
+</pre></p>
+<h1>Form fields</h1>
+<p>period = forms.ChoiceField(
+required=True,
+widget=RadioSelect(renderer=HorizontalRadioRenderer),
+choices=PERIOD_CHOICES,
+label='',)</p>
+<h1>TODO: NL date format.  Also hardcoded in the js.</h1>
+<p>dt_start = forms.DateTimeField(
+label='van',
+widget=SelectDateWidget(years=years_choices),
+required=False)
+dt_end = forms.DateTimeField(
+label='t/m',
+widget=SelectDateWidget(years=years_choices),
+required=False)</p>
+<p>def <strong>init</strong>(self, <em>args, </em>*kwargs):</p>
+<h1># Add argument period, if not available.</h1>
+<h1>if 'period' not in args[0]:</h1>
+<h1>args[0]['period'] = PERIOD_DAY</h1>
+<p>super(DateRangeForm, self).<strong>init</strong>(<em>args, </em>*kwargs)</p>
+<h1>Set initial dt_start/end on disabled when not selected.</h1>
+<p>if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
+self.fields['dt_start'].widget.attrs['disabled'] = True
+self.fields['dt_end'].widget.attrs['disabled'] = True</p>
+<p>def deltatime_range(daterange, now=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Put</span> <span class="n">daterange</span> <span class="n">into</span> <span class="n">session</span><span class="p">,</span> <span class="n">revert</span> <span class="n">to</span> <span class="n">defaults</span><span class="o">.</span>
+
+    <span class="n">daterange</span> <span class="ow">is</span> <span class="p">{</span><span class="s">&#39;dt_start&#39;</span><span class="p">:</span> <span class="n">xx</span><span class="p">,</span> <span class="s">&#39;dt_end&#39;</span><span class="p">:</span> <span class="n">xx</span><span class="p">,</span> <span class="s">&#39;period&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>if now is None:
+<pre>now = datetime.datetime.now()
+</pre>
+period = int(daterange['period'])</p>
+<h1>Calculate relative start/end dates from given period.</h1>
+<p>if period == PERIOD_OTHER:
+almost_one_day = datetime.timedelta(
+<pre>hours=23, minutes=59, seconds=59)
+try:
+dt_start = daterange.get('dt_start', None)
+timedelta_start = dt_start - now
+except TypeError:
+timedelta_start = default_start()
+</pre>
+try:</p>
+<h1>Since we select on day basis, we want to include</h1>
+<h1>the end day.</h1>
+<p>dt_end = daterange.get('dt_end', None)
+timedelta_end = (dt_end + almost_one_day - now)
+except TypeError:
+timedelta_end = default_end()</p>
+<h1>Make sure start is before end</h1>
+<p>if timedelta_start &gt; timedelta_end:
+timedelta_start = timedelta_end - almost_one_day
+else:
+timedelta_start, timedelta_end = PERIOD_DAYS[period]</p>
+<p>return period, timedelta_start, timedelta_end</p>
+<p>def store_timedelta_range(request, period, timedelta_start, timedelta_end):
+Store relative start/end dates in session.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">SESSION_DT_PERIOD</span><span class="p">]</span> <span class="o">=</span> <span class="n">period</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">SESSION_DT_START</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta_start</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">SESSION_DT_END</span><span class="p">]</span> <span class="o">=</span> <span class="n">timedelta_end</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>View: store the date range in the session and redirect.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">set_date_range</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/daterange.html&#39;</span><span class="p">,</span>
+                   <span class="n">now</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>POST must contain DateRangeForm fields.
+now is a datetime field, used for testing.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">DateRangeForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">came_from</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">META</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;HTTP_REFERER&#39;</span><span class="p">,</span> <span class="s">&#39;/&#39;</span><span class="p">)</span>
+            <span class="n">date_range</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+
+            <span class="n">period</span><span class="p">,</span> <span class="n">timedelta_start</span><span class="p">,</span> <span class="n">timedelta_end</span> <span class="o">=</span> <span class="n">deltatime_range</span><span class="p">(</span>
+                <span class="n">date_range</span><span class="p">,</span> <span class="n">now</span><span class="o">=</span><span class="n">now</span><span class="p">)</span>
+            <span class="n">store_timedelta_range</span><span class="p">(</span>
+                <span class="n">request</span><span class="p">,</span> <span class="n">period</span><span class="p">,</span> <span class="n">timedelta_start</span><span class="p">,</span> <span class="n">timedelta_end</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="n">came_from</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Invalid, should never happen. You're probably surfing to the
+set_date_range url.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">form</span> <span class="o">=</span> <span class="n">DateRangeForm</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Form rendering just for debugging errors.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span>
+        <span class="n">template</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;date_range_form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">},</span>
+        <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Return the current period, either default or from session.</p>
+<p>TODO: mix together with current_start_end_dates (but is has a lot
+of impact)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">current_period</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Return the current start/end dates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">current_start_end_dates</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">for_form</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">today</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>If for_form is True, return it as a dict so that we can pass it directly
+into a form class.  Otherwise return it as a tuple.</p>
+<p>today is a datetime field, used for testing.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">today</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">today</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="n">period</span> <span class="o">=</span> <span class="n">current_period</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">period</span> <span class="o">==</span> <span class="n">PERIOD_OTHER</span><span class="p">:</span>
+        <span class="n">period_start</span><span class="p">,</span> <span class="n">period_end</span> <span class="o">=</span> <span class="n">default_start</span><span class="p">(),</span> <span class="n">default_end</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">period_start</span><span class="p">,</span> <span class="n">period_end</span> <span class="o">=</span> <span class="n">PERIOD_DAYS</span><span class="p">[</span><span class="n">period</span><span class="p">]</span>
+
+    <span class="n">dt_start</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">SESSION_DT_START</span><span class="p">,</span> <span class="n">period_start</span><span class="p">)</span> <span class="o">+</span> <span class="n">today</span>
+    <span class="n">dt_end</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">SESSION_DT_END</span><span class="p">,</span> <span class="n">period_end</span><span class="p">)</span> <span class="o">+</span> <span class="n">today</span>
+    <span class="k">if</span> <span class="n">for_form</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dt_start</span><span class="o">=</span><span class="n">dt_start</span><span class="p">,</span>
+                    <span class="n">dt_end</span><span class="o">=</span><span class="n">dt_end</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">dt_start</span><span class="p">,</span> <span class="n">dt_end</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>urls.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>urls.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Actions/services on/from workspaces</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace/(?P&lt;workspace_id&gt;\d+)/wms/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.wms&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_wms&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace/(?P&lt;workspace_id&gt;\d+)/workspace_items/reorder/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_reorder&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_reorder&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace/(?P&lt;workspace_id&gt;\d+)/workspace_items/add/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_add&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_add&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace/(?P&lt;workspace_id&gt;\d+)/workspace_items/empty/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_empty&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_empty&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace/(?P&lt;workspace_id&gt;\d+)/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Date range</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="p">(</span><span class="s">r&#39;^set_date_range$&#39;</span><span class="p">,</span>
+     <span class="s">&#39;lizard_map.daterange.set_date_range&#39;</span><span class="p">,</span>
+     <span class="p">{},</span>
+     <span class="s">&#39;lizard_map.set_date_range&#39;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;set_animation_date$&#39;</span><span class="p">,</span>
+     <span class="s">&#39;lizard_map.animation.set_animation_date&#39;</span><span class="p">,</span>
+     <span class="p">{},</span>
+     <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.set_animation_date&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Load and save map location</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="p">(</span><span class="s">r&#39;^map_location_save$&#39;</span><span class="p">,</span>
+     <span class="s">&#39;lizard_map.views.map_location_save&#39;</span><span class="p">,</span>
+     <span class="p">{},</span>
+     <span class="s">&#39;lizard_map.map_location_save&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">r&#39;^map_location_load_default$&#39;</span><span class="p">,</span>
+     <span class="s">&#39;lizard_map.views.map_location_load_default&#39;</span><span class="p">,</span>
+     <span class="p">{},</span>
+     <span class="s">&#39;lizard_map.map_location_load_default&#39;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Collages and snippets</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^collage/(?P&lt;collage_id&gt;\d+)/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.collage&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.collage&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>url(r'^collage/(?P<collage_id>d+)/edit/$',
+    'lizard_map.views.collage',
+    {'editable': True,
+     'template': 'lizard_map/collage_edit.html'},
+    name="lizard_map.collage_edit"),</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^collage/(?P&lt;collage_id&gt;\d+)/popup/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.collage_popup&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.collage_popup&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^collage_popup/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.collage_popup&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.collage_popup&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^collage_empty/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.collage_empty&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_collage_empty&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet/(?P&lt;snippet_id&gt;\d+)/popup$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.snippet_popup&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.snippet_popup&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet/(?P&lt;snippet_id&gt;\d+)/edit/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.snippet_edit&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.snippet_edit&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet_popup/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.snippet_popup&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.snippet_popup&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet_group/(?P&lt;snippet_group_id&gt;\d+)/image_edit/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.snippet_group_graph_edit&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.snippet_group_graph_edit&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet_group/(?P&lt;snippet_group_id&gt;\d+)/image/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.snippet_group_image&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.snippet_group_image&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Partially the same actions as above,
+you have to put workspace_id in GET parameter here...</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitemreorder/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_reorder&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_reorder&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitemadd/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_add&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_add&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitem/extent/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_extent&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_extent&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Actions on your session workspace - the system looks for the right
+workspace.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^session_workspace/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.session_workspace_edit_item&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;workspace_category&#39;</span><span class="p">:</span> <span class="s">&#39;temp&#39;</span><span class="p">},</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_session_workspace_add_item_temp&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^session_workspace/temp/extent/$&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.session_workspace_extent&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;workspace_category&#39;</span><span class="p">:</span> <span class="s">&#39;temp&#39;</span><span class="p">},</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_session_workspace_extent_temp&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Actions/services on session collages</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^session_collage/add/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.session_collage_snippet_add&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_session_collage_snippet_add&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^session_collage/add_session_graph_options/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.session_collage_snippet_add&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;session_graph_options&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_session_collage_snippet_add_session_graph_options&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^session_collage/delete/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.session_collage_snippet_delete&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_session_collage_snippet_delete&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Actions on workspace items</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitem/(?P&lt;workspace_item_id&gt;\d+)/delete/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_delete&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_delete&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace_item/(?P&lt;workspace_item_id&gt;\d+)/image/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_image&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.workspace_item_image&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspace_item/(?P&lt;workspace_item_id&gt;\d+)/&#39;</span> <span class="o">+</span>
+        <span class="s">&#39;image_session_graph_options/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_image&#39;</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;session_graph_options&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">},</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.workspace_item_image_session_graph_options&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitem/delete/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_delete&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_delete&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^workspaceitem/edit/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.workspace_item_edit&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map_workspace_item_edit&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Actions on legends.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^legend/edit/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.legend_edit&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&#39;lizard_map_legend_edit&#39;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Search stuff.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^search_coordinates/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.search_coordinates&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.search_coordinates&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^search_name/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.search_name&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.search_name&quot;</span><span class="p">),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>Export.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^adapter/export/csv/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.export_identifier_csv&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.export_identifier_csv&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet_group/(?P&lt;snippet_group_id&gt;\d+)/statistics/csv/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.export_snippet_group_statistics_csv&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.export_snippet_group_statistics_csv&quot;</span><span class="p">),</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^snippet_group/(?P&lt;snippet_group_id&gt;\d+)/csv/&#39;</span><span class="p">,</span>
+        <span class="s">&#39;lizard_map.views.export_snippet_group_csv&#39;</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&quot;lizard_map.export_snippet_group_csv&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">:</span>  <span class="c"># Pragma: no cover</span>
+    <span class="n">urlpatterns</span> <span class="o">+=</span> <span class="n">patterns</span><span class="p">(</span>
+        <span class="s">&#39;&#39;</span><span class="p">,</span>
+        <span class="p">(</span><span class="s">r&#39;^admin/&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s">r&#39;&#39;</span><span class="p">,</span> <span class="n">include</span><span class="p">(</span><span class="s">&#39;staticfiles.urls&#39;</span><span class="p">)),</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Demo map stuff.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="p">(</span><span class="s">r&#39;^$&#39;</span><span class="p">,</span> <span class="s">&#39;django.views.generic.simple.direct_to_template&#39;</span><span class="p">,</span>
+         <span class="p">{</span><span class="s">&#39;template&#39;</span><span class="p">:</span> <span class="s">&#39;lizard_map/example_openlayers.html&#39;</span><span class="p">}),</span>
+        <span class="p">(</span><span class="s">r&#39;^example_wms/$&#39;</span><span class="p">,</span> <span class="s">&#39;django.views.generic.simple.direct_to_template&#39;</span><span class="p">,</span>
+         <span class="p">{</span><span class="s">&#39;template&#39;</span><span class="p">:</span> <span class="s">&#39;lizard_map/example_wms.html&#39;</span><span class="p">}),</span>
+    <span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

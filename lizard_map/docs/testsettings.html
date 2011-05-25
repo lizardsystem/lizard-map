@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>testsettings.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>testsettings.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Used for django-staticfiles</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s">&#39;/static_media/&#39;</span>
+<span class="n">TEMPLATE_CONTEXT_PROCESSORS</span> <span class="o">=</span> <span class="p">(</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Default items.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="s">&quot;django.core.context_processors.auth&quot;</span><span class="p">,</span>
+    <span class="s">&quot;django.core.context_processors.debug&quot;</span><span class="p">,</span>
+    <span class="s">&quot;django.core.context_processors.i18n&quot;</span><span class="p">,</span>
+    <span class="s">&quot;django.core.context_processors.media&quot;</span><span class="p">,</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Needs to be added for django-staticfiles to allow you to use
+myapp/my.css in your templates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="s">&#39;staticfiles.context_processors.static_url&#39;</span><span class="p">,</span>
+    <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Sample MAP_SETTINGS.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>MAP_SETTINGS = {
+    'base_layer_type': 'OSM',  # OSM or WMS
+    'projection': 'EPSG:900913',  # EPSG:900913, EPSG:28992
+    'display_projection': 'EPSG:4326',  # EPSG:900913/28992/4326
+    'startlocation_x': '550000',
+    'startlocation_y': '6850000',
+    'startlocation_zoom': '10',
+    'base_layer_osm': (
+        'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'),
+    }</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>MAP_SETTINGS = {
+    'base_layer_type': 'WMS',  # OSM or WMS
+    'projection': 'EPSG:28992',  # EPSG:900913, EPSG:28992
+    'display_projection': 'EPSG:28992',  # EPSG:900913/28992/4326
+    'startlocation_x': '127000',
+    'startlocation_y': '473000',
+    'startlocation_zoom': '4',
+    'base_layer_wms': (
+        'http://nederlandwms.risicokaart.nl/wmsconnector/'
+        'com.esri.wms.Esrimap?'
+        'SERVICENAME=risicokaart_pub_nl_met_ondergrond&amp;'),
+    'base_layer_wms_layers': (
+        'Outline_nederland,Dissolve_provincies,0,2,12,3,38,5,4,9,10'),
+    }</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Set the default period in days.
+DEFAULT_START_DAYS = -20
+DEFAULT_END_DAYS = 5</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">try</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Import local settings that aren't stored in svn.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kn">from</span> <span class="nn">lizard_map.local_testsettings</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
