@@ -1,0 +1,14 @@
+<div class="save-popup popup popup-fat" id="summary-save-workspace">
+  {# The inner div is handy when replacing content without losing overlay properties. #}
+  <div id="summary-save-contents">
+    <div>
+      <form action="{% url lizard_map.save_workspace %}"
+            method="post">
+        {% csrf_token %}
+        {{ save_form.as_p }}
+        <input type="submit" value="Opslaan" />
+        <input name="cancel" type="submit" value="Annulieren" />
+      </form>
+    </div>
+  </div>
+</div>
