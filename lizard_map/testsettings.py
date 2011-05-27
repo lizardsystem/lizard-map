@@ -11,6 +11,7 @@ INSTALLED_APPS = [
     'django_nose',
     'piston',
     'south',
+    'debug_toolbar',
     'django_extensions',
     'django.contrib.gis',
     'django.contrib.admin',
@@ -26,6 +27,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'lizard_map.context_processors.processor.processor',
     # Default items.
     "django.core.context_processors.auth",
     "django.core.context_processors.debug",
@@ -34,6 +36,19 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # Needs to be added for django-staticfiles to allow you to use
     # {{ STATIC_URL }}myapp/my.css in your templates.
     'staticfiles.context_processors.static_url',
+    )
+
+MIDDLEWARE_CLASSES = (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'lizard_ui.middleware.TracebackLoggingMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    )
+INTERNAL_IPS = (
+    '127.0.0.1',
     )
 
 # Sample MAP_SETTINGS.
