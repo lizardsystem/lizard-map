@@ -1,0 +1,28 @@
+{% extends "lizard_map/lizardgis.html" %}
+{% load i18n %}
+
+{% block title %}Openlayers demo{% endblock %}
+
+{% block head-extras %}
+  <script type="text/javascript">
+      $(document).ready(showExampleMap);
+      var map = new OpenLayers.Map('map');
+      var wms = new OpenLayers.Layer.WMS( "OpenLayers WMS",
+             "http://labs.metacarta.com/wms/vmap0", {layers: 'basic'} );
+      map.addLayer(wms);
+      map.zoomToMaxExtent();
+  </script>
+{% endblock head-extras %}
+
+{% block sidebar %}
+<div class="sidebarbox">
+  <h2>{% trans 'Examples' %}</h2>
+  <ul>
+    <li><a href="example_wms/">{% trans 'Example with shapefile' %}</a></li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block object-tabs %}
+workspace a ....... workspace b
+{% endblock %}

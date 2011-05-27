@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>coordinates.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>coordinates.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Coordinates and projection constants and helpers
+import logging
+from pyproj import Proj
+from pyproj import transform</p>
+<p>from lizard_map.models import BackgroundMap
+from lizard_map.models import Setting</p>
+<p>logger = logging.getLogger(<strong>name</strong>)</p>
+<h1>Proj4 projection strings.  Note: no commas between the concatenated</h1>
+<h1>strings!</h1>
+<h1>Rijksdriehoeks stelsel.</h1>
+<p>RD = ("+proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 "
+"+k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel "
+"+towgs84=565.237,50.0087,465.658,-0.406857,0.350733,-1.87035,4.0812 "
+"+units=m +no_defs")
+GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
+<pre>'+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
+'+nadgrids=@null +no_defs +over')
+</pre>WGS84 = ('+proj=latlong +datum=WGS84')</p>
+<h1>Default map settings. Take this when no MAP_SETTINGS in django settings.</h1>
+<p>DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
+DEFAULT_MAP_SETTINGS = {
+'start_extent': '-14675, 6964942, 1254790, 6668977',
+'max_extent': '-20037508.34, -20037508.34, 20037508.34, 20037508.34',
+'projection': 'EPSG:900913',
+'display_projection': 'EPSG:4326',
+'googlemaps_api_key': '',  # Must be defined.
+'background_maps': [BackgroundMap(
+<pre>name='Default map',
+default=True,
+active=True,
+layer_type=BackgroundMap.LAYER_TYPE_OSM,
+layer_url=DEFAULT_OSM_LAYER_URL)],  # OSM
+}
+</pre></p>
+<p>rd_projection = Proj(RD)
+google_projection = Proj(GOOGLE)
+wgs84_projection = Proj(WGS84)</p>
+<p>srs_to_mapnik_projection = {
+'EPSG:28992': RD,
+'EPSG:900913': GOOGLE,
+'EPSG:4326': WGS84,
+}</p>
+<p>def google_to_rd(x, y):
+Return RD coordinates from GOOGLE coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">transform</span><span class="p">(</span><span class="n">google_projection</span><span class="p">,</span> <span class="n">rd_projection</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Return GOOGLE coordinates from RD coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">rd_to_google</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>return transform(rd_projection, google_projection, x, y)</p>
+<p>def wgs84_to_google(x, y):
+Return GOOGLE coordinates from WGS84 coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">transform</span><span class="p">(</span><span class="n">wgs84_projection</span><span class="p">,</span> <span class="n">google_projection</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Return WGS84 coordinates from GOOGLE coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">google_to_wgs84</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>return transform(google_projection, wgs84_projection, x, y)</p>
+<p>def rd_to_wgs84(x, y):
+Return GOOGLE coordinates from RD coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">transform</span><span class="p">(</span><span class="n">rd_projection</span><span class="p">,</span> <span class="n">wgs84_projection</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Return GOOGLE coordinates from coordinates. Coordinates are in</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">srs_to_google</span><span class="p">(</span><span class="n">srs</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>srs (string), i.e. EPSG:28992."""
+if srs == 'EPSG:28992':
+<pre>google_x, google_y = rd_to_google(x, y)
+else:
+google_x, google_y = x, y
+return google_x, google_y
+</pre></p>
+<p>def google_to_srs(x, y, srs):
+Return coordinates in srs from GOOGLE coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Coordinates</span> <span class="n">are</span> <span class="ow">in</span> <span class="n">srs</span> <span class="p">(</span><span class="n">string</span><span class="p">),</span> <span class="n">i</span><span class="o">.</span><span class="n">e</span><span class="o">.</span> <span class="n">EPSG</span><span class="p">:</span><span class="mf">28992.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">    if srs == &#39;EPSG:28992&#39;:</span>
+<span class="s">        srs_x, srs_y = google_to_rd(x, y)</span>
+<span class="s">    else:</span>
+<span class="s">        srs_x, srs_y = x, y</span>
+<span class="s">    return srs_x, srs_y</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">def detect_prj(prj):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">class MapSettings(object):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        def extent_setting(key):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Return srid.</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        Return srs / projection.</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Convert extent in google coordinates to srs of map settings.</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>Inputs a prj string, output is the Proj4 projection string. If the
+string somehow cannot be parsed, we assume it is RD.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Read background map information.</p>
+<p>Uses models BackgroundMap and Setting.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>extent_names = ['left', 'top', 'right', 'bottom']
+extent_list = Setting.get(
+<pre>key, DEFAULT_MAP_SETTINGS[key]).split(',')
+extent = dict(
+[(extent_names[i], s.strip())
+for i, s in enumerate(extent_list)])
+return {key: extent}
+</pre>
+self.global_settings = {}</p>
+<p>self.global_settings.update(extent_setting('start_extent'))
+self.global_settings.update(extent_setting('max_extent'))</p>
+<p>self.global_settings.update(setting('googlemaps_api_key'))
+self.global_settings.update(setting('projection'))
+self.global_settings.update(setting('display_projection'))</p>
+<p>self.background_maps = BackgroundMap.objects.filter(active=True)</p>
+<h1>For the client side to determine is there is a google map.</h1>
+<p>if self.background_maps.filter(
+layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() &gt; 0:</p>
+<p>self.global_settings.update({'has_google': True})</p>
+<p>if not self.background_maps:
+logger.warn("No background maps are active. Taking default.")
+self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']</p>
+<p>self.map_settings = dict(self.global_settings)
+self.map_settings.update({'background_maps': self.background_maps})</p>
+<p>def mapnik_projection(self):
+Returns the mapnik projection.</p>
+<p>return srs_to_mapnik_projection[self.map_settings['projection']]</p>
+<p>@property
+def srid(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>try:
+<pre>if self.map_settings['projection'][:5] == 'EPSG:':
+return int(self.map_settings['projection'][5:])
+except ValueError:
+pass
+return 4326  # wgs84 is the default
+</pre>
+@property
+def srs(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>return self.map_settings['projection']</p>
+<p>def convert_google_extent_map_srs(self, east, north, west, south):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

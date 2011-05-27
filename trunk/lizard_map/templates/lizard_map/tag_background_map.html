@@ -1,0 +1,19 @@
+{# background map settings for in div lizard-map-wms #}
+<div class="background-layer"
+     data-layer-name="{{ background_map.name }}"
+     data-default="{{ background_map.default }}"
+     {% ifequal background_map.layer_type 1 %}{# GOOGLE #}
+     {# default=1, physical=2, hybrid=3, satellite=4 #}
+     data-layer-type="GOOGLE"
+     data-google-layer-type="{{ background_map.google_type }}"
+     {% endifequal %}
+     {% ifequal background_map.layer_type 2 %}{# OSM #}
+     data-layer-type="OSM"
+     data-layer-url="{{ background_map.layer_url }}"
+     {% endifequal %}
+     {% ifequal background_map.layer_type 3 %}{# WMS #}
+     data-layer-type="WMS"
+     data-layer-url="{{ background_map.layer_url }}"
+     data-layer-layer-names="{{ background_map.layer_names }}"
+     {% endifequal %}
+     ></div>

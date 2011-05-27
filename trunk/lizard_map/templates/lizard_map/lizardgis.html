@@ -1,0 +1,31 @@
+{% extends "lizard_ui/lizardbase.html" %}
+{% load workspaces %}
+{% block css %}
+{{ block.super }}
+<link type="text/css"
+      href="{{ STATIC_URL }}lizard_map/lizard_map.css"
+      media="screen, projection"
+      rel="stylesheet" />
+{% endblock css %}
+
+{% block javascript %}
+{{ block.super }}
+<script id="openlayers-script"
+        type="text/javascript"
+        src="{{ STATIC_URL }}openlayers/OpenLayers.js"
+        data-openlayers-url="{{ STATIC_URL }}openlayers/"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
+{% endblock javascript %}
+{% block above-content %}
+<ul class="map-actions">
+  {% date_trigger %}
+  {% date_popup %}
+</ul>
+{% endblock above-content %}
+
+{% block content %}
+<div id="map"></div>
+{% endblock content %}

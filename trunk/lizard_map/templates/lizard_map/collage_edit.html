@@ -1,0 +1,27 @@
+{# loads wms.html because we want to display workspaces. else we would use lizard_ui/lizardbase.html #}
+{# NOT yet used. The standard collage page can edit. When splitting the main collage, then use this. #}
+
+{% extends "lizard_map/wms.html" %}
+{% load workspaces %}
+
+{% block sidebar %}
+{% workspace collage.workspace %}
+{% endblock %}
+
+{% block object-actions %}
+<a href="{% url lizard_map.collage collage_id=collage.id %}"
+   class="ss_sprite ss_application_view_gallery">View</a> |
+<span id="print-button">Print</span>
+{% endblock object-actions %}
+
+{% block content %}
+<div id="textual">
+
+<h2>{{ collage.name }}</h2>
+{% for snippet_group in collage.snippet_groups.all %}
+  {% firstof snippet_group.name '' %}
+  {% snippet_group snippet_group 'False' 'True' %}
+{% endfor %}
+
+</div>
+{% endblock content %}

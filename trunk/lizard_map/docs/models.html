@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>models.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>models.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Do not change the following items!</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">GROUPING_HINT</span> <span class="o">=</span> <span class="s">&#39;grouping_hint&#39;</span>
+<span class="n">USER_WORKSPACES</span> <span class="o">=</span> <span class="s">&#39;user&#39;</span>
+<span class="n">DEFAULT_WORKSPACES</span> <span class="o">=</span> <span class="s">&#39;default&#39;</span>
+<span class="n">TEMP_WORKSPACES</span> <span class="o">=</span> <span class="s">&#39;temp&#39;</span>
+<span class="n">OTHER_WORKSPACES</span> <span class="o">=</span> <span class="s">&#39;other&#39;</span>  <span class="c"># for flexible adding workspaces of others</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>TODO: Can this property be moved to mapnik_helper?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">ICON_ORIGINALS</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="s">&#39;lizard_map&#39;</span><span class="p">,</span> <span class="s">&#39;icons&#39;</span><span class="p">)</span>
+
+<span class="n">ADAPTER_ENTRY_POINT</span> <span class="o">=</span> <span class="s">&#39;lizard_map.adapter_class&#39;</span>
+<span class="n">SEARCH_ENTRY_POINT</span> <span class="o">=</span> <span class="s">&#39;lizard_map.search_method&#39;</span>
+<span class="n">LOCATION_ENTRY_POINT</span> <span class="o">=</span> <span class="s">&#39;lizard_map.location_method&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>WMS is a special kind of adapter: the client side behaves different.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">ADAPTER_CLASS_WMS</span> <span class="o">=</span> <span class="s">&#39;wms&#39;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Add introspection rules for ColorField</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">add_introspection_rules</span><span class="p">([],</span> <span class="p">[</span><span class="s">&quot;lizard_map.models.ColorField&quot;</span><span class="p">])</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Interpolates colors between min_value and max_value, calc</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">legend_values</span><span class="p">(</span><span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">,</span> <span class="n">min_color</span><span class="p">,</span> <span class="n">max_color</span><span class="p">,</span> <span class="n">steps</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>corresponding colors and gives boundary values for each band.</p>
+<p>Makes list of dictionaries: {'color': Color, 'low_value':
+low value, 'high_value': high value}"""
+result = []
+value_per_step = (max_value - min_value) / steps
+for step in range(steps):
+<pre>try:
+fraction = float(step) / (steps - 1)
+except ZeroDivisionError:
+fraction = 0
+alpha = (min_color.a * (1 - fraction) +
+max_color.a * fraction)
+red = (min_color.r * (1 - fraction) +
+max_color.r * fraction)
+green = (min_color.g * (1 - fraction) +
+max_color.g * fraction)
+blue = (min_color.b * (1 - fraction) +
+max_color.b * fraction)
+color = Color('%02x%02x%02x%02x' % (red, green, blue, alpha))
+</pre>
+low_value = min_value + step * value_per_step
+high_value = min_value + (step + 1) * value_per_step
+result.append({
+'color': color,
+'low_value': low_value,
+'high_value': high_value,
+})
+return result</p>
+<p>class Color(str):
+Simple color object: r, g, b, a.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">The</span> <span class="nb">object</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">fact</span> <span class="n">a</span> <span class="n">string</span> <span class="k">with</span> <span class="k">class</span> <span class="nc">variables</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>def <strong>init</strong>(self, s):
+<pre>self.r = None
+self.g = None
+self.b = None
+if s is None:
+return
+try:
+self.r = int(s[0:2], 16)
+except ValueError:
+self.r = 128
+try:
+self.g = int(s[2:4], 16)
+except ValueError:
+self.b = 128
+try:
+self.b = int(s[4:6], 16)
+except ValueError:
+self.b = 128
+try:</p>
+<h1>Alpha is optional.</h1>
+<p>self.a = int(s[6:8], 16)
+except ValueError:
+self.a = 255
+</pre>
+def to_tuple(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Returns</span> <span class="n">color</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">a</span> <span class="nb">tuple</span><span class="o">.</span> <span class="n">Values</span> <span class="n">are</span> <span class="mf">0.</span><span class="o">.</span><span class="mi">1</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>result = (self.r / 255.0, self.g / 255.0,
+<pre>self.b / 255.0, self.a / 255.0)
+return result
+</pre>
+@property
+def html(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Returns</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">html</span> <span class="n">format</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>if self.r is not None and self.g is not None and self.b is not None:
+<pre>return '#%02x%02x%02x' % (self.r, self.g, self.b)
+else:
+return '#ff0000'  # Red as alarm color
+</pre></p>
+<p>class ColorField(models.CharField):
+Custom ColorField for use in Django models. It's an extension</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">of</span> <span class="n">CharField</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+
+<span class="s">    default_error_messages = {</span>
+<span class="s">        &#39;invalid&#39;: _(</span>
+<span class="s">            u&#39;Enter a valid color code rrggbbaa, &#39;</span>
+<span class="s">            &#39;where aa is optional.&#39;),</span>
+<span class="s">        }</span>
+<span class="s">    description = &quot;Color representation in rgb&quot;</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    __metaclass__ = models.SubfieldBase</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">def adapter_class_names():</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in</span>
+<span class="s">                   pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT)]</span>
+<span class="s">    return tuple(entrypoints)</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">class WorkspaceItemError(Exception):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    pass</span>
+
+
+
+<span class="s">#DIVIDER</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">class Workspace(models.Model):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Returns workspace extent, using extents from workspace items.</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Returns a list of wms_layers. Each wms_layer is a dict with keys:</span>
+<span class="s">        wms_id, name, url, params, options. They are used in wms.html</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        for workspace_item in self.workspace_items.filter(visible=True):</span>
+<span class="s">            if workspace_item.adapter.is_animatable:</span>
+<span class="s">                return True</span>
+<span class="s">        return False</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">class WorkspaceItem(models.Model):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        for entrypoint in pkg_resources.iter_entry_points(</span>
+<span class="s">            group=ADAPTER_ENTRY_POINT):</span>
+<span class="s">            if entrypoint.name == self.adapter_class:</span>
+<span class="s">                try:</span>
+<span class="s">                    real_adapter = entrypoint.load()</span>
+<span class="s">                    real_adapter = real_adapter(self,</span>
+<span class="s">                        layer_arguments=self.adapter_layer_arguments)</span>
+<span class="s">                except ImportError, e:</span>
+<span class="s">                    logger.critical(&quot;Invalid entry point: </span><span class="si">%s</span><span class="s">&quot;, e)</span>
+<span class="s">                    raise</span>
+<span class="s">                except WorkspaceItemError:</span>
+<span class="s">                    logger.warning(</span>
+<span class="s">                        &quot;Deleting problematic WorkspaceItem: </span><span class="si">%s</span><span class="s">&quot;, self)</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">                    self.delete()</span>
+<span class="s">                return real_adapter</span>
+<span class="s">        raise AdapterClassNotFoundError(</span>
+<span class="s">            u&#39;Entry point for </span><span class="si">%r</span><span class="s"> not found&#39; </span><span class="si">% s</span><span class="s">elf.adapter_class)</span>
+
+<span class="s">    @property</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def adapter_layer_arguments(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        layer_json = self.adapter_layer_json</span>
+<span class="s">        if not layer_json:</span>
+<span class="s">            return {}</span>
+<span class="s">        result = {}</span>
+<span class="s">        for k, v in json.loads(layer_json).items():</span>
+<span class="s">            result[str(k)] = v</span>
+<span class="s">        return result</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def has_adapter(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Return true if workspace item has a extent that makes sense.</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        When deleting a WorkspaceItem, delete corresponding snippets</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    name = models.CharField(max_length=80,</span>
+<span class="s">                            default=&#39;Collage&#39;)</span>
+<span class="s">    workspace = models.ForeignKey(Workspace,</span>
+<span class="s">                                  related_name=&#39;collages&#39;)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def locations(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        snippets_in_groups = [snippet_group.snippets.all()</span>
+<span class="s">                              for snippet_group in self.snippet_groups.all()]</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        snippets = list(itertools.chain(*snippets_in_groups))</span>
+<span class="s">        return [snippet.location for snippet in snippets]</span>
+
+<span class="s">    @property</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def workspace_items(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Makes snippet in a snippet group. Finds or creates</span>
+<span class="s">        corresponding snippet group (see below)</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    AGGREGATION_PERIOD_CHOICES = (</span>
+<span class="s">        (ALL, _(&#39;all&#39;)),</span>
+<span class="s">        (YEAR, _(&#39;year&#39;)),</span>
+<span class="s">        (QUARTER, _(&#39;quarter&#39;)),</span>
+<span class="s">        (MONTH, _(&#39;month&#39;)),</span>
+<span class="s">        (WEEK, _(&#39;week&#39;)),</span>
+<span class="s">        (DAY, _(&#39;day&#39;)),</span>
+<span class="s">        )</span>
+
+<span class="s">    workspace_collage = models.ForeignKey(WorkspaceCollage,</span>
+<span class="s">                                          related_name=&#39;snippet_groups&#39;)</span>
+<span class="s">    index = models.IntegerField(default=1000)  # larger = lower in the list</span>
+<span class="s">    name = models.CharField(max_length=80, blank=True, null=True)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    boundary_value = models.FloatField(blank=True, null=True)</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    percentile_value = models.FloatField(blank=True, null=True)</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">    restrict_to_month = models.IntegerField(blank=True, null=True)</span>
+<span class="s">    aggregation_period = models.IntegerField(</span>
+<span class="s">        choices=AGGREGATION_PERIOD_CHOICES, default=ALL)</span>
+
+<span class="s">    layout_title = models.CharField(max_length=80, blank=True, null=True)</span>
+<span class="s">    layout_x_label = models.CharField(max_length=80, blank=True, null=True)</span>
+<span class="s">    layout_y_label = models.CharField(max_length=80, blank=True, null=True)</span>
+<span class="s">    layout_y_min = models.FloatField(blank=True, null=True)</span>
+<span class="s">    layout_y_max = models.FloatField(blank=True, null=True)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def statistics(self, start_date, end_date):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            periods = calc_aggregation_periods(start_date, end_date,</span>
+<span class="s">                                               self.aggregation_period)</span>
+
+<span class="s">            for period_start_date, period_end_date in periods:</span>
+<span class="s">                if not self.restrict_to_month or (</span>
+<span class="s">                    self.aggregation_period != MONTH) or (</span>
+<span class="s">                    self.aggregation_period == MONTH and</span>
+<span class="s">                    self.restrict_to_month == period_start_date.month):</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">                    statistics_row = snippet_adapter.value_aggregate(</span>
+<span class="s">                        snippet.identifier,</span>
+<span class="s">                        {&#39;min&#39;: None,</span>
+<span class="s">                         &#39;max&#39;: None,</span>
+<span class="s">                         &#39;avg&#39;: None,</span>
+<span class="s">                         &#39;count_lt&#39;: self.boundary_value,</span>
+<span class="s">                         &#39;count_gte&#39;: self.boundary_value,</span>
+<span class="s">                         &#39;percentile&#39;: self.percentile_value},</span>
+<span class="s">                        start_date=period_start_date,</span>
+<span class="s">                        end_date=period_end_date)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">                    if statistics_row:</span>
+<span class="s">                        statistics_row[&#39;name&#39;] = snippet.name</span>
+<span class="s">                        statistics_row[&#39;period&#39;] = fancy_period(</span>
+<span class="s">                            period_start_date, period_end_date,</span>
+<span class="s">                            self.aggregation_period)</span>
+<span class="s">                        statistics.append(statistics_row)</span>
+
+<span class="s">        if len(statistics) &gt; 1:</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">            averages = [row[&#39;avg&#39;] for row in statistics if row[&#39;avg&#39;]]</span>
+<span class="s">            try:</span>
+<span class="s">                average = float(sum(averages) / len(averages))</span>
+<span class="s">            except ZeroDivisionError:</span>
+<span class="s">                average = None</span>
+<span class="s">            totals = {</span>
+<span class="s">                &#39;min&#39;: min([row[&#39;min&#39;] for row in statistics]),</span>
+<span class="s">                &#39;max&#39;: max([row[&#39;max&#39;] for row in statistics]),</span>
+<span class="s">                &#39;avg&#39;: average,</span>
+<span class="s">                &#39;name&#39;: &#39;Totaal&#39;,</span>
+<span class="s">                }</span>
+<span class="s">            if statistics[0][&#39;count_lt&#39;] is not None:</span>
+<span class="s">                totals[&#39;count_lt&#39;] = sum(</span>
+<span class="s">                    [row[&#39;count_lt&#39;] for row in statistics</span>
+<span class="s">                     if row[&#39;count_lt&#39;]])</span>
+<span class="s">            else:</span>
+<span class="s">                totals[&#39;count_lt&#39;] = None</span>
+<span class="s">            if statistics[0][&#39;count_gte&#39;] is not None:</span>
+<span class="s">                totals[&#39;count_gte&#39;] = sum(</span>
+<span class="s">                    [row[&#39;count_gte&#39;] for row in statistics</span>
+<span class="s">                     if row[&#39;count_gte&#39;]])</span>
+<span class="s">            else:</span>
+<span class="s">                totals[&#39;count_gte&#39;] = None</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">            totals[&#39;percentile&#39;] = None</span>
+<span class="s">            statistics.append(totals)</span>
+
+<span class="s">        return statistics</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def values_table(self, start_date, end_date):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        values_table.append([&#39;Datum + tijdstip&#39;] +</span>
+<span class="s">                            [snippet.name for snippet in snippets])</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        found_dates = {}</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        snippet_values = {}</span>
+
+<span class="s">        for snippet in snippets:</span>
+<span class="s">            values = snippet.workspace_item.adapter.values(</span>
+<span class="s">                identifier=snippet.identifier, start_date=start_date,</span>
+<span class="s">                end_date=end_date)</span>
+<span class="s">            snippet_values[snippet.id] = {}</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">            for row in values:</span>
+<span class="s">                if not self.restrict_to_month or (</span>
+<span class="s">                    self.aggregation_period != MONTH) or (</span>
+<span class="s">                    self.aggregation_period == MONTH and</span>
+<span class="s">                    row[&#39;datetime&#39;].month == self.restrict_to_month):</span>
+
+<span class="s">                    snippet_values[snippet.id][row[&#39;datetime&#39;]] = row</span>
+<span class="s">            found_dates.update(snippet_values[snippet.id])</span>
+
+<span class="s">#DIVIDER</span>
+
+<span class="s">        found_dates_sorted = found_dates.keys()</span>
+<span class="s">        found_dates_sorted.sort()</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        for found_date in found_dates_sorted:</span>
+<span class="s">            value_row = [found_date, ]</span>
+<span class="s">            for snippet in snippets:</span>
+<span class="s">                single_value = snippet_values[snippet.id].get(found_date, {})</span>
+<span class="s">                value_row.append(single_value.get(&#39;value&#39;, None))</span>
+<span class="s">            values_table.append(value_row)</span>
+
+<span class="s">        return values_table</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def layout(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    name = models.CharField(max_length=80,</span>
+<span class="s">                            default=&#39;Snippet&#39;)</span>
+<span class="s">    shortname = models.CharField(max_length=80,</span>
+<span class="s">                                 default=&#39;Snippet&#39;,</span>
+<span class="s">                                 blank=True,</span>
+<span class="s">                                 null=True)</span>
+<span class="s">    snippet_group = models.ForeignKey(WorkspaceCollageSnippetGroup,</span>
+<span class="s">                                      related_name=&#39;snippets&#39;)</span>
+<span class="s">    workspace_item = models.ForeignKey(</span>
+<span class="s">        WorkspaceItem)</span>
+<span class="s">    identifier_json = models.TextField()</span>
+
+<span class="s">#DIVIDER</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def save(self, *args, **kwargs):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        workspace = self.snippet_group.workspace_collage.workspace</span>
+<span class="s">        if len(workspace.workspace_items.filter(</span>
+<span class="s">                pk=self.workspace_item.pk)) == 0:</span>
+<span class="s">            raise &quot;workspace_item of snippet not in workspace of collage&quot;</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        super(WorkspaceCollageSnippet, self).save(*args, **kwargs)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def delete(self, *args, **kwargs):</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">        start_end_dates: 2-tuple of datetimes</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.identifier_json = json.dumps(identifier).replace(&#39;&quot;&#39;, &#39;%22&#39;)</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">class LegendManager(models.Manager):</span>
+<span class="s">#DIVIDER</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def find(self, name):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">    color-max, color &lt; min, color &gt; max, number of steps. Legends can</span>
+<span class="s">    be found using the descriptor.</span>
+
+<span class="s">    Used for mapnik lines and polygons.</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">        Required by legend_default.&quot;&quot;&quot;</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min_value</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">steps</span>
+        <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%.3f</span><span class="s">&#39;</span>
+        <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%.2f</span><span class="s">&#39;</span>
+        <span class="k">if</span> <span class="n">delta</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%.1f</span><span class="s">&#39;</span>
+        <span class="k">return</span> <span class="s">&#39;</span><span class="si">%.0f</span><span class="s">&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>Ensures that to_python is always called.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">legend_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Return allowed layer method names (from entrypoints)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">following</span> <span class="n">format</span><span class="p">:</span> <span class="n">string</span> <span class="n">rrggbb</span> <span class="ow">in</span> <span class="nb">hex</span> <span class="s">&quot;&quot;&quot;</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def mapnik_style(self, value_field=None):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            Makes mapnik rule for looks. For lines and polygons.</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        line/polystyle from Legend object&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapnik_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_field</span><span class="o">=</span><span class="n">value_field</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>in tuple of 2-tuples</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">LegendPoint</span><span class="p">(</span><span class="n">Legend</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>To be raised when a WorkspaceItem is out of date.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">mapnik_style</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value_field</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>A WorkspaceItem can represent something that does no longer exist.
+For example, it may refer to a shape that has been deleted from
+the database. This error may trigger deletion of such orphans.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Defines</span> <span class="n">background</span> <span class="n">maps</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <h5>Models start here</h5>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Global</span> <span class="n">settings</span><span class="o">.</span>
+
+    <span class="n">Available</span> <span class="n">keys</span> <span class="k">with</span> <span class="n">default</span> <span class="n">values</span><span class="p">:</span>
+    <span class="n">projection</span> <span class="s">&#39;EPSG:900913&#39;</span>
+    <span class="n">display_projection</span> <span class="s">&#39;EPSG:4326&#39;</span>
+    <span class="n">googlemaps_api_key</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>Collection for managing what's visible on a map.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Return</span> <span class="n">value</span> <span class="kn">from</span> <span class="nn">given</span><span class="err"> </span><span class="nn">key.</span>
+
+        <span class="n">If</span> <span class="n">the</span> <span class="n">key</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">exist</span><span class="p">,</span> <span class="k">return</span> <span class="bp">None</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>class Meta:
+<pre>verbose_name = <em>("Workspace")
+verbose_name_plural = </em>("Workspaces")
+</pre>
+name = models.CharField(max_length=80,
+<pre>blank=True,
+default='My Workspace')
+</pre>
+owner = models.ForeignKey(User, blank=True, null=True)
+visible = models.BooleanField(default=False)</p>
+<p>def <strong>unicode</strong>(self):
+return u'%s' % (self.name)</p>
+<p>def get_absolute_url(self):
+return reverse('lizard_map_workspace',
+kwargs={'workspace_id': self.id})</p>
+<p>def extent(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">Return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">}</span> <span class="k">for</span> <span class="n">given</span> <span class="n">key</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>north = None
+south = None
+east = None
+west = None
+for workspace_item in self.workspace_items.all():
+<pre>wsi_extent = workspace_item.adapter.extent()
+if wsi_extent['east'] &gt; east or east is None:
+east = wsi_extent['east']
+if wsi_extent['west'] &lt; west or west is None:
+west = wsi_extent['west']
+if wsi_extent['south'] &lt; south or south is None:
+south = wsi_extent['south']
+if wsi_extent['north'] &gt; north or north is None:
+north = wsi_extent['north']
+return {'north': north, 'south': south, 'east': east, 'west': west}
+</pre>
+def wms_layers(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>result = []
+for workspace_item in self.workspace_items.filter(
+<pre>adapter_class=ADAPTER_CLASS_WMS, visible=True):
+</pre></p>
+<h1>The special WMS layer arguments provides name, url,</h1>
+<h1>params, options.</h1>
+<p>layer_arguments = workspace_item.adapter_layer_arguments
+layer_arguments.update(
+<pre>{'wms_id': '%d_%d' % (self.id, workspace_item.id)})
+result.append(layer_arguments)
+</pre>
+result.reverse()
+return result</p>
+<p>@property
+def is_animatable(self):
+Determine if any visible workspace_item is animatable.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>Can show things on a map based on configuration in a url.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>class Meta:
+<pre>ordering = ['index']
+verbose_name = <em>("Workspace item")
+verbose_name_plural = </em>("Workspace items")
+</pre>
+name = models.CharField(max_length=80,
+<pre>blank=True)
+workspace = models.ForeignKey(Workspace,
+related_name='workspace_items')
+adapter_class = models.SlugField(blank=True,
+choices=adapter_class_names())
+adapter_layer_json = models.TextField(blank=True)</p>
+<h1>^^^ Contains json (TODO: add json verification)</h1>
+<p></pre>
+index = models.IntegerField(blank=True, default=0)
+visible = models.BooleanField(default=True)</p>
+<p>def <strong>unicode</strong>(self):
+return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace,
+<pre>self.adapter_class)
+</pre>
+@property
+def adapter(self):
+Return adapter instance for entrypoint</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Trac #2470. Return a NullAdapter instead?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Return dict of parsed adapter_layer_json.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>Converts keys to str.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Can I provide a adapter class for i.e. WMS layer?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>return bool(self.adapter_class)</p>
+<p>def has_extent(self):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>extent = self.adapter.extent()
+if None in extent.values():
+<pre>return False
+else:
+return True
+</pre>
+def delete(self, <em>args, </em>*kwargs):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>snippets = WorkspaceCollageSnippet.objects.filter(workspace_item=self)</p>
+<h1>We delete snippets individually because snippets.delete()</h1>
+<h1>will not remove empty snippet_groups.</h1>
+<p>for snippet in snippets:
+<pre>snippet.delete()
+super(WorkspaceItem, self).delete(<em>args, </em>*kwargs)
+</pre></p>
+<p>class WorkspaceCollage(models.Model):
+A collage contains selections/locations from a workspace</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>locations of all snippets</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>Flatten snippets in groups:</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>Return workspace items used by one of our snippets.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <h1>.distinct may not be used on textfields in oracle as oracle stores</h1>
+<h1>them as NCLOB columns...  At least, that was the problem when our</h1>
+<h1>'name' field was a TextField instead of a CharField.  So I reverted</h1>
+<h1>this change as it didn't turn out to be the problem after all.</h1>
+<h1>Leaving it here in case it turns out to be a recurring problem.</h1>
+<h1>found = set()</h1>
+<h1>for snippet in self.snippets.all():</h1>
+<p><pre>#     found.add(snippet.workspace_item)</p>
+<h1>return list(found)</h1>
+<p>return WorkspaceItem.objects.filter(
+workspacecollagesnippet__in=self.snippets.all()).distinct()
+</pre>
+def get_or_create_snippet(self, workspace_item, identifier_json,
+<pre>shortname, name):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p></pre>found_snippet_group = None
+identifier = parse_identifier_json(identifier_json)
+snippet_groups = self.snippet_groups.all()</p>
+<h1>Try to find most appropriate snippet group:</h1>
+<h1>(1) check for the 'group' property in snippet identifier: if</h1>
+<h1>at least one snippet in a group has this property, then the</h1>
+<h1>group matches. Solves problem with grouping on 'parameter'</h1>
+<p>if GROUPING_HINT in identifier:
+<pre>for snippet_group in snippet_groups:
+for snippet in snippet_group.snippets.all():
+if snippet.identifier.get(
+GROUPING_HINT) == identifier[GROUPING_HINT]:
+found_snippet_group = snippet_group
+break
+</pre></p>
+<h1>(2) find an item in a group with the same</h1>
+<h1>workspace_item. This is a backup grouping mechanism</h1>
+<p>if not found_snippet_group:
+for snippet_group in snippet_groups:
+if snippet_group.snippets.filter(
+workspace_item=workspace_item).exists():
+found_snippet_group = snippet_group
+break</p>
+<h1>(3) No existing snippet group: make one.</h1>
+<p>if not found_snippet_group:
+found_snippet_group = self.snippet_groups.create()</p>
+<p>snippet, snippet_created = found_snippet_group.snippets.get_or_create(
+workspace_item=workspace_item,
+identifier_json=identifier_json,
+shortname=shortname,
+name=name)
+return snippet, snippet_created</p>
+<p>class WorkspaceCollageSnippetGroup(models.Model):
+Contains a group of snippets, belongs to one collage</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Boundary value for statistics.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Percentile value for statistics.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>Restrict_to_month is used to filter the data.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Calcs standard statistics: min, max, avg, count_lt, count_gte,
+percentile and return them in a list of dicts</p>
+<p>Can be filtered by option restrict_to_month.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>Calc periods based on aggregation period setting.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>Base statistics for each period.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>Add name.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>Also show a 'totals' column.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>We cannot calculate a meaningful total percentile here.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Calculates a table with each location as column, each row as
+datetime. First row consist of column names. List of lists.</p>
+<p>Can be filtered by option restrict_to_month.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>Add snippet names</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>Collect all data and found_dates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Snippet_values is a dict of (dicts of dicts {'datetime': .,
+'value': .., 'unit': ..}, key: 'datetime').</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Translate list into dict with dates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>^^^ The value doesn't matter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>Create each row.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>Returns layout properties of this snippet_group. Used in</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>snippet.identifier['layout']"""
+result = {}
+if self.layout_y_label:
+<pre>result['y_label'] = self.layout_y_label
+if self.layout_x_label:
+result['x_label'] = self.layout_x_label
+if self.layout_y_min is not None:
+result['y_min'] = self.layout_y_min
+if self.layout_y_max is not None:
+result['y_max'] = self.layout_y_max
+if self.layout_title:
+result['title'] = self.layout_title
+if self.restrict_to_month:
+result['restrict_to_month'] = self.restrict_to_month
+if self.boundary_value is not None:
+result['horizontal_lines'] = [{
+'name': _('Boundary value'),
+'value': self.boundary_value,
+'style': {'linewidth': 3,
+'linestyle': '--',
+'color': 'green'},
+}, ]</p>
+<h1>TODO: implement percentile. Start/end date is not known here.</h1>
+<h1>if self.percentile_value is not None:</h1>
+<h1>calculated_percentile = self.statistics(self.percentile_value,,)</h1>
+<h1>result['horizontal_lines'] = [{</h1>
+<h1>'name': _('Percentile value'),</h1>
+<h1>'value': calculated_percentile,</h1>
+<h1>'style': {'linewidth': 2,</h1>
+<h1>'linestyle': '--',</h1>
+<h1>'color': 'green'},</h1>
+<h1>}, ]</h1>
+<p>return result
+</pre></p>
+<p>class WorkspaceCollageSnippet(models.Model):
+One snippet in a collage</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>^^^ Format depends on workspace_item layer_method</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>Save model and run an extra check.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <p>Check the constraint that workspace_item is in workspace of owner
+collage.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>Call the "real" save() method.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>Delete model, also deletes snippet_group if that's empty</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>return parse_identifier_json(self.identifier_json)</p>
+<p>@property
+def location(self):
+return self.workspace_item.adapter.location(**self.identifier)</p>
+<p>def image(self, start_end_dates, width=None, height=None):
+Return image from adapter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-58'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-58'>#</a>
+      </div>
+      <p>return self.workspace_item.adapter.image([self.identifier],
+<pre>start_end_dates,
+width=width, height=height)
+</pre>
+def set_identifier(self, identifier):
+sets dictionary identifier to property identifier_json</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-59'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-59'>#</a>
+      </div>
+      <p>Implements extra function 'find'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-60'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-60'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-61'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-61'>#</a>
+      </div>
+      <p>Tries to find matching legend. Second choice legend</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-62'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-62'>#</a>
+      </div>
+      <p>'default'. If nothing found, return None"""</p>
+<p>try:
+<pre>found_legend = Legend.objects.get(descriptor__icontains=name)
+except Legend.DoesNotExist:
+try:
+found_legend = Legend.objects.get(descriptor='default')
+except Legend.DoesNotExist:
+found_legend = None
+return found_legend
+</pre></p>
+<p>class Legend(models.Model):
+Simple lineair interpolated legend with min, max, color-min,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-63'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-63'>#</a>
+      </div>
+      <p>descriptor = models.CharField(max_length=80)
+min_value = models.FloatField(default=0)
+max_value = models.FloatField(default=100)
+steps = models.IntegerField(default=10)</p>
+<p>default_color = ColorField()
+min_color = ColorField()
+max_color = ColorField()
+too_low_color = ColorField()
+too_high_color = ColorField()</p>
+<p>objects = LegendManager()</p>
+<p>def <strong>unicode</strong>(self):
+<pre>return self.descriptor
+</pre>
+@property
+def float_format(self):
+Determine float format for defined legend.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-64'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-64'>#</a>
+      </div>
+      <p>Determines legend steps and values. Required by legend_default.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-65'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-65'>#</a>
+      </div>
+      <p>return legend_values(
+<pre>self.min_value, self.max_value,
+self.min_color, self.max_color, self.steps)
+</pre>
+def update(self, updates):
+Updates model with updates dict. Color values have the</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-66'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-66'>#</a>
+      </div>
+      <p>Return a Mapnik line/polystyle from Legend object</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-67'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-67'>#</a>
+      </div>
+      <p>def mapnik_rule(color, mapnik_filter=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-68'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-68'>#</a>
+      </div>
+      <p>rule = mapnik.Rule()
+if mapnik_filter is not None:
+<pre>rule.filter = mapnik.Filter(mapnik_filter)
+mapnik_color = mapnik.Color(color.r, color.g, color.b)
+</pre>
+symb_line = mapnik.LineSymbolizer(mapnik_color, 3)
+rule.symbols.append(symb_line)</p>
+<p>symb_poly = mapnik.PolygonSymbolizer(mapnik_color)
+symb_poly.fill_opacity = 0.5
+rule.symbols.append(symb_poly)
+return rule</p>
+<p>mapnik_style = mapnik.Style()
+if value_field is None:
+value_field = "value"</p>
+<h1>Default color: red.</h1>
+<p>rule = mapnik_rule(self.default_color)
+mapnik_style.rules.append(rule)</p>
+<h1>&lt; min</h1>
+<p>mapnik_filter = "[%s] &lt;= %f" % (value_field, self.min_value)
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+rule = mapnik_rule(self.too_low_color, mapnik_filter)
+mapnik_style.rules.append(rule)</p>
+<h1>in boundaries</h1>
+<p>for legend_value in self.legend_values():
+mapnik_filter = "[%s] &gt; %f and [%s] &lt;= %f" % (
+value_field, legend_value['low_value'],
+value_field, legend_value['high_value'])
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+rule = mapnik_rule(legend_value['color'], mapnik_filter)
+mapnik_style.rules.append(rule)</p>
+<h1>&gt; max</h1>
+<p>mapnik_filter = "[%s] &gt; %f" % (value_field, self.max_value)
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+rule = mapnik_rule(self.too_high_color, mapnik_filter)
+mapnik_style.rules.append(rule)</p>
+<p>return mapnik_style</p>
+<p>def mapnik_linestyle(self, value_field=None):
+Deprecated. Use mapnik_style instead. Return a Mapnik</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-69'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-69'>#</a>
+      </div>
+      <p>Legend for points.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-70'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-70'>#</a>
+      </div>
+      <p>Return a Mapnik style from Legend object.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-71'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-71'>#</a>
+      </div>
+      <p>mapnik_style = mapnik.Style()
+if value_field is None:
+<pre>value_field = "value"
+</pre></p>
+<h1>Default color: red.</h1>
+<p>mapnik_rule = point_rule(
+self.icon, self.mask, self.default_color)
+mapnik_style.rules.append(mapnik_rule)</p>
+<h1>&lt; min</h1>
+<p>mapnik_filter = "[%s] &lt;= %f" % (value_field, self.min_value)
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+mapnik_rule = point_rule(
+self.icon, self.mask, self.too_low_color,
+mapnik_filter=mapnik_filter)
+mapnik_style.rules.append(mapnik_rule)</p>
+<h1>in boundaries</h1>
+<p>for legend_value in self.legend_values():
+mapnik_filter = "[%s] &gt; %f and [%s] &lt;= %f" % (
+<pre>value_field, legend_value['low_value'],
+value_field, legend_value['high_value'])
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+mapnik_rule = point_rule(
+self.icon, self.mask, legend_value['color'],
+mapnik_filter=mapnik_filter)
+mapnik_style.rules.append(mapnik_rule)
+</pre></p>
+<h1>&gt; max</h1>
+<p>mapnik_filter = "[%s] &gt; %f" % (value_field, self.max_value)
+logger.debug('adding mapnik_filter: %s' % mapnik_filter)
+mapnik_rule = point_rule(
+self.icon, self.mask, self.too_high_color,
+mapnik_filter=mapnik_filter)
+mapnik_style.rules.append(mapnik_rule)</p>
+<p>return mapnik_style</p>
+<p>class BackgroundMap(models.Model):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-72'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-72'>#</a>
+      </div>
+      <p>LAYER_TYPE_GOOGLE = 1
+LAYER_TYPE_OSM = 2
+LAYER_TYPE_WMS = 3</p>
+<p>LAYER_TYPE_CHOICES = (
+<pre>(LAYER_TYPE_GOOGLE, 'GOOGLE'),
+(LAYER_TYPE_OSM, 'OSM'),
+(LAYER_TYPE_WMS, 'WMS'),
+)
+</pre>
+GOOGLE_TYPE_DEFAULT = 1
+GOOGLE_TYPE_PHYSICAL = 2
+GOOGLE_TYPE_HYBRID = 3
+GOOGLE_TYPE_SATELLITE = 4</p>
+<p>GOOGLE_TYPE_CHOICES = (
+(GOOGLE_TYPE_DEFAULT, 'google default'),
+(GOOGLE_TYPE_PHYSICAL, 'google physical'),
+(GOOGLE_TYPE_HYBRID, 'google hybrid'),
+(GOOGLE_TYPE_SATELLITE, 'google satellite'),
+)</p>
+<p>name = models.CharField(max_length=20)
+index = models.IntegerField(default=100)
+default = models.BooleanField(default=False)
+active = models.BooleanField(default=True)</p>
+<p>layer_type = models.IntegerField(choices=LAYER_TYPE_CHOICES)
+google_type = models.IntegerField(
+choices=GOOGLE_TYPE_CHOICES,
+null=True, blank=True,
+help_text='Choose map type in case of GOOGLE maps.')
+layer_url = models.CharField(
+max_length=200,
+null=True, blank=True,
+help_text='Tile url for use with OSM or WMS',
+default='http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
+layer_names = models.TextField(
+null=True, blank=True,
+help_text='Fill in layer names in case of WMS')</p>
+<p>class Meta:
+ordering = ('index', )</p>
+<p>def <strong>unicode</strong>(self):
+return '%s' % self.name</p>
+<p>class Setting(models.Model):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-73'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-73'>#</a>
+      </div>
+      <p>key = models.CharField(max_length=20, unique=True)
+value = models.CharField(max_length=200)</p>
+<p>def <strong>unicode</strong>(self):
+<pre>return '%s = %s' % (self.key, self.value)
+</pre>
+@classmethod
+def get(cls, key, default=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-74'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-74'>#</a>
+      </div>
+      <p>try:
+<pre>setting = cls.objects.get(key=key)
+return setting.value
+except cls.DoesNotExist:
+logger.warn('Setting "%s" does not exist, taking default '
+'value "%s"' % (key, default))
+return default
+</pre>
+@classmethod
+def get_dict(cls, key, default=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

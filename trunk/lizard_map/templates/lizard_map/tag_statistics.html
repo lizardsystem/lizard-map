@@ -1,0 +1,38 @@
+{% if statistics %}
+{% load workspaces %}
+<h3>Statistieken</h3>
+<p>
+  <a href="{% url lizard_map.export_snippet_group_statistics_csv snippet_group_id=snippet_group.id %}"
+     class="ss_table_save ss_sprite noprint">export statistieken</a>
+</p>
+<table class="generic-table">
+  <thead>
+    <tr>
+      <th>Naam</th>
+      <th>Periode</th>
+      <th class="number">Min</th>
+      <th class="number">Max</th>
+      <th class="number">Gem</th>
+      <th class="number">Aantal onder {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
+      <th class="number">Aantal boven {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
+      <th class="number">Percentiel {{ snippet_group.percentile_value|default_if_none:"(geen)"}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for stat in statistics %}
+    <tr>
+      <td>{{ stat.name }}</td>
+      <td>{{ stat.period }}</td>
+      <td class="number">{{ stat.min|float_or_exp|default:"-" }}</td>
+      <td class="number">{{ stat.max|float_or_exp|default:"-" }}</td>
+      <td class="number">{{ stat.avg|float_or_exp|default:"-" }}</td>
+      <td class="number">{{ stat.count_lt|floatformat|default:"-" }}</td>
+      <td class="number">{{ stat.count_gte|floatformat|default:"-" }}</td>
+      <td class="number">{{ stat.percentile|floatformat:2|default:"-" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Geen statistieken beschikbaar.</p>
+{% endif %}

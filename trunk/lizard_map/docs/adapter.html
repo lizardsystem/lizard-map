@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>adapter.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>adapter.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Helper classes and functions for adapters</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="kn">import</span> <span class="n">relativedelta</span>
+<span class="kn">from</span> <span class="nn">dateutil.rrule</span> <span class="kn">import</span> <span class="n">YEARLY</span><span class="p">,</span> <span class="n">MONTHLY</span><span class="p">,</span> <span class="n">DAILY</span><span class="p">,</span> <span class="n">HOURLY</span><span class="p">,</span> <span class="n">MINUTELY</span><span class="p">,</span> <span class="n">SECONDLY</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">django.utils</span> <span class="kn">import</span> <span class="n">simplejson</span> <span class="k">as</span> <span class="n">json</span>
+<span class="kn">from</span> <span class="nn">matplotlib.backends.backend_agg</span> <span class="kn">import</span> <span class="n">FigureCanvasAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">AutoDateFormatter</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">AutoDateLocator</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">DateFormatter</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">RRuleLocator</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">date2num</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">num2date</span>
+<span class="kn">from</span> <span class="nn">matplotlib.dates</span> <span class="kn">import</span> <span class="n">rrulewrapper</span>
+<span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MaxNLocator</span>
+<span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">ScalarFormatter</span>
+<span class="kn">from</span> <span class="nn">lizard_map.matplotlib_settings</span> <span class="kn">import</span> <span class="n">FONT_SIZE</span>
+<span class="kn">from</span> <span class="nn">lizard_map.matplotlib_settings</span> <span class="kn">import</span> <span class="n">SCREEN_DPI</span>
+
+<span class="n">LEGEND_WIDTH</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">LEFT_LABEL_WIDTH</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">BOTTOM_LINE_HEIGHT</span> <span class="o">=</span> <span class="n">FONT_SIZE</span> <span class="o">*</span> <span class="mf">1.5</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Return size in inches for matplotlib's benefit</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">_inches_from_pixels</span><span class="p">(</span><span class="n">pixels</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>return pixels / SCREEN_DPI</p>
+<p>def parse_identifier_json(identifier_json):
+Return dict of parsed identifier_json.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Converts</span> <span class="n">keys</span> <span class="n">to</span> <span class="nb">str</span><span class="o">.</span>
+    <span class="n">TODO</span><span class="p">:</span> <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;%22&#39;</span><span class="p">,</span> <span class="s">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">better</span> <span class="n">way</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>identifier_json = identifier_json.replace('%22', '"').replace('%20', ' ')
+if not identifier_json:
+<pre>return {}
+result = {}
+for k, v in json.loads(identifier_json).items():
+result[str(k)] = v
+return result
+</pre></p>
+<p>def workspace_item_image_url(workspace_item_id, identifiers,
+<pre>strip_layout=False, session_graph_options=False):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Returns</span> <span class="n">image</span> <span class="n">url</span>
+
+    <span class="n">Identifiers</span> <span class="ow">is</span> <span class="n">a</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">dicts</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p></pre>identifiers_copy = identifiers[:]
+if strip_layout:
+<pre>for identifier in identifiers_copy:
+if 'layout' in identifier:
+del identifier['layout']
+identifier_json_list = [json.dumps(identifier).replace('"', '%22') for 
+identifier in identifiers_copy]
+if session_graph_options:
+img_url = reverse(
+"lizard_map.workspace_item_image_session_graph_options",
+kwargs={'workspace_item_id': workspace_item_id, })
+else:
+img_url = reverse(
+"lizard_map.workspace_item_image",
+kwargs={'workspace_item_id': workspace_item_id, })
+img_url = img_url + '?' + '&amp;'.join(['identifier=%s' % i for i in
+identifier_json_list])
+return img_url
+</pre></p>
+<p>class LessTicksAutoDateLocator(AutoDateLocator):
+Similar to matplotlib.date.AutoDateLocator, but with less ticks.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>numticks = 5
+Difference to original AutoDateLocator: less ticks</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">numticks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numticks</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>self._freq = YEARLY</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">interval</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">bymonth</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">bymonthday</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">byhour</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">byminute</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">bysecond</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">numYears</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">YEARLY</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numYears</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">numMonths</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">MONTHLY</span>
+            <span class="n">bymonth</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">13</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numMonths</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">numDays</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">DAILY</span>
+            <span class="n">bymonth</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">bymonthday</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numDays</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">numHours</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">HOURLY</span>
+            <span class="n">bymonth</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">bymonthday</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">byhour</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">)</span>      <span class="c"># show every hour</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numHours</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">numMinutes</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">MINUTELY</span>
+            <span class="n">bymonth</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">bymonthday</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">byhour</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">byminute</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numMinutes</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>end if</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">elif</span> <span class="p">(</span><span class="n">numSeconds</span> <span class="o">&gt;=</span> <span class="n">numticks</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_freq</span> <span class="o">=</span> <span class="n">SECONDLY</span>
+            <span class="n">bymonth</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">bymonthday</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">byhour</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">byminute</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">bysecond</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+            <span class="n">interval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">numSeconds</span> <span class="o">//</span> <span class="n">numticks</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>end if</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>do what?
+  microseconds as floats, but floats from what reference point?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">pass</span>
+
+        <span class="n">rrule</span> <span class="o">=</span> <span class="n">rrulewrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_freq</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+                             <span class="n">dtstart</span><span class="o">=</span><span class="n">dmin</span><span class="p">,</span> <span class="n">until</span><span class="o">=</span><span class="n">dmax</span><span class="p">,</span>
+                             <span class="n">bymonth</span><span class="o">=</span><span class="n">bymonth</span><span class="p">,</span> <span class="n">bymonthday</span><span class="o">=</span><span class="n">bymonthday</span><span class="p">,</span>
+                             <span class="n">byhour</span><span class="o">=</span><span class="n">byhour</span><span class="p">,</span> <span class="n">byminute</span><span class="o">=</span><span class="n">byminute</span><span class="p">,</span>
+                             <span class="n">bysecond</span><span class="o">=</span><span class="n">bysecond</span><span class="p">)</span>
+
+        <span class="n">locator</span> <span class="o">=</span> <span class="n">RRuleLocator</span><span class="p">(</span><span class="n">rrule</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tz</span><span class="p">)</span>
+        <span class="n">locator</span><span class="o">.</span><span class="n">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="p">)</span>
+
+        <span class="n">locator</span><span class="o">.</span><span class="n">set_view_interval</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_view_interval</span><span class="p">())</span>
+        <span class="n">locator</span><span class="o">.</span><span class="n">set_data_interval</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">axis</span><span class="o">.</span><span class="n">get_data_interval</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">locator</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Multiline version of AutoDateFormatter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">MultilineAutoDateFormatter</span><span class="p">(</span><span class="n">AutoDateFormatter</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>This class needs the axes to be able to initialize. When called, the
+ticks need to be known as well. For some scales, instead of showing a
+predetermined date label at any tick, the labels are chosen dependent of
+the tick position. Note that some labels are multiline, so make sure
+there is space for them in your figure."""</p>
+<p>def <strong>init</strong>(self, locator, axes, tz=None):
+<pre>self._locator = locator
+self._formatter = DateFormatter("%b %d %Y %H:%M:%S %Z", tz)
+self._tz = tz
+self.axes = axes
+self.tickinfo = None
+</pre>
+def <strong>call</strong>(self, x, pos=0):</p>
+<p>scale = float(self._locator._get_unit())
+if not self.tickinfo:
+<pre>self.tickinfo = self.Tickinfo(self.axes.get_xticks())
+</pre>
+if (scale == 365.0):
+self._formatter = DateFormatter("%Y", self._tz)
+elif (scale == 30.0):
+if self.tickinfo.show_year(x):
+<pre>self._formatter = DateFormatter("%bn%Y", self._tz)
+else:
+self._formatter = DateFormatter("%b", self._tz)
+elif ((scale == 1.0) or (scale == 7.0)):
+if self.tickinfo.show_month(x):
+self._formatter = DateFormatter("%dn%b %Y", self._tz)
+else:
+self._formatter = DateFormatter("%d", self._tz)
+elif (scale == (1.0 / 24.0)):
+if x == self.tickinfo.max:</p>
+<h1>don't show</h1>
+<p>self._formatter = DateFormatter("%H", self._tz)
+elif self.tickinfo.show_day(x):
+self._formatter = DateFormatter("%Hn%d %b %Y", self._tz)
+else:
+self._formatter = DateFormatter("%H", self._tz)
+elif (scale == (1.0 / (24 * 60))):
+self._formatter = DateFormatter("%H:%M:%S %Z", self._tz)
+elif (scale == (1.0 / (24 * 3600))):
+self._formatter = DateFormatter("%H:%M:%S %Z", self._tz)
+else:
+self._formatter = DateFormatter("%b %d %Y %H:%M:%S %Z", self._tz)
+</pre>
+return self._formatter(x, pos)</p>
+<p>class Tickinfo(object):
+Class with tick information.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">The</span> <span class="n">methods</span> <span class="n">are</span> <span class="n">used</span> <span class="n">to</span> <span class="n">determine</span> <span class="n">what</span> <span class="n">kind</span> <span class="n">of</span> <span class="n">label</span> <span class="n">to</span> <span class="n">put</span> <span class="n">at</span> <span class="n">a</span>
+        <span class="n">particular</span> <span class="n">tick</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        def show_day(self, tick):</span>
+<span class="s">#DIVIDER</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">            if (num2date(self.min).month == num2date(self.max).month):</span>
+<span class="s">                if tick == self.mid:</span>
+<span class="s">                    return True</span>
+<span class="s">                else:</span>
+<span class="s">                    return False</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">            else:</span>
+<span class="s">                middle_of_month = self.middle_of_month(tick)</span>
+<span class="s">                if (abs(tick - middle_of_month) &lt; self.step / 2 or</span>
+<span class="s">                    (middle_of_month &lt; self.min and tick == self.min) or</span>
+<span class="s">                    (middle_of_month &gt; self.max) and tick == self.max):</span>
+<span class="s">                    return True</span>
+<span class="s">                else:</span>
+<span class="s">                    return False</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        def show_year(self, tick):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            dt = num2date(tick)</span>
+<span class="s">            middle_of_day = datetime.datetime(dt.year, dt.month, dt.day, 12)</span>
+<span class="s">            return date2num(middle_of_day)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        def middle_of_month(self, tick):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">            dt = num2date(tick)</span>
+<span class="s">            middle_of_year = datetime.datetime(dt.year, 7, 1)</span>
+<span class="s">            return date2num(middle_of_year)</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">class Graph(object):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        self.figure.set_facecolor(&#39;white&#39;)</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.legend_width = 0.08</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.left_label_width = LEFT_LABEL_WIDTH / self.width</span>
+<span class="s">        self.bottom_axis_location = BOTTOM_LINE_HEIGHT / self.height</span>
+<span class="s">        self.x_label_height = 0.08</span>
+<span class="s">        self.legend_on_bottom_height = 0.0</span>
+<span class="s">        self.axes = self.figure.add_subplot(111)</span>
+<span class="s">        self.axes.grid(True)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.fixup_axes()</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.ax2 = None</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        self.axes.axvline(self.today, color=&#39;orange&#39;, lw=1, ls=&#39;--&#39;)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def set_ylim_margin(self, top=0.1, bottom=0.0):</span>
+<span class="s">#DIVIDER</span>
+
+<span class="s">        axes_to_change = self.axes</span>
+<span class="s">        if second:</span>
+<span class="s">            if self.ax2 is None:</span>
+<span class="s">                return</span>
+<span class="s">            else:</span>
+<span class="s">                axes_to_change = self.ax2</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">        if not self.restrict_to_month:</span>
+<span class="s">            major_locator = LessTicksAutoDateLocator()</span>
+<span class="s">            axes_to_change.xaxis.set_major_locator(major_locator)</span>
+
+<span class="s">            major_formatter = MultilineAutoDateFormatter(</span>
+<span class="s">                major_locator, axes_to_change)</span>
+<span class="s">            axes_to_change.xaxis.set_major_formatter(major_formatter)</span>
+
+<span class="s">        available_height = (self.height -</span>
+<span class="s">                            BOTTOM_LINE_HEIGHT -</span>
+<span class="s">                            self.x_label_height -</span>
+<span class="s">                            self.legend_on_bottom_height)</span>
+<span class="s">        approximate_lines = int(available_height / (FONT_SIZE * 1.5))</span>
+<span class="s">        max_number_of_ticks = approximate_lines</span>
+<span class="s">        if max_number_of_ticks &lt; 2:</span>
+<span class="s">            max_number_of_ticks = 2</span>
+<span class="s">        locator = MaxNLocator(nbins=max_number_of_ticks - 1)</span>
+<span class="s">        if not second:</span>
+<span class="s">            axes_to_change.yaxis.set_major_locator(locator)</span>
+<span class="s">            axes_to_change.yaxis.set_major_formatter(</span>
+<span class="s">                ScalarFormatter(useOffset=False))</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def legend_space(self):</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        Displays legend. Default is right side, but if the width is</span>
+<span class="s">        too small, it will display under the graph.</span>
+
+<span class="s">        handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)</span>
+<span class="s">        labels is list of strings</span>
+<span class="s">#DIVIDER</span>
+<span class="s">        self.ax2 = self.axes.twinx()</span>
+<span class="s">        self.fixup_axes(second=True)</span>
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">    def http_png(self):</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Return true or false to show day at this tick.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <h1>If there is only one day in the ticks, show it at the center</h1>
+<p>if (num2date(self.min).day == num2date(self.max).day):
+<pre>if tick == self.mid:
+return True
+else:
+return False
+</pre></p>
+<h1>If there are more days in the ticks, show a label for that</h1>
+<h1>tick that is closest to the center of their day.</h1>
+<p>else:
+middle_of_day = self.middle_of_day(tick)
+if (abs(tick - middle_of_day) &lt; self.step / 2 or
+(middle_of_day &lt; self.min and tick == self.min) or
+(middle_of_day &gt; self.max) and tick == self.max):
+return True
+else:
+return False</p>
+<p>def show_month(self, tick):
+Return true or false to show month at this tick.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>If there is only one month in the ticks, show it at the center</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      <p>If there are more months in the ticks, show a label for that
+tick that is closest to the center of their month.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Return true or false to show year at this tick.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <h1>If there is only one year in the ticks, show it at the center</h1>
+<p>if (num2date(self.min).year == num2date(self.max).year):
+<pre>if tick == self.mid:
+return True
+else:
+return False
+</pre></p>
+<h1>If there are more years in the ticks, show a label for that</h1>
+<h1>tick that is closest to the center of their year.</h1>
+<p>else:
+middle_of_year = self.middle_of_year(tick)
+if (abs(tick - middle_of_year) &lt; self.step / 2 or
+(middle_of_year &lt; self.min and tick == self.min) or
+(middle_of_year &gt; self.max) and tick == self.max):
+return True
+else:
+return False</p>
+<p>def middle_of_day(self, tick):
+Return the middle of the day as matplotlib number.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>Return the middle of the month as matplotlib number.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>dt = num2date(tick)
+middle_of_month = datetime.datetime(dt.year, dt.month, 16)
+return date2num(middle_of_month)</p>
+<p>def middle_of_year(self, tick):
+Return the middle of the year as matplotlib number.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p>Class for matplotlib graphs, i.e. for popups, krw graphs</p>
+<ul>
+<li>calculates correct size</li>
+<li>horizontal axis = dates</li>
+<li>vertical axis = user defined</li>
+<li>outputs httpresponse for png</li>
+</ul>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>Figure color</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>Axes and legend location: full width is "1".</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>^^^ No legend by default, but we <em>do</em> allow a little space to the
+right of the graph to prevent the rightmost label from being cut off
+(at least, in a reasonable percentage of the cases).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>Fixup_axes in init, so axes can be customised (for example set_ylim).</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>deze kan je zelf zetten</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>Show line for today.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>Adjust y-margin of axes.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>The standard margin is sometimes zero. This method sets the margin
+based on already present data in the visible part of the plot, so
+call it after plotting and before http_png().</p>
+<p>Note that it is assumed here that the y-axis is not reversed.</p>
+<p>From matplotlib 1.0 on there is a set_ymargin method
+like this already."""</p>
+<p>lines = self.axes.lines
+arrays = [numpy.array(l.get_data()) for l in lines]</p>
+<h1>axhline and axvline give trouble - remove short lines from list</h1>
+<p>big_arrays = [a for a in arrays if a.size &gt; 4]
+if len(big_arrays) &gt; 0:
+<pre>data = numpy.concatenate(big_arrays, axis=1)
+if len(data[0]) &gt; 0:</p>
+<h1>Datatimes from database may have timezone information.</h1>
+<h1>In that case, start_date and end_date cannot be naive.</h1>
+<h1>Assume all datetimes do have the same timezone, so we</h1>
+<h1>can do the comparison.</h1>
+<p>start_date_tz =
+self.start_date.replace(tzinfo=data[0][0].tzinfo)
+end_date_tz =
+self.end_date.replace(tzinfo=data[0][0].tzinfo)
+index_in_daterange = ((data[0] &lt; end_date_tz) &amp;
+(data[0] &gt; start_date_tz))
+if index_in_daterange.any():
+data_low = numpy.min(data[1, index_in_daterange])
+data_high = numpy.max(data[1, index_in_daterange])
+data_span = data_high - data_low
+view_low = data_low - data_span * bottom
+view_high = data_high + data_span * top
+self.axes.set_ylim(view_low, view_high)
+return None
+</pre>
+def suptitle(self, title):
+self.figure.suptitle(title,
+x=self.left_label_width,
+horizontalalignment='left')</p>
+<p>def set_xlabel(self, xlabel):
+self.axes.set_xlabel(xlabel)
+self.x_label_height = BOTTOM_LINE_HEIGHT / self.height</p>
+<p>def fixup_axes(self, second=False):
+Fix up the axes by limiting the amount of items.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <pre><code>   available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
+   approximate_characters = int(available_width / (FONT_SIZE / 2))
+   max_number_of_ticks = approximate_characters // 20
+   if max_number_of_ticks &lt; 2:
+       max_number_of_ticks = 2
+</code></pre>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>reserve space for legend (on the right side). even when</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      <p>there is no legend displayed"""
+self.legend_width = LEGEND_WIDTH / self.width</p>
+<p>def legend(self, handles=None, labels=None, ncol=1):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <h1>experimental update: do not reserve space for legend by</h1>
+<h1>default, just place over graph. use legend_space to manually</h1>
+<h1>add space</h1>
+<p>if handles is None and labels is None:
+<pre>handles, labels = self.axes.get_legend_handles_labels()
+if handles and labels:</p>
+<h1>Determine 'small' or 'large'</h1>
+<p>if self.width &lt; 500:
+legend_loc = 4  # lower right</p>
+<h1>approximation of legend height</h1>
+<p>self.legend_on_bottom_height = min(
+(len(labels) / ncol + 2) * BOTTOM_LINE_HEIGHT /
+self.height,
+0.5)
+else:
+legend_loc = 1  # Upper right'
+</pre>
+return self.figure.legend(
+handles,
+labels,
+bbox_to_anchor=(1 - self.legend_width,
+<pre>0,  # self.bottom_axis_location
+self.legend_width,</p>
+<h1>1 = Upper right of above bbox. Use 0 for</h1>
+<h1>'best'</h1>
+<p>1),
+loc=legend_loc,
+ncol=ncol,
+fancybox=True,
+shadow=True,)</p>
+<h1>legend.set_size('medium')</h1>
+<h1>TODO: get rid of the border around the legend.</h1>
+<p></pre>
+def init_second_axes(self):
+init second axes</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>Output plot to png. Also calculates size of plot and put 'now'</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

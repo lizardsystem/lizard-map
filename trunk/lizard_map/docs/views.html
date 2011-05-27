@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>views.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>views.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Workspace stuff</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">CUSTOM_LEGENDS</span> <span class="o">=</span> <span class="s">&#39;custom_legends&#39;</span>
+<span class="n">MAP_LOCATION</span> <span class="o">=</span> <span class="s">&#39;map_location&#39;</span>
+<span class="n">MAP_BASE_LAYER</span> <span class="o">=</span> <span class="s">&#39;map_base_layer&#39;</span>  <span class="c"># The selected base layer</span>
+<span class="n">CRUMBS_HOMEPAGE</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;home&#39;</span><span class="p">,</span> <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;hoofdpagina&#39;</span><span class="p">,</span> <span class="s">&#39;url&#39;</span><span class="p">:</span> <span class="s">&#39;/&#39;</span><span class="p">}</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Default apps screen, make your own template.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">homepage</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+             <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/app_screen.html&#39;</span><span class="p">,</span>
+             <span class="n">crumbs_prepend</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+             <span class="n">application_screen_slug</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Optionally, if application_screen_slug is None, try to fetch GET
+parameter 'screen' from url.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">crumbs_prepend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">crumbs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">crumbs_prepend</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">crumbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">CRUMBS_HOMEPAGE</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">application_screen_slug</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">application_screen_slug</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;screen&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span>
+        <span class="n">template</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;javascript_hover_handler&#39;</span><span class="p">:</span> <span class="s">&#39;popup_hover_handler&#39;</span><span class="p">,</span>
+         <span class="s">&#39;javascript_click_handler&#39;</span><span class="p">:</span> <span class="s">&#39;popup_click_handler&#39;</span><span class="p">,</span>
+         <span class="s">&#39;crumbs&#39;</span><span class="p">:</span> <span class="n">crumbs</span><span class="p">,</span>
+         <span class="s">&#39;application_screen_slug&#39;</span><span class="p">:</span> <span class="n">application_screen_slug</span><span class="p">},</span>
+        <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Render page with one workspace.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+              <span class="n">workspace_id</span><span class="p">,</span>
+              <span class="n">javascript_click_handler</span><span class="o">=</span><span class="s">&#39;popup_click_handler&#39;</span><span class="p">,</span>
+              <span class="n">javascript_hover_handler</span><span class="o">=</span><span class="s">&#39;popup_hover_handler&#39;</span><span class="p">,</span>
+              <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/workspace.html&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>workspaces in dictionary, because of ... ?</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">workspace</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span>
+        <span class="n">template</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;workspaces&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;user&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">workspace</span><span class="p">]},</span>
+         <span class="s">&#39;javascript_click_handler&#39;</span><span class="p">:</span> <span class="n">javascript_click_handler</span><span class="p">,</span>
+         <span class="s">&#39;javascript_hover_handler&#39;</span><span class="p">:</span> <span class="n">javascript_hover_handler</span><span class="p">,</span>
+         <span class="p">},</span>
+        <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>reorder workspace items. returns workspace_id</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace_item_reorder</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                           <span class="n">workspace_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                           <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/tag_workspace.html&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>reorders workspace_item[] in new order. expects all workspace_items from
+workspace</p>
+<p>TODO: check permissions</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">workspace_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;workspace_id&#39;</span><span class="p">]</span>
+
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">)</span>
+    <span class="n">workspace_items</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceItem</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_item_id</span><span class="p">)</span> <span class="k">for</span>
+        <span class="n">workspace_item_id</span> <span class="ow">in</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s">&#39;workspace-items[]&#39;</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">workspace_item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">workspace_items</span><span class="p">):</span>
+        <span class="n">workspace_item</span><span class="o">.</span><span class="n">workspace</span> <span class="o">=</span> <span class="n">workspace</span>
+        <span class="n">workspace_item</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="mi">10</span>
+        <span class="n">workspace_item</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">id</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>TODO: put item_add and item_edit in 1 function</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>add new workspace item to workspace. returns rendered workspace</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace_item_add</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                       <span class="n">workspace_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">is_temp_workspace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                       <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/tag_workspace.html&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>if workspace_id is None:
+<pre>workspace_id = request.POST['workspace_id']
+workspace = get_object_or_404(Workspace, pk=workspace_id)
+name = request.POST['name']
+adapter_class = request.POST['adapter_class']
+adapter_layer_json = request.POST['adapter_layer_json']
+</pre>
+if is_temp_workspace:</p>
+<h1>only one workspace item is used in the temp workspace</h1>
+<p>workspace.workspace_items.all().delete()
+if workspace.workspace_items.count() &gt; 0:
+max_index = workspace.workspace_items.aggregate(
+<pre>Max('index'))['index__max']
+else:
+max_index = 10
+</pre>
+workspace.workspace_items.create(adapter_class=adapter_class,
+<pre>index=max_index + 10,
+adapter_layer_json=adapter_layer_json,
+name=name)
+return HttpResponse(json.dumps(workspace.id))
+</pre></p>
+<p>@never_cache
+def workspace_item_empty(request,
+workspace_id,
+is_temp_workspace=False,
+template='lizard_map/tag_workspace.html'):
+Clear workspace items for given workspace.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">workspace</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">Workspace</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">)</span>
+    <span class="n">workspace</span><span class="o">.</span><span class="n">workspace_items</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>edits a workspace_item</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace_item_edit</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">workspace_item_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">visible</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p>returns workspace_id</p>
+<p>TODO: permission</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">workspace_item_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_item_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;workspace_item_id&#39;</span><span class="p">]</span>
+    <span class="n">workspace_item</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceItem</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_item_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">visible</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;visible&#39;</span><span class="p">]:</span>
+            <span class="n">visible</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;visible&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">visible</span><span class="p">:</span>
+        <span class="n">lookup</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;true&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&#39;false&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+        <span class="n">workspace_item</span><span class="o">.</span><span class="n">visible</span> <span class="o">=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">visible</span><span class="p">]</span>
+    <span class="n">workspace_item</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">workspace_item</span><span class="o">.</span><span class="n">workspace</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>Returns extent for the workspace in json.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace_item_extent</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">workspace_item_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Transform to correct client-side projection, then return coordinates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">workspace_item_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s">&#39;workspace_item_id&#39;</span><span class="p">]</span>
+    <span class="n">workspace_item</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceItem</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_item_id</span><span class="p">)</span>
+    <span class="n">extent</span> <span class="o">=</span> <span class="n">workspace_item</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">extent</span><span class="p">()</span>
+
+    <span class="n">map_settings</span> <span class="o">=</span> <span class="n">MapSettings</span><span class="p">()</span>
+    <span class="n">extent_converted</span> <span class="o">=</span> <span class="n">map_settings</span><span class="o">.</span><span class="n">convert_google_extent_map_srs</span><span class="p">(</span>
+        <span class="n">extent</span><span class="p">[</span><span class="s">&#39;east&#39;</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="s">&#39;north&#39;</span><span class="p">],</span>
+        <span class="n">extent</span><span class="p">[</span><span class="s">&#39;west&#39;</span><span class="p">],</span> <span class="n">extent</span><span class="p">[</span><span class="s">&#39;south&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">extent_converted</span><span class="p">))</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-14'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-14'>#</a>
+      </div>
+      <p>Edits snippet_group properties using post.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">snippet_group_graph_edit</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">snippet_group_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-15'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-15'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">post</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">x_label</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;x_label&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">y_label</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;y_label&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">y_min</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;y_min&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">y_max</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;y_max&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">boundary_value</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;boundary_value&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">percentile_value</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;percentile_value&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">aggregation_period</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;aggregation_period&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="n">restrict_to_month</span> <span class="o">=</span> <span class="n">post</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;restrict_to_month&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">restrict_to_month</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">restrict_to_month</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">restrict_to_month</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">restrict_to_month</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="k">assert</span> <span class="n">restrict_to_month</span> <span class="o">&lt;</span> <span class="mi">13</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">restrict_to_month</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">snippet_group</span> <span class="o">=</span> <span class="n">WorkspaceCollageSnippetGroup</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">pk</span><span class="o">=</span><span class="n">snippet_group_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-16'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-16'>#</a>
+      </div>
+      <p>Empty string is also good! it will force default title.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_title</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_x_label</span> <span class="o">=</span> <span class="n">x_label</span>
+    <span class="k">if</span> <span class="n">y_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_y_label</span> <span class="o">=</span> <span class="n">y_label</span>
+    <span class="n">snippet_group</span><span class="o">.</span><span class="n">restrict_to_month</span> <span class="o">=</span> <span class="n">restrict_to_month</span>
+    <span class="k">if</span> <span class="n">aggregation_period</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">aggregation_period</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">aggregation_period</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_y_min</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_min</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_y_min</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_y_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">layout_y_max</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">boundary_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">boundary_value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">boundary_value</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">percentile_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">percentile_value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="n">snippet_group</span><span class="o">.</span><span class="n">percentile_value</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">snippet_group</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-17'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-17'>#</a>
+      </div>
+      <p>Draws a single image for the snippet_group. There MUST be at</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">snippet_group_image</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">snippet_group_id</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-18'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-18'>#</a>
+      </div>
+      <p>least 1 snippet in the group."""</p>
+<p>snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+<pre>pk=snippet_group_id)
+snippets = snippet_group.snippets.all()
+identifiers = [snippet.identifier for snippet in snippets]
+</pre></p>
+<h1>Add aggregation_period to each identifier</h1>
+<p>for identifier in identifiers:
+if not 'layout' in identifier:
+<pre>identifier['layout'] = {}
+identifier['layout'][
+'aggregation_period'] = snippet_group.aggregation_period
+</pre></p>
+<h1>Add legend option ('layout' is always present).</h1>
+<p>if legend:
+for identifier in identifiers:
+identifier['layout']['legend'] = True</p>
+<h1>Get width and height.</h1>
+<p>width = request.GET.get('width')
+height = request.GET.get('height')
+if width:
+width = int(width)
+else:</p>
+<h1>We want None, not u''.</h1>
+<p>width = None
+if height:
+height = int(height)
+else:</p>
+<h1>We want None, not u''.</h1>
+<p>height = None</p>
+<p>using_workspace_item = snippets[0].workspace_item
+start_date, end_date = current_start_end_dates(request)
+layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...</p>
+<h1>Add current position of slider, if available</h1>
+<p>layout_extra.update(slider_layout_extra(request))</p>
+<p>return using_workspace_item.adapter.image(identifiers,
+<pre>start_date, end_date,
+width, height,
+layout_extra=layout_extra)
+</pre></p>
+<p>@never_cache
+def workspace_item_delete(request, object_id=None):
+delete workspace item from workspace</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">returns</span> <span class="n">workspace_id</span>
+
+    <span class="k">if</span> <span class="n">workspace_item_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">provided</span><span class="p">,</span> <span class="n">it</span> <span class="n">tries</span> <span class="n">to</span> <span class="n">get</span> <span class="n">the</span> <span class="n">variable</span>
+    <span class="n">workspace_item_id</span> <span class="kn">from</span> <span class="nn">the</span><span class="err"> </span><span class="nn">request.POST</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-19'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-19'>#</a>
+      </div>
+      <p>if object_id is None:
+<pre>object_id = request.POST['object_id']
+workspace_item = get_object_or_404(WorkspaceItem, pk=object_id)
+workspace_id = workspace_item.workspace.id
+workspace_item.delete()
+</pre>
+return HttpResponse(json.dumps(workspace_id))</p>
+<p>@never_cache
+def session_workspace_edit_item(request,
+<pre>workspace_item_id=None,
+workspace_category='user'):
+edits workspace item, the function automatically finds best</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">appropriate</span> <span class="n">workspace</span>
+
+    <span class="k">if</span> <span class="n">workspace_item_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">,</span> <span class="n">a</span> <span class="n">new</span> <span class="n">workspace_item</span> <span class="n">will</span> <span class="n">be</span> <span class="n">created</span>
+    <span class="n">using</span> <span class="n">workspace_item_add</span> <span class="n">TODO</span> <span class="k">if</span> <span class="n">workspace_item_id</span> <span class="ow">is</span> <span class="n">filled</span> <span class="ow">in</span><span class="p">,</span>
+    <span class="nb">apply</span> <span class="n">edits</span> <span class="ow">and</span> <span class="n">save</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      <p></pre>workspace_id = request.session['workspaces'][workspace_category][0]</p>
+<p>is_temp_workspace = workspace_category == 'temp'</p>
+<p>if workspace_item_id is None:
+<pre>return workspace_item_add(request, workspace_id,
+is_temp_workspace=is_temp_workspace)
+</pre></p>
+<h1>todo: maak functie af</h1>
+<p>return</p>
+<p>@never_cache
+def session_workspace_extent(request, workspace_category='user'):
+Returns extent for the workspace in json.</p>
+<p>if 'workspaces' in request.session:
+workspace_id = request.session['workspaces'][workspace_category][0]
+workspace = get_object_or_404(Workspace, pk=workspace_id)
+return HttpResponse(json.dumps(workspace.extent()))
+else:
+return HttpResponse(json.dumps(''))</p>
+<p>def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
+Return html with info on list of 'found' objects.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Optionally</span> <span class="n">give</span> <span class="n">pagenumber</span> <span class="p">(</span><span class="n">starts</span> <span class="n">at</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span> <span class="n">If</span> <span class="n">omitted</span><span class="p">,</span> <span class="n">just</span> <span class="n">join</span>
+    <span class="n">everything</span><span class="o">.</span>
+
+    <span class="n">found</span><span class="p">:</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">dictionaries</span> <span class="p">{</span><span class="s">&#39;distance&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s">&#39;timeserie&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span>
+    <span class="s">&#39;workspace_item&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">,</span> <span class="s">&#39;identifier&#39;</span><span class="p">:</span> <span class="o">...</span><span class="p">}</span><span class="o">.</span>
+
+    <span class="n">Note</span><span class="p">:</span> <span class="n">identifier</span> <span class="n">must</span> <span class="n">be</span> <span class="n">a</span> <span class="nb">dict</span><span class="o">.</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">the_real_id</span><span class="p">}</span><span class="o">.</span>
+
+    <span class="n">Result</span> <span class="n">format</span> <span class="p">(</span><span class="n">used</span> <span class="n">by</span> <span class="n">the</span> <span class="n">javascript</span> <span class="n">popup</span> <span class="n">function</span><span class="p">):</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="n">popup_id</span><span class="p">,</span>
+              <span class="s">&#39;x&#39;</span><span class="p">:</span> <span class="n">x_found</span><span class="p">,</span>
+              <span class="s">&#39;y&#39;</span><span class="p">:</span> <span class="n">y_found</span><span class="p">,</span>
+              <span class="s">&#39;html&#39;</span><span class="p">:</span> <span class="n">result_html</span><span class="p">,</span>
+              <span class="s">&#39;big&#39;</span><span class="p">:</span> <span class="n">big_popup</span><span class="p">,</span>
+              <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      <p>html = {}
+x_found = None
+y_found = None</p>
+<h1>Regroup found list of objects into workspace_items.</h1>
+<p>display_groups = {}
+display_group_order = []
+for display_object in found:
+<pre>workspace_item = display_object['workspace_item']
+if workspace_item.id not in display_groups:
+display_groups[workspace_item.id] = []
+display_groups[workspace_item.id].append(display_object)
+if workspace_item.id not in display_group_order:
+display_group_order.append(workspace_item.id)
+</pre>
+if len(display_groups) &gt; 1:
+big_popup = True
+else:
+big_popup = False</p>
+<h1>Figure out temp workspace items (we don't want add-to-collage there).</h1>
+<p>non_user_workspace_item_ids = []
+if request is not None:
+workspace_manager = WorkspaceManager(request)
+workspace_manager.load_workspaces()
+workspace_ids = dict([(ws.id, None) for ws in
+<pre>workspace_manager.workspaces['user']])</p>
+<h1>Add workspace_items of items not in workspace.</h1>
+<p>non_user_workspace_item_ids = []
+for f in found:
+ws_item = f['workspace_item']
+if ws_item.workspace.id not in workspace_ids:
+non_user_workspace_item_ids.append(ws_item.id)
+</pre></p>
+<h1>Now display them.</h1>
+<p>for workspace_item_id, display_group in display_groups.items():</p>
+<h1>There MUST be at least one item in the group</h1>
+<p>workspace_item = display_group[0]['workspace_item']</p>
+<h1>Check if this display object must have the option add_snippet</h1>
+<p>if (hide_add_snippet or
+(workspace_item_id in non_user_workspace_item_ids)):</p>
+<p>add_snippet = False
+else:
+add_snippet = True</p>
+<h1>Add workspace_item name on top</h1>
+<h1>title = workspace_item.name</h1>
+<p>identifiers = [display_object['identifier'] for display_object
+in display_group]</p>
+<h1>img_url = workspace_item_image_url(workspace_item.id, identifiers)</h1>
+<p>html_per_workspace_item = workspace_item.adapter.html(
+identifiers=identifiers,
+layout_options={'add_snippet': add_snippet,
+'legend': True},
+)</p>
+<p>if 'google_coords' in display_object:
+x_found, y_found = display_object['google_coords']
+html[workspace_item.id] = html_per_workspace_item</p>
+<p>result_html = [html[index] for index in display_group_order][:3]</p>
+<p>if popup_id is None:
+popup_id = 'popup-id'
+result = {'id': popup_id,
+'x': x_found,
+'y': y_found,
+'html': result_html,
+'big': big_popup,
+}
+return HttpResponse(json.dumps(result))</p>
+<p>def popup_collage_json(collage, popup_id, request=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">display</span> <span class="n">collage</span> <span class="n">by</span> <span class="n">adding</span> <span class="n">display_groups</span> <span class="n">together</span>
+
+    <span class="n">TODO</span><span class="p">:</span> <span class="n">see</span> <span class="n">popup_json</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      <p>html = []
+snippet_groups = collage.snippet_groups.all()
+if len(snippet_groups) &gt; 1:
+<pre>big_popup = True
+else:
+big_popup = False
+google_x, google_y = None, None
+</pre>
+for snippet_group in snippet_groups:
+snippets = snippet_group.snippets.all()
+if snippets:
+<pre># Pick workspace_item of first snippet to build html
+workspace_item = snippets[0].workspace_item
+html_per_workspace_item = workspace_item.adapter.html(
+snippet_group=snippet_group,
+layout_options={'legend': True})
+html.append(html_per_workspace_item)
+</pre></p>
+<h1>Pick the location of the first snippet.</h1>
+<p>if 'google_coords' in snippets[0].location:
+google_x, google_y = snippets[0].location['google_coords']</p>
+<p>result = {'id': popup_id,
+'x': google_x,
+'y': google_y,
+'html': html,
+'big': big_popup,
+}
+return HttpResponse(json.dumps(result))</p>
+<h1>Collages stuff</h1>
+<p>def collage(request,
+collage_id,
+editable=False,
+template='lizard_map/collage.html'):
+Render page with one collage</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">show_table</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;show_table&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">collage</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceCollage</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">collage_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span>
+        <span class="n">template</span><span class="p">,</span>
+        <span class="p">{</span><span class="s">&#39;collage&#39;</span><span class="p">:</span> <span class="n">collage</span><span class="p">,</span>
+         <span class="s">&#39;editable&#39;</span><span class="p">:</span> <span class="n">editable</span><span class="p">,</span>
+         <span class="s">&#39;request&#39;</span><span class="p">:</span> <span class="n">request</span><span class="p">,</span>
+         <span class="s">&#39;show_table&#39;</span><span class="p">:</span> <span class="n">show_table</span><span class="p">},</span>
+        <span class="n">context_instance</span><span class="o">=</span><span class="n">RequestContext</span><span class="p">(</span><span class="n">request</span><span class="p">))</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      <p>finds session user workspace and add snippet to (only) corresponding</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">session_collage_snippet_add</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                                <span class="n">workspace_item_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">workspace_item_location_identifier</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">workspace_item_location_shortname</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">workspace_item_location_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">workspace_collage_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                                <span class="n">workspace_category</span><span class="o">=</span><span class="s">&#39;user&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      <p>collage</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">workspace_item_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_item_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;workspace_item_id&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_item_location_identifier</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_item_location_identifier</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s">&#39;workspace_item_location_identifier&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_item_location_shortname</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_item_location_shortname</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s">&#39;workspace_item_location_shortname&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">workspace_item_location_name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">workspace_item_location_name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s">&#39;workspace_item_location_name&#39;</span><span class="p">)</span>
+
+    <span class="n">workspace_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;workspaces&#39;</span><span class="p">][</span><span class="n">workspace_category</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">workspace</span> <span class="o">=</span> <span class="n">Workspace</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">workspace_id</span><span class="p">)</span>
+    <span class="n">workspace_item</span> <span class="o">=</span> <span class="n">WorkspaceItem</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">workspace_item_id</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">workspace</span><span class="o">.</span><span class="n">collages</span><span class="o">.</span><span class="n">all</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">workspace</span><span class="o">.</span><span class="n">collages</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+    <span class="n">collage</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">collages</span><span class="o">.</span><span class="n">all</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      <p>Shorten name to 80 characters</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">workspace_item_location_shortname</span> <span class="o">=</span> <span class="n">short_string</span><span class="p">(</span>
+        <span class="n">workspace_item_location_shortname</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+    <span class="n">workspace_item_location_name</span> <span class="o">=</span> <span class="n">short_string</span><span class="p">(</span>
+        <span class="n">workspace_item_location_name</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      <p>create snippet using collage function: also finds/makes snippet group</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">snippet</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">collage</span><span class="o">.</span><span class="n">get_or_create_snippet</span><span class="p">(</span>
+        <span class="n">workspace_item</span><span class="o">=</span><span class="n">workspace_item</span><span class="p">,</span>
+        <span class="n">identifier_json</span><span class="o">=</span><span class="n">workspace_item_location_identifier</span><span class="p">,</span>
+        <span class="n">shortname</span><span class="o">=</span><span class="n">workspace_item_location_shortname</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">workspace_item_location_name</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">workspace_id</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      <p>removes snippet</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">session_collage_snippet_delete</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                                   <span class="n">object_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      <p>TODO: check permission of collage, workspace owners</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">object_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">object_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;object_id&#39;</span><span class="p">)</span>
+    <span class="n">snippet</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceCollageSnippet</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">object_id</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      <p>snippet_group = snippet.snippet_group</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">snippet</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">()</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      <p>get snippet/fews location by snippet_id and return data</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">snippet_popup</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">snippet_id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">snippet_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">snippet_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;snippet_id&#39;</span><span class="p">)</span>
+    <span class="n">snippet</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceCollageSnippet</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">snippet_id</span><span class="p">)</span>
+
+    <span class="n">popup_id</span> <span class="o">=</span> <span class="s">&#39;popup-snippet-</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">snippet_id</span>
+    <span class="k">return</span> <span class="n">popup_json</span><span class="p">([</span><span class="n">snippet</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="p">],</span>
+                      <span class="n">popup_id</span><span class="o">=</span><span class="n">popup_id</span><span class="p">,</span>
+                      <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">,</span>
+                      <span class="n">hide_add_snippet</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      <p>Render page with one collage in popup format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">collage_popup</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                  <span class="n">collage_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                  <span class="n">template</span><span class="o">=</span><span class="s">&#39;lizard_map/collage.html&#39;</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      <p>collage_id in GET parameter.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">if</span> <span class="n">collage_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">collage_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;collage_id&#39;</span><span class="p">)</span>
+    <span class="n">collage</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceCollage</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">collage_id</span><span class="p">)</span>
+    <span class="n">popup_id</span> <span class="o">=</span> <span class="s">&#39;popup-collage&#39;</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      <p>Only one collage popup allowed, also check jquery.workspace.js</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">popup_collage_json</span><span class="p">(</span>
+        <span class="n">collage</span><span class="p">,</span>
+        <span class="n">popup_id</span><span class="o">=</span><span class="n">popup_id</span><span class="p">,</span>
+        <span class="n">request</span><span class="o">=</span><span class="n">request</span><span class="p">)</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      <p>Clear collage for given collage_id.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">collage_empty</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      <p>collage_id is in POST parameter</p>
+<p>TODO: check if workspace is actually yours</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">collage_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;collage_id&#39;</span><span class="p">)</span>
+    <span class="n">collage</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceCollage</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">collage_id</span><span class="p">)</span>
+    <span class="n">collage</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@never_cache</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      <p>Shows image corresponding to workspace item and location identifier(s)</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">workspace_item_image</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">workspace_item_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      <p>identifier_list</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">identifier_json_list</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">getlist</span><span class="p">(</span><span class="s">&#39;identifier&#39;</span><span class="p">)</span>
+    <span class="n">identifier_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">identifier_json</span><span class="p">)</span> <span class="k">for</span> <span class="n">identifier_json</span> <span class="ow">in</span>
+                       <span class="n">identifier_json_list</span><span class="p">]</span>
+
+    <span class="n">width</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;width&#39;</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;height&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">width</span><span class="p">:</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      <p>We want None, not u''.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">width</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">height</span><span class="p">:</span>
+        <span class="n">height</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">height</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      <p>We want None, not u''.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">height</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="n">workspace_item</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">WorkspaceItem</span><span class="p">,</span> <span class="n">pk</span><span class="o">=</span><span class="n">workspace_item_id</span><span class="p">)</span>
+    <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">current_start_end_dates</span><span class="p">(</span><span class="n">request</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      <p>add animation slider position</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">layout_extra</span> <span class="o">=</span> <span class="n">slider_layout_extra</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">workspace_item</span><span class="o">.</span><span class="n">adapter</span><span class="o">.</span><span class="n">image</span><span class="p">(</span><span class="n">identifier_list</span><span class="p">,</span> <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span>
+                                        <span class="n">layout_extra</span><span class="o">=</span><span class="n">layout_extra</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      <p>Edits snippet layout properties.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">snippet_edit</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">snippet_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      <p>Updates a session legend.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">legend_edit</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      <p>POST parameters:
+name
+min_value (optional)
+max_value (optional)
+steps (optional)
+min_color (optional): format ...
+max_color (optional)
+too_low_color (optional)
+too_high_color (optional)</p>
+<p>request['session']['custom_legends'][<name>] = {..}</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      <p>Get new legend from post parameters.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;min_value&#39;</span><span class="p">,</span> <span class="s">&#39;max_value&#39;</span><span class="p">,</span> <span class="s">&#39;steps&#39;</span><span class="p">,</span>
+               <span class="s">&#39;min_color&#39;</span><span class="p">,</span> <span class="s">&#39;max_color&#39;</span><span class="p">,</span> <span class="s">&#39;too_low_color&#39;</span><span class="p">,</span>
+               <span class="s">&#39;too_high_color&#39;</span><span class="p">]</span>
+
+    <span class="n">name</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+    <span class="n">new_legend</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">options</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">new_legend</span><span class="p">[</span><span class="n">option</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      <p>Update session data with new obtained legend.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">custom_legends</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">CUSTOM_LEGENDS</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">custom_legends</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_legend</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="n">CUSTOM_LEGENDS</span><span class="p">]</span> <span class="o">=</span> <span class="n">custom_legends</span>
+
+    <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      <p>Map stuff</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      <p>Return PNG as WMS service.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">wms</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">workspace_id</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      <p>workspace = get_object_or_404(Workspace, pk=workspace_id)</p>
+<h1>WMS standard parameters</h1>
+<p>width = int(request.GET.get('WIDTH'))
+height = int(request.GET.get('HEIGHT'))
+layers = request.GET.get('LAYERS')
+layers = [layer.strip() for layer in layers.split(',')]
+bbox = request.GET.get('BBOX')
+bbox = tuple([float(i.strip()) for i in bbox.split(',')])
+srs = request.GET.get('SRS')</p>
+<h1>TODO: check that they're not none</h1>
+<h1>Map settings</h1>
+<p>mapnik_map = mapnik.Map(width, height)</p>
+<h1>Setup mapnik srs.</h1>
+<p>mapnik_map.srs = coordinates.srs_to_mapnik_projection[srs]
+mapnik_map.background = mapnik.Color('transparent')</p>
+<h1>m.background = mapnik.Color('blue')</h1>
+<p>workspace_items = workspace.workspace_items.filter(visible=True).reverse()
+for workspace_item in workspace_items:
+<pre>logger.debug("Drawing layer for %s..." % workspace_item)
+layers, styles = workspace_item.adapter.layer(layer_ids=layers,
+request=request)
+layers.reverse()  # first item should be drawn on top (=last)
+for layer in layers:
+mapnik_map.layers.append(layer)
+for name in styles:
+mapnik_map.append_style(name, styles[name])</p>
+<h1>mapnik_map.zoom_to_box(layer.envelope())</h1>
+</pre>
+
+<h1>Zoom and create image</h1>
+<p>logger.debug("Zooming to box...")
+mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))</p>
+<h1>mapnik_map.zoom_to_box(layer.envelope())</h1>
+<p>img = mapnik.Image(width, height)
+logger.debug("Rendering map...")
+mapnik.render(mapnik_map, img)
+http_user_agent = request.META.get('HTTP_USER_AGENT', '')</p>
+<p>logger.debug("Converting image to rgba...")
+rgba_image = Image.fromstring('RGBA', (width, height), img.tostring())
+buf = StringIO.StringIO()
+if 'MSIE 6.0' in http_user_agent:
+imgPIL = rgba_image.convert('P')
+imgPIL.save(buf, 'png', transparency=0)
+else:
+rgba_image.save(buf, 'png')
+buf.seek(0)
+response = HttpResponse(buf.read())
+response['Content-type'] = 'image/png'
+return response</p>
+<p>def search_name(request):
+Search for objects near GET x,y,radius then return</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">name</span><span class="o">.</span>
+
+    <span class="n">Optional</span> <span class="n">GET</span> <span class="n">parameter</span> <span class="n">srs</span><span class="p">,</span> <span class="k">if</span> <span class="n">omitted</span><span class="p">,</span> <span class="n">assume</span> <span class="n">google</span><span class="o">.</span>
+
+    <span class="n">Optional</span> <span class="n">GET</span> <span class="n">parameter</span> <span class="n">user_workspace_id</span><span class="p">:</span> <span class="n">a</span> <span class="n">workspace</span> <span class="n">that</span> <span class="ow">is</span>
+    <span class="n">currently</span> <span class="n">shown</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      <p>workspace_manager = WorkspaceManager(request)
+workspace_collections = workspace_manager.load_or_create()</p>
+<h1>xy params from the GET request.</h1>
+<p>x = float(request.GET.get('x'))
+y = float(request.GET.get('y'))</p>
+<h1>TODO: convert radius to correct scale (works now for google + rd)</h1>
+<p>radius = float(request.GET.get('radius'))
+srs = request.GET.get('srs')
+google_x, google_y = coordinates.srs_to_google(srs, x, y)</p>
+<h1>Add a workspace, if it's not already in your own workspaces.</h1>
+<p>user_workspace_id = request.GET.get('user_workspace_id', None)
+if user_workspace_id is not None:
+<pre>workspace_manager.add_other(user_workspace_id)
+workspace_collections = workspace_manager.workspaces
+</pre>
+found = []
+for workspace_collection in workspace_collections.values():
+for workspace in workspace_collection:
+<pre>for workspace_item in workspace.workspace_items.filter(
+visible=True):
+search_results = workspace_item.adapter.search(
+google_x, google_y, radius=radius)
+found += search_results
+if found:</p>
+<h1><code>found</code> is a list of dicts {'distance': ..., 'timeserie': ...}.</h1>
+<p>found.sort(key=lambda item: item['distance'])
+result = {}
+result['name'] = found[0]['name']</p>
+<h1>x, y = coordinates.google_to_srs(google_x, google_y, srs)</h1>
+<h1>result['x'] = x</h1>
+<h1>result['y'] = y</h1>
+<h1>For the x/y we use the original x/y value to position the popup to</h1>
+<h1>the lower right of the cursor to prevent click propagation problems.</h1>
+<p>result['x'] = x + (radius / 10)
+result['y'] = y - (radius / 10)
+return HttpResponse(json.dumps(result))
+else:
+return popup_json([])
+</pre></p>
+<p>def search_coordinates(request):
+searches for objects near GET x,y,radius returns json_popup of</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">results</span><span class="o">.</span>
+
+    <span class="n">Optional</span> <span class="n">GET</span> <span class="n">parameter</span> <span class="n">srs</span><span class="p">,</span> <span class="k">if</span> <span class="n">omitted</span><span class="p">,</span> <span class="n">assume</span> <span class="n">google</span><span class="o">.</span>
+
+    <span class="n">Optional</span> <span class="n">GET</span> <span class="n">parameter</span> <span class="n">user_workspace_id</span><span class="p">:</span> <span class="n">a</span> <span class="n">workspace</span> <span class="n">that</span> <span class="ow">is</span>
+    <span class="n">currently</span> <span class="n">shown</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      <p>workspace_manager = WorkspaceManager(request)
+workspace_collections = workspace_manager.load_or_create()</p>
+<h1>xy params from the GET request.</h1>
+<p>x = float(request.GET.get('x'))
+y = float(request.GET.get('y'))</p>
+<h1>TODO: convert radius to correct scale (works now for google + rd)</h1>
+<p>radius = float(request.GET.get('radius'))
+radius_search = radius
+if 'HTTP_USER_AGENT' in request.META:
+<pre>analyzed_user_agent = analyze_http_user_agent(
+request.META['HTTP_USER_AGENT'])</p>
+<h1>It's more difficult to point with your finger than with the mouse.</h1>
+<p>if analyzed_user_agent['device'] == 'iPad':
+radius_search = radius_search * 3
+srs = request.GET.get('srs')
+google_x, google_y = coordinates.srs_to_google(srs, x, y)
+</pre></p>
+<h1>Add a workspace, if it's not already in your own workspaces.</h1>
+<p>user_workspace_id = request.GET.get('user_workspace_id', None)
+if user_workspace_id is not None:
+workspace_manager.add_other(user_workspace_id)
+workspace_collections = workspace_manager.workspaces</p>
+<p>found = []
+for workspace_collection in workspace_collections.values():
+for workspace in workspace_collection:
+for workspace_item in workspace.workspace_items.filter(
+<pre>visible=True):
+search_results = workspace_item.adapter.search(
+google_x, google_y, radius=radius_search)
+found += search_results
+if found:</p>
+<h1><code>found</code> is a list of dicts {'distance': ..., 'timeserie': ...}.</h1>
+<p>found.sort(key=lambda item: item['distance'])
+return popup_json(found, request=request)
+else:
+return popup_json([])
+</pre></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Export</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      <p>def export_snippet_group_csv(request, snippet_group_id):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Creates</span> <span class="n">a</span> <span class="n">table</span> <span class="k">with</span> <span class="n">each</span> <span class="n">location</span> <span class="k">as</span> <span class="n">column</span><span class="o">.</span> <span class="n">Each</span> <span class="n">row</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">datetime</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      <p>snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+<pre>pk=snippet_group_id)
+start_date, end_date = current_start_end_dates(request)
+table = snippet_group.values_table(start_date, end_date)
+</pre>
+response = HttpResponse(mimetype='text/csv')
+response['Content-Disposition'] = 'attachment; filename=export.csv'
+writer = csv.writer(response)
+for row in table:
+writer.writerow(row)
+return response</p>
+<p>def export_identifier_csv(request, workspace_item_id=None,
+identifier_json=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Uses</span> <span class="n">adapter</span><span class="o">.</span><span class="n">values</span> <span class="n">to</span> <span class="n">get</span> <span class="n">values</span><span class="o">.</span> <span class="n">Then</span> <span class="k">return</span> <span class="n">these</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">csv</span> <span class="n">format</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-54'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-54'>#</a>
+      </div>
+      <h1>Collect input.</h1>
+<p>if workspace_item_id is None:
+<pre>workspace_item_id = request.GET.get('workspace_item_id')
+if identifier_json is None:
+identifier_json = request.GET.get('identifier_json')
+workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
+identifier = parse_identifier_json(identifier_json)
+start_date, end_date = current_start_end_dates(request)
+adapter = workspace_item.adapter
+values = adapter.values(identifier, start_date, end_date)
+filename = '%s.csv' % (
+adapter.location(**identifier).get('name', 'export'))
+</pre></p>
+<h1>Make the csv output.</h1>
+<p>response = HttpResponse(mimetype='text/csv')
+response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+writer = csv.writer(response)
+writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+for row in values:
+writer.writerow([row['datetime'], row['value'], row['unit']])
+return response</p>
+<p>def export_snippet_group_statistics_csv(request, snippet_group_id=None):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Exports</span> <span class="n">snippet_group</span> <span class="n">statistics</span> <span class="k">as</span> <span class="n">csv</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-55'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-55'>#</a>
+      </div>
+      <p>if snippet_group_id is None:
+<pre>snippet_group_id = request.GET.get('snippet_group_id')
+snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+pk=snippet_group_id)
+start_date, end_date = current_start_end_dates(request)
+statistics = snippet_group.statistics(start_date, end_date)
+</pre>
+response = HttpResponse(mimetype='text/csv')
+response['Content-Disposition'] = ('attachment; '
+<pre>'filename=export_statistics.csv')
+writer = csv.writer(response)
+colnames = ['min', 'max', 'avg']
+colnamesdisplay = ['min', 'max', 'avg']
+if snippet_group.boundary_value is not None:
+colnames.append('count_lt')
+colnames.append('count_gte')
+colnamesdisplay.append(
+'# &lt; %s' % snippet_group.boundary_value)
+colnamesdisplay.append(
+'# &gt;= %s' % snippet_group.boundary_value)
+if snippet_group.percentile_value is not None:
+colnames.append('percentile')
+colnamesdisplay.append(
+'percentile %f' % snippet_group.percentile_value)
+writer.writerow(colnamesdisplay)
+for row in statistics:
+writer.writerow([row[colname] for colname in colnames])
+return response
+</pre></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="n">Map</span> <span class="n">locations</span> <span class="n">are</span> <span class="n">stored</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">session</span> <span class="k">with</span> <span class="n">key</span> <span class="n">MAP_SESSION</span><span class="o">.</span> <span class="n">It</span>
+<span class="n">contains</span> <span class="n">a</span> <span class="n">dictionary</span> <span class="k">with</span> <span class="n">fields</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">and</span> <span class="n">zoom</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-56'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-56'>#</a>
+      </div>
+      <p>def map_location_save(request):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Save</span> <span class="nb">map</span> <span class="n">layout</span> <span class="ow">in</span> <span class="n">session</span><span class="o">.</span>
+
+    <span class="o">-</span> <span class="n">extent</span> <span class="k">as</span> <span class="n">strings</span> <span class="p">(</span><span class="n">POST</span> <span class="n">top</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">)</span><span class="o">.</span>
+    <span class="o">-</span> <span class="n">selected</span> <span class="n">base</span> <span class="n">layer</span> <span class="n">name</span><span class="o">.</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-57'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-57'>#</a>
+      </div>
+      <p>top = request.POST['top']
+left = request.POST['left']
+right = request.POST['right']
+bottom = request.POST['bottom']
+base_layer_name = request.POST['base_layer_name']
+request.session[MAP_LOCATION] = {
+<pre>'top': top,
+'left': left,
+'right': right,
+'bottom': bottom}
+request.session[MAP_BASE_LAYER] = base_layer_name
+return HttpResponse("")
+</pre></p>
+<p>def map_location_load_default(request):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Return</span> <span class="n">start_extent</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

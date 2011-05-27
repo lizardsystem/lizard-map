@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>utility.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>utility.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Small utility functions</p>
+<p>def short_string(value, length):</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">Shorten</span> <span class="n">string</span> <span class="n">to</span> <span class="n">given</span> <span class="n">length</span><span class="o">.</span> <span class="n">Length</span> <span class="n">must</span> <span class="n">be</span> <span class="o">&gt;=</span> <span class="mi">5</span>
+
+    <span class="n">TODO</span><span class="p">:</span> <span class="n">wordwrap</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>if value == value[:length]:
+<pre>return value
+else:
+length_pre = min(int(length * 0.75), length - 3)
+length_post = max(length - length_pre - 3, 0)
+result = value[:length_pre] + '...'
+if length_post &gt; 0:
+result += value[-length_post:]
+return result
+</pre></p>
+<p>def float_to_string(value):
+Converts float to nice string representing the float. The</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">resulting</span> <span class="n">string</span> <span class="n">should</span> <span class="n">always</span> <span class="n">be</span> <span class="mi">10</span> <span class="n">chars</span> <span class="ow">or</span> <span class="n">smaller</span><span class="o">.</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">    try:</span>
+<span class="s">        float_value = float(value)</span>
+<span class="s">    except (TypeError, ValueError):</span>
+
+<span class="s">#DIVIDER</span>
+<span class="s">        return value</span>
+<span class="s">    abs_float_value = abs(float_value)</span>
+<span class="s">    if (0 &lt; abs_float_value &lt; 0.01) or (abs_float_value &gt;= 1000000000):</span>
+<span class="s">        return &#39;</span><span class="si">%.2e</span><span class="s">&#39; </span><span class="si">% f</span><span class="s">loat_value</span>
+<span class="s">    if abs_float_value &gt;= 10000000:</span>
+<span class="s">        return &#39;</span><span class="si">%.0f</span><span class="s">&#39; </span><span class="si">% f</span><span class="s">loat_value</span>
+<span class="s">    return &#39;</span><span class="si">%.2f</span><span class="s">&#39; </span><span class="si">% f</span><span class="s">loat_value</span>
+
+
+
+<span class="s">#DIVIDER</span>
+<span class="s">def analyze_http_user_agent(http_user_agent):</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>It is not a number so we just pass it on.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Analyzes http_user_agent and return dictionary of properties.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

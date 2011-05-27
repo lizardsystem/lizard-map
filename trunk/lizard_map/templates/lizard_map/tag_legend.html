@@ -1,0 +1,66 @@
+{# requires 'legend': img_url, description. Uses ss_spite #}
+{# option allow_custom_legend #}
+{# interaction code in lizard_map.js #}
+{# needs colorpicker from nhi lizard_base #}
+{% if legend %}
+  <span class="ss_sprite ss_table sidebarbox-action-icon legend-tooltip">&nbsp;</span>
+  <div class="tooltip">
+    <h4>Legenda voor {{ name }}
+    {% if allow_custom_legend %}
+    <span class="ss_sprite ss_table_edit sidebarbox-action-icon legend-edit"
+          data-name="{{ name }}"
+          rel="#legend-edit-{{ idhash }}"
+          title="Bewerk legenda">&nbsp;</span>
+    {% endif %}
+    </h4>
+    <table>
+      {% for legend_item in legend %}
+      <tr>
+        <td><img src="{{ legend_item.img_url }}" /></td><td>{{ legend_item.description }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  {% if allow_custom_legend %}
+  <div id="legend-edit-{{ idhash }}" class="popup popup-fat popup-size-standard">
+    <h1>{{ name }}</h1>
+    <div>Persoonlijke legenda</div>
+    <form class="legend-options popup-form"
+          data-url="{% url lizard_map_legend_edit %}">
+      <input type="hidden" name="name" value="{{ name }}" />
+      <fieldset class="fixed-label-width">
+        <div>
+          <label>Min. waarde</label>
+          <input type="text" name="min_value" value="{{ custom_legend.min_value }}" />
+        </div>
+        <div>
+          <label>Max. waarde</label>
+          <input type="text" name="max_value" value="{{ custom_legend.max_value }}" />
+        </div>
+        <div>
+          <label>Aantal stappen</label>
+          <input type="text" name="steps" value="{{ custom_legend.steps }}" />
+        </div>
+        <div>
+          <label>Kleur min. waarde</label>
+          <input id="legend-min-color-{{ idhash }}" type="text" name="min_color" value="{{ custom_legend.min_color }}"/>
+          <!--div id="colorSelector" rel="#legend-min-color-{{ idhash }}"><div></div></div-->
+        </div>
+        <div>
+          <label>Kleur max. waarde</label>
+          <input type="text" name="max_color" value="{{ custom_legend.max_color }}" />
+        </div>
+        <div>
+          <label>Kleur < min. waarde</label>
+          <input type="text" name="too_low_color" value="{{ custom_legend.too_low_color }}" />
+        </div>
+        <div>
+          <label>Kleur > max. waarde</label>
+          <input type="text" name="too_high_color" value="{{ custom_legend.too_high_color }}" />
+        </div>
+      </fieldset>
+      <div><input class="legend-action-reload" type="submit" value="Update legenda" /></div>
+    </form>
+  </div>
+  {% endif %}
+{% endif %}

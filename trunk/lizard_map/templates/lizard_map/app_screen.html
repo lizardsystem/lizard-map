@@ -1,0 +1,21 @@
+{# Screen with apps and workspaces on the left and map on the right. #}
+{% extends "lizard_map/wms.html" %}
+{% load workspaces %}
+{% load utility %}
+
+{% block sidebar %}
+{# Make sure you have lizard_ui 1.50 or higher. #}
+{# If no application_screen_slug, revert to default. #}
+{% if application_screen_slug %}
+  {% application_icons application_screen_slug %}
+{% else %}
+  {% application_icons 'home' %}
+{% endif %}
+
+{% for workspace in workspaces.user %}
+  {% workspace workspace %}
+{% empty %}
+No workspace
+{% endfor %}
+
+{% endblock %}

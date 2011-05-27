@@ -1,0 +1,124 @@
+{% extends "lizard_map/lizardgis.html" %}{% load i18n %}{% load map %}
+{% load workspaces %}
+
+{% block css %}
+{{ block.super }}
+<!-- tab styling -->
+<link rel="stylesheet"
+      type="text/css"
+      href="{{ STATIC_URL }}lizard_ui/tabs.css" />
+{% endblock %}
+
+{% block map-javascript %}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
+{% if has_google %}
+<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ googlemaps_api_key }}'></script>
+{% endif %}
+{% ifequal detected_browser 'iPad' %}
+{# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}touch/touch.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_touch.js"></script>
+{% endifequal %}
+{% endblock map-javascript %}
+
+{% block above-content %}
+<ul class="map-actions">
+  {% date_trigger %}
+  {% date_popup %}
+  {# Load and save map locations #}
+  <li id="map-load-default-location"
+      class="map-action"
+      data-url="{% url lizard_map.map_location_load_default %}">
+    <span class="ss_sprite ss_map_go action-icon"
+          title="{% trans 'load default map location' %}"></span>
+  </li>
+  {% if animation_slider %}{% if use_workspaces %}
+  <li id="animation-slider"
+      class="map-action"
+      data-min="{{ animation_slider.min }}"
+      data-max="{{ animation_slider.max }}"
+      data-step="{{ animation_slider.step }}"
+      data-value="{{ animation_slider.value }}"
+      data-ajax-path="{% url lizard_map.set_animation_date %}">
+  </li>
+  <li class="map-action">
+    <span id="selected-date">{{ animation_slider.selected_date|date:"d/m/Y" }}</span>
+  </li>
+  {% endif %}{% endif %}
+  {% if transparency_slider %}
+  <li id="transparency-slider"
+      class="map-action">
+  </li>
+  <li class="map-action">
+    Transparantie
+  </li>
+  {% endif %}
+  {% for workspace_item in workspaces.temp.0.workspace_items.all %}
+  <li class="workspace-empty-temp map-action"
+      data-workspace-item-id="{{ workspace_item.id }}">
+    <span class="ss_sprite ss_map_delete action-icon">
+      {% trans "empty temporary workspace" %}
+    </span>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock above-content %}
+
+{% block content %}
+{# data attributes wms #}
+{# All contents of lizard-map-wms must have class lizard-map-wms-item #}
+<div id="lizard-map-wms"
+     data-javascript-click-handler="{{ javascript_click_handler }}"
+     data-javascript-hover-handler="{{ javascript_hover_handler }}"
+     {# New style maps #}
+     data-max-extent-left="{{ max_extent.left }}"
+     data-max-extent-top="{{ max_extent.top }}"
+     data-max-extent-right="{{ max_extent.right }}"
+     data-max-extent-bottom="{{ max_extent.bottom }}"
+     data-start-extent-left="{{ start_extent.left }}"
+     data-start-extent-top="{{ start_extent.top }}"
+     data-start-extent-right="{{ start_extent.right }}"
+     data-start-extent-bottom="{{ start_extent.bottom }}"
+     {# for WMS: EPSG:28992, EPSG:900913 #}
+     data-projection="{{ projection }}"
+     {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
+     data-display-projection="{{ display_projection }}"
+     {# URLS for saving, loading map locations #}
+     data-save-location-url="{% url lizard_map.map_location_save %}"
+     data-load-location-url="{% url lizard_map.map_location_load_default %}"
+     {# Selected base layer #}
+     data-selected-base-layer="{{ base_layer_name }}"
+     >
+  {# Make a layer for every background map #}
+  {% for background_map in background_maps %}
+  {% background_map background_map %}
+  {% endfor %}
+  {# Make a layer for every workspace #}
+  {% for workspace_list in workspaces.values %}
+    {% for workspace in workspace_list %}
+    <div class="workspace-layer lizard-map-wms-item"
+         data-workspace-id="{{ workspace.id }}"
+         data-workspace-name="{{ workspace.name }}"
+         data-workspace-wms="{% url lizard_map_wms workspace_id=workspace.id %}">
+    </div>
+    {# Add wms layers from every workspace #}
+      {% for wms_layer in workspace.wms_layers %}
+      {% autoescape off %}
+      <div class="workspace-wms-layer lizard-map-wms-item"
+           data-workspace-wms-id="{{ wms_layer.wms_id }}"
+           data-workspace-wms-name="{{ wms_layer.name }}"
+           data-workspace-wms-url="{{ wms_layer.url }}"
+           {# json uses "" #}
+           data-workspace-wms-params='{{ wms_layer.params }}'
+           data-workspace-wms-options='{{ wms_layer.options }}'>
+      </div>
+      {% endautoescape %}
+      {% endfor %}
+    {% endfor %}
+  {% endfor %}
+</div>
+<div id="map"></div>
+{% endblock content %}

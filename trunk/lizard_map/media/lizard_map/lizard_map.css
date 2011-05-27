@@ -1,0 +1,217 @@
+/* Popup styling */
+.popup,
+.date-popup
+{ display: none;
+  z-index: 10000;
+  padding: 1em;
+  border: 1px solid black;
+  background-color: white;
+  /* CSS3 styling for latest browsers */
+  -moz-box-shadow:0 0 40px 5px black;
+  -webkit-box-shadow: 0 0 40px black;
+}
+
+.popup-thin
+{  /* CSS3 styling for latest browsers */
+  -moz-box-shadow:0 0 10px 5px #aaa;
+  -webkit-box-shadow: 0 0 10px #aaa;
+}
+
+/* Datepicker popup styling*/
+.date-popup p
+{ margin: 0px;
+  vertical-align: top;
+}
+
+.date-popup label[for="id_dt_start_month"],
+.date-popup label[for="id_dt_end_month"]
+{ display: block;
+  float: left;
+  clear: left;
+  width: 60px;
+  text-align: right;
+  height: 100%;
+  padding-top: 7px;
+}
+
+.date-popup #id_dt_start_day,
+.date-popup #id_dt_end_day
+{ margin-left: 20px;
+}
+
+.date-popup #id_dt_start_month,
+.date-popup #id_dt_end_month
+{ margin-left: 10px;
+}
+
+.date-popup #id_dt_start_year,
+.date-popup #id_dt_end_year
+{ margin-left: 10px;
+}
+
+
+/* OpenLayers popup*/
+.olPopup
+{
+  -moz-box-shadow:0 0 10px 1px black;
+  -webkit-box-shadow: 0 0 10px black;
+}
+
+.icon-action
+{ float: right;
+}
+
+.popup-graph-edit-form
+{ text-align: left;  /* We might be shown inside a centered table column... */
+  }
+
+.popup-form .fixed-label-width label
+{ width: 10em;
+  margin: 0.5em 0;
+  display: block;
+  float: left;
+  clear: left;
+  }
+
+#animation-slider,
+#transparency-slider
+{ display: block;
+  float: left;
+  line-height: 1.5em;
+  margin-top: 0.4em;
+  width: 150px;
+  margin-left: 1em;
+}
+
+#animation-slider
+{ width: 5em;
+  }
+
+#transparency-slider
+{ width: 5em;
+  }
+
+.vertical-limited
+{ height: 300px;
+  width: 100%;
+  overflow: scroll;
+}
+
+#hover-popup_contentDiv
+{ padding-top: 0.75em;
+  overflow: hidden;
+  background-color: lightyellow;
+}
+
+
+#graph-popup
+{ display: none;
+  z-index: 10000;
+  width: 40em;
+  min-height: 15em;
+  padding: 1em;
+  border: 1px solid black;
+  background-color: white;
+  /* CSS3 styling for latest browsers */
+  -moz-box-shadow:0 0 40px 5px black;
+  -webkit-box-shadow: 0 0 40px black;
+}
+
+#graph-popup-content,
+.popup-content
+{ overflow: auto;
+  }
+
+/* Data attributes for lizard map wms */
+#lizard-map-wms
+{ display: none;
+  }
+
+.map-action
+{ margin-left: 0.5em;
+  float: left;
+  }
+
+.workspace-item-image
+{ float: left;
+  display: block;
+  font-weight: normal;
+  margin: 4px 0 auto 0;
+  }
+
+.workspace-item
+{
+  overflow: visible;
+  width: 100%;
+  min-height: 2em;
+  }
+
+.workspace-item-checkbox
+{
+  float: left;
+  display: block;
+  font-weight: normal;
+  margin: 2px 0.75em auto 0.75em;
+  }
+
+.workspace-acceptable
+{
+  min-height: 2em;
+  line-height: 2em;
+  }
+
+.workspace-item-name
+{ margin: 0 0 0 4.2em;
+  display: block;
+  /*  width: 14em;*/
+  /*  ^^^ Seems unnecessary and causes newlines in IE7... */
+  line-height: 2em;
+  }
+
+.snippet
+{ overflow: visible;
+  width: 100%;
+  min-height: 2em;
+}
+
+.snippet-name
+{ margin: 0 0 0 2em;
+  display: block;
+  width: 17em;
+  line-height: 2em;
+}
+
+.snippet-image
+{ float: left;
+  display: block;
+  font-weight: normal;
+  margin: 4px 0 auto 0;
+  }
+
+
+/* Workspace items and snippets have icons that only show up when you
+hover over the item */
+
+.workspace-item:hover .sidebarbox-action-icon
+{ display: block;
+}
+
+.workspace-item .sidebarbox-action-icon
+{ display: None;
+}
+
+.snippet:hover .sidebarbox-action-icon
+{ display: block;
+}
+
+.snippet .sidebarbox-action-icon
+{ display: None;
+}
+
+.workspace h2 .sidebarbox-action-icon
+{ display: None;
+}
+
+.workspace:hover h2 .sidebarbox-action-icon
+{ display: block;
+}

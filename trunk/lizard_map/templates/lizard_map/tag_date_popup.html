@@ -1,0 +1,14 @@
+<div class="date-popup popup popup-fat"
+     id="summary-datepicker">
+  {# The inner div is handy when replacing content without losing overlay properties. #}
+  <div id="summary-datepicker-contents">
+    <div class="action-icon ss_sprite ss_calendar_view_day"></div>
+    <div>
+      <form action="{% url lizard_map.set_date_range %}"
+            method="post">
+        {% csrf_token %}
+        {{ date_range_form.as_p }}
+      </form>
+    </div>
+  </div>
+</div>

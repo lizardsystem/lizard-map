@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>symbol_manager.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>symbol_manager.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Purpose: Manage image files that are scaled, colorized and rotated.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">Image</span>
+<span class="kn">import</span> <span class="nn">ImageFilter</span>
+
+<span class="n">log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;nens.symbol_manager&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Returns relative filename,</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get_symbol_transformed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename_nopath</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>if the transformed symbol does not yet exist, it is
+created. Transformation as follows:</p>
+<p>1) color, if given
+2) scale, if given
+3) rotate, if given
+4) shadow, if given</p>
+<p>input: filename_nopath is <symbol_path_original>&lt;filename_nopath&gt;
+kwargs:
+<em> size: (x, y)
+</em> color: (r, g, b, a) (alpha is unaltered)
+<em> rotate: in degrees, counterclockwise, around center
+</em> shadow_height: in pixels</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Entering get_symbol_transformed&#39;</span><span class="p">)</span>
+
+        <span class="n">SHADOW_FACTOR_Y</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">SHADOW_FACTOR_X</span> <span class="o">=</span> <span class="mf">0.5</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>get kwargs</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">color</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;color&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+        <span class="n">fn_mask</span><span class="p">,</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;mask&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">filename_nopath</span><span class="p">,))</span>
+        <span class="n">sizex</span><span class="p">,</span> <span class="n">sizey</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;size&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">rotate</span><span class="p">,</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;rotate&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+        <span class="n">rotate</span> <span class="o">%=</span> <span class="mi">360</span>
+        <span class="n">shadow_height</span><span class="p">,</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;shadow_height&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,))</span>
+        <span class="n">force</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;force&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;color: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">color</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;mask: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fn_mask</span><span class="p">)</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;size: </span><span class="si">%d</span><span class="s">x</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sizex</span><span class="p">,</span> <span class="n">sizey</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;rotate: </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rotate</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;shadow_height: </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">shadow_height</span><span class="p">))</span>
+        <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;force no cache: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">force</span><span class="p">))</span>
+
+        <span class="n">filename_mask_abs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol_path_original</span><span class="p">,</span> <span class="n">fn_mask</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>result filename is :
+<orig filename><em><mask></em><hex r><hex g><hex b>_<sx>x<sy>_r<r>.
+<orig extension></p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="n">fn_orig_base</span><span class="p">,</span> <span class="n">fn_orig_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename_nopath</span><span class="p">)</span>
+        <span class="n">result_filename_nopath</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">_</span><span class="si">%s</span><span class="s">_</span><span class="si">%02x%02x%02x</span><span class="s">_</span><span class="si">%d</span><span class="s">x</span><span class="si">%d</span><span class="s">_r</span><span class="si">%03d</span><span class="s">_s</span><span class="si">%d%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">fn_orig_base</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fn_mask</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span><span class="p">),</span>
+            <span class="nb">min</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">256</span><span class="p">),</span>
+            <span class="n">sizex</span><span class="p">,</span> <span class="n">sizey</span><span class="p">,</span> <span class="n">rotate</span><span class="p">,</span> <span class="n">shadow_height</span><span class="p">,</span> <span class="n">fn_orig_extension</span><span class="p">)</span>
+
+        <span class="n">result_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol_path_generated</span><span class="p">,</span>
+                                       <span class="n">result_filename_nopath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">result_filename</span><span class="p">)</span> <span class="ow">and</span> <span class="n">force</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;image already exists, returning filename&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;generating image...&#39;</span><span class="p">)</span>
+            <span class="n">filename_orig_abs</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol_path_original</span><span class="p">,</span>
+                                       <span class="n">filename_nopath</span><span class="p">)</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;orig filename: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename_orig_abs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename_orig_abs</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;File not found (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">filename_orig_abs</span><span class="p">)</span>
+
+            <span class="n">im</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename_orig_abs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s">&#39;RGBA&#39;</span><span class="p">:</span>
+                <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;RGBA&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>color</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">im_mask</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename_mask_abs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">im_mask</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="s">&#39;RGBA&#39;</span><span class="p">:</span>
+                <span class="n">im_mask</span> <span class="o">=</span> <span class="n">im_mask</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="s">&#39;RGBA&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Create objects where you can read and write pixel values.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="n">pix</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="n">pix_mask</span> <span class="o">=</span> <span class="n">im_mask</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">mask</span> <span class="o">=</span> <span class="n">pix_mask</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span>
+                    <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">pix</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+                    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">+</span>
+                         <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
+                    <span class="n">g</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">g</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">+</span>
+                         <span class="n">g</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span> <span class="o">*</span> <span class="n">mask</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span> <span class="o">+</span>
+                         <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">mask</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span><span class="p">)</span>
+                    <span class="n">pix</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">sizex</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">sizey</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sizex</span> <span class="o">!=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">or</span> <span class="n">sizey</span> <span class="o">!=</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">sizex</span><span class="p">,</span> <span class="n">sizey</span><span class="p">),</span> <span class="n">Image</span><span class="o">.</span><span class="n">ANTIALIAS</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p>expand=True werkt niet goed: wordt niet meer deels doorzichtig</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">rotate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">im</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">rotate</span><span class="p">,</span> <span class="n">Image</span><span class="o">.</span><span class="n">BICUBIC</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>drop shadow
+see also: http://en.wikipedia.org/wiki/Alpha_compositing, A over B</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>            <span class="k">if</span> <span class="n">shadow_height</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">im_shadow</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s">&#39;RGBA&#39;</span><span class="p">,</span> <span class="n">im</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                <span class="n">im_shadow</span><span class="o">.</span><span class="n">paste</span><span class="p">((</span><span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">192</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+                                <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">shadow_height</span> <span class="o">*</span> <span class="n">SHADOW_FACTOR_X</span><span class="p">),</span>
+                                 <span class="nb">int</span><span class="p">(</span><span class="n">shadow_height</span> <span class="o">*</span> <span class="n">SHADOW_FACTOR_Y</span><span class="p">)),</span>
+                                <span class="n">im</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>now blur the im_shadow a little bit</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">im_shadow</span> <span class="o">=</span> <span class="n">im_shadow</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">ImageFilter</span><span class="o">.</span><span class="n">BLUR</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>im_shadow.paste(im, (0,0))
+paste original image on top, using the alpha channel</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="n">pix</span> <span class="o">=</span> <span class="n">im</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="n">pix_shadow</span> <span class="o">=</span> <span class="n">im_shadow</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;shadow x: </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">im_shadow</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">im_shadow</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">im_shadow</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="n">r</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">pix_shadow</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+                        <span class="n">r2</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span> <span class="n">b2</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">pix</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
+                        <span class="n">r_res</span> <span class="o">=</span> <span class="n">r2</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">+</span> <span class="n">r</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">/</span> <span class="mi">256</span>
+                        <span class="n">g_res</span> <span class="o">=</span> <span class="n">g2</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">+</span> <span class="n">g</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">/</span> <span class="mi">256</span>
+                        <span class="n">b_res</span> <span class="o">=</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">a2</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span> <span class="o">/</span> <span class="mi">256</span> <span class="o">/</span> <span class="mi">256</span>
+                        <span class="n">a_res</span> <span class="o">=</span> <span class="n">a2</span> <span class="o">+</span> <span class="p">(</span><span class="mi">255</span> <span class="o">-</span> <span class="n">a2</span><span class="p">)</span> <span class="o">*</span> <span class="n">a</span> <span class="o">/</span> <span class="mi">256</span>
+                        <span class="n">pix_shadow</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">r_res</span><span class="p">,</span> <span class="n">g_res</span><span class="p">,</span> <span class="n">b_res</span><span class="p">,</span> <span class="n">a_res</span><span class="p">)</span>
+
+                <span class="n">im</span> <span class="o">=</span> <span class="n">im_shadow</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">result_filename</span><span class="p">):</span>
+                <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;deleting existing result file&#39;</span><span class="p">)</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">result_filename</span><span class="p">)</span>
+
+            <span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;saving image (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">result_filename</span><span class="p">)</span>
+            <span class="n">im</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">result_filename</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result_filename_nopath</span>  <span class="c"># result_filename</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

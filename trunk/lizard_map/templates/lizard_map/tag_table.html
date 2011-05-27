@@ -1,0 +1,28 @@
+{# Renders table. Accepts 'table' which is a list of lists, and 'head' which is a list of columnnames #}
+{# Note: assumes first column is a datetime column #}
+<table class="generic-table">
+  <thead>
+    <tr>
+      {% for value in head %}
+      <th {% if forloop.counter > 1 %}class="number"{% endif %}>
+        {{ value }}
+      </th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for table_row in table %}
+    <tr>
+      {% for value in table_row %}
+      <td {% if forloop.counter > 1 %}class="number"{% endif %}>
+      {% if forloop.counter = 1 %}
+      {{ value|date:"d/m/Y H:i" }}
+      {% else %}
+      {{ value }}
+      {% endif %}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

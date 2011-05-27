@@ -1,0 +1,42 @@
+{# loads wms.html because we want to display workspaces. else we would use lizard_ui/lizardbase.html #}
+{% extends "lizard_map/lizardgis.html" %}
+{% load workspaces %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/graph.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+{% workspace collage.workspace %}
+{% endblock %}
+
+{% block object-actions %}
+{% if editable %}
+<a href="{% url lizard_map.collage_edit collage_id=collage.id %}"
+   class="ss_sprite ss_application_form_edit">Edit</a> |
+{% endif %}
+<span id="print-button">Print</span>
+{% endblock object-actions %}
+
+{% block content %}
+<div id="textual">
+
+  <h2>{{ collage.name }}</h2>
+  {% for snippet_group in collage.snippet_groups.all %}
+  {% snippet_group snippet_group 'False' 'True' 'True' %}
+  {% snippet_group_statistics request snippet_group %}
+  {% if show_table %}
+  <h3>Tabel</h3>
+  <p>
+    <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
+  </p>
+  {% snippet_group_table request snippet_group %}
+  {% else %}
+  <a href="?show_table=1" class="ss_sprite ss_table_add noprint">Toon tabellen</a>
+  {% endif %}
+  {% endfor %}
+
+</div>
+{% endblock content %}

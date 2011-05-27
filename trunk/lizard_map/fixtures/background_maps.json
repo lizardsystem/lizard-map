@@ -1,0 +1,112 @@
+[
+  {
+    "pk": 1, 
+    "model": "lizard_map.backgroundmap", 
+    "fields": {
+      "layer_type": 1, 
+      "index": 10, 
+      "google_type": 1, 
+      "name": "Google standard", 
+      "default": true, 
+      "active": true, 
+      "layer_url": "", 
+      "layer_names": ""
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "lizard_map.backgroundmap", 
+    "fields": {
+      "layer_type": 1, 
+      "index": 20, 
+      "google_type": 2, 
+      "name": "Google physical", 
+      "default": false, 
+      "active": true, 
+      "layer_url": "", 
+      "layer_names": ""
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "lizard_map.backgroundmap", 
+    "fields": {
+      "layer_type": 1, 
+      "index": 30, 
+      "google_type": 3, 
+      "name": "Google hybrid", 
+      "default": false, 
+      "active": true, 
+      "layer_url": "", 
+      "layer_names": ""
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "lizard_map.backgroundmap", 
+    "fields": {
+      "layer_type": 1, 
+      "index": 40, 
+      "google_type": 4, 
+      "name": "Google satellite", 
+      "default": false, 
+      "active": true, 
+      "layer_url": "", 
+      "layer_names": ""
+    }
+  }, 
+  {
+    "pk": 2, 
+    "model": "lizard_map.backgroundmap", 
+    "fields": {
+      "layer_type": 2, 
+      "index": 50, 
+      "google_type": null, 
+      "name": "Openstreetmap", 
+      "default": false, 
+      "active": true, 
+      "layer_url": "http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png", 
+      "layer_names": ""
+    }
+  }, 
+  {
+    "pk": 4, 
+    "model": "lizard_map.setting", 
+    "fields": {
+      "value": "EPSG:900913", 
+      "key": "projection"
+    }
+  }, 
+  {
+    "pk": 5, 
+    "model": "lizard_map.setting", 
+    "fields": {
+      "value": "EPSG:4326", 
+      "key": "display_projection"
+    }
+  }, 
+  {
+    "pk": 6, 
+    "model": "lizard_map.setting", 
+    "fields": {
+      "value": "ABQIAAAATEgjZUeRI1CM_h2ttHS2OxRTirhQe9jywDIf0gYrh8Ydbjp8ZhT1tEmd2yPe1EQl3T_fZ3PtHAIWTQ", 
+      "key": "googlemaps_api_key"
+    }
+  }, 
+  {
+    "pk": 11, 
+    "model": "lizard_map.setting", 
+    "fields": {
+      "value": "-20037508.34, -20037508.34, 20037508.34, 20037508.34", 
+      "key": "max_extent"
+    }
+  }, 
+  {
+    "pk": 3, 
+    "model": "lizard_map.setting", 
+    "fields": {
+      "value": "-14675, 6964942, 1254790, 6668977", 
+      "key": "start_extent"
+    }
+  }
+]

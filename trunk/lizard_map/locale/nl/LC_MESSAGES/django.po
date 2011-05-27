@@ -1,0 +1,220 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-12-13 06:15-0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: dateperiods.py:12
+msgid "Quarter 1"
+msgstr "Eerste kwartaal"
+
+#: dateperiods.py:13
+msgid "Quarter 2"
+msgstr "Tweede kwartaal"
+
+#: dateperiods.py:14
+msgid "Quarter 3"
+msgstr "Derde kwartaal"
+
+#: dateperiods.py:15
+msgid "Quarter 4"
+msgstr "Vierde kwartaal"
+
+#: dateperiods.py:19
+msgid "January"
+msgstr "Januari"
+
+#: dateperiods.py:20
+msgid "February"
+msgstr "Februari"
+
+#: dateperiods.py:21
+msgid "March"
+msgstr "Maart"
+
+#: dateperiods.py:22
+msgid "April"
+msgstr "April"
+
+#: dateperiods.py:23
+msgid "May"
+msgstr "Mei"
+
+#: dateperiods.py:24
+msgid "June"
+msgstr "Juni"
+
+#: dateperiods.py:25
+msgid "July"
+msgstr "Juli"
+
+#: dateperiods.py:26
+msgid "August"
+msgstr "Augustus"
+
+#: dateperiods.py:27
+msgid "September"
+msgstr "September"
+
+#: dateperiods.py:28
+msgid "October"
+msgstr "Oktober"
+
+#: dateperiods.py:29
+msgid "November"
+msgstr "November"
+
+#: dateperiods.py:30
+msgid "December"
+msgstr "December"
+
+#: dateperiods.py:138
+msgid "Whole period"
+msgstr "Hele periode"
+
+#: models.py:119
+msgid "Enter a valid color code rrggbbaa, where aa is optional."
+msgstr ""
+
+#: models.py:158
+msgid "Workspace"
+msgstr "Workspace"
+
+#: models.py:159
+msgid "Workspaces"
+msgstr "Workspaces"
+
+#: models.py:181
+msgid "Workspace item"
+msgstr "Workspace item"
+
+#: models.py:182
+msgid "Workspace items"
+msgstr "Workspace items"
+
+#: models.py:329
+msgid "all"
+msgstr "alles"
+
+#: models.py:330
+msgid "year"
+msgstr "jaar"
+
+#: models.py:331
+msgid "quarter"
+msgstr "kwartaal"
+
+#: models.py:332
+msgid "month"
+msgstr "maand"
+
+#: models.py:333
+msgid "week"
+msgstr "week"
+
+#: models.py:334
+msgid "day"
+msgstr "dag"
+
+#: models.py:358
+msgid "Collage snippet group"
+msgstr "Collage snippet groep"
+
+#: models.py:359
+msgid "Collage snippet groups"
+msgstr "Collage snippet groepen"
+
+#: models.py:514
+msgid "Boundary value"
+msgstr "Grenswaarde"
+
+#: workspace.py:23
+msgid "blue"
+msgstr "blauw"
+
+#: workspace.py:24
+msgid "magenta"
+msgstr "magenta"
+
+#: workspace.py:25
+msgid "yellow"
+msgstr "geel"
+
+#: workspace.py:26
+msgid "black"
+msgstr "zwart"
+
+#: workspace.py:27
+msgid "cyan"
+msgstr "cyaan"
+
+#: workspace.py:28
+msgid "red"
+msgstr "rood"
+
+#: workspace.py:29
+msgid "lightblue"
+msgstr "lichtblauw"
+
+#: workspace.py:30
+msgid "grey"
+msgstr "grijs"
+
+#: templates/lizard_map/example_openlayers.html:19
+msgid "Examples"
+msgstr "Voorbeelden"
+
+#: templates/lizard_map/example_openlayers.html:21
+msgid "Example with shapefile"
+msgstr "Voorbeeld met vormbestand"
+
+#: templates/lizard_map/tag_workspace.html:26
+msgid "adjust datetime"
+msgstr "pas datum-tijd aan"
+
+#: templates/lizard_map/tag_workspace.html:30
+msgid "new workspace"
+msgstr "nieuwe workspace"
+
+#: templates/lizard_map/tag_workspace.html:36
+#: templates/lizard_map/tag_workspace.html:92
+msgid "link to"
+msgstr "link naar"
+
+#: templates/lizard_map/tag_workspace.html:39
+msgid "empty"
+msgstr "leeg"
+
+#: templates/lizard_map/tag_workspace.html:99
+msgid "popup"
+msgstr "popup"
+
+#: templates/lizard_map/wms.html:19
+msgid "load map location"
+msgstr "laad kaart locatie"
+
+#: templates/lizard_map/wms.html:25
+msgid "save map location"
+msgstr "bewaar kaart locatie"
+
+#: templates/lizard_map/wms.html:52
+msgid "empty temporary workspace"
+msgstr "tijdelijke workspace legen"
+
+#~ msgid "Attached point"
+#~ msgstr "Aanhechtpunt"
+
+#~ msgid "Attached points"
+#~ msgstr "Aanhechtpunten"

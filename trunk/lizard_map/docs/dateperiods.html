@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>dateperiods.py</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  
+  <div class='section'>
+    <div class='docs'><h1>dateperiods.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Return period that is in the future for sure</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_all</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Returns 2-tuple of next year: start/end date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_year</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>Returns 2-tuple of next quarter: start/end date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_quarter</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Returns 2-tuple of next month: start/end date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_month</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Returns 2-tuple of next week: start/end date. Week starts on monday.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_week</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Returns 2-tuple of next week: start/end date</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">next_day</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p>Returns list of 2-tuples with startdate/enddates.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">calc_aggregation_periods</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">aggregation_period</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">periods</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">next_period_functions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ALL</span><span class="p">:</span> <span class="n">next_all</span><span class="p">,</span>
+        <span class="n">YEAR</span><span class="p">:</span> <span class="n">next_year</span><span class="p">,</span>
+        <span class="n">QUARTER</span><span class="p">:</span> <span class="n">next_quarter</span><span class="p">,</span>
+        <span class="n">MONTH</span><span class="p">:</span> <span class="n">next_month</span><span class="p">,</span>
+        <span class="n">WEEK</span><span class="p">:</span> <span class="n">next_week</span><span class="p">,</span>
+        <span class="n">DAY</span><span class="p">:</span> <span class="n">next_day</span><span class="p">}</span>
+    <span class="n">next_period</span> <span class="o">=</span> <span class="n">next_period_functions</span><span class="p">[</span><span class="n">aggregation_period</span><span class="p">]</span>
+
+    <span class="n">next_period_start</span><span class="p">,</span> <span class="n">next_period_end</span> <span class="o">=</span> <span class="n">next_period</span><span class="p">(</span><span class="n">start_date</span><span class="p">)</span>
+    <span class="n">periods</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_date</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">next_period_start</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)))</span>
+    <span class="k">while</span> <span class="n">next_period_start</span> <span class="o">&lt;</span> <span class="n">end_date</span><span class="p">:</span>
+        <span class="n">periods</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">next_period_start</span><span class="p">,</span>
+                        <span class="nb">min</span><span class="p">(</span><span class="n">next_period_end</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)))</span>
+        <span class="p">(</span><span class="n">next_period_start</span><span class="p">,</span>
+         <span class="n">next_period_end</span><span class="p">)</span> <span class="o">=</span> <span class="n">next_period</span><span class="p">(</span><span class="n">next_period_start</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">periods</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p>Returns fancy string of (start_date, end_date), format is</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">fancy_period</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">,</span> <span class="n">aggregation_period</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div><div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p>determined by aggregation_period.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="n">period_formats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ALL</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s">&quot;Whole period&quot;</span><span class="p">),</span>
+        <span class="n">YEAR</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y&quot;</span><span class="p">),</span>
+        <span class="n">QUARTER</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">QUARTERS</span><span class="p">[(</span><span class="n">a</span><span class="o">.</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">],</span> <span class="n">a</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y&quot;</span><span class="p">)),</span>
+        <span class="n">MONTH</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">MONTHS</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">month</span><span class="p">],</span> <span class="n">a</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y&quot;</span><span class="p">)),</span>
+        <span class="n">WEEK</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y %m </span><span class="si">%d</span><span class="s">&quot;</span><span class="p">),</span>
+        <span class="n">DAY</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%Y %m </span><span class="si">%d</span><span class="s">&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="n">period_formats</span><span class="p">[</span><span class="n">aggregation_period</span><span class="p">](</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">)</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
