@@ -25,7 +25,6 @@ from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
-
 # Workspace stuff
 
 CUSTOM_LEGENDS = 'custom_legends'
