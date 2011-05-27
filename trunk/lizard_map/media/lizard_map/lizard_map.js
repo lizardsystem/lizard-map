@@ -273,6 +273,7 @@ function setUpWorkspaceButtons() {
         var $workspace, workspace_id, url;
         $workspace = $(this).parents("div.workspace");
         workspace_id = $workspace.attr("data-workspace-id");
+        alert(workspace_id);
         url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
         addProgressAnimationIntoWorkspace();
         $.post(
@@ -282,6 +283,12 @@ function setUpWorkspaceButtons() {
                 $workspace.find(".sidebarbox-action-progress").remove();
                 $workspace.updateWorkspace();
             });
+    });
+    // Save workspace
+    $(".workspace-save-trigger").live('click', function () {
+        popup = $(".save-popup");
+        overlay = popup.overlay();
+        overlay.load();
     });
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {

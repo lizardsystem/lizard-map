@@ -1,6 +1,6 @@
 /* Popup styling */
 .popup,
-.date-popup
+.date-popup,
 { display: none;
   z-index: 10000;
   padding: 1em;
@@ -214,4 +214,19 @@ hover over the item */
 
 .workspace:hover h2 .sidebarbox-action-icon
 { display: block;
+}
+
+/* the overlayed element */
+.save-popup
+{ display:none;
+  z-index:10000;
+  background-color: white;
+  width:200px;
+  min-height:100px;
+  border:1px solid black;
+  padding: 1em;
+
+  /* CSS3 styling for latest browsers */
+  -moz-box-shadow:0 0 40px 5px black;
+  -webkit-box-shadow: 0 0 40px black;
 }

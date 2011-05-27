@@ -29,9 +29,16 @@
       <span class="ss_sprite ss_page_add">&nbsp;</span>
     </a>
     {% endif %}
+    <a id="save_workspace"
+       href="#"
+       title="{% trans 'save' %} {{ workspace.name }}"
+       rel="#summary-save-workspace"
+       class="title ss_sprite ss_attach sidebarbox-action-icon workspace-save-trigger">
+    </a>
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
        title="{% trans 'link to' %} {{ workspace.name }}"
-       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
+       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;
+    </a>
     <a id="trash1"
        href="#"
        title="{% trans 'empty' %} {{ workspace.name }}"
@@ -99,12 +106,18 @@
   {% for collage in workspace.collages.all %}
   <h2 class="collage"
       data-collage-id="{{ collage.id }}">
+    <a id="save_collage"
+       href="#"
+       title="{% trans 'save' %} {{ workspace.name }}"
+       class="title ss_sprite ss_attach sidebarbox-action-icon">
+    </a>
     <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon">
       &nbsp;
     </span>
     <a href="{% url lizard_map.collage collage_id=collage.id %}"
        title="{% trans 'link to' %} {{ collage.name }}"
-       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
+       class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;
+    </a>
     <a id="collage-trash"
        href="#"
        title="{% trans 'empty' %} {{ collage.name }}"

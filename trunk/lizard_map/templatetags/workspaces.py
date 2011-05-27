@@ -119,6 +119,15 @@ def date_popup(context):
         }
 
 
+@register.inclusion_tag("lizard_map/tag_save_popup.html",
+                        takes_context=True)
+def save_popup(context):
+    """Displays save popup"""
+    return {
+        'save_form': context.get('save_form', None),
+        }
+
+
 @register.inclusion_tag("lizard_map/tag_legend.html")
 def legend(name, adapter, session=None):
     """Shows legend. Optionally updates legend with

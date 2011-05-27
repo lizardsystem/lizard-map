@@ -35,6 +35,12 @@ urlpatterns = patterns(
      {},
      name="lizard_map.set_animation_date"),
 
+    # Save workspace
+    (r'^save_workspace$',
+     'lizard_map.save_form.save_workspace',
+     {},
+     'lizard_map.save_workspace'),
+
     # Load and save map location
     (r'^map_location_save$',
      'lizard_map.views.map_location_save',
