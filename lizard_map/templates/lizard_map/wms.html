@@ -25,9 +25,10 @@
 {% endblock map-javascript %}
 
 {% block above-content %}
+  {# date_popup is not a valid child of ul #}
+  {% date_popup %}
 <ul class="map-actions">
   {% date_trigger %}
-  {% date_popup %}
   {# Load and save map locations #}
   <li id="map-load-default-location"
       class="map-action"
