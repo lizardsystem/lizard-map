@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.79 (unreleased)
+1.79 (2011-05-30)
 -----------------
 
 - Use gray background color for map: loading of tiles is less noticable
