@@ -5,7 +5,11 @@ Changelog of lizard-map
 1.79 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Use gray background color for map: loading of tiles is less noticable
+- Added possibility for profiling middleware according to
+  http://www.no-ack.org/2010/12/yet-another-profiling-middleware-for.html
+- Added debug toolbar.
+- Upped django to 1.2.3.
 
 
 1.78 (2011-05-18)
