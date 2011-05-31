@@ -5,8 +5,11 @@
 G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
 
 
-var layers, map;
+var layers, wms_layers, background_layers, map;
 layers = []; // used in an associative way
+background_layers = []; // used in an associative way
+wms_layers = []; // used in an associative way
+
 //layer_names = []; // stores all names, so we can loop through the layers
 
 //layers is globally defined
@@ -25,95 +28,108 @@ function updateLayers() {
 }
 
 
-/* Adds all layers (base + workspaces) to map. Refreshes all
-workspaces. Layers from other sources are assumed to be 'static' */
-function refreshLayers() {
-    var $lizard_map_wms, base_layer,
-        base_layer_type, wms_url, wms_layers, osm_url, i,
-        selected_base_layer_name;
-
-    // Remove all old layers.
-    layers = [];
-    for (i = map.layers.length - 1; i >= 0; i -= 1) {
-        map.removeLayer(map.layers[i]);
-    }
-
-    // Set up all layers.
+// Refresh/setup background layers only when they're not available yet.
+function refreshBackgroundLayers() {
+    var $lizard_map_wms, selected_base_layer_name, base_layer,
+    base_layer_type, wms_url;
     $lizard_map_wms = $("#lizard-map-wms");
     selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
-
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,
-            is_default, layer_names;
+        is_default, layer_names, identifier;
         layer_type = $(this).attr("data-layer-type");
         layer_name = $(this).attr("data-layer-name");
         is_default = $(this).attr("data-default");
 
-        if (layer_type === "GOOGLE")
-        {
-            // default=1, physical=2, hybrid=3, satellite=4
-            data_google_type = $(this).attr("data-google-layer-type");
-            if (data_google_type === "2") {
-                google_type = G_PHYSICAL_MAP;
+        // Three possible identificators.
+        url = $(this).attr("data-layer-url");
+        layer_names = $(this).attr("data-layer-layer-names");
+        data_google_type = $(this).attr("data-google-layer-type");
+        identifier = url + layer_names + data_google_type;
+        if (background_layers.indexOf(identifier) === -1) {
+            // Not already present, adding it.
+            if (layer_type === "GOOGLE")
+            {
+                // default=1, physical=2, hybrid=3, satellite=4
+                if (data_google_type === "2") {
+                    google_type = G_PHYSICAL_MAP;
+                }
+                else if (data_google_type === "3") {
+                    google_type = G_HYBRID_MAP;
+                }
+                else if (data_google_type === "4") {
+                    google_type = G_SATELLITE_MAP;
+                } else {
+                    google_type = G_NORMAL_MAP;
+                }
+                base_layer = new OpenLayers.Layer.Google(
+                    layer_name,
+                    {type: google_type, sphericalMercator: true});
             }
-            else if (data_google_type === "3") {
-                google_type = G_HYBRID_MAP;
+            else if (layer_type === "OSM")
+            {
+                base_layer = new OpenLayers.Layer.OSM(
+                    layer_name, url, {buffer: 0});
             }
-            else if (data_google_type === "4") {
-                google_type = G_SATELLITE_MAP;
-            } else {
-                google_type = G_NORMAL_MAP;
+            else if (layer_type === "WMS")
+            {
+                base_layer = new OpenLayers.Layer.WMS(
+                    layer_name, wms_url,
+                    {'layers': layer_names, 'format': 'image/png',
+                     'maxResolution': 364},
+                    {'isBaseLayer': true, 'buffer': 1}
+                );
             }
-            base_layer = new OpenLayers.Layer.Google(
-                layer_name,
-                {type: google_type, sphericalMercator: true});
-        }
-        else if (layer_type === "OSM")
-        {
-            url = $(this).attr("data-layer-url");
-            base_layer = new OpenLayers.Layer.OSM(
-                layer_name, url, {buffer: 0});
-        }
-        else if (layer_type === "WMS")
-        {
-            url = $(this).attr("data-layer-url");
-            layer_names = $(this).attr("data-layer-layer-names");
-            base_layer = new OpenLayers.Layer.WMS(
-                layer_name, wms_url,
-                {'layers': layer_names, 'format': 'image/png',
-                 'maxResolution': 364},
-                {'isBaseLayer': true, 'buffer': 1}
-            );
-        }
-        // layers.base_layer
-        map.addLayer(base_layer);
-        // Set base layer if is_default.
-        if ((selected_base_layer_name === "") &&
-            (is_default === "True")) {
+            // layers.base_layer
+            map.addLayer(base_layer);
+            background_layers.push(identifier);
+            // Set base layer if is_default.
+            if ((selected_base_layer_name === "") &&
+                (is_default === "True")) {
 
-            map.setBaseLayer(base_layer);
-        } else if (selected_base_layer_name === layer_name) {
-            map.setBaseLayer(base_layer);
+                map.setBaseLayer(base_layer);
+            } else if (selected_base_layer_name === layer_name) {
+                map.setBaseLayer(base_layer);
+            }
         }
     });
+}
 
-    // Add our own data layers.
+
+
+function refreshWorkspaceLayers() {
+    var $lizard_map_wms, wms_url,
+        wms_layers, osm_url;
+    $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-layer").each(function () {
         var workspace_id, workspace_name, workspace_wms;
         workspace_id = $(this).attr("data-workspace-id");
         workspace_name = $(this).attr("data-workspace-name");
         workspace_wms = $(this).attr("data-workspace-wms");
-        layers[workspace_id] = new OpenLayers.Layer.WMS(
-            workspace_name,
-            workspace_wms,
-            {layers: 'basic'},
-            {singleTile: true,
-             isBaseLayer: false});
-        layers[workspace_id].mergeNewParams({'random': Math.random()});
-        map.addLayer(layers[workspace_id]);
+        if (layers[workspace_id] === undefined) {
+            // It doesn't exist yet.
+            layers[workspace_id] = new OpenLayers.Layer.WMS(
+                workspace_name,
+                workspace_wms,
+                {layers: 'basic'},
+                {singleTile: true,
+                 isBaseLayer: false});
+            layers[workspace_id].mergeNewParams({'random': Math.random()});
+            map.addLayer(layers[workspace_id]);
+        } else {
+            // It exists: refresh it.
+            layers[workspace_id].mergeNewParams({'random': Math.random()});
+        }
     });
+}
 
+
+
+function refreshWmsLayers() {
     // Add wms layers from workspace items.
+    var $lizard_map_wms, wms_url, osm_url, i;
+    alert("Doesn't work yet");
+    $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
         var name, url, params, options, id;
         // WMS id, different than workspace ids.
@@ -122,10 +138,20 @@ function refreshLayers() {
         url = $(this).attr("data-workspace-wms-url");
         params = $(this).attr("data-workspace-wms-params");
         options = $(this).attr("data-workspace-wms-options");
-        layers[id] = new OpenLayers.Layer.WMS(
+        wms_layers[id] = new OpenLayers.Layer.WMS(
             name, url, $.parseJSON(params), $.parseJSON(options));
-        map.addLayer(layers[id]);
+        map.addLayer(wms_layers[id]);
     });
+}
+
+
+/* Adds all layers (base + workspaces) to map. Refreshes all
+workspaces. Layers from other sources are assumed to be 'static' */
+function refreshLayers() {
+    // Set up all layers.
+    refreshBackgroundLayers();
+    refreshWorkspaceLayers();
+    refreshWmsLayers();
 }
 
 
