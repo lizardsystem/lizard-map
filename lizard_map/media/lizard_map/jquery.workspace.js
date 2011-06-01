@@ -37,22 +37,6 @@ $("a.url-lizard-map-workspace-item-edit").attr("href");
 */
 
 
-// Terrible hacky function that just reloads the whole page if the
-// collage link matches the current location. To be called when some control
-// is invoked that is likely to alter the collage, for example the controls
-// that remove snippets or toggle their visibility. Already better to .load()
-// only the right part of the site.
-function reloadPageIfThisIsCollage() {
-    var pathname;
-    pathname = $("#collage-view").attr("href");
-    if (pathname === window.location.pathname) {
-        $("#textual").load(pathname + " #content", function () { 
-            reloadGraphs();
-        });
-    }
-}
-
-
 function isCollagePopupVisible() {
     return ($("#graph-popup-content div:first-child").length !== 0 &&
             $("#graph-popup-content div:first-child").data("is_collage_popup") &&
@@ -80,7 +64,7 @@ jQuery.fn.liveCheckboxes = function () {
             var url = $workspace.attr("data-url-lizard-map-snippet-edit");
             $.ajax({
                 url: url,
-                    data: { snippet_id: this.id, visible: this.checked },
+                data: { snippet_id: this.id, visible: this.checked },
                 success: function (snippet) {
                     $workspace.updateWorkspace();
                 },
@@ -91,8 +75,6 @@ jQuery.fn.liveCheckboxes = function () {
             if (isCollagePopupVisible()) {
                 $(".collage").collagePopup();
             }
-            // Reload the page if this is the collage view
-            reloadPageIfThisIsCollage();
         });
     });
 };
@@ -181,7 +163,7 @@ jQuery.fn.collagePopup = function () {
             show_popup(data);
             // Mark popup as being a collage popup
             $("#graph-popup-content div:first-child").data("is_collage_popup", true);
-            
+
         }
     );
 
@@ -301,8 +283,13 @@ jQuery.fn.updateWorkspace = function () {
                     $('.map-actions', $holder).html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
+                $("#collage").html(
+                    $('#collage', $holder).html());
+                reloadGraphs();
                 // reload map layers
-                refreshLayers(); // from lizard_wms.js
+                if ($("#map").length > 0) {
+                    refreshLayers(); // from lizard_wms.js
+                }
                 // Is this enough? See also refreshMapActionsDivs in lizard_map
                 setUpAnimationSlider();
                 setUpTransparencySlider();

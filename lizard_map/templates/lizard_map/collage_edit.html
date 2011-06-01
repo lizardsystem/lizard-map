@@ -16,12 +16,14 @@
 
 {% block content %}
 <div id="textual">
+  <div id="collage">
 
-<h2>{{ collage.name }}</h2>
-{% for snippet_group in collage.snippet_groups.all %}
-  {% firstof snippet_group.name '' %}
-  {% snippet_group snippet_group 'False' 'True' %}
-{% endfor %}
+    <h2>{{ collage.name }}</h2>
+    {% for snippet_group in collage.snippet_groups.all %}
+      {% firstof snippet_group.name '' %}
+      {% snippet_group snippet_group 'False' 'True' %}
+    {% endfor %}
+  </div>
 
 </div>
 {% endblock content %}

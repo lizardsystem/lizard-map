@@ -2,8 +2,7 @@
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-hover_popup, layers, map, refreshLayers, isCollagePopupVisible,
-reloadPageIfThisIsCollage */
+hover_popup, layers, map, refreshLayers, isCollagePopupVisible */
 
 var animationTimer, transparencyTimer;
 
@@ -335,8 +334,6 @@ function setUpWorkspaceButtons() {
                 if (isCollagePopupVisible()) {
                     $(".collage").collagePopup();
                 }
-                // Reload the page if this is the collage view
-                reloadPageIfThisIsCollage();
             });
         return false;
     });
@@ -603,27 +600,29 @@ Sends current extent and name of visible base layer.
 function mapSaveLocation() {
     var url, extent, visible_base_layer_name, i;
     url = $("#lizard-map-wms").attr("data-save-location-url");
-    extent = map.getExtent();
-    visible_base_layer_name = "";
+    if ($("#map").length > 0) {
+        extent = map.getExtent();
+        visible_base_layer_name = "";
 
-    // Find the active base layer.
-    for (i = 0; i < map.layers.length; i = i + 1) {
-        if (map.layers[i].isBaseLayer && map.layers[i].visibility) {
-            visible_base_layer_name = map.layers[i].name;
-            break;
+        // Find the active base layer.
+        for (i = 0; i < map.layers.length; i = i + 1) {
+            if (map.layers[i].isBaseLayer && map.layers[i].visibility) {
+                visible_base_layer_name = map.layers[i].name;
+                break;
+            }
         }
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: {bottom: extent.bottom,
+                   left: extent.left,
+                   right: extent.right,
+                   top: extent.top,
+                   base_layer_name: visible_base_layer_name},
+            async: false,
+            success: function () {}
+        });
     }
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: {bottom: extent.bottom,
-               left: extent.left,
-               right: extent.right,
-               top: extent.top,
-               base_layer_name: visible_base_layer_name},
-        async: false,
-        success: function () {}
-    });
 }
 
 
