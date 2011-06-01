@@ -453,7 +453,8 @@ def popup_collage_json(collage, popup_id, request=None):
     """
 
     html = []
-    snippet_groups = collage.snippet_groups.all()
+    snippet_groups = collage.visible_snippet_groups()
+#    snippet_groups = collage.snippet_groups.all()
     if len(snippet_groups) > 1:
         big_popup = True
     else:

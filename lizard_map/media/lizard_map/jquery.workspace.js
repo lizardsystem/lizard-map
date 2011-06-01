@@ -46,7 +46,9 @@ function reloadPageIfThisIsCollage() {
     var pathname;
     pathname = $("#collage-view").attr("href");
     if (pathname === window.location.pathname) {
-        window.location = pathname;
+        $("#textual").load(pathname + " #content", function () { 
+            reloadGraphs();
+        });
     }
 }
 

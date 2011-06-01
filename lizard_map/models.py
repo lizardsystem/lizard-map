@@ -354,6 +354,10 @@ class WorkspaceCollage(models.Model):
         snippets = list(itertools.chain(*snippets_in_groups))
         return [snippet.location for snippet in snippets]
 
+    def visible_snippet_groups(self):
+        """Return only snippet_groups that have visible snippets."""
+        return self.snippet_groups.filter(snippets__visible=True).distinct()
+
     @property
     def workspace_items(self):
         """Return workspace items used by one of our snippets."""

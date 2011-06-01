@@ -24,7 +24,7 @@
 <div id="textual">
 
   <h2>{{ collage.name }}</h2>
-  {% for snippet_group in collage.snippet_groups.all %}
+  {% for snippet_group in collage.visible_snippet_groups %}
   {% snippet_group snippet_group 'False' 'True' 'True' %}
   {% snippet_group_statistics request snippet_group %}
   {% if show_table %}
