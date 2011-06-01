@@ -5,6 +5,12 @@ Changelog of lizard-map
 1.80 (unreleased)
 -----------------
 
+- Added default "javascript_click_handler" (namely ``popup_click_handler``) to
+  the context via the lizard_map context processor.
+
+- By default, a hover_click_handler isn't added anymore unless you specify one
+  yourself in the context. Most sites don't need/want it.
+
 - Fixed overly-aggressive reloading of map layers. This improves the performance.
 
 

@@ -82,6 +82,12 @@ def workspace_variables(request):
                 break
     add_to_context['animation_slider'] = animation_slider
 
+    # Click/hover handlers.
+    add_to_context['javascript_hover_handler'] = None
+    # This used to be 'popup_hover_handler', but you'll have to pass that
+    # yourself, now, if you want to use it. The default is OFF, now.
+    add_to_context['javascript_click_handler'] = 'popup_click_handler'
+
     add_to_context['use_workspaces'] = True
 
     return add_to_context

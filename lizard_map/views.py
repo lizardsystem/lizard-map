@@ -55,17 +55,15 @@ def homepage(request,
 
     return render_to_response(
         template,
-        {'javascript_hover_handler': 'popup_hover_handler',
-         'javascript_click_handler': 'popup_click_handler',
-         'crumbs': crumbs,
+        {'crumbs': crumbs,
          'application_screen_slug': application_screen_slug},
         context_instance=RequestContext(request))
 
 
 def workspace(request,
               workspace_id,
-              javascript_click_handler='popup_click_handler',
-              javascript_hover_handler='popup_hover_handler',
+              javascript_click_handler=None,
+              javascript_hover_handler=None,
               template='lizard_map/workspace.html'):
     """Render page with one workspace.
 
@@ -73,12 +71,15 @@ def workspace(request,
     """
     workspace = get_object_or_404(Workspace, pk=workspace_id)
 
+    context_dict = {'workspaces': {'user': [workspace]},
+                    }
+    if javascript_click_handler:
+        context_dict['javascript_click_handler'] = javascript_click_handler
+    if javascript_hover_handler:
+        context_dict['javascript_hover_handler'] = javascript_hover_handler
     return render_to_response(
         template,
-        {'workspaces': {'user': [workspace]},
-         'javascript_click_handler': javascript_click_handler,
-         'javascript_hover_handler': javascript_hover_handler,
-         },
+        context_dict,
         context_instance=RequestContext(request))
 
 
