@@ -6,9 +6,9 @@ G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
 
 
 var layers, wms_layers, background_layers, map;
-layers = []; // used in an associative way
-background_layers = []; // used in an associative way
-wms_layers = []; // used in an associative way
+layers = [];  // Used in an associative way.
+background_layers = [];  // Just the identifiers.
+wms_layers = {};
 
 //layer_names = []; // stores all names, so we can loop through the layers
 
@@ -127,20 +127,32 @@ function refreshWorkspaceLayers() {
 
 function refreshWmsLayers() {
     // Add wms layers from workspace items.
-    var $lizard_map_wms, wms_url, osm_url, i;
-    //alert("Doesn't work yet");
+    var $lizard_map_wms, wms_url, osm_url, i, ids_found;
+    ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
         var name, url, params, options, id;
         // WMS id, different than workspace ids.
         id = $(this).attr("data-workspace-wms-id");
+        ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
         url = $(this).attr("data-workspace-wms-url");
         params = $(this).attr("data-workspace-wms-params");
         options = $(this).attr("data-workspace-wms-options");
-        wms_layers[id] = new OpenLayers.Layer.WMS(
-            name, url, $.parseJSON(params), $.parseJSON(options));
-        map.addLayer(wms_layers[id]);
+        if (wms_layers[id] === undefined) {
+            // Create it.
+            wms_layers[id] = new OpenLayers.Layer.WMS(
+                name, url, $.parseJSON(params), $.parseJSON(options));
+            map.addLayer(wms_layers[id]);
+        }
+    });
+    // Remove unused ones.
+    $.each(wms_layers, function (key, value) {
+        if (ids_found.indexOf(key) === -1) {
+            // Remove now-unused layer.
+            map.removeLayer(value);
+            delete wms_layers[key];
+        }
     });
 }
 

@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.80 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed overly-aggressive reloading of map layers. This improves the performance.
 
 
 1.79 (2011-05-30)
