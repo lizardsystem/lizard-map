@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.80 (unreleased)
+1.80 (2011-06-01)
 -----------------
 
 - Added default "javascript_click_handler" (namely ``popup_click_handler``) to
