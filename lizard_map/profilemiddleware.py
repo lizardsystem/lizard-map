@@ -1,7 +1,10 @@
+from cStringIO import StringIO
+from time import time
+import functools
+import logging
 import os
 import re
 import tempfile
-from cStringIO import StringIO
 
 from django.conf import settings
 import hotshot
@@ -10,6 +13,30 @@ import hotshot.stats
 COMMENT_SYNTAX = ((re.compile(r'^application/(.*\+)?xml|text/html$', re.I), '<!--', '-->'),
                   (re.compile(r'^application/j(avascript|son)$',     re.I), '/*',   '*/' ))
 
+
+logger = logging.getLogger(__name__)
+
+# Decorator from
+# http://www.heikkitoivonen.net/blog/2011/02/02/decorator-to-log-slow-calls/
+def time_slow(f=None, threshold=0.01):
+    def decorated(f):
+        @functools.wraps(f)
+        def wrapper(*args, **kw):
+            start = time()
+            try:
+                ret = f(*args, **kw)
+            finally:
+                duration = time() - start
+                if duration > threshold:
+                    logger.info('slow: %s %.9f seconds', f.__name__, duration)
+            return ret
+        return wrapper
+    if f is not None:
+        return decorated(f)
+    return decorated
+
+
+# Copied from somewhere by Reinout.
 class ProfileMiddleware(object):
     def process_view(self, request, callback, args, kwargs):
         # Create a profile, writing into a temporary file.
