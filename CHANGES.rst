@@ -13,6 +13,8 @@ Changelog of lizard-map
 
 - Fixed overly-aggressive reloading of map layers. This improves the performance.
 
+- Added checkboxes and functionality to collage-items (snippets).
+
 
 1.79 (2011-05-30)
 -----------------
