@@ -249,7 +249,7 @@ def snippet_group_image(request, snippet_group_id, legend=True):
 
     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
         pk=snippet_group_id)
-    snippets = snippet_group.snippets.all()
+    snippets = snippet_group.snippets.filter(visible=True)
     identifiers = [snippet.identifier for snippet in snippets]
 
     # Add aggregation_period to each identifier
@@ -460,7 +460,7 @@ def popup_collage_json(collage, popup_id, request=None):
     google_x, google_y = None, None
 
     for snippet_group in snippet_groups:
-        snippets = snippet_group.snippets.all()
+        snippets = snippet_group.snippets.filter(visible=True)
         if snippets:
             # Pick workspace_item of first snippet to build html
             workspace_item = snippets[0].workspace_item
@@ -611,8 +611,13 @@ def collage_empty(request):
     TODO: check if workspace is actually yours
     """
     collage_id = request.POST.get('collage_id')
-    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-    collage.delete()
+    snippetgroups = WorkspaceCollageSnippetGroup.objects.filter(
+        workspace_collage=collage_id)
+    for s in snippetgroups:
+        s.delete()
+
+#    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+#    collage.delete()
 
     return HttpResponse("")
 
@@ -651,14 +656,22 @@ def workspace_item_image(request, workspace_item_id):
                                         layout_extra=layout_extra)
 
 
-def snippet_edit(request, snippet_id):
+@never_cache
+def snippet_edit(request, snippet_id=None, visible=None):
     """
     Edits snippet layout properties.
     """
-    snippet = WorkspaceCollageSnippet.objects.get(pk=snippet_id)
-
     post = request.POST
     layout = {}
+    if snippet_id is None:
+        snippet_id = post['snippet_id']
+    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
+    if visible is None:
+        if post['visible']:
+            visible = post['visible']
+    if visible:
+        lookup = {'true': True, 'false': False}
+        snippet.visible = lookup[visible]
     if post.get('color', None):
         layout.update({'color': post['color']})
     if post.__contains__('line_min'):

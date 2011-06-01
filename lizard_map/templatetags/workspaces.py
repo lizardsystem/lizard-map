@@ -8,7 +8,6 @@ from lizard_map.views import CUSTOM_LEGENDS
 
 register = template.Library()
 
-
 @register.inclusion_tag("lizard_map/tag_workspace_debug.html",
                         takes_context=True)
 def workspace_debug_info(context):

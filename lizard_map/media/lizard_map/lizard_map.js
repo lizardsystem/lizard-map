@@ -2,7 +2,8 @@
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-hover_popup, layers, map, refreshLayers */
+hover_popup, layers, map, refreshLayers, isCollagePopupVisible,
+reloadPageIfThisIsCollage */
 
 var animationTimer, transparencyTimer;
 
@@ -85,7 +86,7 @@ function setUpMapLoadDefaultLocation() {
         url = $(this).attr("data-url");
         $.getJSON(
             url, function (data) {
-                var extent;
+                var extent, zoom;
                 if (data.extent !== undefined) {
                     extent = new OpenLayers.Bounds(
                         data.extent.left,
@@ -95,8 +96,8 @@ function setUpMapLoadDefaultLocation() {
                     // Don't decrease the zoom level here! If you want to see
                     // a larger area in your viewport, you should define a
                     // larger start_extent for your project. #2762
-                    map.setCenter(extent.getCenterLonLat(),
-                                  map.getZoomForExtent(extent) - 0);
+                    zoom = map.getZoomForExtent(extent);
+                    map.setCenter(extent.getCenterLonLat(), zoom);
                 }
             });
     });
@@ -330,15 +331,22 @@ function setUpWorkspaceButtons() {
             { object_id: object_id },
             function () {
                 $workspace.updateWorkspace();
+                // Reload the collage_popup if it is already present
+                if (isCollagePopupVisible()) {
+                    $(".collage").collagePopup();
+                }
+                // Reload the page if this is the collage view
+                reloadPageIfThisIsCollage();
             });
         return false;
     });
-    // Make snippets clickable.
-    $("li.snippet").live('click', function (event) {
-        var $workspace, url, snippet_id;
+    // Make snippetnames clickable.
+    $("div.snippet-name").live('click', function (event) {
+        var $snippet, $workspace, url, snippet_id;
+        $snippet = $(this).parents("li.snippet");
         $workspace = $(this).parents("div.workspace");
         url = $workspace.attr("data-url-lizard-map-snippet-popup");
-        snippet_id = $(this).attr("data-object-id");
+        snippet_id = $snippet.attr("data-object-id");
         $.getJSON(
             url,
             { snippet_id: snippet_id },

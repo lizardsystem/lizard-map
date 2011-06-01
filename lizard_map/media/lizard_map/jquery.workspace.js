@@ -36,6 +36,28 @@ workspace_item_checkbox class in ul.workspace_items
 $("a.url-lizard-map-workspace-item-edit").attr("href");
 */
 
+
+// Terrible hacky function that just reloads the whole page if the
+// collage link matches the current location. To be called when some control
+// is invoked that is likely to alter the collage, for example the controls
+// that remove snippets or toggle their visibility. Already better to .load()
+// only the right part of the site.
+function reloadPageIfThisIsCollage() {
+    var pathname;
+    pathname = $("#collage-view").attr("href");
+    if (pathname === window.location.pathname) {
+        window.location = pathname;
+    }
+}
+
+
+function isCollagePopupVisible() {
+    return ($("#graph-popup-content div:first-child").length !== 0 &&
+            $("#graph-popup-content div:first-child").data("is_collage_popup") &&
+            $("#graph-popup").css("display") === "block");
+}
+
+
 jQuery.fn.liveCheckboxes = function () {
     return this.each(function () {
         var $workspace;
@@ -52,9 +74,26 @@ jQuery.fn.liveCheckboxes = function () {
                 async: false
             });
         });
+        $workspace.find(".snippet-checkbox").live('click', function () {
+            var url = $workspace.attr("data-url-lizard-map-snippet-edit");
+            $.ajax({
+                url: url,
+                    data: { snippet_id: this.id, visible: this.checked },
+                success: function (snippet) {
+                    $workspace.updateWorkspace();
+                },
+                type: "POST",
+                async: false
+            });
+            // Reload the collage_popup if it is already visible
+            if (isCollagePopupVisible()) {
+                $(".collage").collagePopup();
+            }
+            // Reload the page if this is the collage view
+            reloadPageIfThisIsCollage();
+        });
     });
 };
-
 
 
 /* Shows an "jquery tools overlay" popup, data must have the following properties:
@@ -128,6 +167,7 @@ function hover_popup(data, map) {
     }
 }
 
+
 jQuery.fn.collagePopup = function () {
     var url, collage_id;
     url = $(this).closest("[data-url-lizard-map-collage-popup]").attr("data-url-lizard-map-collage-popup");
@@ -137,9 +177,14 @@ jQuery.fn.collagePopup = function () {
         { collage_id: collage_id },
         function (data) {
             show_popup(data);
+            // Mark popup as being a collage popup
+            $("#graph-popup-content div:first-child").data("is_collage_popup", true);
+            
         }
     );
+
 };
+
 
 /* Make workspaces sortable and droppable
 
@@ -222,15 +267,7 @@ jQuery.fn.workspaceInteraction = function () {
         });
         // Make collage clickable. (DONE: should be collage-popup)
         $(".collage-popup", $workspace).live('click',
-                                       $(this).collagePopup);
-        // Snippets. Using sortable instead of draggable because
-        // Draggable applies to li and sortable applies to ul element
-        snippet_list = $workspace.find("ul.snippet-list");
-        snippet_list.sortable({
-            helper: 'clone',
-            items: 'li.snippet'
-        });
-
+                                       $(".collage").collagePopup);
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.

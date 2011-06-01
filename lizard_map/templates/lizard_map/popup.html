@@ -153,7 +153,7 @@ the default template for the html_default method.
     {% endif %}
     {% if snippet_group %}
     {# snippet group #}
-    {% for snippet in snippet_group.snippets.all %}
+    {% for snippet in snippets %}
     <tr>
       <td>{{ snippet.name }}</td>
       <td class="button">
@@ -173,7 +173,7 @@ the default template for the html_default method.
           <div class="popup-content">
             <h2>{% firstof snippet.name snippet.shortname %}</h2>
             <form class="graph-line-options"
-                  action="{% url lizard_map.snippet_edit snippet_id=snippet.id %}"
+                  action="{% url lizard_map_snippet_edit snippet_id=snippet.id %}"
                   method="post">
               <p>
                 <label>Kleur</label>

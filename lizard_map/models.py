@@ -472,7 +472,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
         Can be filtered by option restrict_to_month.
         """
         statistics = []
-        for snippet in self.snippets.all():
+        for snippet in self.snippets.filter(visible=True):
             snippet_adapter = snippet.workspace_item.adapter
 
             # Calc periods based on aggregation period setting.
@@ -541,11 +541,12 @@ class WorkspaceCollageSnippetGroup(models.Model):
         Calculates a table with each location as column, each row as
         datetime. First row consist of column names. List of lists.
 
-        Can be filtered by option restrict_to_month.
+        Can be filtered by option restrict_to_month. Only visible snippets
+        are included.
         """
         values_table = []
 
-        snippets = self.snippets.all()
+        snippets = self.snippets.filter(visible=True)
 
         # Add snippet names
         values_table.append(['Datum + tijdstip'] +
@@ -637,7 +638,12 @@ class WorkspaceCollageSnippet(models.Model):
     workspace_item = models.ForeignKey(
         WorkspaceItem)
     identifier_json = models.TextField()
+    visible = models.BooleanField(default=True)
+
     # ^^^ Format depends on workspace_item layer_method
+
+    class Meta:
+        ordering = ['name', ]
 
     def __unicode__(self):
         return u'%s' % self.name

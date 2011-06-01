@@ -12,6 +12,7 @@
      data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
      data-url-lizard-map-snippet-add="{% url lizard_map_session_collage_snippet_add %}"
      data-url-lizard-map-snippet-delete="{% url lizard_map_session_collage_snippet_delete %}"
+     data-url-lizard-map-snippet-edit="{% url lizard_map_snippet_edit %}"
      data-url-lizard-map-collage-empty="{% url lizard_map_collage_empty %}"
      data-url-lizard-map-session-workspace-add-item-temp="{% url lizard_map_session_workspace_add_item_temp %}"
      data-url-lizard-map-session-workspace-extent-temp="{% url lizard_map_session_workspace_extent_temp %}"
@@ -102,7 +103,7 @@
     <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon">
       &nbsp;
     </span>
-    <a href="{% url lizard_map.collage collage_id=collage.id %}"
+    <a id="collage-view" href="{% url lizard_map.collage collage_id=collage.id %}"
        title="{% trans 'link to' %} {{ collage.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
     <a id="collage-trash"
@@ -128,6 +129,14 @@
                width="16"
                height="16"
                class="snippet-image" />
+        <input id="{{ snippet.id }}"
+               class="snippet-checkbox"
+               type="checkbox"
+               {% if snippet.visible %}
+               checked="checked"
+               {% endif %}
+               title="Zichtbaar"
+               data-workspace-id="{{ snippet.id }}" />
           <span class="ss_sprite ss_delete sidebarbox-action-icon
                        snippet-delete"
                 title="Verwijder">

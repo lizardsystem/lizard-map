@@ -411,10 +411,11 @@ class WorkspaceItemAdapter(object):
         """
         Returns html representation of given snippet_group OR
         identifiers (snippet_group has priority). If a snippet_group
-        is provided, more options are available.
+        is provided, more options are available. Only snippets with
+        attribute visible=True are included in the result.
 
         This particular view always renders a list of items, then 1
-        image
+        image.
 
         Use this function if html function behaviour is default:
         def html(self, identifiers):
@@ -429,10 +430,11 @@ class WorkspaceItemAdapter(object):
         legend = layout_options.get('legend', False)
 
         if snippet_group is not None:
-            snippets = snippet_group.snippets.all()
+            snippets = snippet_group.snippets.filter(visible=True)
             identifiers = [snippet.identifier for snippet in snippets]
             title = str(snippet_group)
         else:
+            snippets = []
             title = self.workspace_item.name
 
         # Image url: for snippet_group there is a special (dynamic) url.
@@ -475,7 +477,8 @@ class WorkspaceItemAdapter(object):
             'add_snippet': add_snippet,
             'editing': editing,
             'snippet_group': snippet_group,
-                'colors': COLORS_DEFAULT,
+            'snippets': snippets,
+            'colors': COLORS_DEFAULT,
             }
 
         if extra_render_kwargs is not None:
