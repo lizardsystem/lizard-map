@@ -128,7 +128,7 @@ function refreshWorkspaceLayers() {
 function refreshWmsLayers() {
     // Add wms layers from workspace items.
     var $lizard_map_wms, wms_url, osm_url, i;
-    alert("Doesn't work yet");
+    //alert("Doesn't work yet");
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
         var name, url, params, options, id;
