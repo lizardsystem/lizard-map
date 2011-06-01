@@ -81,7 +81,7 @@ function setUpTransparencySlider() {
 
 function setUpMapLoadDefaultLocation() {
     $("#map-load-default-location").click(function () {
-        var url, coordinates, zoom;
+        var url;
         url = $(this).attr("data-url");
         $.getJSON(
             url, function (data) {
@@ -89,11 +89,14 @@ function setUpMapLoadDefaultLocation() {
                 if (data.extent !== undefined) {
                     extent = new OpenLayers.Bounds(
                         data.extent.left,
-                        data.extent.top,
+                        data.extent.bottom,
                         data.extent.right,
-                        data.extent.bottom);
+                        data.extent.top);
+                    // Don't decrease the zoom level here! If you want to see
+                    // a larger area in your viewport, you should define a
+                    // larger start_extent for your project. #2759
                     map.setCenter(extent.getCenterLonLat(),
-                                  map.getZoomForExtent(extent) - 1);
+                                  map.getZoomForExtent(extent) - 0);
                 }
             });
     });
