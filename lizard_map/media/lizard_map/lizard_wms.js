@@ -222,16 +222,16 @@ function showMap() {
     start_extent_right = $lizard_map_wms.attr("data-start-extent-right");
     start_extent_bottom = $lizard_map_wms.attr("data-start-extent-bottom");
     start_extent = new OpenLayers.Bounds(
-        parseFloat(start_extent_left), parseFloat(start_extent_top),
-        parseFloat(start_extent_right), parseFloat(start_extent_bottom));
+        parseFloat(start_extent_left), parseFloat(start_extent_bottom),
+        parseFloat(start_extent_right), parseFloat(start_extent_top));
 
     max_extent_left = $lizard_map_wms.attr("data-max-extent-left");
     max_extent_top = $lizard_map_wms.attr("data-max-extent-top");
     max_extent_right = $lizard_map_wms.attr("data-max-extent-right");
     max_extent_bottom = $lizard_map_wms.attr("data-max-extent-bottom");
     max_extent = new OpenLayers.Bounds(
-        parseFloat(max_extent_left), parseFloat(max_extent_top),
-        parseFloat(max_extent_right), parseFloat(max_extent_bottom));
+        parseFloat(max_extent_left), parseFloat(max_extent_bottom),
+        parseFloat(max_extent_right), parseFloat(max_extent_top));
 
     // Set up projection and bounds.
     if (projection === "EPSG:900913")
@@ -354,8 +354,13 @@ function showMap() {
 
     // Zoom to startpoint. Important to parse numbers, else a bug in
     // OpenLayers will initially prevent "+" from working.
-    map.setCenter(start_extent.getCenterLonLat(),
-                  map.getZoomForExtent(start_extent));
+    //
+    // Saving and subsequently restoring a start_extent often results in a
+    // zoom level that is decreased by -1. This might be due to rounding
+    // errors. By passing true to zoomToExtent, we will get the zoom
+    // level that most closely fits the specified bounds.
+    // See #2762 and #2794.
+    map.zoomToExtent(start_extent, true);
 
 }
 

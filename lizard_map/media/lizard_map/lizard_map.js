@@ -104,11 +104,8 @@ function setUpMapLoadDefaultLocation() {
                         data.extent.bottom,
                         data.extent.right,
                         data.extent.top);
-                    // Don't decrease the zoom level here! If you want to see
-                    // a larger area in your viewport, you should define a
-                    // larger start_extent for your project. #2762
-                    zoom = map.getZoomForExtent(extent);
-                    map.setCenter(extent.getCenterLonLat(), zoom);
+                    // See #2762 and #2794.
+                    map.zoomToExtent(extent, true);
                 }
             });
     });
