@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.81 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Workspace items and snippets take up a fixed one-line height now. The
+  overflow is hidden. This makes the interface more predictable.
 
 
 1.80 (2011-06-01)

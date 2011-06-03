@@ -143,12 +143,20 @@
   margin: 4px 0 auto 0;
   }
 
-.workspace-item
-{
-  overflow: visible;
+.workspace-item,
+.snippet
+{ overflow: hidden;
   width: 100%;
-  min-height: 2em;
+  height: 2em;
   }
+
+.workspace-items .ui-sortable-placeholder
+{ height: 25px;
+  }
+
+.snippet
+{ cursor: pointer;
+}
 
 .workspace-item-checkbox
 {
@@ -172,13 +180,6 @@
   /*  width: 14em;*/
   /*  ^^^ Seems unnecessary and causes newlines in IE7... */
   line-height: 2em;
-}
-
-.snippet
-{ overflow: visible;
-  width: 100%;
-  min-height: 2em;
-  cursor: pointer;
 }
 
 .snippet-name
