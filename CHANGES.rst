@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.82 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added spinner ("waiting") icon for clicking on a workspace item, clicking on
+  the plus sign, deleting a workspace item or deleting a collage item.
 
 
 1.81 (2011-06-03)

@@ -28,6 +28,18 @@ function setSliderDate(slider_value) {
 }
 
 
+function indicateWorkspaceItemBusy($workspace_item) {
+    $workspace_item.removeClass("workspace-acceptable");
+    $workspace_item.addClass("waiting-lineitem");
+}
+
+
+function reenableWorkspaceItem($workspace_item) {
+    $workspace_item.addClass("workspace-acceptable");
+    $workspace_item.removeClass("waiting-lineitem");
+}
+
+
 function setUpAnimationSlider() {
     var workspace_item_id;
     $("#animation-slider").slider({
@@ -160,7 +172,7 @@ function setUpAddWorkspaceItem() {
         adapter_class = $workspace_acceptable.attr("data-adapter-class");
         adapter_layer_json = $workspace_acceptable.attr("data-adapter-layer-json");
         url = $workspace.attr("data-url-lizard-map-workspace-item-add");
-
+        indicateWorkspaceItemBusy($workspace_acceptable);
         // Request to make workspace item and update workspace.
         $.post(
             url,
@@ -174,6 +186,7 @@ function setUpAddWorkspaceItem() {
                 $(".workspace").updateWorkspace();
                 // "click" the empty temp workspace
                 $(".workspace-empty-temp").click();
+                reenableWorkspaceItem($workspace_acceptable);
             }
         );
         return false; // Same as .preventDefault and .stopPropagation
@@ -217,8 +230,11 @@ function setUpWorkspaceAcceptable() {
 
     // Clicking a workspace-acceptable shows it in the 'temp' workspace.
     $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp, $workspace, html;
+        var name, adapter_class, adapter_layer_json, url_add_item_temp,
+        $workspace, html, $workspace_acceptable;
         $(".workspace-acceptable").removeClass("selected");
+        $workspace_acceptable = $(this);
+        indicateWorkspaceItemBusy($workspace_acceptable);
         $(this).addClass("selected");
         name = $(this).attr("data-name");
         adapter_class = $(this).attr("data-adapter-class");
@@ -258,6 +274,7 @@ function setUpWorkspaceAcceptable() {
 		*/
             });
         stretchOneSidebarBox();
+        reenableWorkspaceItem($workspace_acceptable);
         return false;
     });
 }
@@ -294,6 +311,7 @@ function setUpWorkspaceButtons() {
         url = $workspace.attr(
             "data-url-lizard-map-workspace-item-delete");
         object_id = $(this).parents(".workspace-item").attr("data-object-id");
+        $(this).parents(".workspace-item").addClass("waiting-lineitem");
         $.post(
             url,
             { object_id: object_id },
@@ -325,6 +343,7 @@ function setUpWorkspaceButtons() {
         url = $workspace.attr(
             "data-url-lizard-map-snippet-delete");
         object_id = $(this).parents(".snippet").attr("data-object-id");
+        $(this).parents(".snippet").addClass("waiting-lineitem");
         $.post(
             url,
             { object_id: object_id },

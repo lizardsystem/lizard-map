@@ -237,3 +237,9 @@ hover over the item */
 .workspace:hover h2 .sidebarbox-action-icon
 { display: block;
 }
+
+.waiting-lineitem
+{ background-image: url(/static_media/lizard_ui/ajax-loader3.gif);
+  background-repeat: no-repeat;
+  background-position: right;
+}

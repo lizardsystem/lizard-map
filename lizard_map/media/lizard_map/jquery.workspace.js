@@ -49,7 +49,10 @@ jQuery.fn.liveCheckboxes = function () {
         var $workspace;
         $workspace = $(this);
         $workspace.find(".workspace-item-checkbox").live('click', function () {
-            var url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
+            var url, $list_item;
+            url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
+            $list_item = $(this).closest('li');
+            $list_item.addClass("waiting-lineitem");
             $.ajax({
                 url: url,
                 data: { workspace_item_id: this.id, visible: this.checked },
@@ -61,7 +64,10 @@ jQuery.fn.liveCheckboxes = function () {
             });
         });
         $workspace.find(".snippet-checkbox").live('click', function () {
-            var url = $workspace.attr("data-url-lizard-map-snippet-edit");
+            var url, $list_item;
+            url = $workspace.attr("data-url-lizard-map-snippet-edit");
+            $list_item = $(this).closest('li');
+            $list_item.addClass("waiting-lineitem");
             $.ajax({
                 url: url,
                 data: { snippet_id: this.id, visible: this.checked },
