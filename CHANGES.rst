@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.82 (unreleased)
+1.82 (2011-06-03)
 -----------------
 
 - Added spinner ("waiting") icon for clicking on a workspace item, clicking on
