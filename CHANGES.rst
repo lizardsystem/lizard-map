@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.81 (unreleased)
+1.81 (2011-06-03)
 -----------------
 
 - Workspace items and snippets take up a fixed one-line height now. The
