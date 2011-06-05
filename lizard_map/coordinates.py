@@ -25,7 +25,7 @@ WGS84 = ('+proj=latlong +datum=WGS84')
 # Default map settings. Take this when no MAP_SETTINGS in django settings.
 DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
 DEFAULT_MAP_SETTINGS = {
-    'start_extent': '-14675, 6964942, 1254790, 6668977',
+    'start_extent': '-14675, 6668977, 1254790, 6964942',
     'max_extent': '-20037508.34, -20037508.34, 20037508.34, 20037508.34',
     'projection': 'EPSG:900913',
     'display_projection': 'EPSG:4326',
@@ -122,7 +122,7 @@ class MapSettings(object):
 
         def extent_setting(key):
             """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
-            extent_names = ['left', 'top', 'right', 'bottom']
+            extent_names = ['left', 'bottom', 'right', 'top']
             extent_list = Setting.get(
                 key, DEFAULT_MAP_SETTINGS[key]).split(',')
             extent = dict(

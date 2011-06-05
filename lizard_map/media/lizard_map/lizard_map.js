@@ -262,10 +262,9 @@ function setUpWorkspaceAcceptable() {
                         (extent.west !== null))
                     {
                         ol_extent = new OpenLayers.Bounds(
-                            extent.west, extent.north,
-                            extent.east, extent.south);
-                        map.setCenter(ol_extent.getCenterLonLat(),
-                                      map.getZoomForExtent(ol_extent) - 3);
+                            extent.west, extent.south,
+                            extent.east, extent.north);
+                        map.zoomToExtent(ol_extent, true);
                     }
                 });
 		*/
@@ -570,12 +569,9 @@ function setUpWorkspaceItemPanToLayer() {
                     (extent.west !== null))
                 {
                     ol_extent = new OpenLayers.Bounds(
-                        extent.west, extent.north,
-                        extent.east, extent.south);
-                    map.setCenter(ol_extent.getCenterLonLat(),
-                                  map.getZoomForExtent(ol_extent));
-                                  // map.getZoomForExtent(ol_extent) - 3);
-                                  // ^^^ - 3 was not nice in Deltaportaal
+                        extent.west, extent.south,
+                        extent.east, extent.north);
+                    map.zoomToExtent(ol_extent, true);
                 }
             });
     });
