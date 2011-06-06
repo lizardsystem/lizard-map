@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.83 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Solved intermittent problem with the zooming level. See #2656, #2762, and
+  #2794.
 
 
 1.82 (2011-06-03)
