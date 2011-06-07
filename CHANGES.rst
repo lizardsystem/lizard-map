@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.84 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed javascript bug that prevented IE from displaying background maps.
+
+- Changed start_extent in background_maps fixture to match 1.83 changes.
 
 
 1.83 (2011-06-07)
