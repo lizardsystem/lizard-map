@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.84 (unreleased)
+1.84 (2011-06-07)
 -----------------
 
 - Fixed javascript bug that prevented IE from displaying background maps.
