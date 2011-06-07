@@ -46,7 +46,7 @@ function refreshBackgroundLayers() {
         layer_names = $(this).attr("data-layer-layer-names");
         data_google_type = $(this).attr("data-google-layer-type");
         identifier = url + layer_names + data_google_type;
-        if (background_layers.indexOf(identifier) === -1) {
+        if ($.inArray(identifier, background_layers) === -1) {
             // Not already present, adding it.
             if (layer_type === "GOOGLE")
             {
@@ -148,7 +148,7 @@ function refreshWmsLayers() {
     });
     // Remove unused ones.
     $.each(wms_layers, function (key, value) {
-        if (ids_found.indexOf(key) === -1) {
+        if ($.inArray(key, ids_found) === -1) {
             // Remove now-unused layer.
             map.removeLayer(value);
             delete wms_layers[key];
