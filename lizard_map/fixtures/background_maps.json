@@ -105,7 +105,7 @@
     "pk": 3, 
     "model": "lizard_map.setting", 
     "fields": {
-      "value": "-14675, 6964942, 1254790, 6668977", 
+      "value": "-14675, 6668977, 1254790, 6964942", 
       "key": "start_extent"
     }
   }
