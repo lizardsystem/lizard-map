@@ -64,20 +64,25 @@ function refreshBackgroundLayers() {
                 }
                 base_layer = new OpenLayers.Layer.Google(
                     layer_name,
-                    {type: google_type, sphericalMercator: true});
+                    {type: google_type,
+                     transitionEffect: 'resize',
+                     sphericalMercator: true});
             }
             else if (layer_type === "OSM")
             {
                 base_layer = new OpenLayers.Layer.OSM(
-                    layer_name, url, {buffer: 0});
+                    layer_name, url,
+                    {buffer: 0,
+                     transitionEffect: 'resize'});
             }
             else if (layer_type === "WMS")
             {
                 base_layer = new OpenLayers.Layer.WMS(
                     layer_name, wms_url,
-                    {'layers': layer_names, 'format': 'image/png',
+                    {'layers': layer_names,
+                     'format': 'image/png',
                      'maxResolution': 364},
-                    {'isBaseLayer': true, 'buffer': 1}
+                    {'isBaseLayer': true, transitionEffect: 'resize', 'buffer': 1}
                 );
             }
             // layers.base_layer
@@ -97,7 +102,7 @@ function refreshBackgroundLayers() {
 
 
 
-function refreshWorkspaceLayers() {
+function refreshWorkspaceLayers(only_temp) {
     var $lizard_map_wms, wms_url,
         wms_layers, osm_url;
     $lizard_map_wms = $("#lizard-map-wms");
@@ -113,6 +118,7 @@ function refreshWorkspaceLayers() {
                 workspace_wms,
                 {layers: 'basic'},
                 {singleTile: true,
+                 transitionEffect: 'resize',
                  isBaseLayer: false});
             layers[workspace_id].mergeNewParams({'random': Math.random()});
             map.addLayer(layers[workspace_id]);
