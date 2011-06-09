@@ -275,6 +275,7 @@ class WorkspaceItem(models.Model):
     @property
     def adapter(self):
         """Return adapter instance for entrypoint"""
+        # TODO: this happens more often than needed! Cache it.
         for entrypoint in pkg_resources.iter_entry_points(
             group=ADAPTER_ENTRY_POINT):
             if entrypoint.name == self.adapter_class:
@@ -316,11 +317,13 @@ class WorkspaceItem(models.Model):
         """
         Return true if workspace item has a extent that makes sense.
         """
-        extent = self.adapter.extent()
-        if None in extent.values():
-            return False
-        else:
-            return True
+        # TODO: lots of caching here! And then re-instate the actual test.
+        return True
+        # extent = self.adapter.extent()
+        # if None in extent.values():
+        #     return False
+        # else:
+        #     return True
 
     def delete(self, *args, **kwargs):
         """
