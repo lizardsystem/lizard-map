@@ -170,6 +170,9 @@ function setUpAddWorkspaceItem() {
         adapter_layer_json = $workspace_acceptable.attr("data-adapter-layer-json");
         url = $workspace.attr("data-url-lizard-map-workspace-item-add");
         indicateWorkspaceItemBusy($workspace_acceptable);
+        if ($(".workspace .workspace-item").length > 7) {
+            alert("Pas op, meer dan 8 workspace items zorgt voor traagheid.");
+        }
         // Request to make workspace item and update workspace.
         $.post(
             url,
