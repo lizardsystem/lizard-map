@@ -5,7 +5,8 @@
 // this.getPanes().hide().eq(tabIndex).show();...
 
 /*global $, jQuery, OpenLayers, window, map, fillSidebar,
-setUpScreen, nothingFoundPopup, reloadGraphs, reloadMapActions,
+setUpScreen, nothingFoundPopup, reloadGraphs,
+reloadLocalizedGraphs, reloadMapActions,
 setUpTransparencySlider, setUpAnimationSlider, setUpTooltips,
 refreshLayers */
 
@@ -124,11 +125,19 @@ function show_popup(data) {
                 html += '</div>';
 
                 $("#graph-popup-content").html(html);
-                $(".tabs").tabs("div.popup-panes > div.pane");
+                $(".tabs").tabs("div.popup-panes > div.pane",
+                                {'effect': 'map_popup'});
             }
             overlay = $('#graph-popup').overlay();
             overlay.load();
-            reloadGraphs();
+            if (data.html.length === 1) {
+                // The tabs don't do their reload magic.
+                reloadGraphs();
+            } else {
+                // Re-reload the first one.
+                reloadLocalizedGraphs(
+                    $("div.popup-panes > div.pane")[0]);
+            }
             $(".add-snippet").snippetInteraction();
         }
         else {
@@ -399,11 +408,17 @@ jQuery.fn.lizardMapLink = function () {
 $(document).ready(function () {
     // Change "default" effect: reload graphs to fix layout.
     $.tools.tabs.addEffect(
-        "default",
+        "map_popup",
         function (tabIndex, done) {
             // hide all panes and show the one that is clicked.
 	    this.getPanes().hide().eq(tabIndex).show();
-            reloadGraphs();
             done.call();
+            if ($('#graph-popup').is(":visible")) {
+                // Don't reload the popup graph if the overlay isn't
+                // initialized yet.  There's no width then :-)
+                // It *does* reload twice when an overlay is already
+                // open, but we'll accept that for now.
+                reloadLocalizedGraphs(this.getPanes()[tabIndex]);
+            }
         });
 });
