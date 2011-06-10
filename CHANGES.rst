@@ -12,6 +12,12 @@ Changelog of lizard-map
 
 - Added function to create a image from reguest and response to save
   it as .png on client side (views.py, urls.py, lizard_wms.js)
+    
+- Added declaration to OpenLayers' ImgPath to use our own dark theme location.
+
+- Implemented tipsy in some places.
+
+- Worked on appearance of graph-popup.
 
 
 1.84 (2011-06-07)
