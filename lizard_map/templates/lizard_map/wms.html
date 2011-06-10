@@ -33,8 +33,10 @@
   <li id="map-load-default-location"
       class="map-action"
       data-url="{% url lizard_map.map_location_load_default %}">
-    <span class="ss_sprite ss_map_go action-icon"
-          title="{% trans 'load default map location' %}"></span>
+    {# <span class="ss_sprite ss_map_go action-icon" #}
+    {#       title="{% trans 'load default map location' %}"></span> #}
+    <span rel="tipsy" class="map-location-icon action-icon"
+          title="{% trans 'Pan &amp; zoom naar standaard kaartlocatie.' %}"></span>
   </li>
   {% if animation_slider %}{% if use_workspaces %}
   <li id="animation-slider"
@@ -58,11 +60,9 @@
   </li>
   {% endif %}
   {% for workspace_item in workspaces.temp.0.workspace_items.all %}
-  <li class="workspace-empty-temp map-action"
+  <li class="workspace-empty-temp map-action empty"
       data-workspace-item-id="{{ workspace_item.id }}">
-    <span class="ss_sprite ss_map_delete action-icon">
-      {% trans "empty temporary workspace" %}
-    </span>
+    <span rel="tipsy" class="empty-temp-workspace-icon action-icon" title="{% trans "Tijdelijke workspace legen" %}"></span>
   </li>
   {% endfor %}
 </ul>

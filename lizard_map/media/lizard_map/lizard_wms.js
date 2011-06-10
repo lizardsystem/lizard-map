@@ -4,6 +4,8 @@
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
 G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
 
+// OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
+OpenLayers.ImgPath = "/static_media/themes/dark/";
 
 var layers, wms_layers, background_layers, map;
 layers = [];  // Used in an associative way.

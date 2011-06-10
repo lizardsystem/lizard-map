@@ -19,7 +19,19 @@ the default template for the html_default method.
   </a>
 </div>
 <br />
-<table class="noprint generic-table">
+<input type="button" name="toggle" value="Toon tabel" id="toggle_button">
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#toggle_table').hide();
+    $('#toggle_button').toggle(function() {
+        $('#toggle_table').slideDown('fast');
+    }, function() {
+        $('#toggle_table').slideUp('fast');
+    });    
+});
+
+</script>
+<table class="noprint generic-table" id="toggle_table">
   <thead>
     <tr>
       <th>Naam</th>

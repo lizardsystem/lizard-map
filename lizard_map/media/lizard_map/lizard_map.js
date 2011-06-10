@@ -642,6 +642,8 @@ function mapSaveLocation() {
 }
 
 
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpAddWorkspaceItem();
@@ -668,6 +670,7 @@ $(document).ready(function () {
     $(".add-snippet").snippetInteraction();
     $("a.lizard-map-link").lizardMapLink();
 });
+
 
 // Beforeunload: this function is called just before leaving the page
 // and loading the new page. Unload however is called after loading
