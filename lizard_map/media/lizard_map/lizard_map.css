@@ -243,3 +243,7 @@ hover over the item */
   background-repeat: no-repeat;
   background-position: right;
 }
+
+div.popup-panes div.pane
+{ display: none;
+}

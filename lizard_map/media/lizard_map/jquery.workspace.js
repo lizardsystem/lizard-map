@@ -110,21 +110,21 @@ function show_popup(data) {
                 $("#graph-popup-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
-                html = "<ul class=\"tabs css-tabs\">";
+                html = '<ul class="tabs css-tabs">';
                 for (i = 0; i < data.html.length; i += 1) {
-                    html += "<li><a href=\"tab-" + (i + 1) + "\">Resultaat ";
-                    html += (i + 1) + "</a></li>";
+                    html += '<li><a href="#">Resultaat ';
+                    html += (i + 1) + '</a></li>';
                 }
-                html += "</ul>";
+                html += '</ul><div class="popup-panes">';
                 for (i = 0; i < data.html.length; i += 1) {
-                    html += "<div class=\"pane\"><div class=\"pane-content\">";
+                    html += '<div class="pane"><div class="pane-content">';
                     html += data.html[i];
-                    html += "</div></div>";
+                    html += '</div></div>';
                 }
+                html += '</div>';
 
                 $("#graph-popup-content").html(html);
-                $(".tabs").tabs("div.pane > div.pane-content");
-                // #graph-popup-content
+                $(".tabs").tabs("div.popup-panes > div.pane");
             }
             overlay = $('#graph-popup').overlay();
             overlay.load();

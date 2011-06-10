@@ -5,6 +5,11 @@ Changelog of lizard-map
 1.85 (unreleased)
 -----------------
 
+- Fixed tab setup in graph popup: no more unneeded reloading of the html.
+
+- Added force_legend_below parameter to ``legend()`` to force the legend to be
+  placed below the graph.
+
 - Added function to create a image from reguest and response to save
   it as .png on client side (views.py, urls.py, lizard_wms.js)
 
