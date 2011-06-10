@@ -371,4 +371,56 @@ function showMap() {
 }
 
 
-$(document).ready(showMap);
+/*
+Creates parameters part of url
+*/
+function getMapUrl() {
+    var extent, srs, activelayers, url, width, height, i;
+    extent  = map.getExtent();
+    extent  = [extent.left, extent.bottom,
+               extent.right, extent.top].join(',');
+    srs = map.getProjectionObject();
+    activelayers = [];
+    url = "?";
+    width   = map.getSize().w;
+    height  = map.getSize().h;
+
+    for (i = map.layers.length - 1; i >= 0; i -= 1) {
+        if (!map.layers[i].getVisibility()) {
+            continue;
+        }
+        if (!map.layers[i].calculateInRange()) {
+            continue;
+        }
+        activelayers[activelayers.length] = map.layers[i].params.LAYERS;
+    }
+
+    activelayers = activelayers.join(',');
+
+    url += "LAYERS=" + activelayers;
+    url += "&SRS=" + srs;
+    url += "&BBOX=" + extent;
+    url += "&WIDTH=" + width;
+    url += "&HEIGHT=" + height;
+
+    return url;
+}
+
+/*
+Replaces a href attr. of 'Download' subelement
+*/
+function setDownloadImageLink() {
+    $('span#download').click(function (e) {
+        var url = "/map/download/";
+        url = url + getMapUrl();
+        $(this).find("a").attr({
+            href: url
+        });
+    });
+}
+
+
+$(document).ready(function () {
+    showMap();
+    setDownloadImageLink();
+});

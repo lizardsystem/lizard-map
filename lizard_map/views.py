@@ -1018,3 +1018,88 @@ def map_location_load_default(request):
     request.session[MAP_BASE_LAYER] = ''  # Reset selected base layer.
 
     return HttpResponse(json.dumps(map_location))
+
+
+def save_map_as_image(request):
+    """
+    Return map as png image to download.
+    """
+    data = {
+        'width': int(request.GET.get('WIDTH')),
+        'height': int(request.GET.get('HEIGHT')),
+        'layers': [layer.strip()
+                   for layer in request.GET.get('LAYERS').split(',')],
+        'bbox': tuple([float(i.strip())
+                       for i in request.GET.get('BBOX').split(',')]),
+        'srs': request.GET.get('SRS'),
+        'workspaces': request.session['workspaces'],
+        'color': "transparent",
+        'format': "png",
+        'content_type': "application/x-png",
+        }
+
+    img = create_mapnik_image(request, data)
+    buf = mapnik_image_to_stream(request, data, img)
+
+    response = HttpResponse(buf.read())
+    response['Content-Type'] = 'application/x-png'
+    response['Content-disposition'] = 'Attachment; filename=%s' % 'kaart.png'
+
+    return response
+
+
+def create_mapnik_image(request, data):
+
+    # Map settings
+    mapnik_map = mapnik.Map(data['width'], data['height'])
+    layers = data['layers']
+    # Setup mapnik srs.
+    mapnik_map.srs = coordinates.srs_to_mapnik_projection[data['srs']]
+    mapnik_map.background = mapnik.Color(data['color'])
+    #m.background = mapnik.Color(data['color')]
+
+    for k, v in data['workspaces'].items():
+        if len(v) <= 0:
+            v[0] = -1
+
+        workspace = get_object_or_404(Workspace, pk=v[0])
+        workspace_items = workspace.workspace_items.filter(
+            visible=True).reverse()
+
+        for workspace_item in workspace_items:
+            logger.debug("Drawing layer for %s..." % workspace_item)
+            layers, styles = workspace_item.adapter.layer(layer_ids=layers,
+                                                          request=request)
+            layers.reverse()  # first item should be drawn on top (=last)
+            for layer in layers:
+                mapnik_map.layers.append(layer)
+            for name in styles:
+                mapnik_map.append_style(name, styles[name])
+
+    #Zoom and create image
+    logger.debug("Zooming to box...")
+    mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
+    img = mapnik.Image(data['width'], data['height'])
+    logger.debug("Rendering map...")
+    mapnik.render(mapnik_map, img)
+
+    return img
+
+
+def mapnik_image_to_stream(request, data, img):
+    """
+    Convert mapnik image object to bytes stream
+    """
+    http_user_agent = request.META.get('HTTP_USER_AGENT', '')
+    logger.debug("Converting image to rgba...")
+    rgba_image = Image.fromstring('RGBA',
+                                  (data['width'], data['height']),
+                                  img.tostring())
+    buf = StringIO.StringIO()
+    if 'MSIE 6.0' in http_user_agent:
+        imgPIL = rgba_image.convert('P')
+        imgPIL.save(buf, data['format'], transparency=0)
+    else:
+        rgba_image.save(buf, data['format'])
+    buf.seek(0)
+    return buf

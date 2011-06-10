@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.85 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added function to create a image from reguest and response to save
+  it as .png on client side (views.py, urls.py, lizard_wms.js)
 
 
 1.84 (2011-06-07)
