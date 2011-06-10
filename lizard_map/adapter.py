@@ -451,7 +451,11 @@ class Graph(object):
         there is no legend displayed"""
         self.legend_width = LEGEND_WIDTH / self.width
 
-    def legend(self, handles=None, labels=None, ncol=1):
+    def legend(self,
+               handles=None,
+               labels=None,
+               ncol=1,
+               force_legend_below=False):
         """
         Displays legend. Default is right side, but if the width is
         too small, it will display under the graph.
@@ -467,7 +471,7 @@ class Graph(object):
             handles, labels = self.axes.get_legend_handles_labels()
         if handles and labels:
             # Determine 'small' or 'large'
-            if self.width < 500:
+            if self.width < 500 or force_legend_below:
                 legend_loc = 4  # lower right
                 # approximation of legend height
                 self.legend_on_bottom_height = min(
