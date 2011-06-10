@@ -102,7 +102,7 @@ function refreshBackgroundLayers() {
 
 
 
-function refreshWorkspaceLayers(only_temp) {
+function refreshWorkspaceLayers() {
     var $lizard_map_wms, wms_url,
         wms_layers, osm_url;
     $lizard_map_wms = $("#lizard-map-wms");
