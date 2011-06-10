@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.85 (unreleased)
+1.85 (2011-06-10)
 -----------------
 
 - Fixed tab setup in graph popup: no more unneeded reloading of the html. Also
