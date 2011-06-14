@@ -53,10 +53,11 @@
   {% endif %}{% endif %}
   {% if transparency_slider %}
   <li id="transparency-slider"
+      title="{% trans "Adjust transparency" %}"
       class="map-action">
   </li>
   <li class="map-action">
-    Transparantie
+    &nbsp;
   </li>
   {% endif %}
   {% for workspace_item in workspaces.temp.0.workspace_items.all %}
