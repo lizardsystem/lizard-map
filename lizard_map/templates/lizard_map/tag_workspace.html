@@ -65,17 +65,17 @@
           title="{{ workspace_item.name }}">
         {# Legend. #}
         {% legend workspace_item.name workspace_item.adapter session %}
+        {# Delete workspace item #}
+        <span class="ss_sprite ss_delete sidebarbox-action-icon
+                     workspace-item-delete"
+              title="Verwijder">
+        </span>
         {# Pan to layer. #}
         {% if workspace_item.has_extent %}
           <span class="ss_sprite ss_magnifier sidebarbox-action-icon
                        workspace-item-pan-to"
                 title="Zoom"></span>
         {% endif %}
-        {# Delete workspace item #}
-        <span class="ss_sprite ss_delete sidebarbox-action-icon
-                     workspace-item-delete"
-              title="Verwijder">
-        </span>
         {# Symbol, appears left. #}
         <img class="workspace-item-image"
              src="{{ workspace_item.adapter.symbol_url }}"
