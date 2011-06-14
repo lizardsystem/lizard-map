@@ -2,6 +2,7 @@
 Helper classes and functions for adapters
 """
 import datetime
+import locale
 import numpy
 
 from dateutil.relativedelta import relativedelta
@@ -18,10 +19,18 @@ from matplotlib.dates import date2num
 from matplotlib.dates import num2date
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
-from matplotlib.ticker import MaxNLocator
+# from matplotlib.ticker import MaxNLocator
 from matplotlib.ticker import ScalarFormatter
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI
+
+# Requires correct locale be generated on the server.
+# On ubuntu: check with locale -a
+# On ubuntu: sudo locale-gen nl_NL.utf8
+locale.setlocale(locale.LC_TIME, 'nl_NL.UTF8')
+
+import logging
+logger = logging.getLogger(__name__)
 
 LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
@@ -196,7 +205,8 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                 self._formatter = DateFormatter("%d", self._tz)
         elif (scale == (1.0 / 24.0)):
             if x == self.tickinfo.max:
-                # don't show
+                # don't show the full label of the first hour
+                # of the next day
                 self._formatter = DateFormatter("%H", self._tz)
             elif self.tickinfo.show_day(x):
                 self._formatter = DateFormatter("%H\n%d %b %Y", self._tz)
@@ -239,9 +249,9 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
             # tick that is closest to the center of their day.
             else:
                 middle_of_day = self.middle_of_day(tick)
-                if (abs(tick - middle_of_day) < self.step / 2 or
+                if ((abs(tick - middle_of_day) < self.step / 2) or
                     (middle_of_day < self.min and tick == self.min) or
-                    (middle_of_day > self.max) and tick == self.max):
+                    (middle_of_day > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -260,9 +270,9 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
             # tick that is closest to the center of their month.
             else:
                 middle_of_month = self.middle_of_month(tick)
-                if (abs(tick - middle_of_month) < self.step / 2 or
+                if ((abs(tick - middle_of_month) < self.step / 2) or
                     (middle_of_month < self.min and tick == self.min) or
-                    (middle_of_month > self.max) and tick == self.max):
+                    (middle_of_month > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -278,12 +288,12 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                     return False
 
             # If there are more years in the ticks, show a label for that
-            # tick that is closest to the center of their year.
+            # tick at the first month of that year.
             else:
-                middle_of_year = self.middle_of_year(tick)
-                if (abs(tick - middle_of_year) < self.step / 2 or
-                    (middle_of_year < self.min and tick == self.min) or
-                    (middle_of_year > self.max) and tick == self.max):
+                first_of_year = self.first_of_year(tick)
+                if ((0 <= tick - first_of_year < self.step) or
+                    (first_of_year < self.min and tick == self.min) or
+                    (first_of_year > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -304,6 +314,12 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
             """ Return the middle of the year as matplotlib number. """
             dt = num2date(tick)
             middle_of_year = datetime.datetime(dt.year, 7, 1)
+            return date2num(middle_of_year)
+
+        def first_of_year(self, tick):
+            """ Return the middle of the year as matplotlib number. """
+            dt = num2date(tick)
+            middle_of_year = datetime.datetime(dt.year, 1, 1)
             return date2num(middle_of_year)
 
 
@@ -440,11 +456,13 @@ class Graph(object):
         max_number_of_ticks = approximate_lines
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
-        locator = MaxNLocator(nbins=max_number_of_ticks - 1)
+        # locator = MaxNLocator(nbins=max_number_of_ticks - 1)
         if not second:
-            axes_to_change.yaxis.set_major_locator(locator)
+            # axes_to_change.yaxis.set_major_locator(locator)
+            # ^^^ Turns out default amount of ticks wasn't that bad
             axes_to_change.yaxis.set_major_formatter(
                 ScalarFormatter(useOffset=False))
+        self.axes.set_ylabel(self.axes.get_ylabel, size='x-large')
 
     def legend_space(self):
         """reserve space for legend (on the right side). even when
@@ -528,6 +546,12 @@ class Graph(object):
                 self.set_ylim_margin(top=0.1, bottom=0.0)
             except:
                 pass
+
+        # Because of the use of setlocale to nl_NL, dutch monthnames can no
+        # Longer be top-aligned.
+        for l in self.axes.get_xticklabels():
+            l.set_verticalalignment('baseline')
+            l.set_position((0, -0.05))
 
         canvas = FigureCanvas(self.figure)
         response = HttpResponse(content_type='image/png')

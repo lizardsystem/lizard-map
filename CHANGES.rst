@@ -11,6 +11,9 @@ Changelog of lizard-map
 - Added transparency_slider to context variables. From now on the
   transparency_slider is enabled by default.
 
+- Modified graph: less yticks, bigger ylabel, dutch monthnames,
+  yearlabel is now at first tick of year.
+
 
 1.85 (2011-06-10)
 -----------------
