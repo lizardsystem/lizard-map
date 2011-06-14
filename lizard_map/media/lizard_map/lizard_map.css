@@ -256,3 +256,9 @@ hover over the item */
 div.popup-panes div.pane
 { display: none;
 }
+
+
+
+table#toggle_table{
+    display:none;
+}

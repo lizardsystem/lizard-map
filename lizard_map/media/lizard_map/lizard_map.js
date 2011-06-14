@@ -641,9 +641,6 @@ function mapSaveLocation() {
     }
 }
 
-
-
-
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpAddWorkspaceItem();
@@ -669,6 +666,7 @@ $(document).ready(function () {
     // voor collage view, nu nog nutteloos voor popup
     $(".add-snippet").snippetInteraction();
     $("a.lizard-map-link").lizardMapLink();
+    
 });
 
 
