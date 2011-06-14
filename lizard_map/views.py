@@ -761,14 +761,19 @@ def wms(request, workspace_id):
     workspace_items = workspace.workspace_items.filter(visible=True).reverse()
     for workspace_item in workspace_items:
         logger.debug("Drawing layer for %s..." % workspace_item)
-        layers, styles = workspace_item.adapter.layer(layer_ids=layers,
-                                                      request=request)
-        layers.reverse()  # first item should be drawn on top (=last)
-        for layer in layers:
-            mapnik_map.layers.append(layer)
-        for name in styles:
-            mapnik_map.append_style(name, styles[name])
-        # mapnik_map.zoom_to_box(layer.envelope())
+        try:
+            layers, styles = workspace_item.adapter.layer(
+                layer_ids=layers,
+                request=request)
+            layers.reverse()  # first item should be drawn on top (=last)
+            for layer in layers:
+                mapnik_map.layers.append(layer)
+            for name in styles:
+                mapnik_map.append_style(name, styles[name])
+        except:
+            # This part may NEVER crash. Layers from workspace items
+            # should prevent crashing themselves, but you never know.
+            logger.exception("Error in drawing layer for %s" % workspace_item)
 
     #Zoom and create image
     logger.debug("Zooming to box...")

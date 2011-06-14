@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.86 (unreleased)
 -----------------
 
+- Added bare try/except around wms workspace layer looping to prevent
+  the function to crash.
+
 - Added transparency_slider to context variables. From now on the
   transparency_slider is enabled by default.
 
