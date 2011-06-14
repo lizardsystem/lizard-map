@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.86 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added transparency_slider to context variables. From now on the
+  transparency_slider is enabled by default.
 
 
 1.85 (2011-06-10)

@@ -90,6 +90,8 @@ def workspace_variables(request):
 
     add_to_context['use_workspaces'] = True
 
+    add_to_context['transparency_slider'] = True
+
     return add_to_context
 
 
