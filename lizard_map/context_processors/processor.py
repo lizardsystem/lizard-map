@@ -2,13 +2,15 @@ import logging
 
 from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import MapSettings
-from lizard_map.daterange import DateRangeForm
-from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
+from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import DateRangeForm
+from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
-from lizard_map.views import MAP_LOCATION
 from lizard_map.views import MAP_BASE_LAYER
+from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
+
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +71,15 @@ def workspace_variables(request):
 
     add_to_context['date_start_period'] = current_date_range["dt_start"]
     add_to_context['date_end_period'] = current_date_range["dt_end"]
+    
+    # This takes the first occurance of a Setting object with key
+    # "popup_video_url" and if it exists, adds it to the global context
+    # processor.
+    # The URL currently points to YouTube videos via their embed url:
+    # "http://www.youtube.com/embed/LLvW64MuvO4"
+    popup_video_url = Setting.objects.filter(key="popup_video_url")[0].value
+    if popup_video_url:
+        add_to_context['popup_video_url'] = popup_video_url
 
     date_range_form = DateRangeForm(current_date_range)
     add_to_context['date_range_form'] = date_range_form
