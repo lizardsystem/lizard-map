@@ -121,6 +121,7 @@ function refreshWorkspaceLayers() {
                 {layers: 'basic'},
                 {singleTile: true,
                  transitionEffect: 'resize',
+                 displayInLayerSwitcher: false,
                  isBaseLayer: false});
             layers[workspace_id].mergeNewParams({'random': Math.random()});
             map.addLayer(layers[workspace_id]);
