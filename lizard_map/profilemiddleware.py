@@ -10,14 +10,18 @@ from django.conf import settings
 import hotshot
 import hotshot.stats
 
-COMMENT_SYNTAX = ((re.compile(r'^application/(.*\+)?xml|text/html$', re.I), '<!--', '-->'),
-                  (re.compile(r'^application/j(avascript|son)$',     re.I), '/*',   '*/' ))
+COMMENT_SYNTAX = ((re.compile(r'^application/(.*\+)?xml|text/html$', re.I),
+                   '<!--', '-->'),
+                  (re.compile(r'^application/j(avascript|son)$',     re.I),
+                   '/*',   '*/'))
 
 
 logger = logging.getLogger(__name__)
 
 # Decorator from
 # http://www.heikkitoivonen.net/blog/2011/02/02/decorator-to-log-slow-calls/
+
+
 def time_slow(f=None, threshold=0.01):
     def decorated(f):
         @functools.wraps(f)
@@ -60,7 +64,8 @@ class ProfileMiddleware(object):
                 # Detect the appropriate syntax based on the
                 # Content-Type header.
                 for regex, begin_comment, end_comment in COMMENT_SYNTAX:
-                    if regex.match(response['Content-Type'].split(';')[0].strip()):
+                    if regex.match(
+                        response['Content-Type'].split(';')[0].strip()):
                         break
                 else:
                     # If the given Content-Type is not
@@ -73,7 +78,8 @@ class ProfileMiddleware(object):
                 # is executed when the content property
                 # is accessed. So we also have to profile
                 # the call of the content property.
-                content = profile.runcall(response.__class__.content.fget, response)
+                content = profile.runcall(
+                    response.__class__.content.fget, response)
             finally:
                 profile.close()
 
@@ -88,14 +94,16 @@ class ProfileMiddleware(object):
             #     stats.sort_stats(*settings.PROFILE_MIDDLEWARE_SORT)
             stats.sort_stats('cumulative')
             stats.stream = StringIO()
-            stats.print_stats(*getattr(settings, 'PROFILE_MIDDLEWARE_RESTRICTIONS', []))
+            stats.print_stats(*getattr(
+                    settings, 'PROFILE_MIDDLEWARE_RESTRICTIONS', []))
         finally:
             os.unlink(filename)
 
         # Construct an HTML/XML or Javascript comment, with
         # the formatted stats, written to the StringIO object
         # and attach it to the content of the response.
-        comment = '\n%s\n\n%s\n\n%s\n' % (begin_comment, stats.stream.getvalue().strip(), end_comment)
+        comment = '\n%s\n\n%s\n\n%s\n' % (
+            begin_comment, stats.stream.getvalue().strip(), end_comment)
         response.content = content + comment
 
         # If the Content-Length header is given, add the
@@ -104,6 +112,7 @@ class ProfileMiddleware(object):
         # it remains so in order to don't change the
         # behaviour of the web server or user agent.
         if response.has_header('Content-Length'):
-            response['Content-Length'] = int(response['Content-Length']) + len(comment)
+            response['Content-Length'] = int(
+                response['Content-Length']) + len(comment)
 
         return response

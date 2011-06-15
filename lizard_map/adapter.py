@@ -552,7 +552,7 @@ class Graph(object):
 
         # Because of the use of setlocale to nl_NL, dutch monthnames can no
         # Longer be top-aligned.
-        if locale.getlocale(locale.LC_TIME) == ('nl_NL','UTF8'):
+        if locale.getlocale(locale.LC_TIME) == ('nl_NL', 'UTF8'):
             for l in self.axes.get_xticklabels():
                 l.set_verticalalignment('baseline')
                 l.set_position((0, -0.05))
