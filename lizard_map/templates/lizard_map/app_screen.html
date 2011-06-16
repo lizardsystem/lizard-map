@@ -4,7 +4,6 @@
 {% load utility %}
 
 {% block sidebar %}
-{# Make sure you have lizard_ui 1.50 or higher. #}
 {# If no application_screen_slug, revert to default. #}
 {% if application_screen_slug %}
   {% application_icons application_screen_slug %}
@@ -17,5 +16,18 @@
 {% empty %}
 No workspace
 {% endfor %}
+
+{% endblock %}
+
+
+{% block content %}
+{% if popup_video_url %}
+<div id="intro_popup">
+  <iframe width="560" height="349"
+          src="{{ popup_video_url }}"
+          frameborder="0" allowfullscreen></iframe>
+</div>
+{% endif %}
+{{ block.super }}
 
 {% endblock %}

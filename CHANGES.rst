@@ -10,11 +10,11 @@ Changelog of lizard-map
 
 - Added transparency_slider to context variables. From now on the
   transparency_slider is enabled by default.
-  
-- Added popup_video_url to the contextprocessor of lizard-map.
-  This is used in realbase.html of lizard_ui to check if we need to 
-  render the div and which video we need to embed.
-  The video url points to the embed urls of YouTube videos.
+
+- Added optional popup_video_url parameter to the ``homepage()`` view.  This
+  video url, when used, should point to the embed urls of YouTube videos.
+  Currently the sizes are hardcoded, so this is work-in-progress.
+  The video is shown once per day, max.
 
 - Modified graph: less yticks, bigger ylabel, dutch monthnames,
   yearlabel is now at first tick of year.

@@ -641,6 +641,23 @@ function mapSaveLocation() {
     }
 }
 
+
+function setupVideoPopup() {
+    // Show popup
+    $("#intro_popup").overlay({
+        // custom top position
+        top: 200,
+        mask: {
+            color: '#fff',
+            loadSpeed: 200,
+            opacity: 0.5
+        },
+        closeOnClick: true,
+        load: true
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpAddWorkspaceItem();
@@ -666,7 +683,8 @@ $(document).ready(function () {
     // voor collage view, nu nog nutteloos voor popup
     $(".add-snippet").snippetInteraction();
     $("a.lizard-map-link").lizardMapLink();
-    
+    // Optional popup video link.
+    setupVideoPopup();
 });
 
 
