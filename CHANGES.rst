@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.86 (unreleased)
+1.86 (2011-06-16)
 -----------------
 
 - Added bare try/except around wms workspace layer looping to prevent
