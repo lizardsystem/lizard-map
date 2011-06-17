@@ -370,10 +370,6 @@ function showMap() {
     // level that most closely fits the specified bounds.
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
-
-    $("#graph-popup").bind("onClose", function() {
-	    $("#graph-popup-content").empty()
-		});
 }
 
 
@@ -425,8 +421,17 @@ function setDownloadImageLink() {
     });
 }
 
+/*
+Erase the contents of the popup when the user closes the popup
+*/
+function erasePopupContentsOnClose() {
+    $("#graph-popup").bind("onClose", function() {
+	    $("#graph-popup-content").empty()
+		});
+}
 
 $(document).ready(function () {
     showMap();
     setDownloadImageLink();
+    erasePopupContentsOnClose();
 });
