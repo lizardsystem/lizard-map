@@ -5,7 +5,9 @@ Changelog of lizard-map
 1.87 (unreleased)
 -----------------
 
-- Nothing changed yet.
+
+- Fixed the problem that a hidden popup would remain populated and re-evaluated
+  (ticket 2892).
 
 
 1.86 (2011-06-16)
