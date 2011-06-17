@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.87 (unreleased)
 -----------------
 
+- Re-enabled custom y tick locator amount selection.
+
 - Showing the table now looks at the table belonging to the button by means of
   a wrapper div, which is more reliable.
 

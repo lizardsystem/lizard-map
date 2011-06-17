@@ -19,7 +19,7 @@ from matplotlib.dates import date2num
 from matplotlib.dates import num2date
 from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
-# from matplotlib.ticker import MaxNLocator
+from matplotlib.ticker import MaxNLocator
 from matplotlib.ticker import ScalarFormatter
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI
@@ -455,14 +455,16 @@ class Graph(object):
                             BOTTOM_LINE_HEIGHT -
                             self.x_label_height -
                             self.legend_on_bottom_height)
-        approximate_lines = int(available_height / (FONT_SIZE * 1.5))
+        approximate_lines = int(available_height / (FONT_SIZE * 2.5))
+        logger.info("#lines: %s", approximate_lines)
         max_number_of_ticks = approximate_lines
         if max_number_of_ticks < 2:
             max_number_of_ticks = 2
-        # locator = MaxNLocator(nbins=max_number_of_ticks - 1)
+        locator = MaxNLocator(nbins=max_number_of_ticks - 1)
         if not second:
-            # axes_to_change.yaxis.set_major_locator(locator)
-            # ^^^ Turns out default amount of ticks wasn't that bad
+            axes_to_change.yaxis.set_major_locator(locator)
+            # ^^^ [Arjan:] Turns out default amount of ticks wasn't that bad.
+            # [Reinout:] I keep hearing complaints so I've re-enabled it.
             axes_to_change.yaxis.set_major_formatter(
                 ScalarFormatter(useOffset=False))
         self.axes.set_ylabel(self.axes.get_ylabel(), size='x-large')
