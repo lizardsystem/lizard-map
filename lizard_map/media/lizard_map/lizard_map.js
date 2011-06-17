@@ -658,6 +658,17 @@ function setupVideoPopup() {
 }
 
 
+function  setupTableToggle() {
+    // For collapsible tables in popups
+    $('.toggle_button').live('click', function (event) {
+        var $wrapper;
+        $wrapper = $(this).closest('.toggle_table_wrapper');
+        $('table', $wrapper).slideDown('fast');
+        $(this).hide();
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     setUpAddWorkspaceItem();
@@ -685,6 +696,7 @@ $(document).ready(function () {
     $("a.lizard-map-link").lizardMapLink();
     // Optional popup video link.
     setupVideoPopup();
+    setupTableToggle();
 });
 
 
