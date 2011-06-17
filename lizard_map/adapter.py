@@ -465,7 +465,7 @@ class Graph(object):
             # ^^^ Turns out default amount of ticks wasn't that bad
             axes_to_change.yaxis.set_major_formatter(
                 ScalarFormatter(useOffset=False))
-        self.axes.set_ylabel(self.axes.get_ylabel, size='x-large')
+        self.axes.set_ylabel(self.axes.get_ylabel(), size='x-large')
 
     def legend_space(self):
         """reserve space for legend (on the right side). even when
