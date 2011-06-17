@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.87 (unreleased)
 -----------------
 
+- Showing the table now looks at the table belonging to the button by means of
+  a wrapper div, which is more reliable.
 
 - Fixed the problem that a hidden popup would remain populated and re-evaluated
   (ticket 2892).
