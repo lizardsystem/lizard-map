@@ -371,6 +371,9 @@ function showMap() {
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
 
+    $("#graph-popup").bind("onClose", function() {
+	    $("#graph-popup-content").empty()
+		});
 }
 
 
