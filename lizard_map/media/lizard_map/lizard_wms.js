@@ -425,9 +425,9 @@ function setDownloadImageLink() {
 Erase the contents of the popup when the user closes the popup
 */
 function erasePopupContentsOnClose() {
-    $("#graph-popup").bind("onClose", function() {
-	    $("#graph-popup-content").empty()
-		});
+    $("#graph-popup").bind("onClose", function () {
+        $("#graph-popup-content").empty();
+    });
 }
 
 $(document).ready(function () {
