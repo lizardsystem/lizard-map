@@ -257,11 +257,9 @@ div.popup-panes div.pane
 { display: none;
 }
 
-
-
-table#toggle_table{
-    display:none;
-}
+table.toggle_table
+{ display: none;
+  }
 
 /* video popup. Brittle because of fixed sizes: videos might have a different size... */
 #intro_popup {
