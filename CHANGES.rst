@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.87 (unreleased)
+1.87 (2011-06-17)
 -----------------
 
 - Re-enabled custom y tick locator amount selection.
