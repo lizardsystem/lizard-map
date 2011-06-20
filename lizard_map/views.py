@@ -697,7 +697,7 @@ def snippet_edit(request, snippet_id=None, visible=None):
         snippet_id = post['snippet_id']
     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
     if visible is None:
-        if post['visible']:
+        if 'visible' in post:
             visible = post['visible']
     if visible:
         lookup = {'true': True, 'false': False}
