@@ -438,8 +438,16 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         # Add workspace_item name on top
         # title = workspace_item.name
 
-        identifiers = [display_object['identifier'] for display_object
-                       in display_group]
+        try:
+            identifiers = [display_object['identifier']
+                           for display_object in display_group]
+        except:
+            logger.critical(
+                "No 'identifier' found in a display_object. Perhaps an "
+                "incorrect shapefile?")
+            identifiers = None
+        if identifiers is None:
+            continue
         # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(

@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.88 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Adding extra safety measure so lizard-map doesn't crash on faulty
+  shapefiles.
 
 
 1.87 (2011-06-17)
