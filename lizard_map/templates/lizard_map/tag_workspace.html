@@ -32,13 +32,16 @@
     {% endif %}
     <a id="trash1"
        href="#"
+       rel="tipsy"
        title="{% trans 'empty' %} {{ workspace.name }}"
        class="title ss_sprite ss_bin_closed sidebarbox-action-icon workspace-empty-trigger">
     </a>
     <a href="{% url lizard_map_workspace workspace_id=workspace.id %}"
+       rel="tipsy"
        title="{% trans 'link to' %} {{ workspace.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
-    <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
+    <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien."
+          rel="tipsy">
     {{ workspace.name }}
     </span>
   </h2>
@@ -68,12 +71,14 @@
         {# Delete workspace item #}
         <span class="ss_sprite ss_delete sidebarbox-action-icon
                      workspace-item-delete"
+              rel="tipsy"
               title="Verwijder">
         </span>
         {# Pan to layer. #}
         {% if workspace_item.has_extent %}
           <span class="ss_sprite ss_magnifier sidebarbox-action-icon
                        workspace-item-pan-to"
+                rel="tipsy"
                 title="Zoom"></span>
         {% endif %}
         {# Symbol, appears left. #}
@@ -104,14 +109,18 @@
          href="#"
          title="{% trans 'empty' %} {{ collage.name }}"
          data-collage-id="{{ collage.id }}"
+         rel="tipsy"
          class="title ss_sprite ss_bin_closed sidebarbox-action-icon
                 collage-empty-trigger">
       </a>
 
-    <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon">
+    <span class="collage-popup ss_sprite ss_chart_line sidebarbox-action-icon"
+          title="{% trans "Grafieken en Statistieken" %}" 
+          rel="tipsy">
       &nbsp;
     </span>
     <a id="collage-view" href="{% url lizard_map.collage collage_id=collage.id %}"
+       rel="tipsy"
        title="{% trans 'link to' %} {{ collage.name }}"
        class="title ss_sprite ss_arrow_turn_right sidebarbox-action-icon">&nbsp;</a>
     <span title="Dit is je collage. Ga met de muis over de elementen heen om opties te zien.">
@@ -140,6 +149,7 @@
                data-workspace-id="{{ snippet.id }}" />
           <span class="ss_sprite ss_delete sidebarbox-action-icon
                        snippet-delete"
+                rel="tipsy"
                 title="Verwijder">
           </span>
           <div class="snippet-name">
