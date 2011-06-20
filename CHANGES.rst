@@ -8,6 +8,8 @@ Changelog of lizard-map
 - Adding extra safety measure so lizard-map doesn't crash on faulty
   shapefiles.
 
+- Fixed collage graph editing: made a check more robust for missing parameters.
+
 
 1.87 (2011-06-17)
 -----------------
