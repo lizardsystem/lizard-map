@@ -305,7 +305,11 @@ class WorkspaceItem(models.Model):
         if not layer_json:
             return {}
         result = {}
-        for k, v in json.loads(layer_json).items():
+        try:
+            decoded_json = json.loads(layer_json)
+        except json.JSONDecodeError:
+            raise WorkspaceItemError("Undecodable json: %s", layer_json)
+        for k, v in decoded_json.items():
             result[str(k)] = v
         return result
 
