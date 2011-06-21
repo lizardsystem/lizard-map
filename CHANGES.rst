@@ -5,6 +5,9 @@ Changelog of lizard-map
 1.88 (unreleased)
 -----------------
 
+- Showing reload link in the statistics part that is shown when the date range
+  has been changed.
+
 - Adding extra safety measure so lizard-map doesn't crash on faulty
   shapefiles.
 

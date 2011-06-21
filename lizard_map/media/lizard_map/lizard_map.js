@@ -395,6 +395,8 @@ function updateDateSelectOrInput() {
                 $("#summary-datepicker-a").attr("title", curr_period_title);
             });
             reloadGraphs();
+            // Check for items with .show_on_date_change and show 'em.
+            $('.show_on_date_change').slideDown();
         });
 }
 

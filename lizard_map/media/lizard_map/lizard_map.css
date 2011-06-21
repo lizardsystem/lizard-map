@@ -295,3 +295,7 @@ table.toggle_table
     border:1px solid #3B5998;
     font-size:20px;
 }
+
+.show_on_date_change
+{ display: none;
+  }
