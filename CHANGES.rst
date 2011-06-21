@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.88 (unreleased)
+1.88 (2011-06-21)
 -----------------
 
 - Made popups more consistent (shadow color and size).
