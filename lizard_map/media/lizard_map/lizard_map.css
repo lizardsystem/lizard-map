@@ -119,8 +119,8 @@
 /*  background-image: url('/static_media/lizard_ui/old_mathematics.png');*/
   color: #000;
   /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 10px 5px black;
-  -webkit-box-shadow: 0 0 10px black;
+  -moz-box-shadow:0 0 40px 5px black;
+  -webkit-box-shadow: 0 0 40px black;
 }
 #graph-popup table thead tr th{
     background-color: #ccc;
