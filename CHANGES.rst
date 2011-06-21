@@ -5,6 +5,8 @@ Changelog of lizard-map
 1.88 (unreleased)
 -----------------
 
+- Added 'continue to site' link in introductory video popup.
+
 - Showing reload link in the statistics part that is shown when the date range
   has been changed.
 

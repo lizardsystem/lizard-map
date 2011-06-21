@@ -268,22 +268,15 @@ table.toggle_table
 
     /* standard decorations */
     width: 560px;
-    height: 349px;
+    /* height: 349px; */
     border: 10px solid #666;
-
+    background-color: #fff;
     /* for modern browsers use semi-transparent color on the border. nice! */
     border: 10px solid rgba(82, 82, 82, 0.698);
 
     /* hot CSS3 features for mozilla and webkit-based browsers (rounded borders) */
     -moz-border-radius:8px;
     -webkit-border-radius:8px;
-}
-
-#intro_popup div {
-    padding:10px;
-    border:1px solid #3B5998;
-    background-color:#fff;
-    font-family:"lucida grande",tahoma,verdana,arial,sans-serif
 }
 
 #intro_popup h2 {
@@ -294,6 +287,12 @@ table.toggle_table
     padding:5px 10px;
     border:1px solid #3B5998;
     font-size:20px;
+}
+
+#intro_popup .to-site-link {
+  text-align: right;
+  margin-right: 1em;
+  font-size: 1.5em;
 }
 
 .show_on_date_change
