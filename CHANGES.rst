@@ -5,7 +5,8 @@ Changelog of lizard-map
 1.89 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Raising workspaceitemerror when the json we get isn't decodable. More
+  robust code this way.
 
 
 1.88 (2011-06-21)
