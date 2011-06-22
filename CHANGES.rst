@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.90 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Changed empty workspace text.
 
 
 1.89 (2011-06-21)
