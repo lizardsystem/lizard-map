@@ -5,7 +5,7 @@ Changelog of lizard-map
 1.91 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed a non-closed 'span' element that broke the layout in IE.
 
 
 1.90 (2011-06-22)
