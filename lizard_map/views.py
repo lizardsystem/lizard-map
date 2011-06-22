@@ -32,7 +32,7 @@ CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
-POPUP_VIDEO_LAST_SEEN = 'popup_video_last_seen_time'
+POPUP_VIDEO_LAST_SEEN = 'popup_video_last_seen'
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
 
 logger = logging.getLogger(__name__)
