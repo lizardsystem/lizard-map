@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-1.90 (unreleased)
+1.90 (2011-06-22)
 -----------------
 
 - Changed empty workspace text.
