@@ -2,8 +2,8 @@ Changelog of lizard-map
 =======================
 
 
-2.1 (unreleased)
-----------------
+2.0.1 (2011-06-22)
+------------------
 
 - Really fixed the non-closed span element.
 
