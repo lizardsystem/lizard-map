@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-2.1 (unreleased)
+2.1 (2011-06-29)
 ----------------
 
 - Temporary disable sorting in workspace when a new workspace-item is
