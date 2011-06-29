@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Temporary disable sorting in workspace when a new workspace-item is
+  being added. Solves #2961.
 
 
 2.0.1 (2011-06-22)

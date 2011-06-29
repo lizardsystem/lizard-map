@@ -309,6 +309,9 @@ jQuery.fn.updateWorkspace = function () {
                 setUpAnimationSlider();
                 setUpTransparencySlider();
                 setUpTooltips();
+                // Enable sorting. Some functions
+                // (setUpAddWorkspaceItem) turns sorting off.
+                $(".workspace ul.workspace-items").sortable("enable");
             }
         );
     });

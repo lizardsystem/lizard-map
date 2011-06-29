@@ -174,6 +174,9 @@ function setUpAddWorkspaceItem() {
         if ($(".workspace .workspace-item").length > 7) {
             alert("Pas op, meer dan 8 workspace items zorgt voor traagheid.");
         }
+        // Temporary disable sorting. It gets enabled again in
+        // updateWorkspace.
+        $(".workspace ul.workspace-items").sortable("disable");
         // Request to make workspace item and update workspace.
         $.post(
             url,
