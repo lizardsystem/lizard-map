@@ -5,7 +5,9 @@ Changelog of lizard-map
 2.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added try/except in WorkspaceCollageSnippetGroup.values_table (used
+  in "show tables" of collage view), because some adapters don't
+  implement the adapter.values function.
 
 
 2.1 (2011-06-29)

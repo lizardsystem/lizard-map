@@ -571,20 +571,26 @@ class WorkspaceCollageSnippetGroup(models.Model):
         snippet_values = {}
 
         for snippet in snippets:
-            values = snippet.workspace_item.adapter.values(
-                identifier=snippet.identifier, start_date=start_date,
-                end_date=end_date)
-            snippet_values[snippet.id] = {}
-            # Translate list into dict with dates.
-            for row in values:
-                if not self.restrict_to_month or (
-                    self.aggregation_period != MONTH) or (
-                    self.aggregation_period == MONTH and
-                    row['datetime'].month == self.restrict_to_month):
+            adapter = snippet.workspace_item.adapter
+            try:
+                values = adapter.values(
+                    identifier=snippet.identifier, start_date=start_date,
+                    end_date=end_date)
+            except NotImplementedError:
+                # If adapter.value is not implemented, just ignore.
+                pass
+            else:
+                snippet_values[snippet.id] = {}
+                # Translate list into dict with dates.
+                for row in values:
+                    if not self.restrict_to_month or (
+                        self.aggregation_period != MONTH) or (
+                        self.aggregation_period == MONTH and
+                        row['datetime'].month == self.restrict_to_month):
 
-                    snippet_values[snippet.id][row['datetime']] = row
-            found_dates.update(snippet_values[snippet.id])
-            # ^^^ The value doesn't matter.
+                        snippet_values[snippet.id][row['datetime']] = row
+                found_dates.update(snippet_values[snippet.id])
+                # ^^^ The value doesn't matter.
 
         found_dates_sorted = found_dates.keys()
         found_dates_sorted.sort()
