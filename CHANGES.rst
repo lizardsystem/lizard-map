@@ -8,6 +8,9 @@ Changelog of lizard-map
 - Adapter.legend: removed "force_legend_below" behaviour when width <
   500. TODO: fix force_legend_below or remove.
 
+- Changed adapter.legend: self.axes.legend instead of
+  self.figure.legend. Everything seems ok.
+
 
 2.1.1 (2011-06-30)
 ------------------
