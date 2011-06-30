@@ -2,8 +2,8 @@ Changelog of lizard-map
 =======================
 
 
-2.2 (unreleased)
-----------------
+2.1.1 (2011-06-30)
+------------------
 
 - Added google_tracking_code from settings to context_processor, if
   available.
