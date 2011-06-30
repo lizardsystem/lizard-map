@@ -156,7 +156,7 @@ the default template for the html_default method.
       </tr>
       {% endif %}
       {% if snippet_group %}
-      {# snippet group #}
+      {# snippet group: popup from collage #}
       {% for snippet in snippets %}
       <tr>
         <td>{{ snippet.name }}</td>
@@ -228,7 +228,7 @@ the default template for the html_default method.
       </tr>
       {% endfor %}
       {% else %}
-      {# no snippet group: #}
+      {# no snippet group: items not from collage #}
       {% for display_object in display_group %}
       <tr>
         <td>{{ display_object.name }}
