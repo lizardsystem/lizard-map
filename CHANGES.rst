@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.2 (unreleased)
 ----------------
 
+- Added google_tracking_code from settings to context_processor, if
+  available.
+
 - Added try/except in WorkspaceCollageSnippetGroup.values_table (used
   in "show tables" of collage view), because some adapters don't
   implement the adapter.values function.

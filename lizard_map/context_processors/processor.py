@@ -1,3 +1,4 @@
+from django.conf import settings
 import logging
 
 from lizard_map.animation import AnimationSettings
@@ -109,7 +110,14 @@ def processor(request):
     # Add workspaces.
     add_to_context.update(workspace_variables(request))
 
-    # Add detected browser
+    # Add detected browser.
     add_to_context.update(detect_browser(request))
+
+    # Add google_tracking_code, if available.
+    try:
+        add_to_context.update(
+            {'google_tracking_code': settings.GOOGLE_TRACKING_CODE})
+    except AttributeError:
+        pass
 
     return add_to_context
