@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Adapter.legend: removed "force_legend_below" behaviour when width <
+  500. TODO: fix force_legend_below or remove.
 
 
 2.1.1 (2011-06-30)

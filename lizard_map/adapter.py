@@ -494,7 +494,11 @@ class Graph(object):
             handles, labels = self.axes.get_legend_handles_labels()
         if handles and labels:
             # Determine 'small' or 'large'
-            if self.width < 500 or force_legend_below:
+            # if self.width < 500 or force_legend_below:
+            if force_legend_below:
+                # TODO: Maybe remove this feature? Needs tweaking. The
+                # legend is still on top of the graph, while the graph
+                # reserves room for the legend below.
                 legend_loc = 4  # lower right
                 # approximation of legend height
                 self.legend_on_bottom_height = min(
@@ -504,7 +508,7 @@ class Graph(object):
             else:
                 legend_loc = 1  # Upper right'
 
-            return self.figure.legend(
+            return self.axes.legend(
                 handles,
                 labels,
                 bbox_to_anchor=(1 - self.legend_width,
@@ -519,6 +523,7 @@ class Graph(object):
                 shadow=True,)
          #legend.set_size('medium')
          # TODO: get rid of the border around the legend.
+         # to get rid of the border: graph.axes.legend_.draw_frame(False)
 
     def init_second_axes(self):
         """ init second axes """
