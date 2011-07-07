@@ -165,7 +165,10 @@ def workspace_item_empty(request,
                        template='lizard_map/tag_workspace.html'):
     """Clear workspace items for given workspace."""
     workspace = get_object_or_404(Workspace, pk=workspace_id)
-    workspace.workspace_items.all().delete()
+    # We loop through the workspace items, so the custom delete
+    # functions will be called. #3031
+    for workspace_item in workspace.workspace_items.all():
+        workspace_item.delete()
 
     return HttpResponse("")
 

@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.1.3 (unreleased)
 ------------------
 
+- Updated workspace_item_empty: When emptying workspace, the
+  snippet-groups will also be deleted. #3031.
+
 - Added try/except around search_coordinates and search_name for
   #3033.
 
