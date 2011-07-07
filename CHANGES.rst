@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added try/except around search_coordinates and search_name for
+  #3033.
 
 
 2.1.2 (2011-06-30)

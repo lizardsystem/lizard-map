@@ -857,9 +857,16 @@ def search_name(request):
         for workspace in workspace_collection:
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
-                search_results = workspace_item.adapter.search(
-                    google_x, google_y, radius=radius)
-                found += search_results
+
+                try:
+                    search_results = workspace_item.adapter.search(
+                        google_x, google_y, radius=radius)
+                    found += search_results
+                except:
+                    logger.exception(
+                        "Crashed while calling search_name on %s" %
+                        workspace_item)
+
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
@@ -916,9 +923,15 @@ def search_coordinates(request):
         for workspace in workspace_collection:
             for workspace_item in workspace.workspace_items.filter(
                 visible=True):
-                search_results = workspace_item.adapter.search(
-                    google_x, google_y, radius=radius_search)
-                found += search_results
+
+                # #3033. Ignore crashing searches.
+                try:
+                    search_results = workspace_item.adapter.search(
+                        google_x, google_y, radius=radius_search)
+                    found += search_results
+                except:
+                    logger.exception("Crashed while calling search on %s" %
+                                     workspace_item)
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
