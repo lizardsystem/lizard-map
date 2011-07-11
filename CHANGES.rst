@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.1.3 (unreleased)
 ------------------
 
+- Updated googlemaps_api_keys in fixture: the new key is for
+  lizardsystem.nl and all its subdomains.
+
 - Updated workspace_item_empty: When emptying workspace, the
   snippet-groups will also be deleted. #3031.
 
