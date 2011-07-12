@@ -81,12 +81,17 @@ function setUpTransparencySlider() {
         step: 1,
         value: transparency_slider_value,
         slide: function (event, ui) {
+            var index;
             $('#map').data("transparency_slider_value", ui.value);
             $(layers).each(function (i, layer) {
                 if (layer !== undefined) {
                     layer.setOpacity(ui.value / 100);
                 }
             });
+            // WMS layers
+            for (index in wms_layers) {
+                wms_layers[index].setOpacity(ui.value / 100);
+            }
         }
     });
 }

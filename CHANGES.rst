@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.3 (unreleased)
 ------------------
 
+- Added wms layers to transparency function. #3039.
+
 - Updated googlemaps_api_keys in fixture: the new key is for
   lizardsystem.nl and all its subdomains.
 
