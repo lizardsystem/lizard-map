@@ -91,9 +91,9 @@ function setUpTransparencySlider() {
             // WMS layers
             for (index in wms_layers) {
                 // Lint wants an if statement.. why?
-                //if (true) {
+                if (true) {
                     wms_layers[index].setOpacity(ui.value / 100);
-                //}
+                }
             }
         }
     });
