@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.3 (unreleased)
 ------------------
 
+- Removed draggability of workspace-acceptables.
+
 - Made the adapter.extent function optional. In
   WorkspaceItem.has_extent we now just detect if the function is at
   all present.  #3041, #3036.
