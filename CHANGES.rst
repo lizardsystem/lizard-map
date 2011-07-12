@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-2.1.3 (unreleased)
+2.1.3 (2011-07-12)
 ------------------
 
 - Removed draggability of workspace-acceptables.
