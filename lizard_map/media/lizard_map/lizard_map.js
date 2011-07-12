@@ -3,7 +3,7 @@
 /*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
 alert,
-hover_popup, layers, map, refreshLayers, isCollagePopupVisible */
+hover_popup, layers, wms_layers, map, refreshLayers, isCollagePopupVisible */
 
 var animationTimer, transparencyTimer;
 
@@ -90,7 +90,10 @@ function setUpTransparencySlider() {
             });
             // WMS layers
             for (index in wms_layers) {
-                wms_layers[index].setOpacity(ui.value / 100);
+                // Lint wants an if statement.. why?
+                //if (true) {
+                    wms_layers[index].setOpacity(ui.value / 100);
+                //}
             }
         }
     });
