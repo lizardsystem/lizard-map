@@ -319,15 +319,12 @@ class WorkspaceItem(models.Model):
 
     def has_extent(self):
         """
-        Return true if workspace item has a extent that makes sense.
+        Return true if workspace item has an extent function.
+
+        Note: no performance changes seen after changing "return True"
+        to getattr.
         """
-        # TODO: lots of caching here! And then re-instate the actual test.
-        return True
-        # extent = self.adapter.extent()
-        # if None in extent.values():
-        #     return False
-        # else:
-        #     return True
+        return getattr(self.adapter, 'extent', None) is not None
 
     def delete(self, *args, **kwargs):
         """

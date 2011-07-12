@@ -193,15 +193,18 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    def extent(self, identifiers=None):
-        """
-        Returns extent {'west':.., 'north':.., 'east':.., 'south':..}
-        in google projection. None for each key means unknown.
+    # def extent(self, identifiers=None):
+    #     """
+    #     Returns extent {'west':.., 'north':.., 'east':.., 'south':..}
+    #     in google projection. None for each key means unknown.
 
-        Optional: If identifiers is given, return extent for those
-        identifiers only.
-        """
-        return {'north': None, 'south': None, 'east': None, 'west': None}
+    #     Optional function. If available, there will be an magnifier
+    #     in your workspace -> workspace-item.
+
+    #     Optional: If identifiers is given, return extent for those
+    #     identifiers only.
+    #     """
+    #     return {'north': None, 'south': None, 'east': None, 'west': None}
 
     def search(self, x, y, radius=None):
         """Search by coordinates. Return list of dicts for matching
