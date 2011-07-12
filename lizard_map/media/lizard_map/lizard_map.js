@@ -204,6 +204,18 @@ function setUpAddWorkspaceItem() {
 
 
 function setUpWorkspaceAcceptable() {
+    // Set up draggability for current and future items.
+    // See http://tinyurl.com/29lg4y3 .
+    $(".workspace-acceptable").live("mouseover", function () {
+        var html;
+        if (!$(this).data("add-workspace-item-initialized")) {
+            // Add the "add to workspace" button
+            $(this).data("add-workspace-item-initialized", true);
+            html = $(this).html();
+            html = '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>' + html;
+            $(this).html(html);
+        }
+    });
     // Do not use mouseout: Mouseout is also activated when moving to
     // the "add-workspace-item" button.
     $(".workspace-acceptable").live("mouseleave", function () {
