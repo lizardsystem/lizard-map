@@ -248,26 +248,6 @@ function setUpWorkspaceAcceptable() {
             function (workspace_id) {
                 var url, center_x, center_y;
                 refreshMapActionsDivs();
-                // Load extent from workspace and zoom to it.
-	        // Disabled to avoid auto zoom
-	        /*
-                url = $(".workspace").attr(
-                    "data-url-lizard-map-session-workspace-extent-temp");
-                $.getJSON(url, {}, function (extent) {
-                    var ol_extent;
-                    // If we do not get extent, just forget it.
-                    if ((extent.north !== null) &&
-                        (extent.south !== null) &&
-                        (extent.east !== null) &&
-                        (extent.west !== null))
-                    {
-                        ol_extent = new OpenLayers.Bounds(
-                            extent.west, extent.south,
-                            extent.east, extent.north);
-                        map.zoomToExtent(ol_extent, true);
-                    }
-                });
-		*/
             });
         stretchOneSidebarBox();
         reenableWorkspaceItem($workspace_acceptable);
