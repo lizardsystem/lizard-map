@@ -25,91 +25,97 @@ TouchHandler = OpenLayers.Class( {
 	    this.map = map;
 	    console.log( "limitPansPerMove " + limitPansPerMove );
 	    if ( limitPansPerMove ) {
-        	console.log("no  " + limitPansPerMove);
-        	this.limitPansPerMove = limitPansPerMove;
+                console.log("no  " + limitPansPerMove);
+                this.limitPansPerMove = limitPansPerMove;
 
 	    }
 
-	    // monkey-p map to include limitZoomOut
-	    map.constructor.prototype['limitZoomOut'] = function( ) {
-            // if ( this.getZoom( ) <= 2 ) {
-            //     return true;
+            // 20110714 Jack: the monkey-p below prevents filter list and add workspace-acceptable buttons to show
+            // When commented-out, you cannot zoom out with gesture.
+            // This works:
+            map.limitZoomOut = function() {return false;}
 
-            // }
-            return false;
+            // This gives erros on iPad:
+	    // // monkey-p map to include limitZoomOut
+	    // map.constructor.prototype['limitZoomOut'] = function( ) {
+            // // if ( this.getZoom( ) <= 2 ) {
+            // //     return true;
 
-	    };
+            // // }
+            // return false;
+
+	    // };
 	    this.hook_touch( map );
 	},
 
     touchstart: function( ) {
-	    var inDoubleTap = false;
-	    var doubleTapTimer = false;
-	    var zoom = null;
+            var inDoubleTap = false;
+            var doubleTapTimer = false;
+            var zoom = null;
 
-	    var obj = this;
-	    return function ( event ) {
-        	dec_debug(event);
-		//event.preventDefault( );
-		if ( event.touches.length == 1 ) {
-		    if ( !doubleTapTimer ) {
-			doubleTapTimer = setTimeout( function( ) { inDoubleTap = false;
-								   doubleTapTimer = false; },
-			    500 );
-		    }
+            var obj = this;
+            return function ( event ) {
+                dec_debug(event);
+                //event.preventDefault( );
+                if ( event.touches.length == 1 ) {
+                    if ( !doubleTapTimer ) {
+                	doubleTapTimer = setTimeout( function( ) { inDoubleTap = false;
+                						   doubleTapTimer = false; },
+                	    500 );
+                    }
 
-		    if ( !inDoubleTap ) {
-			inDoubleTap = true;
+                    if ( !inDoubleTap ) {
+                	inDoubleTap = true;
 
-		    }
-		    else {
-			inDoubleTap = false;
-			var out = "out";
-			if ( zoom == null || zoom == out ) {
-			    obj.map.zoomIn( );
-			    zoom = "in";
+                    }
+                    else {
+                	inDoubleTap = false;
+                	var out = "out";
+                	if ( zoom == null || zoom == out ) {
+                	    obj.map.zoomIn( );
+                	    zoom = "in";
 
-			}
-			else {
-			    obj.map.zoomOut( );
-			    zoom = out;
+                	}
+                	else {
+                	    obj.map.zoomOut( );
+                	    zoom = out;
 
-			}
+                	}
 
-		    }
+                    }
 
-		    var touch = event.touches[0];
-		    obj.touchStartX = touch.clientX;
-		    obj.touchStartY = touch.clientY;
+                    var touch = event.touches[0];
+                    obj.touchStartX = touch.clientX;
+                    obj.touchStartY = touch.clientY;
 
-		    if ( touch.target.width === 128 ) {
-			return false;
+                    if ( touch.target.width === 128 ) {
+                	return false;
 
-		    }
-		    else {
-			return true;
+                    }
+                    else {
+                	return true;
 
-		    }
+                    }
 
-		};
-		return null;
+                };
+                return null;
 
-	    };
+            };
 
-	},
+        },
 
     pan_touch: function ( ) {
-	var obj = this;
+        var obj = this;
         var dx, dy;
-	    return function ( e ) {
+            return function ( e ) {
         	dec_debug( event );
-		e.preventDefault( );
-		if ( e.touches.length == 1 ) {
-		    var touch = e.touches[0];
+        	e.preventDefault( );
+        	if ( e.touches.length == 1 ) {
+        	    var touch = e.touches[0];
                     dx = obj.touchStartX - touch.clientX;
                     dy = obj.touchStartY - touch.clientY;
-		    //hack - limit number of calls to pan
-		    if ((Math.abs(dx) > PAN_MINIMUM) &&
+        	    //hack - limit number of calls to pan
+        	    if ((Math.abs(dx) > PAN_MINIMUM) &&
                         (Math.abs(dy) > PAN_MINIMUM) &&
                         ( obj.skip++ % obj.limitPansPerMove === 0 )) {
             		obj.map.pan( dx, dy, {animate: false} );
@@ -123,40 +129,40 @@ TouchHandler = OpenLayers.Class( {
     },
 
     zoom_guesture: function( ) {
-	    var obj = this;
-	    return function ( e ) {
+            var obj = this;
+            return function ( e ) {
         	dec_debug( event );
-		e.preventDefault( );
-		if ( e.scale > 1 && e.scale != obj.scale ) {
-		    //	if ( this.map.limitZoomIn( ) == false ) {
-		    obj.map.zoomIn( );
-		    //	}
+        	e.preventDefault( );
+        	if ( e.scale > 1 && e.scale != obj.scale ) {
+        	    //	if ( this.map.limitZoomIn( ) == false ) {
+        	    obj.map.zoomIn( );
+        	    //	}
 
-		}
-		else {
-		    if ( e.scale < 1 && e.scale != obj.scale ) {
-			if ( obj.map.limitZoomOut( ) == false ) {
-			    obj.map.zoomOut( );
+        	}
+        	else {
+        	    if ( e.scale < 1 && e.scale != obj.scale ) {
+        		if ( obj.map.limitZoomOut( ) == false ) {
+        		    obj.map.zoomOut( );
 
-			}
+        		}
 
-		    }
+        	    }
 
-		}
-		obj.scale = e.scale;
+        	}
+        	obj.scale = e.scale;
 
-	    };
+            };
 
-	},
+        },
 
     hook_touch: function ( ){
-	    var map = this.map;
-	    map.div.addEventListener("touchstart", this.touchstart(), false);
-	    map.div.addEventListener("touchmove", this.pan_touch(), false);
-	    map.div.addEventListener("touchend", this.zoom_guesture(), false);
-	    map.div.addEventListener("guestureend", this.zoom_guesture(), false);
+            var map = this.map;
+            map.div.addEventListener("touchstart", this.touchstart(), false);
+            map.div.addEventListener("touchmove", this.pan_touch(), false);
+            map.div.addEventListener("touchend", this.zoom_guesture(), false);
+            map.div.addEventListener("guestureend", this.zoom_guesture(), false);
 
-	}
+        }
 
     } );
 

@@ -43,7 +43,9 @@ function positionUpdate(position) {
 
 
 function positionUpdateFail(error) {
-    document.getElementById("notes").innerHTML = error.message;
+    //"notes" does not always exist. Just fail silently. Probably "User denied Geolocation"
+    //document.getElementById("notes").innerHTML = error.message;
+    //console.log(error.message);
 }
 
 

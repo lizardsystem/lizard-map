@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- iPad update: the (+) works again as well as some trees on the
+  sidebar. #3003, #3004.
 
 
 2.1.3 (2011-07-12)
