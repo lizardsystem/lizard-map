@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.1.5 (unreleased)
 ------------------
 
+- Settings are now cached. After deleting and saving the cache will be
+  invalidated.
+
 - Added setting option javascript_hover_handler. Setting this option
   to 'popup_hover_handler' will enable mouse overs. Note: run a
   migrate after upgrading, the Setting.key field can now be 40
