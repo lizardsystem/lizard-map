@@ -6,6 +6,7 @@ from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DateRangeForm
+from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_BASE_LAYER
 from lizard_map.views import MAP_LOCATION
@@ -85,9 +86,10 @@ def workspace_variables(request):
     add_to_context['animation_slider'] = animation_slider
 
     # Click/hover handlers.
-    add_to_context['javascript_hover_handler'] = None
-    # This used to be 'popup_hover_handler', but you'll have to pass that
-    # yourself, now, if you want to use it. The default is OFF, now.
+    # This used to be 'popup_hover_handler'.
+    add_to_context['javascript_hover_handler'] = Setting.get(
+        'javascript_hover_handler', None)
+
     add_to_context['javascript_click_handler'] = 'popup_click_handler'
 
     add_to_context['use_workspaces'] = True

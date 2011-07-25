@@ -3,8 +3,11 @@ import logging
 import mapnik
 
 from django.contrib.auth.models import User
+from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.signals import post_save
+from django.db.models.signals import post_delete
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from south.modelsinspector import add_introspection_rules
@@ -985,7 +988,9 @@ class Setting(models.Model):
     display_projection 'EPSG:4326'
     googlemaps_api_key
     """
-    key = models.CharField(max_length=20, unique=True)
+    CACHE_KEY = 'lizard-map.Setting'
+
+    key = models.CharField(max_length=40, unique=True)
     value = models.CharField(max_length=200)
 
     def __unicode__(self):
@@ -996,15 +1001,26 @@ class Setting(models.Model):
         """
         Return value from given key.
 
-        If the key does not exist, return None
+        If the key does not exist, return None. Caches the whole
+        Setting table.
         """
-        try:
-            setting = cls.objects.get(key=key)
-            return setting.value
-        except cls.DoesNotExist:
+
+        # Caching.
+        settings = cache.get(cls.CACHE_KEY)  # Dict
+        if settings is None:
+            settings = {}
+            for setting in cls.objects.all():
+                settings[setting.key] = setting.value
+            cache.set(cls.CACHE_KEY, settings)
+
+        # Fallback for default.
+        if key not in settings:
             logger.warn('Setting "%s" does not exist, taking default '
                         'value "%s"' % (key, default))
             return default
+
+        # Return desired result.
+        return settings[key]
 
     @classmethod
     def get_dict(cls, key, default=None):
@@ -1012,3 +1028,19 @@ class Setting(models.Model):
         Return {key: value} for given key
         """
         return {key: cls.get(key, default)}
+
+
+# For Django 1.3:
+# @receiver(post_save, sender=Setting)
+# @receiver(post_delete, sender=Setting)
+def setting_post_save_delete(sender, **kwargs):
+    """
+    Invalidates cache after saving or deleting a setting.
+    """
+    logger.debug('Changed setting. Invalidating cache for %s...' %
+                 sender.CACHE_KEY)
+    cache.delete(sender.CACHE_KEY)
+
+
+post_save.connect(setting_post_save_delete, sender=Setting)
+post_delete.connect(setting_post_save_delete, sender=Setting)

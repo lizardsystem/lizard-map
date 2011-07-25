@@ -75,7 +75,9 @@
 <div id="lizard-map-wms"
      data-javascript-click-handler="{{ javascript_click_handler }}"
      {% if javascript_hover_handler %}
-     data-javascript-hover-handler="{{ javascript_hover_handler }}"
+       {% ifnotequal javascript_hover_handler 'None' %}
+       data-javascript-hover-handler="{{ javascript_hover_handler }}"
+       {% endifnotequal %}
      {% endif %}
      {# New style maps #}
      data-max-extent-left="{{ max_extent.left }}"

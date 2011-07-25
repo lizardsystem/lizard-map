@@ -108,5 +108,13 @@
       "value": "-14675, 6668977, 1254790, 6964942",
       "key": "start_extent"
     }
+  },
+  {
+    "pk": 2,
+    "model": "lizard_map.setting",
+    "fields": {
+      "value": "None",
+      "key": "javascript_hover_handler"
+    }
   }
 ]
