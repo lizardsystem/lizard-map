@@ -6,7 +6,9 @@ Changelog of lizard-map
 ------------------
 
 - Added setting option javascript_hover_handler. Setting this option
-  to 'popup_hover_handler' will enable mouse overs.
+  to 'popup_hover_handler' will enable mouse overs. Note: run a
+  migrate after upgrading, the Setting.key field can now be 40
+  characters.
 
 - #3096: fixed blue info button in workspace-acceptables (they appear
    in lizard-shape).
