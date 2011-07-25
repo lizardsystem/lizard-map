@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-2.1.5 (unreleased)
+2.1.5 (2011-07-25)
 ------------------
 
 - Settings are now cached. After deleting and saving the cache will be
