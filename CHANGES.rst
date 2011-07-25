@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- #3096: fixed blue info button in workspace-acceptables (they appear
+   in lizard-shape).
 
 
 2.1.4 (2011-07-14)

@@ -217,6 +217,9 @@ function setUpWorkspaceAcceptable() {
             html = $(this).html();
             html = '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>' + html;
             $(this).html(html);
+            // Re-initialize tooltips, they are often in a
+            // workspace-acceptable.
+            setUpTooltips();
         }
     });
     // Do not use mouseout: Mouseout is also activated when moving to
