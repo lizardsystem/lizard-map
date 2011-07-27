@@ -129,7 +129,7 @@ class WorkspaceManager:
             changes = True
 
         #create collage if necessary, it is stored in the workspace
-        if len(self.workspaces[USER_WORKSPACES][0].collages.all()) == 0:
+        if self.workspaces[USER_WORKSPACES][0].collages.count() == 0:
             self.workspaces[USER_WORKSPACES][0].collages.create()
 
         if changes:

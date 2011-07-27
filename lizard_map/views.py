@@ -154,7 +154,7 @@ def workspace_item_add(request,
     workspace.workspace_items.create(adapter_class=adapter_class,
                                      index=max_index + 10,
                                      adapter_layer_json=adapter_layer_json,
-                                     name=name)
+                                     name=name[:80])
     return HttpResponse(json.dumps(workspace.id))
 
 

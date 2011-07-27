@@ -5,7 +5,15 @@ Changelog of lizard-map
 2.1.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Updated point_3.png: the upper left corner contained an error.
+
+- Added truncation of workspace-item-names to 80 characters (the
+  server would otherwise crash on longer names).
+
+- Now using QuerySet.count instead of len(QuerySet.all()) in workspace
+  manager.
+
+- Added some rel=tipsy html parameters.
 
 
 2.1.5 (2011-07-25)
