@@ -2,7 +2,7 @@
 /*jslint browser: true */
 /*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-alert,
+alert, setUpTooltips,
 hover_popup, layers, wms_layers, map, refreshLayers, isCollagePopupVisible */
 
 var animationTimer, transparencyTimer;
