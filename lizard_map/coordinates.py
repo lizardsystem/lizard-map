@@ -75,6 +75,11 @@ def rd_to_wgs84(x, y):
     return transform(rd_projection, wgs84_projection, x, y)
 
 
+def wgs84_to_rd(x, y):
+    """Return GOOGLE coordinates from RD coordinates."""
+    return transform(wgs84_projection, rd_projection, x, y)
+
+
 def srs_to_google(srs, x, y):
     """Return GOOGLE coordinates from coordinates. Coordinates are in
     srs (string), i.e. EPSG:28992."""
