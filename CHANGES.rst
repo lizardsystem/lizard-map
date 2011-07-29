@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-2.1.6 (unreleased)
+2.1.6 (2011-07-29)
 ------------------
 
 - Added function to convert WGS84 coordinates to RD.
