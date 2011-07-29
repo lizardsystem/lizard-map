@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.6 (unreleased)
 ------------------
 
+- Added function to convert WGS84 coordinates to RD.
+
 - Updated point_3.png: the upper left corner contained an error.
 
 - Added truncation of workspace-item-names to 80 characters (the
@@ -15,6 +17,7 @@ Changelog of lizard-map
 
 - Added some rel=tipsy html parameters.
 
+- Pinned lizard_ui to 2.1.4
 
 2.1.5 (2011-07-25)
 ------------------
