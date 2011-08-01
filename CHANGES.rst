@@ -5,7 +5,8 @@ Changelog of lizard-map
 2.1.7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed clicking bug in FF5: set pixelTolerance to null instead if 0
+  is a workaround for the OpenLayers bug. #3108.
 
 
 2.1.6 (2011-07-29)

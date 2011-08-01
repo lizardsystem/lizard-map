@@ -285,7 +285,7 @@ function showMap() {
             defaultHandlerOptions: {
                 'single': true,
                 'double': false,
-                'pixelTolerance': 0,
+                'pixelTolerance': null,
                 'stopSingle': false,
                 'stopDouble': false
             },
