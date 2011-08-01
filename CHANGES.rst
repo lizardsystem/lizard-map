@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.7 (unreleased)
 ------------------
 
+- Added pdf.png icon. Use pdf.png as mask as well with color ffffff.
+
 - Changed breadcrumbs according to #2499. The behaviour is as follows:
   home for home screen and home -> screen for other screens.
 
