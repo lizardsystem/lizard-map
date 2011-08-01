@@ -26,6 +26,7 @@ Changelog of lizard-map
 
 - Pinned lizard_ui to 2.1.4
 
+
 2.1.5 (2011-07-25)
 ------------------
 
