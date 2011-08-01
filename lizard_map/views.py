@@ -13,6 +13,8 @@ import csv
 import logging
 import mapnik
 
+from lizard_ui.models import ApplicationScreen
+
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import slider_layout_extra
@@ -49,13 +51,25 @@ def homepage(request,
     parameter 'screen' from url.
     """
 
-    if crumbs_prepend is not None:
-        crumbs = list(crumbs_prepend)
-    else:
-        crumbs = [CRUMBS_HOMEPAGE]
-
     if application_screen_slug is None:
         application_screen_slug = request.GET.get('screen', None)
+
+    if crumbs_prepend is None:
+        if application_screen_slug:
+            application_screen = get_object_or_404(
+                ApplicationScreen,
+                slug=application_screen_slug)
+            crumbs = [application_screen.crumb(), ]
+            if application_screen_slug != 'home':
+                # prepend with "home"
+                application_screen_home = get_object_or_404(
+                    ApplicationScreen,
+                    slug='home')
+                crumbs = [application_screen_home.crumb(), ] + crumbs
+        else:
+            crumbs = [CRUMBS_HOMEPAGE]
+    else:
+        crumbs = list(crumbs_prepend)
 
     # Determine if we want to show the video. Only show it once every day or
     # so.

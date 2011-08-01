@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.1.7 (unreleased)
 ------------------
 
+- Changed breadcrumbs according to #2499. The behaviour is as follows:
+  home for home screen and home -> screen for other screens.
+
 - Fixed clicking bug in FF5: set pixelTolerance to null instead if 0
   is a workaround for the OpenLayers bug. #3108.
 
