@@ -508,6 +508,22 @@ class Graph(object):
             else:
                 legend_loc = 1  # Upper right'
 
+            # For width 464 (empty space 150px assumed), we have:
+            # <= 40 = medium
+            # > 40 = small
+            # > 50 = x-small
+            # > 65 = xx-small
+            # Fixes #3095
+            font_len = max([len(label) for label in labels])
+            font_size = 'medium'  #'medium'
+            if font_len > 40 * ((self.width - 150) / 314.0):
+                font_size = 'small'
+            if font_len > 50 * ((self.width - 150) / 314.0):
+                font_size = 'x-small'
+            if font_len > 65 * ((self.width - 150) / 314.0):
+                font_size = 'xx-small'
+            prop = {'size': font_size}
+
             return self.axes.legend(
                 handles,
                 labels,
@@ -517,6 +533,7 @@ class Graph(object):
                                 # 1 = Upper right of above bbox. Use 0 for
                                 # 'best'
                                 1),
+                prop=prop,
                 loc=legend_loc,
                 ncol=ncol,
                 fancybox=True,
