@@ -255,7 +255,6 @@ settings are optional::
     DEFAULT_START_DAYS = -20  # Defaults to -1000
     DEFAULT_END_DAYS = 1  # Defaults to 10
 
-
 You can add google analytics to your site by adding the tracking
 code::
 
