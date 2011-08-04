@@ -33,7 +33,7 @@ function updateLayers() {
 // Refresh/setup background layers only when they're not available yet.
 function refreshBackgroundLayers() {
     var $lizard_map_wms, selected_base_layer_name, base_layer,
-    base_layer_type, wms_url;
+    base_layer_type;
     $lizard_map_wms = $("#lizard-map-wms");
     selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
     $lizard_map_wms.find(".background-layer").each(function () {
@@ -80,7 +80,7 @@ function refreshBackgroundLayers() {
             else if (layer_type === "WMS")
             {
                 base_layer = new OpenLayers.Layer.WMS(
-                    layer_name, wms_url,
+                    layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
                      'maxResolution': 364},
@@ -105,8 +105,7 @@ function refreshBackgroundLayers() {
 
 
 function refreshWorkspaceLayers() {
-    var $lizard_map_wms, wms_url,
-        wms_layers, osm_url;
+    var $lizard_map_wms, wms_layers, osm_url;
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-layer").each(function () {
         var workspace_id, workspace_name, workspace_wms;
@@ -136,7 +135,7 @@ function refreshWorkspaceLayers() {
 
 function refreshWmsLayers() {
     // Add wms layers from workspace items.
-    var $lizard_map_wms, wms_url, osm_url, i, ids_found;
+    var $lizard_map_wms, osm_url, i, ids_found;
     ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {

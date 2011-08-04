@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.7 (unreleased)
 ------------------
 
+- Fixed background-map wms. Updated template and js.
+
 - Changed font-size for long legend texts in adapter.py. #3095.
 
 - Added pdf.png icon. Use pdf.png as mask as well with color ffffff.

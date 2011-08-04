@@ -9,11 +9,11 @@
      {% endifequal %}
      {% ifequal background_map.layer_type 2 %}{# OSM #}
      data-layer-type="OSM"
-     data-layer-url="{{ background_map.layer_url }}"
+     data-layer-url="{{ background_map.layer_url|safe }}"
      {% endifequal %}
      {% ifequal background_map.layer_type 3 %}{# WMS #}
      data-layer-type="WMS"
-     data-layer-url="{{ background_map.layer_url }}"
+     data-layer-url="{{ background_map.layer_url|safe }}"
      data-layer-layer-names="{{ background_map.layer_names }}"
      {% endifequal %}
      ></div>
