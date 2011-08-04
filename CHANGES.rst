@@ -2,7 +2,7 @@ Changelog of lizard-map
 =======================
 
 
-2.1.7 (unreleased)
+2.1.7 (2011-08-04)
 ------------------
 
 - Fixed background-map wms. Updated template and js.
