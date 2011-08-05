@@ -1177,3 +1177,14 @@ class CoordinatesTest(TestCase):
             579427, 6860742, 'EPSG:28992')
         self.assertTrue(abs(x - 142586) < 1)
         self.assertTrue(abs(y - 482911) < 1)
+
+
+class SymbolManagerTest(TestCase):
+    """
+    Test the list_image_file_names funstion in symbol_manager.py.
+    Expected > 5 items in the list.
+    """
+    def test_list_image_file_names(self):
+        icon_names_list = lizard_map.symbol_manager.list_image_file_names()
+        self.assertTrue(len(icon_names_list) > 5)
+

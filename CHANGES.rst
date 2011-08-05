@@ -5,7 +5,7 @@ Changelog of lizard-map
 2.1.8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added function to list icons names.
 
 
 2.1.7 (2011-08-04)

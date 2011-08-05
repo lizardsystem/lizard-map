@@ -4,10 +4,35 @@
 
 import logging
 import os.path
+import fnmatch
 import Image
 import ImageFilter
+import pkg_resources
 
 log = logging.getLogger('nens.symbol_manager')
+
+
+def list_image_file_names():
+    """
+    Collect then names of available images of gived directory
+    """
+    file_extentions = ('png', 'svg')
+    icon_names = []
+    file_names = None
+    path = pkg_resources.resource_filename('lizard_map', 'icons/')
+    try:
+        file_names = os.listdir(path)
+        file_names.sort()
+    except:
+        log.critical('icon/mask path %s does not exist', path)
+        raise Exception()
+
+    for file_name in file_names:
+        for file_extention in file_extentions:
+            if fnmatch.fnmatch(file_name, '*.' + file_extention):
+                icon_names.append((file_name, file_name))
+
+    return icon_names
 
 
 class SymbolManager:
