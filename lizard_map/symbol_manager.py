@@ -14,8 +14,9 @@ log = logging.getLogger('nens.symbol_manager')
 
 def list_image_file_names():
     """
-    Collect then names of available images of gived directory
+    Collect names of available images of icons directory.
     """
+
     file_extentions = ('png', 'svg')
     icon_names = []
     file_names = None
