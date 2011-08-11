@@ -450,7 +450,7 @@ function popup_click_handler(x, y, map) {
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
-    $("#map_OpenLayers_ViewPort").css("cursor", "progress");
+    $("#map_").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
@@ -459,8 +459,8 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                $("#map_OpenLayers_ViewPort").css("cursor", "default");
                 show_popup(data);
+                $("#map").css("cursor", "default");
             }
         );
     }
