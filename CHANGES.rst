@@ -5,7 +5,7 @@ Changelog of lizard-map
 2.1.9 (unreleased)
 ------------------
 
-- Edited mouse progress on cklick in map.
+- Edited mouse progress on click in map.
 
 
 2.1.8 (2011-08-05)
