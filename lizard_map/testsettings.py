@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     ]
 ROOT_URLCONF = 'lizard_map.urls'
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
@@ -82,6 +82,8 @@ INTERNAL_IPS = (
 # Set the default period in days.
 # DEFAULT_START_DAYS = -20
 # DEFAULT_END_DAYS = 5
+
+SOUTH_TESTS_MIGRATE = False
 
 try:
     # Import local settings that aren't stored in svn.

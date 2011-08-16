@@ -53,6 +53,11 @@ import lizard_map.urls
 import lizard_map.views
 
 
+# New.
+from lizard_map.test_models import Period
+from lizard_map.test_models import PeriodMixinTest
+
+
 class WorkspaceManagerTest(TestCase):
 
     class MockRequest(object):

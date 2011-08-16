@@ -5,7 +5,7 @@ Changelog of lizard-map
 2.1.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added PeriodMixin with tests.
 
 
 2.1.9 (2011-08-16)

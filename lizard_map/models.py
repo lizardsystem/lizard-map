@@ -1,3 +1,4 @@
+# Unchecked imports start here
 import itertools
 import logging
 import mapnik
@@ -23,6 +24,13 @@ from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
+# Unchecked end here
+
+
+# New
+import datetime
+
+
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -181,6 +189,95 @@ class WorkspaceItemError(Exception):
 
 ###### Models start here ######
 
+#### Experimental models ####
+
+
+class PeriodMixin(models.Model):
+    """
+    Define a period and time, relative or absolute.
+    """
+
+    # Datetime.
+    dt_start = models.DateTimeField(blank=True, null=True)
+    dt_end = models.DateTimeField(blank=True, null=True)
+    dt = models.DateTimeField(blank=True, null=True)
+
+    # All relative dates are "normalized to days".
+    # Timedelta.
+    td_start = models.FloatField(blank=True, null=True)
+    td_end = models.FloatField(blank=True, null=True)
+    td = models.FloatField(blank=True, null=True)
+
+    # Take datetime or timedelta.
+    absolute = models.BooleanField(default=False)
+
+    # Take dt (True) or dt_end (False) (or td or td_end)
+    custom_time = models.BooleanField(default=False)
+
+    class Meta:
+        abstract = True
+
+    def _dt_fallback(self, now=None):
+        """Return 3-tuple with fallbacks for dt, dt_start and dt_end.
+        """
+        if now is None:
+            now = datetime.datetime.now()
+        return (
+            now,
+            now + datetime.timedelta(-10.0),
+            now + datetime.timedelta(1.0))
+
+
+    def period(self, now=None, fallback=False):
+        """
+        Return specified period. Depends on absolute and custom_time.
+        """
+        try:
+            if self.absolute:
+                dt_start, dt_end = self.dt_start, self.dt_end
+            else:
+                if now is None:
+                    now = datetime.datetime.now()
+                dt_start = now + datetime.timedelta(self.td_start)
+                dt_end = now + datetime.timedelta(self.td_end)
+        except TypeError:
+            if fallback:
+                _, dt_start, dt_end = self._dt_fallback(now=now)
+            else:
+                dt_start, dt_end = None, None
+        return dt_start, dt_end
+
+    def time(self, now=None, fallback=False):
+        """
+        Return specified time. Depends on absolute and custom_time.
+        """
+        try:
+            if self.absolute:
+                if self.custom_time:
+                    dt = self.dt
+                else:
+                    dt = self.dt_end
+            else:
+                if now is None:
+                    now = datetime.datetime.now()
+                if self.custom_time:
+                    dt = now + datetime.timedelta(self.td)
+                else:
+                    dt = now + datetime.timedelta(self.td_end)
+        except TypeError:
+            if fallback:
+                dt, _, _ = self._dt_fallback(now=now)
+            else:
+                dt = None
+        return dt
+
+
+class WorkspaceMixin(models.Model):
+    class Meta:
+        abstract = True
+
+
+#### Old models #####
 
 class Workspace(models.Model):
     """Collection for managing what's visible on a map."""
