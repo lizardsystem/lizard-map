@@ -467,10 +467,16 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
             continue
         # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
+        # Passing the request object as a layout_option is a bit of a hack,
+        # but for some use cases we really need access to it in the html()
+        # method of a WorkspaceItemAdapter, which unfortunately is
+        # lacking a **kwargs at this moment.
+
         html_per_workspace_item = workspace_item.adapter.html(
             identifiers=identifiers,
             layout_options={'add_snippet': add_snippet,
-                            'legend': True},
+                            'legend': True,
+                            'request': request},
             )
 
         if 'google_coords' in display_object:
@@ -898,7 +904,7 @@ def search_name(request):
         result['y'] = y - (radius / 10)
         return HttpResponse(json.dumps(result))
     else:
-        return popup_json([])
+        return popup_json([], request=request)
 
 
 def search_coordinates(request):
@@ -954,7 +960,7 @@ def search_coordinates(request):
         found.sort(key=lambda item: item['distance'])
         return popup_json(found, request=request)
     else:
-        return popup_json([])
+        return popup_json([], request=request)
 
 
 """
