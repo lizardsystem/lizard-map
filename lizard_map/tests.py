@@ -54,7 +54,8 @@ import lizard_map.views
 
 
 # New.
-from lizard_map.test_models import Period
+from lizard_map.test_models import ExtentMixinTest
+from lizard_map.test_models import WorkspaceEditTest
 from lizard_map.test_models import PeriodMixinTest
 
 

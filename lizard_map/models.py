@@ -27,7 +27,7 @@ from lizard_map.mapnik_helper import point_rule
 # Unchecked end here
 
 
-# New
+# New imports
 import datetime
 from django.contrib.auth.models import User
 from django.contrib.sessions.models import Session
@@ -273,23 +273,12 @@ class PeriodMixin(models.Model):
         return dt
 
 
-class WorkspaceMixin(models.Model):
-    """
-    Workspace stuff
-
-    - Extent
-    - Default background map
-    """
-
+class ExtentMixin(models.Model):
     # Extent.
-    xmin = models.FloatField()
-    ymin = models.FloatField()
-    xmax = models.FloatField()
-    ymax = models.FloatField()
-
-    # Background map, fall back to default.
-    background_map = models.ForeignKey(
-        'BackgroundMap', null=True, blank=True)
+    xmin = models.FloatField(default=-14675)
+    ymin = models.FloatField(default=6668977)
+    xmax = models.FloatField(default=1254790)
+    ymax = models.FloatField(default=6964942)
 
     class Meta:
         abstract = True
@@ -297,6 +286,22 @@ class WorkspaceMixin(models.Model):
     def extent(self):
         """Return extent as (xmin, ymin, xmax, ymax)"""
         return (self.xmin, self.ymin, self.xmax, self.ymax)
+
+
+class WorkspaceMixin(models.Model):
+    """
+    Workspace stuff
+
+    - Default background map
+    """
+
+
+    # Background map, fall back to default.
+    background_map = models.ForeignKey(
+        'BackgroundMap', null=True, blank=True)
+
+    class Meta:
+        abstract = True
 
 
 class WorkspaceItemMixin(models.Model):
@@ -319,11 +324,47 @@ class WorkspaceItemMixin(models.Model):
         abstract = True
 
 
-class WorkspaceEdit(WorkspaceMixin, PeriodMixin):
+class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
     """
     Your editable workspace.
+
+    Every user can only have one edit-workspace. If the user is not
+    logged in, look at the session and see if any edit-workspaces
+    match. If all fail, create a new edit-workspace for the user.
     """
-    session = models.ForeignKey(Session, unique=True)
+    user = models.ForeignKey(User, null=True, blank=True, unique=True)
+    session = models.ForeignKey(Session, unique=True, blank=True, null=True)
+
+    @classmethod
+    def get_or_create(cls, session, user=None):
+        """Get your edit-workspace, or create a new one.
+        """
+        result = None
+        if user:
+            # Try to fetch
+            try:
+                result = cls.objects.get(user=user)
+            except cls.DoesNotExist:
+                pass
+        if result is None:
+            # Try to fetch based on session
+            try:
+                workspace = cls.objects.get(session=session)
+                if user and workspace.user != user:
+                    # Remove session from 'wrong' user/session combi.
+                    workspace.session = None
+                    workspace.save()
+                    result = cls(session=session, user=user)
+                    result.save()
+                else:
+                    result = workspace
+            except cls.DoesNotExist:
+                # Create new.
+                result = cls(session=session)
+                if user:
+                    result.user = user
+                result.save()
+        return result
 
 
 class WorkspaceItemEdit(WorkspaceItemMixin):
@@ -335,7 +376,7 @@ class WorkspaceItemEdit(WorkspaceItemMixin):
         related_name='workspace_items')
 
 
-class WorkspaceStorage(WorkspaceMixin, PeriodMixin):
+class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
     """
     Your stored workspace.
     """
