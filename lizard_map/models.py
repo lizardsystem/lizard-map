@@ -29,7 +29,8 @@ from lizard_map.mapnik_helper import point_rule
 
 # New
 import datetime
-
+from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 
 
 # Do not change the following items!
@@ -273,8 +274,83 @@ class PeriodMixin(models.Model):
 
 
 class WorkspaceMixin(models.Model):
+    """
+    Workspace stuff
+
+    - Extent
+    - Default background map
+    """
+
+    # Extent.
+    xmin = models.FloatField()
+    ymin = models.FloatField()
+    xmax = models.FloatField()
+    ymax = models.FloatField()
+
+    # Background map, fall back to default.
+    background_map = models.ForeignKey(
+        'BackgroundMap', null=True, blank=True)
+
     class Meta:
         abstract = True
+
+    def extent(self):
+        """Return extent as (xmin, ymin, xmax, ymax)"""
+        return (self.xmin, self.ymin, self.xmax, self.ymax)
+
+
+class WorkspaceItemMixin(models.Model):
+    """
+    Workspace item
+
+    # URL: points to an adapter
+    """
+    name = models.CharField(max_length=80,
+                            blank=True)
+    # url = models.URLField(verify_exists=False)
+    adapter_class = models.SlugField(choices=adapter_class_names())
+    adapter_layer_json = models.TextField(blank=True)
+
+    index = models.IntegerField(blank=True, default=100)
+    visible = models.BooleanField(default=True)
+    clickable = models.BooleanField(default=True)
+
+    class Meta:
+        abstract = True
+
+
+class WorkspaceEdit(WorkspaceMixin, PeriodMixin):
+    """
+    Your editable workspace.
+    """
+    session = models.ForeignKey(Session, unique=True)
+
+
+class WorkspaceItemEdit(WorkspaceItemMixin):
+    """
+    Workspace item for edit workspace.
+    """
+    workspace = models.ForeignKey(
+        WorkspaceEdit,
+        related_name='workspace_items')
+
+
+class WorkspaceStorage(WorkspaceMixin, PeriodMixin):
+    """
+    Your stored workspace.
+    """
+    name = models.CharField(max_length=40)
+    description = models.TextField(null=True, blank=True)
+    owner = models.ForeignKey(User)
+
+
+class WorkspaceItemStorage(WorkspaceItemMixin):
+    """
+    Workspace item for stored workspace.
+    """
+    workspace = models.ForeignKey(
+        WorkspaceStorage,
+        related_name='workspace_items')
 
 
 #### Old models #####
