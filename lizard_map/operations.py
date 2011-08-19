@@ -50,13 +50,12 @@ def tree_from_list(rows,
     rows is a list with dicts.
 
     >>> rows = [{'id': 'name', 'parent_id': None},
-                {'id': 'child', 'parent_id': 'name'},
-                {'id': 'name2', 'parent_id': None}]
-    >>> tree_from_list(rows)
-    [{'id': 'name', 'parent_id': None, 'children': [
-        {'id': 'child', 'parent_id': 'name', 'children': []}, ],
-    {'id': 'name2', 'parent_id': None, 'children': [],
-    ]
+    ...         {'id': 'child', 'parent_id': 'name'},
+    ...         {'id': 'name2', 'parent_id': None}]
+    >>> tree_from_list(rows)  == [{'id': 'name', 'parent_id': None, 'children': [
+    ...     {'id': 'child', 'parent_id': 'name', 'children': []}, ]},
+    ...     {'id': 'name2', 'parent_id': None, 'children': []}]
+    True
     """
 
     result = {}
@@ -98,10 +97,12 @@ def named_list(rows, names):
     equal length.
 
     >>> named_list([['name1', 'parameter1'],
-                    ['name2', 'parameter2']],
-                   ['name', 'parameter'])
-    [{'name': 'name1', 'parameter': 'parameter1'},
-     {'name': 'name2', 'parameter': 'parameter2'}
+    ...               ['name2', 'parameter2']],
+    ...               ['name', 'parameter']) == [
+    ...    {'name': 'name1', 'parameter': 'parameter1'},
+    ...    {'name': 'name2', 'parameter': 'parameter2'}]
+    True
+
     """
     result = []
     for row in rows:
