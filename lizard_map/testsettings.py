@@ -1,7 +1,14 @@
+import os
+
+from lizard_ui.settingshelper import setup_logging
+from lizard_ui.settingshelper import STATICFILES_FINDERS
+
 DEBUG = True
 TEMPLATE_DEBUG = True
-DATABASE_ENGINE = 'sqlite3'
-DATABASE_NAME = 'test.db'
+DATABASES = {
+    'default': {'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': 'test.db'},
+    }
 SITE_ID = 1
 INSTALLED_APPS = [
     'lizard_map',
@@ -82,6 +89,16 @@ INTERNAL_IPS = (
 # Set the default period in days.
 # DEFAULT_START_DAYS = -20
 # DEFAULT_END_DAYS = 5
+
+SETTINGS_DIR = os.path.dirname(os.path.realpath(__file__))
+BUILDOUT_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, '..'))
+MEDIA_ROOT = os.path.join(BUILDOUT_DIR, 'var', 'media')
+STATIC_ROOT = os.path.join(BUILDOUT_DIR, 'var', 'static')
+MEDIA_URL = '/media/'
+STATIC_URL = '/static_media/'
+
+LOGGING = setup_logging(BUILDOUT_DIR)
+
 
 try:
     # Import local settings that aren't stored in svn.

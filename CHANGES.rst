@@ -5,7 +5,9 @@ Changelog of lizard-map
 2.1.10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Requiring lizard-ui 3.0 now, which also means Django 1.3. Updated the
+  buildout and the testsettings for that. We're also using the KGS (known good
+  set) now to limit the amount of version pinning.
 
 
 2.1.9 (2011-08-16)
