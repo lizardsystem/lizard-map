@@ -29,18 +29,6 @@ function setSliderDate(slider_value) {
 }
 
 
-function indicateWorkspaceItemBusy($workspace_item) {
-    $workspace_item.removeClass("workspace-acceptable");
-    $workspace_item.addClass("waiting-lineitem");
-}
-
-
-function reenableWorkspaceItem($workspace_item) {
-    $workspace_item.addClass("workspace-acceptable");
-    $workspace_item.removeClass("waiting-lineitem");
-}
-
-
 function setUpAnimationSlider() {
     var workspace_item_id;
     $("#animation-slider").slider({
@@ -100,6 +88,7 @@ function setUpTransparencySlider() {
 }
 
 
+/* L3 */
 function setUpMapLoadDefaultLocation() {
     $("#map-load-default-location").click(function () {
         var url;
@@ -160,102 +149,53 @@ function reloadMapActions() {
 }
 
 
-function setUpAddWorkspaceItem() {
-
-    // Add action to button 'add-workspace-item' in workspace
-    // acceptables. This class is added by
-    // setUpWorkspaceAcceptableButtons in lizard-ui: lizard.js.
-    $(".add-workspace-item").live("click", function (event) {
-        // Fetch workspace acceptable properties and add workspace item.
-        var wa_name, adapter_class, adapter_layer_json, url,
-            $workspace_acceptable, $workspace, workspace_id;
-        // Get adapter class and parameters.
-        $workspace_acceptable = $(this).parents(".workspace-acceptable");
-        $workspace = $(".workspace");  // Assumes there is only 1.
-        workspace_id = $workspace.attr("data-workspace-id");
-
-        wa_name = $workspace_acceptable.attr("data-name");
-        adapter_class = $workspace_acceptable.attr("data-adapter-class");
-        adapter_layer_json = $workspace_acceptable.attr("data-adapter-layer-json");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-add");
-        indicateWorkspaceItemBusy($workspace_acceptable);
-        if ($(".workspace .workspace-item").length > 7) {
-            alert("Pas op, meer dan 8 workspace items zorgt voor traagheid.");
-        }
-        // Temporary disable sorting. It gets enabled again in
-        // updateWorkspace.
-        $(".workspace ul.workspace-items").sortable("disable");
-        // Request to make workspace item and update workspace.
-        $.post(
-            url,
-            {workspace_id: workspace_id,
-             name: wa_name,
-             adapter_class: adapter_class,
-             adapter_layer_json: adapter_layer_json
-            },
-            function (workspace_id) {
-                // Update all workspaces.
-                $(".workspace").updateWorkspace();
-                // "click" the empty temp workspace
-                $(".workspace-empty-temp").click();
-                reenableWorkspaceItem($workspace_acceptable);
-            }
-        );
-        return false; // Same as .preventDefault and .stopPropagation
-    });
-}
-
-
+/* L3 */
+/* Clicking a workspace-acceptable toggles the
+   workspace-acceptable. If it is enabled it also shows up in your
+   workspace (if it is visible). */
 function setUpWorkspaceAcceptable() {
-    // Set up draggability for current and future items.
-    // See http://tinyurl.com/29lg4y3 .
-    $(".workspace-acceptable").live("mouseover", function () {
-        var html;
-        if (!$(this).data("add-workspace-item-initialized")) {
-            // Add the "add to workspace" button
-            $(this).data("add-workspace-item-initialized", true);
-            html = $(this).html();
-            html = '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>' + html;
-            $(this).html(html);
-            // Re-initialize tooltips, they are often in a
-            // workspace-acceptable.
-            setUpTooltips();
-        }
-    });
-    // Do not use mouseout: Mouseout is also activated when moving to
-    // the "add-workspace-item" button.
-    $(".workspace-acceptable").live("mouseleave", function () {
-        //  Remove all "add to workspace" button(s).
-        $(".add-workspace-item").remove();
-        $(".workspace-acceptable").removeData(
-            "add-workspace-item-initialized");
-    });
 
-    // Clicking a workspace-acceptable shows it in the 'temp' workspace.
+    function indicateWorkspaceItemBusy($workspace_item) {
+        $workspace_item.removeClass("workspace-acceptable");
+        $workspace_item.addClass("waiting-lineitem");
+    }
+
+    function reenableWorkspaceItem($workspace_item) {
+        $workspace_item.addClass("workspace-acceptable");
+        $workspace_item.removeClass("waiting-lineitem");
+    }
+
     $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp,
+        var name, adapter_class, adapter_layer_json, url_item_toggle,
         $workspace, html, $workspace_acceptable;
-        $(".workspace-acceptable").removeClass("selected");
+
         $workspace_acceptable = $(this);
         indicateWorkspaceItemBusy($workspace_acceptable);
-        $(this).addClass("selected");
+
         name = $(this).attr("data-name");
         adapter_class = $(this).attr("data-adapter-class");
         adapter_layer_json = $(this).attr("data-adapter-layer-json");
         $workspace = $(".workspace");
-        url_add_item_temp = $workspace.attr(
-            "data-url-lizard-map-session-workspace-add-item-temp");
+        url_item_toggle = $workspace.attr(
+            "data-url-lizard-map-workspace-item-toggle");
         $.post(
-            url_add_item_temp,
+            url_item_toggle,
             {name: name,
              adapter_class: adapter_class,
              adapter_layer_json: adapter_layer_json
             },
-            function (workspace_id) {
-                var url, center_x, center_y;
-                refreshMapActionsDivs();
+            function (just_added) {
+                if (just_added === "true") {
+                    // console.log("selected");
+                    $workspace_acceptable.addClass("selected");
+                } else {
+                    // console.log("not selected");
+                    $workspace_acceptable.removeClass("selected");
+                }
+                // refreshMapActionsDivs();
+                $(".workspace").updateWorkspace();
+                //stretchOneSidebarBox();
             });
-        stretchOneSidebarBox();
         reenableWorkspaceItem($workspace_acceptable);
         return false;
     });
@@ -264,10 +204,9 @@ function setUpWorkspaceAcceptable() {
 
 /* Make the following workspace buttons work:
 - Trashcan next to "My Workspace" (workspace-empty-trigger)
-- Trashcan next to "Collage" (collage-empty-trigger)
 - (-) next to workspace-items (workspace-item-delete)
-- (-) next to snippet-items (snippet-delete)
-- Clickable snippets
+
+L3
 */
 function setUpWorkspaceButtons() {
     // Trashcan next to "My Workspace"
@@ -297,62 +236,62 @@ function setUpWorkspaceButtons() {
         $.post(
             url,
             { object_id: object_id },
-            function () {
+            function (is_deleted) {
                 $workspace.updateWorkspace();
             });
         return false;
     });
-    // Trashcan next to "Collage"
-    $(".collage-empty-trigger").live('click', function () {
-        var $workspace, collage_id, url;
-        $workspace = $(this).parents("div.workspace");
-        collage_id = $(this).attr("data-collage-id");
-        url = $workspace.attr("data-url-lizard-map-collage-empty");
-        addProgressAnimationIntoWorkspace();
-        $.post(
-            url, {collage_id: collage_id},
-	    function (data) {
-	        //remove progress
-                $workspace.find(".sidebarbox-action-progress").remove();
-                $workspace.updateWorkspace();
-            });
-    });
-    // Delete snippet
-    $(".snippet-delete").live('click', function () {
-        var $workspace, workspace_id, url, object_id;
-        $workspace = $(this).parents("div.workspace");
-        workspace_id = $workspace.attr("data-workspace-id");
-        url = $workspace.attr(
-            "data-url-lizard-map-snippet-delete");
-        object_id = $(this).parents(".snippet").attr("data-object-id");
-        $(this).parents(".snippet").addClass("waiting-lineitem");
-        $.post(
-            url,
-            { object_id: object_id },
-            function () {
-                $workspace.updateWorkspace();
-                // Reload the collage_popup if it is already present
-                if (isCollagePopupVisible()) {
-                    $(".collage").collagePopup();
-                }
-            });
-        return false;
-    });
-    // Make snippetnames clickable.
-    $("div.snippet-name").live('click', function (event) {
-        var $snippet, $workspace, url, snippet_id;
-        $snippet = $(this).parents("li.snippet");
-        $workspace = $(this).parents("div.workspace");
-        url = $workspace.attr("data-url-lizard-map-snippet-popup");
-        snippet_id = $snippet.attr("data-object-id");
-        $.getJSON(
-            url,
-            { snippet_id: snippet_id },
-            function (data) {
-                show_popup(data);
-            }
-        );
-    });
+    // // Trashcan next to "Collage"
+    // $(".collage-empty-trigger").live('click', function () {
+    //     var $workspace, collage_id, url;
+    //     $workspace = $(this).parents("div.workspace");
+    //     collage_id = $(this).attr("data-collage-id");
+    //     url = $workspace.attr("data-url-lizard-map-collage-empty");
+    //     addProgressAnimationIntoWorkspace();
+    //     $.post(
+    //         url, {collage_id: collage_id},
+    //         function (data) {
+    //             //remove progress
+    //             $workspace.find(".sidebarbox-action-progress").remove();
+    //             $workspace.updateWorkspace();
+    //         });
+    // });
+    // // Delete snippet
+    // $(".snippet-delete").live('click', function () {
+    //     var $workspace, workspace_id, url, object_id;
+    //     $workspace = $(this).parents("div.workspace");
+    //     workspace_id = $workspace.attr("data-workspace-id");
+    //     url = $workspace.attr(
+    //         "data-url-lizard-map-snippet-delete");
+    //     object_id = $(this).parents(".snippet").attr("data-object-id");
+    //     $(this).parents(".snippet").addClass("waiting-lineitem");
+    //     $.post(
+    //         url,
+    //         { object_id: object_id },
+    //         function () {
+    //             $workspace.updateWorkspace();
+    //             // Reload the collage_popup if it is already present
+    //             if (isCollagePopupVisible()) {
+    //                 $(".collage").collagePopup();
+    //             }
+    //         });
+    //     return false;
+    // });
+    // // Make snippetnames clickable.
+    // $("div.snippet-name").live('click', function (event) {
+    //     var $snippet, $workspace, url, snippet_id;
+    //     $snippet = $(this).parents("li.snippet");
+    //     $workspace = $(this).parents("div.workspace");
+    //     url = $workspace.attr("data-url-lizard-map-snippet-popup");
+    //     snippet_id = $snippet.attr("data-object-id");
+    //     $.getJSON(
+    //         url,
+    //         { snippet_id: snippet_id },
+    //         function (data) {
+    //             show_popup(data);
+    //         }
+    //     );
+    // });
 }
 
 
@@ -421,27 +360,27 @@ function setUpGraphEditPopup() {
 }
 
 
-/*
-Empty the temp workspace
-*/
-function setUpEmptyTempInteraction() {
-    $(".workspace-empty-temp").live("click", function () {
-        var $workspace, url, workspace_item_id;
-        $(this).css("cursor", "progress");
-        $workspace = $(".workspace");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-delete");
-        workspace_item_id = $(this).attr("data-workspace-item-id");
-        $.post(
-            url,
-            {object_id: workspace_item_id},
-            function (workspace_id) {
-                refreshMapActionsDivs();
-                // remove highlighting
-                $(".workspace-acceptable").removeClass("selected");
-            }
-        );
-    });
-}
+// /*
+// Empty the temp workspace
+// */
+// function setUpEmptyTempInteraction() {
+//     $(".workspace-empty-temp").live("click", function () {
+//         var $workspace, url, workspace_item_id;
+//         $(this).css("cursor", "progress");
+//         $workspace = $(".workspace");
+//         url = $workspace.attr("data-url-lizard-map-workspace-item-delete");
+//         workspace_item_id = $(this).attr("data-workspace-item-id");
+//         $.post(
+//             url,
+//             {object_id: workspace_item_id},
+//             function (workspace_id) {
+//                 refreshMapActionsDivs();
+//                 // remove highlighting
+//                 $(".workspace-acceptable").removeClass("selected");
+//             }
+//         );
+//     });
+// }
 
 
 /* Handle a click */
@@ -655,13 +594,16 @@ function  setupTableToggle() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-    setUpAddWorkspaceItem();
+    // Touched for L3
+    // setUpToggleWorkspaceItem();
     setUpWorkspaceAcceptable();
+    // setUpEmptyTempInteraction();
+
+    // Untouched
     setUpWorkspaceButtons();
     setUpDatePopup();
     setUpDateUpdate();
     setUpNotFoundPopup();
-    setUpEmptyTempInteraction();
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();

@@ -9,21 +9,28 @@ urlpatterns = patterns(
     '',
     (r'^api/', include('lizard_map.api.urls')),
     # Actions/services on/from workspaces
-    url(r'^workspace/(?P<workspace_id>\d+)/wms/',
-        'lizard_map.views.wms',
-        name="lizard_map_wms"),
-    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/reorder/',
-        'lizard_map.views.workspace_item_reorder',
-        name="lizard_map_workspace_item_reorder"),
-    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/add/',
-        'lizard_map.views.workspace_item_add',
-        name="lizard_map_workspace_item_add"),
-    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/empty/',
-        'lizard_map.views.workspace_item_empty',
-        name="lizard_map_workspace_item_empty"),
-    url(r'^workspace/(?P<workspace_id>\d+)/',
+    url(r'^workspace/(?P<workspace_id>\d+)/$',
         'lizard_map.views.workspace',
         name="lizard_map_workspace"),
+    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/reorder/$',
+        'lizard_map.views.workspace_item_reorder',
+        name="lizard_map_workspace_item_reorder"),
+
+    url(r'^myworkspace/workspace_items/toggle/$',  # L3
+        'lizard_map.views.workspace_item_toggle',
+        name="lizard_map_workspace_item_toggle"),
+    url(r'^myworkspace/workspace_items/delete/$',  # L3
+        'lizard_map.views.workspace_item_delete',
+        name="lizard_map_workspace_item_delete"),
+    url(r'^myworkspace/workspace_items/empty/$',  # L3
+        'lizard_map.views.workspace_item_empty',
+        name="lizard_map_workspace_item_empty"),
+    url(r'^myworkspace/workspace_items/edit/$',  # L3
+        'lizard_map.views.workspace_item_edit',
+        name="lizard_map_workspace_item_edit"),
+    url(r'^myworkspace/wms/$',  # L3
+        'lizard_map.views.wms',
+        name="lizard_map_workspace_edit_wms"),
 
     # Date range
     (r'^set_date_range$',
@@ -93,9 +100,6 @@ urlpatterns = patterns(
     url(r'^workspaceitemreorder/$',
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
-    url(r'^workspaceitemadd/$',
-        'lizard_map.views.workspace_item_add',
-        name="lizard_map_workspace_item_add"),
     url(r'^workspaceitem/extent/$',
         'lizard_map.views.workspace_item_extent',
         name="lizard_map_workspace_item_extent"),
@@ -124,9 +128,9 @@ urlpatterns = patterns(
         name="lizard_map_session_collage_snippet_delete"),
 
     # Actions on workspace items
-    url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
-        'lizard_map.views.workspace_item_delete',
-        name="lizard_map_workspace_item_delete"),
+    # url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
+    #     'lizard_map.views.workspace_item_delete',
+    #     name="lizard_map_workspace_item_delete"),
     url(r'^workspace_item/(?P<workspace_item_id>\d+)/image/',
         'lizard_map.views.workspace_item_image',
         name="lizard_map.workspace_item_image"),
@@ -135,12 +139,9 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_image',
         {'session_graph_options': True},
         name="lizard_map.workspace_item_image_session_graph_options"),
-    url(r'^workspaceitem/delete/',
-        'lizard_map.views.workspace_item_delete',
-        name="lizard_map_workspace_item_delete"),
-    url(r'^workspaceitem/edit/',
-        'lizard_map.views.workspace_item_edit',
-        name="lizard_map_workspace_item_edit"),
+    # url(r'^workspaceitem/edit/', # L3
+    #     'lizard_map.views.workspace_item_toggle',
+    #     name="lizard_map_workspace_item_toggle"),
 
     # Actions on legends.
     url(r'^legend/edit/',

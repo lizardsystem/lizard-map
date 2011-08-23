@@ -322,6 +322,48 @@ class WorkspaceItemMixin(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ('index', 'visible', 'name', )
+
+    @property
+    def adapter(self):
+        """Return adapter instance for entrypoint"""
+        # TODO: this happens more often than needed! Cache it.
+        for entrypoint in pkg_resources.iter_entry_points(
+            group=ADAPTER_ENTRY_POINT):
+            if entrypoint.name == self.adapter_class:
+                try:
+                    real_adapter = entrypoint.load()
+                    real_adapter = real_adapter(self,
+                        layer_arguments=self._adapter_layer_arguments)
+                except ImportError, e:
+                    logger.critical("Invalid entry point: %s", e)
+                    raise
+                except WorkspaceItemError:
+                    logger.warning(
+                        "Deleting problematic WorkspaceItem: %s", self)
+                    # Trac #2470. Return a NullAdapter instead?
+                    self.delete()
+                return real_adapter
+        raise AdapterClassNotFoundError(
+            u'Entry point for %r not found' % self.adapter_class)
+
+    @property
+    def _adapter_layer_arguments(self):
+        """Return dict of parsed adapter_layer_json.
+
+        Converts keys to str.
+        """
+        layer_json = self.adapter_layer_json
+        if not layer_json:
+            return {}
+        result = {}
+        try:
+            decoded_json = json.loads(layer_json)
+        except json.JSONDecodeError:
+            raise WorkspaceItemError("Undecodable json: %s", layer_json)
+        for k, v in decoded_json.items():
+            result[str(k)] = v
+        return result
 
 
 class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):

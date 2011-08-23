@@ -3,6 +3,7 @@ from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
+from lizard_map.models import WorkspaceEdit
 from lizard_map.utility import float_to_string
 from lizard_map.views import CUSTOM_LEGENDS
 
@@ -17,27 +18,50 @@ def workspace_debug_info(context):
     return {'workspaces': workspaces}
 
 
-@register.inclusion_tag("lizard_map/tag_workspace.html",
-                        takes_context=True)
-def workspace(context, workspace, show_new_workspace=False):
-    """Display workspace."""
-    if 'request' in context:
-        session = context['request'].session
-    else:
-        session = None
-    return {
-        'workspace': workspace,
-        'date_range_form': context.get('date_range_form', None),
-        'show_new_workspace': show_new_workspace,
-        'session': session}
+# @register.inclusion_tag("lizard_map/tag_workspace.html",
+#                         takes_context=True)
+# def workspace(context, workspace, show_new_workspace=False):
+#     """Display workspace."""
+#     if 'request' in context:
+#         session = context['request'].session
+#     else:
+#         session = None
+#     return {
+#         'workspace': workspace,
+#         'date_range_form': context.get('date_range_form', None),
+#         'show_new_workspace': show_new_workspace,
+#         'session': session}
 
 
-# New
+# L3
 @register.inclusion_tag("lizard_map/tag_workspace_edit.html",
                         takes_context=True)
 def workspace_edit(context, workspace_edit):
     """Display workspace_edit"""
-    return {'workspace_edit': workspace_edit}
+    if 'request' in context:
+        session = context['request'].session
+        user = context['user']
+    else:
+        session = None
+        user = None
+    return {
+        'workspace_edit': workspace_edit,
+        'session': session,
+        'user': user}
+
+
+# L3
+@register.simple_tag
+def selected_if_in_workspace(
+    adapter_class, adapter_layer_json, workspace_edit):
+    """
+    output ' selected' if workspace_acceptable is in current users workspace
+
+    TODO: cache this thing.
+    """
+    return ' selected' if workspace_edit.workspace_items.filter(
+        adapter_class=adapter_class,
+        adapter_layer_json=adapter_layer_json).count() > 0 else ''
 
 
 @register.simple_tag

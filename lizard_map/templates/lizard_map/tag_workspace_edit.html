@@ -1,30 +1,70 @@
 {# Display edit-workspace #}
+{% load workspaces %}
 {% load i18n %}
-<div id="workspace-edit-{{ workspace_edit.id }}"
-     class="sidebarbox workspace">
+<div id="edit-workspace"
+     class="sidebarbox workspace"
+     data-workspace-id="{{ workspace_edit.id }}"
+     data-url-lizard-map-workspace-item-toggle="{% url lizard_map_workspace_item_toggle %}"
+     data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
+     data-url-lizard-map-workspace-item-empty="{% url lizard_map_workspace_item_empty %}"
+     data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
+     data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_item_edit %}"
+     data-url-wms="{% url lizard_map_workspace_edit_wms %}"
+     >
   <h2>
-    <a id="edit-workspace-empty"
+    <a id="workspace-save"
+       href="#"
+       title="{% trans 'save workspace...' %}"
+       class="title ss_sprite ss_arrow_up sidebarbox-action-icon">&nbsp;</a>
+    <a id="workspace-load"
+       href="#"
+       title="{% trans 'load workspace...' %}"
+       class="title ss_sprite ss_arrow_down sidebarbox-action-icon">&nbsp;</a>
+    <a id="workspace-empty"
        href="#"
        title="{% trans 'empty your workspace' %}"
        class="title ss_sprite ss_bin_closed sidebarbox-action-icon workspace-empty-trigger">
     </a>
-    <a id="edit-workspace-load"
-       href="#"
-       title="{% trans 'load workspace...' %}"
-       class="title ss_sprite ss_arrow_down sidebarbox-action-icon">&nbsp;</a>
-    <a id="edit-workspace-save"
-       href="#"
-       title="{% trans 'save workspace...' %}"
-       class="title ss_sprite ss_arrow_up sidebarbox-action-icon">&nbsp;</a>
     <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
       Workspace
     </span>
   </h2>
   <ul class="workspace-items without-bullets">
     {% for workspace_item in workspace_edit.workspace_items.all %}
-    <li id="workspace-items-{{ workspace_item.id }}">
+    <li id="workspace-items-{{ workspace_item.id }}"
+        class="workspace-item"
+        title="{{ workspace_item.name }}"
+        data-object-id="{{ workspace_item.id }}">
+      {# Legend. #}
+      {% legend workspace_item.name workspace_item.adapter session %}
+      {# Delete workspace item #}
+      <span class="ss_sprite ss_delete sidebarbox-action-icon
+                   workspace-item-delete"
+            rel="tipsy"
+            title="Verwijder">
+      </span>
+      {# Pan to layer. #}
+      {% if workspace_item.has_extent %}
+      <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                   workspace-item-pan-to"
+            rel="tipsy"
+            title="Zoom"></span>
+      {% endif %}
+      {# Symbol, appears left. #}
+      <img class="workspace-item-image"
+           src="{{ workspace_item.adapter.symbol_url }}"
+           width="16"
+           height="16" />
+      <input id="{{ workspace_item.id }}"
+             class="workspace-item-checkbox"
+             type="checkbox"
+             {% if workspace_item.visible %}
+             checked="checked"
+             {% endif %}
+             title="Zichtbaar"
+             data-workspace-id="{{ workspace.id }}" />
       <div class="workspace-item-name">
-      {% firstof workspace_item.name '(noname)' %}
+        {% firstof workspace_item.name '(noname)' %}
       </div>
     </li>
     {% empty %}

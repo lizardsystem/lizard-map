@@ -57,32 +57,32 @@ jQuery.fn.liveCheckboxes = function () {
             $.ajax({
                 url: url,
                 data: { workspace_item_id: this.id, visible: this.checked },
-                success: function (workspace_id) {
+                success: function () {
                     $workspace.updateWorkspace();
                 },
                 type: "POST",
                 async: false
             });
         });
-        $workspace.find(".snippet-checkbox").live('click', function () {
-            var url, $list_item;
-            url = $workspace.attr("data-url-lizard-map-snippet-edit");
-            $list_item = $(this).closest('li');
-            $list_item.addClass("waiting-lineitem");
-            $.ajax({
-                url: url,
-                data: { snippet_id: this.id, visible: this.checked },
-                success: function (snippet) {
-                    $workspace.updateWorkspace();
-                },
-                type: "POST",
-                async: false
-            });
-            // Reload the collage_popup if it is already visible
-            if (isCollagePopupVisible()) {
-                $(".collage").collagePopup();
-            }
-        });
+        // $workspace.find(".snippet-checkbox").live('click', function () {
+        //     var url, $list_item;
+        //     url = $workspace.attr("data-url-lizard-map-snippet-edit");
+        //     $list_item = $(this).closest('li');
+        //     $list_item.addClass("waiting-lineitem");
+        //     $.ajax({
+        //         url: url,
+        //         data: { snippet_id: this.id, visible: this.checked },
+        //         success: function (snippet) {
+        //             $workspace.updateWorkspace();
+        //         },
+        //         type: "POST",
+        //         async: false
+        //     });
+        //     // Reload the collage_popup if it is already visible
+        //     if (isCollagePopupVisible()) {
+        //         $(".collage").collagePopup();
+        //     }
+        // });
     });
 };
 
@@ -187,24 +187,18 @@ jQuery.fn.collagePopup = function () {
 
 /* Make workspaces sortable and droppable
 
-Needed: data attributes on the <div class="workspace">:
+Needed: data attribute .data-url-lizard-map-workspace-item-reorder on
+the <div class="workspace">
 
-.data-url-lizard-map-workspace-item-reorder
-.data-url-lizard-map-workspace-item-add
-
-matching objects require (needs cleanup):
-this.attr("data-workspace_id");
 <ul> at depth 2
 
-TODO: use jquery live to bind all future workspaces?
-
+L3
 */
 jQuery.fn.workspaceInteraction = function () {
     return this.each(function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        workspace_id = $workspace.attr("data-workspace-id");
         workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
@@ -214,9 +208,9 @@ jQuery.fn.workspaceInteraction = function () {
                 url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
                 order = workspaceItems.sortable("serialize");
                 $.post(
-                    url + "?workspace_id=" + workspace_id,
+                    url,
                     order,
-                    function (workspace_id) {
+                    function () {
                         workspaceItems.parent().parent().updateWorkspace();
                     }
                 );
@@ -228,54 +222,18 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'ui-sortable-placeholder',
             items: 'li.workspace-item'
         });
-        // Make the workspace droppable, only accept items with the class
-        // '.workspace-acceptable'.
-        // This is not needed anymore, because you can click the (+).
-        workspaceItems.droppable({
-            accept: '.workspace-acceptable',
-            hoverClass: 'drophover',
-            activeClass: 'dropactive',
-            drop: function (event, ui) {
-                var name, adapter_class, adapter_layer_json, url;
-                // Fade out draggable item.
-                ui.helper.fadeOut();
-                // Get layer_method and parameters from url.
-                name = ui.draggable.attr("data-name");
-                // ^^^ TODO: this attr name might be dangerous.
-                adapter_class = ui.draggable.attr("data-adapter-class");
-                adapter_layer_json = ui.draggable.attr("data-adapter-layer-json");
-                url = $workspace.attr("data-url-lizard-map-workspace-item-add");
-                // Make workspace item out of it.
-                $.post(
-                    url,
-                    {workspace_id: workspace_id,
-                     name: name,
-                     adapter_class: adapter_class,
-                     adapter_layer_json: adapter_layer_json
-                    },
-                    function (workspace_id) {
-                        // "click" the empty temp workspace. To be removed.
-                        $(".workspace-empty-temp").click();
-                        // very strange... $workspace becomes the
-                        // <ul> element, using workspaceItems...
-                        // TODO: empty temp workspace
-                        workspaceItems.parent().parent().updateWorkspace();
-                    }
-                );
-            }
-        });
-        // Make collage clickable. (DONE: should be collage-popup)
-        $(".collage-popup", $workspace).live('click',
-                                       $(".collage").collagePopup);
+        // // Make collage clickable. (DONE: should be collage-popup)
+        // $(".collage-popup", $workspace).live('click',
+        //                                $(".collage").collagePopup);
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.
-        $('#graph-popup').overlay({});
+        $('#graph-popup').overlay({});  // Necessary?
     });
 };
 
 
-// Update workspace boxes and their visible layers.
+// Update workspace boxes and their visible layers. L3
 jQuery.fn.updateWorkspace = function () {
     return this.each(function () {
         var $workspace, workspace_id, $holder;

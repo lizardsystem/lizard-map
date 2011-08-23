@@ -30,6 +30,11 @@ from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
 # Workspace stuff
 
+# L3
+from lizard_map.models import WorkspaceEdit
+
+
+
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
@@ -117,96 +122,138 @@ def workspace(request,
         context_instance=RequestContext(request))
 
 
+##### Edits on workspace ############
+
+# L3
 @never_cache
-def workspace_item_reorder(request,
-                           workspace_id=None,
-                           template='lizard_map/tag_workspace.html'):
-    """reorder workspace items. returns workspace_id
+def workspace_item_reorder(request):
+    """reorder workspace items.
 
-    reorders workspace_item[] in new order. expects all workspace_items from
-    workspace
-
-    TODO: check permissions
+    reorders workspace_item[] in new order.
     """
-    if workspace_id is None:
-        workspace_id = request.GET['workspace_id']
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    workspace_items_order = dict([
+        (workspace_item_id, index*10) for
+        index, workspace_item_id in enumerate(
+            request.POST.getlist('workspace-items[]'))])
 
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
-    workspace_items = [
-        get_object_or_404(WorkspaceItem, pk=workspace_item_id) for
-        workspace_item_id in request.POST.getlist('workspace-items[]')]
-    for i, workspace_item in enumerate(workspace_items):
-        workspace_item.workspace = workspace
-        workspace_item.index = i * 10
+    for workspace_item in workspace_edit.workspace_items.all():
+        workspace_item.index = workspace_items_order.get(
+            str(workspace_item.pk), 1000)
+        print workspace_item.id, workspace_item.index
         workspace_item.save()
-    return HttpResponse(json.dumps(workspace.id))
+    return HttpResponse("")
 
 
-# TODO: put item_add and item_edit in 1 function
+# L3
 @never_cache
-def workspace_item_add(request,
-                       workspace_id=None,
-                       is_temp_workspace=False,
-                       template='lizard_map/tag_workspace.html'):
-    """add new workspace item to workspace. returns rendered workspace"""
-    if workspace_id is None:
-        workspace_id = request.POST['workspace_id']
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
+def workspace_item_toggle(
+    request,
+    is_temp_workspace=False,
+    template='lizard_map/tag_workspace.html'):
+
+    """Toggle workspace item in workspace.
+
+    This means: if the workspace-item is already in the workspace,
+    remove it. If it is not in the workspace, add it.
+
+    Return if it is added (True), or removed (False)
+    """
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
     adapter_layer_json = request.POST['adapter_layer_json']
 
-    if is_temp_workspace:
-        # only one workspace item is used in the temp workspace
-        workspace.workspace_items.all().delete()
-    if workspace.workspace_items.count() > 0:
-        max_index = workspace.workspace_items.aggregate(
-            Max('index'))['index__max']
+    # Find out if it is already present.
+    existing_workspace_items = workspace_edit.workspace_items.filter(
+        adapter_class=adapter_class,
+        adapter_layer_json=adapter_layer_json)
+    if existing_workspace_items.count() == 0:
+        # Create new
+        logger.debug("Creating new workspace-item.")
+        if workspace_edit.workspace_items.count() > 0:
+            max_index = workspace_edit.workspace_items.aggregate(
+                Max('index'))['index__max']
+        else:
+            max_index = 10
+
+        workspace_edit.workspace_items.create(
+            adapter_class=adapter_class,
+            index=max_index + 10,
+            adapter_layer_json=adapter_layer_json,
+            name=name[:80])
+        just_added = True
     else:
-        max_index = 10
+        # Delete existing items
+        logger.debug("Deleting existing workspace-item.")
+        existing_workspace_items.delete()
+        just_added = False
 
-    workspace.workspace_items.create(adapter_class=adapter_class,
-                                     index=max_index + 10,
-                                     adapter_layer_json=adapter_layer_json,
-                                     name=name[:80])
-    return HttpResponse(json.dumps(workspace.id))
+    return HttpResponse(json.dumps(just_added))
 
 
+# L3
 @never_cache
-def workspace_item_empty(request,
-                       workspace_id,
-                       is_temp_workspace=False,
-                       template='lizard_map/tag_workspace.html'):
-    """Clear workspace items for given workspace."""
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
+def workspace_item_empty(
+    request,
+    is_temp_workspace=False,
+    template='lizard_map/tag_workspace.html'):
+
+    """Clear workspace items for edit workspace."""
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
     # We loop through the workspace items, so the custom delete
     # functions will be called. #3031
-    for workspace_item in workspace.workspace_items.all():
+    # TODO find out if this is also needed foor L3
+    for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.delete()
 
     return HttpResponse("")
 
 
+# L3
 @never_cache
 def workspace_item_edit(request, workspace_item_id=None, visible=None):
     """edits a workspace_item
-
-    returns workspace_id
-
-    TODO: permission
     """
     if workspace_item_id is None:
         workspace_item_id = request.POST['workspace_item_id']
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    workspace_item = workspace_edit.workspace_items.get(
+        pk=workspace_item_id)
     if visible is None:
-        if request.POST['visible']:
-            visible = request.POST['visible']
+        visible = request.POST.get('visible', None)
     if visible:
         lookup = {'true': True, 'false': False}
         workspace_item.visible = lookup[visible]
     workspace_item.save()
 
-    return HttpResponse(json.dumps(workspace_item.workspace.id))
+    return HttpResponse("")
+
+
+# L3
+@never_cache
+def workspace_item_delete(request, object_id=None):
+    """delete workspace item from workspace
+
+    returns true if >= 1 items were deleted
+
+    if workspace_item_id is not provided, it tries to get the variable
+    workspace_item_id from the request.POST
+    """
+    if object_id is None:
+        object_id = request.POST['object_id']
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    workspace_items = workspace_edit.workspace_items.filter(pk=object_id)
+    deleted = True if workspace_items.count() > 0 else False
+    workspace_items.delete()
+
+    return HttpResponse(json.dumps(deleted))
 
 
 @never_cache
@@ -328,24 +375,6 @@ def snippet_group_image(request, snippet_group_id, legend=True):
                                               start_date, end_date,
                                               width, height,
                                               layout_extra=layout_extra)
-
-
-@never_cache
-def workspace_item_delete(request, object_id=None):
-    """delete workspace item from workspace
-
-    returns workspace_id
-
-    if workspace_item_id is not provided, it tries to get the variable
-    workspace_item_id from the request.POST
-    """
-    if object_id is None:
-        object_id = request.POST['object_id']
-    workspace_item = get_object_or_404(WorkspaceItem, pk=object_id)
-    workspace_id = workspace_item.workspace.id
-    workspace_item.delete()
-
-    return HttpResponse(json.dumps(workspace_id))
 
 
 @never_cache
@@ -781,10 +810,20 @@ Map stuff
 """
 
 
-def wms(request, workspace_id):
-    """Return PNG as WMS service."""
+def wms(request, workspace_storage_id=None):
+    """Return PNG as WMS service for given workspace_edit or
+    workspace_storage.
 
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
+    if workspace_storage_id is not provided, it will take your own
+    WorkspaceEdit.
+    """
+
+    if workspace_storage_id is None:
+        workspace = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
+    else:
+        workspace = get_object_or_404(
+            WorkspaceStorage, pk=workspace_storage_id)
 
     # WMS standard parameters
     width = int(request.GET.get('WIDTH'))
