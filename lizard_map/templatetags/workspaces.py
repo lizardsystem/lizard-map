@@ -32,6 +32,14 @@ def workspace(context, workspace, show_new_workspace=False):
         'session': session}
 
 
+# New
+@register.inclusion_tag("lizard_map/tag_workspace_edit.html",
+                        takes_context=True)
+def workspace_edit(context, workspace_edit):
+    """Display workspace_edit"""
+    return {'workspace_edit': workspace_edit}
+
+
 @register.simple_tag
 def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
     """

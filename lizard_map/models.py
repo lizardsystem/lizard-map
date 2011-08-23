@@ -275,17 +275,17 @@ class PeriodMixin(models.Model):
 
 class ExtentMixin(models.Model):
     # Extent.
-    xmin = models.FloatField(default=-14675)
-    ymin = models.FloatField(default=6668977)
-    xmax = models.FloatField(default=1254790)
-    ymax = models.FloatField(default=6964942)
+    x_min = models.FloatField(default=-14675)
+    y_min = models.FloatField(default=6668977)
+    x_max = models.FloatField(default=1254790)
+    y_max = models.FloatField(default=6964942)
 
     class Meta:
         abstract = True
 
     def extent(self):
         """Return extent as (xmin, ymin, xmax, ymax)"""
-        return (self.xmin, self.ymin, self.xmax, self.ymax)
+        return (self.x_min, self.y_min, self.x_max, self.y_max)
 
 
 class WorkspaceMixin(models.Model):
@@ -333,14 +333,16 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
     match. If all fail, create a new edit-workspace for the user.
     """
     user = models.ForeignKey(User, null=True, blank=True, unique=True)
-    session = models.ForeignKey(Session, unique=True, blank=True, null=True)
+    #session = models.ForeignKey(Session, unique=True, blank=True, null=True)
+    session_key = models.CharField(
+        max_length=40, unique=True, blank=True, null=True)
 
     @classmethod
-    def get_or_create(cls, session, user=None):
+    def get_or_create(cls, session_key, user):
         """Get your edit-workspace, or create a new one.
         """
         result = None
-        if user:
+        if user.is_authenticated():
             # Try to fetch
             try:
                 result = cls.objects.get(user=user)
@@ -349,19 +351,20 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
         if result is None:
             # Try to fetch based on session
             try:
-                workspace = cls.objects.get(session=session)
-                if user and workspace.user != user:
+                workspace = cls.objects.get(session_key=session_key)
+                if user.is_authenticated() and workspace.user != user:
                     # Remove session from 'wrong' user/session combi.
-                    workspace.session = None
+                    # Should never happen.
+                    workspace.session_key = None
                     workspace.save()
-                    result = cls(session=session, user=user)
+                    result = cls(session_key=session_key, user=user)
                     result.save()
                 else:
                     result = workspace
             except cls.DoesNotExist:
                 # Create new.
-                result = cls(session=session)
-                if user:
+                result = cls(session_key=session_key)
+                if user.is_authenticated():
                     result.user = user
                 result.save()
         return result

@@ -1,0 +1,35 @@
+{# Display edit-workspace #}
+{% load i18n %}
+<div id="workspace-edit-{{ workspace_edit.id }}"
+     class="sidebarbox workspace">
+  <h2>
+    <a id="edit-workspace-empty"
+       href="#"
+       title="{% trans 'empty your workspace' %}"
+       class="title ss_sprite ss_bin_closed sidebarbox-action-icon workspace-empty-trigger">
+    </a>
+    <a id="edit-workspace-load"
+       href="#"
+       title="{% trans 'load workspace...' %}"
+       class="title ss_sprite ss_arrow_down sidebarbox-action-icon">&nbsp;</a>
+    <a id="edit-workspace-save"
+       href="#"
+       title="{% trans 'save workspace...' %}"
+       class="title ss_sprite ss_arrow_up sidebarbox-action-icon">&nbsp;</a>
+    <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
+      Workspace
+    </span>
+  </h2>
+  <ul class="workspace-items without-bullets">
+    {% for workspace_item in workspace_edit.workspace_items.all %}
+    <li id="workspace-items-{{ workspace_item.id }}">
+      <div class="workspace-item-name">
+      {% firstof workspace_item.name '(noname)' %}
+      </div>
+    </li>
+    {% empty %}
+      {# No workspaceitems #}
+      <li>Klik op <span class="ss_sprite ss_add">&nbsp;</span> naast items om deze items toe te voegen aan je workspace.</li>
+    {% endfor %}
+  </ul>
+</div>

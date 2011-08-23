@@ -12,6 +12,10 @@ from lizard_map.views import MAP_BASE_LAYER
 from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
 
+# New
+from lizard_map.models import WorkspaceEdit
+from django.contrib.sessions.models import Session
+
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +70,11 @@ def workspace_variables(request):
     workspace_manager = WorkspaceManager(request)
     workspaces = workspace_manager.load_or_create()
     add_to_context['workspaces'] = workspaces
+
+    # New
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, user=request.user)
+    add_to_context['workspace_edit'] = workspace_edit
 
     current_date_range = current_start_end_dates(request, for_form=True)
     current_date_range.update({'period': current_period(request)})
