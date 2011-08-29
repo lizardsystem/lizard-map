@@ -11,16 +11,16 @@ long_description = '\n\n'.join([
     ])
 
 install_requires = [
-    'pkginfo',
     'Django',
     'PIL',
-    'django-nose',
     'django-extensions',
+    'django-nose',
+    'django-piston',
     'django-staticfiles',
     'lizard-ui >= 3.0',
     'matplotlib',
+    'pkginfo',
     'pyproj',
-    'django-piston',
     'south',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],

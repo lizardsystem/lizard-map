@@ -3,6 +3,8 @@ import os
 from lizard_ui.settingshelper import setup_logging
 from lizard_ui.settingshelper import STATICFILES_FINDERS
 
+STATICFILES_FINDERS = STATICFILES_FINDERS
+
 DEBUG = True
 TEMPLATE_DEBUG = True
 DATABASES = {
