@@ -1,12 +1,16 @@
-from django.conf.urls.defaults import *
 from django.conf import settings
+from django.conf.urls.defaults import include
+from django.conf.urls.defaults import patterns
+from django.conf.urls.defaults import url
 from django.contrib import admin
 
+from lizard_ui.urls import debugmode_urlpatterns
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
+    (r'^ui/', include('lizard_ui.urls')),
     (r'^api/', include('lizard_map.api.urls')),
     # Actions/services on/from workspaces
     url(r'^workspace/(?P<workspace_id>\d+)/wms/',
@@ -167,12 +171,12 @@ urlpatterns = patterns(
         name="lizard_map.export_snippet_group_csv"),
     )
 
+urlpatterns += debugmode_urlpatterns()
 
 if settings.DEBUG:  # Pragma: no cover
     urlpatterns += patterns(
         '',
         (r'^admin/', include(admin.site.urls)),
-        (r'', include('staticfiles.urls')),
         # Demo map stuff.
         (r'^$', 'django.views.generic.simple.direct_to_template',
          {'template': 'lizard_map/example_openlayers.html'}),
