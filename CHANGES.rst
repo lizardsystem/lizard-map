@@ -5,7 +5,7 @@ Changelog of lizard-map
 2.1.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fixed progress cursor in popup_click_handler().
 
 
 2.1.10 (2011-08-24)
