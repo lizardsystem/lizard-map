@@ -450,7 +450,7 @@ function popup_click_handler(x, y, map) {
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
-    $("#map_").css("cursor", "progress");
+    $("#map").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
