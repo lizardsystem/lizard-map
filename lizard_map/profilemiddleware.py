@@ -7,8 +7,12 @@ import re
 import tempfile
 
 from django.conf import settings
-import hotshot
-import hotshot.stats
+# On some systems, hotshot is now available.
+try:
+    import hotshot
+    import hotshot.stats
+except ImportError:
+    hotshot = None
 
 COMMENT_SYNTAX = ((re.compile(r'^application/(.*\+)?xml|text/html$', re.I),
                    '<!--', '-->'),
@@ -43,6 +47,10 @@ def time_slow(f=None, threshold=0.01):
 # Copied from somewhere by Reinout.
 class ProfileMiddleware(object):
     def process_view(self, request, callback, args, kwargs):
+        # For safety, if hotshot cannot be imported
+        if hotshot is None:
+            return
+
         # Create a profile, writing into a temporary file.
         filename = tempfile.mktemp()
         profile = hotshot.Profile(filename)

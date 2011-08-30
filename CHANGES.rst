@@ -5,6 +5,9 @@ Changelog of lizard-map
 2.1.12 (unreleased)
 -------------------
 
+- Added try/except around hotshot in profile middleware, because it
+  requires python-profiler.
+
 - Added request to layout_options in popup_collage_json. The request
   is needed in some adapter.html functions in order to get user
   datetime/periods.
