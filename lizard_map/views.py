@@ -519,7 +519,7 @@ def popup_collage_json(collage, popup_id, request=None):
             workspace_item = snippets[0].workspace_item
             html_per_workspace_item = workspace_item.adapter.html(
                 snippet_group=snippet_group,
-                layout_options={'legend': True})
+                layout_options={'legend': True, 'request': request})
             html.append(html_per_workspace_item)
 
             # Pick the location of the first snippet.

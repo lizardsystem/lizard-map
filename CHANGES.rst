@@ -5,7 +5,9 @@ Changelog of lizard-map
 2.1.12 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added request to layout_options in popup_collage_json. The request
+  is needed in some adapter.html functions in order to get user
+  datetime/periods.
 
 
 2.1.11 (2011-08-30)
