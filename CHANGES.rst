@@ -7,6 +7,8 @@ Changelog of lizard-map
 
 - Fixed progress cursor in popup_click_handler().
 
+- Zoom to closest extent is no longer used for workspace items.
+
 
 2.1.10 (2011-08-24)
 -------------------
