@@ -47,14 +47,14 @@ default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
 default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
 
 
-def default_start():
-    """Default period when period is PERIOD_OTHER"""
-    return datetime.timedelta(days=default_start_days)
+def default_start(now):
+    """Return default start date when period is PERIOD_OTHER."""
+    return now + datetime.timedelta(days=default_start_days)
 
 
-def default_end():
-    """Default period when period is PERIOD_OTHER"""
-    return datetime.timedelta(days=default_end_days)
+def default_end(now):
+    """Return default end date when period is PERIOD_OTHER."""
+    return now + datetime.timedelta(days=default_end_days)
 
 
 class HorizontalRadioRenderer(forms.RadioSelect.renderer):
@@ -127,12 +127,12 @@ def _retrieve_start_end(daterange, now=None):
     try:
         dt_start = daterange['dt_start']
     except (KeyError, TypeError):
-        dt_start = now + default_start()
+        dt_start = default_start(now)
 
     try:
         dt_end = daterange['dt_end']
     except (KeyError, TypeError):
-        dt_end = now + default_end()
+        dt_end = default_end(now)
 
     return dt_start, dt_end
 
@@ -197,9 +197,9 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
 
     Other parameter:
       *today*
-         datetime field to initialize the current datetime (for testing purposes)
+         datetime to initialize the current datetime (for testing purposes)
       *retrieve_period_function*
-         function to retrieve the current period type (for testing purposes)
+         function to retrieve the period type (for testing purposes)
 
     """
     if today is None:
@@ -207,15 +207,15 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
 
     period = retrieve_period_function(request)
     if period == PERIOD_OTHER:
-        dt_start = request.session.get(SESSION_DT_START, today + default_start())
-        dt_end = request.session.get(SESSION_DT_END, today + default_end())
+        session = request.session
+        dt_start = session.get(SESSION_DT_START, default_start(today))
+        dt_end = session.get(SESSION_DT_END, default_end(today))
     else:
         period_start, period_end = PERIOD_DAYS[period]
         dt_start = period_start + today
         dt_end = period_end + today
 
     if for_form:
-        return dict(dt_start=dt_start,
-                    dt_end=dt_end)
+        return dict(dt_start=dt_start, dt_end=dt_end)
     else:
         return (dt_start, dt_end)
