@@ -39,8 +39,6 @@ PERIOD_CHOICES = [[PERIOD_DAY, 'dg'],
 SESSION_DT_PERIOD = 'dt_period'
 SESSION_DT_START = 'dt_start'
 SESSION_DT_END = 'dt_end'
-SESSION_TIMEDELTA_START = 'timedelta_start'
-SESSION_TIMEDELTA_END = 'timedelta_end'
 
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
@@ -110,56 +108,45 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def deltatime_range(daterange, now=None):
+def _retrieve_start_end(daterange, now=None):
+    """Return the (start, end) for the given date range.
+
+    If the given date range does not specify a start (or end) date & time, this
+    function returns a default start (or end) date & time.
+
+    Parameters:
+      *date_range*
+        dictionary that may specify the 'dt_start' and 'dt_end' date & time(s)
+      *now*
+        datetime.datetime that specifies the current date & time
     """
-    Put daterange into session, revert to defaults.
 
-    daterange is {'dt_start': xx, 'dt_end': xx, 'period': int}
-    """
-    period = int(daterange['period'])
+    if now is None:
+        now = datetime.datetime.now()
 
-    dt_start = None
-    dt_end = None
-    timedelta_start = None
-    timedelta_end = None
+    try:
+        dt_start = daterange['dt_start']
+    except (KeyError, TypeError):
+        dt_start = now + default_start()
 
-    # Calculate relative start/end dates from given period.
-    if period == PERIOD_OTHER:
-        if now is None:
-            now = datetime.datetime.now()
+    try:
+        dt_end = daterange['dt_end']
+    except (KeyError, TypeError):
+        dt_end = now + default_end()
 
-        try:
-            dt_start = daterange.get('dt_start', now - default_start())
-        except TypeError:
-            dt_start = now - default_start()
-
-        try:
-            dt_end = daterange.get('dt_end', now - default_end())
-        except TypeError:
-            dt_end = now - default_end()
-    else:
-        timedelta_start, timedelta_end = PERIOD_DAYS[period]
-
-    return period, (dt_start, dt_end, timedelta_start, timedelta_end)
-
-
-def store_timedelta_range(request, period, horizon):
-    """Store relative start/end dates in session."""
-    request.session[SESSION_DT_PERIOD] = period
-    if horizon[0] is not None:
-        request.session[SESSION_DT_START] = horizon[0]
-    if horizon[1] is not None:
-        request.session[SESSION_DT_END] = horizon[1]
-    if horizon[2] is not None:
-        request.session[SESSION_TIMEDELTA_START] = horizon[2]
-    if horizon[3] is not None:
-        request.session[SESSION_TIMEDELTA_END] = horizon[3]
+    return dt_start, dt_end
 
 
 def compute_and_store_horizon(request, date_range, now=None):
 
-    period, horizon = deltatime_range(date_range, now=now)
-    store_timedelta_range(request, period, horizon)
+    period = int(date_range['period'])
+    request.session[SESSION_DT_PERIOD] = period
+
+    if period == PERIOD_OTHER:
+        start, end = _retrieve_start_end(date_range, now=now)
+        request.session[SESSION_DT_START] = start
+        request.session[SESSION_DT_END] = end
+
 
 def set_date_range(request, template='lizard_map/daterange.html',
                    now=None):
@@ -202,12 +189,18 @@ def current_period(request):
 
 
 def current_start_end_dates(request, for_form=False, today=None, retrieve_period_function=current_period):
-    """Return the current start/end dates.
+    """Return the current start datetime and end datetime.
 
-    If for_form is True, return it as a dict so that we can pass it directly
-    into a form class.  Otherwise return it as a tuple.
+    If for_form is True, this function returns the datetime's as a dictionary
+    so the client can pass that directly into a form class. If for_form is not
+    True, this functions returns them as a tuple.
 
-    today is a datetime field, used for testing.
+    Other parameter:
+      *today*
+         datetime field to initialize the current datetime (for testing purposes)
+      *retrieve_period_function*
+         function to retrieve the current period type (for testing purposes)
+
     """
     if today is None:
         today = datetime.datetime.now()
@@ -218,10 +211,8 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
         dt_end = request.session.get(SESSION_DT_END, today + default_end())
     else:
         period_start, period_end = PERIOD_DAYS[period]
-        dt_start = request.session.get(
-            SESSION_TIMEDELTA_START, period_start) + today
-        dt_end = request.session.get(
-            SESSION_TIMEDELTA_END, period_end) + today
+        dt_start = period_start + today
+        dt_end = period_end + today
 
     if for_form:
         return dict(dt_start=dt_start,

@@ -15,14 +15,11 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import default_start
 from lizard_map.daterange import default_end
 from lizard_map.daterange import PERIOD_DAY
-from lizard_map.daterange import PERIOD_WEEK
 from lizard_map.daterange import PERIOD_OTHER
 from lizard_map.daterange import PERIOD_DAYS
 from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import SESSION_DT_START
-from lizard_map.daterange import SESSION_TIMEDELTA_START
-from lizard_map.daterange import SESSION_TIMEDELTA_END
 from lizard_map.daterange import compute_and_store_horizon
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
@@ -527,8 +524,9 @@ class TestAnimationSettings(TestCase):
         """
         twothousand = datetime.datetime(year=2000, month=1, day=1)
         twothousandthree = datetime.datetime(year=2003, month=1, day=1)
-        self.request.session[SESSION_TIMEDELTA_START] = twothousand - today
-        self.request.session[SESSION_TIMEDELTA_END] = twothousandthree - today
+        self.request.session[SESSION_DT_PERIOD] = PERIOD_OTHER
+        self.request.session[SESSION_DT_START] = twothousand
+        self.request.session[SESSION_DT_END] = twothousandthree
         day_one = datetime.datetime(1979, 5, 25)
         self.date_start_days = (twothousand - day_one).days
         self.date_end_days = (twothousandthree - day_one).days
@@ -1203,24 +1201,6 @@ class Tests(unittest.TestCase):
         compute_and_store_horizon(request, date_range)
         self.assertEqual(PERIOD_OTHER, request.session[SESSION_DT_PERIOD])
 
-    def test_b(self):
-        """Test the function stores the time delta start and end for periods other than PERIOD_OTHER."""
-
-        request = HttpRequest()
-        request.session = {}
-
-        date_range = { 'period': PERIOD_DAY }
-        compute_and_store_horizon(request, date_range)
-
-        self.assertEqual(PERIOD_DAYS[PERIOD_DAY][0], request.session[SESSION_TIMEDELTA_START])
-        self.assertEqual(PERIOD_DAYS[PERIOD_DAY][1], request.session[SESSION_TIMEDELTA_END])
-
-        date_range = { 'period': PERIOD_WEEK }
-        compute_and_store_horizon(request, date_range)
-
-        self.assertEqual(PERIOD_DAYS[PERIOD_WEEK][0], request.session[SESSION_TIMEDELTA_START])
-        self.assertEqual(PERIOD_DAYS[PERIOD_WEEK][1], request.session[SESSION_TIMEDELTA_END])
-
     def test_ba(self):
         """Test only the computed values are stored."""
 
@@ -1265,15 +1245,15 @@ class Tests(unittest.TestCase):
         now = datetime.datetime(2011, 8, 30)
         compute_and_store_horizon(request, date_range, now=now)
 
-        self.assertEqual(now - default_start(), request.session[SESSION_DT_START])
-        self.assertEqual(now - default_end(), request.session[SESSION_DT_END])
+        self.assertEqual(now + default_start(), request.session[SESSION_DT_START])
+        self.assertEqual(now + default_end(), request.session[SESSION_DT_END])
 
 
 class MoreTests(unittest.TestCase):
     """Implements the tests for function current_start_end_dates."""
 
     def test_a(self):
-        """Test the function returns the correct start and end date & time.
+        """Test the function returns the correct values for PERIOD_DAY.
 
         No session information is stored.
 
@@ -1290,8 +1270,25 @@ class MoreTests(unittest.TestCase):
         self.assertEqual(start, datetime.timedelta(-1) + today)
         self.assertEqual(end, datetime.timedelta(0) + today)
 
-    def test_aa(self):
-        """Test the default start and end date & time for period PERIOD_OTHER.
+
+    def test_b(self):
+        """Test the function returns the correct values for PERIOD_DAY.
+
+        The sessions specifies the required information.
+
+        """
+        today = datetime.datetime.now()
+
+        request = HttpRequest()
+        request.session = { SESSION_DT_PERIOD: PERIOD_DAY }
+
+        start, end = current_start_end_dates(request, today=today)
+
+        self.assertEqual(start, datetime.timedelta(-1) + today)
+        self.assertEqual(end, datetime.timedelta(0) + today)
+
+    def test_c(self):
+        """Test the function returns the defaults for period PERIOD_OTHER.
 
         No session information is stored.
 
@@ -1308,20 +1305,3 @@ class MoreTests(unittest.TestCase):
         self.assertEqual(start, today + default_start())
         self.assertEqual(end, today + default_end())
 
-    def test_b(self):
-        """Test the function returns the correct start and end date & time.
-
-        The sessions specifies the required information.
-
-        """
-        today = datetime.datetime.now()
-
-        request = HttpRequest()
-        request.session = { SESSION_DT_PERIOD: PERIOD_DAY,
-                            SESSION_TIMEDELTA_START: datetime.timedelta(-21),
-                            SESSION_TIMEDELTA_END: datetime.timedelta(-7) }
-
-        start, end = current_start_end_dates(request, today=today)
-
-        self.assertEqual(start, datetime.timedelta(-21) + today)
-        self.assertEqual(end, datetime.timedelta(-7) + today)
