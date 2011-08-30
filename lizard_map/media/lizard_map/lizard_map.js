@@ -559,7 +559,7 @@ function setUpWorkspaceItemPanToLayer() {
                     ol_extent = new OpenLayers.Bounds(
                         extent.west, extent.south,
                         extent.east, extent.north);
-                    map.zoomToExtent(ol_extent, true);
+                    map.zoomToExtent(ol_extent);
                 }
             });
     });
