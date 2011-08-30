@@ -20,7 +20,7 @@ from lizard_map.daterange import PERIOD_DAYS
 from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import SESSION_DT_START
-from lizard_map.daterange import compute_and_store_horizon
+from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
 from lizard_map.daterange import set_date_range
@@ -1185,34 +1185,32 @@ class CoordinatesTest(TestCase):
 
 
 class Tests(unittest.TestCase):
-    """Implements the tests for function compute_and_store_horizon."""
+    """Implements the tests for function compute_and_store_start_end."""
 
     def test_a(self):
         """Test the period attribute is stored."""
 
-        request = HttpRequest()
-        request.session = {}
+        session = {}
 
         date_range = { 'period': PERIOD_DAY }
-        compute_and_store_horizon(request, date_range)
-        self.assertEqual(PERIOD_DAY, request.session[SESSION_DT_PERIOD])
+        compute_and_store_start_end(session, date_range)
+        self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
 
         date_range = { 'period': PERIOD_OTHER }
-        compute_and_store_horizon(request, date_range)
-        self.assertEqual(PERIOD_OTHER, request.session[SESSION_DT_PERIOD])
+        compute_and_store_start_end(session, date_range)
+        self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
 
-    def test_ba(self):
+    def test_b(self):
         """Test only the computed values are stored."""
 
-        request = HttpRequest()
-        request.session = { SESSION_DT_START: datetime.datetime(2011, 8, 1),
-                            SESSION_DT_END: datetime.datetime(2011, 8, 30) }
+        session = { SESSION_DT_START: datetime.datetime(2011, 8, 1),
+                    SESSION_DT_END: datetime.datetime(2011, 8, 30) }
 
         date_range = { 'period': PERIOD_DAY }
-        compute_and_store_horizon(request, date_range)
+        compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1), request.session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30), request.session[SESSION_DT_END])
+        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
 
     def test_c(self):
         """Test the start and end datetime are stored for PERIOD_OTHER.
@@ -1220,40 +1218,55 @@ class Tests(unittest.TestCase):
         The required information is stored in the form.
 
         """
-        request = HttpRequest()
-        request.session = {}
+        session = {}
 
         date_range = { 'period': PERIOD_OTHER,
                        'dt_start': datetime.datetime(2011, 8, 1),
                        'dt_end': datetime.datetime(2011, 8, 30) }
 
-        compute_and_store_horizon(request, date_range)
+        compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1), request.session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30), request.session[SESSION_DT_END])
+        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
 
     def test_d(self):
-        """Test the default start and end datetime are stored for PERIOD_OTHER.
+        """Test the function stores the correct defaults for PERIOD_OTHER.
 
         The required information is not stored in the form.
 
         """
-        request = HttpRequest()
-        request.session = {}
+        session = {}
 
         date_range = { 'period': PERIOD_OTHER }
         now = datetime.datetime(2011, 8, 30)
-        compute_and_store_horizon(request, date_range, now=now)
+        compute_and_store_start_end(session, date_range, now=now)
 
-        self.assertEqual(now + default_start(), request.session[SESSION_DT_START])
-        self.assertEqual(now + default_end(), request.session[SESSION_DT_END])
+        self.assertEqual(default_start(now), session[SESSION_DT_START])
+        self.assertEqual(default_end(now), session[SESSION_DT_END])
+
+    def test_e(self):
+        """Test the start stored for PERIOD_OTHER is never after the end.
+
+        The required information is stored in the form but the start is after the end.
+
+        """
+        session = {}
+
+        date_range = { 'period': PERIOD_OTHER,
+                       'dt_start': datetime.datetime(2011, 8, 30),
+                       'dt_end': datetime.datetime(2011, 8, 1) }
+
+        compute_and_store_start_end(session, date_range)
+
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
 
 
 class MoreTests(unittest.TestCase):
     """Implements the tests for function current_start_end_dates."""
 
     def test_a(self):
-        """Test the function returns the correct values for PERIOD_DAY.
+        """Test the function the correct values for PERIOD_DAY.
 
         No session information is stored.
 
@@ -1302,6 +1315,6 @@ class MoreTests(unittest.TestCase):
         start, end = current_start_end_dates(request, today=today,\
              retrieve_period_function=retrieve_period)
 
-        self.assertEqual(start, today + default_start())
-        self.assertEqual(end, today + default_end())
+        self.assertEqual(start, default_start(today))
+        self.assertEqual(end, default_end(today))
 

@@ -108,8 +108,8 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def _retrieve_start_end(daterange, now=None):
-    """Return the (start, end) for the given date range.
+def _compute_start_end(daterange, now=None):
+    """Compute and return the (start, end) for the given date range.
 
     If the given date range does not specify a start (or end) date & time, this
     function returns a default start (or end) date & time.
@@ -119,8 +119,8 @@ def _retrieve_start_end(daterange, now=None):
         dictionary that may specify the 'dt_start' and 'dt_end' date & time(s)
       *now*
         datetime.datetime that specifies the current date & time
-    """
 
+    """
     if now is None:
         now = datetime.datetime.now()
 
@@ -134,18 +134,29 @@ def _retrieve_start_end(daterange, now=None):
     except (KeyError, TypeError):
         dt_end = default_end(now)
 
-    return dt_start, dt_end
+    return dt_start, max((dt_start, dt_end))
 
 
-def compute_and_store_horizon(request, date_range, now=None):
+def compute_and_store_start_end(session, date_range, now=None):
+    """Store the (start, end) of the given date range in the given session.
 
+    Parameters:
+      *session*
+        dictionary to store the start and end datetime.datetime (can also be a
+        HttpRequest.session)
+      *date_range*
+        dictionary that may specify the 'dt_start' and 'dt_end' date & time(s)
+      *now*
+        datetime.datetime to represent the current date and time
+
+    """
     period = int(date_range['period'])
-    request.session[SESSION_DT_PERIOD] = period
+    session[SESSION_DT_PERIOD] = period
 
     if period == PERIOD_OTHER:
-        start, end = _retrieve_start_end(date_range, now=now)
-        request.session[SESSION_DT_START] = start
-        request.session[SESSION_DT_END] = end
+        start, end = _compute_start_end(date_range, now=now)
+        session[SESSION_DT_START] = start
+        session[SESSION_DT_END] = end
 
 
 def set_date_range(request, template='lizard_map/daterange.html',
@@ -161,7 +172,7 @@ def set_date_range(request, template='lizard_map/daterange.html',
             came_from = request.META.get('HTTP_REFERER', '/')
             date_range = form.cleaned_data
 
-            compute_and_store_horizon(request, date_range, now=now)
+            compute_and_store_start_end(request.session, date_range, now=now)
 
             return HttpResponseRedirect(came_from)
     else:
