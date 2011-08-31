@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-1.79.1 (unreleased)
--------------------
+1.79.1.1 (unreleased)
+---------------------
 
 Please clear your session info when you upgrade to this version as the fix to
 #3181 stores different information.
