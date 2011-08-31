@@ -1,6 +1,8 @@
 import datetime
+import unittest
 
 from django.core.urlresolvers import reverse
+from django.http import HttpRequest
 from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson as json
@@ -10,15 +12,17 @@ from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.adapter import workspace_item_image_url
 from lizard_map.animation import AnimationSettings
+from lizard_map.daterange import default_start
+from lizard_map.daterange import default_end
 from lizard_map.daterange import PERIOD_DAY
-from lizard_map.daterange import PERIOD_YEAR
 from lizard_map.daterange import PERIOD_OTHER
 from lizard_map.daterange import PERIOD_DAYS
-from lizard_map.daterange import SESSION_DT_START
+from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_END
+from lizard_map.daterange import SESSION_DT_START
+from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
-from lizard_map.daterange import deltatime_range
 from lizard_map.daterange import set_date_range
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import YEAR
@@ -427,87 +431,6 @@ class TestDateRange(TestCase):
         self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
         self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
 
-    def test_set_date_range2(self):
-        """Set custom date range, then retrieve it back"""
-        timedelta_start = datetime.timedelta(days=-20)
-        timedelta_end = datetime.timedelta(days=15)
-
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': self.today + timedelta_start,
-            'dt_end': self.today + timedelta_end}
-        self.request.META = {}
-
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
-
-        self.assertEquals(period, PERIOD_OTHER)
-        self.assertEquals(dt_start, self.today + timedelta_start)
-        self.assertEquals(
-            dt_end, self.today + timedelta_end + self.almost_one_day)
-
-    def test_set_date_range3(self):
-        """Set start date after end date: result must have dt_start<dt_end"""
-        timedelta_start = datetime.timedelta(days=20)
-        timedelta_end = datetime.timedelta(days=-15)
-
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': self.today + timedelta_start,
-            'dt_end': self.today + timedelta_end}
-        self.request.META = {}
-
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
-
-        self.assertEquals(period, PERIOD_OTHER)
-        self.assertTrue(dt_start < dt_end)
-
-    def do_deltatime(
-        self, period_expected,
-        timedelta_start_expected, timedelta_end_expected):
-        """Easy testing deltatime_range."""
-
-        daterange = {'dt_start': self.today + timedelta_start_expected,
-                     'dt_end': self.today + timedelta_end_expected,
-                     'period': period_expected}
-        period, timedelta_start, timedelta_end = deltatime_range(
-            daterange, now=self.today)
-
-        # Test on day accuracy, because "almost_one_day" is added to end.
-        self.assertEquals(period, period_expected)
-        self.assertEquals(timedelta_start.days, timedelta_start_expected.days)
-        self.assertEquals(timedelta_end.days, timedelta_end_expected.days)
-
-    def test_deltatime_range(self):
-        """Deltatime_range"""
-        timedelta_start_expected = datetime.timedelta(-1000)
-        timedelta_end_expected = datetime.timedelta(20)
-        period_expected = PERIOD_OTHER
-        self.do_deltatime(
-            period_expected,
-            timedelta_start_expected, timedelta_end_expected)
-
-    def test_deltatime_range2(self):
-        """Deltatime_range"""
-        timedelta_start_expected = datetime.timedelta(-1)
-        timedelta_end_expected = datetime.timedelta(0)
-        period_expected = PERIOD_DAY
-        self.do_deltatime(
-            period_expected,
-            timedelta_start_expected, timedelta_end_expected)
-
-    def test_deltatime_range3(self):
-        """Deltatime_range"""
-        timedelta_start_expected = datetime.timedelta(-365)
-        timedelta_end_expected = datetime.timedelta(0)
-        period_expected = PERIOD_YEAR
-        self.do_deltatime(
-            period_expected,
-            timedelta_start_expected, timedelta_end_expected)
-
 
 class TestAnimationSettings(TestCase):
     """Tests for animation.py."""
@@ -520,8 +443,9 @@ class TestAnimationSettings(TestCase):
         """
         twothousand = datetime.datetime(year=2000, month=1, day=1)
         twothousandthree = datetime.datetime(year=2003, month=1, day=1)
-        self.request.session[SESSION_DT_START] = twothousand - today
-        self.request.session[SESSION_DT_END] = twothousandthree - today
+        self.request.session[SESSION_DT_PERIOD] = PERIOD_OTHER
+        self.request.session[SESSION_DT_START] = twothousand
+        self.request.session[SESSION_DT_END] = twothousandthree
         day_one = datetime.datetime(1979, 5, 25)
         self.date_start_days = (twothousand - day_one).days
         self.date_end_days = (twothousandthree - day_one).days
@@ -1178,7 +1102,6 @@ class CoordinatesTest(TestCase):
         self.assertTrue(abs(x - 142586) < 1)
         self.assertTrue(abs(y - 482911) < 1)
 
-
 class SymbolManagerTest(TestCase):
     """
     Test the list_image_file_names funstion in symbol_manager.py.
@@ -1187,4 +1110,130 @@ class SymbolManagerTest(TestCase):
     def test_list_image_file_names(self):
         icon_names_list = lizard_map.symbol_manager.list_image_file_names()
         self.assertTrue(len(icon_names_list) > 5)
+
+class DateRangeStore(unittest.TestCase):
+    """Implements the tests for function compute_and_store_start_end."""
+
+    def test_a(self):
+        """Test the period attribute is stored."""
+
+        session = {}
+
+        date_range = { 'period': PERIOD_DAY }
+        compute_and_store_start_end(session, date_range)
+        self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
+
+        date_range = { 'period': PERIOD_OTHER }
+        compute_and_store_start_end(session, date_range)
+        self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
+
+    def test_b(self):
+        """Test only the computed values are stored."""
+
+        session = { SESSION_DT_START: datetime.datetime(2011, 8, 1),
+                    SESSION_DT_END: datetime.datetime(2011, 8, 30) }
+
+        date_range = { 'period': PERIOD_DAY }
+        compute_and_store_start_end(session, date_range)
+
+        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+
+    def test_c(self):
+        """Test the start and end datetime are stored for PERIOD_OTHER.
+
+        The required information is stored in the form.
+
+        """
+        session = {}
+
+        date_range = { 'period': PERIOD_OTHER,
+                       'dt_start': datetime.datetime(2011, 8, 1),
+                       'dt_end': datetime.datetime(2011, 8, 30) }
+
+        compute_and_store_start_end(session, date_range)
+
+        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+
+    def test_d(self):
+        """Test the function stores the correct defaults for PERIOD_OTHER.
+
+        The required information is not stored in the form.
+
+        """
+        session = {}
+
+        date_range = { 'period': PERIOD_OTHER }
+        now = datetime.datetime(2011, 8, 30)
+        compute_and_store_start_end(session, date_range, now=now)
+
+        self.assertEqual(default_start(now), session[SESSION_DT_START])
+        self.assertEqual(default_end(now), session[SESSION_DT_END])
+
+    def test_e(self):
+        """Test the start stored for PERIOD_OTHER is never after the end.
+
+        The required information is stored in the form but the start is after the end.
+
+        """
+        session = {}
+
+        date_range = { 'period': PERIOD_OTHER,
+                       'dt_start': datetime.datetime(2011, 8, 30),
+                       'dt_end': datetime.datetime(2011, 8, 1) }
+
+        compute_and_store_start_end(session, date_range)
+
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+
+
+class DateRangeRetrieveSet(unittest.TestCase):
+    """Implements the tests for function current_start_end_dates."""
+
+    def setUp(self):
+        self.today = datetime.datetime(2011, 8, 31)
+
+        self.request = HttpRequest()
+        self.request.session = {}
+
+    def test_a(self):
+        """Test the function the correct values for PERIOD_DAY.
+
+        No session information is stored.
+
+        """
+        retrieve_period = lambda request: PERIOD_DAY
+        start, end = current_start_end_dates(self.request, today=self.today,\
+             retrieve_period_function=retrieve_period)
+
+        self.assertEqual(start, datetime.timedelta(-1) + self.today)
+        self.assertEqual(end, datetime.timedelta(0) + self.today)
+
+    def test_b(self):
+        """Test the function returns the correct values for PERIOD_DAY.
+
+        The sessions specifies the required information.
+
+        """
+        self.request.session = { SESSION_DT_PERIOD: PERIOD_DAY }
+
+        start, end = current_start_end_dates(self.request, today=self.today)
+
+        self.assertEqual(start, datetime.timedelta(-1) + self.today)
+        self.assertEqual(end, datetime.timedelta(0) + self.today)
+
+    def test_c(self):
+        """Test the function returns the defaults for period PERIOD_OTHER.
+
+        No session information is stored.
+
+        """
+        retrieve_period = lambda request: PERIOD_OTHER
+        start, end = current_start_end_dates(self.request, today=self.today,\
+             retrieve_period_function=retrieve_period)
+
+        self.assertEqual(start, default_start(self.today))
+        self.assertEqual(end, default_end(self.today))
 

@@ -47,14 +47,14 @@ default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
 default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
 
 
-def default_start():
-    """Default period when period is PERIOD_OTHER"""
-    return datetime.timedelta(days=default_start_days)
+def default_start(now):
+    """Return default start date when period is PERIOD_OTHER."""
+    return now + datetime.timedelta(days=default_start_days)
 
 
-def default_end():
-    """Default period when period is PERIOD_OTHER"""
-    return datetime.timedelta(days=default_end_days)
+def default_end(now):
+    """Return default end date when period is PERIOD_OTHER."""
+    return now + datetime.timedelta(days=default_end_days)
 
 
 class HorizontalRadioRenderer(forms.RadioSelect.renderer):
@@ -108,49 +108,55 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def deltatime_range(daterange, now=None):
-    """
-    Put daterange into session, revert to defaults.
+def _compute_start_end(daterange, now=None):
+    """Compute and return the (start, end) for the given date range.
 
-    daterange is {'dt_start': xx, 'dt_end': xx, 'period': int}
+    If the given date range does not specify a start (or end) date & time, this
+    function returns a default start (or end) date & time.
+
+    Parameters:
+      *date_range*
+        dictionary that may specify the 'dt_start' and 'dt_end' date & time(s)
+      *now*
+        datetime.datetime that specifies the current date & time
+
     """
     if now is None:
         now = datetime.datetime.now()
 
-    period = int(daterange['period'])
+    try:
+        dt_start = daterange['dt_start']
+    except (KeyError, TypeError):
+        dt_start = default_start(now)
 
-    # Calculate relative start/end dates from given period.
+    try:
+        dt_end = daterange['dt_end']
+    except (KeyError, TypeError):
+        dt_end = default_end(now)
+
+    return dt_start, max((dt_start, dt_end))
+
+
+def compute_and_store_start_end(session, date_range, now=None):
+    """Store the (start, end) of the given date range in the given session.
+
+    Parameters:
+      *session*
+        dictionary to store the start and end datetime.datetime (can also be a
+        HttpRequest.session)
+      *date_range*
+        dictionary that may specify the 'dt_start' and 'dt_end' date & time(s)
+      *now*
+        datetime.datetime to represent the current date and time
+
+    """
+    period = int(date_range['period'])
+    session[SESSION_DT_PERIOD] = period
+
     if period == PERIOD_OTHER:
-        almost_one_day = datetime.timedelta(
-            hours=23, minutes=59, seconds=59)
-        try:
-            dt_start = daterange.get('dt_start', None)
-            timedelta_start = dt_start - now
-        except TypeError:
-            timedelta_start = default_start()
-
-        try:
-            # Since we select on day basis, we want to include
-            # the end day.
-            dt_end = daterange.get('dt_end', None)
-            timedelta_end = (dt_end + almost_one_day - now)
-        except TypeError:
-            timedelta_end = default_end()
-
-        # Make sure start is before end
-        if timedelta_start > timedelta_end:
-            timedelta_start = timedelta_end - almost_one_day
-    else:
-        timedelta_start, timedelta_end = PERIOD_DAYS[period]
-
-    return period, timedelta_start, timedelta_end
-
-
-def store_timedelta_range(request, period, timedelta_start, timedelta_end):
-    """Store relative start/end dates in session."""
-    request.session[SESSION_DT_PERIOD] = period
-    request.session[SESSION_DT_START] = timedelta_start
-    request.session[SESSION_DT_END] = timedelta_end
+        start, end = _compute_start_end(date_range, now=now)
+        session[SESSION_DT_START] = start
+        session[SESSION_DT_END] = end
 
 
 def set_date_range(request, template='lizard_map/daterange.html',
@@ -166,10 +172,7 @@ def set_date_range(request, template='lizard_map/daterange.html',
             came_from = request.META.get('HTTP_REFERER', '/')
             date_range = form.cleaned_data
 
-            period, timedelta_start, timedelta_end = deltatime_range(
-                date_range, now=now)
-            store_timedelta_range(
-                request, period, timedelta_start, timedelta_end)
+            compute_and_store_start_end(request.session, date_range, now=now)
 
             return HttpResponseRedirect(came_from)
     else:
@@ -196,29 +199,34 @@ def current_period(request):
     return request.session.get(SESSION_DT_PERIOD, default_period)
 
 
-def current_start_end_dates(request, for_form=False, today=None):
-    """Return the current start/end dates.
+def current_start_end_dates(request, for_form=False, today=None, retrieve_period_function=current_period):
+    """Return the current start datetime and end datetime.
 
-    If for_form is True, return it as a dict so that we can pass it directly
-    into a form class.  Otherwise return it as a tuple.
+    If for_form is True, this function returns the datetime's as a dictionary
+    so the client can pass that directly into a form class. If for_form is not
+    True, this functions returns them as a tuple.
 
-    today is a datetime field, used for testing.
+    Other parameter:
+      *today*
+         datetime to initialize the current datetime (for testing purposes)
+      *retrieve_period_function*
+         function to retrieve the period type (for testing purposes)
+
     """
     if today is None:
         today = datetime.datetime.now()
 
-    period = current_period(request)
+    period = retrieve_period_function(request)
     if period == PERIOD_OTHER:
-        period_start, period_end = default_start(), default_end()
+        session = request.session
+        dt_start = session.get(SESSION_DT_START, default_start(today))
+        dt_end = session.get(SESSION_DT_END, default_end(today))
     else:
         period_start, period_end = PERIOD_DAYS[period]
+        dt_start = period_start + today
+        dt_end = period_end + today
 
-    dt_start = request.session.get(
-        SESSION_DT_START, period_start) + today
-    dt_end = request.session.get(
-        SESSION_DT_END, period_end) + today
     if for_form:
-        return dict(dt_start=dt_start,
-                    dt_end=dt_end)
+        return dict(dt_start=dt_start, dt_end=dt_end)
     else:
         return (dt_start, dt_end)

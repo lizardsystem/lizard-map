@@ -5,7 +5,12 @@ Changelog of lizard-map
 2.1.13 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Please clear your session info when you upgrade to this version as the fix to
+#3181 stores different information.
+
+- Fixed a problem in the date range selector, namely that the day of the end
+  date with move to the next day when the user selected another month of the
+  end date (#3181).
 
 
 2.1.12 (2011-08-30)
