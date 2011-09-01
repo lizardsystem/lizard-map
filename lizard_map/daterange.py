@@ -108,7 +108,7 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def _compute_start_end(daterange, now=None):
+def _compute_start_end(daterange, session, now=None):
     """Compute and return the (start, end) for the given date range.
 
     If the given date range does not specify a start (or end) date & time, this
@@ -126,17 +126,16 @@ def _compute_start_end(daterange, now=None):
 
     try:
         dt_start = daterange['dt_start']
+        if dt_start is None:
+            dt_start = session[SESSION_DT_START]
     except (KeyError, TypeError):
-        dt_start = default_start(now)
-    if dt_start is None:
         dt_start = default_start(now)
 
     try:
-        dt_end = default_end(now)
         dt_end = daterange['dt_end']
+        if dt_end is None:
+            dt_end = session[SESSION_DT_END]
     except (KeyError, TypeError):
-        dt_end = default_end(now)
-    if dt_end is None:
         dt_end = default_end(now)
 
     return dt_start, max((dt_start, dt_end))
