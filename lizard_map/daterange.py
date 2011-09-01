@@ -158,7 +158,7 @@ def compute_and_store_start_end(session, date_range, now=None):
     session[SESSION_DT_PERIOD] = period
 
     if period == PERIOD_OTHER:
-        start, end = _compute_start_end(date_range, now=now)
+        start, end = _compute_start_end(date_range, session, now=now)
         session[SESSION_DT_START] = start
         session[SESSION_DT_END] = end
 
