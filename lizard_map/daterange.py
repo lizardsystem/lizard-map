@@ -128,10 +128,15 @@ def _compute_start_end(daterange, now=None):
         dt_start = daterange['dt_start']
     except (KeyError, TypeError):
         dt_start = default_start(now)
+    if dt_start is None:
+        dt_start = default_start(now)
 
     try:
+        dt_end = default_end(now)
         dt_end = daterange['dt_end']
     except (KeyError, TypeError):
+        dt_end = default_end(now)
+    if dt_end is None:
         dt_end = default_end(now)
 
     return dt_start, max((dt_start, dt_end))
