@@ -219,9 +219,12 @@ function setUpWorkspaceButtons() {
         $.post(
             url, {workspace_id: workspace_id},
 	    function (data) {
-	        //remove progress
+	        // Remove progress.
                 $workspace.find(".sidebarbox-action-progress").remove();
                 $workspace.updateWorkspace();
+                // Remove all "selected" from workspace_acceptables:
+                // everything is gone.
+                $(".workspace-acceptable").removeClass("selected");
             });
     });
     // Delete workspace item
@@ -398,6 +401,7 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
+                console.log(data);
                 show_popup(data);
                 $("#map").css("cursor", "default");
             }

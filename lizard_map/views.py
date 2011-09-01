@@ -21,10 +21,10 @@ from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
-from lizard_map.models import WorkspaceItem
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.models import WorkspaceCollageSnippetGroup
+from lizard_map.models import WorkspaceItem
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceManager
@@ -32,6 +32,7 @@ from lizard_map.workspace import WorkspaceManager
 
 # L3
 from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceItemEdit
 
 
 
@@ -456,17 +457,19 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
     # Figure out temp workspace items (we don't want add-to-collage there).
     non_user_workspace_item_ids = []
-    if request is not None:
-        workspace_manager = WorkspaceManager(request)
-        workspace_manager.load_workspaces()
-        workspace_ids = dict([(ws.id, None) for ws in
-                              workspace_manager.workspaces['user']])
-        # Add workspace_items of items not in workspace.
-        non_user_workspace_item_ids = []
-        for f in found:
-            ws_item = f['workspace_item']
-            if ws_item.workspace.id not in workspace_ids:
-                non_user_workspace_item_ids.append(ws_item.id)
+
+    # Old:
+    # if request is not None:
+    #     workspace_manager = WorkspaceManager(request)
+    #     workspace_manager.load_workspaces()
+    #     workspace_ids = dict([(ws.id, None) for ws in
+    #                           workspace_manager.workspaces['user']])
+    #     # Add workspace_items of items not in workspace.
+    #     non_user_workspace_item_ids = []
+    #     for f in found:
+    #         ws_item = f['workspace_item']
+    #         if ws_item.workspace.id not in workspace_ids:
+    #             non_user_workspace_item_ids.append(ws_item.id)
 
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
@@ -474,12 +477,12 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         workspace_item = display_group[0]['workspace_item']
 
         # Check if this display object must have the option add_snippet
-        if (hide_add_snippet or
-            (workspace_item_id in non_user_workspace_item_ids)):
+        # if (hide_add_snippet or
+        #     (workspace_item_id in non_user_workspace_item_ids)):
 
-            add_snippet = False
-        else:
-            add_snippet = True
+        #     add_snippet = False
+        # else:
+        add_snippet = True
 
         # Add workspace_item name on top
         # title = workspace_item.name
@@ -699,7 +702,7 @@ def collage_empty(request):
 
 
 @never_cache
-def workspace_item_image(request, workspace_item_id):
+def workspace_item_image(request, workspace_item):
     """Shows image corresponding to workspace item and location identifier(s)
 
     identifier_list
@@ -721,7 +724,6 @@ def workspace_item_image(request, workspace_item_id):
         # We want None, not u''.
         height = None
 
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     start_date, end_date = current_start_end_dates(request)
 
     # add animation slider position
@@ -730,6 +732,12 @@ def workspace_item_image(request, workspace_item_id):
     return workspace_item.adapter.image(identifier_list, start_date, end_date,
                                         width, height,
                                         layout_extra=layout_extra)
+
+
+def workspace_item_edit_image(request, workspace_item_id):
+    workspace_item = get_object_or_404(
+        WorkspaceItemEdit, pk=workspace_item_id)
+    return workspace_item_image(request, workspace_item)
 
 
 @never_cache
@@ -944,14 +952,14 @@ def search_coordinates(request):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
 
-    Optional GET parameter srs, if omitted, assume google.
-
-    Optional GET parameter user_workspace_id: a workspace that is
+    GET parameter user_workspace_id: a workspace-edit that is
     currently shown.
+
+    Optional GET parameter srs, if omitted, assume google.
     """
 
-    workspace_manager = WorkspaceManager(request)
-    workspace_collections = workspace_manager.load_or_create()
+    # workspace_manager = WorkspaceManager(request)
+    # workspace_collections = workspace_manager.load_or_create()
 
     # xy params from the GET request.
     x = float(request.GET.get('x'))
@@ -970,24 +978,26 @@ def search_coordinates(request):
 
     # Add a workspace, if it's not already in your own workspaces.
     user_workspace_id = request.GET.get('user_workspace_id', None)
-    if user_workspace_id is not None:
-        workspace_manager.add_other(user_workspace_id)
-        workspace_collections = workspace_manager.workspaces
+    workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
+    # if user_workspace_id is not None:
+    #     workspace_manager.add_other(user_workspace_id)
+    #     workspace_collections = workspace_manager.workspaces
 
     found = []
-    for workspace_collection in workspace_collections.values():
-        for workspace in workspace_collection:
-            for workspace_item in workspace.workspace_items.filter(
-                visible=True):
+    # for workspace_collection in workspace_collections.values():
+    #     for workspace in workspace_collection:
+    for workspace_item in workspace.workspace_items.filter(
+        visible=True):
 
-                # #3033. Ignore crashing searches.
-                try:
-                    search_results = workspace_item.adapter.search(
-                        google_x, google_y, radius=radius_search)
-                    found += search_results
-                except:
-                    logger.exception("Crashed while calling search on %s" %
-                                     workspace_item)
+        # #3033. Ignore crashing searches.
+        try:
+            search_results = workspace_item.adapter.search(
+                google_x, google_y, radius=radius_search)
+            found += search_results
+        except:
+            logger.exception("Crashed while calling search on %s" %
+                             workspace_item)
+
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])

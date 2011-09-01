@@ -71,6 +71,18 @@
 {% endblock above-content %}
 
 {% block content %}
+{# Popups on map: invisible #}
+<div id="graph-popup">
+  <div id="graph-popup-content">
+  </div>
+</div>
+<div class="hide">
+  <a href="#" rel="#not_found_popup" id="not_found_popup_trigger">hidden</a>
+</div>
+<div id="not_found_popup">
+  <h1>Niets gevonden</h1>
+  <p>Er is niets rond deze locatie gevonden.</p>
+</div>
 {# data attributes wms #}
 {# All contents of lizard-map-wms must have class lizard-map-wms-item #}
 <div id="lizard-map-wms"
