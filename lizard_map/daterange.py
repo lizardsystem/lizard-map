@@ -108,7 +108,7 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
-def _compute_start_end(daterange, now=None):
+def _compute_start_end(daterange, session, now=None):
     """Compute and return the (start, end) for the given date range.
 
     If the given date range does not specify a start (or end) date & time, this
@@ -126,11 +126,15 @@ def _compute_start_end(daterange, now=None):
 
     try:
         dt_start = daterange['dt_start']
+        if dt_start is None:
+            dt_start = session[SESSION_DT_START]
     except (KeyError, TypeError):
         dt_start = default_start(now)
 
     try:
         dt_end = daterange['dt_end']
+        if dt_end is None:
+            dt_end = session[SESSION_DT_END]
     except (KeyError, TypeError):
         dt_end = default_end(now)
 
@@ -154,7 +158,7 @@ def compute_and_store_start_end(session, date_range, now=None):
     session[SESSION_DT_PERIOD] = period
 
     if period == PERIOD_OTHER:
-        start, end = _compute_start_end(date_range, now=now)
+        start, end = _compute_start_end(date_range, session, now=now)
         session[SESSION_DT_START] = start
         session[SESSION_DT_END] = end
 
@@ -172,6 +176,7 @@ def set_date_range(request, template='lizard_map/daterange.html',
             came_from = request.META.get('HTTP_REFERER', '/')
             date_range = form.cleaned_data
 
+            logger.warning("in set-date_range")
             compute_and_store_start_end(request.session, date_range, now=now)
 
             return HttpResponseRedirect(came_from)
@@ -213,6 +218,7 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
          function to retrieve the period type (for testing purposes)
 
     """
+    logger.warning("in current_start_end_dates")
     if today is None:
         today = datetime.datetime.now()
 
