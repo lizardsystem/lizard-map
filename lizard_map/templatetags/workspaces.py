@@ -32,8 +32,9 @@ def workspace(context, workspace, show_new_workspace=False):
         'session': session}
 
 
-@register.simple_tag
-def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
+@register.simple_tag(takes_context=True)
+def snippet_group(context, snippet_group, add_snippet=None,
+                  editing=None, legend=None):
     """
     Renders snippet_group.  All snippets MUST be using the same
     workspace_item, or output is undefined.
@@ -50,7 +51,8 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
             snippet_group=snippet_group,
             layout_options={'add_snippet': add_snippet == 'True',
                             'editing': editing == 'True',
-                            'legend': legend == 'True'},
+                            'legend': legend == 'True',
+                            'request': context['request']},
             )
     else:
         return 'empty snippet_group (should never happen)'

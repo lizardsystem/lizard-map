@@ -12,6 +12,9 @@ Please clear your session info when you upgrade to this version as the fix to
   date with move to the next day when the user selected another month of the
   end date (#3181).
 
+- Added request to templatetag snippet_group to be able to use request in
+  adapters' html function.
+
 
 2.1.12 (2011-08-30)
 -------------------
