@@ -1015,8 +1015,11 @@ class Setting(models.Model):
 
         # Fallback for default.
         if key not in settings:
-            logger.warn('Setting "%s" does not exist, taking default '
-                        'value "%s"' % (key, default))
+            if default is not None:
+                # Only warn if None is not a fine value: otherwise we'd warn
+                # about a setting that doesn't *need* to be set.
+                logger.warn('Setting "%s" does not exist, taking default '
+                            'value "%s"' % (key, default))
             return default
 
         # Return desired result.
