@@ -232,12 +232,15 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
 
     if (isinstance(dt_start, datetime.timedelta) or
         isinstance(dt_end, datetime.timedelta)):
-        # Weird corner case.
+        # Fix for https://office.nelen-schuurmans.nl/trac/ticket/3196
+        # Apparently the session data structure changed.
         logger.error("Weird corner case: timedeltas as start/end dates.")
         logger.error("start: %s (%s), end %s (%s)",
                      dt_start, type(dt_start), dt_end, type(dt_end))
         dt_start = default_start(today)
         dt_end = default_end(today)
+        default_period = getattr(settings, 'DEFAULT_PERIOD', PERIOD_DAY)
+        session[SESSION_DT_PERIOD] = default_period
         session[SESSION_DT_START] = dt_start
         session[SESSION_DT_END] = dt_end
     if for_form:
