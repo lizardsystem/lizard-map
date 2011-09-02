@@ -36,9 +36,10 @@ PERIOD_CHOICES = [[PERIOD_DAY, 'dg'],
                   [PERIOD_YEAR, 'jr'],
                   [PERIOD_OTHER, 'anders']]
 
-SESSION_DT_PERIOD = 'dt_period'
-SESSION_DT_START = 'dt_start'
-SESSION_DT_END = 'dt_end'
+# Session data postfixed with '_2' as the meaning changed between versions.
+SESSION_DT_PERIOD = 'dt_period_2'
+SESSION_DT_START = 'dt_start_2'
+SESSION_DT_END = 'dt_end_2'
 
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
@@ -229,20 +230,6 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
         period_start, period_end = PERIOD_DAYS[period]
         dt_start = period_start + today
         dt_end = period_end + today
-
-    if (isinstance(dt_start, datetime.timedelta) or
-        isinstance(dt_end, datetime.timedelta)):
-        # Fix for https://office.nelen-schuurmans.nl/trac/ticket/3196
-        # Apparently the session data structure changed.
-        logger.error("Weird corner case: timedeltas as start/end dates.")
-        logger.error("start: %s (%s), end %s (%s)",
-                     dt_start, type(dt_start), dt_end, type(dt_end))
-        dt_start = default_start(today)
-        dt_end = default_end(today)
-        default_period = getattr(settings, 'DEFAULT_PERIOD', PERIOD_DAY)
-        session[SESSION_DT_PERIOD] = default_period
-        session[SESSION_DT_START] = dt_start
-        session[SESSION_DT_END] = dt_end
     if for_form:
         return dict(dt_start=dt_start, dt_end=dt_end)
     else:
