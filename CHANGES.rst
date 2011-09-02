@@ -5,14 +5,13 @@ Changelog of lizard-map
 2.1.14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- 2.1.13 stated "please clear your session info when you upgrade to this
+  version as the fix to #3181 stores different information." This release
+  fixes that. No session data deletion is needed anymore.
 
 
 2.1.13 (2011-09-01)
 -------------------
-
-Please clear your session info when you upgrade to this version as the fix to
-#3181 stores different information.
 
 - Fixed a problem in the date range selector, namely that the day of the end
   date with move to the next day when the user selected another month of the
