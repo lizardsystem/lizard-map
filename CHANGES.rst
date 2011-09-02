@@ -2,8 +2,8 @@ Changelog of lizard-map
 =======================
 
 
-2.1.14 (unreleased)
--------------------
+2.2 (2011-09-02)
+----------------
 
 - 2.1.13 stated "please clear your session info when you upgrade to this
   version as the fix to #3181 stores different information." This release
