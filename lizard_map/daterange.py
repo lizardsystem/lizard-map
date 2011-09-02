@@ -230,6 +230,16 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
         dt_start = period_start + today
         dt_end = period_end + today
 
+    if (isinstance(dt_start, datetime.timedelta) or
+        isinstance(dt_end, datetime.timedelta)):
+        # Weird corner case.
+        logger.error("Weird corner case: timedeltas as start/end dates.")
+        logger.error("start: %s (%s), end %s (%s)",
+                     dt_start, type(dt_start), dt_end, type(dt_end))
+        dt_start = default_start(today)
+        dt_end = default_end(today)
+        session[SESSION_DT_START] = dt_start
+        session[SESSION_DT_END] = dt_end
     if for_form:
         return dict(dt_start=dt_start, dt_end=dt_end)
     else:
