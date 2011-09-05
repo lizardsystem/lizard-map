@@ -175,8 +175,6 @@ def set_date_range(request, template='lizard_map/daterange.html',
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
             date_range = form.cleaned_data
-
-            logger.warning("in set-date_range")
             compute_and_store_start_end(request.session, date_range, now=now)
 
             return HttpResponseRedirect(came_from)
@@ -218,7 +216,6 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
          function to retrieve the period type (for testing purposes)
 
     """
-    logger.warning("in current_start_end_dates")
     if today is None:
         today = datetime.datetime.now()
 
