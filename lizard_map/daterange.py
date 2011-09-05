@@ -176,7 +176,6 @@ def set_date_range(request, template='lizard_map/daterange.html',
         if form.is_valid():
             came_from = request.META.get('HTTP_REFERER', '/')
             date_range = form.cleaned_data
-
             compute_and_store_start_end(request.session, date_range, now=now)
 
             return HttpResponseRedirect(came_from)

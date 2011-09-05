@@ -1102,6 +1102,7 @@ class CoordinatesTest(TestCase):
         self.assertTrue(abs(x - 142586) < 1)
         self.assertTrue(abs(y - 482911) < 1)
 
+
 class SymbolManagerTest(TestCase):
     """
     Test the list_image_file_names funstion in symbol_manager.py.
@@ -1110,6 +1111,7 @@ class SymbolManagerTest(TestCase):
     def test_list_image_file_names(self):
         icon_names_list = lizard_map.symbol_manager.list_image_file_names()
         self.assertTrue(len(icon_names_list) > 5)
+
 
 class DateRangeStore(unittest.TestCase):
     """Implements the tests for function compute_and_store_start_end."""
