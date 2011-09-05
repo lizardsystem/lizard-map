@@ -4,7 +4,9 @@ Changelog of lizard-map
 1.79.1.2 (unreleased)
 ---------------------
 
-- Nothing changed yet.
+- 2.1.13 stated to "clear your session info when you upgrade to this version as
+  the fix to #3181 stores different information." This release fixes that. No
+  session data deletion is needed anymore.
 
 
 1.79.1.1 (2011-09-05)

@@ -36,9 +36,9 @@ PERIOD_CHOICES = [[PERIOD_DAY, 'dg'],
                   [PERIOD_YEAR, 'jr'],
                   [PERIOD_OTHER, 'anders']]
 
-SESSION_DT_PERIOD = 'dt_period'
-SESSION_DT_START = 'dt_start'
-SESSION_DT_END = 'dt_end'
+SESSION_DT_PERIOD = 'dt_period_2'
+SESSION_DT_START = 'dt_start_2'
+SESSION_DT_END = 'dt_end_2'
 
 DUTCH_DATE_FORMAT = '%d/%m/%Y'
 # ^^^ This is what jquery ui with the Dutch locale does for Reinout.
