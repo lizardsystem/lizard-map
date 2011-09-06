@@ -31,6 +31,12 @@ urlpatterns = patterns(
     url(r'^myworkspace/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
+    url(r'^myworkspace/load/$',  # L3
+        'lizard_map.views.workspace_load',
+        name="lizard_map_workspace_load"),
+    url(r'^myworkspace/save/$',  # L3
+        'lizard_map.views.workspace_save',
+        name="lizard_map_workspace_save"),
 
     # Date range
     (r'^set_date_range$',

@@ -108,7 +108,7 @@
 }
 
 
-#graph-popup
+#dialog
 { display: none;
   z-index: 10000;
   width: 40em;
@@ -122,15 +122,15 @@
   -moz-box-shadow:0 0 40px 5px black;
   -webkit-box-shadow: 0 0 40px black;
 }
-#graph-popup table thead tr th{
+#dialog table thead tr th{
     background-color: #ccc;
     color: #000;
     border-color: gray;
 }
-#graph-popup table tbody tr td{
+#dialog table tbody tr td{
     border-color: gray;
 }
-#graph-popup-content,
+#dialog-content,
 .popup-content
 { overflow: auto;
   }

@@ -202,6 +202,43 @@ function setUpWorkspaceAcceptable() {
 }
 
 
+/* L3 Generic dialog code that works on a hrefs:
+
+1) Get contents from href url and display in div #dialog
+
+2) On post, check result. On error, display message. On 200 no
+contents: close.
+
+*/
+function setUpDialogs() {
+    $(".ajax-dialog").live("click", function (event) {
+        var url, overlay;
+        event.preventDefault();
+
+        url = $(event.target).attr("href");
+        $("#dialog-content").load(url + " .dialog-box", function() {
+            overlay = $("#dialog").overlay();
+            overlay.load();  // Pop up
+        });
+        return false;
+    });
+    // Submit buttons must have class "ajax-dialog-submit"
+    $(".ajax-dialog-submit").live("click", function (event) {
+        alert("submit");
+        return false;
+    });
+}
+
+/*
+Erase the contents of the popup when the user closes the popup
+*/
+function eraseDialogContentsOnClose() {
+    $("#dialog").live("onClose", function () {
+        $("#dialog-content").empty();
+    });
+}
+
+
 /* Make the following workspace buttons work:
 - Trashcan next to "My Workspace" (workspace-empty-trigger)
 - (-) next to workspace-items (workspace-item-delete)
@@ -244,57 +281,6 @@ function setUpWorkspaceButtons() {
             });
         return false;
     });
-    // // Trashcan next to "Collage"
-    // $(".collage-empty-trigger").live('click', function () {
-    //     var $workspace, collage_id, url;
-    //     $workspace = $(this).parents("div.workspace");
-    //     collage_id = $(this).attr("data-collage-id");
-    //     url = $workspace.attr("data-url-lizard-map-collage-empty");
-    //     addProgressAnimationIntoWorkspace();
-    //     $.post(
-    //         url, {collage_id: collage_id},
-    //         function (data) {
-    //             //remove progress
-    //             $workspace.find(".sidebarbox-action-progress").remove();
-    //             $workspace.updateWorkspace();
-    //         });
-    // });
-    // // Delete snippet
-    // $(".snippet-delete").live('click', function () {
-    //     var $workspace, workspace_id, url, object_id;
-    //     $workspace = $(this).parents("div.workspace");
-    //     workspace_id = $workspace.attr("data-workspace-id");
-    //     url = $workspace.attr(
-    //         "data-url-lizard-map-snippet-delete");
-    //     object_id = $(this).parents(".snippet").attr("data-object-id");
-    //     $(this).parents(".snippet").addClass("waiting-lineitem");
-    //     $.post(
-    //         url,
-    //         { object_id: object_id },
-    //         function () {
-    //             $workspace.updateWorkspace();
-    //             // Reload the collage_popup if it is already present
-    //             if (isCollagePopupVisible()) {
-    //                 $(".collage").collagePopup();
-    //             }
-    //         });
-    //     return false;
-    // });
-    // // Make snippetnames clickable.
-    // $("div.snippet-name").live('click', function (event) {
-    //     var $snippet, $workspace, url, snippet_id;
-    //     $snippet = $(this).parents("li.snippet");
-    //     $workspace = $(this).parents("div.workspace");
-    //     url = $workspace.attr("data-url-lizard-map-snippet-popup");
-    //     snippet_id = $snippet.attr("data-object-id");
-    //     $.getJSON(
-    //         url,
-    //         { snippet_id: snippet_id },
-    //         function (data) {
-    //             show_popup(data);
-    //         }
-    //     );
-    // });
 }
 
 
@@ -361,29 +347,6 @@ function nothingFoundPopup() {
 function setUpGraphEditPopup() {
     $(".graph_edit_trigger").overlay();
 }
-
-
-// /*
-// Empty the temp workspace
-// */
-// function setUpEmptyTempInteraction() {
-//     $(".workspace-empty-temp").live("click", function () {
-//         var $workspace, url, workspace_item_id;
-//         $(this).css("cursor", "progress");
-//         $workspace = $(".workspace");
-//         url = $workspace.attr("data-url-lizard-map-workspace-item-delete");
-//         workspace_item_id = $(this).attr("data-workspace-item-id");
-//         $.post(
-//             url,
-//             {object_id: workspace_item_id},
-//             function (workspace_id) {
-//                 refreshMapActionsDivs();
-//                 // remove highlighting
-//                 $(".workspace-acceptable").removeClass("selected");
-//             }
-//         );
-//     });
-// }
 
 
 /* Handle a click */
@@ -598,10 +561,11 @@ function  setupTableToggle() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-    // Touched for L3
+    // Touched/new for L3
     // setUpToggleWorkspaceItem();
     setUpWorkspaceAcceptable();
-    // setUpEmptyTempInteraction();
+    setUpDialogs();
+    eraseDialogContentsOnClose();
 
     // Untouched
     setUpWorkspaceButtons();

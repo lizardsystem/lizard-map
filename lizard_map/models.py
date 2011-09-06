@@ -190,7 +190,7 @@ class WorkspaceItemError(Exception):
 
 ###### Models start here ######
 
-#### Experimental models ####
+#### L3 models ####
 
 
 class PeriodMixin(models.Model):

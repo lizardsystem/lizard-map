@@ -75,6 +75,7 @@ function setUpGraphForm() {
     $(".popup-graph-edit-global input:radio").click(setGraphFilterMonth);
 }
 
+
 $(document).ready(function () {
     $(".graph-save-snippet").click(graph_save_snippet);
     $("input.graph-line-options-submit").click(graph_line_options_submit);

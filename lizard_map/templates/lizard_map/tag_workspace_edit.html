@@ -15,13 +15,13 @@
      >
   <h2>
     <a id="workspace-save"
-       href="#"
+       href="{% url lizard_map_workspace_save %}"
        title="{% trans 'save workspace...' %}"
-       class="title ss_sprite ss_arrow_up sidebarbox-action-icon">&nbsp;</a>
+       class="title ss_sprite ss_arrow_up sidebarbox-action-icon ajax-dialog">&nbsp;</a>
     <a id="workspace-load"
-       href="#"
+       href="{% url lizard_map_workspace_load %}"
        title="{% trans 'load workspace...' %}"
-       class="title ss_sprite ss_arrow_down sidebarbox-action-icon">&nbsp;</a>
+       class="title ss_sprite ss_arrow_down sidebarbox-action-icon ajax-dialog">&nbsp;</a>
     <a id="workspace-empty"
        href="#"
        title="{% trans 'empty your workspace' %}"
@@ -71,7 +71,7 @@
     </li>
     {% empty %}
       {# No workspaceitems #}
-      <li>Klik op <span class="ss_sprite ss_add">&nbsp;</span> naast items om deze items toe te voegen aan je workspace.</li>
+      <li>Klik op items om deze toe te voegen aan je workspace.</li>
     {% endfor %}
   </ul>
 </div>

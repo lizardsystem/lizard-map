@@ -39,9 +39,9 @@ $("a.url-lizard-map-workspace-item-edit").attr("href");
 
 
 function isCollagePopupVisible() {
-    return ($("#graph-popup-content div:first-child").length !== 0 &&
-            $("#graph-popup-content div:first-child").data("is_collage_popup") &&
-            $("#graph-popup").css("display") === "block");
+    return ($("#dialog-content div:first-child").length !== 0 &&
+            $("#dialog-content div:first-child").data("is_collage_popup") &&
+            $("#dialog").css("display") === "block");
 }
 
 
@@ -108,7 +108,7 @@ function show_popup(data) {
         if (data.html && data.html.length !== 0) {
             // Generates pages with handlers. First only page 0 is visible.
             if (data.html.length === 1) {
-                $("#graph-popup-content").html(data.html[0]);
+                $("#dialog-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
                 html = '<ul class="tabs css-tabs">';
@@ -124,11 +124,11 @@ function show_popup(data) {
                 }
                 html += '</div>';
 
-                $("#graph-popup-content").html(html);
+                $("#dialog-content").html(html);
                 $(".tabs").tabs("div.popup-panes > div.pane",
                                 {'effect': 'map_popup'});
             }
-            overlay = $('#graph-popup').overlay();
+            overlay = $('#dialog').overlay();
             overlay.load();
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
@@ -177,7 +177,7 @@ jQuery.fn.collagePopup = function () {
         function (data) {
             show_popup(data);
             // Mark popup as being a collage popup
-            $("#graph-popup-content div:first-child").data("is_collage_popup", true);
+            $("#dialog-content div:first-child").data("is_collage_popup", true);
 
         }
     );
@@ -228,7 +228,7 @@ jQuery.fn.workspaceInteraction = function () {
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.
-        $('#graph-popup').overlay({});  // Necessary?
+        $('#dialog').overlay({});  // Necessary?
     });
 };
 
@@ -374,7 +374,7 @@ $(document).ready(function () {
             // hide all panes and show the one that is clicked.
 	    this.getPanes().hide().eq(tabIndex).show();
             done.call();
-            if ($('#graph-popup').is(":visible")) {
+            if ($('#dialog').is(":visible")) {
                 // Don't reload the popup graph if the overlay isn't
                 // initialized yet.  There's no width then :-)
                 // It *does* reload twice when an overlay is already

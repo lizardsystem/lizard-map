@@ -125,6 +125,32 @@ def workspace(request,
 
 ##### Edits on workspace ############
 
+
+# L3
+def workspace_save(request, template='lizard_map/form_workspace_save.html'):
+    """
+    Save your edit-workspace to storage-workspace.
+    """
+    logger.debug("workspace_save")
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    return render_to_response(
+        template,
+        {},
+        context_instance=RequestContext(request))
+
+
+# L3
+def workspace_load(request):
+    """
+    Load a storage-workspace into your edit-workspace (overwrite existing).
+    """
+    logger.debug("workspace_load")
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    pass
+
+
 # L3
 @never_cache
 def workspace_item_reorder(request):
