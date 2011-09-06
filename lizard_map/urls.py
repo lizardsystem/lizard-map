@@ -2,6 +2,8 @@ from django.conf.urls.defaults import *
 from django.conf import settings
 from django.contrib import admin
 
+import lizard_map.views
+
 
 admin.autodiscover()
 
@@ -31,11 +33,11 @@ urlpatterns = patterns(
     url(r'^myworkspace/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
-    url(r'^myworkspace/load/$',  # L3
-        'lizard_map.views.workspace_load',
-        name="lizard_map_workspace_load"),
+    # url(r'^myworkspace/load/$',  # L3
+    #     'lizard_map.views.workspace_load',
+    #     name="lizard_map_workspace_load"),
     url(r'^myworkspace/save/$',  # L3
-        'lizard_map.views.workspace_save',
+        lizard_map.views.WorkspaceSaveView.as_view(),
         name="lizard_map_workspace_save"),
 
     # Date range

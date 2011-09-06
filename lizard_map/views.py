@@ -31,9 +31,12 @@ from lizard_map.workspace import WorkspaceManager
 # Workspace stuff
 
 # L3
+from django.views.generic.edit import FormView
+
+from lizard_ui.views import ViewContextMixin
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceItemEdit
-
+from lizard_map.forms import WorkspaceSaveForm
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -127,17 +130,45 @@ def workspace(request,
 
 
 # L3
-def workspace_save(request, template='lizard_map/form_workspace_save.html'):
-    """
-    Save your edit-workspace to storage-workspace.
-    """
-    logger.debug("workspace_save")
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
-    return render_to_response(
-        template,
-        {},
-        context_instance=RequestContext(request))
+class WorkspaceSaveView(ViewContextMixin, FormView):
+    template_name = 'lizard_map/form_workspace_save.html'
+    form_class = WorkspaceSaveForm
+    success_url = './'
+
+    def form_valid(self, form):
+        """
+        Save edit workspace to storage workspace
+        """
+        logger.debug("form is valid")
+        return super(WorkspaceSaveView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        """
+        """
+        logger.debug("form is invalid")
+        return super(WorkspaceSaveView, self).form_invalid(form)
+
+    def post(self, request, *args, **kwargs):
+        """
+        """
+        logger.debug("post...")
+        logger.debug(args)
+        logger.debug(kwargs)
+        return super(WorkspaceSaveView, self).post(request, *args, **kwargs)
+
+
+# L3
+# def workspace_save(request, template='lizard_map/form_workspace_save.html'):
+#     """
+#     Save your edit-workspace to storage-workspace.
+#     """
+#     logger.debug("workspace_save")
+#     workspace_edit = WorkspaceEdit.get_or_create(
+#         request.session.session_key, request.user)
+#     return render_to_response(
+#         template,
+#         {},
+#         context_instance=RequestContext(request))
 
 
 # L3

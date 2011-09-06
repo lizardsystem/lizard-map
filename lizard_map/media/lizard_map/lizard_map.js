@@ -222,9 +222,20 @@ function setUpDialogs() {
         });
         return false;
     });
-    // Submit buttons must have class "ajax-dialog-submit"
-    $(".ajax-dialog-submit").live("click", function (event) {
-        alert("submit");
+    // Handle submit button in forms in a dialog.
+    $("#dialog input:submit").live("click", function (event) {
+        var $form;
+        event.preventDefault();
+        $form = $(event.target).parents("form");
+        $.post($form.attr("action"),
+               function (data) {
+                   // Put data in extra html to find root-level .dialog-box
+                   div = $("<div/>").html(data).find(".dialog-box");
+                   $("#dialog-content").html(div);
+                   overlay = $("#dialog").overlay();
+                   overlay.load();
+               }
+              );
         return false;
     });
 }
