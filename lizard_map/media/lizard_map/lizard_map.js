@@ -295,6 +295,17 @@ function eraseDialogContentsOnClose() {
 }
 
 
+/* L3 popup with "niets gevonden" */
+function nothingFoundPopup() {
+    var html;
+    html = "<h1>Niets gevonden</h1>" +
+           "<p>Er is niets rond deze locatie gevonden.</p>";
+    dialogContent(html);
+    dialogOverlay();
+    dialogCloseDelay();
+}
+
+
 /* Make the following workspace buttons work:
 - Trashcan next to "My Workspace" (workspace-empty-trigger)
 - (-) next to workspace-items (workspace-item-delete)
@@ -383,20 +394,6 @@ function setUpDatePopup() {
             $(this).overlay();
         }
     });
-}
-
-
-function setUpNotFoundPopup() {
-    $("#not_found_popup_trigger").overlay();
-}
-
-
-function nothingFoundPopup() {
-    $("#not_found_popup_trigger").click();
-    setTimeout(function () {
-        $("#not_found_popup .close").click();
-    },
-              2000);
 }
 
 
@@ -627,7 +624,6 @@ $(document).ready(function () {
     setUpWorkspaceButtons();
     setUpDatePopup();
     setUpDateUpdate();
-    setUpNotFoundPopup();
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();

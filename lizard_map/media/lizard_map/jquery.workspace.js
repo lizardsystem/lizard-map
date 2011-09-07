@@ -8,7 +8,7 @@
 setUpScreen, nothingFoundPopup, reloadGraphs,
 reloadLocalizedGraphs, reloadMapActions,
 setUpTransparencySlider, setUpAnimationSlider, setUpTooltips,
-refreshLayers */
+refreshLayers, dialogContent, dialogOverlay */
 
 
 /*
@@ -108,7 +108,7 @@ function show_popup(data) {
         if (data.html && data.html.length !== 0) {
             // Generates pages with handlers. First only page 0 is visible.
             if (data.html.length === 1) {
-                $("#dialog-content").html(data.html[0]);
+                dialogContent(data.html[0]);
             } else {
                 // Build up html with tabs.
                 html = '<ul class="tabs css-tabs">';
@@ -124,12 +124,11 @@ function show_popup(data) {
                 }
                 html += '</div>';
 
-                $("#dialog-content").html(html);
+                dialogContent(html);
                 $(".tabs").tabs("div.popup-panes > div.pane",
                                 {'effect': 'map_popup'});
             }
-            overlay = $('#dialog').overlay();
-            overlay.load();
+            dialogOverlay();
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
                 reloadGraphs();
