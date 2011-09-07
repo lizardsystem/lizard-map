@@ -202,12 +202,30 @@ function setUpWorkspaceAcceptable() {
 }
 
 
+/* L3 dialog contents */
+function dialogContent(content) {
+    $("#dialog-content").html(content);
+}
+
+/* L3 pop up the dialog */
+function dialogOverlay() {
+    overlay = $("#dialog").overlay();
+    overlay.load();  // Pop up
+}
+
+/* L3 close dialog after delay */
+function dialogCloseDelay() {
+    setTimeout(function () {
+        $("#dialog .close").click();
+    }, 2000);
+}
+
+
 /* L3 Generic dialog code that works on a hrefs:
 
 1) Get contents from href url and display in div #dialog
 
-2) On post, check result. On error, display message. On 200 no
-contents: close.
+2) On post, check json result and close if success.
 
 */
 function setUpDialogs() {
@@ -216,10 +234,21 @@ function setUpDialogs() {
         event.preventDefault();
 
         url = $(event.target).attr("href");
-        $("#dialog-content").load(url + " .dialog-box", function() {
-            overlay = $("#dialog").overlay();
-            overlay.load();  // Pop up
-        });
+        $.get(
+            url)
+            .success(function (data) {
+                var div;
+                // Put data in extra html to find root-level .dialog-box
+                div = $("<div/>").html(data).find(".dialog-box");
+                dialogContent(div);
+                dialogOverlay();
+            })
+            .error(function (data) {
+                dialogContent("Fout bij laden van dialoog. " +
+                              "Probeert U het later nog eens.");
+                dialogOverlay();
+                dialogCloseDelay();
+            });
         return false;
     });
     // Handle submit button in forms in a dialog.
@@ -227,15 +256,31 @@ function setUpDialogs() {
         var $form;
         event.preventDefault();
         $form = $(event.target).parents("form");
-        $.post($form.attr("action"),
-               function (data) {
-                   // Put data in extra html to find root-level .dialog-box
-                   div = $("<div/>").html(data).find(".dialog-box");
-                   $("#dialog-content").html(div);
-                   overlay = $("#dialog").overlay();
-                   overlay.load();
-               }
-              );
+        $.post(
+            $form.attr("action"), $form.serialize(),
+            function (data, status, context) {
+                // Strange: everything goes to .error
+            }, "json")
+            .error(function (context) {
+                var div;
+                div = $("<div/>").html(context.responseText).find(".dialog-box");
+                if (context.status === 400) {
+                    // Bad request: wrong input
+                    dialogContent(div);
+                    dialogOverlay();
+                } else if (context.status === 200) {
+                    dialogContent(div);
+                    dialogOverlay();
+                    dialogCloseDelay();
+                } else {
+                    // Unknown error
+                    dialogContent("Fout bij opslaan, " +
+                                  "probeert U het later nog eens.");
+                    dialogOverlay();
+                    dialogCloseDelay();
+                }
+                return false;
+            });
         return false;
     });
 }

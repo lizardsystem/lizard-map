@@ -61,12 +61,6 @@
     &nbsp;
   </li>
   {% endif %}
-  {% for workspace_item in workspaces.temp.0.workspace_items.all %}
-  <li class="workspace-empty-temp map-action empty"
-      data-workspace-item-id="{{ workspace_item.id }}">
-    <span rel="tipsy" class="empty-temp-workspace-icon action-icon" title="{% trans "Tijdelijke workspace legen" %}"></span>
-  </li>
-  {% endfor %}
 </ul>
 {% endblock above-content %}
 

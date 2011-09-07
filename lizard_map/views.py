@@ -3,8 +3,11 @@ import datetime
 
 from django.db.models import Max
 from django.http import HttpResponse
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson as json
 from django.views.decorators.cache import never_cache
@@ -37,6 +40,7 @@ from lizard_ui.views import ViewContextMixin
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceItemEdit
 from lizard_map.forms import WorkspaceSaveForm
+from lizard_map.forms import WorkspaceLoadForm
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -45,6 +49,7 @@ MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
 POPUP_VIDEO_LAST_SEEN = 'popup_video_last_seen'
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
+
 
 logger = logging.getLogger(__name__)
 
@@ -130,56 +135,76 @@ def workspace(request,
 
 
 # L3
-class WorkspaceSaveView(ViewContextMixin, FormView):
+class ActionDialogView(ViewContextMixin, FormView):
+    """
+    Generic Action Dialog View.
+
+    Input from user is expected as form. Then an action is performed.
+    """
+
+    # Used with "GET" or "POST" with invalid form.
     template_name = 'lizard_map/form_workspace_save.html'
-    form_class = WorkspaceSaveForm
+    # Used with "POST" with valid form.
+    template_name_success = 'lizard_map/form_workspace_save_success.html'
+    # Form which is added to the context for your templates.
+    form_class = WorkspaceSaveForm  # Define your form
+
     success_url = './'
+
+    def form_valid_action(self, form):
+        """
+        Implement your action here.
+        """
+        pass
 
     def form_valid(self, form):
         """
-        Save edit workspace to storage workspace
+        Return rendered template_name_success.
         """
         logger.debug("form is valid")
-        return super(WorkspaceSaveView, self).form_valid(form)
+        self.form_valid_action(form)
+        return render(
+            self.request,
+            self.template_name_success,
+            self.get_context_data())
 
     def form_invalid(self, form):
         """
+        Return rendered template_name with current form with errors.
         """
         logger.debug("form is invalid")
-        return super(WorkspaceSaveView, self).form_invalid(form)
+        html = render_to_string(
+            self.template_name, self.get_context_data(form=form),
+            context_instance=RequestContext(self.request))
+        return HttpResponseBadRequest(html)
 
-    def post(self, request, *args, **kwargs):
+
+class WorkspaceSaveView(ActionDialogView):
+    template_name = 'lizard_map/form_workspace_save.html'
+    template_name_success = 'lizard_map/form_workspace_save_success.html'
+    form_class = WorkspaceSaveForm  # Define your form
+
+    def form_valid_action(self, form):
         """
+        Save edit workspace to storage workspace
         """
-        logger.debug("post...")
-        logger.debug(args)
-        logger.debug(kwargs)
-        return super(WorkspaceSaveView, self).post(request, *args, **kwargs)
+        logger.debug("Saving stuff...")
+        workspace_edit = WorkspaceEdit.get_or_create(
+           self.request.session.session_key, self.request.user)
 
 
-# L3
-# def workspace_save(request, template='lizard_map/form_workspace_save.html'):
-#     """
-#     Save your edit-workspace to storage-workspace.
-#     """
-#     logger.debug("workspace_save")
-#     workspace_edit = WorkspaceEdit.get_or_create(
-#         request.session.session_key, request.user)
-#     return render_to_response(
-#         template,
-#         {},
-#         context_instance=RequestContext(request))
+class WorkspaceLoadView(ActionDialogView):
+    template_name = 'lizard_map/form_workspace_load.html'
+    template_name_success = 'lizard_map/form_workspace_load_success.html'
+    form_class = WorkspaceLoadForm  # Define your form
 
-
-# L3
-def workspace_load(request):
-    """
-    Load a storage-workspace into your edit-workspace (overwrite existing).
-    """
-    logger.debug("workspace_load")
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
-    pass
+    def form_valid_action(self, form):
+        """
+        Load storage workspace to edit workspace
+        """
+        logger.debug("Loading stuff...")
+        workspace_edit = WorkspaceEdit.get_or_create(
+           self.request.session.session_key, self.request.user)
 
 
 # L3
