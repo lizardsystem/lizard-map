@@ -1,0 +1,7 @@
+<div class="dialog-box">
+  <form action="{% url lizard_map_date_range %}"
+        method="post">
+    {% csrf_token %}
+    {{ date_range_form.as_p }}
+  </form>
+</div>

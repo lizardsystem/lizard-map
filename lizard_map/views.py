@@ -41,6 +41,7 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceItemEdit
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
+from lizard_map.daterange import DateRangeForm
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -205,6 +206,18 @@ class WorkspaceLoadView(ActionDialogView):
         logger.debug("Loading stuff...")
         workspace_edit = WorkspaceEdit.get_or_create(
            self.request.session.session_key, self.request.user)
+
+
+class DateRangeView(ActionDialogView):
+    template_name = 'lizard_map/box_daterange.html'
+    template_name_success = template_name
+    form_class = DateRangeForm  # Define your form
+
+    def form_valid_action(self, form):
+        """
+        Update date range
+        """
+        logger.debug("Updating date range...")
 
 
 # L3

@@ -28,6 +28,10 @@
   {# date_popup is not a valid child of ul #}
   {% date_popup %}
 <ul class="map-actions">
+  <a href="{% url lizard_map_date_range %}"
+     id="date-range"
+     title="date-range"
+     class="title ss_sprite ss_arrow_up ajax-dialog-onchange">&nbsp;</a>
   {% date_trigger %}
   {# Load and save map locations #}
   <li id="map-load-default-location"

@@ -49,6 +49,9 @@ urlpatterns = patterns(
      'lizard_map.animation.set_animation_date',
      {},
      name="lizard_map.set_animation_date"),
+    url(r'^date_range/$',  # L3
+        lizard_map.views.DateRangeView.as_view(),
+        name="lizard_map_date_range"),
 
     # Load and save map location
     (r'^map_location_save$',

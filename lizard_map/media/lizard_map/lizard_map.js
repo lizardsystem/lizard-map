@@ -221,40 +221,36 @@ function dialogCloseDelay() {
 }
 
 
-/* L3 Generic dialog code that works on a hrefs:
+/* L3 Click on dialog */
+function dialogClick(event) {
+    var url, overlay;
+    event.preventDefault();
 
-1) Get contents from href url and display in div #dialog
+    url = $(event.target).attr("href");
+    $.get(url)
+        .success(function (data) {
+            var div;
+            // Put data in extra html to find root-level .dialog-box
+            div = $("<div/>").html(data).find(".dialog-box");
+            dialogContent(div);
+            dialogOverlay();
+        })
+        .error(function (data) {
+            dialogContent("Fout bij laden van dialoog. " +
+                          "Probeert U het later nog eens.");
+            dialogOverlay();
+            dialogCloseDelay();
+        });
+    $("#dialog").data("submit-on-change", false);
+    return false;
+}
 
-2) On post, check json result and close if success.
-
-*/
-function setUpDialogs() {
-    $(".ajax-dialog").live("click", function (event) {
-        var url, overlay;
-        event.preventDefault();
-
-        url = $(event.target).attr("href");
-        $.get(
-            url)
-            .success(function (data) {
-                var div;
-                // Put data in extra html to find root-level .dialog-box
-                div = $("<div/>").html(data).find(".dialog-box");
-                dialogContent(div);
-                dialogOverlay();
-            })
-            .error(function (data) {
-                dialogContent("Fout bij laden van dialoog. " +
-                              "Probeert U het later nog eens.");
-                dialogOverlay();
-                dialogCloseDelay();
-            });
-        return false;
-    });
-    // Handle submit button in forms in a dialog.
-    $("#dialog input:submit").live("click", function (event) {
-        var $form;
-        event.preventDefault();
+/* L3 Onchange on dialog: only on ajax-dialog-onchange */
+function dialogOnChange(event) {
+    var $form;
+    event.preventDefault();
+    if ($("#dialog").data("submit-on-change")) {
+        // console.log("onchange submit");
         $form = $(event.target).parents("form");
         $.post(
             $form.attr("action"), $form.serialize(),
@@ -263,26 +259,71 @@ function setUpDialogs() {
             }, "json")
             .error(function (context) {
                 var div;
-                div = $("<div/>").html(context.responseText).find(".dialog-box");
-                if (context.status === 400) {
-                    // Bad request: wrong input
-                    dialogContent(div);
-                    dialogOverlay();
-                } else if (context.status === 200) {
-                    dialogContent(div);
-                    dialogOverlay();
-                    dialogCloseDelay();
-                } else {
-                    // Unknown error
-                    dialogContent("Fout bij opslaan, " +
-                                  "probeert U het later nog eens.");
-                    dialogOverlay();
-                    dialogCloseDelay();
-                }
+                div = $("<div/>").html(context.responseText).find(
+                    ".dialog-box");
+                // Bad request: wrong input
+                // Or 200, or else... all the same
+                dialogContent(div);
+                dialogOverlay();
                 return false;
             });
-        return false;
-    });
+    }
+    return false;
+}
+
+function dialogSetupChange(event) {
+    $("#dialog").data("submit-on-change", true);
+}
+
+/* L3 Pressing submit in dialog box */
+function dialogSubmit(event) {
+    var $form;
+    event.preventDefault();
+    $form = $(event.target).parents("form");
+    $.post(
+        $form.attr("action"), $form.serialize(),
+        function (data, status, context) {
+            // Strange: everything goes to .error
+        }, "json")
+        .error(function (context) {
+            var div;
+            div = $("<div/>").html(context.responseText).find(".dialog-box");
+            if (context.status === 400) {
+                // Bad request: wrong input
+                dialogContent(div);
+                dialogOverlay();
+            } else if (context.status === 200) {
+                dialogContent(div);
+                dialogOverlay();
+                dialogCloseDelay();
+            } else {
+                // Unknown error
+                dialogContent("Fout bij opslaan, " +
+                              "probeert U het later nog eens.");
+                dialogOverlay();
+                dialogCloseDelay();
+            }
+            return false;
+        });
+    return false;
+}
+
+/* L3 Generic dialog code that works on a hrefs:
+
+1) Get contents from href url and display in div #dialog
+
+2) On post, check json result and close if success.
+
+*/
+function setUpDialogs() {
+    $(".ajax-dialog").live("click", dialogClick);
+    $(".ajax-dialog-onchange").live("click", dialogClick);
+    $(".ajax-dialog-onchange").live("click", dialogSetupChange);
+    // Handle submit button in forms in a dialog.
+    $("#dialog input:submit").live("click", dialogSubmit);
+    // Handle ajax-dialog-onchange, which submit on changes.
+    $("#dialog form input").live("change", dialogOnChange);
+    $("#dialog form select").live("change", dialogOnChange);
 }
 
 /*
@@ -622,8 +663,8 @@ $(document).ready(function () {
 
     // Untouched
     setUpWorkspaceButtons();
-    setUpDatePopup();
-    setUpDateUpdate();
+    //setUpDatePopup();
+    //setUpDateUpdate();
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();
