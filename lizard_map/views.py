@@ -182,6 +182,18 @@ class ActionDialogView(ViewContextMixin, FormView):
             context_instance=RequestContext(self.request))
         return HttpResponseBadRequest(html)
 
+    def get(self, request, *args, **kwargs):
+        """Added request to initial, so in your form constructor you
+        can use request."""
+        self.initial.update({'request': request})
+        return super(ActionDialogView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        """Added request to initial, so in your form constructor you
+        can use request."""
+        self.initial.update({'request': request})
+        return super(ActionDialogView, self).post(request, *args, **kwargs)
+
 
 class WorkspaceSaveView(ActionDialogView):
     template_name = 'lizard_map/form_workspace_save.html'

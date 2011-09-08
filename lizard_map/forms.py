@@ -14,7 +14,16 @@ class WorkspaceSaveForm(forms.Form):
 
 
 class WorkspaceLoadForm(forms.Form):
-    name = forms.CharField(max_length=100, required=True)
+    NAME_CHOICES = (('a', 'a'), ('b', 'b'))
+    name = forms.ChoiceField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        """
+        The choices are dynamic, they depend on the user/session.
+        """
+        print args, kwargs
+        super(WorkspaceLoadForm, self).__init__(*args, **kwargs)
+        self.fields['name'].choices = self.NAME_CHOICES
 
 
 class HorizontalRadioRenderer(forms.RadioSelect.renderer):
