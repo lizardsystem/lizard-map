@@ -220,10 +220,51 @@ function dialogCloseDelay() {
     }, 2000);
 }
 
+/* L3 close dialog */
+function dialogClose() {
+    $("#dialog .close").click();
+}
 
-/* L3 Click on dialog */
+
+/* L3 dialog replace ids */
+function dialogReplaceTitles(new_content) {
+    var replace_titles, id, ids, div, title;
+    // Create array with ids to be replaced.
+    // There may be some empty strings in this list.
+    ids = $("#dialog").data("replace-titles").split(" ");
+
+    // Place a div around everything to allow searching through the
+    // root objects.
+    div = $("<div/>").html(new_content);
+
+    for (var i in ids) {
+        id = ids[i];
+        if (id !== "") {
+            title = div.find("#" + id);
+            console.log(title);
+            $("#" + id).attr("title", title.html());
+        }
+    }
+}
+
+/* L3 Dialog size */
+function dialogSize(size) {
+    if (size === "s") {
+        // Small
+        $("#dialog").css("width", "30em");
+        $("#dialog").css("min-height", "10em");
+    } else {
+        // Default
+        $("#dialog").css("width", "40em");
+        $("#dialog").css("min-height", "15em");
+    }
+}
+
+
+/* L3 Click on dialog. Initially fill contents by get. Configure some
+settings. */
 function dialogClick(event) {
-    var url, overlay;
+    var url, overlay, size;
     event.preventDefault();
 
     url = $(event.target).attr("href");
@@ -242,12 +283,19 @@ function dialogClick(event) {
             dialogCloseDelay();
         });
     $("#dialog").data("submit-on-change", false);
+    // All ids that have to be replaced in the original page. Space
+    // separated.
+    $("#dialog").data("replace-titles", "");  // Reset
+    $("#dialog").data(
+        "replace-titles", $(event.target).attr("data-replace-titles"));
+    dialogSize($(event.target).attr("data-size"));
     return false;
 }
 
 /* L3 Onchange on dialog: only on ajax-dialog-onchange */
 function dialogOnChange(event) {
     var $form;
+    console.log("dialog onchange");
     event.preventDefault();
     if ($("#dialog").data("submit-on-change")) {
         // console.log("onchange submit");
@@ -263,6 +311,7 @@ function dialogOnChange(event) {
                     ".dialog-box");
                 // Bad request: wrong input
                 // Or 200, or else... all the same
+                dialogReplaceTitles(context.responseText);
                 dialogContent(div);
                 dialogOverlay();
                 return false;
@@ -278,6 +327,7 @@ function dialogSetupChange(event) {
 /* L3 Pressing submit in dialog box */
 function dialogSubmit(event) {
     var $form;
+    console.log("dialog submit");
     event.preventDefault();
     $form = $(event.target).parents("form");
     $.post(
@@ -293,9 +343,16 @@ function dialogSubmit(event) {
                 dialogContent(div);
                 dialogOverlay();
             } else if (context.status === 200) {
-                dialogContent(div);
-                dialogOverlay();
-                dialogCloseDelay();
+                dialogReplaceTitles(context.responseText);
+                if ($("#dialog").data("submit-on-change")) {
+                    // Close immediately, because the contents don't change.
+                    dialogClose();
+                } else {
+                    // Show success message, then close.
+                    dialogContent(div);
+                    dialogOverlay();
+                    dialogCloseDelay();
+                }
             } else {
                 // Unknown error
                 dialogContent("Fout bij opslaan, " +
@@ -342,6 +399,7 @@ function nothingFoundPopup() {
     html = "<h1>Niets gevonden</h1>" +
            "<p>Er is niets rond deze locatie gevonden.</p>";
     dialogContent(html);
+    dialogSize("s");
     dialogOverlay();
     dialogCloseDelay();
 }
@@ -388,52 +446,6 @@ function setUpWorkspaceButtons() {
                 $workspace.updateWorkspace();
             });
         return false;
-    });
-}
-
-
-/* Updates the date popup from a select or input tag */
-function updateDateSelectOrInput() {
-    var url, $form;
-    $form = $(this).parents("form");
-    url = $form.attr("action");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            // Update the popup. Note: We cannot use load, because the
-            // overlay properties will get lost
-            $.get("./", {}, function (data) {
-                var new_contents, curr_period_title;
-                new_contents = $(data).find(
-                    "#summary-datepicker-contents").html();
-                $("#summary-datepicker-contents").html(new_contents);
-                curr_period_title = $(data).find(
-                    "#summary-datepicker-a").attr("title");
-                $("#summary-datepicker-a").attr("title", curr_period_title);
-            });
-            reloadGraphs();
-            // Check for items with .show_on_date_change and show 'em.
-            $('.show_on_date_change').slideDown();
-        });
-}
-
-
-// Updates date div from server when fields change.
-function setUpDateUpdate() {
-    $("#summary-datepicker form input").live(
-        'change', updateDateSelectOrInput);
-    $("#summary-datepicker form select").live(
-        'change', updateDateSelectOrInput);
-}
-
-
-function setUpDatePopup() {
-    $(".popup-trigger").live('mouseover', function () {
-        if (!$(this).data("popup-initialized")) {
-            $(this).data("popup-initialized", true);
-            $(this).overlay();
-        }
     });
 }
 
@@ -656,15 +668,12 @@ function  setupTableToggle() {
 // Initialize all workspace actions.
 $(document).ready(function () {
     // Touched/new for L3
-    // setUpToggleWorkspaceItem();
     setUpWorkspaceAcceptable();
     setUpDialogs();
     eraseDialogContentsOnClose();
 
     // Untouched
     setUpWorkspaceButtons();
-    //setUpDatePopup();
-    //setUpDateUpdate();
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();

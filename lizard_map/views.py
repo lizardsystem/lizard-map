@@ -43,6 +43,9 @@ from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.daterange import DateRangeForm
 
+from daterange import deltatime_range
+from daterange import store_timedelta_range
+
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
@@ -218,6 +221,12 @@ class DateRangeView(ActionDialogView):
         Update date range
         """
         logger.debug("Updating date range...")
+        date_range = form.cleaned_data
+
+        period, timedelta_start, timedelta_end = deltatime_range(
+            date_range)
+        store_timedelta_range(
+            self.request, period, timedelta_start, timedelta_end)
 
 
 # L3

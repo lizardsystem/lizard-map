@@ -26,13 +26,14 @@
 
 {% block above-content %}
   {# date_popup is not a valid child of ul #}
-  {% date_popup %}
 <ul class="map-actions">
   <a href="{% url lizard_map_date_range %}"
      id="date-range"
-     title="date-range"
-     class="title ss_sprite ss_arrow_up ajax-dialog-onchange">&nbsp;</a>
-  {% date_trigger %}
+     title='Van {{ date_start_period|date:"d-m-Y" }} t/m {{ date_end_period|date:"d-m-Y" }}'
+     class="title datepicker-icon action-icon ajax-dialog-onchange"
+     data-replace-titles="date-range"
+     data-size="s"
+     rel="tipsy-south">&nbsp;</a>
   {# Load and save map locations #}
   <li id="map-load-default-location"
       class="map-action"

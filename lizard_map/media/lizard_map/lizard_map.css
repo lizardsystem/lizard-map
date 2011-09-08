@@ -22,13 +22,14 @@
 }
 
 /* Datepicker popup styling*/
-.date-popup p
+.date-popup p,
+.date-range-box p
 { margin: 0px;
   vertical-align: top;
 }
 
-.date-popup label[for="id_dt_start_month"],
-.date-popup label[for="id_dt_end_month"]
+.date-range-box label[for="id_dt_start_month"],
+.date-range-box label[for="id_dt_end_month"]
 { display: block;
   float: left;
   clear: left;
@@ -38,18 +39,18 @@
   padding-top: 7px;
 }
 
-.date-popup #id_dt_start_day,
-.date-popup #id_dt_end_day
+.date-range-box #id_dt_start_day,
+.date-range-box #id_dt_end_day
 { margin-left: 20px;
 }
 
-.date-popup #id_dt_start_month,
-.date-popup #id_dt_end_month
+.date-range-box #id_dt_start_month,
+.date-range-box #id_dt_end_month
 { margin-left: 10px;
 }
 
-.date-popup #id_dt_start_year,
-.date-popup #id_dt_end_year
+.date-range-box #id_dt_start_year,
+.date-range-box #id_dt_end_year
 { margin-left: 10px;
 }
 
@@ -108,12 +109,13 @@
 }
 
 
+
 #dialog
 { display: none;
   z-index: 10000;
-  width: 40em;
-  min-height: 15em;
   padding: 1em;
+  width: 40em;  /* also set by lizard_map.js */
+  min-height: 15em;  /* also set by lizard_map.js */
   border: 1px solid gray;
   background-color: #FEFFFE;
 /*  background-image: url('/static_media/lizard_ui/old_mathematics.png');*/
@@ -122,14 +124,17 @@
   -moz-box-shadow:0 0 40px 5px black;
   -webkit-box-shadow: 0 0 40px black;
 }
+
 #dialog table thead tr th{
     background-color: #ccc;
     color: #000;
     border-color: gray;
 }
+
 #dialog table tbody tr td{
     border-color: gray;
 }
+
 #dialog-content,
 .popup-content
 { overflow: auto;

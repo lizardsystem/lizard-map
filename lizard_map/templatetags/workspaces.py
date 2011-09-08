@@ -131,26 +131,6 @@ def float_or_exp(value):
     return float_to_string(value)
 
 
-@register.inclusion_tag("lizard_map/tag_date_trigger.html",
-                        takes_context=True)
-def date_trigger(context):
-    """Displays date icon and link"""
-    return {
-        'date_range_form': context.get('date_range_form', None),
-        'date_start_period': context.get('date_start_period', None),
-        'date_end_period': context.get('date_end_period', None),
-        }
-
-
-@register.inclusion_tag("lizard_map/tag_date_popup.html",
-                        takes_context=True)
-def date_popup(context):
-    """Displays date popup"""
-    return {
-        'date_range_form': context.get('date_range_form', None),
-        }
-
-
 @register.inclusion_tag("lizard_map/tag_legend.html")
 def legend(name, adapter, session=None):
     """Shows legend. Optionally updates legend with
