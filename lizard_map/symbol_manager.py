@@ -9,7 +9,7 @@ import Image
 import ImageFilter
 import pkg_resources
 
-log = logging.getLogger('nens.symbol_manager')
+logger = logging.getLogger(__name__)
 
 
 def list_image_file_names():
@@ -39,7 +39,7 @@ def list_image_file_names():
 class SymbolManager:
 
     def __init__(self, symbol_path_original, symbol_path_generated):
-        log.debug('Initializing SymbolManager')
+        # logger.debug('Initializing SymbolManager')
         self.symbol_path_original = symbol_path_original
         self.symbol_path_generated = symbol_path_generated
         if not(os.path.exists(self.symbol_path_original)):
@@ -70,7 +70,7 @@ class SymbolManager:
         * rotate: in degrees, counterclockwise, around center
         * shadow_height: in pixels
         """
-        log.debug('Entering get_symbol_transformed')
+        # logger.debug('Entering get_symbol_transformed')
 
         SHADOW_FACTOR_Y = 1
         SHADOW_FACTOR_X = 0.5
@@ -84,12 +84,12 @@ class SymbolManager:
         shadow_height, = kwargs.get('shadow_height', (0,))
         force = kwargs.get('force', False)
 
-        log.debug('color: %s' % str(color))
-        log.debug('mask: %s' % fn_mask)
-        log.debug('size: %dx%d' % (sizex, sizey))
-        log.debug('rotate: %d' % (rotate))
-        log.debug('shadow_height: %d' % (shadow_height))
-        log.debug('force no cache: %s' % (force))
+        # logger.debug('color: %s' % str(color))
+        # logger.debug('mask: %s' % fn_mask)
+        # logger.debug('size: %dx%d' % (sizex, sizey))
+        # logger.debug('rotate: %d' % (rotate))
+        # logger.debug('shadow_height: %d' % (shadow_height))
+        # logger.debug('force no cache: %s' % (force))
 
         filename_mask_abs = os.path.join(self.symbol_path_original, fn_mask)
 
@@ -106,12 +106,13 @@ class SymbolManager:
         result_filename = os.path.join(self.symbol_path_generated,
                                        result_filename_nopath)
         if os.path.isfile(result_filename) and force == False:
-            log.debug('image already exists, returning filename')
+            pass
+            # logger.debug('image already exists, returning filename')
         else:
-            log.debug('generating image...')
+            # logger.debug('generating image...')
             filename_orig_abs = os.path.join(self.symbol_path_original,
                                        filename_nopath)
-            log.debug('orig filename: %s' % filename_orig_abs)
+            # logger.debug('orig filename: %s' % filename_orig_abs)
             if not(os.path.isfile(filename_orig_abs)):
                 raise Exception('File not found (%s)' % filename_orig_abs)
 
@@ -162,7 +163,7 @@ class SymbolManager:
                 #paste original image on top, using the alpha channel
                 pix = im.load()
                 pix_shadow = im_shadow.load()
-                log.debug('shadow x: %d' % im_shadow.size[0])
+                # logger.debug('shadow x: %d' % im_shadow.size[0])
                 for x in range(im_shadow.size[0]):
                     for y in range(im_shadow.size[1]):
                         r, g, b, a = pix_shadow[x, y]
@@ -176,10 +177,10 @@ class SymbolManager:
                 im = im_shadow
 
             if os.path.isfile(result_filename):
-                log.debug('deleting existing result file')
+                # logger.debug('deleting existing result file')
                 os.remove(result_filename)
 
-            log.debug('saving image (%s)' % result_filename)
+            # logger.debug('saving image (%s)' % result_filename)
             im.save(result_filename)
 
         return result_filename_nopath  # result_filename

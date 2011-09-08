@@ -5,7 +5,7 @@ Changelog of lizard-map
 2.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Commented out all the debugging in the symbolmanager
 
 
 2.2 (2011-09-02)
