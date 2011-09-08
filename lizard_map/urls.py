@@ -41,10 +41,6 @@ urlpatterns = patterns(
         name="lizard_map_workspace_load"),
 
     # Date range
-    (r'^set_date_range$',
-     'lizard_map.daterange.set_date_range',
-     {},
-     'lizard_map.set_date_range'),
     url(r'set_animation_date$',
      'lizard_map.animation.set_animation_date',
      {},

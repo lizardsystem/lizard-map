@@ -153,37 +153,6 @@ def store_timedelta_range(request, period, timedelta_start, timedelta_end):
     request.session[SESSION_DT_END] = timedelta_end
 
 
-def set_date_range(request, template='lizard_map/daterange.html',
-                   now=None):
-    """View: store the date range in the session and redirect.
-
-    POST must contain DateRangeForm fields.
-    now is a datetime field, used for testing.
-    """
-    if request.method == 'POST':
-        form = DateRangeForm(request.POST)
-        if form.is_valid():
-            came_from = request.META.get('HTTP_REFERER', '/')
-            date_range = form.cleaned_data
-
-            period, timedelta_start, timedelta_end = deltatime_range(
-                date_range, now=now)
-            store_timedelta_range(
-                request, period, timedelta_start, timedelta_end)
-
-            return HttpResponseRedirect(came_from)
-    else:
-        # Invalid, should never happen. You're probably surfing to the
-        # set_date_range url.
-        form = DateRangeForm()
-
-    # Form rendering just for debugging errors.
-    return render_to_response(
-        template,
-        {'date_range_form': form},
-        context_instance=RequestContext(request))
-
-
 def current_period(request):
     """
     Return the current period, either default or from session.
