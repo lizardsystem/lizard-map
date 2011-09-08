@@ -41,7 +41,7 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceItemEdit
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
-from lizard_map.daterange import DateRangeForm
+from lizard_map.forms import DateRangeForm
 
 from daterange import deltatime_range
 from daterange import store_timedelta_range
@@ -231,17 +231,20 @@ class DateRangeView(ActionDialogView):
 
 # L3
 @never_cache
-def workspace_item_reorder(request):
+def workspace_item_reorder(
+    request, workspace_edit=None, workspace_items_order=None):
     """reorder workspace items.
 
     reorders workspace_item[] in new order.
     """
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
-    workspace_items_order = dict([
-        (workspace_item_id, index*10) for
-        index, workspace_item_id in enumerate(
-            request.POST.getlist('workspace-items[]'))])
+    if workspace_edit is None:
+        workspace_edit = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
+    if workspace_items_order is None:
+        workspace_items_order = dict([
+                (workspace_item_id, index*10) for
+                index, workspace_item_id in enumerate(
+                    request.POST.getlist('workspace-items[]'))])
 
     for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.index = workspace_items_order.get(
@@ -255,6 +258,7 @@ def workspace_item_reorder(request):
 @never_cache
 def workspace_item_toggle(
     request,
+    workspace_edit=None,
     is_temp_workspace=False,
     template='lizard_map/tag_workspace.html'):
 
@@ -265,8 +269,11 @@ def workspace_item_toggle(
 
     Return if it is added (True), or removed (False)
     """
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
+
+    # For testing, workspace_edit can be given.
+    if workspace_edit is None:
+        workspace_edit = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
 
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
@@ -321,13 +328,16 @@ def workspace_item_empty(
 
 # L3
 @never_cache
-def workspace_item_edit(request, workspace_item_id=None, visible=None):
+def workspace_item_edit(request, workspace_edit=None, workspace_item_id=None, visible=None):
     """edits a workspace_item
+
+    workspace_edit is added for testing
     """
+    if workspace_edit is None:
+        workspace_edit = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
     if workspace_item_id is None:
         workspace_item_id = request.POST['workspace_item_id']
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
     workspace_item = workspace_edit.workspace_items.get(
         pk=workspace_item_id)
     if visible is None:
@@ -342,7 +352,7 @@ def workspace_item_edit(request, workspace_item_id=None, visible=None):
 
 # L3
 @never_cache
-def workspace_item_delete(request, object_id=None):
+def workspace_item_delete(request, workspace_edit=None, object_id=None):
     """delete workspace item from workspace
 
     returns true if >= 1 items were deleted
@@ -352,8 +362,9 @@ def workspace_item_delete(request, object_id=None):
     """
     if object_id is None:
         object_id = request.POST['object_id']
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
+    if workspace_edit is None:
+        workspace_edit = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
     workspace_items = workspace_edit.workspace_items.filter(pk=object_id)
     deleted = True if workspace_items.count() > 0 else False
     workspace_items.delete()
@@ -601,7 +612,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
             identifiers = None
         if identifiers is None:
             continue
-        # img_url = workspace_item_image_url(workspace_item.id, identifiers)
 
         html_per_workspace_item = workspace_item.adapter.html(
             identifiers=identifiers,
@@ -1016,24 +1026,28 @@ def search_name(request):
 
     # Add a workspace, if it's not already in your own workspaces.
     user_workspace_id = request.GET.get('user_workspace_id', None)
-    if user_workspace_id is not None:
-        workspace_manager.add_other(user_workspace_id)
-        workspace_collections = workspace_manager.workspaces
+    workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
+    # if user_workspace_id is not None:
+    #     workspace_manager.add_other(user_workspace_id)
+    #     workspace_collections = workspace_manager.workspaces
 
     found = []
-    for workspace_collection in workspace_collections.values():
-        for workspace in workspace_collection:
-            for workspace_item in workspace.workspace_items.filter(
-                visible=True):
+    # for workspace_collection in workspace_collections.values():
+    #     for workspace in workspace_collection:
+    #         for workspace_item in workspace.workspace_items.filter(
+    #             visible=True):
 
-                try:
-                    search_results = workspace_item.adapter.search(
-                        google_x, google_y, radius=radius)
-                    found += search_results
-                except:
-                    logger.exception(
-                        "Crashed while calling search_name on %s" %
-                        workspace_item)
+    for workspace_item in workspace.workspace_items.filter(
+        visible=True):
+
+        try:
+            search_results = workspace_item.adapter.search(
+                google_x, google_y, radius=radius)
+            found += search_results
+        except:
+            logger.exception(
+                "Crashed while calling search_name on %s" %
+                workspace_item)
 
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.

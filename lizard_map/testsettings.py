@@ -29,13 +29,13 @@ STATIC_URL = '/static_media/'
 TEMPLATE_CONTEXT_PROCESSORS = (
     'lizard_map.context_processors.processor.processor',
     # Default items.
-    "django.core.context_processors.auth",
+    "django.contrib.auth.context_processors.auth",
     "django.core.context_processors.debug",
     "django.core.context_processors.i18n",
     "django.core.context_processors.media",
     # Needs to be added for django-staticfiles to allow you to use
     # {{ STATIC_URL }}myapp/my.css in your templates.
-    'staticfiles.context_processors.static_url',
+    'staticfiles.context_processors.static',
     )
 
 MIDDLEWARE_CLASSES = (

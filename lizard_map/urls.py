@@ -106,7 +106,7 @@ urlpatterns = patterns(
     # you have to put workspace_id in GET parameter here...
     url(r'^workspaceitemreorder/$',
         'lizard_map.views.workspace_item_reorder',
-        name="lizard_map_workspace_item_reorder"),
+        name="lizard_map_workspace_item_reorder"),  # L3
     url(r'^workspaceitem/extent/$',
         'lizard_map.views.workspace_item_extent',
         name="lizard_map_workspace_item_extent"),
@@ -159,10 +159,10 @@ urlpatterns = patterns(
     # Search stuff.
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',
-        name="lizard_map.search_coordinates"),
+        name="lizard_map.search_coordinates"),  # L3
     url(r'^search_name/',
         'lizard_map.views.search_name',
-        name="lizard_map.search_name"),
+        name="lizard_map.search_name"),  # L3
 
     # Export.
     url(r'^adapter/export/csv/',

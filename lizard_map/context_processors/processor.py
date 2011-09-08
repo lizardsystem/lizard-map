@@ -5,7 +5,7 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.daterange import DateRangeForm
+from lizard_map.forms import DateRangeForm
 from lizard_map.models import Setting
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_BASE_LAYER
