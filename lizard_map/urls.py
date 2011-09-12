@@ -28,8 +28,8 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_empty',
         name="lizard_map_workspace_item_empty"),
     url(r'^myworkspace/workspace_items/edit/$',  # L3
-        'lizard_map.views.workspace_item_edit',
-        name="lizard_map_workspace_item_edit"),
+        'lizard_map.views.workspace_edit_item',
+        name="lizard_map_workspace_edit_item"),
     url(r'^myworkspace/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
@@ -138,9 +138,9 @@ urlpatterns = patterns(
     # url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
     #     'lizard_map.views.workspace_item_delete',
     #     name="lizard_map_workspace_item_delete"),
-    url(r'^workspace_item_edit/(?P<workspace_item_id>\d+)/image/',  # L3
-        'lizard_map.views.workspace_item_edit_image',
-        name="lizard_map.workspace_item_edit_image"),
+    url(r'^workspace_edit_item/(?P<workspace_item_id>\d+)/image/',  # L3
+        'lizard_map.views.workspace_edit_item_image',
+        name="lizard_map.workspace_edit_item_image"),
 
     url(r'^workspace_item/(?P<workspace_item_id>\d+)/' +
         'image_session_graph_options/',

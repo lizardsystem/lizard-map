@@ -35,8 +35,8 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
 #from lizard_map.models import WorkspaceCollage
 #from lizard_map.models import WorkspaceCollageSnippetGroup
-from lizard_map.models import WorkspaceItemEdit
-from lizard_map.models import WorkspaceItemStorage
+from lizard_map.models import WorkspaceEditItem
+from lizard_map.models import WorkspaceStorageItem
 from lizard_map.operations import AnchestorRegistration
 from lizard_map.operations import CycleError
 from lizard_map.operations import named_list
@@ -270,14 +270,14 @@ class WorkspaceEditTest(TestCase):
             workspace_item_id=str(workspace_item1.id),
             visible='false')
         self.assertEqual(
-            WorkspaceItemEdit.objects.get(name='test workspaceitem').visible,
+            WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
             False)
         result = lizard_map.views.workspace_item_edit(
             self.request, workspace_edit=workspace,
             workspace_item_id=str(workspace_item1.id),
             visible='true')
         self.assertEqual(
-            WorkspaceItemEdit.objects.get(name='test workspaceitem').visible,
+            WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
             True)
 
     def test_workspace_item_delete(self):
@@ -336,7 +336,7 @@ class WorkspaceItemTest(TestCase):
 
     # def test_has_adapter(self):
     #     """A workspace item can point to a method that returns a layer."""
-    #     workspace_item = WorkspaceItemEdit()
+    #     workspace_item = WorkspaceEditItem()
     #     self.assertFalse(workspace_item.has_adapter())
     #     workspace_item.adapter_class = 'todo'
     #     self.assertTrue(workspace_item.has_adapter())
@@ -349,7 +349,7 @@ class WorkspaceItemTest(TestCase):
     def test_entry_point_lookup(self):
         """The string that identifies a method is looked up as a so-called
         entry point."""
-        workspace_item = WorkspaceItemEdit()
+        workspace_item = WorkspaceEditItem()
         workspace_item.adapter_class = 'todo'
         self.assertRaises(lizard_map.models.AdapterClassNotFoundError,
                           lambda: workspace_item.adapter,
@@ -365,7 +365,7 @@ class WorkspaceItemTest(TestCase):
     def test_adapter_arguments(self):
         """The layer method probably needs arguments. You can store them as a
         json string."""
-        workspace_item = WorkspaceItemEdit()
+        workspace_item = WorkspaceEditItem()
         self.assertTrue(isinstance(workspace_item._adapter_layer_arguments,
                                    dict))
         self.assertFalse(len(workspace_item._adapter_layer_arguments))
@@ -376,9 +376,9 @@ class WorkspaceItemTest(TestCase):
     def test_name(self):
         """A workspace item always has a name.  It is blank by default,
         though."""
-        workspace_item = WorkspaceItemEdit()
+        workspace_item = WorkspaceEditItem()
         self.assertEquals(workspace_item.name, '')
-        workspace_item2 = WorkspaceItemEdit(name='bla')
+        workspace_item2 = WorkspaceEditItem(name='bla')
         self.assertEquals(workspace_item2.name, 'bla')
 
     def test_representation(self):
@@ -425,19 +425,19 @@ class TestWorkspaceLoadSave(TestCase):
         self.request.META = {}
 
     def test_item_edit_as_storage(self):
-        """WorkspaceItemEdit to WorkspaceItemStorage conversion."""
-        workspace_item_edit = WorkspaceItemEdit(
+        """WorkspaceEditItem to WorkspaceStorageItem conversion."""
+        workspace_item_edit = WorkspaceEditItem(
             workspace=self.workspace_edit)
         workspace_item_edit.save()
 
-        workspace_item_storage = workspace_item_edit.as_storage(
+        workspace_storage_item = workspace_item_edit.as_storage(
             workspace=self.workspace_storage)
-        workspace_item_storage.save()  # Do not crash.
+        workspace_storage_item.save()  # Do not crash.
 
         # This dict does not have _state, _workspace_cache, workspace_id
         edit_dict = workspace_item_edit.__dict__
 
-        storage_dict = workspace_item_storage.__dict__
+        storage_dict = workspace_storage_item.__dict__
 
         # _workspace_cache does not appear in other code... strange?
         del storage_dict['id']
@@ -448,17 +448,17 @@ class TestWorkspaceLoadSave(TestCase):
         self.assertEquals(edit_dict, storage_dict)
 
     def test_item_storage_as_edit(self):
-        """WorkspaceItemStorage to WorkspaceItemEdit conversion."""
-        workspace_item_storage = WorkspaceItemStorage(
+        """WorkspaceStorageItem to WorkspaceEditItem conversion."""
+        workspace_storage_item = WorkspaceStorageItem(
             workspace=self.workspace_storage)
-        workspace_item_storage.save()
+        workspace_storage_item.save()
 
-        workspace_item_edit = workspace_item_storage.as_edit(
+        workspace_item_edit = workspace_storage_item.as_edit(
             workspace=self.workspace_edit)
         workspace_item_edit.save()  # Do not crash.
 
         # This dict does not have _state, _workspace_cache, workspace_id
-        storage_dict = workspace_item_storage.__dict__
+        storage_dict = workspace_storage_item.__dict__
 
         edit_dict = workspace_item_edit.__dict__
 
@@ -503,7 +503,7 @@ class TestWorkspaceLoadSave(TestCase):
 
         # Item "saved" is deleted.
         self.assertEquals(
-            len(WorkspaceItemStorage.objects.filter(name="saved")), 0)
+            len(WorkspaceStorageItem.objects.filter(name="saved")), 0)
 
     def test_save2(self):
         """Load: copy from storage to edit in different workspaces."""
@@ -523,7 +523,7 @@ class TestWorkspaceLoadSave(TestCase):
 
         # 3 workspaces, 3 workspace items should exist.
         self.assertEquals(WorkspaceStorage.objects.count(), 3)
-        self.assertEquals(WorkspaceItemStorage.objects.count(), 3)
+        self.assertEquals(WorkspaceStorageItem.objects.count(), 3)
 
     def test_save_not_authenticated(self):
         data = {'name': 'test workspace'}
@@ -969,7 +969,7 @@ class WorkspaceItemAdapterTest(TestCase):
     def setUp(self):
         self.workspace = WorkspaceEdit()
         self.workspace.save()
-        workspace_item = WorkspaceItemEdit(workspace=self.workspace)
+        workspace_item = WorkspaceEditItem(workspace=self.workspace)
         workspace_item.save()
         layer_arguments = {}
         self.adapter = WorkspaceItemAdapter(workspace_item, layer_arguments)

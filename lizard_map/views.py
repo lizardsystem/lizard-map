@@ -39,7 +39,7 @@ from django.views.generic.edit import FormView
 
 from lizard_ui.views import ViewContextMixin
 from lizard_map.models import WorkspaceEdit
-from lizard_map.models import WorkspaceItemEdit
+from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
@@ -364,7 +364,7 @@ def workspace_item_empty(
 
 # L3
 @never_cache
-def workspace_item_edit(request, workspace_edit=None, workspace_item_id=None, visible=None):
+def workspace_edit_item(request, workspace_edit=None, workspace_item_id=None, visible=None):
     """edits a workspace_item
 
     workspace_edit is added for testing
@@ -884,9 +884,9 @@ def workspace_item_image(request, workspace_item):
                                         layout_extra=layout_extra)
 
 
-def workspace_item_edit_image(request, workspace_item_id):
+def workspace_edit_item_image(request, workspace_item_id):
     workspace_item = get_object_or_404(
-        WorkspaceItemEdit, pk=workspace_item_id)
+        WorkspaceEditItem, pk=workspace_item_id)
     return workspace_item_image(request, workspace_item)
 
 

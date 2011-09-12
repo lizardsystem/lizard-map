@@ -312,7 +312,6 @@ class WorkspaceItemMixin(models.Model):
     """
     name = models.CharField(max_length=80,
                             blank=True)
-    # url = models.URLField(verify_exists=False)
     adapter_class = models.SlugField(choices=adapter_class_names())
     adapter_layer_json = models.TextField(blank=True)
 
@@ -444,10 +443,10 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
         # Delete all existing workspace item storages.
         workspace_storage.workspace_items.all().delete()
         # Create new workspace items.
-        for workspace_item_edit in self.workspace_items.all():
-            workspace_item_storage = workspace_item_edit.as_storage(
+        for workspace_edit_item in self.workspace_items.all():
+            workspace_storage_item = workspace_edit_item.as_storage(
                 workspace=workspace_storage)
-            workspace_item_storage.save()
+            workspace_storage_item.save()
 
     def load_from_storage(self, workspace_storage):
         """Load model and workspace_items from Storage.
@@ -455,13 +454,13 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
         # Delete all existing workspace items.
         self.workspace_items.all().delete()
         # Create new workspace items.
-        for workspace_item_storage in workspace_storage.workspace_items.all():
-            workspace_item_edit = workspace_item_storage.as_edit(
+        for workspace_storage_item in workspace_storage.workspace_items.all():
+            workspace_edit_item = workspace_storage_item.as_edit(
                 workspace=self)
-            workspace_item_edit.save()
+            workspace_edit_item.save()
 
 
-class WorkspaceItemEdit(WorkspaceItemMixin):
+class WorkspaceEditItem(WorkspaceItemMixin):
     """
     Workspace item for edit workspace.
     """
@@ -470,8 +469,8 @@ class WorkspaceItemEdit(WorkspaceItemMixin):
         related_name='workspace_items')
 
     def as_storage(self, workspace):
-        """Return self as a WorkspaceItemStorage."""
-        return self._as_new_object(WorkspaceItemStorage, workspace)
+        """Return self as a WorkspaceStorageItem."""
+        return self._as_new_object(WorkspaceStorageItem, workspace)
 
 
 class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
@@ -486,7 +485,7 @@ class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
         return u'%s (%s)' % (self.name, self.owner)
 
 
-class WorkspaceItemStorage(WorkspaceItemMixin):
+class WorkspaceStorageItem(WorkspaceItemMixin):
     """
     Workspace item for stored workspace.
     """
@@ -495,8 +494,8 @@ class WorkspaceItemStorage(WorkspaceItemMixin):
         related_name='workspace_items')
 
     def as_edit(self, workspace):
-        """Return self as a WorkspaceItemEdit."""
-        return self._as_new_object(WorkspaceItemEdit, workspace)
+        """Return self as a WorkspaceEditItem."""
+        return self._as_new_object(WorkspaceEditItem, workspace)
 
 
 #### Old models #####
