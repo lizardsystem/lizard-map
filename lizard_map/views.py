@@ -224,17 +224,8 @@ class WorkspaceSaveView(ActionDialogView):
                 self.template_name_forbidden,
                 {'message': 'U kunt geen workspace opslaan als U niet bent ingelogd.'},
                 context_instance=RequestContext(self.request))
-            print 'asdf'
             return HttpResponseForbidden(html)
-        workspace_storage, _ = WorkspaceStorage.objects.get_or_create(
-            name=form_data['name'], owner=user)
-        # Delete all existing workspace item storages.
-        workspace_storage.workspace_items.all().delete()
-        # Create new workspace items.
-        for workspace_item_edit in workspace_edit.workspace_items.all():
-            workspace_item_storage = workspace_item_edit.as_storage(
-                workspace_storage)
-            workspace_item_storage.save()
+        workspace_edit.save_to_storage(name=form_data['name'], owner=user)
 
 
 class WorkspaceLoadView(ActionDialogView):
@@ -253,13 +244,7 @@ class WorkspaceLoadView(ActionDialogView):
            self.request.session.session_key, self.request.user)
         # TODO: check permissions.
         workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
-        # Delete all existing workspace items.
-        workspace_edit.workspace_items.all().delete()
-        # Create new workspace items.
-        for workspace_item_storage in workspace_storage.workspace_items.all():
-            workspace_item_edit = workspace_item_storage.as_edit(
-                workspace_edit)
-            workspace_item_edit.save()
+        workspace_edit.load_from_storage(workspace_storage)
 
 
 class DateRangeView(ActionDialogView):

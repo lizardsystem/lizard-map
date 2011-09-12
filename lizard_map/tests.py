@@ -458,6 +458,21 @@ class TestWorkspaceLoadSave(TestCase):
 
         self.assertEquals(edit_dict, storage_dict)
 
+    def test_load(self):
+        """Load: copy from storage to edit."""
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="mock")
+
+        # Add some random workspace_items in storage workspace.
+        self.workspace_storage.workspace_items.create(name="saved")
+
+        self.workspace_edit.load_from_storage(self.workspace_storage)
+
+        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
+        self.assertEquals(
+            self.workspace_edit.workspace_items.all()[0].name, 'saved')
+
+
 
 class TestDateRange(TestCase):
     """Test daterange.py"""

@@ -436,6 +436,30 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
     def __unicode__(self):
         return 'Workspace Edit of user %s' % self.user
 
+    def save_to_storage(self, name, owner):
+        """Save this model and workspace_items to Storage.
+        """
+        workspace_storage, _ = WorkspaceStorage.objects.get_or_create(
+            name=name, owner=owner)
+        # Delete all existing workspace item storages.
+        workspace_storage.workspace_items.all().delete()
+        # Create new workspace items.
+        for workspace_item_edit in self.workspace_items.all():
+            workspace_item_storage = workspace_item_edit.as_storage(
+                workspace=workspace_storage)
+            workspace_item_storage.save()
+
+    def load_from_storage(self, workspace_storage):
+        """Load model and workspace_items from Storage.
+        """
+        # Delete all existing workspace items.
+        self.workspace_items.all().delete()
+        # Create new workspace items.
+        for workspace_item_storage in workspace_storage.workspace_items.all():
+            workspace_item_edit = workspace_item_storage.as_edit(
+                workspace=self)
+            workspace_item_edit.save()
+
 
 class WorkspaceItemEdit(WorkspaceItemMixin):
     """
