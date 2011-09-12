@@ -1,5 +1,6 @@
 import datetime
 
+from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -414,6 +415,15 @@ class TestWorkspaceLoadSave(TestCase):
             name='storage', owner=self.user)
         self.workspace_storage.save()
 
+        class Mock(dict):
+            pass
+
+        self.request = Mock()
+        self.request.session = Mock()
+        self.request.session.session_key = 'mock-session-key'
+        self.request.user = AnonymousUser()
+        self.request.META = {}
+
     def test_item_edit_as_storage(self):
         """WorkspaceItemEdit to WorkspaceItemStorage conversion."""
         workspace_item_edit = WorkspaceItemEdit(
@@ -514,6 +524,24 @@ class TestWorkspaceLoadSave(TestCase):
         # 3 workspaces, 3 workspace items should exist.
         self.assertEquals(WorkspaceStorage.objects.count(), 3)
         self.assertEquals(WorkspaceItemStorage.objects.count(), 3)
+
+    def test_save_not_authenticated(self):
+        data = {'name': 'test workspace'}
+        form = lizard_map.forms.WorkspaceSaveForm(data)
+        form.is_valid()  # it must succeed
+
+        # Count workspaces
+        no_of_workspaces = WorkspaceStorage.objects.count()
+
+        view = lizard_map.views.WorkspaceSaveView()
+        view.request = self.request  # Manually put request in view.
+        response = view.form_valid_action(form)  # Perform save action.
+
+        self.assertTrue(response.status_code, 403)
+
+        # Nothing is changed.
+        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)
+
 
 
 class TestDateRange(TestCase):
