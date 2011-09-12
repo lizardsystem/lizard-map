@@ -381,7 +381,8 @@ class WorkspaceItemTest(TestCase):
     def test_representation(self):
         workspace = WorkspaceEdit()
         workspace.save()
-        workspace_item = workspace.workspace_items.create()
+        workspace_item = workspace.workspace_items.create(
+            name="workspace_item")
         # No errors: fine.  As long as we return something.
         self.assertTrue(unicode(workspace_item))
 
