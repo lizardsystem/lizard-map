@@ -361,6 +361,11 @@ function dialogSubmit(event) {
                         $(".workspace").updateWorkspace();
                     }
                 }
+            } else if (context.status === 403) {
+                // Forbidden: display whole page
+                dialogContent(context.responseText);
+                dialogOverlay();
+                dialogCloseDelay();
             } else {
                 // Unknown error
                 dialogContent("Fout bij opslaan, " +
