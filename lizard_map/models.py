@@ -374,7 +374,7 @@ class WorkspaceItemMixin(models.Model):
 
         Used when duplicating WorkspaceStorageItems to
         WorkspaceEditItems and vice versa."""
-        delete_fields = ['_state', '_workspace_cache', 'workspace_id']
+        delete_fields = ['_state', '_workspace_cache', 'workspace_id', 'id']
 
         # Get current data in dict.
         kwargs = self.__dict__
@@ -483,7 +483,7 @@ class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
     owner = models.ForeignKey(User)
 
     def __unicode__(self):
-        return self.name
+        return u'%s (%s)' % (self.name, self.owner)
 
 
 class WorkspaceItemStorage(WorkspaceItemMixin):

@@ -430,6 +430,7 @@ class TestWorkspaceLoadSave(TestCase):
         storage_dict = workspace_item_storage.__dict__
 
         # _workspace_cache does not appear in other code... strange?
+        del storage_dict['id']
         del storage_dict['_state']
         del storage_dict['_workspace_cache']
         del storage_dict['workspace_id']
@@ -452,6 +453,7 @@ class TestWorkspaceLoadSave(TestCase):
         edit_dict = workspace_item_edit.__dict__
 
         # _workspace_cache does not appear in other code... strange?
+        del edit_dict['id']
         del edit_dict['_state']
         del edit_dict['_workspace_cache']
         del edit_dict['workspace_id']
@@ -472,6 +474,46 @@ class TestWorkspaceLoadSave(TestCase):
         self.assertEquals(
             self.workspace_edit.workspace_items.all()[0].name, 'saved')
 
+    def test_save(self):
+        """Load: copy from storage to edit."""
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="edit")
+
+        # Add some random workspace_items in storage workspace.
+        self.workspace_storage.workspace_items.create(name="saved")
+
+        # The name and owner must correspond.
+        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
+
+        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
+
+        # Just copied 'edit' from edit to storage.
+        self.assertEquals(
+            self.workspace_storage.workspace_items.all()[0].name, 'edit')
+
+        # Item "saved" is deleted.
+        self.assertEquals(
+            len(WorkspaceItemStorage.objects.filter(name="saved")), 0)
+
+    def test_save2(self):
+        """Load: copy from storage to edit in different workspaces."""
+        user2 = User(username="pinkpony")
+        user2.save()
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="edit")
+
+        # Find existing workspace = 1.
+        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
+        # Create new workspace = 2.
+        self.workspace_edit.save_to_storage(name='new', owner=self.user)
+        # Create new workspace = 3.
+        self.workspace_edit.save_to_storage(name='storage', owner=user2)
+        # Overwrite workspace = 3.
+        self.workspace_edit.save_to_storage(name='storage', owner=user2)
+
+        # 3 workspaces, 3 workspace items should exist.
+        self.assertEquals(WorkspaceStorage.objects.count(), 3)
+        self.assertEquals(WorkspaceItemStorage.objects.count(), 3)
 
 
 class TestDateRange(TestCase):
