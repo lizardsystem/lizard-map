@@ -288,6 +288,10 @@ function dialogClick(event) {
     $("#dialog").data("replace-titles", "");  // Reset
     $("#dialog").data(
         "replace-titles", $(event.target).attr("data-replace-titles"));
+    // Reload page after successful submit?
+    $("#dialog").data("reload-after-submit", "");  // Reset
+    $("#dialog").data(
+        "reload-after-submit", $(event.target).attr("data-reload-after-submit"));
     dialogSize($(event.target).attr("data-size"));
     return false;
 }
@@ -352,6 +356,10 @@ function dialogSubmit(event) {
                     dialogContent(div);
                     dialogOverlay();
                     dialogCloseDelay();
+                    if ($("#dialog").data("reload-after-submit")) {
+                        // Reload workspace
+                        $(".workspace").updateWorkspace();
+                    }
                 }
             } else {
                 // Unknown error
@@ -365,11 +373,18 @@ function dialogSubmit(event) {
     return false;
 }
 
-/* L3 Generic dialog code that works on a hrefs:
+/* L3 Generic dialog code that works on a hrefs.
 
-1) Get contents from href url and display in div #dialog
+- Define an a href with class "ajax-dialog" or "ajax-dialog-onchange"
+- Optionally add attributes:
+  - data-reload-after-submit="true": reloads the page after successful submit
+  - data-replace-titles="title_id1 title_id2": replaces given tag ids
+    after submit (or onchange).
 
-2) On post, check json result and close if success.
+The actions are as follows:
+1) Click: get contents from href url and display in div #dialog
+2) On submit, check result and close if success. Remain open with
+   result if error.
 
 */
 function setUpDialogs() {

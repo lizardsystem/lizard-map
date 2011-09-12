@@ -365,6 +365,25 @@ class WorkspaceItemMixin(models.Model):
             result[str(k)] = v
         return result
 
+    def __unicode__(self):
+        return self.name
+
+    def _as_new_object(self, obj, workspace):
+        """Return self as a new object with the same properties except
+        workspace.
+
+        Used when duplicating WorkspaceStorageItems to
+        WorkspaceEditItems and vice versa."""
+        # Get current data in dict.
+        kwargs = self.__dict__
+        del kwargs['_state']
+        del kwargs['workspace_id']
+
+        # Put data in new object.
+        workspace_item = obj(**kwargs)
+        workspace_item.workspace = workspace
+        return workspace_item
+
 
 class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
     """
@@ -411,6 +430,9 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
                 result.save()
         return result
 
+    def __unicode__(self):
+        return 'Workspace Edit of user %s' % self.user
+
 
 class WorkspaceItemEdit(WorkspaceItemMixin):
     """
@@ -419,6 +441,10 @@ class WorkspaceItemEdit(WorkspaceItemMixin):
     workspace = models.ForeignKey(
         WorkspaceEdit,
         related_name='workspace_items')
+
+    def as_storage(self, workspace):
+        """Return self as a WorkspaceItemStorage."""
+        return self._as_new_object(WorkspaceItemStorage, workspace)
 
 
 class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
@@ -429,6 +455,9 @@ class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User)
 
+    def __unicode__(self):
+        return self.name
+
 
 class WorkspaceItemStorage(WorkspaceItemMixin):
     """
@@ -437,6 +466,10 @@ class WorkspaceItemStorage(WorkspaceItemMixin):
     workspace = models.ForeignKey(
         WorkspaceStorage,
         related_name='workspace_items')
+
+    def as_edit(self, workspace):
+        """Return self as a WorkspaceItemEdit."""
+        return self._as_new_object(WorkspaceItemEdit, workspace)
 
 
 #### Old models #####

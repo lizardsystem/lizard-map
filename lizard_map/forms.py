@@ -8,14 +8,18 @@ from django.forms.widgets import RadioSelect
 from daterange import PERIOD_CHOICES
 from daterange import PERIOD_OTHER
 
+from lizard_map.models import WorkspaceStorage
+
 
 class WorkspaceSaveForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
 
+    def __init__(self, *args, **kwargs):
+        super(WorkspaceSaveForm, self).__init__(*args, **kwargs)
+
 
 class WorkspaceLoadForm(forms.Form):
-    NAME_CHOICES = (('a', 'a'), ('b', 'b'))
-    name = forms.ChoiceField(required=True)
+    id = forms.ChoiceField(required=True)
 
     def __init__(self, *args, **kwargs):
         """
@@ -23,7 +27,11 @@ class WorkspaceLoadForm(forms.Form):
         """
         print args, kwargs
         super(WorkspaceLoadForm, self).__init__(*args, **kwargs)
-        self.fields['name'].choices = self.NAME_CHOICES
+        # TODO: use request to filter WorkspaceStorage.
+        workspaces = WorkspaceStorage.objects.all()
+        workspace_choices = [
+            (workspace.id, workspace.name) for workspace in workspaces]
+        self.fields['id'].choices = workspace_choices
 
 
 class HorizontalRadioRenderer(forms.RadioSelect.renderer):

@@ -4,6 +4,7 @@ import datetime
 from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render_to_response
 from django.shortcuts import render
@@ -39,6 +40,7 @@ from django.views.generic.edit import FormView
 from lizard_ui.views import ViewContextMixin
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceItemEdit
+from lizard_map.models import WorkspaceStorage
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
@@ -158,6 +160,9 @@ class ActionDialogView(ViewContextMixin, FormView):
     def form_valid_action(self, form):
         """
         Implement your action here.
+
+        Normally return None. If a not-None is returned, that will be
+        returned as result.
         """
         pass
 
@@ -166,7 +171,9 @@ class ActionDialogView(ViewContextMixin, FormView):
         Return rendered template_name_success.
         """
         logger.debug("form is valid")
-        self.form_valid_action(form)
+        result = self.form_valid_action(form)
+        if result:
+            return result
         return render(
             self.request,
             self.template_name_success,
@@ -198,6 +205,7 @@ class ActionDialogView(ViewContextMixin, FormView):
 class WorkspaceSaveView(ActionDialogView):
     template_name = 'lizard_map/form_workspace_save.html'
     template_name_success = 'lizard_map/form_workspace_save_success.html'
+    template_name_forbidden = '403.html'
     form_class = WorkspaceSaveForm  # Define your form
 
     def form_valid_action(self, form):
@@ -205,8 +213,28 @@ class WorkspaceSaveView(ActionDialogView):
         Save edit workspace to storage workspace
         """
         logger.debug("Saving stuff...")
+        form_data = form.cleaned_data
+        # Should be get, else there is nothing to save...
         workspace_edit = WorkspaceEdit.get_or_create(
            self.request.session.session_key, self.request.user)
+        # TODO: quota, warning on duplicate names.
+        user = self.request.user
+        if not user.is_authenticated():
+            html = render_to_string(
+                self.template_name_forbidden,
+                {'message': 'U kunt geen workspace opslaan als U niet bent ingelogd.'},
+                context_instance=RequestContext(self.request))
+            print 'asdf'
+            return HttpResponseForbidden(html)
+        workspace_storage, _ = WorkspaceStorage.objects.get_or_create(
+            name=form_data['name'], owner=user)
+        # Delete all existing workspace item storages.
+        workspace_storage.workspace_items.all().delete()
+        # Create new workspace items.
+        for workspace_item_edit in workspace_edit.workspace_items.all():
+            workspace_item_storage = workspace_item_edit.as_storage(
+                workspace_storage)
+            workspace_item_storage.save()
 
 
 class WorkspaceLoadView(ActionDialogView):
@@ -219,8 +247,19 @@ class WorkspaceLoadView(ActionDialogView):
         Load storage workspace to edit workspace
         """
         logger.debug("Loading stuff...")
+        form_data = form.cleaned_data
+
         workspace_edit = WorkspaceEdit.get_or_create(
            self.request.session.session_key, self.request.user)
+        # TODO: check permissions.
+        workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
+        # Delete all existing workspace items.
+        workspace_edit.workspace_items.all().delete()
+        # Create new workspace items.
+        for workspace_item_storage in workspace_storage.workspace_items.all():
+            workspace_item_edit = workspace_item_storage.as_edit(
+                workspace_edit)
+            workspace_item_edit.save()
 
 
 class DateRangeView(ActionDialogView):

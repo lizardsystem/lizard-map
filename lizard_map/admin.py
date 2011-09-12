@@ -9,10 +9,22 @@ from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
 from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.models import WorkspaceItem
+from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceItemEdit
+from lizard_map.models import WorkspaceStorage
+from lizard_map.models import WorkspaceItemStorage
 
 
 class WorkspaceItemInline(admin.TabularInline):
     model = WorkspaceItem
+
+
+class WorkspaceItemEditInline(admin.TabularInline):
+    model = WorkspaceItemEdit
+
+
+class WorkspaceItemStorageInline(admin.TabularInline):
+    model = WorkspaceItemStorage
 
 
 class WorkspaceCollageInline(admin.TabularInline):
@@ -31,6 +43,18 @@ class WorkspaceAdmin(admin.ModelAdmin):
     inlines = [
         WorkspaceItemInline,
         WorkspaceCollageInline,
+        ]
+
+
+class WorkspaceEditAdmin(admin.ModelAdmin):
+    inlines = [
+        WorkspaceItemEditInline,
+        ]
+
+
+class WorkspaceStorageAdmin(admin.ModelAdmin):
+    inlines = [
+        WorkspaceItemStorageInline,
         ]
 
 
@@ -63,3 +87,5 @@ admin.site.register(WorkspaceCollageSnippet)
 admin.site.register(WorkspaceCollageSnippetGroup,
                     WorkspaceCollageSnippetGroupAdmin)
 admin.site.register(WorkspaceItem)
+admin.site.register(WorkspaceEdit, WorkspaceEditAdmin)
+admin.site.register(WorkspaceStorage, WorkspaceStorageAdmin)
