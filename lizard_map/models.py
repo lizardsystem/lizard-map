@@ -374,10 +374,13 @@ class WorkspaceItemMixin(models.Model):
 
         Used when duplicating WorkspaceStorageItems to
         WorkspaceEditItems and vice versa."""
+        delete_fields = ['_state', '_workspace_cache', 'workspace_id']
+
         # Get current data in dict.
         kwargs = self.__dict__
-        del kwargs['_state']
-        del kwargs['workspace_id']
+        for delete_me in delete_fields:
+            if delete_me in kwargs:
+                del kwargs[delete_me]
 
         # Put data in new object.
         workspace_item = obj(**kwargs)

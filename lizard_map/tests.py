@@ -31,9 +31,11 @@ from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Color
 from lizard_map.models import Legend
 from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceStorage
 #from lizard_map.models import WorkspaceCollage
 #from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.models import WorkspaceItemEdit
+from lizard_map.models import WorkspaceItemStorage
 from lizard_map.operations import AnchestorRegistration
 from lizard_map.operations import CycleError
 from lizard_map.operations import named_list
@@ -42,7 +44,7 @@ from lizard_map.operations import unique_list
 from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
-from lizard_map.workspace import WorkspaceManager
+#from lizard_map.workspace import WorkspaceManager
 from lizard_map.templatetags import workspaces
 import lizard_map.admin
 import lizard_map.coordinates
@@ -395,6 +397,66 @@ class WorkspaceItemTest(TestCase):
 #         self.assertFalse(workspace.collages.all())
 #         workspace.collages.create(name='user collage')
 #         self.assertTrue(workspace.collages.all())
+
+class TestWorkspaceLoadSave(TestCase):
+    """Loading and saving from WorkspaceEdit to WorkspaceStorage.
+
+    """
+
+    def setUp(self):
+        self.user = User(username='mindstorms')
+        self.user.save()
+
+        self.workspace_edit = WorkspaceEdit()
+        self.workspace_edit.save()
+
+        self.workspace_storage = WorkspaceStorage(
+            name='storage', owner=self.user)
+        self.workspace_storage.save()
+
+    def test_item_edit_as_storage(self):
+        """WorkspaceItemEdit to WorkspaceItemStorage conversion."""
+        workspace_item_edit = WorkspaceItemEdit(
+            workspace=self.workspace_edit)
+        workspace_item_edit.save()
+
+        workspace_item_storage = workspace_item_edit.as_storage(
+            workspace=self.workspace_storage)
+        workspace_item_storage.save()  # Do not crash.
+
+        # This dict does not have _state, _workspace_cache, workspace_id
+        edit_dict = workspace_item_edit.__dict__
+
+        storage_dict = workspace_item_storage.__dict__
+
+        # _workspace_cache does not appear in other code... strange?
+        del storage_dict['_state']
+        del storage_dict['_workspace_cache']
+        del storage_dict['workspace_id']
+
+        self.assertEquals(edit_dict, storage_dict)
+
+    def test_item_storage_as_edit(self):
+        """WorkspaceItemStorage to WorkspaceItemEdit conversion."""
+        workspace_item_storage = WorkspaceItemStorage(
+            workspace=self.workspace_storage)
+        workspace_item_storage.save()
+
+        workspace_item_edit = workspace_item_storage.as_edit(
+            workspace=self.workspace_edit)
+        workspace_item_edit.save()  # Do not crash.
+
+        # This dict does not have _state, _workspace_cache, workspace_id
+        storage_dict = workspace_item_storage.__dict__
+
+        edit_dict = workspace_item_edit.__dict__
+
+        # _workspace_cache does not appear in other code... strange?
+        del edit_dict['_state']
+        del edit_dict['_workspace_cache']
+        del edit_dict['workspace_id']
+
+        self.assertEquals(edit_dict, storage_dict)
 
 
 class TestDateRange(TestCase):
