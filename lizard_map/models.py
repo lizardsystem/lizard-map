@@ -29,8 +29,6 @@ from lizard_map.mapnik_helper import point_rule
 
 # New imports
 import datetime
-from django.contrib.auth.models import User
-from django.contrib.sessions.models import Session
 
 
 # Do not change the following items!
@@ -228,7 +226,6 @@ class PeriodMixin(models.Model):
             now + datetime.timedelta(-10.0),
             now + datetime.timedelta(1.0))
 
-
     def period(self, now=None, fallback=False):
         """
         Return specified period. Depends on absolute and custom_time.
@@ -288,13 +285,12 @@ class ExtentMixin(models.Model):
         return (self.x_min, self.y_min, self.x_max, self.y_max)
 
 
-class WorkspaceMixin(models.Model):
+class BackgroundMapMixin(models.Model):
     """
     Workspace stuff
 
     - Default background map
     """
-
 
     # Background map, fall back to default.
     background_map = models.ForeignKey(
@@ -433,7 +429,7 @@ class UserSessionMixin(models.Model):
 
 
 class WorkspaceEdit(
-    UserSessionMixin, WorkspaceMixin, PeriodMixin, ExtentMixin):
+    UserSessionMixin, BackgroundMapMixin, PeriodMixin, ExtentMixin):
     """
     Your editable workspace.
 
@@ -483,7 +479,7 @@ class WorkspaceEditItem(WorkspaceItemMixin):
         return self._as_new_object(WorkspaceStorageItem, workspace)
 
 
-class WorkspaceStorage(WorkspaceMixin, PeriodMixin, ExtentMixin):
+class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin):
     """
     Your stored workspace.
     """
