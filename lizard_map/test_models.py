@@ -2,7 +2,6 @@ import datetime
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
-from django.contrib.sessions.models import Session
 from django.contrib.sessions.backends.db import SessionStore
 from django.test import TestCase
 from django.test.client import Client
@@ -10,7 +9,14 @@ from django.test.client import Client
 
 from lizard_map.models import ExtentMixin
 from lizard_map.models import PeriodMixin
+from lizard_map.models import UserSessionMixin
+
 from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceStorage
+from lizard_map.models import WorkspaceEditItem
+from lizard_map.models import WorkspaceStorageItem
+
+import lizard_map
 
 
 class Period(PeriodMixin):
@@ -45,7 +51,7 @@ class PeriodMixinTest(TestCase):
         dt = p.time(now=now)
         self.assertEquals(dt, datetime.datetime(2011, 8, 15))
 
-    def test_period_absolute(self):
+    def test_period_absolute2(self):
         """
         Using absolute period with custom time.
         """
@@ -148,53 +154,65 @@ class ExtentMixinTest(TestCase):
         self.assertEquals(result, expected)
 
 
-class WorkspaceEditTest(TestCase):
+class UserSession(UserSessionMixin):
+    """Test class to instantiate UserSessionMixin"""
+    pass
+
+
+class UserSessionMixinTest(TestCase):
     def setUp(self):
         self.client = Client()
         self.session_key = 'session_key'
         self.other_session_key = 'other_session_key'
 
     def test_get_or_create(self):
-        """Edit-workspace get_or_create with session and anonymous user"""
+        """User session object get_or_create with session and
+        anonymous user"""
         user = AnonymousUser()
-        ws = WorkspaceEdit.get_or_create(self.session_key, user)
-        self.assertTrue(ws.id)
+        user_session_object = UserSession.get_or_create(
+            self.session_key, user)
+        self.assertTrue(user_session_object.id)
 
     def test_get_or_create2(self):
-        """Edit-workspace get_or_create with user and session"""
+        """User session object get_or_create with user and session"""
         user = User(username='pony', password='pink')
         user.save()
-        ws = WorkspaceEdit.get_or_create(
+        user_session_object = UserSession.get_or_create(
             self.session_key, user=user)
-        self.assertTrue(ws.id)
+        self.assertTrue(user_session_object.id)
 
     def test_get_or_create5(self):
-        """Edit-workspace get_or_create gets same workspace based on session"""
+        """User session object get_or_create gets same workspace based
+        on session"""
         user = AnonymousUser()
-        ws = WorkspaceEdit.get_or_create(self.session_key, user)
-        self.assertTrue(ws.id)
-        ws2 = WorkspaceEdit.get_or_create(self.session_key, user)
-        self.assertEquals(ws.id, ws2.id)
+        user_session_object = UserSession.get_or_create(
+            self.session_key, user)
+        self.assertTrue(user_session_object.id)
+        user_session_object2 = UserSession.get_or_create(
+            self.session_key, user)
+        self.assertEquals(user_session_object.id, user_session_object2.id)
 
     def test_get_or_create6(self):
-        """Edit-workspace get_or_create based on session or user"""
+        """User session object get_or_create based on session or user"""
         user = User(username='pony', password='pink')
         user.save()
 
-        ws = WorkspaceEdit.get_or_create(
+        user_session_object = UserSession.get_or_create(
             self.session_key, user)
-        self.assertTrue(ws.id)
+        self.assertTrue(user_session_object.id)
 
-        ws_user = WorkspaceEdit.get_or_create(
+        user_session_object_user = UserSession.get_or_create(
             self.session_key, user)
-        self.assertEquals(ws.id, ws_user.id)
+        self.assertEquals(
+            user_session_object.id, user_session_object_user.id)
 
-        ws_session = WorkspaceEdit.get_or_create(
+        user_session_object_session = UserSession.get_or_create(
             self.session_key, user)
-        self.assertEquals(ws.id, ws_session.id)
+        self.assertEquals(
+            user_session_object.id, user_session_object_session.id)
 
     def test_get_or_create7(self):
-        """Edit-workspace get_or_create workspace cornercase.
+        """User session object get_or_create workspace cornercase.
 
         Defined user has preference over defined session."""
         user = User(username='pony', password='pink')
@@ -204,22 +222,169 @@ class WorkspaceEditTest(TestCase):
         session_store = SessionStore(session_key='other_session')
         session_store.save()
 
-        ws = WorkspaceEdit.get_or_create(
+        user_session_object = UserSession.get_or_create(
             self.other_session_key, user=user)
-        self.assertTrue(ws.id)
+        self.assertTrue(user_session_object.id)
 
-        ws_user = WorkspaceEdit.get_or_create(
+        user_session_object_user = UserSession.get_or_create(
             self.session_key, user=user)
-        self.assertEquals(ws.id, ws_user.id)
+        self.assertEquals(
+            user_session_object.id, user_session_object_user.id)
 
         # Don't find anything: create new workspace
-        ws_other = WorkspaceEdit.get_or_create(
+        user_session_object_other = UserSession.get_or_create(
             self.other_session_key, user=user2)
-        self.assertNotEquals(ws.id, ws_other.id)
+        self.assertNotEquals(
+            user_session_object.id, user_session_object_other.id)
 
     def test_get_or_create_anonymous(self):
-        """Edit-workspace get_or_create with anonymous user and session"""
+        """User session object get_or_create with anonymous user and
+        session"""
         user = AnonymousUser()
-        ws = WorkspaceEdit.get_or_create(
+        user_session_object = UserSession.get_or_create(
             self.session_key, user=user)
-        self.assertTrue(ws.id)
+        self.assertTrue(user_session_object.id)
+
+
+class WorkspaceLoadSaveTest(TestCase):
+    """Loading and saving from WorkspaceEdit to WorkspaceStorage.
+
+    """
+
+    def setUp(self):
+        self.user = User(username='mindstorms')
+        self.user.save()
+
+        self.workspace_edit = WorkspaceEdit()
+        self.workspace_edit.save()
+
+        self.workspace_storage = WorkspaceStorage(
+            name='storage', owner=self.user)
+        self.workspace_storage.save()
+
+        class Mock(dict):
+            pass
+
+        self.request = Mock()
+        self.request.session = Mock()
+        self.request.session.session_key = 'mock-session-key'
+        self.request.user = AnonymousUser()
+        self.request.META = {}
+
+    def test_item_edit_as_storage(self):
+        """WorkspaceEditItem to WorkspaceStorageItem conversion."""
+        workspace_item_edit = WorkspaceEditItem(
+            workspace=self.workspace_edit)
+        workspace_item_edit.save()
+
+        workspace_storage_item = workspace_item_edit.as_storage(
+            workspace=self.workspace_storage)
+        workspace_storage_item.save()  # Do not crash.
+
+        # This dict does not have _state, _workspace_cache, workspace_id
+        edit_dict = workspace_item_edit.__dict__
+
+        storage_dict = workspace_storage_item.__dict__
+
+        # _workspace_cache does not appear in other code... strange?
+        del storage_dict['id']
+        del storage_dict['_state']
+        del storage_dict['_workspace_cache']
+        del storage_dict['workspace_id']
+
+        self.assertEquals(edit_dict, storage_dict)
+
+    def test_item_storage_as_edit(self):
+        """WorkspaceStorageItem to WorkspaceEditItem conversion."""
+        workspace_storage_item = WorkspaceStorageItem(
+            workspace=self.workspace_storage)
+        workspace_storage_item.save()
+
+        workspace_item_edit = workspace_storage_item.as_edit(
+            workspace=self.workspace_edit)
+        workspace_item_edit.save()  # Do not crash.
+
+        # This dict does not have _state, _workspace_cache, workspace_id
+        storage_dict = workspace_storage_item.__dict__
+
+        edit_dict = workspace_item_edit.__dict__
+
+        # _workspace_cache does not appear in other code... strange?
+        del edit_dict['id']
+        del edit_dict['_state']
+        del edit_dict['_workspace_cache']
+        del edit_dict['workspace_id']
+
+        self.assertEquals(edit_dict, storage_dict)
+
+    def test_load(self):
+        """Load: copy from storage to edit."""
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="mock")
+
+        # Add some random workspace_items in storage workspace.
+        self.workspace_storage.workspace_items.create(name="saved")
+
+        self.workspace_edit.load_from_storage(self.workspace_storage)
+
+        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
+        self.assertEquals(
+            self.workspace_edit.workspace_items.all()[0].name, 'saved')
+
+    def test_save(self):
+        """Load: copy from storage to edit."""
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="edit")
+
+        # Add some random workspace_items in storage workspace.
+        self.workspace_storage.workspace_items.create(name="saved")
+
+        # The name and owner must correspond.
+        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
+
+        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
+
+        # Just copied 'edit' from edit to storage.
+        self.assertEquals(
+            self.workspace_storage.workspace_items.all()[0].name, 'edit')
+
+        # Item "saved" is deleted.
+        self.assertEquals(
+            len(WorkspaceStorageItem.objects.filter(name="saved")), 0)
+
+    def test_save2(self):
+        """Load: copy from storage to edit in different workspaces."""
+        user2 = User(username="pinkpony")
+        user2.save()
+        # Add some random workspace_items in edit workspace.
+        self.workspace_edit.workspace_items.create(name="edit")
+
+        # Find existing workspace = 1.
+        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
+        # Create new workspace = 2.
+        self.workspace_edit.save_to_storage(name='new', owner=self.user)
+        # Create new workspace = 3.
+        self.workspace_edit.save_to_storage(name='storage', owner=user2)
+        # Overwrite workspace = 3.
+        self.workspace_edit.save_to_storage(name='storage', owner=user2)
+
+        # 3 workspaces, 3 workspace items should exist.
+        self.assertEquals(WorkspaceStorage.objects.count(), 3)
+        self.assertEquals(WorkspaceStorageItem.objects.count(), 3)
+
+    def test_save_not_authenticated(self):
+        data = {'name': 'test workspace'}
+        form = lizard_map.forms.WorkspaceSaveForm(data)
+        form.is_valid()  # it must succeed
+
+        # Count workspaces
+        no_of_workspaces = WorkspaceStorage.objects.count()
+
+        view = lizard_map.views.WorkspaceSaveView()
+        view.request = self.request  # Manually put request in view.
+        response = view.form_valid_action(form)  # Perform save action.
+
+        self.assertTrue(response.status_code, 403)
+
+        # Nothing is changed.
+        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)

@@ -1,6 +1,5 @@
 import datetime
 
-from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -32,11 +31,9 @@ from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Color
 from lizard_map.models import Legend
 from lizard_map.models import WorkspaceEdit
-from lizard_map.models import WorkspaceStorage
+from lizard_map.models import WorkspaceEditItem
 #from lizard_map.models import WorkspaceCollage
 #from lizard_map.models import WorkspaceCollageSnippetGroup
-from lizard_map.models import WorkspaceEditItem
-from lizard_map.models import WorkspaceStorageItem
 from lizard_map.operations import AnchestorRegistration
 from lizard_map.operations import CycleError
 from lizard_map.operations import named_list
@@ -58,44 +55,18 @@ import lizard_map.views
 
 # New.
 from lizard_map.test_models import ExtentMixinTest
-from lizard_map.test_models import WorkspaceEditTest
 from lizard_map.test_models import PeriodMixinTest
+from lizard_map.test_models import UserSessionMixinTest
+from lizard_map.test_models import WorkspaceLoadSaveTest
 
 
-# class WorkspaceManagerTest(TestCase):
-
-#     class MockRequest(object):
-#         session = {}
-
-#     def setUp(self):
-#         mock_request = self.MockRequest()
-#         self.workspace_manager = WorkspaceManager(
-#             mock_request)
-
-#     def test_smoke(self):
-#         """We use the WorkspaceManager to find and create our workspaces"""
-#         self.assertTrue(self.workspace_manager)  # It exists.
-
-#     def test_load_or_create(self):
-#         workspace_groups = self.workspace_manager.load_or_create()
-#         self.assertTrue(workspace_groups)
-
-#     def test_load(self):
-#         workspace_groups = self.workspace_manager.load_or_create()
-#         self.assertTrue(workspace_groups)
-#         self.workspace_manager.save_workspaces()
-#         errors = self.workspace_manager.load_workspaces()
-#         self.assertEqual(errors, 0)
-
-#     def test_save(self):
-#         workspace_groups = self.workspace_manager.load_or_create()
-#         self.assertTrue(workspace_groups)
-#         self.workspace_manager.save_workspaces()
-
-#     def test_empty(self):
-#         workspace_groups = self.workspace_manager.load_or_create()
-#         self.assertTrue(workspace_groups)
-#         self.workspace_manager.empty()
+class Mixins(TestCase):
+    # Satisfy pychecker
+    def test_smoke(self):
+        self.assertTrue(ExtentMixinTest)
+        self.assertTrue(PeriodMixinTest)
+        self.assertTrue(UserSessionMixinTest)
+        self.assertTrue(WorkspaceLoadSaveTest)
 
 
 class ViewsTest(TestCase):
@@ -139,13 +110,15 @@ class ViewsTest(TestCase):
 
     def test_search_coordinates(self):
         url = reverse('lizard_map.search_coordinates')
-        url += '?x=430987.5469813&y=6817896.448126&radius=100&user_workspace_id=%d' % self.workspace.id
+        url += ('?x=430987.5469813&y=6817896.448126&radius=100&'
+                'user_workspace_id=%d' % self.workspace.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_search_name(self):
         url = reverse('lizard_map.search_name')
-        url += '?x=430987.5469813&y=6817896.448126&radius=100&user_workspace_id=%d' % self.workspace.id
+        url += ('?x=430987.5469813&y=6817896.448126&radius=100&'
+                'user_workspace_id=%d' % self.workspace.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
@@ -172,42 +145,6 @@ class ViewsTest(TestCase):
              'left': '-14675', 'bottom': '6668977'})
 
 
-# class WorkspaceTest(TestCase):
-
-#     def test_workspace_contains_items(self):
-#         """A workspace can contain workspace items"""
-#         workspace1 = Workspace()
-#         workspace1.save()
-#         self.assertTrue(workspace1)
-#         self.assertFalse(workspace1.workspace_items.all())  # Empty.
-#         workspace_item1 = workspace1.workspace_items.create()
-#         workspace_item2 = workspace1.workspace_items.create()
-#         self.assertEquals(len(workspace1.workspace_items.all()), 2)
-#         self.assertTrue(workspace_item1 in workspace1.workspace_items.all())
-#         self.assertTrue(workspace_item2 in workspace1.workspace_items.all())
-
-#     def test_name(self):
-#         """A workspace always has a name.  It is 'My Workspace' by
-#         default."""
-#         workspace = Workspace()
-#         self.assertEquals(workspace.name, u'My Workspace')
-
-#     def test_representation(self):
-#         workspace = Workspace()
-#         workspace.save()
-#         # No errors: fine.  As long as we return something.
-#         self.assertTrue(unicode(workspace))
-
-#     def test_absolute_url(self):
-#         workspace = Workspace()
-#         workspace.save()
-#         # The initial version of this test asserted that the absolute URL ended
-#         # with '/workspace/1', apparantly assuming that the new workspace would
-#         # have id 1. However, that does not have to be the case.
-#         expected_end = '/workspace/%d/' % workspace.id
-#         self.assertTrue(workspace.get_absolute_url().endswith(expected_end))
-
-
 class WorkspaceEditTest(TestCase):
 
     class MockRequest(object):
@@ -228,7 +165,6 @@ class WorkspaceEditTest(TestCase):
     def test_workspace_item_add(self):
         workspace = WorkspaceEdit()
         workspace.save()
-        url = reverse('lizard_map_workspace_item_toggle')
         params = {'name': 'test workspace_item',
                   'adapter_class': 'test adapter_class',
                   'adapter_layer_json': '{"json"}'}
@@ -247,10 +183,9 @@ class WorkspaceEditTest(TestCase):
         workspace.save()
         workspace_item1 = workspace.workspace_items.create()
         workspace_item2 = workspace.workspace_items.create()
-        url = reverse('lizard_map_workspace_item_reorder')
         order = {str(workspace_item2.id): 10,
                  str(workspace_item1.id): 20}
-        result = lizard_map.views.workspace_item_reorder(
+        lizard_map.views.workspace_item_reorder(
             self.request, workspace_edit=workspace,
             workspace_items_order=order)
 
@@ -265,14 +200,14 @@ class WorkspaceEditTest(TestCase):
         workspace_item1 = workspace.workspace_items.create(
             name='test workspaceitem')
 
-        result = lizard_map.views.workspace_edit_item(
+        lizard_map.views.workspace_edit_item(
             self.request, workspace_edit=workspace,
             workspace_item_id=str(workspace_item1.id),
             visible='false')
         self.assertEqual(
             WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
             False)
-        result = lizard_map.views.workspace_edit_item(
+        lizard_map.views.workspace_edit_item(
             self.request, workspace_edit=workspace,
             workspace_item_id=str(workspace_item1.id),
             visible='true')
@@ -287,7 +222,7 @@ class WorkspaceEditTest(TestCase):
             name='test workspaceitem')
 
         self.request.POST['object_id'] = str(workspace_item1.id)
-        result = lizard_map.views.workspace_item_delete(
+        lizard_map.views.workspace_item_delete(
             self.request, workspace_edit=workspace)
         self.assertFalse(workspace.workspace_items.all())
 
@@ -398,151 +333,6 @@ class WorkspaceItemTest(TestCase):
 #         self.assertFalse(workspace.collages.all())
 #         workspace.collages.create(name='user collage')
 #         self.assertTrue(workspace.collages.all())
-
-class TestWorkspaceLoadSave(TestCase):
-    """Loading and saving from WorkspaceEdit to WorkspaceStorage.
-
-    """
-
-    def setUp(self):
-        self.user = User(username='mindstorms')
-        self.user.save()
-
-        self.workspace_edit = WorkspaceEdit()
-        self.workspace_edit.save()
-
-        self.workspace_storage = WorkspaceStorage(
-            name='storage', owner=self.user)
-        self.workspace_storage.save()
-
-        class Mock(dict):
-            pass
-
-        self.request = Mock()
-        self.request.session = Mock()
-        self.request.session.session_key = 'mock-session-key'
-        self.request.user = AnonymousUser()
-        self.request.META = {}
-
-    def test_item_edit_as_storage(self):
-        """WorkspaceEditItem to WorkspaceStorageItem conversion."""
-        workspace_item_edit = WorkspaceEditItem(
-            workspace=self.workspace_edit)
-        workspace_item_edit.save()
-
-        workspace_storage_item = workspace_item_edit.as_storage(
-            workspace=self.workspace_storage)
-        workspace_storage_item.save()  # Do not crash.
-
-        # This dict does not have _state, _workspace_cache, workspace_id
-        edit_dict = workspace_item_edit.__dict__
-
-        storage_dict = workspace_storage_item.__dict__
-
-        # _workspace_cache does not appear in other code... strange?
-        del storage_dict['id']
-        del storage_dict['_state']
-        del storage_dict['_workspace_cache']
-        del storage_dict['workspace_id']
-
-        self.assertEquals(edit_dict, storage_dict)
-
-    def test_item_storage_as_edit(self):
-        """WorkspaceStorageItem to WorkspaceEditItem conversion."""
-        workspace_storage_item = WorkspaceStorageItem(
-            workspace=self.workspace_storage)
-        workspace_storage_item.save()
-
-        workspace_item_edit = workspace_storage_item.as_edit(
-            workspace=self.workspace_edit)
-        workspace_item_edit.save()  # Do not crash.
-
-        # This dict does not have _state, _workspace_cache, workspace_id
-        storage_dict = workspace_storage_item.__dict__
-
-        edit_dict = workspace_item_edit.__dict__
-
-        # _workspace_cache does not appear in other code... strange?
-        del edit_dict['id']
-        del edit_dict['_state']
-        del edit_dict['_workspace_cache']
-        del edit_dict['workspace_id']
-
-        self.assertEquals(edit_dict, storage_dict)
-
-    def test_load(self):
-        """Load: copy from storage to edit."""
-        # Add some random workspace_items in edit workspace.
-        self.workspace_edit.workspace_items.create(name="mock")
-
-        # Add some random workspace_items in storage workspace.
-        self.workspace_storage.workspace_items.create(name="saved")
-
-        self.workspace_edit.load_from_storage(self.workspace_storage)
-
-        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
-        self.assertEquals(
-            self.workspace_edit.workspace_items.all()[0].name, 'saved')
-
-    def test_save(self):
-        """Load: copy from storage to edit."""
-        # Add some random workspace_items in edit workspace.
-        self.workspace_edit.workspace_items.create(name="edit")
-
-        # Add some random workspace_items in storage workspace.
-        self.workspace_storage.workspace_items.create(name="saved")
-
-        # The name and owner must correspond.
-        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
-
-        self.assertEquals(len(self.workspace_edit.workspace_items.all()), 1)
-
-        # Just copied 'edit' from edit to storage.
-        self.assertEquals(
-            self.workspace_storage.workspace_items.all()[0].name, 'edit')
-
-        # Item "saved" is deleted.
-        self.assertEquals(
-            len(WorkspaceStorageItem.objects.filter(name="saved")), 0)
-
-    def test_save2(self):
-        """Load: copy from storage to edit in different workspaces."""
-        user2 = User(username="pinkpony")
-        user2.save()
-        # Add some random workspace_items in edit workspace.
-        self.workspace_edit.workspace_items.create(name="edit")
-
-        # Find existing workspace = 1.
-        self.workspace_edit.save_to_storage(name='storage', owner=self.user)
-        # Create new workspace = 2.
-        self.workspace_edit.save_to_storage(name='new', owner=self.user)
-        # Create new workspace = 3.
-        self.workspace_edit.save_to_storage(name='storage', owner=user2)
-        # Overwrite workspace = 3.
-        self.workspace_edit.save_to_storage(name='storage', owner=user2)
-
-        # 3 workspaces, 3 workspace items should exist.
-        self.assertEquals(WorkspaceStorage.objects.count(), 3)
-        self.assertEquals(WorkspaceStorageItem.objects.count(), 3)
-
-    def test_save_not_authenticated(self):
-        data = {'name': 'test workspace'}
-        form = lizard_map.forms.WorkspaceSaveForm(data)
-        form.is_valid()  # it must succeed
-
-        # Count workspaces
-        no_of_workspaces = WorkspaceStorage.objects.count()
-
-        view = lizard_map.views.WorkspaceSaveView()
-        view.request = self.request  # Manually put request in view.
-        response = view.form_valid_action(form)  # Perform save action.
-
-        self.assertTrue(response.status_code, 403)
-
-        # Nothing is changed.
-        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)
-
-
 
 class TestDateRange(TestCase):
     """Test daterange.py"""
@@ -1014,14 +804,6 @@ class WorkspaceItemAdapterTest(TestCase):
         identifiers = {}
         self.assertTrue(self.adapter.html_default(identifiers=identifiers))
 
-    # def test_html_default_snippet_group(self):
-    #     workspace_collage = WorkspaceCollage(workspace=self.workspace)
-    #     workspace_collage.save()
-    #     snippet_group = WorkspaceCollageSnippetGroup(
-    #         workspace_collage=workspace_collage)
-    #     snippet_group.save()
-    #     self.assertTrue(self.adapter.html_default(snippet_group=snippet_group))
-
     def test_legend_object_default(self):
         self.adapter.legend_object_default('no_name')
 
@@ -1359,4 +1141,3 @@ class SymbolManagerTest(TestCase):
     def test_list_image_file_names(self):
         icon_names_list = lizard_map.symbol_manager.list_image_file_names()
         self.assertTrue(len(icon_names_list) > 5)
-
