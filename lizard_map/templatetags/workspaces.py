@@ -51,6 +51,15 @@ def workspace_edit(context, workspace_edit):
 
 
 # L3
+@register.inclusion_tag("lizard_map/tag_collage_edit.html",
+                        takes_context=True)
+def collage_edit(context, collage_edit):
+    """Display collage_edit"""
+    return {
+        'collage_edit': collage_edit}
+
+
+# L3
 @register.simple_tag
 def selected_if_in_workspace(
     adapter_class, adapter_layer_json, workspace_edit):

@@ -21,6 +21,7 @@ install_requires = [
     'matplotlib',
     'pyproj',
     'django-piston',
+    'django-jsonfield',
     'south',
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],

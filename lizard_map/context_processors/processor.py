@@ -13,6 +13,7 @@ from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
 
 # New
+from lizard_map.models import CollageEdit
 from lizard_map.models import WorkspaceEdit
 from django.contrib.sessions.models import Session
 
@@ -75,6 +76,10 @@ def workspace_variables(request):
     workspace_edit = WorkspaceEdit.get_or_create(
         request.session.session_key, user=request.user)
     add_to_context['workspace_edit'] = workspace_edit
+
+    collage_edit = CollageEdit.get_or_create(
+        request.session.session_key, user=request.user)
+    add_to_context['collage_edit'] = collage_edit
 
     current_date_range = current_start_end_dates(request, for_form=True)
     current_date_range.update({'period': current_period(request)})

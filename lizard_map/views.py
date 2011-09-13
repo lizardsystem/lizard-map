@@ -38,6 +38,7 @@ from lizard_map.workspace import WorkspaceManager
 from django.views.generic.edit import FormView
 
 from lizard_ui.views import ViewContextMixin
+from lizard_map.models import CollageEdit
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
@@ -114,6 +115,7 @@ def homepage(request,
         context_instance=RequestContext(request))
 
 
+# Obsolete
 def workspace(request,
               workspace_id,
               javascript_click_handler=None,
@@ -294,9 +296,7 @@ def workspace_item_reorder(
 @never_cache
 def workspace_item_toggle(
     request,
-    workspace_edit=None,
-    is_temp_workspace=False,
-    template='lizard_map/tag_workspace.html'):
+    workspace_edit=None):
 
     """Toggle workspace item in workspace.
 
@@ -345,26 +345,19 @@ def workspace_item_toggle(
 
 # L3
 @never_cache
-def workspace_item_empty(
-    request,
-    is_temp_workspace=False,
-    template='lizard_map/tag_workspace.html'):
-
+def workspace_item_empty(request):
     """Clear workspace items for edit workspace."""
     workspace_edit = WorkspaceEdit.get_or_create(
         request.session.session_key, request.user)
-    # We loop through the workspace items, so the custom delete
-    # functions will be called. #3031
-    # TODO find out if this is also needed foor L3
-    for workspace_item in workspace_edit.workspace_items.all():
-        workspace_item.delete()
+    workspace_edit.workspace_items.all().delete()
 
     return HttpResponse("")
 
 
 # L3
 @never_cache
-def workspace_edit_item(request, workspace_edit=None, workspace_item_id=None, visible=None):
+def workspace_edit_item(
+    request, workspace_edit=None, workspace_item_id=None, visible=None):
     """edits a workspace_item
 
     workspace_edit is added for testing
@@ -408,6 +401,71 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     return HttpResponse(json.dumps(deleted))
 
 
+# L3: based on workspace_item_toggle. UNFINISHED NEED TESTING
+@never_cache
+def collage_item_toggle(
+    request,
+    collage_edit=None):
+
+    """Toggle collage item in collage.
+
+    Return if it is added (True), or removed (False)
+    """
+
+    # For testing, workspace_edit can be given.
+    if collage_edit is None:
+        collage_edit = CollageEdit.get_or_create(
+            request.session.session_key, request.user)
+
+    name = request.POST['name']
+    adapter_class = request.POST['adapter_class']
+    adapter_layer_json = request.POST['adapter_layer_json']
+    identifier = json.loads(request.POST['identifier'])
+
+    # Find out if it is already present.
+    existing_collage_items = collage_edit.collage_items.filter(
+        adapter_class=adapter_class,
+        adapter_layer_json=adapter_layer_json,
+        identifier=identifier)
+    if existing_collage_items.count() == 0:
+        # Create new
+        logger.debug("Creating new collage-item.")
+
+        # TODO: put this in model.
+        if collage_edit.collage_items.count() > 0:
+            max_index = collage_edit.collage_items.aggregate(
+                Max('index'))['index__max']
+        else:
+            max_index = 10
+
+        collage_edit.collage_items.create(
+            adapter_class=adapter_class,
+            index=max_index + 10,
+            adapter_layer_json=adapter_layer_json,
+            identifier=identifier,
+            name=name[:80])
+        just_added = True
+    else:
+        # Delete existing items
+        logger.debug("Deleting existing collage-item.")
+        existing_collage_items.delete()
+        just_added = False
+
+    return HttpResponse(json.dumps(just_added))
+
+
+# L3
+@never_cache
+def collage_item_empty(request):
+    """Clear collage items for edit collage."""
+    collage_edit = CollageEdit.get_or_create(
+        request.session.session_key, request.user)
+    collage_edit.workspace_items.all().delete()
+
+    return HttpResponse("")
+
+
+#Obsolete
 @never_cache
 def workspace_item_extent(request, workspace_item_id=None):
     """Returns extent for the workspace in json.

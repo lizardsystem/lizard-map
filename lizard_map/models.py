@@ -29,6 +29,8 @@ from lizard_map.mapnik_helper import point_rule
 
 # New imports
 import datetime
+from django.core.serializers.json import DjangoJSONEncoder
+#from jsonfield.fields import JSONField
 
 
 # Do not change the following items!
@@ -160,6 +162,46 @@ class ColorField(models.CharField):
         if isinstance(value, Color):
             return value
         return Color(value)
+
+
+""" From:
+https://github.com/bradjasper/django-jsonfield/blob/master/jsonfield/fields.py
+
+Using djang-jsonfield results in an error in admin pages using this
+field."""
+class JSONField(models.TextField):
+    """JSONField is a generic textfield that neatly serializes/unserializes
+JSON objects seamlessly"""
+
+    # Used so to_python() is called
+    __metaclass__ = models.SubfieldBase
+
+    def to_python(self, value):
+        """Convert our string value to JSON after we load it from the DB"""
+
+        if value == "":
+            return None
+
+        try:
+            if isinstance(value, basestring):
+                return json.loads(value)
+        except ValueError:
+            pass
+
+        return value
+
+    def get_db_prep_save(self, value, connection):
+        """Convert our JSON object to a string before we save"""
+
+        if not value or value == "":
+            return None
+
+        if isinstance(value, (dict, list)):
+            value = json.dumps(value, cls=DjangoJSONEncoder)
+
+        # Changed connection to kwarg to fix error.
+        return super(JSONField, self).get_db_prep_save(
+            value, connection=connection)
 
 
 def adapter_class_names():
@@ -504,14 +546,15 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
         return self._as_new_object(WorkspaceEditItem, workspace)
 
 
-# class CollageEdit(UserSessionMixin):
-#     pass
+class CollageEdit(UserSessionMixin):
+    pass
 
 
-# class CollageItemEdit(WorkspaceItemMixin):
-#     collage = models.ForeignKey(
-#         CollageEdit,
-#         related_name='collage_items')
+class CollageEditItem(WorkspaceItemMixin):
+    collage = models.ForeignKey(
+        CollageEdit,
+        related_name='collage_items')
+    identifier = JSONField(default="")
 
 
 #### Old models #####

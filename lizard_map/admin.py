@@ -4,6 +4,8 @@ from lizard_map.models import BackgroundMap
 from lizard_map.models import Legend
 from lizard_map.models import LegendPoint
 from lizard_map.models import Setting
+from lizard_map.models import CollageEdit
+from lizard_map.models import CollageEditItem
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
 from lizard_map.models import WorkspaceCollageSnippet
@@ -27,6 +29,10 @@ class WorkspaceStorageItemInline(admin.TabularInline):
     model = WorkspaceStorageItem
 
 
+class CollageEditItemInline(admin.TabularInline):
+    model = CollageEditItem
+
+
 class WorkspaceCollageInline(admin.TabularInline):
     model = WorkspaceCollage
 
@@ -37,6 +43,16 @@ class WorkspaceCollageSnippetInline(admin.TabularInline):
 
 class WorkspaceCollageSnippetGroupInline(admin.TabularInline):
     model = WorkspaceCollageSnippetGroup
+
+
+class CollageEditAdmin(admin.ModelAdmin):
+    inlines = [
+        CollageEditItemInline,
+        ]
+
+
+class CollageEditItemAdmin(admin.ModelAdmin):
+    pass
 
 
 class WorkspaceAdmin(admin.ModelAdmin):
@@ -78,6 +94,8 @@ class BackgroundMapAdmin(admin.ModelAdmin):
 
 
 admin.site.register(BackgroundMap, BackgroundMapAdmin)
+admin.site.register(CollageEdit, CollageEditAdmin)
+admin.site.register(CollageEditItem, CollageEditItemAdmin)
 admin.site.register(Legend)
 admin.site.register(LegendPoint)
 admin.site.register(Setting)
