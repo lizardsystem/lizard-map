@@ -387,22 +387,16 @@ class WorkspaceItemMixin(models.Model):
         return workspace_item
 
 
-class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
-    """
-    Your editable workspace.
-
-    Every user can only have one edit-workspace. If the user is not
-    logged in, look at the session and see if any edit-workspaces
-    match. If all fail, create a new edit-workspace for the user.
+class UserSessionMixin(models.Model):
+    """For objects that are bound to a user and/or session.
     """
     user = models.ForeignKey(User, null=True, blank=True, unique=True)
-    #session = models.ForeignKey(Session, unique=True, blank=True, null=True)
     session_key = models.CharField(
         max_length=40, unique=True, blank=True, null=True)
 
     @classmethod
     def get_or_create(cls, session_key, user):
-        """Get your edit-workspace, or create a new one.
+        """Get your user session object, or create a new one.
         """
         result = None
         if user.is_authenticated():
@@ -414,16 +408,18 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
         if result is None:
             # Try to fetch based on session
             try:
-                workspace = cls.objects.get(session_key=session_key)
-                if user.is_authenticated() and workspace.user != user:
+                user_session_object = cls.objects.get(session_key=session_key)
+                if (user.is_authenticated() and
+                    user_session_object.user != user):
+
                     # Remove session from 'wrong' user/session combi.
                     # Should never happen.
-                    workspace.session_key = None
-                    workspace.save()
+                    user_session_object.session_key = None
+                    user_session_object.save()
                     result = cls(session_key=session_key, user=user)
                     result.save()
                 else:
-                    result = workspace
+                    result = user_session_object
             except cls.DoesNotExist:
                 # Create new.
                 result = cls(session_key=session_key)
@@ -431,6 +427,20 @@ class WorkspaceEdit(WorkspaceMixin, PeriodMixin, ExtentMixin):
                     result.user = user
                 result.save()
         return result
+
+    class Meta:
+        abstract = True
+
+
+class WorkspaceEdit(
+    UserSessionMixin, WorkspaceMixin, PeriodMixin, ExtentMixin):
+    """
+    Your editable workspace.
+
+    Every user can only have one edit-workspace. If the user is not
+    logged in, look at the session and see if any edit-workspaces
+    match. If all fail, create a new edit-workspace for the user.
+    """
 
     def __unicode__(self):
         return 'Workspace Edit of user %s' % self.user
@@ -496,6 +506,16 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
     def as_edit(self, workspace):
         """Return self as a WorkspaceEditItem."""
         return self._as_new_object(WorkspaceEditItem, workspace)
+
+
+# class CollageEdit(UserSessionMixin):
+#     pass
+
+
+# class CollageItemEdit(WorkspaceItemMixin):
+#     collage = models.ForeignKey(
+#         CollageEdit,
+#         related_name='collage_items')
 
 
 #### Old models #####

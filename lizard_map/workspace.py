@@ -452,7 +452,7 @@ class WorkspaceItemAdapter(object):
             # Image url: static url composed with all options and layout tweaks
             # L3: is workspace_item_edit ok?
             img_url = reverse(
-                "lizard_map.workspace_item_edit_image",
+                "lizard_map.workspace_edit_item_image",
                 kwargs={'workspace_item_id': self.workspace_item.id},
                 )
             # If legend option: add legend to layout of identifiers

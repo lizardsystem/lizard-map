@@ -257,7 +257,7 @@ class WorkspaceEditTest(TestCase):
         self.assertEqual(workspace.workspace_items.all()[0], workspace_item2)
         self.assertEqual(workspace.workspace_items.all()[1], workspace_item1)
 
-    def test_workspace_item_edit(self):
+    def test_workspace_edit_item(self):
         workspace = WorkspaceEdit(
             session_key=self.request.session.session_key,
             user=self.request.user)
@@ -265,14 +265,14 @@ class WorkspaceEditTest(TestCase):
         workspace_item1 = workspace.workspace_items.create(
             name='test workspaceitem')
 
-        result = lizard_map.views.workspace_item_edit(
+        result = lizard_map.views.workspace_edit_item(
             self.request, workspace_edit=workspace,
             workspace_item_id=str(workspace_item1.id),
             visible='false')
         self.assertEqual(
             WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
             False)
-        result = lizard_map.views.workspace_item_edit(
+        result = lizard_map.views.workspace_edit_item(
             self.request, workspace_edit=workspace,
             workspace_item_id=str(workspace_item1.id),
             visible='true')
