@@ -5,6 +5,10 @@ Changelog of lizard-map
 2.1.10 (unreleased)
 -------------------
 
+- Made app_screen class-based, with helper class WorkspaceView.
+
+- Added workspaces.
+
 - Added PeriodMixin with tests.
 
 

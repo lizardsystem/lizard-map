@@ -119,26 +119,26 @@ urlpatterns = patterns(
 
     # Actions on your session workspace - the system looks for the right
     # workspace.
-    url(r'^session_workspace/$',
-        'lizard_map.views.session_workspace_edit_item',
-        {'workspace_category': 'temp'},
-        name="lizard_map_session_workspace_add_item_temp"),
-    url(r'^session_workspace/temp/extent/$',
-        'lizard_map.views.session_workspace_extent',
-        {'workspace_category': 'temp'},
-        name="lizard_map_session_workspace_extent_temp"),
+    # url(r'^session_workspace/$',
+    #     'lizard_map.views.session_workspace_edit_item',
+    #     {'workspace_category': 'temp'},
+    #     name="lizard_map_session_workspace_add_item_temp"),
+    # url(r'^session_workspace/temp/extent/$',
+    #     'lizard_map.views.session_workspace_extent',
+    #     {'workspace_category': 'temp'},
+    #     name="lizard_map_session_workspace_extent_temp"),
 
     # Actions/services on session collages
-    url(r'^session_collage/add/',
-        'lizard_map.views.session_collage_snippet_add',
-        name="lizard_map_session_collage_snippet_add"),
-    url(r'^session_collage/add_session_graph_options/',
-        'lizard_map.views.session_collage_snippet_add',
-        {'session_graph_options': True},
-        name="lizard_map_session_collage_snippet_add_session_graph_options"),
-    url(r'^session_collage/delete/',
-        'lizard_map.views.session_collage_snippet_delete',
-        name="lizard_map_session_collage_snippet_delete"),
+    # url(r'^session_collage/add/',
+    #     'lizard_map.views.session_collage_snippet_add',
+    #     name="lizard_map_session_collage_snippet_add"),
+    # url(r'^session_collage/add_session_graph_options/',
+    #     'lizard_map.views.session_collage_snippet_add',
+    #     {'session_graph_options': True},
+    #     name="lizard_map_session_collage_snippet_add_session_graph_options"),
+    # url(r'^session_collage/delete/',
+    #     'lizard_map.views.session_collage_snippet_delete',
+    #     name="lizard_map_session_collage_snippet_delete"),
 
     # Actions on workspace items
     # url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
@@ -189,8 +189,13 @@ if settings.DEBUG:  # Pragma: no cover
         (r'^admin/', include(admin.site.urls)),
         (r'', include('staticfiles.urls')),
         # Demo map stuff.
-        (r'^$', 'django.views.generic.simple.direct_to_template',
-         {'template': 'lizard_map/example_openlayers.html'}),
-        (r'^example_wms/$', 'django.views.generic.simple.direct_to_template',
-         {'template': 'lizard_map/example_wms.html'}),
+        # (r'^$', 'django.views.generic.simple.direct_to_template',
+        #  {'template': 'lizard_map/example_openlayers.html'}),
+        # (r'^example_wms/$', 'django.views.generic.simple.direct_to_template',
+        #  {'template': 'lizard_map/example_wms.html'}),
+
+        # Homepage
+        url(r'^$',  # L3
+            lizard_map.views.HomepageView.as_view(),
+            name="lizard_map_homepage"),
     )

@@ -36,9 +36,13 @@ from lizard_map.workspace import WorkspaceManager
 
 # L3
 from django.views.generic.edit import FormView
+from django.views.generic.base import TemplateView
 
 from lizard_ui.views import ViewContextMixin
+from lizard_map.animation import AnimationSettings
+from lizard_map.daterange import current_period
 from lizard_map.models import CollageEdit
+from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
@@ -61,59 +65,217 @@ TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
 logger = logging.getLogger(__name__)
 
 
-def homepage(request,
-             template='lizard_map/app_screen.html',
-             crumbs_prepend=None,
-             popup_video_url=None,
-             application_screen_slug=None):
-    """Default apps screen, make your own template.
+# L3. Now used in context processor. Will be used in class based views.
+def map_variables(request):
+    # Map variables.
+    session = request.session
+    add_to_context = {}
+    add_to_context.update(MapSettings().map_settings)
 
-    Optionally, if application_screen_slug is None, try to fetch GET
-    parameter 'screen' from url.
-    """
+    # By default it takes coordinates from the django settings. If a
+    # user has custom coordinates in his session, it will take those
+    # coordinates and zoomlevel.
 
-    if application_screen_slug is None:
-        application_screen_slug = request.GET.get('screen', None)
-
-    if crumbs_prepend is None:
-        if application_screen_slug:
-            application_screen = get_object_or_404(
-                ApplicationScreen,
-                slug=application_screen_slug)
-            crumbs = [application_screen.crumb(), ]
-            if application_screen_slug != 'home':
-                # prepend with "home"
-                application_screen_home = get_object_or_404(
-                    ApplicationScreen,
-                    slug='home')
-                crumbs = [application_screen_home.crumb(), ] + crumbs
-        else:
-            crumbs = [CRUMBS_HOMEPAGE]
+    if MAP_LOCATION in session:
+        map_location = session[MAP_LOCATION]
+        add_to_context['start_extent'] = map_location
+        logger.debug('Fetched map coordinates from session: '
+                     '%s' % (map_location))
+    if MAP_BASE_LAYER in session:
+        add_to_context['base_layer_name'] = session[MAP_BASE_LAYER]
     else:
-        crumbs = list(crumbs_prepend)
+        add_to_context['base_layer_name'] = ""
 
-    # Determine if we want to show the video. Only show it once every day or
-    # so.
-    if popup_video_url is not None:
-        now = datetime.datetime.now()
-        if not POPUP_VIDEO_LAST_SEEN in request.session:
-            # Record the time and show the popup.
-            request.session[POPUP_VIDEO_LAST_SEEN] = now
-        elif ((now - request.session[POPUP_VIDEO_LAST_SEEN]) <
-            TIME_BETWEEN_VIDEO_POPUP):
-            # We've seen it recently enough, don't show it now.
-            popup_video_url = None
+    return add_to_context
+
+
+def workspace_variables(request):
+    """Add workspace variables.
+
+    workspaces
+    date_range_form
+    animation_slider
+    use_workspaces: used in template to view certain parts
+    """
+    add_to_context = {}
+
+    workspace_manager = WorkspaceManager(request)
+    workspaces = workspace_manager.load_or_create()
+    add_to_context['workspaces'] = workspaces
+
+    # New
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, user=request.user)
+    add_to_context['workspace_edit'] = workspace_edit
+
+    collage_edit = CollageEdit.get_or_create(
+        request.session.session_key, user=request.user)
+    add_to_context['collage_edit'] = collage_edit
+
+    current_date_range = current_start_end_dates(request, for_form=True)
+    current_date_range.update({'period': current_period(request)})
+
+    add_to_context['date_start_period'] = current_date_range["dt_start"]
+    add_to_context['date_end_period'] = current_date_range["dt_end"]
+
+    date_range_form = DateRangeForm(current_date_range)
+    add_to_context['date_range_form'] = date_range_form
+
+    # Add animation slider? Default: no.
+    animation_slider = None  # default
+    for k, ws_list in workspaces.items():
+        for ws in ws_list:
+            if ws.is_animatable:
+                animation_slider = AnimationSettings(request).info()
+                break
+    add_to_context['animation_slider'] = animation_slider
+
+    # Click/hover handlers.
+    # This used to be 'popup_hover_handler'.
+    add_to_context['javascript_hover_handler'] = Setting.get(
+        'javascript_hover_handler', None)
+
+    add_to_context['javascript_click_handler'] = 'popup_click_handler'
+
+    add_to_context['use_workspaces'] = True
+
+    add_to_context['transparency_slider'] = True
+
+    return add_to_context
+
+
+class WorkspaceView(ViewContextMixin, TemplateView):
+    """Add workspace and map variables to context.
+    """
+    # template_name = 'lizard_map/app_screen.html'
+
+    def get_context_data(self, **kwargs):
+        # Take original context.
+        context = super(WorkspaceView, self).get_context_data(**kwargs)
+
+        # Add map variables.
+        context.update(map_variables(self.request))
+
+        # Add workspaces.
+        context.update(workspace_variables(self.request))
+
+        return context
+
+
+class HomepageView(WorkspaceView):
+    """
+    Homepage view with apps on the left side
+
+    Try to fetch GET parameter 'screen' from url. It points to the
+    application_screen_slug.
+    """
+    template_name = 'lizard_map/app_screen.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomepageView, self).get_context_data(**kwargs)
+
+        # Application screen slug
+        application_screen_slug = kwargs.get('application_screen_slug', None)
+        if application_screen_slug is None:
+            application_screen_slug = self.request.GET.get('screen', None)
+        context['application_screen_slug'] = application_screen_slug
+
+        # Breadcrumbs
+        crumbs_prepend = kwargs.get('crumbs_prepend', None)
+        if crumbs_prepend is None:
+            if application_screen_slug:
+                application_screen = get_object_or_404(
+                    ApplicationScreen,
+                    slug=application_screen_slug)
+                crumbs = [application_screen.crumb(), ]
+                if application_screen_slug != 'home':
+                    # prepend with "home"
+                    application_screen_home = get_object_or_404(
+                        ApplicationScreen,
+                        slug='home')
+                    crumbs = [application_screen_home.crumb(), ] + crumbs
+            else:
+                crumbs = [CRUMBS_HOMEPAGE]
         else:
-            # Record the new time and show the popup.
-            request.session[POPUP_VIDEO_LAST_SEEN] = now
+            crumbs = list(kwargs['crumbs_prepend'])
+        context['crumbs'] = crumbs
 
-    return render_to_response(
-        template,
-        {'crumbs': crumbs,
-         'popup_video_url': popup_video_url,
-         'application_screen_slug': application_screen_slug},
-        context_instance=RequestContext(request))
+        # Determine if we want to show the video. Only show it once
+        # every day or so.
+        popup_video_url = kwargs.get('popup_video_url', None)
 
+        # Update request for popup, resets popup_video_url if too new.
+        if popup_video_url is not None:
+            now = datetime.datetime.now()
+            if not POPUP_VIDEO_LAST_SEEN in self.request.session:
+                # Record the time and show the popup.
+                self.request.session[POPUP_VIDEO_LAST_SEEN] = now
+            elif ((now - self.request.session[POPUP_VIDEO_LAST_SEEN]) <
+                TIME_BETWEEN_VIDEO_POPUP):
+                # We've seen it recently enough, don't show it now.
+                popup_video_url = None
+            else:
+                # Record the new time and show the popup.
+                self.request.session[POPUP_VIDEO_LAST_SEEN] = now
+
+        # May be None, even when popup_video_url exists.
+        context['popup_video_url'] = popup_video_url
+
+        return context
+
+
+# def homepage(request,
+#              template='lizard_map/app_screen.html',
+#              crumbs_prepend=None,
+#              popup_video_url=None,
+#              application_screen_slug=None):
+#     """Default apps screen, make your own template.
+
+#     Optionally, if application_screen_slug is None, try to fetch GET
+#     parameter 'screen' from url.
+#     """
+
+#     if application_screen_slug is None:
+#         application_screen_slug = request.GET.get('screen', None)
+
+#     if crumbs_prepend is None:
+#         if application_screen_slug:
+#             application_screen = get_object_or_404(
+#                 ApplicationScreen,
+#                 slug=application_screen_slug)
+#             crumbs = [application_screen.crumb(), ]
+#             if application_screen_slug != 'home':
+#                 # prepend with "home"
+#                 application_screen_home = get_object_or_404(
+#                     ApplicationScreen,
+#                     slug='home')
+#                 crumbs = [application_screen_home.crumb(), ] + crumbs
+#         else:
+#             crumbs = [CRUMBS_HOMEPAGE]
+#     else:
+#         crumbs = list(crumbs_prepend)
+
+#     # Determine if we want to show the video. Only show it once every day or
+#     # so.
+#     if popup_video_url is not None:
+#         now = datetime.datetime.now()
+#         if not POPUP_VIDEO_LAST_SEEN in request.session:
+#             # Record the time and show the popup.
+#             request.session[POPUP_VIDEO_LAST_SEEN] = now
+#         elif ((now - request.session[POPUP_VIDEO_LAST_SEEN]) <
+#             TIME_BETWEEN_VIDEO_POPUP):
+#             # We've seen it recently enough, don't show it now.
+#             popup_video_url = None
+#         else:
+#             # Record the new time and show the popup.
+#             request.session[POPUP_VIDEO_LAST_SEEN] = now
+
+#     return render_to_response(
+#         template,
+#         {'crumbs': crumbs,
+#          'popup_video_url': popup_video_url,
+#          'application_screen_slug': application_screen_slug},
+#         context_instance=RequestContext(request))
 
 # Obsolete
 def workspace(request,
@@ -137,7 +299,6 @@ def workspace(request,
         template,
         context_dict,
         context_instance=RequestContext(request))
-
 
 ##### Edits on workspace ############
 
@@ -224,7 +385,8 @@ class WorkspaceSaveView(ActionDialogView):
         if not user.is_authenticated():
             html = render_to_string(
                 self.template_name_forbidden,
-                {'message': 'U kunt geen workspace opslaan als U niet bent ingelogd.'},
+                {'message': ('U kunt geen workspace opslaan als U '
+                             'niet bent ingelogd.')},
                 context_instance=RequestContext(self.request))
             return HttpResponseForbidden(html)
         workspace_edit.save_to_storage(name=form_data['name'], owner=user)
@@ -280,7 +442,7 @@ def workspace_item_reorder(
             request.session.session_key, request.user)
     if workspace_items_order is None:
         workspace_items_order = dict([
-                (workspace_item_id, index*10) for
+                (workspace_item_id, index * 10) for
                 index, workspace_item_id in enumerate(
                     request.POST.getlist('workspace-items[]'))])
 
@@ -587,28 +749,28 @@ def snippet_group_image(request, snippet_group_id, legend=True):
                                               layout_extra=layout_extra)
 
 
-@never_cache
-def session_workspace_edit_item(request,
-                                workspace_item_id=None,
-                                workspace_category='user'):
-    """edits workspace item, the function automatically finds best
-    appropriate workspace
+# @never_cache
+# def session_workspace_edit_item(request,
+#                                 workspace_item_id=None,
+#                                 workspace_category='user'):
+#     """edits workspace item, the function automatically finds best
+#     appropriate workspace
 
-    if workspace_item_id is None, a new workspace_item will be created
-    using workspace_item_add TODO if workspace_item_id is filled in,
-    apply edits and save
+#     if workspace_item_id is None, a new workspace_item will be created
+#     using workspace_item_add TODO if workspace_item_id is filled in,
+#     apply edits and save
 
-    """
-    workspace_id = request.session['workspaces'][workspace_category][0]
+#     """
+#     workspace_id = request.session['workspaces'][workspace_category][0]
 
-    is_temp_workspace = workspace_category == 'temp'
+#     is_temp_workspace = workspace_category == 'temp'
 
-    if workspace_item_id is None:
-        return workspace_item_add(request, workspace_id,
-                                  is_temp_workspace=is_temp_workspace)
+#     if workspace_item_id is None:
+#         return workspace_item_add(request, workspace_id,
+#                                   is_temp_workspace=is_temp_workspace)
 
-    #todo: maak functie af
-    return
+#     #todo: maak functie af
+#     return
 
 
 @never_cache
@@ -664,37 +826,12 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     else:
         big_popup = False
 
-    # Figure out temp workspace items (we don't want add-to-collage there).
-    non_user_workspace_item_ids = []
-
-    # Old:
-    # if request is not None:
-    #     workspace_manager = WorkspaceManager(request)
-    #     workspace_manager.load_workspaces()
-    #     workspace_ids = dict([(ws.id, None) for ws in
-    #                           workspace_manager.workspaces['user']])
-    #     # Add workspace_items of items not in workspace.
-    #     non_user_workspace_item_ids = []
-    #     for f in found:
-    #         ws_item = f['workspace_item']
-    #         if ws_item.workspace.id not in workspace_ids:
-    #             non_user_workspace_item_ids.append(ws_item.id)
-
     # Now display them.
     for workspace_item_id, display_group in display_groups.items():
         # There MUST be at least one item in the group
         workspace_item = display_group[0]['workspace_item']
 
-        # Check if this display object must have the option add_snippet
-        # if (hide_add_snippet or
-        #     (workspace_item_id in non_user_workspace_item_ids)):
-
-        #     add_snippet = False
-        # else:
         add_snippet = True
-
-        # Add workspace_item name on top
-        # title = workspace_item.name
 
         try:
             identifiers = [display_object['identifier']
@@ -739,7 +876,6 @@ def popup_collage_json(collage, popup_id, request=None):
 
     html = []
     snippet_groups = collage.visible_snippet_groups()
-#    snippet_groups = collage.snippet_groups.all()
     if len(snippet_groups) > 1:
         big_popup = True
     else:
@@ -1098,6 +1234,7 @@ def wms(request, workspace_storage_id=None):
     return response
 
 
+# L3
 def search_name(request):
     """Search for objects near GET x,y,radius then return
     name.
@@ -1107,9 +1244,6 @@ def search_name(request):
     Optional GET parameter user_workspace_id: a workspace that is
     currently shown.
     """
-    workspace_manager = WorkspaceManager(request)
-    workspace_collections = workspace_manager.load_or_create()
-
     # xy params from the GET request.
     x = float(request.GET.get('x'))
     y = float(request.GET.get('y'))
@@ -1121,15 +1255,8 @@ def search_name(request):
     # Add a workspace, if it's not already in your own workspaces.
     user_workspace_id = request.GET.get('user_workspace_id', None)
     workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
-    # if user_workspace_id is not None:
-    #     workspace_manager.add_other(user_workspace_id)
-    #     workspace_collections = workspace_manager.workspaces
 
     found = []
-    # for workspace_collection in workspace_collections.values():
-    #     for workspace in workspace_collection:
-    #         for workspace_item in workspace.workspace_items.filter(
-    #             visible=True):
 
     for workspace_item in workspace.workspace_items.filter(
         visible=True):
@@ -1160,6 +1287,7 @@ def search_name(request):
         return popup_json([])
 
 
+# L3
 def search_coordinates(request):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
@@ -1191,13 +1319,8 @@ def search_coordinates(request):
     # Add a workspace, if it's not already in your own workspaces.
     user_workspace_id = request.GET.get('user_workspace_id', None)
     workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
-    # if user_workspace_id is not None:
-    #     workspace_manager.add_other(user_workspace_id)
-    #     workspace_collections = workspace_manager.workspaces
 
     found = []
-    # for workspace_collection in workspace_collections.values():
-    #     for workspace in workspace_collection:
     for workspace_item in workspace.workspace_items.filter(
         visible=True):
 
