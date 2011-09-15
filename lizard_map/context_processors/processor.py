@@ -42,12 +42,6 @@ def processor(request):
     """
     add_to_context = {}
 
-    # Add map variables.
-    #add_to_context.update(map_variables(request))
-
-    # Add workspaces.
-    #add_to_context.update(workspace_variables(request))
-
     # Add detected browser.
     add_to_context.update(detect_browser(request))
 

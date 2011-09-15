@@ -14,8 +14,8 @@ from lizard_map.models import WorkspaceStorage
 class WorkspaceSaveForm(forms.Form):
     name = forms.CharField(max_length=100, required=True)
 
-    def __init__(self, *args, **kwargs):
-        super(WorkspaceSaveForm, self).__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super(WorkspaceSaveForm, self).__init__(*args, **kwargs)
 
 
 class WorkspaceLoadForm(forms.Form):
@@ -85,3 +85,12 @@ class DateRangeForm(forms.Form):
             self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
+class CollageForm(forms.Form):
+    """
+    Collage form. Never actually displayed.
+    """
+    workspace_id = forms.IntegerField(required=True)
+    x = forms.FloatField(required=True)
+    y = forms.FloatField(required=True)
+    radius = forms.FloatField(required=True)
+    srs = forms.CharField(max_length=100, required=True)

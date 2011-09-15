@@ -490,7 +490,6 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                console.log(data);
                 show_popup(data);
                 $("#map").css("cursor", "default");
             }
@@ -674,7 +673,7 @@ function setupVideoPopup() {
 }
 
 
-function  setupTableToggle() {
+function setupTableToggle() {
     // For collapsible tables in popups
     $('.toggle_button').live('click', function (event) {
         var $wrapper;

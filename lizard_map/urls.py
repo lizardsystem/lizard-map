@@ -39,12 +39,18 @@ urlpatterns = patterns(
     url(r'^myworkspace/load/$',  # L3
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
+    url(r'^mycollage/$',  # L3
+        lizard_map.views.CollageView.as_view(),
+        name="lizard_map_collage"),
     url(r'^mycollage/collage_items/toggle/$',  # L3
         'lizard_map.views.collage_item_toggle',
         name="lizard_map_collage_item_toggle"),
     url(r'^mycollage/collage_items/empty/$',  # L3
         'lizard_map.views.collage_item_empty',
         name="lizard_map_collage_item_empty"),
+    # url(r'^mycollage/add_selection/$',  # L3
+    #     'lizard_map.views.add_selection',
+    #     name="lizard_map.add_selection"),
 
     # Date range
     url(r'set_animation_date$',
@@ -167,7 +173,8 @@ urlpatterns = patterns(
         'lizard_map.views.search_coordinates',
         name="lizard_map.search_coordinates"),  # L3
     url(r'^search_name/',
-        'lizard_map.views.search_name',
+        'lizard_map.views.search_coordinates',
+        {'format': 'name'},
         name="lizard_map.search_name"),  # L3
 
     # Export.

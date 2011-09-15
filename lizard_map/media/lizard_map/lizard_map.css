@@ -303,3 +303,8 @@ table.toggle_table
 .show_on_date_change
 { display: none;
   }
+
+
+li#map-multiple-selection.active {
+    background-color: #FF0000;
+}

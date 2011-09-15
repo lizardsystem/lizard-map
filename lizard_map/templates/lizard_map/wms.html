@@ -27,6 +27,9 @@
 {% block above-content %}
   {# date_popup is not a valid child of ul #}
 <ul class="map-actions">
+  <li id="map-multiple-selection"
+      class="ss_sprite ss_add action-icon">
+  </li>
   <a href="{% url lizard_map_date_range %}"
      id="date-range"
      title='Van {{ date_start_period|date:"d-m-Y" }} t/m {{ date_end_period|date:"d-m-Y" }}'

@@ -255,8 +255,8 @@ jQuery.fn.updateWorkspace = function () {
                     $('.map-actions', $holder).html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
-                $("#collage").html(
-                    $('#collage', $holder).html());
+                // $("#collage").html(
+                //     $('#collage', $holder).html());
                 reloadGraphs();
                 // reload map layers
                 if ($("#map").length > 0) {

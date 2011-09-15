@@ -5,6 +5,8 @@ Changelog of lizard-map
 2.1.10 (unreleased)
 -------------------
 
+- Integrated search_name in search_coordinates.
+
 - Made app_screen class-based, with helper class WorkspaceView.
 
 - Added workspaces.

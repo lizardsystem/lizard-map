@@ -49,6 +49,7 @@ from lizard_map.models import WorkspaceStorage
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
+from lizard_map.forms import CollageForm
 
 from daterange import deltatime_range
 from daterange import store_timedelta_range
@@ -145,7 +146,8 @@ def workspace_variables(request):
 
 
 class WorkspaceView(ViewContextMixin, TemplateView):
-    """Add workspace and map variables to context.
+    """Add workspace and map variables to context. Used to display a
+    page with the workspace in it.
     """
     # template_name = 'lizard_map/app_screen.html'
 
@@ -223,59 +225,6 @@ class HomepageView(WorkspaceView):
 
         return context
 
-
-# def homepage(request,
-#              template='lizard_map/app_screen.html',
-#              crumbs_prepend=None,
-#              popup_video_url=None,
-#              application_screen_slug=None):
-#     """Default apps screen, make your own template.
-
-#     Optionally, if application_screen_slug is None, try to fetch GET
-#     parameter 'screen' from url.
-#     """
-
-#     if application_screen_slug is None:
-#         application_screen_slug = request.GET.get('screen', None)
-
-#     if crumbs_prepend is None:
-#         if application_screen_slug:
-#             application_screen = get_object_or_404(
-#                 ApplicationScreen,
-#                 slug=application_screen_slug)
-#             crumbs = [application_screen.crumb(), ]
-#             if application_screen_slug != 'home':
-#                 # prepend with "home"
-#                 application_screen_home = get_object_or_404(
-#                     ApplicationScreen,
-#                     slug='home')
-#                 crumbs = [application_screen_home.crumb(), ] + crumbs
-#         else:
-#             crumbs = [CRUMBS_HOMEPAGE]
-#     else:
-#         crumbs = list(crumbs_prepend)
-
-#     # Determine if we want to show the video. Only show it once every day or
-#     # so.
-#     if popup_video_url is not None:
-#         now = datetime.datetime.now()
-#         if not POPUP_VIDEO_LAST_SEEN in request.session:
-#             # Record the time and show the popup.
-#             request.session[POPUP_VIDEO_LAST_SEEN] = now
-#         elif ((now - request.session[POPUP_VIDEO_LAST_SEEN]) <
-#             TIME_BETWEEN_VIDEO_POPUP):
-#             # We've seen it recently enough, don't show it now.
-#             popup_video_url = None
-#         else:
-#             # Record the new time and show the popup.
-#             request.session[POPUP_VIDEO_LAST_SEEN] = now
-
-#     return render_to_response(
-#         template,
-#         {'crumbs': crumbs,
-#          'popup_video_url': popup_video_url,
-#          'application_screen_slug': application_screen_slug},
-#         context_instance=RequestContext(request))
 
 # Obsolete
 def workspace(request,
@@ -1234,28 +1183,12 @@ def wms(request, workspace_storage_id=None):
     return response
 
 
-# L3
-def search_name(request):
-    """Search for objects near GET x,y,radius then return
-    name.
+def search(workspace, google_x, google_y, radius):
+    """Search workspace for given coordinates.
 
-    Optional GET parameter srs, if omitted, assume google.
-
-    Optional GET parameter user_workspace_id: a workspace that is
-    currently shown.
+    Return a list of found results in "adapter.search" dictionary
+    format.
     """
-    # xy params from the GET request.
-    x = float(request.GET.get('x'))
-    y = float(request.GET.get('y'))
-    # TODO: convert radius to correct scale (works now for google + rd)
-    radius = float(request.GET.get('radius'))
-    srs = request.GET.get('srs')
-    google_x, google_y = coordinates.srs_to_google(srs, x, y)
-
-    # Add a workspace, if it's not already in your own workspaces.
-    user_workspace_id = request.GET.get('user_workspace_id', None)
-    workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
-
     found = []
 
     for workspace_item in workspace.workspace_items.filter(
@@ -1267,28 +1200,13 @@ def search_name(request):
             found += search_results
         except:
             logger.exception(
-                "Crashed while calling search_name on %s" %
+                "Crashed while calling search on %s" %
                 workspace_item)
-
-    if found:
-        # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
-        found.sort(key=lambda item: item['distance'])
-        result = {}
-        result['name'] = found[0]['name']
-        # x, y = coordinates.google_to_srs(google_x, google_y, srs)
-        # result['x'] = x
-        # result['y'] = y
-        # For the x/y we use the original x/y value to position the popup to
-        # the lower right of the cursor to prevent click propagation problems.
-        result['x'] = x + (radius / 10)
-        result['y'] = y - (radius / 10)
-        return HttpResponse(json.dumps(result))
-    else:
-        return popup_json([])
+    return found
 
 
 # L3
-def search_coordinates(request):
+def search_coordinates(request, format='popup'):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
 
@@ -1296,6 +1214,8 @@ def search_coordinates(request):
     currently shown.
 
     Optional GET parameter srs, if omitted, assume google.
+
+    Format: 'popup', 'name'
     """
 
     # workspace_manager = WorkspaceManager(request)
@@ -1316,29 +1236,73 @@ def search_coordinates(request):
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
-    # Add a workspace, if it's not already in your own workspaces.
     user_workspace_id = request.GET.get('user_workspace_id', None)
     workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
 
-    found = []
-    for workspace_item in workspace.workspace_items.filter(
-        visible=True):
-
-        # #3033. Ignore crashing searches.
-        try:
-            search_results = workspace_item.adapter.search(
-                google_x, google_y, radius=radius_search)
-            found += search_results
-        except:
-            logger.exception("Crashed while calling search on %s" %
-                             workspace_item)
+    found = search(workspace, google_x, google_y, radius)
 
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
-        return popup_json(found, request=request)
+        if format == 'name':
+            result = {}
+            result['name'] = found[0]['name']
+            # x, y = coordinates.google_to_srs(google_x, google_y, srs)
+            # result['x'] = x
+            # result['y'] = y
+            # For the x/y we use the original x/y value to position the popup to
+            # the lower right of the cursor to prevent click propagation problems.
+            result['x'] = x + (radius / 10)
+            result['y'] = y - (radius / 10)
+            return HttpResponse(json.dumps(result))
+        else:
+            # default: as popup
+            return popup_json(found, request=request)
     else:
         return popup_json([])
+
+
+class CollageView(ActionDialogView):
+    template_name = 'lizard_map/box_collage.html'
+    template_name_success = template_name
+    form_class = CollageForm
+
+    def form_valid_action(self, form):
+        """Find collage items and save them.
+        """
+        form_data = form.cleaned_data
+        x = float(form_data['x'])
+        y = float(form_data['y'])
+        # TODO: convert radius to correct scale (works now for google + rd)
+        radius = float(form_data['radius'])
+        workspace_id = form_data['workspace_id']
+        srs = form_data['srs']
+        google_x, google_y = coordinates.srs_to_google(srs, x, y)
+
+        # Workspace.
+        workspace = WorkspaceEdit.objects.get(pk=workspace_id)
+        collage = CollageEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+
+        found = search(workspace, google_x, google_y, radius)
+
+        for found_item in found:
+            # Add all found items to collage.
+            logger.debug("Adding collage item %s" % found_item['name'])
+            collage.collage_items.create(
+                adapter_class=found_item['workspace_item'].adapter_class,
+                adapter_layer_json=found_item[
+                    'workspace_item'].adapter_layer_json,
+                name=found_item['name'],
+                identifier=found_item['identifier'])
+
+    def get_context_data(self, **kwargs):
+        context = super(CollageView, self).get_context_data(**kwargs)
+        # Add collage-edit
+        collage_edit = CollageEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+        context['collage_edit'] = collage_edit
+        return context
 
 
 """
