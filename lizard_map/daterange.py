@@ -229,6 +229,7 @@ def current_start_end_dates(request, for_form=False, today=None, retrieve_period
         period_start, period_end = PERIOD_DAYS[period]
         dt_start = period_start + today
         dt_end = period_end + today
+
     if for_form:
         return dict(dt_start=dt_start, dt_end=dt_end)
     else:
