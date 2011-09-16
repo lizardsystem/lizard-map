@@ -4,6 +4,9 @@ Changelog of lizard-map
 2.3 (unreleased)
 ----------------
 
+- Removed the youtube popup. Unused at the moment. And the implementation was
+  terribly hardcoded.
+
 - Commented out all the debugging in the symbolmanager
 
 

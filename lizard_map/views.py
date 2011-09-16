@@ -34,7 +34,6 @@ CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
-POPUP_VIDEO_LAST_SEEN = 'popup_video_last_seen'
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
 
 logger = logging.getLogger(__name__)
@@ -43,7 +42,6 @@ logger = logging.getLogger(__name__)
 def homepage(request,
              template='lizard_map/app_screen.html',
              crumbs_prepend=None,
-             popup_video_url=None,
              application_screen_slug=None):
     """Default apps screen, make your own template.
 
@@ -70,21 +68,6 @@ def homepage(request,
             crumbs = [CRUMBS_HOMEPAGE]
     else:
         crumbs = list(crumbs_prepend)
-
-    # Determine if we want to show the video. Only show it once every day or
-    # so.
-    if popup_video_url is not None:
-        now = datetime.datetime.now()
-        if not POPUP_VIDEO_LAST_SEEN in request.session:
-            # Record the time and show the popup.
-            request.session[POPUP_VIDEO_LAST_SEEN] = now
-        elif ((now - request.session[POPUP_VIDEO_LAST_SEEN]) <
-            TIME_BETWEEN_VIDEO_POPUP):
-            # We've seen it recently enough, don't show it now.
-            popup_video_url = None
-        else:
-            # Record the new time and show the popup.
-            request.session[POPUP_VIDEO_LAST_SEEN] = now
 
     return render_to_response(
         template,

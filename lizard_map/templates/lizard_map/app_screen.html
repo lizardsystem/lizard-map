@@ -18,19 +18,3 @@ No workspace
 {% endfor %}
 
 {% endblock %}
-
-
-{% block content %}
-{% if popup_video_url %}
-<div id="intro_popup">
-  <iframe width="560" height="349"
-          src="{{ popup_video_url }}"
-          frameborder="0" allowfullscreen></iframe>
-  <div class="to-site-link">
-    <a href="/">Door naar de site &rarr;</a>
-  </div>
-</div>
-{% endif %}
-{{ block.super }}
-
-{% endblock %}
