@@ -248,8 +248,8 @@ jQuery.fn.updateWorkspace = function () {
             function () {
                 $(".workspace-items", $workspace).html(
                     $('.workspace-items', $holder).html());
-                $(".snippet-list", $workspace).html(
-                    $('.snippet-list', $holder).html());
+                // $(".snippet-list", $workspace).html(
+                //     $('.snippet-list', $holder).html());
                 fillSidebar();
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
