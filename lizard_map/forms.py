@@ -12,13 +12,16 @@ from lizard_map.models import WorkspaceStorage
 
 
 class WorkspaceSaveForm(forms.Form):
+    """
+    Save workspace from edit to storage
+    """
     name = forms.CharField(max_length=100, required=True)
-
-    # def __init__(self, *args, **kwargs):
-    #     super(WorkspaceSaveForm, self).__init__(*args, **kwargs)
 
 
 class WorkspaceLoadForm(forms.Form):
+    """
+    Load workspace from storage to edit.
+    """
     id = forms.ChoiceField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -96,8 +99,8 @@ class CollageForm(forms.Form):
     srs = forms.CharField(max_length=100, required=True)
 
 
-class CollageEmptyForm(forms.Form):
+class EmptyForm(forms.Form):
     """
-    Collage empty form. Used by view.
+    Empty form. Used by views.
     """
     pass

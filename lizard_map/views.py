@@ -51,7 +51,7 @@ from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import CollageForm
-from lizard_map.forms import CollageEmptyForm
+from lizard_map.forms import EmptyForm
 
 from daterange import deltatime_range
 from daterange import store_timedelta_range
@@ -609,15 +609,15 @@ def collage_item_toggle(
     return HttpResponse(json.dumps(just_added))
 
 
-# L3
-@never_cache
-def collage_item_empty(request):
-    """Clear collage items for edit collage."""
-    collage_edit = CollageEdit.get_or_create(
-        request.session.session_key, request.user)
-    collage_edit.workspace_items.all().delete()
+# # L3
+# @never_cache
+# def collage_item_empty(request):
+#     """Clear collage items for edit collage."""
+#     collage_edit = CollageEdit.get_or_create(
+#         request.session.session_key, request.user)
+#     collage_edit.workspace_items.all().delete()
 
-    return HttpResponse("")
+#     return HttpResponse("")
 
 
 #To be updated
@@ -903,6 +903,7 @@ def popup_collage_json(collage, popup_id, request=None):
 # Collages stuff
 
 
+# Needs updating
 def collage(request,
             collage_id,
             editable=False,
@@ -921,6 +922,7 @@ def collage(request,
         context_instance=RequestContext(request))
 
 
+# Obsolete
 @never_cache
 def session_collage_snippet_add(request,
                                 workspace_item_id=None,
@@ -969,6 +971,7 @@ def session_collage_snippet_add(request,
     return HttpResponse(json.dumps(workspace_id))
 
 
+# Obsolete
 def session_collage_snippet_delete(request,
                                    object_id=None):
     """removes snippet
@@ -984,6 +987,7 @@ def session_collage_snippet_delete(request,
     return HttpResponse()
 
 
+# Obsolete
 @never_cache
 def snippet_popup(request, snippet_id=None):
     """get snippet/fews location by snippet_id and return data
@@ -1000,6 +1004,7 @@ def snippet_popup(request, snippet_id=None):
                       hide_add_snippet=True)
 
 
+# Obsolete
 @never_cache
 def collage_popup(request,
                   collage_id=None,
@@ -1020,6 +1025,7 @@ def collage_popup(request,
         request=request)
 
 
+#Obsolete
 @never_cache
 def collage_empty(request):
     """Clear collage for given collage_id.
@@ -1040,6 +1046,7 @@ def collage_empty(request):
     return HttpResponse("")
 
 
+# L3
 @never_cache
 def workspace_item_image(request, workspace_item):
     """Shows image corresponding to workspace item and location identifier(s)
@@ -1073,6 +1080,7 @@ def workspace_item_image(request, workspace_item):
                                         layout_extra=layout_extra)
 
 
+# L3
 def workspace_edit_item_image(request, workspace_item_id):
     workspace_item = get_object_or_404(
         WorkspaceEditItem, pk=workspace_item_id)
@@ -1348,7 +1356,7 @@ class CollageEmptyView(CollageMixin, ActionDialogView):
     """
     template_name = 'lizard_map/box_collage.html'
     template_name_success = template_name
-    form_class = CollageEmptyForm
+    form_class = EmptyForm
 
     def form_valid_action(self, form):
         """Find collage items and save them.
@@ -1357,6 +1365,19 @@ class CollageEmptyView(CollageMixin, ActionDialogView):
         collage_edit = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
         collage_edit.collage_items.all().delete()
+
+
+class WorkspaceEmptyView(WorkspaceMixin, ActionDialogView):
+    template_name = 'lizard_map/box_workspace.html'
+    template_name_success = template_name
+    form_class = EmptyForm
+
+    def form_valid_action(self, form):
+        """
+        """
+        workspace_edit = WorkspaceEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+        workspace_edit.workspace_items.all().delete()
 
 
 """

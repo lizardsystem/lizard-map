@@ -404,17 +404,23 @@ function setUpDialogs() {
 }
 
 
-function actionPostClick(event) {
+function actionPostClick(event, preAction, postAction) {
     var url, target, target_id;
     event.preventDefault();
 
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id")
     target = $(target_id);
+    if (preAction !== undefined) {
+        preAction();
+    }
     $.post(url)
         .success(function (data) {
             div = $("<div/>").html(data).find(".dialog-box").find(target_id);
             target.html(div.html());
+            if (postAction !== undefined) {
+                postAction();
+            }
         })
         .error(function (data) {
             target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
@@ -423,10 +429,28 @@ function actionPostClick(event) {
 }
 
 
+/* Actions to do after server returns from post */
+function postClickWorkspaceEmpty() {
+    var $workspace;
+    $workspace = $("#edit-workspace");
+    // Remove progress.
+    $workspace.find(".sidebarbox-action-progress").remove();
+    $workspace.updateWorkspace();
+}
+
+
+function actionPostClickWorkspaceEmpty(event) {
+    return actionPostClick(
+        event,
+        addProgressAnimationIntoWorkspace,
+        postClickWorkspaceEmpty);
+}
+
 /* Actions post or get an url, then replaces tag data-target-id in
 current page. */
 function setUpActions() {
     $(".action-post").live("click", actionPostClick);
+    $(".action-post-workspace-empty").live("click", actionPostClickWorkspaceEmpty);
 }
 
 /*
@@ -458,24 +482,24 @@ function nothingFoundPopup() {
 L3
 */
 function setUpWorkspaceButtons() {
-    // Trashcan next to "My Workspace"
-    $(".workspace-empty-trigger").live('click', function () {
-        var $workspace, workspace_id, url;
-        $workspace = $(this).parents("div.workspace");
-        workspace_id = $workspace.attr("data-workspace-id");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
-        addProgressAnimationIntoWorkspace();
-        $.post(
-            url, {workspace_id: workspace_id},
-	    function (data) {
-	        // Remove progress.
-                $workspace.find(".sidebarbox-action-progress").remove();
-                $workspace.updateWorkspace();
-                // Remove all "selected" from workspace_acceptables:
-                // everything is gone.
-                $(".workspace-acceptable").removeClass("selected");
-            });
-    });
+    // // Trashcan next to "My Workspace"
+    // $(".workspace-empty-trigger").live('click', function () {
+    //     var $workspace, workspace_id, url;
+    //     $workspace = $(this).parents("div.workspace");
+    //     workspace_id = $workspace.attr("data-workspace-id");
+    //     url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
+    //     addProgressAnimationIntoWorkspace();
+    //     $.post(
+    //         url, {workspace_id: workspace_id},
+    //         function (data) {
+    //             // Remove progress.
+    //             $workspace.find(".sidebarbox-action-progress").remove();
+    //             $workspace.updateWorkspace();
+    //             // Remove all "selected" from workspace_acceptables:
+    //             // everything is gone.
+    //             $(".workspace-acceptable").removeClass("selected");
+    //         });
+    // });
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {
         var $workspace, workspace_id, url, object_id;

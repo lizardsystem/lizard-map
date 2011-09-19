@@ -6,7 +6,6 @@
      data-workspace-id="{{ workspace_edit.id }}"
      data-url-lizard-map-workspace-item-toggle="{% url lizard_map_workspace_item_toggle %}"
      data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
-     data-url-lizard-map-workspace-item-empty="{% url lizard_map_workspace_item_empty %}"
      data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
      data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_edit_item %}"
      data-url-wms="{% url lizard_map_workspace_edit_wms %}"
@@ -25,9 +24,10 @@
        data-reload-after-submit="true"
        class="title ss_sprite ss_arrow_down sidebarbox-action-icon ajax-dialog">&nbsp;</a>
     <a id="workspace-empty"
-       href="#"
+       href="{% url lizard_map_workspace_empty %}"
        title="{% trans 'empty your workspace' %}"
-       class="title ss_sprite ss_bin_closed sidebarbox-action-icon workspace-empty-trigger">
+       class="title ss_sprite ss_bin_closed sidebarbox-action-icon action-post-workspace-empty"
+       data-target-id="#edit-workspace">
     </a>
     <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
       Workspace

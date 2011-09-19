@@ -33,6 +33,9 @@ urlpatterns = patterns(
     url(r'^myworkspace/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
+    url(r'^myworkspace/$',  # L3
+        lizard_map.views.WorkspaceEmptyView.as_view(),
+        name="lizard_map_workspace_empty"),
     url(r'^myworkspace/save/$',  # L3
         lizard_map.views.WorkspaceSaveView.as_view(),
         name="lizard_map_workspace_save"),
