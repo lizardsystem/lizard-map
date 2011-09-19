@@ -94,3 +94,10 @@ class CollageForm(forms.Form):
     y = forms.FloatField(required=True)
     radius = forms.FloatField(required=True)
     srs = forms.CharField(max_length=100, required=True)
+
+
+class CollageEmptyForm(forms.Form):
+    """
+    Collage empty form. Used by view.
+    """
+    pass

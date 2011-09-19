@@ -42,12 +42,18 @@ urlpatterns = patterns(
     url(r'^mycollage/$',  # L3
         lizard_map.views.CollageView.as_view(),
         name="lizard_map_collage"),
-    url(r'^mycollage/collage_items/toggle/$',  # L3
-        'lizard_map.views.collage_item_toggle',
-        name="lizard_map_collage_item_toggle"),
-    url(r'^mycollage/collage_items/empty/$',  # L3
-        'lizard_map.views.collage_item_empty',
-        name="lizard_map_collage_item_empty"),
+    url(r'^mycollage/empty/$',  # L3
+        lizard_map.views.CollageEmptyView.as_view(),
+        name="lizard_map_collage_empty"),
+
+    # url(r'^mycollage/collage_items/toggle/$',  # L3
+    #     'lizard_map.views.collage_item_toggle',
+    #     name="lizard_map_collage_item_toggle"),
+
+    # url(r'^mycollage/collage_items/empty/$',  # L3
+    #     'lizard_map.views.collage_item_empty',
+    #     name="lizard_map_collage_item_empty"),
+
     # url(r'^mycollage/add_selection/$',  # L3
     #     'lizard_map.views.add_selection',
     #     name="lizard_map.add_selection"),
@@ -92,9 +98,9 @@ urlpatterns = patterns(
     url(r'^collage_popup/$',
         'lizard_map.views.collage_popup',
         name="lizard_map.collage_popup"),
-    url(r'^collage_empty/$',
-        'lizard_map.views.collage_empty',
-        name="lizard_map_collage_empty"),
+    # url(r'^collage_empty/$',
+    #     'lizard_map.views.collage_empty',
+    #     name="lizard_map_collage_empty"),
     url(r'^snippet/(?P<snippet_id>\d+)/popup$',
         'lizard_map.views.snippet_popup',
         name="lizard_map.snippet_popup"),

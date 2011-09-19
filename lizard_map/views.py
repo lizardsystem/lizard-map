@@ -51,6 +51,7 @@ from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import CollageForm
+from lizard_map.forms import CollageEmptyForm
 
 from daterange import deltatime_range
 from daterange import store_timedelta_range
@@ -1307,7 +1308,7 @@ def search_coordinates(request, format='popup'):
         return popup_json([])
 
 
-class CollageView(ActionDialogView):
+class CollageView(CollageMixin, ActionDialogView):
     template_name = 'lizard_map/box_collage.html'
     template_name_success = template_name
     form_class = CollageForm
@@ -1341,13 +1342,21 @@ class CollageView(ActionDialogView):
                 name=found_item['name'],
                 identifier=found_item['identifier'])
 
-    def get_context_data(self, **kwargs):
-        context = super(CollageView, self).get_context_data(**kwargs)
-        # Add collage-edit
+
+class CollageEmptyView(CollageMixin, ActionDialogView):
+    """Post result in an empty collage. Return (empty) collage view.
+    """
+    template_name = 'lizard_map/box_collage.html'
+    template_name_success = template_name
+    form_class = CollageEmptyForm
+
+    def form_valid_action(self, form):
+        """Find collage items and save them.
+        """
+        logger.debug('Deleting collage items from collage_edit')
         collage_edit = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
-        context['collage_edit'] = collage_edit
-        return context
+        collage_edit.collage_items.all().delete()
 
 
 """

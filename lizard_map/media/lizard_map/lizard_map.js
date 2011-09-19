@@ -403,6 +403,32 @@ function setUpDialogs() {
     $("#dialog form select").live("change", dialogOnChange);
 }
 
+
+function actionPostClick(event) {
+    var url, target, target_id;
+    event.preventDefault();
+
+    url = $(event.target).attr("href");
+    target_id = $(event.target).attr("data-target-id")
+    target = $(target_id);
+    $.post(url)
+        .success(function (data) {
+            div = $("<div/>").html(data).find(".dialog-box").find(target_id);
+            target.html(div.html());
+        })
+        .error(function (data) {
+            target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
+        });
+    return false;
+}
+
+
+/* Actions post or get an url, then replaces tag data-target-id in
+current page. */
+function setUpActions() {
+    $(".action-post").live("click", actionPostClick);
+}
+
 /*
 Erase the contents of the popup when the user closes the popup
 */
@@ -690,6 +716,7 @@ $(document).ready(function () {
     setUpWorkspaceAcceptable();
     setUpDialogs();
     eraseDialogContentsOnClose();
+    setUpActions();
 
     // Untouched
     setUpWorkspaceButtons();

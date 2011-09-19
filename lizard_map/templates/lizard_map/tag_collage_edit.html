@@ -4,14 +4,13 @@
 <div id="edit-collage"
      class="sidebarbox collage"
      data-collage-id="{{ collage_edit.id }}"
-     data-url-lizard-map-collage-item-toggle="{% url lizard_map_collage_item_toggle %}"
-     data-url-lizard-map-collage-item-empty="{% url lizard_map_collage_item_empty %}"
      >
   <h2>
     <a id="collage-empty"
-       href="#"
-       title="{% trans 'empty your workspace' %}"
-       class="title ss_sprite ss_bin_closed sidebarbox-action-icon collage-empty-trigger">
+       href="{% url lizard_map_collage_empty %}"
+       title="{% trans 'empty your collage' %}"
+       class="title ss_sprite ss_bin_closed sidebarbox-action-icon action-post"
+       data-target-id="#edit-collage">
     </a>
     <span title="Dit is je huidige selectie.">
       Selectie
