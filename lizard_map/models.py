@@ -272,6 +272,9 @@ class WorkspaceItem(models.Model):
     visible = models.BooleanField(default=True)
 
     def __unicode__(self):
+        if self.id is None:
+            # We've already been deleted...
+            return u'DELETED WORKSPACEITEM'
         return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace,
                                            self.adapter_class)
 
@@ -294,6 +297,7 @@ class WorkspaceItem(models.Model):
                         "Deleting problematic WorkspaceItem: %s", self)
                     # Trac #2470. Return a NullAdapter instead?
                     self.delete()
+                    return None
                 return real_adapter
         raise AdapterClassNotFoundError(
             u'Entry point for %r not found' % self.adapter_class)

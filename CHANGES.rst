@@ -4,6 +4,8 @@ Changelog of lizard-map
 2.3 (unreleased)
 ----------------
 
+- Made the automatic invalid-workspaceitem-deletion more robust.
+
 - Removed the youtube popup. Unused at the moment. And the implementation was
   terribly hardcoded.
 

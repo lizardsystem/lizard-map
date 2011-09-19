@@ -367,6 +367,21 @@ class WorkspaceItemTest(TestCase):
         # No errors: fine.  As long as we return something.
         self.assertTrue(unicode(workspace_item))
 
+    def test_delete_invalid_one(self):
+        workspace = Workspace()
+        workspace.save()
+        workspace_item = workspace.workspace_items.create(
+            adapter_class='adapter_dummy')
+        workspace_item.save()
+        self.assertTrue(isinstance(workspace_item.adapter,
+                                   lizard_map.layers.AdapterDummy))
+        workspace_item.adapter_layer_json = '{"invalid": "non existing"}bbb'
+        workspace_item.save()
+        # The workspace item should be deleted after .adapter() got an error.
+        self.assertEquals(workspace_item.adapter, None)
+        # Make sure the code doesn't hang in the __unicode__ after a deletion.
+        self.assertEquals(unicode(workspace_item), u"DELETED WORKSPACEITEM")
+
 
 class TestCollages(TestCase):
 
