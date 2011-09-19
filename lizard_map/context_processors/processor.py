@@ -1,4 +1,4 @@
-from django.conf import settings
+#from django.conf import settings
 import logging
 
 from lizard_map.coordinates import MapSettings
@@ -11,11 +11,6 @@ from lizard_map.views import MAP_LOCATION
 from lizard_map.workspace import WorkspaceManager
 
 # New
-from lizard_map.views import map_variables
-from lizard_map.views import workspace_variables
-from lizard_map.models import CollageEdit
-from lizard_map.models import WorkspaceEdit
-from django.contrib.sessions.models import Session
 
 
 logger = logging.getLogger(__name__)
@@ -45,11 +40,11 @@ def processor(request):
     # Add detected browser.
     add_to_context.update(detect_browser(request))
 
-    # Add google_tracking_code, if available.
-    try:
-        add_to_context.update(
-            {'google_tracking_code': settings.GOOGLE_TRACKING_CODE})
-    except AttributeError:
-        pass
+    # # Add google_tracking_code, if available.
+    # try:
+    #     add_to_context.update(
+    #         {'google_tracking_code': settings.GOOGLE_TRACKING_CODE})
+    # except AttributeError:
+    #     pass
 
     return add_to_context

@@ -507,6 +507,14 @@ class WorkspaceEdit(
                 workspace=self)
             workspace_edit_item.save()
 
+    @property
+    def is_animatable(self):
+        """Determine if any visible workspace_item is animatable."""
+        for workspace_item in self.workspace_items.filter(visible=True):
+            if workspace_item.adapter.is_animatable:
+                return True
+        return False
+
 
 class WorkspaceEditItem(WorkspaceItemMixin):
     """
@@ -1405,6 +1413,19 @@ class Setting(models.Model):
         Return {key: value} for given key
         """
         return {key: cls.get(key, default)}
+
+    @classmethod
+    def extent(cls, key, fallback):
+        """ Setting in "xx0,yy0,xx1,yy1" format.
+
+        TODO: test"""
+        extent_names = ['left', 'bottom', 'right', 'top']
+        extent_list = cls.get(
+            key, fallback).split(',')
+        extent = dict(
+            [(extent_names[i], s.strip())
+             for i, s in enumerate(extent_list)])
+        return extent
 
 
 # For Django 1.3:

@@ -1,6 +1,7 @@
 import StringIO
 import datetime
 
+from django.conf import settings
 from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -41,6 +42,7 @@ from django.views.generic.base import TemplateView
 from lizard_ui.views import ViewContextMixin
 from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_period
+from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
@@ -66,105 +68,143 @@ TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
 logger = logging.getLogger(__name__)
 
 
-# L3. Now used in context processor. Will be used in class based views.
-def map_variables(request):
-    # Map variables.
-    session = request.session
-    add_to_context = {}
-    add_to_context.update(MapSettings().map_settings)
-
-    # By default it takes coordinates from the django settings. If a
-    # user has custom coordinates in his session, it will take those
-    # coordinates and zoomlevel.
-
-    if MAP_LOCATION in session:
-        map_location = session[MAP_LOCATION]
-        add_to_context['start_extent'] = map_location
-        logger.debug('Fetched map coordinates from session: '
-                     '%s' % (map_location))
-    if MAP_BASE_LAYER in session:
-        add_to_context['base_layer_name'] = session[MAP_BASE_LAYER]
-    else:
-        add_to_context['base_layer_name'] = ""
-
-    return add_to_context
-
-
-def workspace_variables(request):
-    """Add workspace variables.
-
-    workspaces
-    date_range_form
-    animation_slider
-    use_workspaces: used in template to view certain parts
+class GoogleTrackingMixin(object):
     """
-    add_to_context = {}
-
-    workspace_manager = WorkspaceManager(request)
-    workspaces = workspace_manager.load_or_create()
-    add_to_context['workspaces'] = workspaces
-
-    # New
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, user=request.user)
-    add_to_context['workspace_edit'] = workspace_edit
-
-    collage_edit = CollageEdit.get_or_create(
-        request.session.session_key, user=request.user)
-    add_to_context['collage_edit'] = collage_edit
-
-    current_date_range = current_start_end_dates(request, for_form=True)
-    current_date_range.update({'period': current_period(request)})
-
-    add_to_context['date_start_period'] = current_date_range["dt_start"]
-    add_to_context['date_end_period'] = current_date_range["dt_end"]
-
-    date_range_form = DateRangeForm(current_date_range)
-    add_to_context['date_range_form'] = date_range_form
-
-    # Add animation slider? Default: no.
-    animation_slider = None  # default
-    for k, ws_list in workspaces.items():
-        for ws in ws_list:
-            if ws.is_animatable:
-                animation_slider = AnimationSettings(request).info()
-                break
-    add_to_context['animation_slider'] = animation_slider
-
-    # Click/hover handlers.
-    # This used to be 'popup_hover_handler'.
-    add_to_context['javascript_hover_handler'] = Setting.get(
-        'javascript_hover_handler', None)
-
-    add_to_context['javascript_click_handler'] = 'popup_click_handler'
-
-    add_to_context['use_workspaces'] = True
-
-    add_to_context['transparency_slider'] = True
-
-    return add_to_context
-
-
-class WorkspaceView(ViewContextMixin, TemplateView):
-    """Add workspace and map variables to context. Used to display a
-    page with the workspace in it.
+    Google tracking code.
     """
-    # template_name = 'lizard_map/app_screen.html'
+    def google_tracking_code():
+        try:
+            return settings.GOOGLE_TRACKING_CODE
+        except AttributeError:
+            return None
 
-    def get_context_data(self, **kwargs):
-        # Take original context.
-        context = super(WorkspaceView, self).get_context_data(**kwargs)
 
+class WorkspaceMixin(object):
+    """Add workspace and map variables. Not (yet) pretty.
+    """
+    javascript_click_handler = 'popup_click_handler'
+
+    def workspace_edit(self):
+        """Return your workspace"""
+        if not hasattr(self, '_workspace_edit'):
+            self._workspace_edit = WorkspaceEdit.get_or_create(
+                self.request.session.session_key, user=self.request.user)
+        return self._workspace_edit
+
+    def animation_slider(self):
+        """Add animation slider? Default: none."""
+        if not hasattr(self, '_animation_slider'):
+            self._animation_slider = None  # default
+            if self.workspace_edit().is_animatable:
+                self._animation_slider = AnimationSettings(self.request).info()
+        return self._animation_slider
+
+    def javascript_hover_handler(self):
+        if not hasattr(self, '_javascript_hover_handler'):
+            self._javascript_hover_handler = Setting.get(
+                'javascript_hover_handler', None)
+        return self._javascript_hover_handler
+
+
+class MapMixin(object):
+    """All map stuff
+    """
+    has_google = False  # Can be set after calling background_maps
+
+    def maps(self):
         # Add map variables.
-        context.update(map_variables(self.request))
+        self.map_variables = map_variables(self.request)
+        return ""
 
-        # Add workspaces.
-        context.update(workspace_variables(self.request))
+    def max_extent(self):
+        s = Setting.extent(
+            'max_extent',
+            '-20037508.34, -20037508.34, 20037508.34, 20037508.34')
+        return s
 
-        return context
+    def start_extent(self):
+        map_location = Setting.extent(
+            'start_extent',
+            '-14675, 6668977, 1254790, 6964942')
+        if MAP_LOCATION in self.request.session:
+            map_location = self.request.session[MAP_LOCATION]
+            logger.debug('Fetched map coordinates from session: '
+                         '%s' % (map_location))
+        return map_location
+
+    def projection(self):
+        return Setting.get('projection', 'EPSG:900913')
+
+    def display_projection(self):
+        return Setting.get('projection', 'EPSG:4326')
+
+    def googlemaps_api_key(self):
+        return Setting.get('projection', '')  # Must be defined
+
+    def base_layer_name(self):
+        if MAP_BASE_LAYER in self.request.session:
+            return self.request.session[MAP_BASE_LAYER]
+        else:
+            return ""
+
+    def background_maps(self):
+        maps = BackgroundMap.objects.filter(active=True)
+
+        # For the client side to determine is there is a google map.
+        if maps.filter(
+            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
+
+            self.has_google = True
+
+        if not maps:
+            logger.warn("No background maps are active. Taking default.")
+            maps = BackgroundMap(
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=BackgroundMap.LAYER_TYPE_OSM,
+                layer_url=DEFAULT_OSM_LAYER_URL)
+
+        return maps
 
 
-class HomepageView(WorkspaceView):
+class CollageMixin(object):
+
+    def collage_edit(self):
+        if not hasattr(self, '_collage_edit'):
+            self._collage_edit = CollageEdit.get_or_create(
+                self.request.session.session_key, user=self.request.user)
+        return self._collage_edit
+
+
+class DateRangeMixin(object):
+    """Date range stuff
+    """
+    def current_date_range(self):
+        date_range = current_start_end_dates(
+            self.request, for_form=True)
+        date_range.update(
+            {'period': current_period(self.request)})
+        return date_range
+
+    def date_start_period(self):
+        return self.current_date_range()["dt_start"]
+
+    def date_end_period(self):
+        return self.current_date_range()["dt_end"]
+
+    def date_range_form(self):
+        return DateRangeForm(self.current_date_range())
+
+
+class AppView(
+    WorkspaceMixin, CollageMixin, DateRangeMixin, ViewContextMixin, MapMixin,
+    GoogleTrackingMixin, TemplateView):
+    """All-in-one"""
+    pass
+
+
+class HomepageView(AppView):
     """
     Homepage view with apps on the left side
 
@@ -360,7 +400,7 @@ class WorkspaceLoadView(ActionDialogView):
         workspace_edit.load_from_storage(workspace_storage)
 
 
-class DateRangeView(ActionDialogView):
+class DateRangeView(DateRangeMixin, ActionDialogView):
     template_name = 'lizard_map/box_daterange.html'
     template_name_success = template_name
     form_class = DateRangeForm  # Define your form
@@ -576,7 +616,7 @@ def collage_item_empty(request):
     return HttpResponse("")
 
 
-#Obsolete
+#To be updated
 @never_cache
 def workspace_item_extent(request, workspace_item_id=None):
     """Returns extent for the workspace in json.

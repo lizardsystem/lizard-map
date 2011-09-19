@@ -125,39 +125,39 @@ class MapSettings(object):
         def setting(key):
             return Setting.get_dict(key, DEFAULT_MAP_SETTINGS[key])
 
-        def extent_setting(key):
-            """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
-            extent_names = ['left', 'bottom', 'right', 'top']
-            extent_list = Setting.get(
-                key, DEFAULT_MAP_SETTINGS[key]).split(',')
-            extent = dict(
-                [(extent_names[i], s.strip())
-                 for i, s in enumerate(extent_list)])
-            return {key: extent}
+        # def extent_setting(key):
+        #     """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
+        #     extent_names = ['left', 'bottom', 'right', 'top']
+        #     extent_list = Setting.get(
+        #         key, DEFAULT_MAP_SETTINGS[key]).split(',')
+        #     extent = dict(
+        #         [(extent_names[i], s.strip())
+        #          for i, s in enumerate(extent_list)])
+        #     return {key: extent}
 
-        self.global_settings = {}
+        # self.global_settings = {}
 
-        self.global_settings.update(extent_setting('start_extent'))
-        self.global_settings.update(extent_setting('max_extent'))
+        # self.global_settings.update(extent_setting('start_extent'))
+        # self.global_settings.update(extent_setting('max_extent'))
 
-        self.global_settings.update(setting('googlemaps_api_key'))
-        self.global_settings.update(setting('projection'))
-        self.global_settings.update(setting('display_projection'))
+        # self.global_settings.update(setting('googlemaps_api_key'))
+        # self.global_settings.update(setting('projection'))
+        # self.global_settings.update(setting('display_projection'))
 
-        self.background_maps = BackgroundMap.objects.filter(active=True)
+        # self.background_maps = BackgroundMap.objects.filter(active=True)
 
-        # For the client side to determine is there is a google map.
-        if self.background_maps.filter(
-            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
+        # # For the client side to determine is there is a google map.
+        # if self.background_maps.filter(
+        #     layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
 
-            self.global_settings.update({'has_google': True})
+        #     self.global_settings.update({'has_google': True})
 
-        if not self.background_maps:
-            logger.warn("No background maps are active. Taking default.")
-            self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
+        # if not self.background_maps:
+        #     logger.warn("No background maps are active. Taking default.")
+        #     self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
 
-        self.map_settings = dict(self.global_settings)
-        self.map_settings.update({'background_maps': self.background_maps})
+        # self.map_settings = dict(self.global_settings)
+        # self.map_settings.update({'background_maps': self.background_maps})
 
     def mapnik_projection(self):
         """Returns the mapnik projection.

@@ -3,8 +3,8 @@
   <form action="{% url lizard_map_date_range %}"
         method="post">
     {% csrf_token %}
-    {{ date_range_form.as_p }}
+    {{ view.date_range_form.as_p }}
     <div><input type="submit" value="opslaan" /></div>
   </form>
 </div>
-<div id="date-range">Van {{ date_start_period|date:"d-m-Y" }} t/m {{ date_end_period|date:"d-m-Y" }}</div>
+<div id="date-range">Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}</div>
