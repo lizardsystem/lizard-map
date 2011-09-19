@@ -72,7 +72,6 @@ def homepage(request,
     return render_to_response(
         template,
         {'crumbs': crumbs,
-         'popup_video_url': popup_video_url,
          'application_screen_slug': application_screen_slug},
         context_instance=RequestContext(request))
 
