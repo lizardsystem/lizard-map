@@ -23,7 +23,6 @@ from lizard_ui.models import ApplicationScreen
 from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import slider_layout_extra
-from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceCollage
@@ -63,6 +62,10 @@ MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
 POPUP_VIDEO_LAST_SEEN = 'popup_video_last_seen'
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
+
+
+DEFAULT_START_EXTENT = '-14675, 6668977, 1254790, 6964942'
+DEFAULT_PROJECTION = 'EPSG:900913'
 
 
 logger = logging.getLogger(__name__)
@@ -125,7 +128,7 @@ class MapMixin(object):
     def start_extent(self):
         map_location = Setting.extent(
             'start_extent',
-            '-14675, 6668977, 1254790, 6964942')
+            DEFAULT_START_EXTENT)
         if MAP_LOCATION in self.request.session:
             map_location = self.request.session[MAP_LOCATION]
             logger.debug('Fetched map coordinates from session: '
@@ -133,7 +136,7 @@ class MapMixin(object):
         return map_location
 
     def projection(self):
-        return Setting.get('projection', 'EPSG:900913')
+        return Setting.get('projection', DEFAULT_PROJECTION)
 
     def display_projection(self):
         return Setting.get('projection', 'EPSG:4326')
@@ -627,10 +630,12 @@ def workspace_item_extent(request, workspace_item_id=None):
     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
     extent = workspace_item.adapter.extent()
 
-    map_settings = MapSettings()
-    extent_converted = map_settings.convert_google_extent_map_srs(
-        extent['east'], extent['north'],
-        extent['west'], extent['south'])
+    srs = Setting.get('projection', DEFAULT_PROJECTION)
+    extent_converted['east'], extent_converted['north'] = google_to_srs(
+        extent['east'], extent['north'], srs)
+    extent_converted['west'], extent_converted['south'] = google_to_srs(
+        extent['west'], extent['south'], srs)
+
     return HttpResponse(json.dumps(extent_converted))
 
 
@@ -1462,8 +1467,10 @@ def map_location_load_default(request):
     """
     Return start_extent
     """
-    map_settings = MapSettings()
-    extent = map_settings.map_settings['start_extent']
+    extent = Setting.extent(
+        'start_extent',
+        DEFAULT_START_EXTENT)
+
     map_location = {'extent': extent}
 
     request.session[MAP_BASE_LAYER] = ''  # Reset selected base layer.

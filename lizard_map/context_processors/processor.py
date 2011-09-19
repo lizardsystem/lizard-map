@@ -1,7 +1,8 @@
+# Obsolete
 #from django.conf import settings
 import logging
 
-from lizard_map.coordinates import MapSettings
+#from lizard_map.coordinates import MapSettings
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.forms import DateRangeForm

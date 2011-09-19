@@ -226,14 +226,14 @@ class WorkspaceEditTest(TestCase):
             self.request, workspace_edit=workspace)
         self.assertFalse(workspace.workspace_items.all())
 
-    def test_workspace_extent_temp(self):
-        """
-        Tests if the workspace extent does not crash (although the
-        content will be meaningless).
-        """
-        url = reverse('lizard_map_session_workspace_extent_temp')
-        result = self.client.get(url, {})
-        self.assertEqual(result.status_code, 200)
+    # def test_workspace_extent_temp(self):
+    #     """
+    #     Tests if the workspace extent does not crash (although the
+    #     content will be meaningless).
+    #     """
+    #     url = reverse('lizard_map_session_workspace_extent_temp')
+    #     result = self.client.get(url, {})
+    #     self.assertEqual(result.status_code, 200)
 
     # Not testable without adapter
     # def test_workspace_extent(self):
@@ -1086,39 +1086,41 @@ class CoordinatesTest(TestCase):
             lizard_map.coordinates.detect_prj(prj),
             lizard_map.coordinates.WGS84)
 
-    def test_map_settings(self):
-        """
-        Test MapSettings class. Nothing in settings.py, so revert to
-        default google projection and srid.
-        """
-        map_settings = lizard_map.coordinates.MapSettings()
+    # Jack *thinks* map_settings could be deleted
 
-        self.assertTrue(map_settings.mapnik_projection(),
-                        lizard_map.coordinates.GOOGLE)
-        self.assertTrue(map_settings.srid, 900913)
+    # def test_map_settings(self):
+    #     """
+    #     Test MapSettings class. Nothing in settings.py, so revert to
+    #     default google projection and srid.
+    #     """
+    #     map_settings = lizard_map.coordinates.MapSettings()
 
-    def test_map_settings2(self):
-        """
-        Test custom settings for MapSettings.
-        """
+    #     self.assertTrue(map_settings.mapnik_projection(),
+    #                     lizard_map.coordinates.GOOGLE)
+    #     self.assertTrue(map_settings.srid, 900913)
 
-        MAP_SETTINGS = {
-            'base_layer_type': 'WMS',  # OSM or WMS
-            'projection': 'EPSG:28992',  # EPSG:900913, EPSG:28992
-            'display_projection': 'EPSG:28992',  # EPSG:900913/28992/4326
-            'startlocation_x': '144000',
-            'startlocation_y': '486000',
-            'startlocation_zoom': '4',
-            'base_layer_wms': (
-                'http://kaart.almere.nl/wmsconnector/com.esri.wms.Esrimap?'
-                'SERVICENAME=AIKWMS&'),
-            'base_layer_wms_layers': (
-                'mrsid2008'),
-            }
-        map_settings = lizard_map.coordinates.MapSettings(MAP_SETTINGS)
-        self.assertTrue(map_settings.mapnik_projection(),
-                        lizard_map.coordinates.RD)
-        self.assertTrue(map_settings.srid, 28992)
+    # def test_map_settings2(self):
+    #     """
+    #     Test custom settings for MapSettings.
+    #     """
+
+    #     MAP_SETTINGS = {
+    #         'base_layer_type': 'WMS',  # OSM or WMS
+    #         'projection': 'EPSG:28992',  # EPSG:900913, EPSG:28992
+    #         'display_projection': 'EPSG:28992',  # EPSG:900913/28992/4326
+    #         'startlocation_x': '144000',
+    #         'startlocation_y': '486000',
+    #         'startlocation_zoom': '4',
+    #         'base_layer_wms': (
+    #             'http://kaart.almere.nl/wmsconnector/com.esri.wms.Esrimap?'
+    #             'SERVICENAME=AIKWMS&'),
+    #         'base_layer_wms_layers': (
+    #             'mrsid2008'),
+    #         }
+    #     map_settings = lizard_map.coordinates.MapSettings(MAP_SETTINGS)
+    #     self.assertTrue(map_settings.mapnik_projection(),
+    #                     lizard_map.coordinates.RD)
+    #     self.assertTrue(map_settings.srid, 28992)
 
     def test_srs_to_google(self):
         x, y = lizard_map.coordinates.srs_to_google(
