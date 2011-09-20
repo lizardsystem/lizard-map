@@ -439,7 +439,7 @@ function postClickWorkspaceEmpty() {
 }
 
 
-function actionPostClickWorkspaceEmpty(event) {
+function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
         addProgressAnimationIntoWorkspace,
@@ -450,7 +450,8 @@ function actionPostClickWorkspaceEmpty(event) {
 current page. */
 function setUpActions() {
     $(".action-post").live("click", actionPostClick);
-    $(".action-post-workspace-empty").live("click", actionPostClickWorkspaceEmpty);
+    // Empty workspace AND empty collage.
+    $(".action-post-workspace-empty").live("click", actionPostClickEmpty);
 }
 
 /*

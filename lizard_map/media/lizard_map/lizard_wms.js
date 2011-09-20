@@ -55,6 +55,7 @@ function addSelection(x, y, map) {
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
 
+                stretchOneSidebarBox();
                 //show_popup(data);
                 //$("#map").css("cursor", "default");
             }
@@ -463,7 +464,7 @@ function setDownloadImageLink() {
 
 /* map-multiple-selection button */
 function setUpMultipleSelection() {
-    $("#map-multiple-selection").click(function () {
+    $("#map-multiple-selection").live("click", function () {
         $(this).toggleClass("active");
     });
 }

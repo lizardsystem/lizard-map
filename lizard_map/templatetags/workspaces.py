@@ -68,7 +68,6 @@ def selected_if_in_workspace(
 
     TODO: cache this thing.
     """
-    print workspace_edit
     return ' selected' if workspace_edit.workspace_items.filter(
         adapter_class=adapter_class,
         adapter_layer_json=adapter_layer_json).count() > 0 else ''

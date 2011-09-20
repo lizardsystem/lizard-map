@@ -151,7 +151,14 @@
   line-height: 1.3em;
   }
 
-.workspace-item-image
+.workspace-acceptable
+{
+  min-height: 2em;
+  line-height: 2em;
+  }
+
+.workspace-item-image,
+.collage-item-image
 { float: left;
   display: block;
   font-weight: normal;
@@ -159,7 +166,7 @@
   }
 
 .workspace-item,
-.snippet
+.collage-item
 { overflow: hidden;
   width: 100%;
   height: 2em;
@@ -169,11 +176,12 @@
 { height: 25px;
   }
 
-.snippet
+.collage-item
 { cursor: pointer;
 }
 
-.workspace-item-checkbox
+.workspace-item-checkbox,
+.collage-item-checkbox
 {
   float: left;
   display: block;
@@ -183,13 +191,8 @@
 
   }
 
-.workspace-acceptable
-{
-  min-height: 2em;
-  line-height: 2em;
-  }
-
-.workspace-item-name
+.workspace-item-name,
+.collage-item-name
 { margin: 0 0 0 4.2em;
   display: block;
   /*  width: 14em;*/
@@ -197,58 +200,27 @@
   line-height: 2em;
 }
 
-.snippet-name
-{ margin: 0 0 0 4.2em;
-  display: block;
-  line-height: 2em;
-}
 
-.snippet-image
-{ float: left;
-  display: block;
-  font-weight: normal;
-  margin: 4px 0 auto 0;
-  }
+/* Workspace items and collage items have icons that only show up when
+you hover over the item */
 
-.snippet-name
-{ margin: 0 0 0 4.2em;
-  display: block;
-  line-height: 2em;
-}
-
-.snippet-checkbox
-{
-  float: left;
-  display: block;
-  font-weight: normal;
-  margin: 2px 0.75em auto 0.75em;
-  cursor: pointer;
-  }
-
-/* Workspace items and snippets have icons that only show up when you
-hover over the item */
-
-.workspace-item:hover .sidebarbox-action-icon
+.workspace-item:hover .sidebarbox-action-icon,
+.collage-item:hover .sidebarbox-action-icon
 { display: block;
 }
 
-.workspace-item .sidebarbox-action-icon
+.workspace-item .sidebarbox-action-icon,
+.collage-item .sidebarbox-action-icon
 { display: None;
 }
 
-.snippet:hover .sidebarbox-action-icon
-{ display: block;
-}
-
-.snippet .sidebarbox-action-icon
+.workspace h2 .sidebarbox-action-icon,
+.collage h2 .sidebarbox-action-icon
 { display: None;
 }
 
-.workspace h2 .sidebarbox-action-icon
-{ display: None;
-}
-
-.workspace:hover h2 .sidebarbox-action-icon
+.workspace:hover h2 .sidebarbox-action-icon,
+.collage:hover h2 .sidebarbox-action-icon
 { display: block;
 }
 
@@ -258,9 +230,9 @@ hover over the item */
   background-position: right;
 }
 
-div.popup-panes div.pane
-{ display: none;
-}
+/* div.popup-panes div.pane */
+/* { display: none; */
+/* } */
 
 table.toggle_table
 { display: none;
