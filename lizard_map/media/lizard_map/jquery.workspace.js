@@ -166,22 +166,22 @@ function hover_popup(data, map) {
 }
 
 
-jQuery.fn.collagePopup = function () {
-    var url, collage_id;
-    url = $(this).closest("[data-url-lizard-map-collage-popup]").attr("data-url-lizard-map-collage-popup");
-    collage_id = $(this).closest("[data-collage-id]").attr("data-collage-id");
-    $.getJSON(
-        url,
-        { collage_id: collage_id },
-        function (data) {
-            show_popup(data);
-            // Mark popup as being a collage popup
-            $("#dialog-content div:first-child").data("is_collage_popup", true);
+// jQuery.fn.collagePopup = function () {
+//     var url, collage_id;
+//     url = $(this).closest("[data-url-lizard-map-collage-popup]").attr("data-url-lizard-map-collage-popup");
+//     collage_id = $(this).closest("[data-collage-id]").attr("data-collage-id");
+//     $.getJSON(
+//         url,
+//         { collage_id: collage_id },
+//         function (data) {
+//             show_popup(data);
+//             // Mark popup as being a collage popup
+//             $("#dialog-content div:first-child").data("is_collage_popup", true);
 
-        }
-    );
+//         }
+//     );
 
-};
+// };
 
 
 /* Make workspaces sortable and droppable

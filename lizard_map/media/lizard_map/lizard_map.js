@@ -404,17 +404,27 @@ function setUpDialogs() {
 }
 
 
-function actionPostClick(event, preAction, postAction) {
+/* Generic POST click handling: do preAction, post, if success do
+postAction. */
+function actionPostClick(event, preAction, postAction, parameters) {
     var url, target, target_id;
     event.preventDefault();
 
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id")
+    if (target_id === undefined) {
+        alert("Fout: data-target-id is undefined.");
+        return false;
+    }
     target = $(target_id);
     if (preAction !== undefined) {
         preAction();
     }
-    $.post(url)
+    if (parameters === undefined) {
+        parameters = {};
+    }
+    console.log(parameters);
+    $.post(url, parameters)
         .success(function (data) {
             div = $("<div/>").html(data).find(".dialog-box").find(target_id);
             target.html(div.html());
@@ -443,7 +453,48 @@ function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
         addProgressAnimationIntoWorkspace,
-        postClickWorkspaceEmpty);
+        postClickWorkspaceEmpty
+    );
+}
+
+function actionPostDeleteCollageItem(event) {
+    var object_id;
+    object_id = $(event.target).parents(
+        ".collage-item").attr("data-object-id");
+    return actionPostClick(
+        event,
+        undefined,
+        stretchOneSidebarBox,
+        {object_id: object_id, action: 'delete'}
+    );
+}
+
+/* Click checkbox on collage item. */
+function actionPostEditCollageItem(event) {
+    var object_id, visible, $collage_item;
+    $collage_item = $(event.target).parents(".collage-item");
+    object_id = $collage_item.attr("data-object-id");
+    visible = $collage_item.find(".collage-item-checkbox").attr("checked");
+    return actionPostClick(
+        event,
+        undefined,
+        stretchOneSidebarBox,
+        {object_id: object_id, visible: visible, action: 'update'}
+    );
+}
+
+/* Collage popup: still old-fashioned. */
+function collagePopup(event) {
+    var url;
+    event.preventDefault();
+
+    url = $(event.target).attr("href");
+    $.getJSON(url, function (data) {
+        show_popup(data);
+        // Mark popup as being a collage popup
+        $("#dialog-content div:first-child").data("is_collage_popup", true);
+    });
+    return false;
 }
 
 /* Actions post or get an url, then replaces tag data-target-id in
@@ -452,6 +503,15 @@ function setUpActions() {
     $(".action-post").live("click", actionPostClick);
     // Empty workspace AND empty collage.
     $(".action-post-workspace-empty").live("click", actionPostClickEmpty);
+    // Delete collage item
+    $(".collage-item-delete").live(
+        "click", actionPostDeleteCollageItem);
+    // Edit (visibility of) collage item
+    $(".collage-item-checkbox").live(
+        "click", actionPostEditCollageItem);
+    // Collage-popup.
+    $(".collage-popup").live(
+        "click", collagePopup);
 }
 
 /*
@@ -483,24 +543,6 @@ function nothingFoundPopup() {
 L3
 */
 function setUpWorkspaceButtons() {
-    // // Trashcan next to "My Workspace"
-    // $(".workspace-empty-trigger").live('click', function () {
-    //     var $workspace, workspace_id, url;
-    //     $workspace = $(this).parents("div.workspace");
-    //     workspace_id = $workspace.attr("data-workspace-id");
-    //     url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
-    //     addProgressAnimationIntoWorkspace();
-    //     $.post(
-    //         url, {workspace_id: workspace_id},
-    //         function (data) {
-    //             // Remove progress.
-    //             $workspace.find(".sidebarbox-action-progress").remove();
-    //             $workspace.updateWorkspace();
-    //             // Remove all "selected" from workspace_acceptables:
-    //             // everything is gone.
-    //             $(".workspace-acceptable").removeClass("selected");
-    //         });
-    // });
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {
         var $workspace, workspace_id, url, object_id;
@@ -759,8 +801,8 @@ $(document).ready(function () {
     $(".workspace").workspaceInteraction();
 
     // voor collage view, nu nog nutteloos voor popup
-    $(".add-snippet").snippetInteraction();
-    $("a.lizard-map-link").lizardMapLink();
+    //$(".add-snippet").snippetInteraction();
+    //$("a.lizard-map-link").lizardMapLink();
     // Optional popup video link.
     setupVideoPopup();
     setupTableToggle();

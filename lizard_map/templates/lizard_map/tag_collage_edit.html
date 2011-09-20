@@ -12,6 +12,11 @@
        class="title ss_sprite ss_bin_closed sidebarbox-action-icon action-post-workspace-empty"
        data-target-id="#edit-collage">
     </a>
+    <a id="collage-popup"
+       href="{% url lizard_map_collage_popup %}"
+       title="{% trans 'collage popup' %}"
+       class="title ss_sprite ss_chart_line sidebarbox-action-icon collage-popup">
+    </a>
     <span title="Dit is je huidige selectie.">
       Selectie
     </span>
@@ -23,11 +28,13 @@
         title="{{ collage_item.name }}"
         data-object-id="{{ collage_item.id }}">
       {# Delete collage item #}
-      <span class="ss_sprite ss_delete sidebarbox-action-icon
+      <a class="ss_sprite ss_delete sidebarbox-action-icon
                    collage-item-delete"
             rel="tipsy"
-            title="Verwijder">
-      </span>
+            title="Verwijder"
+            href="{% url lizard_map_collage_item_edit %}"
+            data-target-id="#edit-collage">
+      </a>
       {# Pan to layer. #}
       {% if workspace_item.has_extent %}
       <span class="ss_sprite ss_magnifier sidebarbox-action-icon
@@ -46,7 +53,9 @@
              {% if collage_item.visible %}
              checked="checked"
              {% endif %}
-             title="Zichtbaar" />
+             title="Zichtbaar"
+             href="{% url lizard_map_collage_item_edit %}"
+             data-target-id="#edit-collage"/>
       <div class="collage-item-name">
         {% firstof collage_item.name '(noname)' %}
       </div>

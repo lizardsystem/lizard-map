@@ -51,7 +51,9 @@ from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import CollageForm
+from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
+from lizard_map.forms import SingleObjectForm
 
 from daterange import deltatime_range
 from daterange import store_timedelta_range
@@ -270,28 +272,28 @@ class HomepageView(AppView):
         return context
 
 
-# Obsolete
-def workspace(request,
-              workspace_id,
-              javascript_click_handler=None,
-              javascript_hover_handler=None,
-              template='lizard_map/workspace.html'):
-    """Render page with one workspace.
+# # Obsolete
+# def workspace(request,
+#               workspace_id,
+#               javascript_click_handler=None,
+#               javascript_hover_handler=None,
+#               template='lizard_map/workspace.html'):
+#     """Render page with one workspace.
 
-    workspaces in dictionary, because of ... ?
-    """
-    workspace = get_object_or_404(Workspace, pk=workspace_id)
+#     workspaces in dictionary, because of ... ?
+#     """
+#     workspace = get_object_or_404(Workspace, pk=workspace_id)
 
-    context_dict = {'workspaces': {'user': [workspace]},
-                    }
-    if javascript_click_handler:
-        context_dict['javascript_click_handler'] = javascript_click_handler
-    if javascript_hover_handler:
-        context_dict['javascript_hover_handler'] = javascript_hover_handler
-    return render_to_response(
-        template,
-        context_dict,
-        context_instance=RequestContext(request))
+#     context_dict = {'workspaces': {'user': [workspace]},
+#                     }
+#     if javascript_click_handler:
+#         context_dict['javascript_click_handler'] = javascript_click_handler
+#     if javascript_hover_handler:
+#         context_dict['javascript_hover_handler'] = javascript_hover_handler
+#     return render_to_response(
+#         template,
+#         context_dict,
+#         context_instance=RequestContext(request))
 
 ##### Edits on workspace ############
 
@@ -498,15 +500,15 @@ def workspace_item_toggle(
     return HttpResponse(json.dumps(just_added))
 
 
-# L3
-@never_cache
-def workspace_item_empty(request):
-    """Clear workspace items for edit workspace."""
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
-    workspace_edit.workspace_items.all().delete()
+# # L3
+# @never_cache
+# def workspace_item_empty(request):
+#     """Clear workspace items for edit workspace."""
+#     workspace_edit = WorkspaceEdit.get_or_create(
+#         request.session.session_key, request.user)
+#     workspace_edit.workspace_items.all().delete()
 
-    return HttpResponse("")
+#     return HttpResponse("")
 
 
 # L3
@@ -556,68 +558,59 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     return HttpResponse(json.dumps(deleted))
 
 
-# L3: based on workspace_item_toggle. UNFINISHED NEED TESTING
-@never_cache
-def collage_item_toggle(
-    request,
-    collage_edit=None):
-
-    """Toggle collage item in collage.
-
-    Return if it is added (True), or removed (False)
-    """
-
-    # For testing, workspace_edit can be given.
-    if collage_edit is None:
-        collage_edit = CollageEdit.get_or_create(
-            request.session.session_key, request.user)
-
-    name = request.POST['name']
-    adapter_class = request.POST['adapter_class']
-    adapter_layer_json = request.POST['adapter_layer_json']
-    identifier = json.loads(request.POST['identifier'])
-
-    # Find out if it is already present.
-    existing_collage_items = collage_edit.collage_items.filter(
-        adapter_class=adapter_class,
-        adapter_layer_json=adapter_layer_json,
-        identifier=identifier)
-    if existing_collage_items.count() == 0:
-        # Create new
-        logger.debug("Creating new collage-item.")
-
-        # TODO: put this in model.
-        if collage_edit.collage_items.count() > 0:
-            max_index = collage_edit.collage_items.aggregate(
-                Max('index'))['index__max']
-        else:
-            max_index = 10
-
-        collage_edit.collage_items.create(
-            adapter_class=adapter_class,
-            index=max_index + 10,
-            adapter_layer_json=adapter_layer_json,
-            identifier=identifier,
-            name=name[:80])
-        just_added = True
-    else:
-        # Delete existing items
-        logger.debug("Deleting existing collage-item.")
-        existing_collage_items.delete()
-        just_added = False
-
-    return HttpResponse(json.dumps(just_added))
-
-
-# # L3
+# # L3: based on workspace_item_toggle. UNFINISHED NEED TESTING
 # @never_cache
-# def collage_item_empty(request):
-#     """Clear collage items for edit collage."""
-#     collage_edit = CollageEdit.get_or_create(
-#         request.session.session_key, request.user)
-#     collage_edit.workspace_items.all().delete()
+# def collage_item_toggle(
+#     request,
+#     collage_edit=None):
 
-#     return HttpResponse("")
+#     """Toggle collage item in collage.
+
+#     Return if it is added (True), or removed (False)
+#     """
+
+#     # For testing, workspace_edit can be given.
+#     if collage_edit is None:
+#         collage_edit = CollageEdit.get_or_create(
+#             request.session.session_key, request.user)
+
+#     name = request.POST['name']
+#     adapter_class = request.POST['adapter_class']
+#     adapter_layer_json = request.POST['adapter_layer_json']
+#     identifier = json.loads(request.POST['identifier'])
+
+#     # Find out if it is already present.
+#     existing_collage_items = collage_edit.collage_items.filter(
+#         adapter_class=adapter_class,
+#         adapter_layer_json=adapter_layer_json,
+#         identifier=identifier)
+#     if existing_collage_items.count() == 0:
+#         # Create new
+#         logger.debug("Creating new collage-item.")
+
+#         # TODO: put this in model.
+#         if collage_edit.collage_items.count() > 0:
+#             max_index = collage_edit.collage_items.aggregate(
+#                 Max('index'))['index__max']
+#         else:
+#             max_index = 10
+
+#         collage_edit.collage_items.create(
+#             adapter_class=adapter_class,
+#             index=max_index + 10,
+#             adapter_layer_json=adapter_layer_json,
+#             identifier=identifier,
+#             name=name[:80])
+#         just_added = True
+#     else:
+#         # Delete existing items
+#         logger.debug("Deleting existing collage-item.")
+#         existing_collage_items.delete()
+#         just_added = False
+
+#     return HttpResponse(json.dumps(just_added))
+
+
 
 
 #To be updated
@@ -862,38 +855,23 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     return HttpResponse(json.dumps(result))
 
 
+# Updated for L3, but needs refactoring.
 def popup_collage_json(collage, popup_id, request=None):
     """
-    display collage by adding display_groups together
-
-    TODO: see popup_json
+    Display collage. Each item in a separate tab.
     """
 
     html = []
-    snippet_groups = collage.visible_snippet_groups()
-    if len(snippet_groups) > 1:
-        big_popup = True
-    else:
-        big_popup = False
+    big_popup = True
     google_x, google_y = None, None
 
-    for snippet_group in snippet_groups:
-        snippets = snippet_group.snippets.filter(visible=True)
-        if snippets:
-            # Pick workspace_item of first snippet to build html
-            workspace_item = snippets[0].workspace_item
-            html_per_workspace_item = workspace_item.adapter.html(
-                snippet_group=snippet_group,
-                layout_options={'legend': True})
-            html.append(html_per_workspace_item)
+    collage_items = collage.collage_items.filter(visible=True)
 
-            # Pick the location of the first snippet.
-            if 'google_coords' in snippets[0].location:
-                google_x, google_y = snippets[0].location['google_coords']
+    # L3. For now: only one page per collage item. No grouping yet.
+    for collage_item in collage_items:
+        html.append(collage_item.html())
 
     result = {'id': popup_id,
-              'x': google_x,
-              'y': google_y,
               'html': html,
               'big': big_popup,
               }
@@ -1004,7 +982,7 @@ def snippet_popup(request, snippet_id=None):
                       hide_add_snippet=True)
 
 
-# Obsolete
+# L3. TODO: test
 @never_cache
 def collage_popup(request,
                   collage_id=None,
@@ -1013,9 +991,11 @@ def collage_popup(request,
 
     collage_id in GET parameter.
     """
-    if collage_id is None:
-        collage_id = request.GET.get('collage_id')
-    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+    # if collage_id is None:
+    #     collage_id = request.GET.get('collage_id')
+    # collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+    collage = CollageEdit.get_or_create(
+        request.session.session_key, request.user)
     popup_id = 'popup-collage'
 
     # Only one collage popup allowed, also check jquery.workspace.js
@@ -1023,27 +1003,6 @@ def collage_popup(request,
         collage,
         popup_id=popup_id,
         request=request)
-
-
-#Obsolete
-@never_cache
-def collage_empty(request):
-    """Clear collage for given collage_id.
-
-    collage_id is in POST parameter
-
-    TODO: check if workspace is actually yours
-    """
-    collage_id = request.POST.get('collage_id')
-    snippetgroups = WorkspaceCollageSnippetGroup.objects.filter(
-        workspace_collage=collage_id)
-    for s in snippetgroups:
-        s.delete()
-
-#    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-#    collage.delete()
-
-    return HttpResponse("")
 
 
 # L3
@@ -1316,7 +1275,40 @@ def search_coordinates(request, format='popup'):
         return popup_json([])
 
 
+def action_collage_add(form_data):
+    """
+    Add items to collage by coordinates.
+    """
+    x = float(form_data['x'])
+    y = float(form_data['y'])
+    # TODO: convert radius to correct scale (works now for google + rd)
+    radius = float(form_data['radius'])
+    workspace_id = form_data['workspace_id']
+    srs = form_data['srs']
+    google_x, google_y = coordinates.srs_to_google(srs, x, y)
+
+    # Workspace.
+    workspace = WorkspaceEdit.objects.get(pk=workspace_id)
+    collage = CollageEdit.get_or_create(
+        self.request.session.session_key, self.request.user)
+
+    found = search(workspace, google_x, google_y, radius)
+
+    for found_item in found:
+        # Add all found items to collage.
+        logger.debug("Adding collage item %s" % found_item['name'])
+        collage.collage_items.create(
+            adapter_class=found_item['workspace_item'].adapter_class,
+            adapter_layer_json=found_item[
+                'workspace_item'].adapter_layer_json,
+            name=found_item['name'],
+            identifier=found_item['identifier'])
+
+
 class CollageView(CollageMixin, ActionDialogView):
+    """
+    Add collage item by coordinates
+    """
     template_name = 'lizard_map/box_collage.html'
     template_name_success = template_name
     form_class = CollageForm
@@ -1325,46 +1317,45 @@ class CollageView(CollageMixin, ActionDialogView):
         """Find collage items and save them.
         """
         form_data = form.cleaned_data
-        x = float(form_data['x'])
-        y = float(form_data['y'])
-        # TODO: convert radius to correct scale (works now for google + rd)
-        radius = float(form_data['radius'])
-        workspace_id = form_data['workspace_id']
-        srs = form_data['srs']
-        google_x, google_y = coordinates.srs_to_google(srs, x, y)
-
-        # Workspace.
-        workspace = WorkspaceEdit.objects.get(pk=workspace_id)
-        collage = CollageEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
-
-        found = search(workspace, google_x, google_y, radius)
-
-        for found_item in found:
-            # Add all found items to collage.
-            logger.debug("Adding collage item %s" % found_item['name'])
-            collage.collage_items.create(
-                adapter_class=found_item['workspace_item'].adapter_class,
-                adapter_layer_json=found_item[
-                    'workspace_item'].adapter_layer_json,
-                name=found_item['name'],
-                identifier=found_item['identifier'])
+        action_collage_add(form_data)
 
 
-class CollageEmptyView(CollageMixin, ActionDialogView):
-    """Post result in an empty collage. Return (empty) collage view.
+class CollageEmptyView(CollageView):
     """
-    template_name = 'lizard_map/box_collage.html'
-    template_name_success = template_name
+    Empty collage.
+    """
     form_class = EmptyForm
 
     def form_valid_action(self, form):
-        """Find collage items and save them.
+        """Delete all collage items from collage_edit.
         """
-        logger.debug('Deleting collage items from collage_edit')
+        logger.debug('Deleting all collage items from collage_edit')
         collage_edit = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
         collage_edit.collage_items.all().delete()
+
+
+class CollageItemEditView(CollageView):
+    """Edit collage item: create, (read, )update or delete"""
+    form_class = EditForm
+
+    def form_valid_action(self, form):
+        form_data = form.cleaned_data
+        collage_edit = CollageEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+        collage_item = collage_edit.collage_items.get(
+            pk=form_data['object_id'])
+        if form_data['action'] == 'update':
+            logger.debug("Updating collage item...")
+            collage_item.visible = form_data['visible']
+            collage_item.save()
+        elif form_data['action'] == 'delete':
+            logger.debug("Deleting collage item...")
+            collage_item.delete()
+
+
+class CollagePopupView(CollageMixin, TemplateView):
+    template_name = 'lizard_map/box_collage_popup.html'
 
 
 class WorkspaceEmptyView(WorkspaceMixin, ActionDialogView):

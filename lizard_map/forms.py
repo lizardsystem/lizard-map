@@ -104,3 +104,20 @@ class EmptyForm(forms.Form):
     Empty form. Used by views.
     """
     pass
+
+
+class SingleObjectForm(forms.Form):
+    """
+    Form with one object_id (can be anything).
+    """
+    object_id = forms.IntegerField(required=True)
+
+
+class EditForm(forms.Form):
+    """
+    Form with one object_id (can be anything) and fixed properties.
+    """
+
+    action = forms.CharField(max_length=100, required=True)
+    object_id = forms.IntegerField(required=True)
+    visible = forms.BooleanField(required=False)  # Only when "update".

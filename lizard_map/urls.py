@@ -11,9 +11,9 @@ urlpatterns = patterns(
     '',
     (r'^api/', include('lizard_map.api.urls')),
     # Actions/services on/from workspaces
-    url(r'^workspace/(?P<workspace_id>\d+)/$',
-        'lizard_map.views.workspace',
-        name="lizard_map_workspace"),
+    # url(r'^workspace/(?P<workspace_id>\d+)/$',
+    #     'lizard_map.views.workspace',
+    #     name="lizard_map_workspace"),
     url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/reorder/$',
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
@@ -24,16 +24,13 @@ urlpatterns = patterns(
     url(r'^myworkspace/workspace_items/delete/$',  # L3
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
-    url(r'^myworkspace/workspace_items/empty/$',  # L3
-        'lizard_map.views.workspace_item_empty',
-        name="lizard_map_workspace_item_empty"),
     url(r'^myworkspace/workspace_items/edit/$',  # L3
         'lizard_map.views.workspace_edit_item',
         name="lizard_map_workspace_edit_item"),
     url(r'^myworkspace/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
-    url(r'^myworkspace/$',  # L3
+    url(r'^myworkspace/empty/$',  # L3
         lizard_map.views.WorkspaceEmptyView.as_view(),
         name="lizard_map_workspace_empty"),
     url(r'^myworkspace/save/$',  # L3
@@ -42,24 +39,23 @@ urlpatterns = patterns(
     url(r'^myworkspace/load/$',  # L3
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
-    url(r'^mycollage/$',  # L3
+
+    url(r'^mycollage/$',  # L3 add collage item
         lizard_map.views.CollageView.as_view(),
         name="lizard_map_collage"),
-    url(r'^mycollage/empty/$',  # L3
+    url(r'^mycollage/empty/$',  # L3 empty collage
         lizard_map.views.CollageEmptyView.as_view(),
         name="lizard_map_collage_empty"),
+    url(r'^mycollage/edit_item/$',  # L3 delete or update
+        lizard_map.views.CollageItemEditView.as_view(),
+        name="lizard_map_collage_item_edit"),
+    url(r'^mycollage/popup/$',  # L3 popup, works like the old one
+        'lizard_map.views.collage_popup',
+        name="lizard_map_collage_popup"),
 
     # url(r'^mycollage/collage_items/toggle/$',  # L3
     #     'lizard_map.views.collage_item_toggle',
     #     name="lizard_map_collage_item_toggle"),
-
-    # url(r'^mycollage/collage_items/empty/$',  # L3
-    #     'lizard_map.views.collage_item_empty',
-    #     name="lizard_map_collage_item_empty"),
-
-    # url(r'^mycollage/add_selection/$',  # L3
-    #     'lizard_map.views.add_selection',
-    #     name="lizard_map.add_selection"),
 
     # Date range
     url(r'set_animation_date$',

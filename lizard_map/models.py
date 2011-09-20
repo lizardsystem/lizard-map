@@ -564,6 +564,9 @@ class CollageEditItem(WorkspaceItemMixin):
         related_name='collage_items')
     identifier = JSONField(default="")
 
+    def html(self):
+        return self.adapter.html(identifiers=[self.identifier, ])
+
 
 #### Old models #####
 
