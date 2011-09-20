@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-2.3 (unreleased)
+2.3 (2011-09-20)
 ----------------
 
 - Made the automatic invalid-workspaceitem-deletion more robust.
