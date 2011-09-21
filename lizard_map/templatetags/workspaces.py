@@ -115,7 +115,9 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
 def collage_item_statistics(request, collage_item):
     start_date, end_date = current_start_end_dates(request)
     statistics = collage_item.statistics(start_date, end_date)
-    return {'statistics': statistics}
+    return {'statistics': statistics,
+            'boundary_value': collage_item.boundary_value,
+            'percentile_value': collage_item.percentile_value}
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")
