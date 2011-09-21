@@ -8,6 +8,8 @@ from django.forms.widgets import RadioSelect
 from daterange import PERIOD_CHOICES
 from daterange import PERIOD_OTHER
 
+from lizard_map.models import StatisticsMixin
+
 from lizard_map.models import WorkspaceStorage
 
 
@@ -28,7 +30,6 @@ class WorkspaceLoadForm(forms.Form):
         """
         The choices are dynamic, they depend on the user/session.
         """
-        print args, kwargs
         super(WorkspaceLoadForm, self).__init__(*args, **kwargs)
         # TODO: use request to filter WorkspaceStorage.
         workspaces = WorkspaceStorage.objects.all()
@@ -121,3 +122,26 @@ class EditForm(forms.Form):
     action = forms.CharField(max_length=100, required=True)
     object_id = forms.IntegerField(required=True)
     visible = forms.BooleanField(required=False)  # Only when "update".
+
+
+class CollageItemEditorForm(forms.Form):
+    """
+    Form to edit collage item edits.
+    """
+    title = forms.CharField(max_length=100)
+    y_min = forms.FloatField()
+    y_max = forms.FloatField()
+    x_label = forms.CharField(max_length=100)
+    y_label = forms.CharField(max_length=100)
+
+    boundary_value = forms.FloatField()
+    percentile_value = forms.FloatField()
+    aggregation_period = forms.IntegerField()
+    # choices=StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+
+    # def __init__(self, *args, **kwargs):
+    #     """
+    #     """
+    #     super(CollageItemEditorForm, self).__init__(*args, **kwargs)
+    #     # TODO: use request to filter WorkspaceStorage.
+    #     self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES

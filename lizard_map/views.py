@@ -37,8 +37,11 @@ from lizard_map.workspace import WorkspaceManager
 # L3
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
+from django.views.generic.base import View
 
 from lizard_ui.views import ViewContextMixin
+from lizard_map.adapter import adapter_layer_arguments
+from lizard_map.adapter import adapter_entrypoint
 from lizard_map.animation import AnimationSettings
 from lizard_map.daterange import current_period
 from lizard_map.models import BackgroundMap
@@ -51,6 +54,7 @@ from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import CollageForm
+from lizard_map.forms import CollageItemEditorForm
 from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
 from lizard_map.forms import SingleObjectForm
@@ -424,6 +428,21 @@ class DateRangeView(DateRangeMixin, ActionDialogView):
             self.request, period, timedelta_start, timedelta_end)
 
 
+class CollageItemEditorView(ActionDialogView):
+    template_name = 'lizard_map/box_collage_item_editor.html'
+    template_name_success = template_name
+    form_class = CollageItemEditorForm
+
+    def get(self, request, *args, **kwargs):
+        self.collage_item_id = kwargs['collage_item_id']
+        return super(CollageItemEditorView, self).get(request, *args, **kwargs)
+
+    def form_valid_action(self, form):
+        """
+
+        """
+        pass
+
 # L3
 @never_cache
 def workspace_item_reorder(
@@ -500,17 +519,6 @@ def workspace_item_toggle(
     return HttpResponse(json.dumps(just_added))
 
 
-# # L3
-# @never_cache
-# def workspace_item_empty(request):
-#     """Clear workspace items for edit workspace."""
-#     workspace_edit = WorkspaceEdit.get_or_create(
-#         request.session.session_key, request.user)
-#     workspace_edit.workspace_items.all().delete()
-
-#     return HttpResponse("")
-
-
 # L3
 @never_cache
 def workspace_edit_item(
@@ -558,61 +566,6 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     return HttpResponse(json.dumps(deleted))
 
 
-# # L3: based on workspace_item_toggle. UNFINISHED NEED TESTING
-# @never_cache
-# def collage_item_toggle(
-#     request,
-#     collage_edit=None):
-
-#     """Toggle collage item in collage.
-
-#     Return if it is added (True), or removed (False)
-#     """
-
-#     # For testing, workspace_edit can be given.
-#     if collage_edit is None:
-#         collage_edit = CollageEdit.get_or_create(
-#             request.session.session_key, request.user)
-
-#     name = request.POST['name']
-#     adapter_class = request.POST['adapter_class']
-#     adapter_layer_json = request.POST['adapter_layer_json']
-#     identifier = json.loads(request.POST['identifier'])
-
-#     # Find out if it is already present.
-#     existing_collage_items = collage_edit.collage_items.filter(
-#         adapter_class=adapter_class,
-#         adapter_layer_json=adapter_layer_json,
-#         identifier=identifier)
-#     if existing_collage_items.count() == 0:
-#         # Create new
-#         logger.debug("Creating new collage-item.")
-
-#         # TODO: put this in model.
-#         if collage_edit.collage_items.count() > 0:
-#             max_index = collage_edit.collage_items.aggregate(
-#                 Max('index'))['index__max']
-#         else:
-#             max_index = 10
-
-#         collage_edit.collage_items.create(
-#             adapter_class=adapter_class,
-#             index=max_index + 10,
-#             adapter_layer_json=adapter_layer_json,
-#             identifier=identifier,
-#             name=name[:80])
-#         just_added = True
-#     else:
-#         # Delete existing items
-#         logger.debug("Deleting existing collage-item.")
-#         existing_collage_items.delete()
-#         just_added = False
-
-#     return HttpResponse(json.dumps(just_added))
-
-
-
-
 #To be updated
 @never_cache
 def workspace_item_extent(request, workspace_item_id=None):
@@ -633,6 +586,7 @@ def workspace_item_extent(request, workspace_item_id=None):
     return HttpResponse(json.dumps(extent_converted))
 
 
+# TODO: update to L3
 @never_cache
 def snippet_group_graph_edit(request, snippet_group_id):
     """Edits snippet_group properties using post.
@@ -687,6 +641,7 @@ def snippet_group_graph_edit(request, snippet_group_id):
     return HttpResponse('')
 
 
+# TODO: update to L3
 @never_cache
 def snippet_group_image(request, snippet_group_id, legend=True):
     """Draws a single image for the snippet_group. There MUST be at
@@ -737,30 +692,6 @@ def snippet_group_image(request, snippet_group_id, legend=True):
                                               layout_extra=layout_extra)
 
 
-# @never_cache
-# def session_workspace_edit_item(request,
-#                                 workspace_item_id=None,
-#                                 workspace_category='user'):
-#     """edits workspace item, the function automatically finds best
-#     appropriate workspace
-
-#     if workspace_item_id is None, a new workspace_item will be created
-#     using workspace_item_add TODO if workspace_item_id is filled in,
-#     apply edits and save
-
-#     """
-#     workspace_id = request.session['workspaces'][workspace_category][0]
-
-#     is_temp_workspace = workspace_category == 'temp'
-
-#     if workspace_item_id is None:
-#         return workspace_item_add(request, workspace_id,
-#                                   is_temp_workspace=is_temp_workspace)
-
-#     #todo: maak functie af
-#     return
-
-
 @never_cache
 def session_workspace_extent(request, workspace_category='user'):
     """Returns extent for the workspace in json.
@@ -795,8 +726,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """
 
     html = {}
-    x_found = None
-    y_found = None
+    # x_found = None
+    # y_found = None
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
@@ -838,8 +769,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
                             'legend': True},
             )
 
-        if 'google_coords' in display_object:
-            x_found, y_found = display_object['google_coords']
+        # if 'google_coords' in display_object:
+        #     x_found, y_found = display_object['google_coords']
         html[workspace_item.id] = html_per_workspace_item
 
     result_html = [html[index] for index in display_group_order][:3]
@@ -847,25 +778,22 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     if popup_id is None:
         popup_id = 'popup-id'
     result = {'id': popup_id,
-              'x': x_found,
-              'y': y_found,
+              # 'x': x_found,
+              # 'y': y_found,
               'html': result_html,
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))
 
 
-# Updated for L3, but needs refactoring.
-def popup_collage_json(collage, popup_id, request=None):
+# Updated for L3. No grouping yet.
+def popup_collage_json(collage_items, popup_id, request=None):
     """
     Display collage. Each item in a separate tab.
     """
 
     html = []
     big_popup = True
-    google_x, google_y = None, None
-
-    collage_items = collage.collage_items.filter(visible=True)
 
     # L3. For now: only one page per collage item. No grouping yet.
     for collage_item in collage_items:
@@ -949,103 +877,32 @@ def session_collage_snippet_add(request,
     return HttpResponse(json.dumps(workspace_id))
 
 
-# Obsolete
-def session_collage_snippet_delete(request,
-                                   object_id=None):
-    """removes snippet
-
-    TODO: check permission of collage, workspace owners
-    """
-    if object_id is None:
-        object_id = request.POST.get('object_id')
-    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=object_id)
-    # snippet_group = snippet.snippet_group
-
-    snippet.delete()
-    return HttpResponse()
-
-
-# Obsolete
-@never_cache
-def snippet_popup(request, snippet_id=None):
-    """get snippet/fews location by snippet_id and return data
-
-    """
-    if snippet_id is None:
-        snippet_id = request.GET.get('snippet_id')
-    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
-
-    popup_id = 'popup-snippet-%s' % snippet_id
-    return popup_json([snippet.location, ],
-                      popup_id=popup_id,
-                      request=request,
-                      hide_add_snippet=True)
-
-
-# L3. TODO: test
+# L3.
 @never_cache
 def collage_popup(request,
                   collage_id=None,
+                  collage_item_id=None,
                   template='lizard_map/collage.html'):
-    """Render page with one collage in popup format
-
-    collage_id in GET parameter.
+    """Render page with collage item(s) in popup format
     """
-    # if collage_id is None:
-    #     collage_id = request.GET.get('collage_id')
-    # collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
     collage = CollageEdit.get_or_create(
         request.session.session_key, request.user)
     popup_id = 'popup-collage'
 
+    collage_items = collage.collage_items.filter(visible=True)
+
+    # This item is filled when clicking on a single collage item.
+    if collage_item_id is not None:
+        collage_items = collage_items.filter(pk=collage_item_id)
+
     # Only one collage popup allowed, also check jquery.workspace.js
     return popup_collage_json(
-        collage,
+        collage_items,
         popup_id=popup_id,
         request=request)
 
 
-# L3
-@never_cache
-def workspace_item_image(request, workspace_item):
-    """Shows image corresponding to workspace item and location identifier(s)
-
-    identifier_list
-    """
-    identifier_json_list = request.GET.getlist('identifier')
-    identifier_list = [json.loads(identifier_json) for identifier_json in
-                       identifier_json_list]
-
-    width = request.GET.get('width')
-    height = request.GET.get('height')
-    if width:
-        width = int(width)
-    else:
-        # We want None, not u''.
-        width = None
-    if height:
-        height = int(height)
-    else:
-        # We want None, not u''.
-        height = None
-
-    start_date, end_date = current_start_end_dates(request)
-
-    # add animation slider position
-    layout_extra = slider_layout_extra(request)
-
-    return workspace_item.adapter.image(identifier_list, start_date, end_date,
-                                        width, height,
-                                        layout_extra=layout_extra)
-
-
-# L3
-def workspace_edit_item_image(request, workspace_item_id):
-    workspace_item = get_object_or_404(
-        WorkspaceEditItem, pk=workspace_item_id)
-    return workspace_item_image(request, workspace_item)
-
-
+# TODO: Update to L3
 @never_cache
 def snippet_edit(request, snippet_id=None, visible=None):
     """
@@ -1082,6 +939,7 @@ def snippet_edit(request, snippet_id=None, visible=None):
     return HttpResponse('')
 
 
+# TODO: Update to L3
 def legend_edit(request):
     """Updates a session legend.
 
@@ -1275,34 +1133,11 @@ def search_coordinates(request, format='popup'):
         return popup_json([])
 
 
-def action_collage_add(form_data):
+class CollageDetailView(CollageMixin, ViewContextMixin, TemplateView):
     """
-    Add items to collage by coordinates.
+    Shows "my collage" as big page.
     """
-    x = float(form_data['x'])
-    y = float(form_data['y'])
-    # TODO: convert radius to correct scale (works now for google + rd)
-    radius = float(form_data['radius'])
-    workspace_id = form_data['workspace_id']
-    srs = form_data['srs']
-    google_x, google_y = coordinates.srs_to_google(srs, x, y)
-
-    # Workspace.
-    workspace = WorkspaceEdit.objects.get(pk=workspace_id)
-    collage = CollageEdit.get_or_create(
-        self.request.session.session_key, self.request.user)
-
-    found = search(workspace, google_x, google_y, radius)
-
-    for found_item in found:
-        # Add all found items to collage.
-        logger.debug("Adding collage item %s" % found_item['name'])
-        collage.collage_items.create(
-            adapter_class=found_item['workspace_item'].adapter_class,
-            adapter_layer_json=found_item[
-                'workspace_item'].adapter_layer_json,
-            name=found_item['name'],
-            identifier=found_item['identifier'])
+    template_name = 'lizard_map/collage_edit_detail.html'
 
 
 class CollageView(CollageMixin, ActionDialogView):
@@ -1317,7 +1152,32 @@ class CollageView(CollageMixin, ActionDialogView):
         """Find collage items and save them.
         """
         form_data = form.cleaned_data
-        action_collage_add(form_data)
+
+        # Add items to collage by coordinates.
+        x = float(form_data['x'])
+        y = float(form_data['y'])
+        # TODO: convert radius to correct scale (works now for google + rd)
+        radius = float(form_data['radius'])
+        workspace_id = form_data['workspace_id']
+        srs = form_data['srs']
+        google_x, google_y = coordinates.srs_to_google(srs, x, y)
+
+        # Workspace.
+        workspace = WorkspaceEdit.objects.get(pk=workspace_id)
+        collage = CollageEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+
+        found = search(workspace, google_x, google_y, radius)
+
+        for found_item in found:
+            # Add all found items to collage.
+            logger.debug("Adding collage item %s" % found_item['name'])
+            collage.collage_items.create(
+                adapter_class=found_item['workspace_item'].adapter_class,
+                adapter_layer_json=found_item[
+                    'workspace_item'].adapter_layer_json,
+                name=found_item['name'],
+                identifier=found_item['identifier'])
 
 
 class CollageEmptyView(CollageView):
@@ -1376,51 +1236,54 @@ Export
 """
 
 
-def export_snippet_group_csv(request, snippet_group_id):
-    """
-    Creates a table with each location as column. Each row is a datetime.
-    """
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-        pk=snippet_group_id)
-    start_date, end_date = current_start_end_dates(request)
-    table = snippet_group.values_table(start_date, end_date)
+# # TODO: update to L3
+# def export_snippet_group_csv(request, snippet_group_id):
+#     """
+#     Creates a table with each location as column. Each row is a datetime.
+#     """
+#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+#         pk=snippet_group_id)
+#     start_date, end_date = current_start_end_dates(request)
+#     table = snippet_group.values_table(start_date, end_date)
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename=export.csv'
-    writer = csv.writer(response)
-    for row in table:
-        writer.writerow(row)
-    return response
-
-
-def export_identifier_csv(request, workspace_item_id=None,
-    identifier_json=None):
-    """
-    Uses adapter.values to get values. Then return these values in csv format.
-    """
-    # Collect input.
-    if workspace_item_id is None:
-        workspace_item_id = request.GET.get('workspace_item_id')
-    if identifier_json is None:
-        identifier_json = request.GET.get('identifier_json')
-    workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
-    identifier = parse_identifier_json(identifier_json)
-    start_date, end_date = current_start_end_dates(request)
-    adapter = workspace_item.adapter
-    values = adapter.values(identifier, start_date, end_date)
-    filename = '%s.csv' % (
-        adapter.location(**identifier).get('name', 'export'))
-
-    # Make the csv output.
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-    writer = csv.writer(response)
-    writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
-    for row in values:
-        writer.writerow([row['datetime'], row['value'], row['unit']])
-    return response
+#     response = HttpResponse(mimetype='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename=export.csv'
+#     writer = csv.writer(response)
+#     for row in table:
+#         writer.writerow(row)
+#     return response
 
 
+# # TODO: update to L3
+# def export_identifier_csv(request, workspace_item_id=None,
+#     identifier_json=None):
+#     """
+#     Uses adapter.values to get values. Then return these values in csv format.
+#     """
+#     # Collect input.
+#     if workspace_item_id is None:
+#         workspace_item_id = request.GET.get('workspace_item_id')
+#     if identifier_json is None:
+#         identifier_json = request.GET.get('identifier_json')
+#     workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
+#     identifier = parse_identifier_json(identifier_json)
+#     start_date, end_date = current_start_end_dates(request)
+#     adapter = workspace_item.adapter
+#     values = adapter.values(identifier, start_date, end_date)
+#     filename = '%s.csv' % (
+#         adapter.location(**identifier).get('name', 'export'))
+
+#     # Make the csv output.
+#     response = HttpResponse(mimetype='text/csv')
+#     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+#     writer = csv.writer(response)
+#     writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+#     for row in values:
+#         writer.writerow([row['datetime'], row['value'], row['unit']])
+#     return response
+
+
+# TODO: update to L3
 def export_snippet_group_statistics_csv(request, snippet_group_id=None):
     """
     Exports snippet_group statistics as csv.
@@ -1499,6 +1362,7 @@ def map_location_load_default(request):
     return HttpResponse(json.dumps(map_location))
 
 
+# Save map
 def save_map_as_image(request):
     """
     Return map as png image to download.
@@ -1528,7 +1392,6 @@ def save_map_as_image(request):
 
 
 def create_mapnik_image(request, data):
-
     # Map settings
     mapnik_map = mapnik.Map(data['width'], data['height'])
     layers = data['layers']
@@ -1582,3 +1445,91 @@ def mapnik_image_to_stream(request, data, img):
         rgba_image.save(buf, data['format'])
     buf.seek(0)
     return buf
+
+
+class AdapterMixin(object):
+    """
+    Provide functions to get adapter stuff from get request
+    """
+    def adapter(self, adapter_class):
+        """
+        named url arguments become kwargs
+        """
+        adapter_layer_json = self.request.GET.get("adapter_layer_json")
+        layer_arguments = adapter_layer_arguments(adapter_layer_json)
+        return adapter_entrypoint(adapter_class, layer_arguments)
+
+    def identifiers(self):
+        identifier_json_list = self.request.GET.getlist('identifier')
+        identifier_list = [json.loads(identifier_json) for identifier_json in
+                           identifier_json_list]
+        return identifier_list
+
+    def identifier(self):
+        identifier_json = self.request.GET.get('identifier')
+        identifier = parse_identifier_json(identifier_json)
+        return identifier
+
+
+class ImageMixin(object):
+    def width_height(self):
+        width = self.request.GET.get('width')
+        height = self.request.GET.get('height')
+
+        if width:
+            width = int(width)
+        else:
+            # We want None, not u''.
+            width = None
+
+        if height:
+            height = int(height)
+        else:
+            # We want None, not u''.
+            height = None
+        return width, height
+
+
+class AdapterImageView(AdapterMixin, ImageMixin, View):
+    def get(self, request, *args, **kwargs):
+        """
+        named url arguments become kwargs
+        """
+        current_adapter = self.adapter(kwargs['adapter_class'])
+        identifier_list = self.identifiers()
+        width, height = self.width_height()
+
+        start_date, end_date = current_start_end_dates(self.request)
+
+        # add animation slider position
+        layout_extra = slider_layout_extra(self.request)
+
+        return current_adapter.image(
+            identifier_list, start_date, end_date,
+            width, height,
+            layout_extra=layout_extra)
+
+
+class AdapterCsvView(AdapterMixin, View):
+    """
+    Export csv for a single identifier
+    """
+    def get(self, request, *args, **kwargs):
+        adapter = self.adapter(kwargs['adapter_class'])
+        identifier = self.identifier()
+        start_date, end_date = current_start_end_dates(self.request)
+
+        values = adapter.values(identifier, start_date, end_date)
+        filename = '%s.csv' % (
+            adapter.location(**identifier).get('name', 'export'))
+
+        # Make the csv output.
+        response = HttpResponse(mimetype='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+        writer = csv.writer(response)
+        writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+        for row in values:
+            writer.writerow([row['datetime'], row['value'], row['unit']])
+        return response
+
+

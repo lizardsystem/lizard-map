@@ -26,6 +26,11 @@ from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
 # Unchecked end here
 
+from adapter import adapter_layer_arguments
+from adapter import adapter_entrypoint
+from adapter import adapter_class_names
+from adapter import adapter_serialize
+from adapter import ADAPTER_ENTRY_POINT  # Temporary, because fewsjdbc api handler imports this.
 
 # New imports
 import datetime
@@ -43,7 +48,7 @@ OTHER_WORKSPACES = 'other'  # for flexible adding workspaces of others
 # TODO: Can this property be moved to mapnik_helper?
 ICON_ORIGINALS = pkg_resources.resource_filename('lizard_map', 'icons')
 
-ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
+#ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 SEARCH_ENTRY_POINT = 'lizard_map.search_method'
 LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 
@@ -204,20 +209,6 @@ JSON objects seamlessly"""
             value, connection=connection)
 
 
-def adapter_class_names():
-    """Return allowed layer method names (from entrypoints)
-
-    in tuple of 2-tuples
-    """
-    entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in
-                   pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT)]
-    return tuple(entrypoints)
-
-
-class AdapterClassNotFoundError(Exception):
-    pass
-
-
 class WorkspaceItemError(Exception):
     """To be raised when a WorkspaceItem is out of date.
 
@@ -363,44 +354,20 @@ class WorkspaceItemMixin(models.Model):
 
     @property
     def adapter(self):
-        """Return adapter instance for entrypoint"""
-        # TODO: this happens more often than needed! Cache it.
-        for entrypoint in pkg_resources.iter_entry_points(
-            group=ADAPTER_ENTRY_POINT):
-            if entrypoint.name == self.adapter_class:
-                try:
-                    real_adapter = entrypoint.load()
-                    real_adapter = real_adapter(self,
-                        layer_arguments=self._adapter_layer_arguments)
-                except ImportError, e:
-                    logger.critical("Invalid entry point: %s", e)
-                    raise
-                except WorkspaceItemError:
-                    logger.warning(
-                        "Deleting problematic WorkspaceItem: %s", self)
-                    # Trac #2470. Return a NullAdapter instead?
-                    self.delete()
-                return real_adapter
-        raise AdapterClassNotFoundError(
-            u'Entry point for %r not found' % self.adapter_class)
-
-    @property
-    def _adapter_layer_arguments(self):
-        """Return dict of parsed adapter_layer_json.
-
-        Converts keys to str.
-        """
-        layer_json = self.adapter_layer_json
-        if not layer_json:
-            return {}
-        result = {}
+        """Obsolete. See adapter views"""
         try:
-            decoded_json = json.loads(layer_json)
+            layer_arguments = adapter_layer_arguments(self.adapter_layer_json)
         except json.JSONDecodeError:
             raise WorkspaceItemError("Undecodable json: %s", layer_json)
-        for k, v in decoded_json.items():
-            result[str(k)] = v
-        return result
+        try:
+            current_adapter = adapter_entrypoint(
+                self.adapter_class, layer_arguments, self)
+        except WorkspaceItemError:
+            logger.warning(
+                "Deleting problematic WorkspaceItem: %s", self)
+                # Trac #2470. Return a NullAdapter instead?
+            self.delete()
+        return current_adapter
 
     def __unicode__(self):
         return self.name
@@ -423,6 +390,28 @@ class WorkspaceItemMixin(models.Model):
         workspace_item = obj(**kwargs)
         workspace_item.workspace = workspace
         return workspace_item
+
+    def _url_arguments(self, identifiers):
+        """for img_url, csv_url"""
+        layer_json = self.adapter_layer_json.replace('"', '%22')
+        url_arguments = [
+            'adapter_layer_json=%s' % layer_json, ]
+        url_arguments.extend([
+                'identifier=%s' % adapter_serialize(
+                    identifier) for identifier in identifiers])
+        return url_arguments
+
+    def url(self, url_name, identifiers):
+        """fetch url to adapter (img, csv, ...)
+
+        example url_name: "lizard_map_adapter_image"
+        """
+        url = reverse(
+            url_name,
+            kwargs={'adapter_class': self.adapter_class},
+            )
+        url += '?' + '&'.join(self._url_arguments(identifiers))
+        return url
 
 
 class UserSessionMixin(models.Model):
@@ -558,7 +547,33 @@ class CollageEdit(UserSessionMixin):
     pass
 
 
-class CollageEditItem(WorkspaceItemMixin):
+class StatisticsMixin(models.Model):
+    """
+    Statistics mixin.
+    """
+    AGGREGATION_PERIOD_CHOICES = (
+        (ALL, _('all')),
+        (YEAR, _('year')),
+        (QUARTER, _('quarter')),
+        (MONTH, _('month')),
+        (WEEK, _('week')),
+        (DAY, _('day')),
+        )
+
+    # Boundary value for statistics.
+    boundary_value = models.FloatField(blank=True, null=True)
+    # Percentile value for statistics.
+    percentile_value = models.FloatField(blank=True, null=True)
+    # Restrict_to_month is used to filter the data.
+    restrict_to_month = models.IntegerField(blank=True, null=True)
+    aggregation_period = models.IntegerField(
+        choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
+
+    class Meta:
+        abstract = True
+
+
+class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     collage = models.ForeignKey(
         CollageEdit,
         related_name='collage_items')
@@ -566,6 +581,51 @@ class CollageEditItem(WorkspaceItemMixin):
 
     def html(self):
         return self.adapter.html(identifiers=[self.identifier, ])
+
+    def img_url(self):
+        return self.url("lizard_map_adapter_image", [self.identifier, ])
+
+    def csv_url(self):
+        return self.url("lizard_map_adapter_csv", [self.identifier, ])
+
+    def statistics(self, start_date, end_date):
+        """From collage snippet group. Brings statistics and collage
+        properties together.
+
+        TODO: needs testing
+        """
+        adapter = self.adapter
+
+        # Calc periods based on aggregation period setting.
+        periods = calc_aggregation_periods(start_date, end_date,
+                                           self.aggregation_period)
+        statistics = []
+        for period_start_date, period_end_date in periods:
+            if not self.restrict_to_month or (
+                self.aggregation_period != MONTH) or (
+                self.aggregation_period == MONTH and
+                self.restrict_to_month == period_start_date.month):
+
+                # Base statistics for each period.
+                statistics_row = adapter.value_aggregate(
+                    self.identifier,
+                    {'min': None,
+                     'max': None,
+                     'avg': None,
+                     'count_lt': self.boundary_value,
+                     'count_gte': self.boundary_value,
+                     'percentile': self.percentile_value},
+                    start_date=period_start_date,
+                    end_date=period_end_date)
+
+                # Add name.
+                if statistics_row:
+                    statistics_row['name'] = self.name
+                    statistics_row['period'] = fancy_period(
+                        period_start_date, period_end_date,
+                        self.aggregation_period)
+                    statistics.append(statistics_row)
+        return statistics
 
 
 #### Old models #####
@@ -863,6 +923,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
         return ', '.join([snippet.__unicode__() for snippet
                           in self.snippets.all()])
 
+    # L3 TODO: use this in collage
     def statistics(self, start_date, end_date):
         """
         Calcs standard statistics: min, max, avg, count_lt, count_gte,
@@ -935,6 +996,7 @@ class WorkspaceCollageSnippetGroup(models.Model):
 
         return statistics
 
+    # L3 TODO: use this in collage model
     def values_table(self, start_date, end_date):
         """
         Calculates a table with each location as column, each row as

@@ -423,7 +423,6 @@ function actionPostClick(event, preAction, postAction, parameters) {
     if (parameters === undefined) {
         parameters = {};
     }
-    console.log(parameters);
     $.post(url, parameters)
         .success(function (data) {
             div = $("<div/>").html(data).find(".dialog-box").find(target_id);
@@ -496,6 +495,20 @@ function collagePopup(event) {
     });
     return false;
 }
+
+// /* Collage item popup: still old-fashioned. */
+// function collageItemPopup(event) {
+//     var url, collage_item_id;
+//     event.preventDefault();
+
+//     url = $(event.target).attr("href");
+//     $.getJSON(url, function (data) {
+//         show_popup(data);
+//         // Mark popup as being a collage popup
+//         $("#dialog-content div:first-child").data("is_collage_popup", true);
+//     });
+//     return false;
+// }
 
 /* Actions post or get an url, then replaces tag data-target-id in
 current page. */

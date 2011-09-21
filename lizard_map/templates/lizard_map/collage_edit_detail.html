@@ -1,0 +1,52 @@
+{#% extends "lizard_ui/lizardbase.html" %#}
+{% extends "lizard_map/lizardgis.html" %}
+{% load workspaces %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/graph.js"></script>
+{% endblock %}
+
+{% block sidebar %}
+
+{# TODO slugs #}
+{% collage_edit view.collage_edit %}
+
+{% endblock %}
+
+
+{% block content %}
+{# Popups: invisible #}
+<div id="dialog">
+  <div id="dialog-content">
+  </div>
+</div>
+<div id="textual">
+  <div id="collage">
+    <h2>Selectie</h2>
+    {% for collage_item in view.collage_edit.collage_items.all %}
+    <h3>{{ collage_item.name }}</h3>
+
+    {{ collage_item.html }}
+
+    {% collage_item_statistics view.request collage_item %}
+
+    <div>
+      <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerken</a>
+    </div>
+
+    {% if show_table %}
+    <h3>Tabel</h3>
+    <p>
+      <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
+    </p>
+    {#% snippet_group_table request snippet_group %#}
+    {% else %}
+    <a href="?show_table=1" class="ss_sprite ss_table_add noprint">Toon tabellen</a>
+    {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

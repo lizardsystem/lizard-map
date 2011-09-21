@@ -40,7 +40,10 @@ urlpatterns = patterns(
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
 
-    url(r'^mycollage/$',  # L3 add collage item
+    url(r'^mycollage/$',  # L3
+        lizard_map.views.CollageDetailView.as_view(),
+        name="lizard_map_collage_edit_detail"),
+    url(r'^mycollage/add_item/$',  # L3 add collage item
         lizard_map.views.CollageView.as_view(),
         name="lizard_map_collage"),
     url(r'^mycollage/empty/$',  # L3 empty collage
@@ -49,13 +52,23 @@ urlpatterns = patterns(
     url(r'^mycollage/edit_item/$',  # L3 delete or update
         lizard_map.views.CollageItemEditView.as_view(),
         name="lizard_map_collage_item_edit"),
+    url(r'^mycollage/item/(?P<collage_item_id>\d+)/edit/$',  # L3 Properties
+        lizard_map.views.CollageItemEditorView.as_view(),
+        name="lizard_map_collage_item_editor"),
     url(r'^mycollage/popup/$',  # L3 popup, works like the old one
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_popup"),
+    url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',  # L3 popup
+        'lizard_map.views.collage_popup',
+        name="lizard_map_collage_item_popup"),
 
-    # url(r'^mycollage/collage_items/toggle/$',  # L3
-    #     'lizard_map.views.collage_item_toggle',
-    #     name="lizard_map_collage_item_toggle"),
+    # Adapter
+    url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
+        lizard_map.views.AdapterImageView.as_view(),
+        name="lizard_map_adapter_image"),
+    url(r'^adapter/(?P<adapter_class>.*)/csv/$',  # L3
+        lizard_map.views.AdapterCsvView.as_view(),
+        name="lizard_map_adapter_csv"),
 
     # Date range
     url(r'set_animation_date$',
@@ -83,41 +96,20 @@ urlpatterns = patterns(
      'lizard_map.views.save_map_as_image'),
 
     # Collages and snippets
-    url(r'^collage/(?P<collage_id>\d+)/$',
-        'lizard_map.views.collage',
-        name="lizard_map.collage"),
+    # url(r'^collage/(?P<collage_id>\d+)/$',
+    #     'lizard_map.views.collage',
+    #     name="lizard_map.collage"),
     # url(r'^collage/(?P<collage_id>\d+)/edit/$',
     #     'lizard_map.views.collage',
     #     {'editable': True,
     #      'template': 'lizard_map/collage_edit.html'},
     #     name="lizard_map.collage_edit"),
-    url(r'^collage/(?P<collage_id>\d+)/popup/$',
-        'lizard_map.views.collage_popup',
-        name="lizard_map.collage_popup"),
-    url(r'^collage_popup/$',
-        'lizard_map.views.collage_popup',
-        name="lizard_map.collage_popup"),
-    # url(r'^collage_empty/$',
-    #     'lizard_map.views.collage_empty',
-    #     name="lizard_map_collage_empty"),
-    url(r'^snippet/(?P<snippet_id>\d+)/popup$',
-        'lizard_map.views.snippet_popup',
-        name="lizard_map.snippet_popup"),
-    url(r'^snippet/(?P<snippet_id>\d+)/edit/$',
-        'lizard_map.views.snippet_edit',
-        name="lizard_map_snippet_edit"),
-    url(r'^snippet/edit/',
-        'lizard_map.views.snippet_edit',
-        name="lizard_map_snippet_edit"),
-    url(r'^snippet_popup/',
-        'lizard_map.views.snippet_popup',
-        name="lizard_map.snippet_popup"),
-    url(r'^snippet_group/(?P<snippet_group_id>\d+)/image_edit/',
-        'lizard_map.views.snippet_group_graph_edit',
-        name="lizard_map.snippet_group_graph_edit"),
-    url(r'^snippet_group/(?P<snippet_group_id>\d+)/image/',
-        'lizard_map.views.snippet_group_image',
-        name="lizard_map.snippet_group_image"),
+    # url(r'^collage/(?P<collage_id>\d+)/popup/$',
+    #     'lizard_map.views.collage_popup',
+    #     name="lizard_map.collage_popup"),
+    # url(r'^collage_popup/$',
+    #     'lizard_map.views.collage_popup',
+    #     name="lizard_map.collage_popup"),
 
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
@@ -128,45 +120,13 @@ urlpatterns = patterns(
         'lizard_map.views.workspace_item_extent',
         name="lizard_map_workspace_item_extent"),
 
-    # Actions on your session workspace - the system looks for the right
-    # workspace.
-    # url(r'^session_workspace/$',
-    #     'lizard_map.views.session_workspace_edit_item',
-    #     {'workspace_category': 'temp'},
-    #     name="lizard_map_session_workspace_add_item_temp"),
-    # url(r'^session_workspace/temp/extent/$',
-    #     'lizard_map.views.session_workspace_extent',
-    #     {'workspace_category': 'temp'},
-    #     name="lizard_map_session_workspace_extent_temp"),
-
-    # Actions/services on session collages
-    # url(r'^session_collage/add/',
-    #     'lizard_map.views.session_collage_snippet_add',
-    #     name="lizard_map_session_collage_snippet_add"),
-    # url(r'^session_collage/add_session_graph_options/',
-    #     'lizard_map.views.session_collage_snippet_add',
-    #     {'session_graph_options': True},
-    #     name="lizard_map_session_collage_snippet_add_session_graph_options"),
-    # url(r'^session_collage/delete/',
-    #     'lizard_map.views.session_collage_snippet_delete',
-    #     name="lizard_map_session_collage_snippet_delete"),
-
     # Actions on workspace items
-    # url(r'^workspaceitem/(?P<workspace_item_id>\d+)/delete/',
-    #     'lizard_map.views.workspace_item_delete',
-    #     name="lizard_map_workspace_item_delete"),
-    url(r'^workspace_edit_item/(?P<workspace_item_id>\d+)/image/',  # L3
-        'lizard_map.views.workspace_edit_item_image',
-        name="lizard_map.workspace_edit_item_image"),
 
-    url(r'^workspace_item/(?P<workspace_item_id>\d+)/' +
-        'image_session_graph_options/',
-        'lizard_map.views.workspace_item_image',
-        {'session_graph_options': True},
-        name="lizard_map.workspace_item_image_session_graph_options"),
-    # url(r'^workspaceitem/edit/', # L3
-    #     'lizard_map.views.workspace_item_toggle',
-    #     name="lizard_map_workspace_item_toggle"),
+    # url(r'^workspace_item/(?P<workspace_item_id>\d+)/' +
+    #     'image_session_graph_options/',
+    #     'lizard_map.views.workspace_item_image',
+    #     {'session_graph_options': True},
+    #     name="lizard_map.workspace_item_image_session_graph_options"),
 
     # Actions on legends.
     url(r'^legend/edit/',
@@ -183,15 +143,9 @@ urlpatterns = patterns(
         name="lizard_map.search_name"),  # L3
 
     # Export.
-    url(r'^adapter/export/csv/',
-        'lizard_map.views.export_identifier_csv',
-        name="lizard_map.export_identifier_csv"),
     url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
         'lizard_map.views.export_snippet_group_statistics_csv',
         name="lizard_map.export_snippet_group_statistics_csv"),
-    url(r'^snippet_group/(?P<snippet_group_id>\d+)/csv/',
-        'lizard_map.views.export_snippet_group_csv',
-        name="lizard_map.export_snippet_group_csv"),
     )
 
 

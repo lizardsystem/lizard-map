@@ -97,17 +97,25 @@ def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
         return 'empty snippet_group (should never happen)'
 
 
-@register.inclusion_tag("lizard_map/tag_statistics.html")
-def snippet_group_statistics(request, snippet_group):
-    """
-    Renders table with statistics. Uses start/enddate from request.
+# # Obsolete
+# @register.inclusion_tag("lizard_map/tag_statistics.html")
+# def snippet_group_statistics(request, snippet_group):
+#     """
+#     Renders table with statistics. Uses start/enddate from request.
 
-    TODO: use start_date and end_date from workspace
-    """
-    statistics = []
+#     TODO: use start_date and end_date from workspace
+#     """
+#     statistics = []
+#     start_date, end_date = current_start_end_dates(request)
+#     statistics = snippet_group.statistics(start_date, end_date)
+#     return {'statistics': statistics, 'snippet_group': snippet_group}
+
+
+@register.inclusion_tag("lizard_map/tag_statistics.html")
+def collage_item_statistics(request, collage_item):
     start_date, end_date = current_start_end_dates(request)
-    statistics = snippet_group.statistics(start_date, end_date)
-    return {'statistics': statistics, 'snippet_group': snippet_group}
+    statistics = collage_item.statistics(start_date, end_date)
+    return {'statistics': statistics}
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")
