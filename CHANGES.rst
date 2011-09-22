@@ -4,7 +4,10 @@ Changelog of lizard-map
 2.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- The context processor now first weeds out faulty workspace items before
+  attempting anything else. This prevents an "error 500": normally the
+  workspace item gets deleted, but the .is_animatable call still breaks on the
+  just-deleted workspaceitem. Now we first remove the faulty ones beforehand.
 
 
 2.3 (2011-09-20)

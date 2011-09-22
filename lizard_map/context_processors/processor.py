@@ -76,6 +76,11 @@ def workspace_variables(request):
     date_range_form = DateRangeForm(current_date_range)
     add_to_context['date_range_form'] = date_range_form
 
+    # First weed out faulty workspace items before they trip us up.
+    for k, ws_list in workspaces.items():
+        for ws in ws_list:
+            ws.check_workspace_item_adapters()
+
     # Add animation slider? Default: no.
     animation_slider = None  # default
     for k, ws_list in workspaces.items():

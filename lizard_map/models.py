@@ -242,6 +242,23 @@ class Workspace(models.Model):
         result.reverse()
         return result
 
+    def check_workspace_item_adapters(self):
+        """Call workspace items' adapters to weed out the faulty ones.
+
+        Calling a workspace item's adapter can result in a
+        WorkspaceItemError. This in turn results in an automatic deletion of
+        the workspace item. But... We often call the adapter directly, like
+        ``workspace_item.adapter.is_animatable``. The result is a "None has no
+        attribute is_animatable" error. Tadaah, an error 500 page.
+
+        So we just call the adapters once to make sure the faulty ones are
+        deleted without tripping us up.
+
+        """
+        for workspace_item in self.workspace_items.all():
+            # Just request the adapter.
+            workspace_item.adapter
+
     @property
     def is_animatable(self):
         """Determine if any visible workspace_item is animatable."""
