@@ -510,8 +510,12 @@ class CollageItemEditorView(ActionDialogView):
 
         # Non reserved keywords
         for k, v in data.items():
-            if k not in reserved and v:
-                new_layout[k] = v
+            if k not in reserved:
+                if v:
+                    new_layout[k] = v
+                else:
+                    if k in new_layout:
+                        del new_layout[k]
 
         identifier['layout'] = new_layout
         collage_item.identifier = identifier

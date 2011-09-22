@@ -302,10 +302,6 @@ function dialogClick(event) {
     $("#dialog").data("replace-titles", "");  // Reset
     $("#dialog").data(
         "replace-titles", $(event.target).attr("data-replace-titles"));
-    // Reload page after successful submit?
-    $("#dialog").data("reload-after-submit", "");  // Reset
-    $("#dialog").data(
-        "reload-after-submit", $(event.target).attr("data-reload-after-submit"));
     dialogSize($(event.target).attr("data-size"));
     return false;
 }
@@ -343,7 +339,7 @@ function dialogSetupChange(event) {
 }
 
 /* L3 Pressing submit in dialog box */
-function dialogSubmit(event) {
+function dialogSubmit(event, afterSubmit) {
     var $form;
     console.log("dialog submit");
     event.preventDefault();
@@ -370,9 +366,8 @@ function dialogSubmit(event) {
                     dialogContent(div);
                     dialogOverlay();
                     dialogCloseDelay();
-                    if ($("#dialog").data("reload-after-submit")) {
-                        // Reload workspace
-                        $(".workspace").updateWorkspace();
+                    if (afterSubmit !== undefined) {
+                        afterSubmit(context);
                     }
                 }
             } else if (context.status === 403) {
@@ -390,6 +385,18 @@ function dialogSubmit(event) {
             return false;
         });
     return false;
+}
+
+function updateWorkspaceAfterSubmit(event) {
+    return dialogSubmit(event, function (context) {
+        return $(".workspace").updateWorkspace();
+    });
+}
+
+function reloadScreenAfterSubmit(event) {
+    return dialogSubmit(event, function (context) {
+        window.location.reload();
+    });
 }
 
 /* L3 Generic dialog code that works on a hrefs.
@@ -410,11 +417,19 @@ function setUpDialogs() {
     $(".ajax-dialog").live("click", dialogClick);
     $(".ajax-dialog-onchange").live("click", dialogClick);
     $(".ajax-dialog-onchange").live("click", dialogSetupChange);
-    // Handle submit button in forms in a dialog.
-    $("#dialog input:submit").live("click", dialogSubmit);
+    // Handle submit button in forms in a dialog. Exclude alternative-submit.
+    $("#dialog input:submit:not(.alternative-submit)").live(
+        "click", dialogSubmit);
     // Handle ajax-dialog-onchange, which submit on changes.
     $("#dialog form input").live("change", dialogOnChange);
     $("#dialog form select").live("change", dialogOnChange);
+
+    // TODO: split this part. It is for specific lizard-map workspace stuff.
+    // For workspace changes: live our own handler
+    $("#dialog input:submit.update-workspace-after").live(
+        "click", updateWorkspaceAfterSubmit);
+    $("#dialog input:submit.reload-screen-after").live(
+        "click", reloadScreenAfterSubmit);
 }
 
 

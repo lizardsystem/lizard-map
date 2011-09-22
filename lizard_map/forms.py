@@ -146,9 +146,5 @@ class CollageItemEditorForm(forms.Form):
     def __init__(self, *args, **kwargs):
         """
         """
-        # initial = kwargs['initial']
-        # print initial['args']
-        # print initial['kwargs']
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-        # TODO: use request to filter WorkspaceStorage.
-        #self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+        # self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
