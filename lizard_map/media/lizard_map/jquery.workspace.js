@@ -232,15 +232,60 @@ jQuery.fn.workspaceInteraction = function () {
 };
 
 
+/* Refresh workspace-acceptables. They should light up if the item is
+in given workspace. */
+function updateWorkspaceAcceptableStatus() {
+    var workspace_items, $workspace;
+    $workspace = $(".workspace");  // Later make this an option?
+    workspace_items = $workspace.find(".workspace-item");
+
+    $(".workspace-acceptable").each(function () {
+        var wa_adapter_class, wa_adapter_layer_json, selected, visible;
+        selected = false;
+        visible = true;
+        wa_adapter_class = $(this).attr("data-adapter-class");
+        wa_adapter_layer_json = $(this).attr(
+            "data-adapter-layer-json");
+
+        workspace_items.each(function () {
+            var adapter_class, adapter_layer_json, $workspace_item;
+            $workspace_item = $(this);
+            adapter_class = $workspace_item.attr(
+                "data-adapter-class");
+
+            if (wa_adapter_class === adapter_class) {
+                adapter_layer_json = $workspace_item.attr(
+                    "data-adapter-layer-json");
+                if (wa_adapter_layer_json === adapter_layer_json) {
+                    selected = true;
+                    if ($workspace_item.attr("data-visible") === "False") {
+                        visible = false;
+                    }
+                }
+            }
+        });
+        if (selected && visible) {
+            $(this).addClass("selected");
+            $(this).removeClass("selected-invisible");
+        } else if (selected && !visible) {
+            $(this).addClass("selected-invisible");
+            $(this).removeClass("selected");
+        } else {
+            $(this).removeClass("selected");
+            $(this).removeClass("selected-invisible");
+        }
+    });
+}
+
+
 // Update workspace boxes and their visible layers. L3
 jQuery.fn.updateWorkspace = function () {
     return this.each(function () {
         var $workspace, workspace_id, $holder;
         $workspace = $(this);
         workspace_id = $workspace.attr("data-workspace-id");
-        // reload workspace items: TODO: works only with a single workspace
-        // item.
         $holder = $('<div/>');
+
         // Holder trick for replacing several items with just one server call:
         // see http://tinyurl.com/32xacr4 .
         $holder.load(
@@ -263,6 +308,9 @@ jQuery.fn.updateWorkspace = function () {
                     refreshLayers(); // from lizard_wms.js
                 }
                 // Is this enough? See also refreshMapActionsDivs in lizard_map
+
+                updateWorkspaceAcceptableStatus();
+
                 setUpAnimationSlider();
                 setUpTransparencySlider();
                 setUpTooltips();

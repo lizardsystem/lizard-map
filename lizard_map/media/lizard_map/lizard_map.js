@@ -199,6 +199,16 @@ function setUpWorkspaceAcceptable() {
         reenableWorkspaceItem($workspace_acceptable);
         return false;
     });
+
+    // Set initial status.
+    updateWorkspaceAcceptableStatus();
+
+    // We want to refresh workspace-acceptables after clicking an
+    // accordion tab. Not accidently a click is also triggered after
+    // loading next pane.
+    $("#accordion").data("tabs").onClick(function (event) {
+        updateWorkspaceAcceptableStatus();
+    });
 }
 
 
@@ -482,7 +492,8 @@ function actionPostEditCollageItem(event) {
     );
 }
 
-/* Collage popup: still old-fashioned. */
+/* Collage popup: still old-fashioned. Same for single collage-item or
+whole collage. */
 function collagePopup(event) {
     var url;
     event.preventDefault();
@@ -495,20 +506,6 @@ function collagePopup(event) {
     });
     return false;
 }
-
-// /* Collage item popup: still old-fashioned. */
-// function collageItemPopup(event) {
-//     var url, collage_item_id;
-//     event.preventDefault();
-
-//     url = $(event.target).attr("href");
-//     $.getJSON(url, function (data) {
-//         show_popup(data);
-//         // Mark popup as being a collage popup
-//         $("#dialog-content div:first-child").data("is_collage_popup", true);
-//     });
-//     return false;
-// }
 
 /* Actions post or get an url, then replaces tag data-target-id in
 current page. */

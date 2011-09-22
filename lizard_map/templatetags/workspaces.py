@@ -59,18 +59,18 @@ def collage_edit(context, collage_edit):
         'collage_edit': collage_edit}
 
 
-# L3
-@register.simple_tag
-def selected_if_in_workspace(
-    adapter_class, adapter_layer_json, workspace_edit):
-    """
-    output ' selected' if workspace_acceptable is in current users workspace
+# # L3
+# @register.simple_tag
+# def selected_if_in_workspace(
+#     adapter_class, adapter_layer_json, workspace_edit):
+#     """
+#     output ' selected' if workspace_acceptable is in current users workspace
 
-    TODO: cache this thing.
-    """
-    return ' selected' if workspace_edit.workspace_items.filter(
-        adapter_class=adapter_class,
-        adapter_layer_json=adapter_layer_json).count() > 0 else ''
+#     TODO: cache this thing.
+#     """
+#     return ' selected' if workspace_edit.workspace_items.filter(
+#         adapter_class=adapter_class,
+#         adapter_layer_json=adapter_layer_json).count() > 0 else ''
 
 
 @register.simple_tag

@@ -280,3 +280,9 @@ table.toggle_table
 li#map-multiple-selection.active {
     background-color: #FF0000;
 }
+
+
+/* The other part is in lizard.css in lizard-ui. TODO: merge in one place */
+#sidebar .selected-invisible {
+    background-color: #f4f4f4;
+}
