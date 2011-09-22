@@ -24,14 +24,14 @@ from lizard_map import coordinates
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import slider_layout_extra
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.models import Workspace
-from lizard_map.models import WorkspaceCollage
-from lizard_map.models import WorkspaceCollageSnippet
-from lizard_map.models import WorkspaceCollageSnippetGroup
-from lizard_map.models import WorkspaceItem
+# from lizard_map.models import Workspace
+# from lizard_map.models import WorkspaceCollage
+# from lizard_map.models import WorkspaceCollageSnippet
+# from lizard_map.models import WorkspaceCollageSnippetGroup
+# from lizard_map.models import WorkspaceItem
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.utility import short_string
-from lizard_map.workspace import WorkspaceManager
+# from lizard_map.workspace import WorkspaceManager
 # Workspace stuff
 
 # L3
@@ -319,29 +319,6 @@ class HomepageView(AppView):
         return context
 
 
-# # Obsolete
-# def workspace(request,
-#               workspace_id,
-#               javascript_click_handler=None,
-#               javascript_hover_handler=None,
-#               template='lizard_map/workspace.html'):
-#     """Render page with one workspace.
-
-#     workspaces in dictionary, because of ... ?
-#     """
-#     workspace = get_object_or_404(Workspace, pk=workspace_id)
-
-#     context_dict = {'workspaces': {'user': [workspace]},
-#                     }
-#     if javascript_click_handler:
-#         context_dict['javascript_click_handler'] = javascript_click_handler
-#     if javascript_hover_handler:
-#         context_dict['javascript_hover_handler'] = javascript_hover_handler
-#     return render_to_response(
-#         template,
-#         context_dict,
-#         context_instance=RequestContext(request))
-
 ##### Edits on workspace ############
 
 
@@ -491,7 +468,7 @@ class CollageItemEditorView(ActionDialogView):
 
     def form_valid_action(self, form):
         """
-
+        Change collage-item accordingly
         """
         reserved = {'boundary_value': None,
                     'percentile_value': None,
@@ -500,7 +477,6 @@ class CollageItemEditorView(ActionDialogView):
         data = form.cleaned_data
         collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
         identifier = collage_item.identifier
-        print identifier
         new_layout = identifier.get('layout', {})
 
         # Reserved keywords
@@ -520,7 +496,7 @@ class CollageItemEditorView(ActionDialogView):
         identifier['layout'] = new_layout
         collage_item.identifier = identifier
         collage_item.save()
-        print identifier
+
 
 # L3
 @never_cache

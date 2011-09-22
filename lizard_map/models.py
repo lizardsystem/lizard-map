@@ -460,7 +460,8 @@ class UserSessionMixin(models.Model):
 
 
 class WorkspaceModelMixin(object):
-
+    """Properties that are specific for workspace models.
+    """
     @property
     def is_animatable(self):
         """Determine if any visible workspace_item is animatable."""
@@ -529,7 +530,7 @@ class WorkspaceEditItem(WorkspaceItemMixin):
 class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
                        WorkspaceModelMixin):
     """
-    Your stored workspace.
+    Stored workspaces.
     """
     name = models.CharField(max_length=40)
     description = models.TextField(null=True, blank=True)
@@ -558,6 +559,9 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
 
 
 class CollageEdit(UserSessionMixin):
+    """
+    User selection of map locations.
+    """
     pass
 
 
@@ -659,537 +663,540 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
 
 #### Old models #####
 
-class Workspace(models.Model):
-    """Collection for managing what's visible on a map."""
-
-    class Meta:
-        verbose_name = _("Workspace")
-        verbose_name_plural = _("Workspaces")
-
-    name = models.CharField(max_length=80,
-                            blank=True,
-                            default='My Workspace')
-
-    owner = models.ForeignKey(User, blank=True, null=True)
-    visible = models.BooleanField(default=False)
-
-    def __unicode__(self):
-        return u'%s' % (self.name)
-
-    def get_absolute_url(self):
-        return reverse('lizard_map_workspace',
-                       kwargs={'workspace_id': self.id})
-
-    def extent(self):
-        """
-        Returns workspace extent, using extents from workspace items.
-        """
-        north = None
-        south = None
-        east = None
-        west = None
-        for workspace_item in self.workspace_items.all():
-            wsi_extent = workspace_item.adapter.extent()
-            if wsi_extent['east'] > east or east is None:
-                east = wsi_extent['east']
-            if wsi_extent['west'] < west or west is None:
-                west = wsi_extent['west']
-            if wsi_extent['south'] < south or south is None:
-                south = wsi_extent['south']
-            if wsi_extent['north'] > north or north is None:
-                north = wsi_extent['north']
-        return {'north': north, 'south': south, 'east': east, 'west': west}
-
-    def wms_layers(self):
-        """
-        Returns a list of wms_layers. Each wms_layer is a dict with keys:
-        wms_id, name, url, params, options. They are used in wms.html
-        """
-        result = []
-        for workspace_item in self.workspace_items.filter(
-            adapter_class=ADAPTER_CLASS_WMS, visible=True):
-
-            # The special WMS layer arguments provides name, url,
-            # params, options.
-            layer_arguments = workspace_item.adapter_layer_arguments
-            layer_arguments.update(
-                {'wms_id': '%d_%d' % (self.id, workspace_item.id)})
-            result.append(layer_arguments)
-
-        result.reverse()
-        return result
-
-    @property
-    def is_animatable(self):
-        """Determine if any visible workspace_item is animatable."""
-        for workspace_item in self.workspace_items.filter(visible=True):
-            if workspace_item.adapter.is_animatable:
-                return True
-        return False
-
-
-class WorkspaceItem(models.Model):
-    """Can show things on a map based on configuration in a url."""
-
-    class Meta:
-        ordering = ['index']
-        verbose_name = _("Workspace item")
-        verbose_name_plural = _("Workspace items")
-
-    name = models.CharField(max_length=80,
-                            blank=True)
-    workspace = models.ForeignKey(Workspace,
-                                  related_name='workspace_items')
-    adapter_class = models.SlugField(blank=True,
-                                     choices=adapter_class_names())
-    adapter_layer_json = models.TextField(blank=True)
-    # ^^^ Contains json (TODO: add json verification)
-
-    index = models.IntegerField(blank=True, default=0)
-    visible = models.BooleanField(default=True)
-
-    def __unicode__(self):
-        return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace,
-                                           self.adapter_class)
-
-    @property
-    def adapter(self):
-        """Return adapter instance for entrypoint"""
-        # TODO: this happens more often than needed! Cache it.
-        for entrypoint in pkg_resources.iter_entry_points(
-            group=ADAPTER_ENTRY_POINT):
-            if entrypoint.name == self.adapter_class:
-                try:
-                    real_adapter = entrypoint.load()
-                    real_adapter = real_adapter(self,
-                        layer_arguments=self.adapter_layer_arguments)
-                except ImportError, e:
-                    logger.critical("Invalid entry point: %s", e)
-                    raise
-                except WorkspaceItemError:
-                    logger.warning(
-                        "Deleting problematic WorkspaceItem: %s", self)
-                    # Trac #2470. Return a NullAdapter instead?
-                    self.delete()
-                return real_adapter
-        raise AdapterClassNotFoundError(
-            u'Entry point for %r not found' % self.adapter_class)
-
-    @property
-    def adapter_layer_arguments(self):
-        """Return dict of parsed adapter_layer_json.
-
-        Converts keys to str.
-        """
-        layer_json = self.adapter_layer_json
-        if not layer_json:
-            return {}
-        result = {}
-        try:
-            decoded_json = json.loads(layer_json)
-        except json.JSONDecodeError:
-            raise WorkspaceItemError("Undecodable json: %s", layer_json)
-        for k, v in decoded_json.items():
-            result[str(k)] = v
-        return result
-
-    def has_adapter(self):
-        """Can I provide a adapter class for i.e. WMS layer?"""
-        return bool(self.adapter_class)
-
-    def has_extent(self):
-        """
-        Return true if workspace item has an extent function.
-
-        Note: no performance changes seen after changing "return True"
-        to getattr.
-        """
-        return getattr(self.adapter, 'extent', None) is not None
-
-    def delete(self, *args, **kwargs):
-        """
-        When deleting a WorkspaceItem, delete corresponding snippets
-        """
-        snippets = WorkspaceCollageSnippet.objects.filter(workspace_item=self)
-        # We delete snippets individually because snippets.delete()
-        # will not remove empty snippet_groups.
-        for snippet in snippets:
-            snippet.delete()
-        super(WorkspaceItem, self).delete(*args, **kwargs)
-
-
-class WorkspaceCollage(models.Model):
-    """A collage contains selections/locations from a workspace"""
-    name = models.CharField(max_length=80,
-                            default='Collage')
-    workspace = models.ForeignKey(Workspace,
-                                  related_name='collages')
-
-    def __unicode__(self):
-        return '%s' % (self.name)
-
-    @property
-    def locations(self):
-        """locations of all snippets
-        """
-        snippets_in_groups = [snippet_group.snippets.all()
-                              for snippet_group in self.snippet_groups.all()]
-        # Flatten snippets in groups:
-        snippets = list(itertools.chain(*snippets_in_groups))
-        return [snippet.location for snippet in snippets]
-
-    def visible_snippet_groups(self):
-        """Return only snippet_groups that have visible snippets."""
-        return self.snippet_groups.filter(snippets__visible=True).distinct()
-
-    @property
-    def workspace_items(self):
-        """Return workspace items used by one of our snippets."""
-        # .distinct may not be used on textfields in oracle as oracle stores
-        # them as NCLOB columns...  At least, that was the problem when our
-        # 'name' field was a TextField instead of a CharField.  So I reverted
-        # this change as it didn't turn out to be the problem after all.
-        # Leaving it here in case it turns out to be a recurring problem.
-        # found = set()
-        # for snippet in self.snippets.all():
-        #     found.add(snippet.workspace_item)
-        # return list(found)
-        return WorkspaceItem.objects.filter(
-            workspacecollagesnippet__in=self.snippets.all()).distinct()
-
-    def get_or_create_snippet(self, workspace_item, identifier_json,
-                              shortname, name):
-        """
-        Makes snippet in a snippet group. Finds or creates
-        corresponding snippet group (see below)
-        """
-        found_snippet_group = None
-        identifier = parse_identifier_json(identifier_json)
-        snippet_groups = self.snippet_groups.all()
-
-        # Try to find most appropriate snippet group:
-
-        # (1) check for the 'group' property in snippet identifier: if
-        # at least one snippet in a group has this property, then the
-        # group matches. Solves problem with grouping on 'parameter'
-        if GROUPING_HINT in identifier:
-            for snippet_group in snippet_groups:
-                for snippet in snippet_group.snippets.all():
-                    if snippet.identifier.get(
-                        GROUPING_HINT) == identifier[GROUPING_HINT]:
-                        found_snippet_group = snippet_group
-                        break
-
-        # (2) find an item in a group with the same
-        # workspace_item. This is a backup grouping mechanism
-        if not found_snippet_group:
-            for snippet_group in snippet_groups:
-                if snippet_group.snippets.filter(
-                    workspace_item=workspace_item).exists():
-                    found_snippet_group = snippet_group
-                    break
-
-        # (3) No existing snippet group: make one.
-        if not found_snippet_group:
-            found_snippet_group = self.snippet_groups.create()
-
-        snippet, snippet_created = found_snippet_group.snippets.get_or_create(
-            workspace_item=workspace_item,
-            identifier_json=identifier_json,
-            shortname=shortname,
-            name=name)
-        return snippet, snippet_created
-
-
-class WorkspaceCollageSnippetGroup(models.Model):
-    """Contains a group of snippets, belongs to one collage"""
-    AGGREGATION_PERIOD_CHOICES = (
-        (ALL, _('all')),
-        (YEAR, _('year')),
-        (QUARTER, _('quarter')),
-        (MONTH, _('month')),
-        (WEEK, _('week')),
-        (DAY, _('day')),
-        )
-
-    workspace_collage = models.ForeignKey(WorkspaceCollage,
-                                          related_name='snippet_groups')
-    index = models.IntegerField(default=1000)  # larger = lower in the list
-    name = models.CharField(max_length=80, blank=True, null=True)
-
-    # Boundary value for statistics.
-    boundary_value = models.FloatField(blank=True, null=True)
-    # Percentile value for statistics.
-    percentile_value = models.FloatField(blank=True, null=True)
-    # Restrict_to_month is used to filter the data.
-    restrict_to_month = models.IntegerField(blank=True, null=True)
-    aggregation_period = models.IntegerField(
-        choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
-
-    layout_title = models.CharField(max_length=80, blank=True, null=True)
-    layout_x_label = models.CharField(max_length=80, blank=True, null=True)
-    layout_y_label = models.CharField(max_length=80, blank=True, null=True)
-    layout_y_min = models.FloatField(blank=True, null=True)
-    layout_y_max = models.FloatField(blank=True, null=True)
-
-    class Meta:
-        verbose_name = _('Collage snippet group')
-        verbose_name_plural = _('Collage snippet groups')
-        ordering = ['name', ]
-
-    def __unicode__(self):
-        if self.snippets_summary:
-            return self.snippets_summary
-        else:
-            return '(empty snippet_group)'
-
-    @property
-    def workspace(self):
-        return self.workspace_collage.workspace
-
-    @property
-    def snippets_summary(self):
-        return ', '.join([snippet.__unicode__() for snippet
-                          in self.snippets.all()])
-
-    # L3 TODO: use this in collage
-    def statistics(self, start_date, end_date):
-        """
-        Calcs standard statistics: min, max, avg, count_lt, count_gte,
-        percentile and return them in a list of dicts
-
-        Can be filtered by option restrict_to_month.
-        """
-        statistics = []
-        for snippet in self.snippets.filter(visible=True):
-            snippet_adapter = snippet.workspace_item.adapter
-
-            # Calc periods based on aggregation period setting.
-            periods = calc_aggregation_periods(start_date, end_date,
-                                               self.aggregation_period)
-
-            for period_start_date, period_end_date in periods:
-                if not self.restrict_to_month or (
-                    self.aggregation_period != MONTH) or (
-                    self.aggregation_period == MONTH and
-                    self.restrict_to_month == period_start_date.month):
-
-                    # Base statistics for each period.
-                    statistics_row = snippet_adapter.value_aggregate(
-                        snippet.identifier,
-                        {'min': None,
-                         'max': None,
-                         'avg': None,
-                         'count_lt': self.boundary_value,
-                         'count_gte': self.boundary_value,
-                         'percentile': self.percentile_value},
-                        start_date=period_start_date,
-                        end_date=period_end_date)
-
-                    # Add name.
-                    if statistics_row:
-                        statistics_row['name'] = snippet.name
-                        statistics_row['period'] = fancy_period(
-                            period_start_date, period_end_date,
-                            self.aggregation_period)
-                        statistics.append(statistics_row)
-
-        if len(statistics) > 1:
-            # Also show a 'totals' column.
-            averages = [row['avg'] for row in statistics if row['avg']]
-            try:
-                average = float(sum(averages) / len(averages))
-            except ZeroDivisionError:
-                average = None
-            totals = {
-                'min': min([row['min'] for row in statistics]),
-                'max': max([row['max'] for row in statistics]),
-                'avg': average,
-                'name': 'Totaal',
-                }
-            if statistics[0]['count_lt'] is not None:
-                totals['count_lt'] = sum(
-                    [row['count_lt'] for row in statistics
-                     if row['count_lt']])
-            else:
-                totals['count_lt'] = None
-            if statistics[0]['count_gte'] is not None:
-                totals['count_gte'] = sum(
-                    [row['count_gte'] for row in statistics
-                     if row['count_gte']])
-            else:
-                totals['count_gte'] = None
-            # We cannot calculate a meaningful total percentile here.
-            totals['percentile'] = None
-            statistics.append(totals)
-
-        return statistics
-
-    # L3 TODO: use this in collage model
-    def values_table(self, start_date, end_date):
-        """
-        Calculates a table with each location as column, each row as
-        datetime. First row consist of column names. List of lists.
-
-        Can be filtered by option restrict_to_month. Only visible snippets
-        are included.
-        """
-        values_table = []
-
-        snippets = self.snippets.filter(visible=True)
-
-        # Add snippet names
-        values_table.append(['Datum + tijdstip'] +
-                            [snippet.name for snippet in snippets])
-
-        # Collect all data and found_dates.
-        found_dates = {}
-
-        # Snippet_values is a dict of (dicts of dicts {'datetime': .,
-        # 'value': .., 'unit': ..}, key: 'datetime').
-        snippet_values = {}
-
-        for snippet in snippets:
-            adapter = snippet.workspace_item.adapter
-            try:
-                values = adapter.values(
-                    identifier=snippet.identifier, start_date=start_date,
-                    end_date=end_date)
-            except NotImplementedError:
-                # If adapter.value is not implemented, just ignore.
-                pass
-            else:
-                snippet_values[snippet.id] = {}
-                # Translate list into dict with dates.
-                for row in values:
-                    if not self.restrict_to_month or (
-                        self.aggregation_period != MONTH) or (
-                        self.aggregation_period == MONTH and
-                        row['datetime'].month == self.restrict_to_month):
-
-                        snippet_values[snippet.id][row['datetime']] = row
-                found_dates.update(snippet_values[snippet.id])
-                # ^^^ The value doesn't matter.
-
-        found_dates_sorted = found_dates.keys()
-        found_dates_sorted.sort()
-
-        # Create each row.
-        for found_date in found_dates_sorted:
-            value_row = [found_date, ]
-            for snippet in snippets:
-                single_value = snippet_values[snippet.id].get(found_date, {})
-                value_row.append(single_value.get('value', None))
-            values_table.append(value_row)
-
-        return values_table
-
-    def layout(self):
-        """Returns layout properties of this snippet_group. Used in
-        snippet.identifier['layout']"""
-        result = {}
-        if self.layout_y_label:
-            result['y_label'] = self.layout_y_label
-        if self.layout_x_label:
-            result['x_label'] = self.layout_x_label
-        if self.layout_y_min is not None:
-            result['y_min'] = self.layout_y_min
-        if self.layout_y_max is not None:
-            result['y_max'] = self.layout_y_max
-        if self.layout_title:
-            result['title'] = self.layout_title
-        if self.restrict_to_month:
-            result['restrict_to_month'] = self.restrict_to_month
-        if self.boundary_value is not None:
-            result['horizontal_lines'] = [{
-                    'name': _('Boundary value'),
-                    'value': self.boundary_value,
-                    'style': {'linewidth': 3,
-                              'linestyle': '--',
-                              'color': 'green'},
-                    }, ]
-        # TODO: implement percentile. Start/end date is not known here.
-        # if self.percentile_value is not None:
-        #     calculated_percentile = self.statistics(self.percentile_value,,)
-        #     result['horizontal_lines'] = [{
-        #             'name': _('Percentile value'),
-        #             'value': calculated_percentile,
-        #             'style': {'linewidth': 2,
-        #                       'linestyle': '--',
-        #                       'color': 'green'},
-        #             }, ]
-        return result
-
-
-class WorkspaceCollageSnippet(models.Model):
-    """One snippet in a collage"""
-    name = models.CharField(max_length=80,
-                            default='Snippet')
-    shortname = models.CharField(max_length=80,
-                                 default='Snippet',
-                                 blank=True,
-                                 null=True)
-    snippet_group = models.ForeignKey(WorkspaceCollageSnippetGroup,
-                                      related_name='snippets')
-    workspace_item = models.ForeignKey(
-        WorkspaceItem)
-    identifier_json = models.TextField()
-    visible = models.BooleanField(default=True)
-
-    # ^^^ Format depends on workspace_item layer_method
-
-    class Meta:
-        ordering = ['name', ]
-
-    def __unicode__(self):
-        return u'%s' % self.name
-
-    def save(self, *args, **kwargs):
-        """Save model and run an extra check.
-
-        Check the constraint that workspace_item is in workspace of owner
-        collage.
-
-        """
-        workspace = self.snippet_group.workspace_collage.workspace
-        if len(workspace.workspace_items.filter(
-                pk=self.workspace_item.pk)) == 0:
-            raise "workspace_item of snippet not in workspace of collage"
-        # Call the "real" save() method.
-        super(WorkspaceCollageSnippet, self).save(*args, **kwargs)
-
-    def delete(self, *args, **kwargs):
-        """Delete model, also deletes snippet_group if that's empty"""
-        snippet_group = self.snippet_group
-        super(WorkspaceCollageSnippet, self).delete(*args, **kwargs)
-        if not snippet_group.snippets.exists():
-            snippet_group.delete()
-
-    @property
-    def identifier(self):
-        """Return dict of parsed identifier_json.
-
-        """
-        return parse_identifier_json(self.identifier_json)
-
-    @property
-    def location(self):
-        return self.workspace_item.adapter.location(**self.identifier)
-
-    def image(self, start_end_dates, width=None, height=None):
-        """Return image from adapter.
-
-        start_end_dates: 2-tuple of datetimes
-
-        """
-        return self.workspace_item.adapter.image([self.identifier],
-                                                 start_end_dates,
-                                                 width=width, height=height)
-
-    def set_identifier(self, identifier):
-        """sets dictionary identifier to property identifier_json"""
-        self.identifier_json = json.dumps(identifier).replace('"', '%22')
-
+# class Workspace(models.Model):
+#     """Collection for managing what's visible on a map."""
+
+#     class Meta:
+#         verbose_name = _("Workspace")
+#         verbose_name_plural = _("Workspaces")
+
+#     name = models.CharField(max_length=80,
+#                             blank=True,
+#                             default='My Workspace')
+
+#     owner = models.ForeignKey(User, blank=True, null=True)
+#     visible = models.BooleanField(default=False)
+
+#     def __unicode__(self):
+#         return u'%s' % (self.name)
+
+#     def get_absolute_url(self):
+#         return reverse('lizard_map_workspace',
+#                        kwargs={'workspace_id': self.id})
+
+#     def extent(self):
+#         """
+#         Returns workspace extent, using extents from workspace items.
+#         """
+#         north = None
+#         south = None
+#         east = None
+#         west = None
+#         for workspace_item in self.workspace_items.all():
+#             wsi_extent = workspace_item.adapter.extent()
+#             if wsi_extent['east'] > east or east is None:
+#                 east = wsi_extent['east']
+#             if wsi_extent['west'] < west or west is None:
+#                 west = wsi_extent['west']
+#             if wsi_extent['south'] < south or south is None:
+#                 south = wsi_extent['south']
+#             if wsi_extent['north'] > north or north is None:
+#                 north = wsi_extent['north']
+#         return {'north': north, 'south': south, 'east': east, 'west': west}
+
+#     def wms_layers(self):
+#         """
+#         Returns a list of wms_layers. Each wms_layer is a dict with keys:
+#         wms_id, name, url, params, options. They are used in wms.html
+#         """
+#         result = []
+#         for workspace_item in self.workspace_items.filter(
+#             adapter_class=ADAPTER_CLASS_WMS, visible=True):
+
+#             # The special WMS layer arguments provides name, url,
+#             # params, options.
+#             layer_arguments = workspace_item.adapter_layer_arguments
+#             layer_arguments.update(
+#                 {'wms_id': '%d_%d' % (self.id, workspace_item.id)})
+#             result.append(layer_arguments)
+
+#         result.reverse()
+#         return result
+
+#     @property
+#     def is_animatable(self):
+#         """Determine if any visible workspace_item is animatable."""
+#         for workspace_item in self.workspace_items.filter(visible=True):
+#             if workspace_item.adapter.is_animatable:
+#                 return True
+#         return False
+
+
+# class WorkspaceItem(models.Model):
+#     """Can show things on a map based on configuration in a url."""
+
+#     class Meta:
+#         ordering = ['index']
+#         verbose_name = _("Workspace item")
+#         verbose_name_plural = _("Workspace items")
+
+#     name = models.CharField(max_length=80,
+#                             blank=True)
+#     workspace = models.ForeignKey(Workspace,
+#                                   related_name='workspace_items')
+#     adapter_class = models.SlugField(blank=True,
+#                                      choices=adapter_class_names())
+#     adapter_layer_json = models.TextField(blank=True)
+#     # ^^^ Contains json (TODO: add json verification)
+
+#     index = models.IntegerField(blank=True, default=0)
+#     visible = models.BooleanField(default=True)
+
+#     def __unicode__(self):
+#         return u'(%d) name=%s ws=%s %s' % (self.id, self.name, self.workspace,
+#                                            self.adapter_class)
+
+#     @property
+#     def adapter(self):
+#         """Return adapter instance for entrypoint"""
+#         # TODO: this happens more often than needed! Cache it.
+#         for entrypoint in pkg_resources.iter_entry_points(
+#             group=ADAPTER_ENTRY_POINT):
+#             if entrypoint.name == self.adapter_class:
+#                 try:
+#                     real_adapter = entrypoint.load()
+#                     real_adapter = real_adapter(self,
+#                         layer_arguments=self.adapter_layer_arguments)
+#                 except ImportError, e:
+#                     logger.critical("Invalid entry point: %s", e)
+#                     raise
+#                 except WorkspaceItemError:
+#                     logger.warning(
+#                         "Deleting problematic WorkspaceItem: %s", self)
+#                     # Trac #2470. Return a NullAdapter instead?
+#                     self.delete()
+#                 return real_adapter
+#         raise AdapterClassNotFoundError(
+#             u'Entry point for %r not found' % self.adapter_class)
+
+#     @property
+#     def adapter_layer_arguments(self):
+#         """Return dict of parsed adapter_layer_json.
+
+#         Converts keys to str.
+#         """
+#         layer_json = self.adapter_layer_json
+#         if not layer_json:
+#             return {}
+#         result = {}
+#         try:
+#             decoded_json = json.loads(layer_json)
+#         except json.JSONDecodeError:
+#             raise WorkspaceItemError("Undecodable json: %s", layer_json)
+#         for k, v in decoded_json.items():
+#             result[str(k)] = v
+#         return result
+
+#     def has_adapter(self):
+#         """Can I provide a adapter class for i.e. WMS layer?"""
+#         return bool(self.adapter_class)
+
+#     def has_extent(self):
+#         """
+#         Return true if workspace item has an extent function.
+
+#         Note: no performance changes seen after changing "return True"
+#         to getattr.
+#         """
+#         return getattr(self.adapter, 'extent', None) is not None
+
+#     def delete(self, *args, **kwargs):
+#         """
+#         When deleting a WorkspaceItem, delete corresponding snippets
+#         """
+#         snippets = WorkspaceCollageSnippet.objects.filter(workspace_item=self)
+#         # We delete snippets individually because snippets.delete()
+#         # will not remove empty snippet_groups.
+#         for snippet in snippets:
+#             snippet.delete()
+#         super(WorkspaceItem, self).delete(*args, **kwargs)
+
+
+# class WorkspaceCollage(models.Model):
+#     """A collage contains selections/locations from a workspace"""
+#     name = models.CharField(max_length=80,
+#                             default='Collage')
+#     workspace = models.ForeignKey(Workspace,
+#                                   related_name='collages')
+
+#     def __unicode__(self):
+#         return '%s' % (self.name)
+
+#     @property
+#     def locations(self):
+#         """locations of all snippets
+#         """
+#         snippets_in_groups = [snippet_group.snippets.all()
+#                               for snippet_group in self.snippet_groups.all()]
+#         # Flatten snippets in groups:
+#         snippets = list(itertools.chain(*snippets_in_groups))
+#         return [snippet.location for snippet in snippets]
+
+#     def visible_snippet_groups(self):
+#         """Return only snippet_groups that have visible snippets."""
+#         return self.snippet_groups.filter(snippets__visible=True).distinct()
+
+#     @property
+#     def workspace_items(self):
+#         """Return workspace items used by one of our snippets."""
+#         # .distinct may not be used on textfields in oracle as oracle stores
+#         # them as NCLOB columns...  At least, that was the problem when our
+#         # 'name' field was a TextField instead of a CharField.  So I reverted
+#         # this change as it didn't turn out to be the problem after all.
+#         # Leaving it here in case it turns out to be a recurring problem.
+#         # found = set()
+#         # for snippet in self.snippets.all():
+#         #     found.add(snippet.workspace_item)
+#         # return list(found)
+#         return WorkspaceItem.objects.filter(
+#             workspacecollagesnippet__in=self.snippets.all()).distinct()
+
+#     def get_or_create_snippet(self, workspace_item, identifier_json,
+#                               shortname, name):
+#         """
+#         Makes snippet in a snippet group. Finds or creates
+#         corresponding snippet group (see below)
+#         """
+#         found_snippet_group = None
+#         identifier = parse_identifier_json(identifier_json)
+#         snippet_groups = self.snippet_groups.all()
+
+#         # Try to find most appropriate snippet group:
+
+#         # (1) check for the 'group' property in snippet identifier: if
+#         # at least one snippet in a group has this property, then the
+#         # group matches. Solves problem with grouping on 'parameter'
+#         if GROUPING_HINT in identifier:
+#             for snippet_group in snippet_groups:
+#                 for snippet in snippet_group.snippets.all():
+#                     if snippet.identifier.get(
+#                         GROUPING_HINT) == identifier[GROUPING_HINT]:
+#                         found_snippet_group = snippet_group
+#                         break
+
+#         # (2) find an item in a group with the same
+#         # workspace_item. This is a backup grouping mechanism
+#         if not found_snippet_group:
+#             for snippet_group in snippet_groups:
+#                 if snippet_group.snippets.filter(
+#                     workspace_item=workspace_item).exists():
+#                     found_snippet_group = snippet_group
+#                     break
+
+#         # (3) No existing snippet group: make one.
+#         if not found_snippet_group:
+#             found_snippet_group = self.snippet_groups.create()
+
+#         snippet, snippet_created = found_snippet_group.snippets.get_or_create(
+#             workspace_item=workspace_item,
+#             identifier_json=identifier_json,
+#             shortname=shortname,
+#             name=name)
+#         return snippet, snippet_created
+
+
+# class WorkspaceCollageSnippetGroup(models.Model):
+#     """Contains a group of snippets, belongs to one collage"""
+#     AGGREGATION_PERIOD_CHOICES = (
+#         (ALL, _('all')),
+#         (YEAR, _('year')),
+#         (QUARTER, _('quarter')),
+#         (MONTH, _('month')),
+#         (WEEK, _('week')),
+#         (DAY, _('day')),
+#         )
+
+#     workspace_collage = models.ForeignKey(WorkspaceCollage,
+#                                           related_name='snippet_groups')
+#     index = models.IntegerField(default=1000)  # larger = lower in the list
+#     name = models.CharField(max_length=80, blank=True, null=True)
+
+#     # Boundary value for statistics.
+#     boundary_value = models.FloatField(blank=True, null=True)
+#     # Percentile value for statistics.
+#     percentile_value = models.FloatField(blank=True, null=True)
+#     # Restrict_to_month is used to filter the data.
+#     restrict_to_month = models.IntegerField(blank=True, null=True)
+#     aggregation_period = models.IntegerField(
+#         choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
+
+#     layout_title = models.CharField(max_length=80, blank=True, null=True)
+#     layout_x_label = models.CharField(max_length=80, blank=True, null=True)
+#     layout_y_label = models.CharField(max_length=80, blank=True, null=True)
+#     layout_y_min = models.FloatField(blank=True, null=True)
+#     layout_y_max = models.FloatField(blank=True, null=True)
+
+#     class Meta:
+#         verbose_name = _('Collage snippet group')
+#         verbose_name_plural = _('Collage snippet groups')
+#         ordering = ['name', ]
+
+#     def __unicode__(self):
+#         if self.snippets_summary:
+#             return self.snippets_summary
+#         else:
+#             return '(empty snippet_group)'
+
+#     @property
+#     def workspace(self):
+#         return self.workspace_collage.workspace
+
+#     @property
+#     def snippets_summary(self):
+#         return ', '.join([snippet.__unicode__() for snippet
+#                           in self.snippets.all()])
+
+#     # L3 TODO: use this in collage
+#     def statistics(self, start_date, end_date):
+#         """
+#         Calcs standard statistics: min, max, avg, count_lt, count_gte,
+#         percentile and return them in a list of dicts
+
+#         Can be filtered by option restrict_to_month.
+#         """
+#         statistics = []
+#         for snippet in self.snippets.filter(visible=True):
+#             snippet_adapter = snippet.workspace_item.adapter
+
+#             # Calc periods based on aggregation period setting.
+#             periods = calc_aggregation_periods(start_date, end_date,
+#                                                self.aggregation_period)
+
+#             for period_start_date, period_end_date in periods:
+#                 if not self.restrict_to_month or (
+#                     self.aggregation_period != MONTH) or (
+#                     self.aggregation_period == MONTH and
+#                     self.restrict_to_month == period_start_date.month):
+
+#                     # Base statistics for each period.
+#                     statistics_row = snippet_adapter.value_aggregate(
+#                         snippet.identifier,
+#                         {'min': None,
+#                          'max': None,
+#                          'avg': None,
+#                          'count_lt': self.boundary_value,
+#                          'count_gte': self.boundary_value,
+#                          'percentile': self.percentile_value},
+#                         start_date=period_start_date,
+#                         end_date=period_end_date)
+
+#                     # Add name.
+#                     if statistics_row:
+#                         statistics_row['name'] = snippet.name
+#                         statistics_row['period'] = fancy_period(
+#                             period_start_date, period_end_date,
+#                             self.aggregation_period)
+#                         statistics.append(statistics_row)
+
+#         if len(statistics) > 1:
+#             # Also show a 'totals' column.
+#             averages = [row['avg'] for row in statistics if row['avg']]
+#             try:
+#                 average = float(sum(averages) / len(averages))
+#             except ZeroDivisionError:
+#                 average = None
+#             totals = {
+#                 'min': min([row['min'] for row in statistics]),
+#                 'max': max([row['max'] for row in statistics]),
+#                 'avg': average,
+#                 'name': 'Totaal',
+#                 }
+#             if statistics[0]['count_lt'] is not None:
+#                 totals['count_lt'] = sum(
+#                     [row['count_lt'] for row in statistics
+#                      if row['count_lt']])
+#             else:
+#                 totals['count_lt'] = None
+#             if statistics[0]['count_gte'] is not None:
+#                 totals['count_gte'] = sum(
+#                     [row['count_gte'] for row in statistics
+#                      if row['count_gte']])
+#             else:
+#                 totals['count_gte'] = None
+#             # We cannot calculate a meaningful total percentile here.
+#             totals['percentile'] = None
+#             statistics.append(totals)
+
+#         return statistics
+
+#     # L3 TODO: use this in collage model
+#     def values_table(self, start_date, end_date):
+#         """
+#         Calculates a table with each location as column, each row as
+#         datetime. First row consist of column names. List of lists.
+
+#         Can be filtered by option restrict_to_month. Only visible snippets
+#         are included.
+#         """
+#         values_table = []
+
+#         snippets = self.snippets.filter(visible=True)
+
+#         # Add snippet names
+#         values_table.append(['Datum + tijdstip'] +
+#                             [snippet.name for snippet in snippets])
+
+#         # Collect all data and found_dates.
+#         found_dates = {}
+
+#         # Snippet_values is a dict of (dicts of dicts {'datetime': .,
+#         # 'value': .., 'unit': ..}, key: 'datetime').
+#         snippet_values = {}
+
+#         for snippet in snippets:
+#             adapter = snippet.workspace_item.adapter
+#             try:
+#                 values = adapter.values(
+#                     identifier=snippet.identifier, start_date=start_date,
+#                     end_date=end_date)
+#             except NotImplementedError:
+#                 # If adapter.value is not implemented, just ignore.
+#                 pass
+#             else:
+#                 snippet_values[snippet.id] = {}
+#                 # Translate list into dict with dates.
+#                 for row in values:
+#                     if not self.restrict_to_month or (
+#                         self.aggregation_period != MONTH) or (
+#                         self.aggregation_period == MONTH and
+#                         row['datetime'].month == self.restrict_to_month):
+
+#                         snippet_values[snippet.id][row['datetime']] = row
+#                 found_dates.update(snippet_values[snippet.id])
+#                 # ^^^ The value doesn't matter.
+
+#         found_dates_sorted = found_dates.keys()
+#         found_dates_sorted.sort()
+
+#         # Create each row.
+#         for found_date in found_dates_sorted:
+#             value_row = [found_date, ]
+#             for snippet in snippets:
+#                 single_value = snippet_values[snippet.id].get(found_date, {})
+#                 value_row.append(single_value.get('value', None))
+#             values_table.append(value_row)
+
+#         return values_table
+
+#     def layout(self):
+#         """Returns layout properties of this snippet_group. Used in
+#         snippet.identifier['layout']"""
+#         result = {}
+#         if self.layout_y_label:
+#             result['y_label'] = self.layout_y_label
+#         if self.layout_x_label:
+#             result['x_label'] = self.layout_x_label
+#         if self.layout_y_min is not None:
+#             result['y_min'] = self.layout_y_min
+#         if self.layout_y_max is not None:
+#             result['y_max'] = self.layout_y_max
+#         if self.layout_title:
+#             result['title'] = self.layout_title
+#         if self.restrict_to_month:
+#             result['restrict_to_month'] = self.restrict_to_month
+#         if self.boundary_value is not None:
+#             result['horizontal_lines'] = [{
+#                     'name': _('Boundary value'),
+#                     'value': self.boundary_value,
+#                     'style': {'linewidth': 3,
+#                               'linestyle': '--',
+#                               'color': 'green'},
+#                     }, ]
+#         # TODO: implement percentile. Start/end date is not known here.
+#         # if self.percentile_value is not None:
+#         #     calculated_percentile = self.statistics(self.percentile_value,,)
+#         #     result['horizontal_lines'] = [{
+#         #             'name': _('Percentile value'),
+#         #             'value': calculated_percentile,
+#         #             'style': {'linewidth': 2,
+#         #                       'linestyle': '--',
+#         #                       'color': 'green'},
+#         #             }, ]
+#         return result
+
+
+# class WorkspaceCollageSnippet(models.Model):
+#     """One snippet in a collage"""
+#     name = models.CharField(max_length=80,
+#                             default='Snippet')
+#     shortname = models.CharField(max_length=80,
+#                                  default='Snippet',
+#                                  blank=True,
+#                                  null=True)
+#     snippet_group = models.ForeignKey(WorkspaceCollageSnippetGroup,
+#                                       related_name='snippets')
+#     workspace_item = models.ForeignKey(
+#         WorkspaceItem)
+#     identifier_json = models.TextField()
+#     visible = models.BooleanField(default=True)
+
+#     # ^^^ Format depends on workspace_item layer_method
+
+#     class Meta:
+#         ordering = ['name', ]
+
+#     def __unicode__(self):
+#         return u'%s' % self.name
+
+#     def save(self, *args, **kwargs):
+#         """Save model and run an extra check.
+
+#         Check the constraint that workspace_item is in workspace of owner
+#         collage.
+
+#         """
+#         workspace = self.snippet_group.workspace_collage.workspace
+#         if len(workspace.workspace_items.filter(
+#                 pk=self.workspace_item.pk)) == 0:
+#             raise "workspace_item of snippet not in workspace of collage"
+#         # Call the "real" save() method.
+#         super(WorkspaceCollageSnippet, self).save(*args, **kwargs)
+
+#     def delete(self, *args, **kwargs):
+#         """Delete model, also deletes snippet_group if that's empty"""
+#         snippet_group = self.snippet_group
+#         super(WorkspaceCollageSnippet, self).delete(*args, **kwargs)
+#         if not snippet_group.snippets.exists():
+#             snippet_group.delete()
+
+#     @property
+#     def identifier(self):
+#         """Return dict of parsed identifier_json.
+
+#         """
+#         return parse_identifier_json(self.identifier_json)
+
+#     @property
+#     def location(self):
+#         return self.workspace_item.adapter.location(**self.identifier)
+
+#     def image(self, start_end_dates, width=None, height=None):
+#         """Return image from adapter.
+
+#         start_end_dates: 2-tuple of datetimes
+
+#         """
+#         return self.workspace_item.adapter.image([self.identifier],
+#                                                  start_end_dates,
+#                                                  width=width, height=height)
+
+#     def set_identifier(self, identifier):
+#         """sets dictionary identifier to property identifier_json"""
+#         self.identifier_json = json.dumps(identifier).replace('"', '%22')
+
+
+# TODO: Remove legend-shape dependencies of legend stuff, then remove
+# the legend stuff.
 
 class LegendManager(models.Manager):
     """Implements extra function 'find'

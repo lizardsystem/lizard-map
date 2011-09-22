@@ -2,7 +2,7 @@ from django import template
 from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.models import Workspace
+#from lizard_map.models import Workspace
 from lizard_map.models import WorkspaceEdit
 from lizard_map.utility import float_to_string
 from lizard_map.views import CUSTOM_LEGENDS
@@ -10,12 +10,12 @@ from lizard_map.views import CUSTOM_LEGENDS
 register = template.Library()
 
 
-@register.inclusion_tag("lizard_map/tag_workspace_debug.html",
-                        takes_context=True)
-def workspace_debug_info(context):
-    """Display debug info on workspaces."""
-    workspaces = Workspace.objects.all()
-    return {'workspaces': workspaces}
+# @register.inclusion_tag("lizard_map/tag_workspace_debug.html",
+#                         takes_context=True)
+# def workspace_debug_info(context):
+#     """Display debug info on workspaces."""
+#     workspaces = Workspace.objects.all()
+#     return {'workspaces': workspaces}
 
 
 # @register.inclusion_tag("lizard_map/tag_workspace.html",
@@ -73,6 +73,7 @@ def collage_edit(context, collage_edit):
 #         adapter_layer_json=adapter_layer_json).count() > 0 else ''
 
 
+# TODO: remove?
 @register.simple_tag
 def snippet_group(snippet_group, add_snippet=None, editing=None, legend=None):
     """

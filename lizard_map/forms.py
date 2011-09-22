@@ -136,7 +136,7 @@ class CollageItemEditorForm(forms.Form):
 
     boundary_value = forms.FloatField(required=False)
     percentile_value = forms.FloatField(required=False)
-    aggregation_period = forms.IntegerField()
+    aggregation_period = forms.ChoiceField()
 
     line_min = forms.BooleanField(required=False)
     line_max = forms.BooleanField(required=False)
@@ -147,4 +147,4 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-        # self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+        self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
