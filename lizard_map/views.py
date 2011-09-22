@@ -90,22 +90,20 @@ class GoogleTrackingMixin(object):
 
 
 class WorkspaceMixin(object):
-    """Add workspace and map variables. Not (yet) pretty.
+    """Add workspace and map variables.
     """
     javascript_click_handler = 'popup_click_handler'
 
-    def workspace_edit(self):
-        """Return your workspace"""
-        if not hasattr(self, '_workspace_edit'):
-            self._workspace_edit = WorkspaceEdit.get_or_create(
-                self.request.session.session_key, user=self.request.user)
-        return self._workspace_edit
+    def workspace(self):
+        """Implement a function that returns a workspace-storage,
+        workspace-edit or other workspace."""
+        pass
 
     def animation_slider(self):
         """Add animation slider? Default: none."""
         if not hasattr(self, '_animation_slider'):
             self._animation_slider = None  # default
-            if self.workspace_edit().is_animatable:
+            if self.workspace().is_animatable:
                 self._animation_slider = AnimationSettings(self.request).info()
         return self._animation_slider
 
@@ -114,6 +112,18 @@ class WorkspaceMixin(object):
             self._javascript_hover_handler = Setting.get(
                 'javascript_hover_handler', None)
         return self._javascript_hover_handler
+
+
+class WorkspaceEditMixin(WorkspaceMixin):
+    def workspace_edit(self):
+        """Return your workspace"""
+        if not hasattr(self, '_workspace_edit'):
+            self._workspace_edit = WorkspaceEdit.get_or_create(
+                self.request.session.session_key, user=self.request.user)
+        return self._workspace_edit
+
+    def workspace(self):
+        return self.workspace_edit()
 
 
 class MapMixin(object):
@@ -208,10 +218,41 @@ class DateRangeMixin(object):
 
 
 class AppView(
-    WorkspaceMixin, CollageMixin, DateRangeMixin, ViewContextMixin, MapMixin,
+    WorkspaceEditMixin, CollageMixin, DateRangeMixin,
+    ViewContextMixin, MapMixin,
     GoogleTrackingMixin, TemplateView):
     """All-in-one"""
     pass
+
+
+class WorkspaceStorageListView(
+    ViewContextMixin, GoogleTrackingMixin, TemplateView):
+
+    template_name = 'lizard_map/workspace_storage_list.html'
+
+    def workspaces(self):
+        return WorkspaceStorage.objects.all()
+
+class WorkspaceStorageView(
+    WorkspaceMixin, CollageMixin, DateRangeMixin,
+    ViewContextMixin, MapMixin,
+    GoogleTrackingMixin, TemplateView):
+    """Workspace storage view.
+
+    TODO: load workspace in my workspace and go there"""
+    template_name = 'lizard_map/workspace_storage_detail.html'
+
+    def workspace(self):
+        """Return a workspace"""
+        if not hasattr(self, '_workspace'):
+            self._workspace = WorkspaceStorage.objects.get(
+                pk=self.workspace_id)
+        return self._workspace
+
+    def get(self, request, *args, **kwargs):
+        self.workspace_id = kwargs['workspace_id']
+        return super(WorkspaceStorageView, self).get(
+            request, *args, **kwargs)
 
 
 class HomepageView(AppView):
@@ -1218,7 +1259,7 @@ class CollagePopupView(CollageMixin, TemplateView):
     template_name = 'lizard_map/box_collage_popup.html'
 
 
-class WorkspaceEmptyView(WorkspaceMixin, ActionDialogView):
+class WorkspaceEmptyView(WorkspaceEditMixin, ActionDialogView):
     template_name = 'lizard_map/box_workspace.html'
     template_name_success = template_name
     form_class = EmptyForm

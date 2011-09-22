@@ -14,6 +14,10 @@
      data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
      >
   <h2>
+    <a id="workspace-link-to-stored"
+       href="{% url lizard_map_workspace_storage_list %}"
+       title="{% trans 'stored workspaces' %}"
+       class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog">&nbsp;</a>
     <a id="workspace-save"
        href="{% url lizard_map_workspace_save %}"
        title="{% trans 'save workspace...' %}"

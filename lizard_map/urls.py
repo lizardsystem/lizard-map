@@ -10,14 +10,11 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     (r'^api/', include('lizard_map.api.urls')),
-    # Actions/services on/from workspaces
-    # url(r'^workspace/(?P<workspace_id>\d+)/$',
-    #     'lizard_map.views.workspace',
-    #     name="lizard_map_workspace"),
-    url(r'^workspace/(?P<workspace_id>\d+)/workspace_items/reorder/$',
+
+    # Actions/services on/from my workspace and my collage
+    url(r'^myworkspace/workspace_items/reorder/$', # L3
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
-
     url(r'^myworkspace/workspace_items/toggle/$',  # L3
         'lizard_map.views.workspace_item_toggle',
         name="lizard_map_workspace_item_toggle"),
@@ -61,6 +58,15 @@ urlpatterns = patterns(
     url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',  # L3 popup
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_item_popup"),
+
+    # Workspace storage
+    url(r'^workspace/$',
+        lizard_map.views.WorkspaceStorageListView.as_view(),
+        name="lizard_map_workspace_storage_list"),
+    url(r'^workspace/(?P<workspace_id>\d+)/$',
+        lizard_map.views.WorkspaceStorageView.as_view(),
+        name="lizard_map_workspace_storage"),
+
 
     # Adapter
     url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
