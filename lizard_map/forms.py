@@ -128,20 +128,27 @@ class CollageItemEditorForm(forms.Form):
     """
     Form to edit collage item edits.
     """
-    title = forms.CharField(max_length=100)
-    y_min = forms.FloatField()
-    y_max = forms.FloatField()
-    x_label = forms.CharField(max_length=100)
-    y_label = forms.CharField(max_length=100)
+    title = forms.CharField(max_length=100, required=False)
+    #y_min = forms.FloatField(required=False)
+    #y_max = forms.FloatField(required=False)
+    x_label = forms.CharField(max_length=100, required=False)
+    y_label = forms.CharField(max_length=100, required=False)
 
-    boundary_value = forms.FloatField()
-    percentile_value = forms.FloatField()
+    boundary_value = forms.FloatField(required=False)
+    percentile_value = forms.FloatField(required=False)
     aggregation_period = forms.IntegerField()
+
+    line_min = forms.BooleanField(required=False)
+    line_max = forms.BooleanField(required=False)
+    line_avg = forms.BooleanField(required=False)
     # choices=StatisticsMixin.AGGREGATION_PERIOD_CHOICES
 
-    # def __init__(self, *args, **kwargs):
-    #     """
-    #     """
-    #     super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-    #     # TODO: use request to filter WorkspaceStorage.
-    #     self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+    def __init__(self, *args, **kwargs):
+        """
+        """
+        # initial = kwargs['initial']
+        # print initial['args']
+        # print initial['kwargs']
+        super(CollageItemEditorForm, self).__init__(*args, **kwargs)
+        # TODO: use request to filter WorkspaceStorage.
+        #self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES

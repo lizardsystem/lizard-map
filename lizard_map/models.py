@@ -599,6 +599,18 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     def html(self):
         return self.adapter.html(identifiers=[self.identifier, ])
 
+    def form_initial(self):
+        """Initial values from object for CollageItemEditorForm."""
+        result = {}
+        result['boundary_value'] = self.boundary_value
+        result['percentile_value'] = self.percentile_value
+        result['restrict_to_month'] = self.restrict_to_month
+        result['aggregation_period'] = self.aggregation_period
+        identifier_layout = self.identifier.get('layout', {})
+        result.update(identifier_layout)
+
+        return result
+
     def img_url(self):
         return self.url("lizard_map_adapter_image", [self.identifier, ])
 

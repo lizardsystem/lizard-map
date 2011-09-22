@@ -43,9 +43,11 @@ from lizard_ui.views import ViewContextMixin
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.animation import AnimationSettings
+from lizard_map.dateperiods import ALL
 from lizard_map.daterange import current_period
 from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
+from lizard_map.models import CollageEditItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
@@ -471,18 +473,50 @@ class DateRangeView(DateRangeMixin, ActionDialogView):
 
 class CollageItemEditorView(ActionDialogView):
     template_name = 'lizard_map/box_collage_item_editor.html'
-    template_name_success = template_name
+    template_name_success = 'lizard_map/box_collage_item_editor_success.html'
     form_class = CollageItemEditorForm
 
     def get(self, request, *args, **kwargs):
         self.collage_item_id = kwargs['collage_item_id']
-        return super(CollageItemEditorView, self).get(request, *args, **kwargs)
+
+        collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
+        self.initial.update(collage_item.form_initial())
+        return super(CollageItemEditorView, self).get(
+            request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.collage_item_id = kwargs['collage_item_id']
+        return super(CollageItemEditorView, self).post(
+            request, *args, **kwargs)
 
     def form_valid_action(self, form):
         """
 
         """
-        pass
+        reserved = {'boundary_value': None,
+                    'percentile_value': None,
+                    'aggregation_period': None}
+
+        data = form.cleaned_data
+        collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
+        identifier = collage_item.identifier
+        print identifier
+        new_layout = identifier.get('layout', {})
+
+        # Reserved keywords
+        collage_item.boundary_value = data['boundary_value']
+        collage_item.percentile_value = data['percentile_value']
+        collage_item.aggregation_period = data.get('aggregation_period', ALL)
+
+        # Non reserved keywords
+        for k, v in data.items():
+            if k not in reserved and v:
+                new_layout[k] = v
+
+        identifier['layout'] = new_layout
+        collage_item.identifier = identifier
+        collage_item.save()
+        print identifier
 
 # L3
 @never_cache
