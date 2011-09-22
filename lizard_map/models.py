@@ -508,6 +508,10 @@ class WorkspaceEdit(
                 workspace=self)
             workspace_edit_item.save()
 
+    def wms_url(self):
+        """Used by wms.html"""
+        return reverse("lizard_map_workspace_edit_wms")
+
 
 class WorkspaceEditItem(WorkspaceItemMixin):
     """
@@ -533,6 +537,11 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
+
+    def wms_url(self):
+        """Used by wms.html"""
+        return reverse("lizard_map_workspace_storage_wms",
+                       kwargs={'workspace_storage_id': self.id})
 
 
 class WorkspaceStorageItem(WorkspaceItemMixin):

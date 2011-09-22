@@ -59,6 +59,15 @@ urlpatterns = patterns(
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_item_popup"),
 
+    # Search stuff for my workspace.
+    url(r'^search_coordinates/',
+        'lizard_map.views.search_coordinates',
+        name="lizard_map.search_coordinates"),  # L3
+    url(r'^search_name/',
+        'lizard_map.views.search_coordinates',
+        {'format': 'name'},
+        name="lizard_map.search_name"),  # L3
+
     # Workspace storage
     url(r'^workspace/$',
         lizard_map.views.WorkspaceStorageListView.as_view(),
@@ -66,6 +75,16 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/$',
         lizard_map.views.WorkspaceStorageView.as_view(),
         name="lizard_map_workspace_storage"),
+    url(r'^workspace/(?P<workspace_storage_id>\d+)/wms/$',  # L3
+        'lizard_map.views.wms',
+        name="lizard_map_workspace_storage_wms"),
+    url(r'^workspace/(?P<workspace_storage_id>\d+)/search_coordinates/',
+        'lizard_map.views.search_coordinates',
+        name="lizard_map.search_coordinates"),  # L3
+    url(r'^workspace/(?P<workspace_storage_id>\d+)/search_name/',
+        'lizard_map.views.search_coordinates',
+        {'format': 'name'},
+        name="lizard_map.search_name"),  # L3
 
 
     # Adapter
@@ -138,15 +157,6 @@ urlpatterns = patterns(
     url(r'^legend/edit/',
         'lizard_map.views.legend_edit',
         name='lizard_map_legend_edit'),
-
-    # Search stuff.
-    url(r'^search_coordinates/',
-        'lizard_map.views.search_coordinates',
-        name="lizard_map.search_coordinates"),  # L3
-    url(r'^search_name/',
-        'lizard_map.views.search_coordinates',
-        {'format': 'name'},
-        name="lizard_map.search_name"),  # L3
 
     # Export.
     url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',

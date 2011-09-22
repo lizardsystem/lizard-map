@@ -1118,7 +1118,7 @@ def search(workspace, google_x, google_y, radius):
 
 
 # L3
-def search_coordinates(request, format='popup'):
+def search_coordinates(request, workspace_storage_id=None, format='popup'):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
 
@@ -1148,8 +1148,11 @@ def search_coordinates(request, format='popup'):
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
-    user_workspace_id = request.GET.get('user_workspace_id', None)
-    workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
+    if workspace_storage_id:
+        workspace = WorkspaceStorage.objects.get(pk=workspace_storage_id)
+    else:
+        user_workspace_id = request.GET.get('user_workspace_id', None)
+        workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
 
     found = search(workspace, google_x, google_y, radius)
 

@@ -106,11 +106,11 @@
   {% for background_map in view.background_maps %}
   {% background_map background_map %}
   {% endfor %}
-  {# Make a layer for every workspace. TODO: update to L3 #}
+  {# Make a layer for workspace. #}
   <div class="workspace-layer lizard-map-wms-item"
        data-workspace-id="{{ view.workspace.id }}"
        data-workspace-name="{{ view.workspace.name }}"
-       data-workspace-wms="{% url lizard_map_workspace_edit_wms %}">
+       data-workspace-wms="{{ view.workspace.wms_url }}">
   </div>
   {# Add wms layers from workspace #}
   {% for wms_layer in view.workspace.wms_layers %}
