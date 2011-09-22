@@ -579,6 +579,9 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         related_name='collage_items')
     identifier = JSONField(default="")
 
+    class Meta:
+        ordering = ()
+
     def html(self):
         return self.adapter.html(identifiers=[self.identifier, ])
 

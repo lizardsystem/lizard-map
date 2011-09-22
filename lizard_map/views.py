@@ -1531,5 +1531,3 @@ class AdapterCsvView(AdapterMixin, View):
         for row in values:
             writer.writerow([row['datetime'], row['value'], row['unit']])
         return response
-
-
