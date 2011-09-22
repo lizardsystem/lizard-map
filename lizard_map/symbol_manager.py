@@ -25,7 +25,7 @@ def list_image_file_names():
         file_names = os.listdir(path)
         file_names.sort()
     except:
-        log.critical('icon/mask path %s does not exist', path)
+        logger.critical('icon/mask path %s does not exist', path)
         raise Exception()
 
     for file_name in file_names:
@@ -43,14 +43,14 @@ class SymbolManager:
         self.symbol_path_original = symbol_path_original
         self.symbol_path_generated = symbol_path_generated
         if not(os.path.exists(self.symbol_path_original)):
-            log.critical('original path %s does not exist',
+            logger.critical('original path %s does not exist',
                          self.symbol_path_original)
             raise Exception(
                 'SymbolManager failed: original path %s does not exist' % (
                     self.symbol_path_original))
         if not(os.path.exists(self.symbol_path_generated)):
             os.makedirs(self.symbol_path_generated)
-            log.info('Created map %s' % self.symbol_path_generated)
+            logger.info('Created map %s' % self.symbol_path_generated)
 
     def get_symbol_transformed(self, filename_nopath, **kwargs):
         """Returns relative filename,
