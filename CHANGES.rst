@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-2.4 (unreleased)
+2.4 (2011-09-22)
 ----------------
 
 - The context processor now first weeds out faulty workspace items before
