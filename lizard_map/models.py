@@ -307,12 +307,8 @@ class WorkspaceItem(models.Model):
                     real_adapter = real_adapter(self,
                         layer_arguments=self.adapter_layer_arguments)
                 except ImportError, e:
-                    logger.critical(
-                        "Invalid entry point: %s. "
-                        "Deleting problematic WorkspaceItem %s.",
-                        e, self)
-                    self.delete()
-                    return None
+                    logger.critical("Invalid entry point: %s", e)
+                    raise
                 except WorkspaceItemError:
                     logger.warning(
                         "Deleting problematic WorkspaceItem: %s", self)
@@ -320,8 +316,13 @@ class WorkspaceItem(models.Model):
                     self.delete()
                     return None
                 return real_adapter
-        raise AdapterClassNotFoundError(
-            u'Entry point for %r not found' % self.adapter_class)
+        # When we're here, no adapter has been found. Delete the workspace.
+        logger.error("Entry point for %r not found, "
+                     "deleting workspace item %s.",
+                     self.adapter_class, self)
+        self.delete()
+        return None
+
 
     @property
     def adapter_layer_arguments(self):

@@ -329,12 +329,6 @@ class WorkspaceItemTest(TestCase):
         """The string that identifies a method is looked up as a so-called
         entry point."""
         workspace_item = WorkspaceItem()
-        workspace_item.adapter_class = 'todo'
-        self.assertRaises(lizard_map.models.AdapterClassNotFoundError,
-                          lambda: workspace_item.adapter,
-                          # ^^^ lambda as adapter is a property and
-                          # assertRaises expects a callable.
-                          )
         workspace_item.adapter_class = 'adapter_dummy'
         workspace_item.adapter_layer_json = ("{}")
         self.assertTrue(isinstance(
@@ -367,7 +361,7 @@ class WorkspaceItemTest(TestCase):
         # No errors: fine.  As long as we return something.
         self.assertTrue(unicode(workspace_item))
 
-    def test_delete_invalid_one(self):
+    def test_delete_invalid_ws_item_1(self):
         workspace = Workspace()
         workspace.save()
         workspace_item = workspace.workspace_items.create(
@@ -376,6 +370,17 @@ class WorkspaceItemTest(TestCase):
         self.assertTrue(isinstance(workspace_item.adapter,
                                    lizard_map.layers.AdapterDummy))
         workspace_item.adapter_layer_json = '{"invalid": "non existing"}bbb'
+        workspace_item.save()
+        # The workspace item should be deleted after .adapter() got an error.
+        self.assertEquals(workspace_item.adapter, None)
+        # Make sure the code doesn't hang in the __unicode__ after a deletion.
+        self.assertEquals(unicode(workspace_item), u"DELETED WORKSPACEITEM")
+
+    def test_delete_invalid_ws_item_2(self):
+        workspace = Workspace()
+        workspace.save()
+        workspace_item = workspace.workspace_items.create(
+            adapter_class='adapter_does_not_exist')
         workspace_item.save()
         # The workspace item should be deleted after .adapter() got an error.
         self.assertEquals(workspace_item.adapter, None)
