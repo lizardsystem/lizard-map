@@ -307,8 +307,12 @@ class WorkspaceItem(models.Model):
                     real_adapter = real_adapter(self,
                         layer_arguments=self.adapter_layer_arguments)
                 except ImportError, e:
-                    logger.critical("Invalid entry point: %s", e)
-                    raise
+                    logger.critical(
+                        "Invalid entry point: %s. "
+                        "Deleting problematic WorkspaceItem %s.",
+                        e, self)
+                    self.delete()
+                    return None
                 except WorkspaceItemError:
                     logger.warning(
                         "Deleting problematic WorkspaceItem: %s", self)

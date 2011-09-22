@@ -4,7 +4,11 @@ Changelog of lizard-map
 2.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- When there's an non-existing adapter (=invalid/non-existing entry point
+  name), we now also delete the workspace item instead of raising an
+  error. There just might be an old workspace item laying around in a
+  customer's session and we shouldn't keep the customer stuck in an
+  error 500.
 
 
 2.4 (2011-09-22)
