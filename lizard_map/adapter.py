@@ -515,7 +515,7 @@ class Graph(object):
             # > 65 = xx-small
             # Fixes #3095
             font_len = max([len(label) for label in labels])
-            font_size = 'medium'  #'medium'
+            font_size = 'medium'  # 'medium'
             if font_len > 40 * ((self.width - 150) / 314.0):
                 font_size = 'small'
             if font_len > 50 * ((self.width - 150) / 314.0):

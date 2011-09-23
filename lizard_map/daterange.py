@@ -203,7 +203,8 @@ def current_period(request):
     return request.session.get(SESSION_DT_PERIOD, default_period)
 
 
-def current_start_end_dates(request, for_form=False, today=None, retrieve_period_function=current_period):
+def current_start_end_dates(request, for_form=False, today=None,
+                            retrieve_period_function=current_period):
     """Return the current start datetime and end datetime.
 
     If for_form is True, this function returns the datetime's as a dictionary

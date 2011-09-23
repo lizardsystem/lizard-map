@@ -323,7 +323,6 @@ class WorkspaceItem(models.Model):
         self.delete()
         return None
 
-
     @property
     def adapter_layer_arguments(self):
         """Return dict of parsed adapter_layer_json.

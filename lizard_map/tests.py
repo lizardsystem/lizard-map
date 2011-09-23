@@ -1141,25 +1141,27 @@ class DateRangeStore(unittest.TestCase):
 
         session = {}
 
-        date_range = { 'period': PERIOD_DAY }
+        date_range = {'period': PERIOD_DAY}
         compute_and_store_start_end(session, date_range)
         self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
 
-        date_range = { 'period': PERIOD_OTHER }
+        date_range = {'period': PERIOD_OTHER}
         compute_and_store_start_end(session, date_range)
         self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
 
     def test_b(self):
         """Test only the computed values are stored."""
 
-        session = { SESSION_DT_START: datetime.datetime(2011, 8, 1),
-                    SESSION_DT_END: datetime.datetime(2011, 8, 30) }
+        session = {SESSION_DT_START: datetime.datetime(2011, 8, 1),
+                   SESSION_DT_END: datetime.datetime(2011, 8, 30)}
 
-        date_range = { 'period': PERIOD_DAY }
+        date_range = {'period': PERIOD_DAY}
         compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+        self.assertEqual(datetime.datetime(2011, 8, 1),
+                         session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30),
+                         session[SESSION_DT_END])
 
     def test_c(self):
         """Test the start and end datetime are stored for PERIOD_OTHER.
@@ -1169,14 +1171,16 @@ class DateRangeStore(unittest.TestCase):
         """
         session = {}
 
-        date_range = { 'period': PERIOD_OTHER,
-                       'dt_start': datetime.datetime(2011, 8, 1),
-                       'dt_end': datetime.datetime(2011, 8, 30) }
+        date_range = {'period': PERIOD_OTHER,
+                      'dt_start': datetime.datetime(2011, 8, 1),
+                      'dt_end': datetime.datetime(2011, 8, 30)}
 
         compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1), session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+        self.assertEqual(datetime.datetime(2011, 8, 1),
+                         session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30),
+                         session[SESSION_DT_END])
 
     def test_d(self):
         """Test the function stores the correct defaults for PERIOD_OTHER.
@@ -1186,7 +1190,7 @@ class DateRangeStore(unittest.TestCase):
         """
         session = {}
 
-        date_range = { 'period': PERIOD_OTHER }
+        date_range = {'period': PERIOD_OTHER}
         now = datetime.datetime(2011, 8, 30)
         compute_and_store_start_end(session, date_range, now=now)
 
@@ -1196,19 +1200,22 @@ class DateRangeStore(unittest.TestCase):
     def test_e(self):
         """Test the start stored for PERIOD_OTHER is never after the end.
 
-        The required information is stored in the form but the start is after the end.
+        The required information is stored in the form but the start is after
+        the end.
 
         """
         session = {}
 
-        date_range = { 'period': PERIOD_OTHER,
-                       'dt_start': datetime.datetime(2011, 8, 30),
-                       'dt_end': datetime.datetime(2011, 8, 1) }
+        date_range = {'period': PERIOD_OTHER,
+                      'dt_start': datetime.datetime(2011, 8, 30),
+                      'dt_end': datetime.datetime(2011, 8, 1)}
 
         compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30), session[SESSION_DT_END])
+        self.assertEqual(datetime.datetime(2011, 8, 30),
+                         session[SESSION_DT_START])
+        self.assertEqual(datetime.datetime(2011, 8, 30),
+                         session[SESSION_DT_END])
 
 
 class DateRangeRetrieveSet(unittest.TestCase):
@@ -1239,7 +1246,7 @@ class DateRangeRetrieveSet(unittest.TestCase):
         The sessions specifies the required information.
 
         """
-        self.request.session = { SESSION_DT_PERIOD: PERIOD_DAY }
+        self.request.session = {SESSION_DT_PERIOD: PERIOD_DAY}
 
         start, end = current_start_end_dates(self.request, today=self.today)
 
@@ -1258,4 +1265,3 @@ class DateRangeRetrieveSet(unittest.TestCase):
 
         self.assertEqual(start, default_start(self.today))
         self.assertEqual(end, default_end(self.today))
-

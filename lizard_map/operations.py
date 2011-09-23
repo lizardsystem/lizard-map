@@ -52,7 +52,8 @@ def tree_from_list(rows,
     >>> rows = [{'id': 'name', 'parent_id': None},
     ...         {'id': 'child', 'parent_id': 'name'},
     ...         {'id': 'name2', 'parent_id': None}]
-    >>> tree_from_list(rows)  == [{'id': 'name', 'parent_id': None, 'children': [
+    >>> tree_from_list(rows)  == [{'id': 'name', 'parent_id': None,
+    ...                            'children': [
     ...     {'id': 'child', 'parent_id': 'name', 'children': []}, ]},
     ...     {'id': 'name2', 'parent_id': None, 'children': []}]
     True
