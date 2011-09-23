@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-2.5 (unreleased)
+2.5 (2011-09-23)
 ----------------
 
 - Not mentioning pyproj as a dependency anymore, even though we *do* need
