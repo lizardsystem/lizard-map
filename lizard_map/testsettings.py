@@ -45,7 +45,11 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.static",
     "django.contrib.messages.context_processors.messages"
     )
-
+LANGUAGES = (
+    ('nl', 'Nederlands'),
+    ('en', 'English'),
+)
+LANGUAGE_CODE = 'nl'
 MIDDLEWARE_CLASSES = (
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     #'lizard_map.profilemiddleware.ProfileMiddleware',
