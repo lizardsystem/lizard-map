@@ -4,6 +4,10 @@ Changelog of lizard-map
 2.5 (unreleased)
 ----------------
 
+- Not mentioning pyproj as a dependency anymore, even though we *do* need
+  it. Somehow the osc.recipe.sysegg buildout recipe doesn't really want to
+  play nice with it.
+
 - When there's an non-existing adapter (=invalid/non-existing entry point
   name), we now also delete the workspace item instead of raising an
   error. There just might be an old workspace item laying around in a
