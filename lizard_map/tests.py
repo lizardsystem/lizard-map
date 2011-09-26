@@ -286,7 +286,7 @@ class WorkspaceItemTest(TestCase):
         entry point."""
         workspace_item = WorkspaceEditItem()
         workspace_item.adapter_class = 'todo'
-        self.assertRaises(lizard_map.models.AdapterClassNotFoundError,
+        self.assertRaises(lizard_map.adapter.AdapterClassNotFoundError,
                           lambda: workspace_item.adapter,
                           # ^^^ lambda as adapter is a property and
                           # assertRaises expects a callable.
@@ -324,15 +324,6 @@ class WorkspaceItemTest(TestCase):
         # No errors: fine.  As long as we return something.
         self.assertTrue(unicode(workspace_item))
 
-
-# class TestCollages(TestCase):
-
-#     def test_creation(self):
-#         workspace = Workspace()
-#         workspace.save()  # save() because we need our generated id.
-#         self.assertFalse(workspace.collages.all())
-#         workspace.collages.create(name='user collage')
-#         self.assertTrue(workspace.collages.all())
 
 class TestDateRange(TestCase):
     """Test daterange.py"""

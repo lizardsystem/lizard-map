@@ -9,7 +9,7 @@ from lizard_map.forms import DateRangeForm
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.views import MAP_BASE_LAYER
 from lizard_map.views import MAP_LOCATION
-from lizard_map.workspace import WorkspaceManager
+#from lizard_map.workspace import WorkspaceManager
 
 # New
 
