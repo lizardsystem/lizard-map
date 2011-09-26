@@ -173,9 +173,17 @@ class ColorField(models.CharField):
 
 #From:
 #https://github.com/bradjasper/django-jsonfield/blob/master/jsonfield/fields.py
-
 #Using djang-jsonfield results in an error in admin pages using this
 #field.
+
+# Add south introspection rules.
+try:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules([], ["^lizard_map\.models\.JSONField"])
+except:
+    # South is not used.
+    pass
+
 class JSONField(models.TextField):
     """JSONField is a generic textfield that neatly serializes/unserializes
 JSON objects seamlessly"""

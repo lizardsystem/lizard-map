@@ -4,6 +4,8 @@ Changelog of lizard-map
 2.6 (unreleased)
 ----------------
 
+- Added migration for new models; South introspection rules.
+
 - Integrated search_name in search_coordinates.
 
 - Made app_screen class-based, with helper class WorkspaceView.
