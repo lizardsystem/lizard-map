@@ -31,20 +31,10 @@ INSTALLED_APPS = [
     ]
 ROOT_URLCONF = 'lizard_map.urls'
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'lizard_map.context_processors.processor.processor',
-    # Default django 1.3 items.
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.contrib.messages.context_processors.messages"
-    )
 LANGUAGES = (
     ('nl', 'Nederlands'),
     ('en', 'English'),
@@ -72,6 +62,8 @@ STATIC_URL = '/static_media/'
 
 LOGGING = setup_logging(BUILDOUT_DIR)
 
+
+SOUTH_TESTS_MIGRATE = False
 
 try:
     # Import local settings that aren't stored in svn.

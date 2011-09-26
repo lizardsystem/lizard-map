@@ -7,12 +7,15 @@ from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import DUTCH_DATE_FORMAT
-from lizard_map.workspace import WorkspaceManager
+#from lizard_map.workspace import WorkspaceManager
+from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceStorage
 
 ANIMATION_SETTINGS = 'animation_settings'
 
 
-def slider_layout_extra(request):
+# TODO: L3 test
+def slider_layout_extra(request, workspace_storage_id=None):
     """
     Calculates layout_extra (used when drawing graphs) for current
     animation slider.
@@ -22,23 +25,30 @@ def slider_layout_extra(request):
 
     layout_extra = {}
 
-    workspace_manager = WorkspaceManager(request)
-    workspace_groups = workspace_manager.load_or_create()
+    # workspace_manager = WorkspaceManager(request)
+    # workspace_groups = workspace_manager.load_or_create()
 
-    for workspaces in workspace_groups.values():
-        for workspace in workspaces:
-            for workspace_item in workspace.workspace_items.filter(
-                visible=True):
-                if workspace_item.adapter.is_animatable:
-                    animation_info = AnimationSettings(request).info()
-                    if not 'vertical_lines' in layout_extra:
-                        layout_extra['vertical_lines'] = []
-                    vertical_line = {'name': 'Positie animatie slider',
-                                     'value': animation_info['selected_date'],
-                                     'style': {'linewidth': 3,
-                                               'linestyle': '--',
-                                               'color': 'green'}}
-                    layout_extra['vertical_lines'].append(vertical_line)
+    # for workspaces in workspace_groups.values():
+    #     for workspace in workspaces:
+
+    if workspace_storage_id is None:
+        workspace = WorkspaceEdit.get_or_create(request.session.session_key,
+                                                request.user)
+    else:
+        workspace = WorkspaceStorage.objects.get(pk=workspace_storage_id)
+
+    for workspace_item in workspace.workspace_items.filter(
+        visible=True):
+        if workspace_item.adapter.is_animatable:
+            animation_info = AnimationSettings(request).info()
+            if not 'vertical_lines' in layout_extra:
+                layout_extra['vertical_lines'] = []
+            vertical_line = {'name': 'Positie animatie slider',
+                             'value': animation_info['selected_date'],
+                             'style': {'linewidth': 3,
+                                       'linestyle': '--',
+                                       'color': 'green'}}
+            layout_extra['vertical_lines'].append(vertical_line)
     return layout_extra
 
 

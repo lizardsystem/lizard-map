@@ -2,73 +2,69 @@ from django import template
 from django.utils import simplejson as json
 
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.models import Workspace
+#from lizard_map.models import Workspace
 from lizard_map.utility import float_to_string
 from lizard_map.views import CUSTOM_LEGENDS
 
 register = template.Library()
 
 
-@register.inclusion_tag("lizard_map/tag_workspace_debug.html",
-                        takes_context=True)
-def workspace_debug_info(context):
-    """Display debug info on workspaces."""
-    workspaces = Workspace.objects.all()
-    return {'workspaces': workspaces}
+# @register.inclusion_tag("lizard_map/tag_workspace_debug.html",
+#                         takes_context=True)
+# def workspace_debug_info(context):
+#     """Display debug info on workspaces."""
+#     workspaces = Workspace.objects.all()
+#     return {'workspaces': workspaces}
 
 
-@register.inclusion_tag("lizard_map/tag_workspace.html",
+# @register.inclusion_tag("lizard_map/tag_workspace.html",
+#                         takes_context=True)
+# def workspace(context, workspace, show_new_workspace=False):
+#     """Display workspace."""
+#     if 'request' in context:
+#         session = context['request'].session
+#     else:
+#         session = None
+#     return {
+#         'workspace': workspace,
+#         'date_range_form': context.get('date_range_form', None),
+#         'show_new_workspace': show_new_workspace,
+#         'session': session}
+
+
+# L3
+@register.inclusion_tag("lizard_map/tag_workspace_edit.html",
                         takes_context=True)
-def workspace(context, workspace, show_new_workspace=False):
-    """Display workspace."""
+def workspace_edit(context, workspace_edit):
+    """Display workspace_edit"""
     if 'request' in context:
         session = context['request'].session
+        user = context['user']
     else:
         session = None
+        user = None
     return {
-        'workspace': workspace,
-        'date_range_form': context.get('date_range_form', None),
-        'show_new_workspace': show_new_workspace,
-        'session': session}
+        'workspace_edit': workspace_edit,
+        'session': session,
+        'user': user}
 
 
-@register.simple_tag(takes_context=True)
-def snippet_group(context, snippet_group, add_snippet=None,
-                  editing=None, legend=None):
-    """
-    Renders snippet_group.  All snippets MUST be using the same
-    workspace_item, or output is undefined.
-
-    add_snippet and editing are strings that are 'True' or 'False'
-
-    TODO: make snippets of the same adapter compatible (instead of
-    workspace_item)
-    """
-    snippets = snippet_group.snippets.all()
-    if snippets:
-        workspace_item = snippets[0].workspace_item
-        return workspace_item.adapter.html(
-            snippet_group=snippet_group,
-            layout_options={'add_snippet': add_snippet == 'True',
-                            'editing': editing == 'True',
-                            'legend': legend == 'True',
-                            'request': context['request']},
-            )
-    else:
-        return 'empty snippet_group (should never happen)'
+# L3
+@register.inclusion_tag("lizard_map/tag_collage_edit.html",
+                        takes_context=True)
+def collage_edit(context, collage_edit):
+    """Display collage_edit"""
+    return {
+        'collage_edit': collage_edit}
 
 
 @register.inclusion_tag("lizard_map/tag_statistics.html")
-def snippet_group_statistics(request, snippet_group):
-    """
-    Renders table with statistics. Uses start/enddate from request.
-
-    TODO: use start_date and end_date from workspace
-    """
-    statistics = []
+def collage_item_statistics(request, collage_item):
     start_date, end_date = current_start_end_dates(request)
-    statistics = snippet_group.statistics(start_date, end_date)
-    return {'statistics': statistics, 'snippet_group': snippet_group}
+    statistics = collage_item.statistics(start_date, end_date)
+    return {'statistics': statistics,
+            'boundary_value': collage_item.boundary_value,
+            'percentile_value': collage_item.percentile_value}
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")
@@ -99,26 +95,6 @@ def json_escaped(value):
 def float_or_exp(value):
     """Show number with 2 decimals or with an exponent if too small."""
     return float_to_string(value)
-
-
-@register.inclusion_tag("lizard_map/tag_date_trigger.html",
-                        takes_context=True)
-def date_trigger(context):
-    """Displays date icon and link"""
-    return {
-        'date_range_form': context.get('date_range_form', None),
-        'date_start_period': context.get('date_start_period', None),
-        'date_end_period': context.get('date_end_period', None),
-        }
-
-
-@register.inclusion_tag("lizard_map/tag_date_popup.html",
-                        takes_context=True)
-def date_popup(context):
-    """Displays date popup"""
-    return {
-        'date_range_form': context.get('date_range_form', None),
-        }
 
 
 @register.inclusion_tag("lizard_map/tag_legend.html")

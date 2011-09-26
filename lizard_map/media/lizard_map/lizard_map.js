@@ -29,18 +29,6 @@ function setSliderDate(slider_value) {
 }
 
 
-function indicateWorkspaceItemBusy($workspace_item) {
-    $workspace_item.removeClass("workspace-acceptable");
-    $workspace_item.addClass("waiting-lineitem");
-}
-
-
-function reenableWorkspaceItem($workspace_item) {
-    $workspace_item.addClass("workspace-acceptable");
-    $workspace_item.removeClass("waiting-lineitem");
-}
-
-
 function setUpAnimationSlider() {
     var workspace_item_id;
     $("#animation-slider").slider({
@@ -100,6 +88,7 @@ function setUpTransparencySlider() {
 }
 
 
+/* L3 */
 function setUpMapLoadDefaultLocation() {
     $("#map-load-default-location").click(function () {
         var url;
@@ -160,131 +149,429 @@ function reloadMapActions() {
 }
 
 
-function setUpAddWorkspaceItem() {
-
-    // Add action to button 'add-workspace-item' in workspace
-    // acceptables. This class is added by
-    // setUpWorkspaceAcceptableButtons in lizard-ui: lizard.js.
-    $(".add-workspace-item").live("click", function (event) {
-        // Fetch workspace acceptable properties and add workspace item.
-        var wa_name, adapter_class, adapter_layer_json, url,
-            $workspace_acceptable, $workspace, workspace_id;
-        // Get adapter class and parameters.
-        $workspace_acceptable = $(this).parents(".workspace-acceptable");
-        $workspace = $(".workspace");  // Assumes there is only 1.
-        workspace_id = $workspace.attr("data-workspace-id");
-
-        wa_name = $workspace_acceptable.attr("data-name");
-        adapter_class = $workspace_acceptable.attr("data-adapter-class");
-        adapter_layer_json = $workspace_acceptable.attr("data-adapter-layer-json");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-add");
-        indicateWorkspaceItemBusy($workspace_acceptable);
-        if ($(".workspace .workspace-item").length > 7) {
-            alert("Pas op, meer dan 8 workspace items zorgt voor traagheid.");
-        }
-        // Temporary disable sorting. It gets enabled again in
-        // updateWorkspace.
-        $(".workspace ul.workspace-items").sortable("disable");
-        // Request to make workspace item and update workspace.
-        $.post(
-            url,
-            {workspace_id: workspace_id,
-             name: wa_name,
-             adapter_class: adapter_class,
-             adapter_layer_json: adapter_layer_json
-            },
-            function (workspace_id) {
-                // Update all workspaces.
-                $(".workspace").updateWorkspace();
-                // "click" the empty temp workspace
-                $(".workspace-empty-temp").click();
-                reenableWorkspaceItem($workspace_acceptable);
-            }
-        );
-        return false; // Same as .preventDefault and .stopPropagation
-    });
-}
-
-
+/* L3 */
+/* Clicking a workspace-acceptable toggles the
+   workspace-acceptable. If it is enabled it also shows up in your
+   workspace (if it is visible). */
 function setUpWorkspaceAcceptable() {
-    // Set up draggability for current and future items.
-    // See http://tinyurl.com/29lg4y3 .
-    $(".workspace-acceptable").live("mouseover", function () {
-        var html;
-        if (!$(this).data("add-workspace-item-initialized")) {
-            // Add the "add to workspace" button
-            $(this).data("add-workspace-item-initialized", true);
-            html = $(this).html();
-            html = '<span class="ss_sprite ss_add sidebarbox-action-icon add-workspace-item" title="Voeg laag toe aan workspace">&nbsp;</span>' + html;
-            $(this).html(html);
-            // Re-initialize tooltips, they are often in a
-            // workspace-acceptable.
-            setUpTooltips();
-        }
-    });
-    // Do not use mouseout: Mouseout is also activated when moving to
-    // the "add-workspace-item" button.
-    $(".workspace-acceptable").live("mouseleave", function () {
-        //  Remove all "add to workspace" button(s).
-        $(".add-workspace-item").remove();
-        $(".workspace-acceptable").removeData(
-            "add-workspace-item-initialized");
-    });
 
-    // Clicking a workspace-acceptable shows it in the 'temp' workspace.
+    function indicateWorkspaceItemBusy($workspace_item) {
+        $workspace_item.removeClass("workspace-acceptable");
+        $workspace_item.addClass("waiting-lineitem");
+    }
+
+    function reenableWorkspaceItem($workspace_item) {
+        $workspace_item.addClass("workspace-acceptable");
+        $workspace_item.removeClass("waiting-lineitem");
+    }
+
     $(".workspace-acceptable").live("click", function (event) {
-        var name, adapter_class, adapter_layer_json, url_add_item_temp,
+        var name, adapter_class, adapter_layer_json, url_item_toggle,
         $workspace, html, $workspace_acceptable;
-        $(".workspace-acceptable").removeClass("selected");
+
         $workspace_acceptable = $(this);
         indicateWorkspaceItemBusy($workspace_acceptable);
-        $(this).addClass("selected");
+
         name = $(this).attr("data-name");
         adapter_class = $(this).attr("data-adapter-class");
         adapter_layer_json = $(this).attr("data-adapter-layer-json");
         $workspace = $(".workspace");
-        url_add_item_temp = $workspace.attr(
-            "data-url-lizard-map-session-workspace-add-item-temp");
+        url_item_toggle = $workspace.attr(
+            "data-url-lizard-map-workspace-item-toggle");
         $.post(
-            url_add_item_temp,
+            url_item_toggle,
             {name: name,
              adapter_class: adapter_class,
              adapter_layer_json: adapter_layer_json
             },
-            function (workspace_id) {
-                var url, center_x, center_y;
-                refreshMapActionsDivs();
+            function (just_added) {
+                if (just_added === "true") {
+                    // console.log("selected");
+                    $workspace_acceptable.addClass("selected");
+                } else {
+                    // console.log("not selected");
+                    $workspace_acceptable.removeClass("selected");
+                }
+                // refreshMapActionsDivs();
+                $(".workspace").updateWorkspace();
+                //stretchOneSidebarBox();
             });
-        stretchOneSidebarBox();
         reenableWorkspaceItem($workspace_acceptable);
         return false;
     });
+
+    // Set initial status.
+    updateWorkspaceAcceptableStatus();
+
+    // We want to refresh workspace-acceptables after clicking an
+    // accordion tab. Not accidently a click is also triggered after
+    // loading next pane.
+    try {
+        $("#accordion").data("tabs").onClick(function (event) {
+            updateWorkspaceAcceptableStatus();
+        });
+    } catch (e) {
+        // Nothing. There is no accordion.
+    }
+}
+
+
+/* L3 dialog contents */
+function dialogContent(content) {
+    $("#dialog-content").html(content);
+}
+
+/* L3 pop up the dialog */
+function dialogOverlay() {
+    overlay = $("#dialog").overlay();
+    overlay.load();  // Pop up
+}
+
+/* L3 close dialog after delay */
+function dialogCloseDelay() {
+    setTimeout(function () {
+        $("#dialog .close").click();
+    }, 2000);
+}
+
+/* L3 close dialog */
+function dialogClose() {
+    $("#dialog .close").click();
+}
+
+
+/* L3 dialog replace ids */
+function dialogReplaceTitles(new_content) {
+    var replace_titles, id, ids, div, title;
+    // Create array with ids to be replaced.
+    // There may be some empty strings in this list.
+    ids = $("#dialog").data("replace-titles").split(" ");
+
+    // Place a div around everything to allow searching through the
+    // root objects.
+    div = $("<div/>").html(new_content);
+
+    for (var i in ids) {
+        id = ids[i];
+        if (id !== "") {
+            title = div.find("#" + id);
+            console.log(title);
+            $("#" + id).attr("title", title.html());
+        }
+    }
+}
+
+/* L3 Dialog size */
+function dialogSize(size) {
+    if (size === "s") {
+        // Small
+        $("#dialog").css("width", "30em");
+        $("#dialog").css("min-height", "10em");
+    } else {
+        // Default
+        $("#dialog").css("width", "40em");
+        $("#dialog").css("min-height", "15em");
+    }
+}
+
+
+/* L3 Click on dialog. Initially fill contents by get. Configure some
+settings. */
+function dialogClick(event) {
+    var url, overlay, size;
+    event.preventDefault();
+
+    url = $(event.target).attr("href");
+    $.get(url)
+        .success(function (data) {
+            var div;
+            // Put data in extra html to find root-level .dialog-box
+            div = $("<div/>").html(data).find(".dialog-box");
+            dialogContent(div);
+            dialogOverlay();
+        })
+        .error(function (data) {
+            dialogContent("Fout bij laden van dialoog. " +
+                          "Probeert U het later nog eens.");
+            dialogOverlay();
+            dialogCloseDelay();
+        });
+    $("#dialog").data("submit-on-change", false);
+    // All ids that have to be replaced in the original page. Space
+    // separated.
+    $("#dialog").data("replace-titles", "");  // Reset
+    $("#dialog").data(
+        "replace-titles", $(event.target).attr("data-replace-titles"));
+    dialogSize($(event.target).attr("data-size"));
+    return false;
+}
+
+/* L3 Onchange on dialog: only on ajax-dialog-onchange */
+function dialogOnChange(event) {
+    var $form;
+    console.log("dialog onchange");
+    event.preventDefault();
+    if ($("#dialog").data("submit-on-change")) {
+        // console.log("onchange submit");
+        $form = $(event.target).parents("form");
+        $.post(
+            $form.attr("action"), $form.serialize(),
+            function (data, status, context) {
+                // Strange: everything goes to .error
+            }, "json")
+            .error(function (context) {
+                var div;
+                div = $("<div/>").html(context.responseText).find(
+                    ".dialog-box");
+                // Bad request: wrong input
+                // Or 200, or else... all the same
+                dialogReplaceTitles(context.responseText);
+                dialogContent(div);
+                dialogOverlay();
+                return false;
+            });
+    }
+    return false;
+}
+
+function dialogSetupChange(event) {
+    $("#dialog").data("submit-on-change", true);
+}
+
+/* L3 Pressing submit in dialog box */
+function dialogSubmit(event, afterSubmit) {
+    var $form;
+    console.log("dialog submit");
+    event.preventDefault();
+    $form = $(event.target).parents("form");
+    $.post(
+        $form.attr("action"), $form.serialize(),
+        function (data, status, context) {
+            // Strange: everything goes to .error
+        }, "json")
+        .error(function (context) {
+            var div;
+            div = $("<div/>").html(context.responseText).find(".dialog-box");
+            if (context.status === 400) {
+                // Bad request: wrong input
+                dialogContent(div);
+                dialogOverlay();
+            } else if (context.status === 200) {
+                dialogReplaceTitles(context.responseText);
+                if ($("#dialog").data("submit-on-change")) {
+                    // Close immediately, because the contents don't change.
+                    dialogClose();
+                } else {
+                    // Show success message, then close.
+                    dialogContent(div);
+                    dialogOverlay();
+                    dialogCloseDelay();
+                    if (afterSubmit !== undefined) {
+                        afterSubmit(context);
+                    }
+                }
+            } else if (context.status === 403) {
+                // Forbidden: display whole page
+                dialogContent(context.responseText);
+                dialogOverlay();
+                dialogCloseDelay();
+            } else {
+                // Unknown error
+                dialogContent("Fout bij opslaan, " +
+                              "probeert U het later nog eens.");
+                dialogOverlay();
+                dialogCloseDelay();
+            }
+            return false;
+        });
+    return false;
+}
+
+function updateWorkspaceAfterSubmit(event) {
+    return dialogSubmit(event, function (context) {
+        return $(".workspace").updateWorkspace();
+    });
+}
+
+function reloadScreenAfterSubmit(event) {
+    return dialogSubmit(event, function (context) {
+        window.location.reload();
+    });
+}
+
+/* L3 Generic dialog code that works on a hrefs.
+
+- Define an a href with class "ajax-dialog" or "ajax-dialog-onchange"
+- Optionally add attributes:
+  - data-reload-after-submit="true": reloads the page after successful submit
+  - data-replace-titles="title_id1 title_id2": replaces given tag ids
+    after submit (or onchange).
+
+The actions are as follows:
+1) Click: get contents from href url and display in div #dialog
+2) On submit, check result and close if success. Remain open with
+   result if error.
+
+*/
+function setUpDialogs() {
+    $(".ajax-dialog").live("click", dialogClick);
+    $(".ajax-dialog-onchange").live("click", dialogClick);
+    $(".ajax-dialog-onchange").live("click", dialogSetupChange);
+    // Handle submit button in forms in a dialog. Exclude alternative-submit.
+    $("#dialog input:submit:not(.alternative-submit)").live(
+        "click", dialogSubmit);
+    // Handle ajax-dialog-onchange, which submit on changes.
+    $("#dialog form input").live("change", dialogOnChange);
+    $("#dialog form select").live("change", dialogOnChange);
+
+    // TODO: split this part. It is for specific lizard-map workspace stuff.
+    // For workspace changes: live our own handler
+    $("#dialog input:submit.update-workspace-after").live(
+        "click", updateWorkspaceAfterSubmit);
+    $("#dialog input:submit.reload-screen-after").live(
+        "click", reloadScreenAfterSubmit);
+}
+
+
+/* Generic POST click handling: do preAction, post, if success do
+postAction. */
+function actionPostClick(event, preAction, postAction, parameters) {
+    var url, target, target_id;
+    event.preventDefault();
+
+    url = $(event.target).attr("href");
+    target_id = $(event.target).attr("data-target-id")
+    if (target_id === undefined) {
+        alert("Fout: data-target-id is undefined.");
+        return false;
+    }
+    target = $(target_id);
+    if (preAction !== undefined) {
+        preAction();
+    }
+    if (parameters === undefined) {
+        parameters = {};
+    }
+    $.post(url, parameters)
+        .success(function (data) {
+            div = $("<div/>").html(data).find(".dialog-box").find(target_id);
+            target.html(div.html());
+            if (postAction !== undefined) {
+                postAction();
+            }
+        })
+        .error(function (data) {
+            target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
+        });
+    return false;
+}
+
+
+/* Actions to do after server returns from post */
+function postClickWorkspaceEmpty() {
+    var $workspace;
+    $workspace = $("#edit-workspace");
+    // Remove progress.
+    $workspace.find(".sidebarbox-action-progress").remove();
+    $workspace.updateWorkspace();
+}
+
+
+function actionPostClickEmpty(event) {
+    return actionPostClick(
+        event,
+        addProgressAnimationIntoWorkspace,
+        postClickWorkspaceEmpty
+    );
+}
+
+function actionPostDeleteCollageItem(event) {
+    var object_id;
+    object_id = $(event.target).parents(
+        ".collage-item").attr("data-object-id");
+    return actionPostClick(
+        event,
+        undefined,
+        stretchOneSidebarBox,
+        {object_id: object_id, action: 'delete'}
+    );
+}
+
+/* Click checkbox on collage item. */
+function actionPostEditCollageItem(event) {
+    var object_id, visible, $collage_item;
+    $collage_item = $(event.target).parents(".collage-item");
+    object_id = $collage_item.attr("data-object-id");
+    visible = $collage_item.find(".collage-item-checkbox").attr("checked");
+    return actionPostClick(
+        event,
+        undefined,
+        stretchOneSidebarBox,
+        {object_id: object_id, visible: visible, action: 'update'}
+    );
+}
+
+/* Collage popup: still old-fashioned. Same for single collage-item or
+whole collage. */
+function collagePopup(event) {
+    var url;
+    event.preventDefault();
+
+    url = $(event.target).attr("href");
+    $.getJSON(url, function (data) {
+        show_popup(data);
+        // Mark popup as being a collage popup
+        $("#dialog-content div:first-child").data("is_collage_popup", true);
+    });
+    return false;
+}
+
+/* Actions post or get an url, then replaces tag data-target-id in
+current page. */
+function setUpActions() {
+    $(".action-post").live("click", actionPostClick);
+    // Empty workspace AND empty collage.
+    $(".action-post-workspace-empty").live("click", actionPostClickEmpty);
+    // Delete collage item
+    $(".collage-item-delete").live(
+        "click", actionPostDeleteCollageItem);
+    // Edit (visibility of) collage item
+    $(".collage-item-checkbox").live(
+        "click", actionPostEditCollageItem);
+    // Collage-popup.
+    $(".collage-popup").live(
+        "click", collagePopup);
+}
+
+/*
+Erase the contents of the popup when the user closes the popup
+*/
+function eraseDialogContentsOnClose() {
+    $("#dialog").live("onClose", function () {
+        $("#dialog-content").empty();
+    });
+}
+
+
+/* L3 popup with "niets gevonden" */
+function nothingFoundPopup() {
+    var html;
+    html = "<h1>Niets gevonden</h1>" +
+           "<p>Er is niets rond deze locatie gevonden.</p>";
+    dialogContent(html);
+    dialogSize("s");
+    dialogOverlay();
+    dialogCloseDelay();
 }
 
 
 /* Make the following workspace buttons work:
 - Trashcan next to "My Workspace" (workspace-empty-trigger)
-- Trashcan next to "Collage" (collage-empty-trigger)
 - (-) next to workspace-items (workspace-item-delete)
-- (-) next to snippet-items (snippet-delete)
-- Clickable snippets
+
+L3
 */
 function setUpWorkspaceButtons() {
-    // Trashcan next to "My Workspace"
-    $(".workspace-empty-trigger").live('click', function () {
-        var $workspace, workspace_id, url;
-        $workspace = $(this).parents("div.workspace");
-        workspace_id = $workspace.attr("data-workspace-id");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-empty");
-        addProgressAnimationIntoWorkspace();
-        $.post(
-            url, {workspace_id: workspace_id},
-	    function (data) {
-	        //remove progress
-                $workspace.find(".sidebarbox-action-progress").remove();
-                $workspace.updateWorkspace();
-            });
-    });
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {
         var $workspace, workspace_id, url, object_id;
@@ -297,150 +584,16 @@ function setUpWorkspaceButtons() {
         $.post(
             url,
             { object_id: object_id },
-            function () {
+            function (is_deleted) {
                 $workspace.updateWorkspace();
             });
         return false;
     });
-    // Trashcan next to "Collage"
-    $(".collage-empty-trigger").live('click', function () {
-        var $workspace, collage_id, url;
-        $workspace = $(this).parents("div.workspace");
-        collage_id = $(this).attr("data-collage-id");
-        url = $workspace.attr("data-url-lizard-map-collage-empty");
-        addProgressAnimationIntoWorkspace();
-        $.post(
-            url, {collage_id: collage_id},
-	    function (data) {
-	        //remove progress
-                $workspace.find(".sidebarbox-action-progress").remove();
-                $workspace.updateWorkspace();
-            });
-    });
-    // Delete snippet
-    $(".snippet-delete").live('click', function () {
-        var $workspace, workspace_id, url, object_id;
-        $workspace = $(this).parents("div.workspace");
-        workspace_id = $workspace.attr("data-workspace-id");
-        url = $workspace.attr(
-            "data-url-lizard-map-snippet-delete");
-        object_id = $(this).parents(".snippet").attr("data-object-id");
-        $(this).parents(".snippet").addClass("waiting-lineitem");
-        $.post(
-            url,
-            { object_id: object_id },
-            function () {
-                $workspace.updateWorkspace();
-                // Reload the collage_popup if it is already present
-                if (isCollagePopupVisible()) {
-                    $(".collage").collagePopup();
-                }
-            });
-        return false;
-    });
-    // Make snippetnames clickable.
-    $("div.snippet-name").live('click', function (event) {
-        var $snippet, $workspace, url, snippet_id;
-        $snippet = $(this).parents("li.snippet");
-        $workspace = $(this).parents("div.workspace");
-        url = $workspace.attr("data-url-lizard-map-snippet-popup");
-        snippet_id = $snippet.attr("data-object-id");
-        $.getJSON(
-            url,
-            { snippet_id: snippet_id },
-            function (data) {
-                show_popup(data);
-            }
-        );
-    });
-}
-
-
-/* Updates the date popup from a select or input tag */
-function updateDateSelectOrInput() {
-    var url, $form;
-    $form = $(this).parents("form");
-    url = $form.attr("action");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            // Update the popup. Note: We cannot use load, because the
-            // overlay properties will get lost
-            $.get("./", {}, function (data) {
-                var new_contents, curr_period_title;
-                new_contents = $(data).find(
-                    "#summary-datepicker-contents").html();
-                $("#summary-datepicker-contents").html(new_contents);
-                curr_period_title = $(data).find(
-                    "#summary-datepicker-a").attr("title");
-                $("#summary-datepicker-a").attr("title", curr_period_title);
-            });
-            reloadGraphs();
-            // Check for items with .show_on_date_change and show 'em.
-            $('.show_on_date_change').slideDown();
-        });
-}
-
-
-// Updates date div from server when fields change.
-function setUpDateUpdate() {
-    $("#summary-datepicker form input").live(
-        'change', updateDateSelectOrInput);
-    $("#summary-datepicker form select").live(
-        'change', updateDateSelectOrInput);
-}
-
-
-function setUpDatePopup() {
-    $(".popup-trigger").live('mouseover', function () {
-        if (!$(this).data("popup-initialized")) {
-            $(this).data("popup-initialized", true);
-            $(this).overlay();
-        }
-    });
-}
-
-
-function setUpNotFoundPopup() {
-    $("#not_found_popup_trigger").overlay();
-}
-
-
-function nothingFoundPopup() {
-    $("#not_found_popup_trigger").click();
-    setTimeout(function () {
-        $("#not_found_popup .close").click();
-    },
-              2000);
 }
 
 
 function setUpGraphEditPopup() {
     $(".graph_edit_trigger").overlay();
-}
-
-
-/*
-Empty the temp workspace
-*/
-function setUpEmptyTempInteraction() {
-    $(".workspace-empty-temp").live("click", function () {
-        var $workspace, url, workspace_item_id;
-        $(this).css("cursor", "progress");
-        $workspace = $(".workspace");
-        url = $workspace.attr("data-url-lizard-map-workspace-item-delete");
-        workspace_item_id = $(this).attr("data-workspace-item-id");
-        $.post(
-            url,
-            {object_id: workspace_item_id},
-            function (workspace_id) {
-                refreshMapActionsDivs();
-                // remove highlighting
-                $(".workspace-acceptable").removeClass("selected");
-            }
-        );
-    });
 }
 
 
@@ -642,7 +795,7 @@ function setupVideoPopup() {
 }
 
 
-function  setupTableToggle() {
+function setupTableToggle() {
     // For collapsible tables in popups
     $('.toggle_button').live('click', function (event) {
         var $wrapper;
@@ -655,13 +808,14 @@ function  setupTableToggle() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-    setUpAddWorkspaceItem();
+    // Touched/new for L3
     setUpWorkspaceAcceptable();
+    setUpDialogs();
+    eraseDialogContentsOnClose();
+    setUpActions();
+
+    // Untouched
     setUpWorkspaceButtons();
-    setUpDatePopup();
-    setUpDateUpdate();
-    setUpNotFoundPopup();
-    setUpEmptyTempInteraction();
     setUpAnimationSlider();
     setUpTransparencySlider();
     setUpGraphEditPopup();
@@ -676,8 +830,8 @@ $(document).ready(function () {
     $(".workspace").workspaceInteraction();
 
     // voor collage view, nu nog nutteloos voor popup
-    $(".add-snippet").snippetInteraction();
-    $("a.lizard-map-link").lizardMapLink();
+    //$(".add-snippet").snippetInteraction();
+    //$("a.lizard-map-link").lizardMapLink();
     // Optional popup video link.
     setupVideoPopup();
     setupTableToggle();

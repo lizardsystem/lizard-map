@@ -1,0 +1,54 @@
+{# Workspace (storage) view: shows workspace on the left, map on the right #}
+{% extends "lizard_map/wms.html" %}
+{% load workspaces %}
+{% load i18n %}
+
+{% block sidebar %}
+<div id="workspace"
+     class="sidebarbox workspace"
+     data-workspace-id="{{ view.workspace.id }}"
+     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
+     data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
+     data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
+     >
+  <h2>
+    <span title="Dit is een opgeslagen workspace. Ga met je muis over de elementen heen om opties te zien.">
+      {{ view.workspace.name }}
+    </span>
+  </h2>
+  <ul class="workspace-items without-bullets">
+    {% for workspace_item in view.workspace.workspace_items.all %}
+    <li id="workspace-items-{{ workspace_item.id }}"
+        class="workspace-item"
+        title="{{ workspace_item.name }}"
+        data-object-id="{{ workspace_item.id }}"
+        data-adapter-class="{{ workspace_item.adapter_class }}"
+        data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
+        data-visible="{{ workspace_item.visible }}">
+      {# Legend. #}
+      {% legend workspace_item.name workspace_item.adapter view.request.session %}
+      {# Pan to layer. #}
+      {% if workspace_item.has_extent %}
+      <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                   workspace-item-pan-to"
+            rel="tipsy"
+            title="Zoom"></span>
+      {% endif %}
+      {# Symbol, appears left. #}
+      <img class="workspace-item-image"
+           src="{{ workspace_item.adapter.symbol_url }}"
+           width="16"
+           height="16" />
+      <div class="workspace-item-name">
+        {% firstof workspace_item.name '(noname)' %}
+      </div>
+    </li>
+    {% empty %}
+      {# No workspaceitems #}
+      <li>Geen workspace items in opgeslagen workspace.</li>
+    {% endfor %}
+  </ul>
+</div>
+
+{% collage_edit view.collage_edit %}
+{% endblock sidebar %}

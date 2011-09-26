@@ -3,14 +3,12 @@
 import datetime
 import logging
 
-from django import forms
 from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.template import RequestContext
-from django.shortcuts import render_to_response
+#from django.http import HttpResponseRedirect
+#from django.template import RequestContext
+#from django.shortcuts import render_to_response
 
-from datewidget import SelectDateWidget
-from django.forms.widgets import RadioSelect
+# from lizard_map.forms import DateRangeForm
 
 
 logger = logging.getLogger(__name__)
@@ -56,57 +54,6 @@ def default_start(now):
 def default_end(now):
     """Return default end date when period is PERIOD_OTHER."""
     return now + datetime.timedelta(days=default_end_days)
-
-
-class HorizontalRadioRenderer(forms.RadioSelect.renderer):
-    """ this overrides widget method to put radio buttons horizontally
-        instead of vertically.
-    """
-
-    def render(self):
-        """Outputs radios"""
-        return (u'\n'.join([u'%s\n' % widget for widget in self]))
-
-
-class DateRangeForm(forms.Form):
-    """
-    Date range form.
-    """
-    # Settings
-    start_year = getattr(settings,
-                         'START_YEAR',
-                          datetime.date.today().year - 7)
-    end_year = getattr(settings,
-                       'END_YEAR',
-                        datetime.date.today().year + 3)
-    years_choices = range(start_year, end_year + 1)
-
-    # Form fields
-    period = forms.ChoiceField(
-        required=True,
-        widget=RadioSelect(renderer=HorizontalRadioRenderer),
-        choices=PERIOD_CHOICES,
-        label='',)
-    # TODO: NL date format.  Also hardcoded in the js.
-    dt_start = forms.DateTimeField(
-        label='van',
-        widget=SelectDateWidget(years=years_choices),
-        required=False)
-    dt_end = forms.DateTimeField(
-        label='t/m',
-        widget=SelectDateWidget(years=years_choices),
-        required=False)
-
-    def __init__(self, *args, **kwargs):
-        # # Add argument period, if not available.
-        # if 'period' not in args[0]:
-        #     args[0]['period'] = PERIOD_DAY
-        super(DateRangeForm, self).__init__(*args, **kwargs)
-
-        # Set initial dt_start/end on disabled when not selected.
-        if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
-            self.fields['dt_start'].widget.attrs['disabled'] = True
-            self.fields['dt_end'].widget.attrs['disabled'] = True
 
 
 def _compute_start_end(daterange, session, now=None):
@@ -164,31 +111,31 @@ def compute_and_store_start_end(session, date_range, now=None):
         session[SESSION_DT_END] = end
 
 
-def set_date_range(request, template='lizard_map/daterange.html',
-                   now=None):
-    """View: store the date range in the session and redirect.
+# def set_date_range(request, template='lizard_map/daterange.html',
+#                    now=None):
+#     """View: store the date range in the session and redirect.
 
-    POST must contain DateRangeForm fields.
-    now is a datetime field, used for testing.
-    """
-    if request.method == 'POST':
-        form = DateRangeForm(request.POST)
-        if form.is_valid():
-            came_from = request.META.get('HTTP_REFERER', '/')
-            date_range = form.cleaned_data
-            compute_and_store_start_end(request.session, date_range, now=now)
+#     POST must contain DateRangeForm fields.
+#     now is a datetime field, used for testing.
+#     """
+#     if request.method == 'POST':
+#         form = DateRangeForm(request.POST)
+#         if form.is_valid():
+#             came_from = request.META.get('HTTP_REFERER', '/')
+#             date_range = form.cleaned_data
+#             compute_and_store_start_end(request.session, date_range, now=now)
 
-            return HttpResponseRedirect(came_from)
-    else:
-        # Invalid, should never happen. You're probably surfing to the
-        # set_date_range url.
-        form = DateRangeForm()
+#             return HttpResponseRedirect(came_from)
+#     else:
+#         # Invalid, should never happen. You're probably surfing to the
+#         # set_date_range url.
+#         form = DateRangeForm()
 
-    # Form rendering just for debugging errors.
-    return render_to_response(
-        template,
-        {'date_range_form': form},
-        context_instance=RequestContext(request))
+#     # Form rendering just for debugging errors.
+#     return render_to_response(
+#         template,
+#         {'date_range_form': form},
+#         context_instance=RequestContext(request))
 
 
 def current_period(request):

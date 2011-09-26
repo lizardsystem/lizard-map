@@ -1,0 +1,10 @@
+<div class="dialog-box date-range-box">
+  <div class="action-icon ss_sprite ss_calendar_view_day"></div>
+  <form action="{% url lizard_map_date_range %}"
+        method="post">
+    {% csrf_token %}
+    {{ view.date_range_form.as_p }}
+    <div><input type="submit" value="opslaan" /></div>
+  </form>
+</div>
+<div id="date-range">Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}</div>

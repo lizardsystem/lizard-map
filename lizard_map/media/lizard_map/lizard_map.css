@@ -22,13 +22,14 @@
 }
 
 /* Datepicker popup styling*/
-.date-popup p
+.date-popup p,
+.date-range-box p
 { margin: 0px;
   vertical-align: top;
 }
 
-.date-popup label[for="id_dt_start_month"],
-.date-popup label[for="id_dt_end_month"]
+.date-range-box label[for="id_dt_start_month"],
+.date-range-box label[for="id_dt_end_month"]
 { display: block;
   float: left;
   clear: left;
@@ -38,18 +39,18 @@
   padding-top: 7px;
 }
 
-.date-popup #id_dt_start_day,
-.date-popup #id_dt_end_day
+.date-range-box #id_dt_start_day,
+.date-range-box #id_dt_end_day
 { margin-left: 20px;
 }
 
-.date-popup #id_dt_start_month,
-.date-popup #id_dt_end_month
+.date-range-box #id_dt_start_month,
+.date-range-box #id_dt_end_month
 { margin-left: 10px;
 }
 
-.date-popup #id_dt_start_year,
-.date-popup #id_dt_end_year
+.date-range-box #id_dt_start_year,
+.date-range-box #id_dt_end_year
 { margin-left: 10px;
 }
 
@@ -108,12 +109,13 @@
 }
 
 
-#graph-popup
+
+#dialog
 { display: none;
   z-index: 10000;
-  width: 40em;
-  min-height: 15em;
   padding: 1em;
+  width: 40em;  /* also set by lizard_map.js */
+  min-height: 15em;  /* also set by lizard_map.js */
   border: 1px solid gray;
   background-color: #FEFFFE;
 /*  background-image: url('/static_media/lizard_ui/old_mathematics.png');*/
@@ -122,15 +124,18 @@
   -moz-box-shadow:0 0 40px 5px black;
   -webkit-box-shadow: 0 0 40px black;
 }
-#graph-popup table thead tr th{
+
+#dialog table thead tr th{
     background-color: #ccc;
     color: #000;
     border-color: gray;
 }
-#graph-popup table tbody tr td{
+
+#dialog table tbody tr td{
     border-color: gray;
 }
-#graph-popup-content,
+
+#dialog-content,
 .popup-content
 { overflow: auto;
   }
@@ -146,7 +151,14 @@
   line-height: 1.3em;
   }
 
-.workspace-item-image
+.workspace-acceptable
+{
+  min-height: 2em;
+  line-height: 2em;
+  }
+
+.workspace-item-image,
+.collage-item-image
 { float: left;
   display: block;
   font-weight: normal;
@@ -154,7 +166,7 @@
   }
 
 .workspace-item,
-.snippet
+.collage-item
 { overflow: hidden;
   width: 100%;
   height: 2em;
@@ -164,11 +176,12 @@
 { height: 25px;
   }
 
-.snippet
+.collage-item
 { cursor: pointer;
 }
 
-.workspace-item-checkbox
+.workspace-item-checkbox,
+.collage-item-checkbox
 {
   float: left;
   display: block;
@@ -178,13 +191,8 @@
 
   }
 
-.workspace-acceptable
-{
-  min-height: 2em;
-  line-height: 2em;
-  }
-
-.workspace-item-name
+.workspace-item-name,
+.collage-item-name
 { margin: 0 0 0 4.2em;
   display: block;
   /*  width: 14em;*/
@@ -192,58 +200,27 @@
   line-height: 2em;
 }
 
-.snippet-name
-{ margin: 0 0 0 4.2em;
-  display: block;
-  line-height: 2em;
-}
 
-.snippet-image
-{ float: left;
-  display: block;
-  font-weight: normal;
-  margin: 4px 0 auto 0;
-  }
+/* Workspace items and collage items have icons that only show up when
+you hover over the item */
 
-.snippet-name
-{ margin: 0 0 0 4.2em;
-  display: block;
-  line-height: 2em;
-}
-
-.snippet-checkbox
-{
-  float: left;
-  display: block;
-  font-weight: normal;
-  margin: 2px 0.75em auto 0.75em;
-  cursor: pointer;
-  }
-
-/* Workspace items and snippets have icons that only show up when you
-hover over the item */
-
-.workspace-item:hover .sidebarbox-action-icon
+.workspace-item:hover .sidebarbox-action-icon,
+.collage-item:hover .sidebarbox-action-icon
 { display: block;
 }
 
-.workspace-item .sidebarbox-action-icon
+.workspace-item .sidebarbox-action-icon,
+.collage-item .sidebarbox-action-icon
 { display: None;
 }
 
-.snippet:hover .sidebarbox-action-icon
-{ display: block;
-}
-
-.snippet .sidebarbox-action-icon
+.workspace h2 .sidebarbox-action-icon,
+.collage h2 .sidebarbox-action-icon
 { display: None;
 }
 
-.workspace h2 .sidebarbox-action-icon
-{ display: None;
-}
-
-.workspace:hover h2 .sidebarbox-action-icon
+.workspace:hover h2 .sidebarbox-action-icon,
+.collage:hover h2 .sidebarbox-action-icon
 { display: block;
 }
 
@@ -253,9 +230,9 @@ hover over the item */
   background-position: right;
 }
 
-div.popup-panes div.pane
-{ display: none;
-}
+/* div.popup-panes div.pane */
+/* { display: none; */
+/* } */
 
 table.toggle_table
 { display: none;
@@ -298,3 +275,24 @@ table.toggle_table
 .show_on_date_change
 { display: none;
   }
+
+
+/* The other part is in lizard.css in lizard-ui. TODO: merge in one place */
+#sidebar .selected-invisible {
+    background-color: #f4f4f4;
+}
+
+
+/* Multiple selection button styling */
+
+.map-multiple-selection{
+    margin-top: 3px;
+    height: 18px;
+    width: 18px;
+    background-image: url('/static_media/sprites/star-light.png');
+}
+
+
+li#map-multiple-selection.active {
+    background-color: #00FF00;
+}

@@ -113,84 +113,84 @@ def detect_prj(prj):
     return RD
 
 
-class MapSettings(object):
-    """
-    Read background map information.
+# class MapSettings(object):
+#     """
+#     Read background map information.
 
-    Uses models BackgroundMap and Setting.
-    """
+#     Uses models BackgroundMap and Setting.
+#     """
 
-    def __init__(self, map_settings=None):
+#     def __init__(self, map_settings=None):
 
-        def setting(key):
-            return Setting.get_dict(key, DEFAULT_MAP_SETTINGS[key])
+#         def setting(key):
+#             return Setting.get_dict(key, DEFAULT_MAP_SETTINGS[key])
 
-        def extent_setting(key):
-            """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
-            extent_names = ['left', 'bottom', 'right', 'top']
-            extent_list = Setting.get(
-                key, DEFAULT_MAP_SETTINGS[key]).split(',')
-            extent = dict(
-                [(extent_names[i], s.strip())
-                 for i, s in enumerate(extent_list)])
-            return {key: extent}
+#         # def extent_setting(key):
+#         #     """ Convert "xx0,yy0,xx1,yy1" to dictionary with extent_names."""
+#         #     extent_names = ['left', 'bottom', 'right', 'top']
+#         #     extent_list = Setting.get(
+#         #         key, DEFAULT_MAP_SETTINGS[key]).split(',')
+#         #     extent = dict(
+#         #         [(extent_names[i], s.strip())
+#         #          for i, s in enumerate(extent_list)])
+#         #     return {key: extent}
 
-        self.global_settings = {}
+#         # self.global_settings = {}
 
-        self.global_settings.update(extent_setting('start_extent'))
-        self.global_settings.update(extent_setting('max_extent'))
+#         # self.global_settings.update(extent_setting('start_extent'))
+#         # self.global_settings.update(extent_setting('max_extent'))
 
-        self.global_settings.update(setting('googlemaps_api_key'))
-        self.global_settings.update(setting('projection'))
-        self.global_settings.update(setting('display_projection'))
+#         # self.global_settings.update(setting('googlemaps_api_key'))
+#         # self.global_settings.update(setting('projection'))
+#         # self.global_settings.update(setting('display_projection'))
 
-        self.background_maps = BackgroundMap.objects.filter(active=True)
+#         # self.background_maps = BackgroundMap.objects.filter(active=True)
 
-        # For the client side to determine is there is a google map.
-        if self.background_maps.filter(
-            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
+#         # # For the client side to determine is there is a google map.
+#         # if self.background_maps.filter(
+#         #     layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
 
-            self.global_settings.update({'has_google': True})
+#         #     self.global_settings.update({'has_google': True})
 
-        if not self.background_maps:
-            logger.warn("No background maps are active. Taking default.")
-            self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
+#         # if not self.background_maps:
+#         #     logger.warn("No background maps are active. Taking default.")
+#         #     self.background_maps = DEFAULT_MAP_SETTINGS['background_maps']
 
-        self.map_settings = dict(self.global_settings)
-        self.map_settings.update({'background_maps': self.background_maps})
+#         # self.map_settings = dict(self.global_settings)
+#         # self.map_settings.update({'background_maps': self.background_maps})
 
-    def mapnik_projection(self):
-        """Returns the mapnik projection.
-        """
-        return srs_to_mapnik_projection[self.map_settings['projection']]
+#     def mapnik_projection(self):
+#         """Returns the mapnik projection.
+#         """
+#         return srs_to_mapnik_projection[self.map_settings['projection']]
 
-    @property
-    def srid(self):
-        """
-        Return srid.
+#     @property
+#     def srid(self):
+#         """
+#         Return srid.
 
-        """
-        try:
-            if self.map_settings['projection'][:5] == 'EPSG:':
-                return int(self.map_settings['projection'][5:])
-        except ValueError:
-            pass
-        return 4326  # wgs84 is the default
+#         """
+#         try:
+#             if self.map_settings['projection'][:5] == 'EPSG:':
+#                 return int(self.map_settings['projection'][5:])
+#         except ValueError:
+#             pass
+#         return 4326  # wgs84 is the default
 
-    @property
-    def srs(self):
-        """
-        Return srs / projection.
-        """
-        return self.map_settings['projection']
+#     @property
+#     def srs(self):
+#         """
+#         Return srs / projection.
+#         """
+#         return self.map_settings['projection']
 
-    def convert_google_extent_map_srs(self, east, north, west, south):
-        """
-        Convert extent in google coordinates to srs of map settings.
-        """
-        extent_converted = {}
-        extent_converted['east'], extent_converted['north'] = google_to_srs(
-            east, north, self.srs)
-        extent_converted['west'], extent_converted['south'] = google_to_srs(
-            west, south, self.srs)
-        return extent_converted
+#     def convert_google_extent_map_srs(self, east, north, west, south):
+#         """
+#         Convert extent in google coordinates to srs of map settings.
+#         """
+#         extent_converted = {}
+#         extent_converted['east'], extent_converted['north'] = google_to_srs(
+#             east, north, self.srs)
+#         extent_converted['west'], extent_converted['south'] = google_to_srs(
+#             west, south, self.srs)
+#         return extent_converted

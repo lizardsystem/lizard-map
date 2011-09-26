@@ -30,6 +30,40 @@ function updateLayers() {
 }
 
 
+/* L3 is multiple selection turned on? */
+function multipleSelection() {
+    return $("li#map-multiple-selection").hasClass("active");
+}
+
+/* L3 click on (lon, lat) in multiple select mode
+
+Borrowed from popup_click_handler
+*/
+function addSelection(x, y, map) {
+    var extent, radius, url, workspace_id;
+    extent = map.getExtent();
+    radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
+    $("#map_").css("cursor", "progress");
+    url = $(".workspace").attr("data-url-lizard-map-add-selection");
+    workspace_id = $(".workspace").attr("data-workspace-id");
+    if (url !== undefined) {
+        $.post(
+            url,
+            { x: x, y: y, radius: radius, srs: map.getProjection(),
+              workspace_id: workspace_id},
+            function (data, status, context) {
+                div = $(data).find("#edit-collage");
+                $("#edit-collage").html(div.html());
+
+                stretchOneSidebarBox();
+                //show_popup(data);
+                //$("#map").css("cursor", "default");
+            }
+        );
+    }
+}
+
+
 // Refresh/setup background layers only when they're not available yet.
 function refreshBackgroundLayers() {
     var $lizard_map_wms, selected_base_layer_name, base_layer,
@@ -306,7 +340,12 @@ function showMap() {
             trigger: function (e) {
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
-                eval(javascript_click_handler_name)(lonlat.lon, lonlat.lat, map);
+                if (multipleSelection()) {
+                    addSelection(lonlat.lon, lonlat.lat, map);
+                } else {
+                    eval(javascript_click_handler_name)(
+                        lonlat.lon, lonlat.lat, map);
+                }
             }
         });
         map_click_control = new MapClickControl();
@@ -342,7 +381,9 @@ function showMap() {
             onPause: function (e) {
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
-                eval(javascript_hover_handler_name)(lonlat.lon, lonlat.lat, map);
+                eval(javascript_hover_handler_name)(
+                    lonlat.lon, lonlat.lat, map);
+
             },
 
             onMove: function (evt) {
@@ -420,17 +461,17 @@ function setDownloadImageLink() {
     });
 }
 
-/*
-Erase the contents of the popup when the user closes the popup
-*/
-function erasePopupContentsOnClose() {
-    $("#graph-popup").bind("onClose", function () {
-        $("#graph-popup-content").empty();
+
+/* map-multiple-selection button */
+function setUpMultipleSelection() {
+    $("#map-multiple-selection").live("click", function () {
+        $(this).toggleClass("active");
     });
 }
+
 
 $(document).ready(function () {
     showMap();
     setDownloadImageLink();
-    erasePopupContentsOnClose();
+    setUpMultipleSelection();
 });

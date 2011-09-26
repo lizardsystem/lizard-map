@@ -2,7 +2,7 @@
 {% load workspaces %}
 <h3>Statistieken</h3>
 <p>
-  <a href="{% url lizard_map.export_snippet_group_statistics_csv snippet_group_id=snippet_group.id %}"
+  <a href=""
      class="ss_table_save ss_sprite noprint">export statistieken</a>
 </p>
 <p class="show_on_date_change notice">
@@ -17,9 +17,9 @@
       <th class="number">Min</th>
       <th class="number">Max</th>
       <th class="number">Gem</th>
-      <th class="number">Aantal onder {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
-      <th class="number">Aantal boven {{ snippet_group.boundary_value|default_if_none:"(geen)" }}</th>
-      <th class="number">Percentiel {{ snippet_group.percentile_value|default_if_none:"(geen)"}}</th>
+      <th class="number">Aantal onder {{ boundary_value|default_if_none:"(-)" }}</th>
+      <th class="number">Aantal boven {{ boundary_value|default_if_none:"(-)" }}</th>
+      <th class="number">Percentiel {{ percentile_value|default_if_none:"(-)"}}</th>
     </tr>
   </thead>
   <tbody>

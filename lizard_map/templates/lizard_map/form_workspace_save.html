@@ -1,0 +1,12 @@
+<div class="dialog-box">
+Workspace opslaan
+<form action="{% url lizard_map_workspace_save %}" method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+<div>
+  <input id="workspace-save"
+         type="submit"
+         value="opslaan" />
+</div>
+</form>
+</div>

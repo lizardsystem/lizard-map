@@ -4,7 +4,13 @@ Changelog of lizard-map
 2.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Integrated search_name in search_coordinates.
+
+- Made app_screen class-based, with helper class WorkspaceView.
+
+- Added workspaces.
+
+- Added PeriodMixin with tests.
 
 
 2.5 (2011-09-23)

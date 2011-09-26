@@ -1,0 +1,11 @@
+<div class="dialog-box">
+  <h4>Aanpassen details selectie.</h4>
+  <form action="{% url lizard_map_collage_item_editor collage_item_id=view.collage_item_id %}" method="post">
+    {{ form.as_p }}
+    <p>
+    <input type="submit"
+           value="Pas aan"
+           class="alternative-submit reload-screen-after"/>
+    </p>
+  </form>
+</div>

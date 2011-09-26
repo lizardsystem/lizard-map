@@ -4,6 +4,7 @@ Helper classes and functions for adapters
 import datetime
 import locale
 import numpy
+import pkg_resources
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
@@ -35,6 +36,14 @@ try:
 except locale.Error:
     logger.debug('No locale nl_NL.UTF8 on this os. Using default locale.')
 
+
+#Adapter stuff
+
+ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
+
+
+# Graph stuff
+
 LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
 BOTTOM_LINE_HEIGHT = FONT_SIZE * 1.5
@@ -44,6 +53,8 @@ def _inches_from_pixels(pixels):
     """Return size in inches for matplotlib's benefit"""
     return pixels / SCREEN_DPI
 
+
+# Adapter helpers
 
 def parse_identifier_json(identifier_json):
     """Return dict of parsed identifier_json.
@@ -61,32 +72,62 @@ def parse_identifier_json(identifier_json):
     return result
 
 
-def workspace_item_image_url(workspace_item_id, identifiers,
-                             strip_layout=False, session_graph_options=False):
-    """
-    Returns image url
+class AdapterClassNotFoundError(Exception):
+    pass
 
-    Identifiers is a list of dicts
-    """
-    identifiers_copy = identifiers[:]
-    if strip_layout:
-        for identifier in identifiers_copy:
-            if 'layout' in identifier:
-                del identifier['layout']
-    identifier_json_list = [json.dumps(identifier).replace('"', '%22') for \
-                                identifier in identifiers_copy]
-    if session_graph_options:
-        img_url = reverse(
-            "lizard_map.workspace_item_image_session_graph_options",
-            kwargs={'workspace_item_id': workspace_item_id, })
-    else:
-        img_url = reverse(
-            "lizard_map.workspace_item_image",
-            kwargs={'workspace_item_id': workspace_item_id, })
-    img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
-                                        identifier_json_list])
-    return img_url
 
+def adapter_serialize(o):
+    return json.dumps(o).replace('"', '%22')
+
+
+def adapter_class_names():
+    """Return allowed layer method names (from entrypoints)
+
+    in tuple of 2-tuples
+    """
+    entrypoints = [(entrypoint.name, entrypoint.name) for entrypoint in
+                   pkg_resources.iter_entry_points(group=ADAPTER_ENTRY_POINT)]
+    return tuple(entrypoints)
+
+
+def adapter_layer_arguments(layer_json):
+    """Return dict of parsed adapter_layer_json.
+
+    Converts keys to str.
+    """
+    if not layer_json:
+        return {}
+    result = {}
+    decoded_json = json.loads(layer_json)
+    for k, v in decoded_json.items():
+        result[str(k)] = v
+    return result
+
+
+def adapter_entrypoint(adapter_class, layer_arguments, workspace_item=None):
+    """Return adapter instance for entrypoint
+
+    Optionally give workspace_item, for legacy (must be factored out).
+    """
+    # TODO: this happens more often than needed! Cache it.
+    for entrypoint in pkg_resources.iter_entry_points(
+        group=ADAPTER_ENTRY_POINT):
+        if entrypoint.name == adapter_class:
+            try:
+                real_adapter = entrypoint.load()
+                real_adapter = real_adapter(
+                    workspace_item,
+                    layer_arguments=layer_arguments,
+                    adapter_class=adapter_class)
+            except ImportError, e:
+                logger.critical("Invalid entry point: %s", e)
+                raise
+            return real_adapter
+    raise AdapterClassNotFoundError(
+        u'Entry point for %r not found' % adapter_class)
+
+
+# Graph stuff
 
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""

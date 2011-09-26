@@ -1,0 +1,16 @@
+{# Workspace (storage) list. Used as a dialog/box #}
+
+<div class="dialog-box">
+Ga naar een opgeslagen workspace
+
+<ul>
+  {% for workspace in view.workspaces %}
+  <li>
+    <a href="{% url lizard_map_workspace_storage workspace_id=workspace.id %}">
+  {{ workspace.name }}</a></li>
+  {% empty %}
+    <li>Geen opgeslagen workspaces</li>
+  {% endfor %}
+</ul>
+
+<div>

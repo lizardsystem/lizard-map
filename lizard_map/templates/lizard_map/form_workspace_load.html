@@ -1,0 +1,14 @@
+<div class="dialog-box">
+Workspace laden
+<form action="{% url lizard_map_workspace_load %}" method="POST">
+{% csrf_token %}
+{{ form.as_p }}
+<div>
+  {# You must add "alternative-submit" to prevent default dialogSubmit #}
+  <input id="workspace-load"
+         class="alternative-submit update-workspace-after"
+         type="submit"
+         value="laden" />
+</div>
+</form>
+</div>

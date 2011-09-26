@@ -11,10 +11,7 @@
   {% application_icons 'home' %}
 {% endif %}
 
-{% for workspace in workspaces.user %}
-  {% workspace workspace %}
-{% empty %}
-No workspace
-{% endfor %}
+{% workspace_edit view.workspace_edit %}
+{% collage_edit view.collage_edit %}
 
 {% endblock %}
