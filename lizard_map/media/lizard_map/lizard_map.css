@@ -277,12 +277,22 @@ table.toggle_table
   }
 
 
-li#map-multiple-selection.active {
-    background-color: #FF0000;
-}
-
-
 /* The other part is in lizard.css in lizard-ui. TODO: merge in one place */
 #sidebar .selected-invisible {
     background-color: #f4f4f4;
+}
+
+
+/* Multiple selection button styling */
+
+.map-multiple-selection{
+    margin-top: 3px;
+    height: 18px;
+    width: 18px;
+    background-image: url('/static_media/sprites/star-light.png');
+}
+
+
+li#map-multiple-selection.active {
+    background-color: #00FF00;
 }
