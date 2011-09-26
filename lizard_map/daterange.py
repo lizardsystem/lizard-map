@@ -86,7 +86,10 @@ def _compute_start_end(daterange, session, now=None):
     except (KeyError, TypeError):
         dt_end = default_end(now)
 
-    return dt_start, max((dt_start, dt_end))
+    if dt_start > dt_end:
+        dt_end = dt_start + datetime.timedelta(days=1)
+
+    return dt_start, dt_end
 
 
 def compute_and_store_start_end(session, date_range, now=None):

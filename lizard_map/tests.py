@@ -448,8 +448,6 @@ class TestDateRange(TestCase):
         period, dt_start, dt_end = self._test_set_date_range(self.request)
 
         self.assertEquals(period, PERIOD_OTHER)
-        print '----------------------------------'
-        print dt_start, dt_end
         self.assertTrue(dt_start < dt_end)
 
     # # TODO: Check met Pieter
@@ -1247,8 +1245,7 @@ class DateRangeStore(unittest.TestCase):
 
         self.assertEqual(datetime.datetime(2011, 8, 30),
                          session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_END])
+        self.assertTrue(session[SESSION_DT_START] < session[SESSION_DT_END])
 
 
 class DateRangeRetrieveSet(unittest.TestCase):
