@@ -358,15 +358,15 @@ class WorkspaceItemMixin(models.Model):
     def _adapter_layer_arguments(self):
         try:
             layer_arguments = adapter_layer_arguments(self.adapter_layer_json)
-        except json.JSONDecodeError:
+        except ValueError:
             raise WorkspaceItemError("Undecodable json: %s",
                                      self.adapter_layer_json)
         return layer_arguments
 
     @property
     def adapter(self):
-        layer_arguments = self._adapter_layer_arguments
         try:
+            layer_arguments = self._adapter_layer_arguments
             current_adapter = adapter_entrypoint(
                 self.adapter_class, layer_arguments, self)
         except (WorkspaceItemError, AdapterClassNotFoundError):
