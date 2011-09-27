@@ -4,6 +4,10 @@ Changelog of lizard-map
 2.6 (unreleased)
 ----------------
 
+Lizard 3: Make sure you read the readme before upgrading to this version.
+
+- Rebuilt collage screen with grouping.
+
 - Added configchecker.
 
 - Added migration for new models; South introspection rules.

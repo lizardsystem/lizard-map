@@ -58,13 +58,27 @@ def collage_edit(context, collage_edit):
         'collage_edit': collage_edit}
 
 
+# L3
 @register.inclusion_tag("lizard_map/tag_statistics.html")
-def collage_item_statistics(request, collage_item):
+def collage_item_statistics(request, collage_items):
+    if not collage_items:
+        return {}
     start_date, end_date = current_start_end_dates(request)
-    statistics = collage_item.statistics(start_date, end_date)
-    return {'statistics': statistics,
-            'boundary_value': collage_item.boundary_value,
-            'percentile_value': collage_item.percentile_value}
+    statistics = []
+    for collage_item in collage_items:
+        statistics.extend(collage_item.statistics(start_date, end_date))
+    return {'statistics': statistics}
+
+
+@register.simple_tag
+def collage_items_html(collage_items):
+    """
+    Generate single html for multiple collage items.
+    """
+    if not collage_items:
+        return ""
+    identifiers = [collage_item.identifier for collage_item in collage_items]
+    return collage_items[0].html(identifiers)
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")

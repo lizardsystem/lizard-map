@@ -634,17 +634,20 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     class Meta:
         ordering = ()
 
-    def html(self):
-        if hasattr(self, 'identifiers'):
-            # You can define identifiers in a collage item
-            # to mark it as an grouped collage item. (Not very pretty)
-            identifiers = self.identifiers
-        else:
+    def html(self, identifiers=None):
+        if identifiers is None:
             identifiers = [self.identifier, ]
         return self.adapter.html(identifiers=identifiers)
 
-    def location(self):
-        return self.adapter.location(identifier=self.identifier)
+    @property
+    def default_grouping_hint(self):
+        return '%s::%s' % (self.adapter_class, self.adapter_layer_json)
+
+    @property
+    def grouping_hint(self):
+        adapter_location = self.adapter.location(**self.identifier)
+        return adapter_location.get('grouping_hint',
+                                    self.default_grouping_hint)
 
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""
@@ -700,6 +703,8 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
                     statistics_row['period'] = fancy_period(
                         period_start_date, period_end_date,
                         self.aggregation_period)
+                    statistics_row['boundary_value'] = self.boundary_value
+                    statistics_row['percentile_value'] = self.percentile_value
                     statistics.append(statistics_row)
         return statistics
 # TODO: Remove legend-shape dependencies of legend stuff, then remove

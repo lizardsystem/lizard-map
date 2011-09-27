@@ -25,27 +25,34 @@
 <div id="textual">
   <div id="collage">
     <h2>Selectie</h2>
-    {% for collage_item in view.grouped_collage_items %}
-    <h3>{{ collage_item.name }}</h3>
+    {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
 
-    {{ collage_item.html }}
+    {% collage_items_html collage_items %}
+    {% collage_item_statistics view.request collage_items %}
 
-    {% collage_item_statistics view.request collage_item %}
+    <h3>Bewerken</h3>
+    <table class="generic-table">
+      <thead><tr>
+        <th>Naam</th>
+        <th>Bewerk</th>
+        <th>Toon tabel</th>
+        <th>Download</th>
+      </tr></thead>
+      <tbody>
+        {% for collage_item in collage_items %}
+        <tr>
+          <td>{{ collage_item.name }}</td>
+          <td><a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
+          </td>
+          <td><a href="" class="ss_sprite ss_table">Toon tabel</a></td>
+          <td><a href="" class="ss_sprite ss_table_save">Download CSV</a></td>
+        </tr>
+        {% endfor %}
 
-    <div>
-      <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerken</a>
-    </div>
+      </tbody>
 
-    {% if show_table %}
-    <h3>Tabel</h3>
-    <p>
-      <a href="./" class="ss_sprite ss_table_delete">Verberg tabellen</a>.
-    </p>
-    {#% snippet_group_table request snippet_group %#}
-    {% else %}
-    <a href="?show_table=1" class="ss_sprite ss_table_add noprint">Toon tabellen</a>
-    {% endif %}
-    {% endfor %}
+      {% endfor %}
+    </table>
   </div>
 </div>
 

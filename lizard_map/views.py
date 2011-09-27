@@ -819,16 +819,21 @@ def group_collage_items(collage_items):
     hint", or adapter/adapter_layer_arguments by creating collage
     items with extra property "identifiers".
     """
-    for collage_item in collage_items:
-        collage_item.identifiers = [collage_item.identifier, ]
+    # for collage_item in collage_items:
+    #     collage_item.identifiers = [collage_item.identifier, ]
 
-    # Testing...
-    # identifiers = []
-    # for collage_item in collage_items:
-    #     identifiers.append(collage_item.identifier)
-    # for collage_item in collage_items:
-    #     collage_item.identifiers = identifiers
-    return collage_items
+    # Identifiers by grouping hint. Content is a list with collage
+    # items.
+    grouped_collage_items = {}
+
+    for collage_item in collage_items:
+        grouping_hint = collage_item.grouping_hint
+        if grouping_hint not in grouped_collage_items:
+            grouped_collage_items[grouping_hint] = []
+        grouped_collage_items[grouping_hint].append(
+            collage_item)
+
+    return grouped_collage_items
 
 
 # Updated for L3.
