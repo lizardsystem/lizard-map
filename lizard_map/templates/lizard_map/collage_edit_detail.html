@@ -25,7 +25,7 @@
 <div id="textual">
   <div id="collage">
     <h2>Selectie</h2>
-    {% for collage_item in view.collage_edit.collage_items.all %}
+    {% for collage_item in view.grouped_collage_items %}
     <h3>{{ collage_item.name }}</h3>
 
     {{ collage_item.html }}

@@ -635,7 +635,16 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         ordering = ()
 
     def html(self):
-        return self.adapter.html(identifiers=[self.identifier, ])
+        if hasattr(self, 'identifiers'):
+            # You can define identifiers in a collage item
+            # to mark it as an grouped collage item. (Not very pretty)
+            identifiers = self.identifiers
+        else:
+            identifiers = [self.identifier, ]
+        return self.adapter.html(identifiers=identifiers)
+
+    def location(self):
+        return self.adapter.location(identifier=self.identifier)
 
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""

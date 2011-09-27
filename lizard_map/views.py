@@ -12,7 +12,7 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson as json
-from django.views.decorators.cache import never_cachei
+from django.views.decorators.cache import never_cache
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
@@ -409,13 +409,6 @@ class DateRangeView(DateRangeMixin, ActionDialogView):
         logger.debug("Updating date range...")
         date_range = form.cleaned_data
 
-        # period, timedelta_start, timedelta_end = deltatime_range(
-        #     date_range)
-
-        # TODO: FIXXXX
-        # store_timedelta_range(
-        #     self.request, period, timedelta_start, timedelta_end)
-
         compute_and_store_start_end(self.request.session, date_range)
 
 
@@ -549,7 +542,7 @@ def workspace_item_toggle(
 @never_cache
 def workspace_edit_item(
     request, workspace_edit=None, workspace_item_id=None, visible=None):
-    """edits a workspace_item
+    """Sets (in)visibility of a workspace_item
 
     workspace_edit is added for testing
     """
@@ -818,7 +811,27 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     return HttpResponse(json.dumps(result))
 
 
-# Updated for L3. No grouping yet.
+def group_collage_items(collage_items):
+    """
+    Group collage items.
+
+    The grouping is done automagically by adapter property "grouping
+    hint", or adapter/adapter_layer_arguments by creating collage
+    items with extra property "identifiers".
+    """
+    for collage_item in collage_items:
+        collage_item.identifiers = [collage_item.identifier, ]
+
+    # Testing...
+    # identifiers = []
+    # for collage_item in collage_items:
+    #     identifiers.append(collage_item.identifier)
+    # for collage_item in collage_items:
+    #     collage_item.identifiers = identifiers
+    return collage_items
+
+
+# Updated for L3.
 def popup_collage_json(collage_items, popup_id, request=None):
     """
     Display collage. Each item in a separate tab.
@@ -828,7 +841,8 @@ def popup_collage_json(collage_items, popup_id, request=None):
     big_popup = True
 
     # L3. For now: only one page per collage item. No grouping yet.
-    for collage_item in collage_items:
+    grouped_collage_items = group_collage_items(collage_items)
+    for collage_item in grouped_collage_items:
         html.append(collage_item.html())
 
     result = {'id': popup_id,
@@ -1068,6 +1082,14 @@ class CollageDetailView(CollageMixin, ViewContextMixin, TemplateView):
     Shows "my collage" as big page.
     """
     template_name = 'lizard_map/collage_edit_detail.html'
+
+    def grouped_collage_items(self):
+        """A grouped collage item is a collage item with property
+        "identifiers": a list of identifiers """
+        collage_items = group_collage_items(
+            self.collage_edit().collage_items.all())
+
+        return collage_items
 
 
 class CollageView(CollageMixin, ActionDialogView):
