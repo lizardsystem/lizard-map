@@ -4,13 +4,21 @@ Changelog of lizard-map
 2.6 (unreleased)
 ----------------
 
+- Added configchecker.
+
 - Added migration for new models; South introspection rules.
 
 - Integrated search_name in search_coordinates.
 
+- Added generic dialog javascript code.
+
+- Added generic POST action javascript code.
+
+- Added all kinds of mixins for workspaces, collages, etc.
+
 - Made app_screen class-based, with helper class WorkspaceView.
 
-- Added workspaces.
+- Added new workspaces.
 
 - Added PeriodMixin with tests.
 
