@@ -7,6 +7,7 @@
   <strong>{{ title|truncatewords:8 }}</strong>
 </div>
 
+{% if img_url %}
 <div style="width: 100%; height: 240px;"
      class="img-use-my-size">
   <a href="{{ img_url }}"
@@ -14,9 +15,12 @@
     afbeelding nog niet geladen
   </a>
 </div>
+{% endif %}
 
+{% if csv_url %}
 <div>
   <a href="{{ csv_url }}"
      class="ss_table_save ss_sprite"
      title="Export csv">&nbsp;</a>
 </div>
+{% endif %}

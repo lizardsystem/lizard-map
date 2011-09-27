@@ -320,8 +320,13 @@ class WorkspaceItemAdapter(object):
         # Build "adapter-image" url for current adapter and identifiers.
         img_url = self.workspace_mixin_item.url(
             "lizard_map_adapter_image", identifiers)
-        csv_url = self.workspace_mixin_item.url(
-            "lizard_map_adapter_csv", identifiers)
+
+        # Only place a link in case of a single object.
+        if len(identifiers) == 1:
+            csv_url = self.workspace_mixin_item.url(
+                "lizard_map_adapter_csv", identifiers)
+        else:
+            csv_url = None
 
         render_kwargs = {
             'title': title,

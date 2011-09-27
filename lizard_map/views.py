@@ -845,10 +845,12 @@ def popup_collage_json(collage_items, popup_id, request=None):
     html = []
     big_popup = True
 
-    # L3. For now: only one page per collage item. No grouping yet.
     grouped_collage_items = group_collage_items(collage_items)
-    for collage_item in grouped_collage_items:
-        html.append(collage_item.html())
+    for collage_items in grouped_collage_items.values():
+        collage_item = collage_items[0]  # Each group always has items.
+        identifiers = [collage_item.identifier for
+                       collage_item in collage_items]
+        html.append(collage_item.html(identifiers=identifiers))
 
     result = {'id': popup_id,
               'html': html,
