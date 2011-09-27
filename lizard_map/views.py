@@ -1327,7 +1327,7 @@ def save_map_as_image(request):
         'bbox': tuple([float(i.strip())
                        for i in request.GET.get('BBOX').split(',')]),
         'srs': request.GET.get('SRS'),
-        'workspaces': request.session['workspaces'],
+        'workspaces': request.session.get('workspaces'),
         'color': "transparent",
         'format': "png",
         'content_type': "application/x-png",
@@ -1352,23 +1352,21 @@ def create_mapnik_image(request, data):
     mapnik_map.background = mapnik.Color(data['color'])
     #m.background = mapnik.Color(data['color')]
 
-    for k, v in data['workspaces'].items():
-        if len(v) <= 0:
-            v[0] = -1
+    workspace = WorkspaceEdit.get_or_create(
+        request.session.session_key, user=request.user)
 
-        workspace = get_object_or_404(Workspace, pk=v[0])
-        workspace_items = workspace.workspace_items.filter(
-            visible=True).reverse()
+    workspace_items = workspace.workspace_items.filter(
+        visible=True).reverse()
 
-        for workspace_item in workspace_items:
-            logger.debug("Drawing layer for %s..." % workspace_item)
-            layers, styles = workspace_item.adapter.layer(layer_ids=layers,
-                                                          request=request)
-            layers.reverse()  # first item should be drawn on top (=last)
-            for layer in layers:
-                mapnik_map.layers.append(layer)
-            for name in styles:
-                mapnik_map.append_style(name, styles[name])
+    for workspace_item in workspace_items:
+        logger.debug("Drawing layer for %s..." % workspace_item)
+        layers, styles = workspace_item.adapter.layer(layer_ids=layers,
+                                                      request=request)
+        layers.reverse()  # first item should be drawn on top (=last)
+        for layer in layers:
+            mapnik_map.layers.append(layer)
+        for name in styles:
+            mapnik_map.append_style(name, styles[name])
 
     #Zoom and create image
     logger.debug("Zooming to box...")
