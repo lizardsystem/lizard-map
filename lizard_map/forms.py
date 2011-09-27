@@ -15,14 +15,14 @@ class WorkspaceSaveForm(forms.Form):
     """
     Save workspace from edit to storage
     """
-    name = forms.CharField(max_length=100, required=True)
+    name = forms.CharField(max_length=100, required=True, label='naam')
 
 
 class WorkspaceLoadForm(forms.Form):
     """
     Load workspace from storage to edit.
     """
-    id = forms.ChoiceField(required=True)
+    id = forms.ChoiceField(required=True, label='')
 
     def __init__(self, *args, **kwargs):
         """

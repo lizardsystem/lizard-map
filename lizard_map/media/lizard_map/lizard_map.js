@@ -263,7 +263,11 @@ function dialogReplaceTitles(new_content) {
 
 /* L3 Dialog size */
 function dialogSize(size) {
-    if (size === "s") {
+    if (size === "xs") {
+        // Extra Small
+        $("#dialog").css("width", "20em");
+        $("#dialog").css("min-height", "7em");
+    } else if (size === "s") {
         // Small
         $("#dialog").css("width", "30em");
         $("#dialog").css("min-height", "10em");
@@ -523,6 +527,7 @@ function collagePopup(event) {
         // Mark popup as being a collage popup
         $("#dialog-content div:first-child").data("is_collage_popup", true);
     });
+    dialogSize("");  // Reset to default.
     return false;
 }
 
