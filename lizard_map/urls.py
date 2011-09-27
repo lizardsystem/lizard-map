@@ -41,6 +41,12 @@ urlpatterns = patterns(
     url(r'^myworkspace/load/$',  # L3
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
+    # Partially the same actions as above,
+    # you have to put workspace_id in GET parameter here...
+    # TODO: Update to L3
+    # url(r'^workspaceitem/extent/$',
+    #     'lizard_map.views.workspace_item_extent',
+    #     name="lizard_map_workspace_item_extent"),
 
     url(r'^mycollage/$',  # L3
         lizard_map.views.CollageDetailView.as_view(),
@@ -91,7 +97,6 @@ urlpatterns = patterns(
         {'format': 'name'},
         name="lizard_map.search_name"),  # L3
 
-
     # Adapter
     url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
         lizard_map.views.AdapterImageView.as_view(),
@@ -125,48 +130,15 @@ urlpatterns = patterns(
      {},
      'lizard_map.views.save_map_as_image'),
 
-    # Collages and snippets
-    # url(r'^collage/(?P<collage_id>\d+)/$',
-    #     'lizard_map.views.collage',
-    #     name="lizard_map.collage"),
-    # url(r'^collage/(?P<collage_id>\d+)/edit/$',
-    #     'lizard_map.views.collage',
-    #     {'editable': True,
-    #      'template': 'lizard_map/collage_edit.html'},
-    #     name="lizard_map.collage_edit"),
-    # url(r'^collage/(?P<collage_id>\d+)/popup/$',
-    #     'lizard_map.views.collage_popup',
-    #     name="lizard_map.collage_popup"),
-    # url(r'^collage_popup/$',
-    #     'lizard_map.views.collage_popup',
-    #     name="lizard_map.collage_popup"),
-
-    # Partially the same actions as above,
-    # you have to put workspace_id in GET parameter here...
-    url(r'^workspaceitemreorder/$',
-        'lizard_map.views.workspace_item_reorder',
-        name="lizard_map_workspace_item_reorder"),  # L3
-    url(r'^workspaceitem/extent/$',
-        'lizard_map.views.workspace_item_extent',
-        name="lizard_map_workspace_item_extent"),
-
-    # Actions on workspace items
-
-    # url(r'^workspace_item/(?P<workspace_item_id>\d+)/' +
-    #     'image_session_graph_options/',
-    #     'lizard_map.views.workspace_item_image',
-    #     {'session_graph_options': True},
-    #     name="lizard_map.workspace_item_image_session_graph_options"),
-
     # Actions on legends.
     url(r'^legend/edit/',
         'lizard_map.views.legend_edit',
         name='lizard_map_legend_edit'),
 
-    # Export.
-    url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
-        'lizard_map.views.export_snippet_group_statistics_csv',
-        name="lizard_map.export_snippet_group_statistics_csv"),
+    # # Export.
+    # url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
+    #     'lizard_map.views.export_snippet_group_statistics_csv',
+    #     name="lizard_map.export_snippet_group_statistics_csv"),
     )
 
 urlpatterns += debugmode_urlpatterns()

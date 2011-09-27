@@ -603,142 +603,142 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     return HttpResponse(json.dumps(deleted))
 
 
-#To be updated
-@never_cache
-def workspace_item_extent(request, workspace_item_id=None):
-    """Returns extent for the workspace in json.
+# #To be updated/tested
+# @never_cache
+# def workspace_item_extent(request, workspace_item_id=None):
+#     """Returns extent for the workspace in json.
 
-    Transform to correct client-side projection, then return coordinates.
-    """
-    workspace_item_id = request.GET['workspace_item_id']
-    workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-    extent = workspace_item.adapter.extent()
+#     Transform to correct client-side projection, then return coordinates.
+#     """
+#     workspace_item_id = request.GET['workspace_item_id']
+#     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
+#     extent = workspace_item.adapter.extent()
 
-    srs = Setting.get('projection', DEFAULT_PROJECTION)
-    extent_converted['east'], extent_converted['north'] = google_to_srs(
-        extent['east'], extent['north'], srs)
-    extent_converted['west'], extent_converted['south'] = google_to_srs(
-        extent['west'], extent['south'], srs)
+#     srs = Setting.get('projection', DEFAULT_PROJECTION)
+#     extent_converted['east'], extent_converted['north'] = google_to_srs(
+#         extent['east'], extent['north'], srs)
+#     extent_converted['west'], extent_converted['south'] = google_to_srs(
+#         extent['west'], extent['south'], srs)
 
-    return HttpResponse(json.dumps(extent_converted))
-
-
-# TODO: update to L3
-@never_cache
-def snippet_group_graph_edit(request, snippet_group_id):
-    """Edits snippet_group properties using post.
-    """
-    post = request.POST
-    title = post.get('title', None)
-    x_label = post.get('x_label', None)
-    y_label = post.get('y_label', None)
-    y_min = post.get('y_min', None)
-    y_max = post.get('y_max', None)
-    boundary_value = post.get('boundary_value', None)
-    percentile_value = post.get('percentile_value', None)
-    aggregation_period = post.get('aggregation_period', None)
-    restrict_to_month = post.get('restrict_to_month', None)
-    if restrict_to_month is not None:
-        try:
-            restrict_to_month = int(restrict_to_month)
-            assert restrict_to_month > 0
-            assert restrict_to_month < 13
-        except ValueError:
-            restrict_to_month = None
-
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-        pk=snippet_group_id)
-    if title is not None:
-        # Empty string is also good! it will force default title.
-        snippet_group.layout_title = title
-    if x_label is not None:
-        snippet_group.layout_x_label = x_label
-    if y_label is not None:
-        snippet_group.layout_y_label = y_label
-    snippet_group.restrict_to_month = restrict_to_month
-    if aggregation_period is not None:
-        snippet_group.aggregation_period = int(aggregation_period)
-    try:
-        snippet_group.layout_y_min = float(y_min)
-    except (ValueError, TypeError):
-        snippet_group.layout_y_min = None
-    try:
-        snippet_group.layout_y_max = float(y_max)
-    except (ValueError, TypeError):
-        snippet_group.layout_y_max = None
-    try:
-        snippet_group.boundary_value = float(boundary_value)
-    except (ValueError, TypeError):
-        snippet_group.boundary_value = None
-    try:
-        snippet_group.percentile_value = float(percentile_value)
-    except (ValueError, TypeError):
-        snippet_group.percentile_value = None
-    snippet_group.save()
-    return HttpResponse('')
+#     return HttpResponse(json.dumps(extent_converted))
 
 
-# TODO: update to L3
-@never_cache
-def snippet_group_image(request, snippet_group_id, legend=True):
-    """Draws a single image for the snippet_group. There MUST be at
-    least 1 snippet in the group."""
+# # TODO: update to L3
+# @never_cache
+# def snippet_group_graph_edit(request, snippet_group_id):
+#     """Edits snippet_group properties using post.
+#     """
+#     post = request.POST
+#     title = post.get('title', None)
+#     x_label = post.get('x_label', None)
+#     y_label = post.get('y_label', None)
+#     y_min = post.get('y_min', None)
+#     y_max = post.get('y_max', None)
+#     boundary_value = post.get('boundary_value', None)
+#     percentile_value = post.get('percentile_value', None)
+#     aggregation_period = post.get('aggregation_period', None)
+#     restrict_to_month = post.get('restrict_to_month', None)
+#     if restrict_to_month is not None:
+#         try:
+#             restrict_to_month = int(restrict_to_month)
+#             assert restrict_to_month > 0
+#             assert restrict_to_month < 13
+#         except ValueError:
+#             restrict_to_month = None
 
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-        pk=snippet_group_id)
-    snippets = snippet_group.snippets.filter(visible=True)
-    identifiers = [snippet.identifier for snippet in snippets]
-
-    # Add aggregation_period to each identifier
-    for identifier in identifiers:
-        if not 'layout' in identifier:
-            identifier['layout'] = {}
-        identifier['layout'][
-            'aggregation_period'] = snippet_group.aggregation_period
-
-    # Add legend option ('layout' is always present).
-    if legend:
-        for identifier in identifiers:
-            identifier['layout']['legend'] = True
-
-    # Get width and height.
-    width = request.GET.get('width')
-    height = request.GET.get('height')
-    if width:
-        width = int(width)
-    else:
-        # We want None, not u''.
-        width = None
-    if height:
-        height = int(height)
-    else:
-        # We want None, not u''.
-        height = None
-
-    using_workspace_item = snippets[0].workspace_item
-    start_date, end_date = current_start_end_dates(request)
-    layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
-
-    # Add current position of slider, if available
-
-    layout_extra.update(slider_layout_extra(request))
-
-    return using_workspace_item.adapter.image(identifiers,
-                                              start_date, end_date,
-                                              width, height,
-                                              layout_extra=layout_extra)
+#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+#         pk=snippet_group_id)
+#     if title is not None:
+#         # Empty string is also good! it will force default title.
+#         snippet_group.layout_title = title
+#     if x_label is not None:
+#         snippet_group.layout_x_label = x_label
+#     if y_label is not None:
+#         snippet_group.layout_y_label = y_label
+#     snippet_group.restrict_to_month = restrict_to_month
+#     if aggregation_period is not None:
+#         snippet_group.aggregation_period = int(aggregation_period)
+#     try:
+#         snippet_group.layout_y_min = float(y_min)
+#     except (ValueError, TypeError):
+#         snippet_group.layout_y_min = None
+#     try:
+#         snippet_group.layout_y_max = float(y_max)
+#     except (ValueError, TypeError):
+#         snippet_group.layout_y_max = None
+#     try:
+#         snippet_group.boundary_value = float(boundary_value)
+#     except (ValueError, TypeError):
+#         snippet_group.boundary_value = None
+#     try:
+#         snippet_group.percentile_value = float(percentile_value)
+#     except (ValueError, TypeError):
+#         snippet_group.percentile_value = None
+#     snippet_group.save()
+#     return HttpResponse('')
 
 
-@never_cache
-def session_workspace_extent(request, workspace_category='user'):
-    """Returns extent for the workspace in json.
-    """
-    if 'workspaces' in request.session:
-        workspace_id = request.session['workspaces'][workspace_category][0]
-        workspace = get_object_or_404(Workspace, pk=workspace_id)
-        return HttpResponse(json.dumps(workspace.extent()))
-    else:
-        return HttpResponse(json.dumps(''))
+# # TODO: update to L3
+# @never_cache
+# def snippet_group_image(request, snippet_group_id, legend=True):
+#     """Draws a single image for the snippet_group. There MUST be at
+#     least 1 snippet in the group."""
+
+#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+#         pk=snippet_group_id)
+#     snippets = snippet_group.snippets.filter(visible=True)
+#     identifiers = [snippet.identifier for snippet in snippets]
+
+#     # Add aggregation_period to each identifier
+#     for identifier in identifiers:
+#         if not 'layout' in identifier:
+#             identifier['layout'] = {}
+#         identifier['layout'][
+#             'aggregation_period'] = snippet_group.aggregation_period
+
+#     # Add legend option ('layout' is always present).
+#     if legend:
+#         for identifier in identifiers:
+#             identifier['layout']['legend'] = True
+
+#     # Get width and height.
+#     width = request.GET.get('width')
+#     height = request.GET.get('height')
+#     if width:
+#         width = int(width)
+#     else:
+#         # We want None, not u''.
+#         width = None
+#     if height:
+#         height = int(height)
+#     else:
+#         # We want None, not u''.
+#         height = None
+
+#     using_workspace_item = snippets[0].workspace_item
+#     start_date, end_date = current_start_end_dates(request)
+#     layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
+
+#     # Add current position of slider, if available
+
+#     layout_extra.update(slider_layout_extra(request))
+
+#     return using_workspace_item.adapter.image(identifiers,
+#                                               start_date, end_date,
+#                                               width, height,
+#                                               layout_extra=layout_extra)
+
+
+# @never_cache
+# def session_workspace_extent(request, workspace_category='user'):
+#     """Returns extent for the workspace in json.
+#     """
+#     if 'workspaces' in request.session:
+#         workspace_id = request.session['workspaces'][workspace_category][0]
+#         workspace = get_object_or_404(Workspace, pk=workspace_id)
+#         return HttpResponse(json.dumps(workspace.extent()))
+#     else:
+#         return HttpResponse(json.dumps(''))
 
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
@@ -852,72 +852,72 @@ def popup_collage_json(collage_items, popup_id, request=None):
 # Collages stuff
 
 
-# Needs updating
-def collage(request,
-            collage_id,
-            editable=False,
-            template='lizard_map/collage.html'):
-    """Render page with one collage"""
-    show_table = request.GET.get('show_table', False)
+# # Needs updating
+# def collage(request,
+#             collage_id,
+#             editable=False,
+#             template='lizard_map/collage.html'):
+#     """Render page with one collage"""
+#     show_table = request.GET.get('show_table', False)
 
-    collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
+#     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
 
-    return render_to_response(
-        template,
-        {'collage': collage,
-         'editable': editable,
-         'request': request,
-         'show_table': show_table},
-        context_instance=RequestContext(request))
+#     return render_to_response(
+#         template,
+#         {'collage': collage,
+#          'editable': editable,
+#          'request': request,
+#          'show_table': show_table},
+#         context_instance=RequestContext(request))
 
 
-# Obsolete
-@never_cache
-def session_collage_snippet_add(request,
-                                workspace_item_id=None,
-                                workspace_item_location_identifier=None,
-                                workspace_item_location_shortname=None,
-                                workspace_item_location_name=None,
-                                workspace_collage_id=None,
-                                workspace_category='user'):
-    """finds session user workspace and add snippet to (only) corresponding
-    collage
-    """
+# # Obsolete
+# @never_cache
+# def session_collage_snippet_add(request,
+#                                 workspace_item_id=None,
+#                                 workspace_item_location_identifier=None,
+#                                 workspace_item_location_shortname=None,
+#                                 workspace_item_location_name=None,
+#                                 workspace_collage_id=None,
+#                                 workspace_category='user'):
+#     """finds session user workspace and add snippet to (only) corresponding
+#     collage
+#     """
 
-    if workspace_item_id is None:
-        workspace_item_id = request.POST.get('workspace_item_id')
-    if workspace_item_location_identifier is None:
-        workspace_item_location_identifier = request.POST.get(
-            'workspace_item_location_identifier')
-    if workspace_item_location_shortname is None:
-        workspace_item_location_shortname = request.POST.get(
-            'workspace_item_location_shortname')
-    if workspace_item_location_name is None:
-        workspace_item_location_name = request.POST.get(
-            'workspace_item_location_name')
+#     if workspace_item_id is None:
+#         workspace_item_id = request.POST.get('workspace_item_id')
+#     if workspace_item_location_identifier is None:
+#         workspace_item_location_identifier = request.POST.get(
+#             'workspace_item_location_identifier')
+#     if workspace_item_location_shortname is None:
+#         workspace_item_location_shortname = request.POST.get(
+#             'workspace_item_location_shortname')
+#     if workspace_item_location_name is None:
+#         workspace_item_location_name = request.POST.get(
+#             'workspace_item_location_name')
 
-    workspace_id = request.session['workspaces'][workspace_category][0]
-    workspace = Workspace.objects.get(pk=workspace_id)
-    workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
+#     workspace_id = request.session['workspaces'][workspace_category][0]
+#     workspace = Workspace.objects.get(pk=workspace_id)
+#     workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
 
-    if len(workspace.collages.all()) == 0:
-        workspace.collages.create()
-    collage = workspace.collages.all()[0]
+#     if len(workspace.collages.all()) == 0:
+#         workspace.collages.create()
+#     collage = workspace.collages.all()[0]
 
-    # Shorten name to 80 characters
-    workspace_item_location_shortname = short_string(
-        workspace_item_location_shortname, 80)
-    workspace_item_location_name = short_string(
-        workspace_item_location_name, 80)
+#     # Shorten name to 80 characters
+#     workspace_item_location_shortname = short_string(
+#         workspace_item_location_shortname, 80)
+#     workspace_item_location_name = short_string(
+#         workspace_item_location_name, 80)
 
-    # create snippet using collage function: also finds/makes snippet group
-    snippet, _ = collage.get_or_create_snippet(
-        workspace_item=workspace_item,
-        identifier_json=workspace_item_location_identifier,
-        shortname=workspace_item_location_shortname,
-        name=workspace_item_location_name)
+#     # create snippet using collage function: also finds/makes snippet group
+#     snippet, _ = collage.get_or_create_snippet(
+#         workspace_item=workspace_item,
+#         identifier_json=workspace_item_location_identifier,
+#         shortname=workspace_item_location_shortname,
+#         name=workspace_item_location_name)
 
-    return HttpResponse(json.dumps(workspace_id))
+#     return HttpResponse(json.dumps(workspace_id))
 
 
 # L3.
@@ -945,41 +945,41 @@ def collage_popup(request,
         request=request)
 
 
-# TODO: Update to L3
-@never_cache
-def snippet_edit(request, snippet_id=None, visible=None):
-    """
-    Edits snippet layout properties.
-    """
-    post = request.POST
-    layout = {}
-    if snippet_id is None:
-        snippet_id = post['snippet_id']
-    snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
-    if visible is None:
-        if 'visible' in post:
-            visible = post['visible']
-    if visible:
-        lookup = {'true': True, 'false': False}
-        snippet.visible = lookup[visible]
-    if post.get('color', None):
-        layout.update({'color': post['color']})
-    if post.__contains__('line_min'):
-        layout.update({'line_min': None})
-    if post.__contains__('line_max'):
-        layout.update({'line_max': None})
-    if post.__contains__('line_avg'):
-        layout.update({'line_avg': None})
+# # TODO: Update to L3
+# @never_cache
+# def snippet_edit(request, snippet_id=None, visible=None):
+#     """
+#     Edits snippet layout properties.
+#     """
+#     post = request.POST
+#     layout = {}
+#     if snippet_id is None:
+#         snippet_id = post['snippet_id']
+#     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
+#     if visible is None:
+#         if 'visible' in post:
+#             visible = post['visible']
+#     if visible:
+#         lookup = {'true': True, 'false': False}
+#         snippet.visible = lookup[visible]
+#     if post.get('color', None):
+#         layout.update({'color': post['color']})
+#     if post.__contains__('line_min'):
+#         layout.update({'line_min': None})
+#     if post.__contains__('line_max'):
+#         layout.update({'line_max': None})
+#     if post.__contains__('line_avg'):
+#         layout.update({'line_avg': None})
 
-    identifier = snippet.identifier
-    if 'layout' in identifier:
-        del identifier['layout']
-    identifier.update({'layout': layout})
+#     identifier = snippet.identifier
+#     if 'layout' in identifier:
+#         del identifier['layout']
+#     identifier.update({'layout': layout})
 
-    snippet.set_identifier(identifier)
-    snippet.save()
+#     snippet.set_identifier(identifier)
+#     snippet.save()
 
-    return HttpResponse('')
+#     return HttpResponse('')
 
 
 # TODO: Update to L3
@@ -1329,39 +1329,39 @@ Export
 #     return response
 
 
-# TODO: update to L3
-def export_snippet_group_statistics_csv(request, snippet_group_id=None):
-    """
-    Exports snippet_group statistics as csv.
-    """
-    if snippet_group_id is None:
-        snippet_group_id = request.GET.get('snippet_group_id')
-    snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-        pk=snippet_group_id)
-    start_date, end_date = current_start_end_dates(request)
-    statistics = snippet_group.statistics(start_date, end_date)
+# # TODO: update to L3
+# def export_snippet_group_statistics_csv(request, snippet_group_id=None):
+#     """
+#     Exports snippet_group statistics as csv.
+#     """
+#     if snippet_group_id is None:
+#         snippet_group_id = request.GET.get('snippet_group_id')
+#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
+#         pk=snippet_group_id)
+#     start_date, end_date = current_start_end_dates(request)
+#     statistics = snippet_group.statistics(start_date, end_date)
 
-    response = HttpResponse(mimetype='text/csv')
-    response['Content-Disposition'] = ('attachment; '
-                                       'filename=export_statistics.csv')
-    writer = csv.writer(response)
-    colnames = ['min', 'max', 'avg']
-    colnamesdisplay = ['min', 'max', 'avg']
-    if snippet_group.boundary_value is not None:
-        colnames.append('count_lt')
-        colnames.append('count_gte')
-        colnamesdisplay.append(
-            '# < %s' % snippet_group.boundary_value)
-        colnamesdisplay.append(
-            '# >= %s' % snippet_group.boundary_value)
-    if snippet_group.percentile_value is not None:
-        colnames.append('percentile')
-        colnamesdisplay.append(
-            'percentile %f' % snippet_group.percentile_value)
-    writer.writerow(colnamesdisplay)
-    for row in statistics:
-        writer.writerow([row[colname] for colname in colnames])
-    return response
+#     response = HttpResponse(mimetype='text/csv')
+#     response['Content-Disposition'] = ('attachment; '
+#                                        'filename=export_statistics.csv')
+#     writer = csv.writer(response)
+#     colnames = ['min', 'max', 'avg']
+#     colnamesdisplay = ['min', 'max', 'avg']
+#     if snippet_group.boundary_value is not None:
+#         colnames.append('count_lt')
+#         colnames.append('count_gte')
+#         colnamesdisplay.append(
+#             '# < %s' % snippet_group.boundary_value)
+#         colnamesdisplay.append(
+#             '# >= %s' % snippet_group.boundary_value)
+#     if snippet_group.percentile_value is not None:
+#         colnames.append('percentile')
+#         colnamesdisplay.append(
+#             'percentile %f' % snippet_group.percentile_value)
+#     writer.writerow(colnamesdisplay)
+#     for row in statistics:
+#         writer.writerow([row[colname] for colname in colnames])
+#     return response
 
 
 """
@@ -1492,6 +1492,8 @@ def mapnik_image_to_stream(request, data, img):
     buf.seek(0)
     return buf
 
+
+# Adapter related views
 
 class AdapterMixin(object):
     """
