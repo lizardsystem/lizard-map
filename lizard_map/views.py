@@ -12,42 +12,35 @@ from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.template import RequestContext
 from django.utils import simplejson as json
-from django.views.decorators.cache import never_cache
+from django.views.decorators.cache import never_cachei
+from django.views.generic.edit import FormView
+from django.views.generic.base import TemplateView
+from django.views.generic.base import View
 import Image
 import csv
 import logging
 import mapnik
 
-from lizard_ui.models import ApplicationScreen
-
-from lizard_map import coordinates
-from lizard_map.adapter import parse_identifier_json
-from lizard_map.animation import slider_layout_extra
-from lizard_map.daterange import current_start_end_dates
-# from lizard_map.models import Workspace
-# from lizard_map.models import WorkspaceCollage
-# from lizard_map.models import WorkspaceCollageSnippet
-# from lizard_map.models import WorkspaceCollageSnippetGroup
-# from lizard_map.models import WorkspaceItem
-from lizard_map.utility import analyze_http_user_agent
-from lizard_map.utility import short_string
-# from lizard_map.workspace import WorkspaceManager
-# Workspace stuff
-
-# L3
-from django.views.generic.edit import FormView
-from django.views.generic.base import TemplateView
-from django.views.generic.base import View
-
-from lizard_ui.views import ViewContextMixin
-from lizard_map.adapter import adapter_layer_arguments
-from lizard_map.adapter import adapter_entrypoint
-from lizard_map.animation import AnimationSettings
-from lizard_map.dateperiods import ALL
-from lizard_map.daterange import current_period
 #from lizard_map.daterange import deltatime_range
 #from lizard_map.daterange import store_timedelta_range
+from lizard_map import coordinates
+from lizard_map.adapter import adapter_entrypoint
+from lizard_map.adapter import adapter_layer_arguments
+from lizard_map.adapter import parse_identifier_json
+from lizard_map.animation import AnimationSettings
+from lizard_map.animation import slider_layout_extra
+from lizard_map.dateperiods import ALL
 from lizard_map.daterange import compute_and_store_start_end
+from lizard_map.daterange import current_period
+from lizard_map.daterange import current_start_end_dates
+from lizard_map.forms import CollageForm
+from lizard_map.forms import CollageItemEditorForm
+from lizard_map.forms import DateRangeForm
+from lizard_map.forms import EditForm
+from lizard_map.forms import EmptyForm
+from lizard_map.forms import SingleObjectForm
+from lizard_map.forms import WorkspaceLoadForm
+from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
@@ -55,14 +48,10 @@ from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
-from lizard_map.forms import WorkspaceSaveForm
-from lizard_map.forms import WorkspaceLoadForm
-from lizard_map.forms import DateRangeForm
-from lizard_map.forms import CollageForm
-from lizard_map.forms import CollageItemEditorForm
-from lizard_map.forms import EditForm
-from lizard_map.forms import EmptyForm
-from lizard_map.forms import SingleObjectForm
+from lizard_map.utility import analyze_http_user_agent
+from lizard_map.utility import short_string
+from lizard_ui.models import ApplicationScreen
+from lizard_ui.views import ViewContextMixin
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -852,74 +841,6 @@ def popup_collage_json(collage_items, popup_id, request=None):
 # Collages stuff
 
 
-# # Needs updating
-# def collage(request,
-#             collage_id,
-#             editable=False,
-#             template='lizard_map/collage.html'):
-#     """Render page with one collage"""
-#     show_table = request.GET.get('show_table', False)
-
-#     collage = get_object_or_404(WorkspaceCollage, pk=collage_id)
-
-#     return render_to_response(
-#         template,
-#         {'collage': collage,
-#          'editable': editable,
-#          'request': request,
-#          'show_table': show_table},
-#         context_instance=RequestContext(request))
-
-
-# # Obsolete
-# @never_cache
-# def session_collage_snippet_add(request,
-#                                 workspace_item_id=None,
-#                                 workspace_item_location_identifier=None,
-#                                 workspace_item_location_shortname=None,
-#                                 workspace_item_location_name=None,
-#                                 workspace_collage_id=None,
-#                                 workspace_category='user'):
-#     """finds session user workspace and add snippet to (only) corresponding
-#     collage
-#     """
-
-#     if workspace_item_id is None:
-#         workspace_item_id = request.POST.get('workspace_item_id')
-#     if workspace_item_location_identifier is None:
-#         workspace_item_location_identifier = request.POST.get(
-#             'workspace_item_location_identifier')
-#     if workspace_item_location_shortname is None:
-#         workspace_item_location_shortname = request.POST.get(
-#             'workspace_item_location_shortname')
-#     if workspace_item_location_name is None:
-#         workspace_item_location_name = request.POST.get(
-#             'workspace_item_location_name')
-
-#     workspace_id = request.session['workspaces'][workspace_category][0]
-#     workspace = Workspace.objects.get(pk=workspace_id)
-#     workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
-
-#     if len(workspace.collages.all()) == 0:
-#         workspace.collages.create()
-#     collage = workspace.collages.all()[0]
-
-#     # Shorten name to 80 characters
-#     workspace_item_location_shortname = short_string(
-#         workspace_item_location_shortname, 80)
-#     workspace_item_location_name = short_string(
-#         workspace_item_location_name, 80)
-
-#     # create snippet using collage function: also finds/makes snippet group
-#     snippet, _ = collage.get_or_create_snippet(
-#         workspace_item=workspace_item,
-#         identifier_json=workspace_item_location_identifier,
-#         shortname=workspace_item_location_shortname,
-#         name=workspace_item_location_name)
-
-#     return HttpResponse(json.dumps(workspace_id))
-
-
 # L3.
 @never_cache
 def collage_popup(request,
@@ -943,43 +864,6 @@ def collage_popup(request,
         collage_items,
         popup_id=popup_id,
         request=request)
-
-
-# # TODO: Update to L3
-# @never_cache
-# def snippet_edit(request, snippet_id=None, visible=None):
-#     """
-#     Edits snippet layout properties.
-#     """
-#     post = request.POST
-#     layout = {}
-#     if snippet_id is None:
-#         snippet_id = post['snippet_id']
-#     snippet = get_object_or_404(WorkspaceCollageSnippet, pk=snippet_id)
-#     if visible is None:
-#         if 'visible' in post:
-#             visible = post['visible']
-#     if visible:
-#         lookup = {'true': True, 'false': False}
-#         snippet.visible = lookup[visible]
-#     if post.get('color', None):
-#         layout.update({'color': post['color']})
-#     if post.__contains__('line_min'):
-#         layout.update({'line_min': None})
-#     if post.__contains__('line_max'):
-#         layout.update({'line_max': None})
-#     if post.__contains__('line_avg'):
-#         layout.update({'line_avg': None})
-
-#     identifier = snippet.identifier
-#     if 'layout' in identifier:
-#         del identifier['layout']
-#     identifier.update({'layout': layout})
-
-#     snippet.set_identifier(identifier)
-#     snippet.save()
-
-#     return HttpResponse('')
 
 
 # TODO: Update to L3

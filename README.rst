@@ -28,9 +28,13 @@ Core concept: workspaces
 A *workspace item* is something that can be displayed on a map.  A *workspace*
 is a collection of workspace items that is actually displayed.
 
-Every session gets its own workspace.  (There is a possiblity of adding extra
-workspaces, but that isn't used yet in one of our sites, so it isn't fully
-thought-out yet).
+There are two types of workspaces:
+
+- Edit Workspace: Every session/user gets its own workspace. This
+  workspace can be edited.
+
+- Storage Workspace. TODO: extra info.
+
 
 A workspace item needs to know how to display itself, how to search for items
 when you click on the map and more.  To get that to work for arbitrary map
@@ -54,7 +58,7 @@ Collages
 A workspace item often results in multiple areas or points.  If you click on
 such a point, you normally get a popup with extra information.  If you want to
 compare a couple of those information "snippets", you can place them in your
-workspace's *collage*.
+*collage*. In the GUI this is called "Selectie".
 
 Clicking the collage gives a popup with all the collected information popups
 in that single popup.
@@ -133,6 +137,25 @@ libapache2-mod-wsgi, python-gdal, spatialite-bin, python-pysqlite2,
 python-pyproj.
 
 
+Upgrading to Lizard 3
+---------------------
+
+Short summary to convert your app to Lizard 3.
+
+- Replace old template tags workspace with workspace_edit and
+  collage_edit (see below).
+
+- Review urls.py for old lizard_map views. Replace with new ones or
+  remove.
+
+- Migrate
+
+- Upgrade to class-based views, using one of the View classes
+  (i.e. AppView). An excellent description can be found when googling
+  "class based views reinout". You can take lizard-map views as
+  examples as well.
+
+
 Site integration
 ----------------
 
@@ -144,51 +167,21 @@ lizard_map/workspace concepts.
 
 - Add 'lizard_map' to your settings.py: INSTALLED_APPS.
 
-- Add 'lizard_map.context_processors.processor.processor' to your
-  settings.py's ``TEMPLATE_CONTEXT_PROCESSORS``. REQUIRED for all map
-  related functionality.
-
 - Add an entry in your urls.py::
 
-    (r'^map/', include('lizard_map.urls')),
+    import lizard_map.urls
 
-- On your page, include the following parameters:
+    (r'^map/', include(lizard_map.urls)),
 
-   - javascript_hover_handler (popup_click_handler)
-   - javascript_click_handler (popup_hover_handler)
-   - date_range_form
-   - workspaces
+- Use one of the views, i.e. AppView.
+
 
 Example view::
 
-    from django.shortcuts import render_to_response
-    from django.template import RequestContext
+    from lizard_map.views import AppView
 
-    from lizard_map.daterange import DateRangeForm
-    from lizard_map.daterange import current_start_end_dates
-    from lizard_map.workspace import WorkspaceManager
-
-
-    def homepage(request,
-                 javascript_click_handler='popup_click_handler',
-                 javascript_hover_handler='popup_hover_handler',
-                 template="lizard_shape/homepage.html"):
-        """
-        Main page for Shape.
-        """
-
-        workspace_manager = WorkspaceManager(request)
-        workspaces = workspace_manager.load_or_create()
-        date_range_form = DateRangeForm(
-            current_start_end_dates(request, for_form=True))
-
-        return render_to_response(
-            template,
-            {'javascript_hover_handler': javascript_hover_handler,
-             'javascript_click_handler': javascript_click_handler,
-             'date_range_form': date_range_form,
-             'workspaces': workspaces},
-            context_instance=RequestContext(request))
+    class MyAppView(AppView):
+        template_name = 'my_app/template.html'
 
 
 Example template::
@@ -212,19 +205,19 @@ Example template::
       </ul>
     </div>
 
-    {% for workspace in workspaces.user %}
-      {% workspace workspace %}
-    {% empty %}
-    No workspace
-    {% endfor %}
+    {% workspace_edit view.workspace_edit %}
+    {% collage_edit view.collage_edit %}
 
     {% endblock %}
 
-- Add this view to your views.py:
+- Add this view to your url.py:
 
-    (r'^$', 'mapdemo.views.homepage'),
+    import my_app.views
 
-- Start testing by running syncdb.
+    (r'^$', my_app.views.MyAppView.as_view()),
+
+
+- Start testing by running syncdb / migrate.
 
 - Add and configure background maps by loading "background_maps" fixture.
 
