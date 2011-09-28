@@ -15,6 +15,8 @@ Changelog of lizard-map
 - Fixed "pan & zoom to default location". After changes in workspace
   the button didn't work anymore.
 
+- WMS background maps can now be used as overlays.
+
 
 3.0 (2011-09-28)
 ----------------
