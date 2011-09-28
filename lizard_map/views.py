@@ -19,6 +19,7 @@ import Image
 import csv
 import logging
 import mapnik
+import urllib2
 
 #from lizard_map.daterange import deltatime_range
 #from lizard_map.daterange import store_timedelta_range
@@ -1401,8 +1402,9 @@ def create_mapnik_image(request, data):
         for name in styles:
             mapnik_map.append_style(name, styles[name])
 
+
     #Zoom and create image
-    logger.debug("Zooming to box...")
+    logger.debug("Zooming to box...")    
     mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
     img = mapnik.Image(data['width'], data['height'])
     logger.debug("Rendering map...")
@@ -1417,15 +1419,33 @@ def mapnik_image_to_stream(request, data, img):
     """
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
     logger.debug("Converting image to rgba...")
+
+    bbox = ",".join([str(x) for x in data['bbox']])
+    # -78512.5,354478.5,362109.5,550492.5
+    geoserver_img = urllib2.urlopen("http://geoserver.lizard.net/geoserver/"+
+        "wms?LAYERS=nhi%3Awaterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
+        "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
+        "ogc.se_inimage&SRS=EPSG%3A28992&BBOX="+ str(bbox) +
+        "&WIDTH="+ str(data['width']) +"&HEIGHT=" + str(data['height'])).read()
+    
+    # ^^^ TODO: This should be configurable! (Added by gnijholt on Sep 28 2011)
+    base_image = Image.open(StringIO.StringIO(geoserver_img))
     rgba_image = Image.fromstring('RGBA',
                                   (data['width'], data['height']),
-                                  img.tostring())
+                                  img.tostring()).convert("RGBA")
+                                  
+    bg_w, bg_h = base_image.size
+    img_w, img_h = rgba_image.size
+
+    offset = ((bg_w-img_w), bg_h-img_h)
+    base_image.paste(rgba_image, offset, rgba_image)
+
     buf = StringIO.StringIO()
     if 'MSIE 6.0' in http_user_agent:
-        imgPIL = rgba_image.convert('P')
+        imgPIL = base_image.convert('P')
         imgPIL.save(buf, data['format'], transparency=0)
     else:
-        rgba_image.save(buf, data['format'])
+        base_image.save(buf, data['format'])
     buf.seek(0)
     return buf
 
