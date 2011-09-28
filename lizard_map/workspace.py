@@ -302,6 +302,11 @@ class WorkspaceItemAdapter(object):
         if template is None:
             template = 'lizard_map/html_default.html'
 
+        is_collage = False
+        if layout_options is not None:
+            if 'is_collage' in layout_options:
+                is_collage = layout_options['is_collage']
+
         # Fetch name
         if identifiers:
             location = self.location(**identifiers[0])
@@ -325,14 +330,15 @@ class WorkspaceItemAdapter(object):
         # Makes it possible to create collage items from current
         # selected objects.
         collage_item_props = []
-        for identifier in identifiers:
-            location = self.location(**identifier)
-            collage_item_props.append(
-            {'name': location['name'],
-             'adapter_class': self.workspace_mixin_item.adapter_class,
-             'adapter_layer_json':
-                        self.workspace_mixin_item.adapter_layer_json,
-             'identifier': adapter_serialize(identifier)})
+        if not is_collage:
+            for identifier in identifiers:
+                location = self.location(**identifier)
+                collage_item_props.append(
+                {'name': location['name'],
+                 'adapter_class': self.workspace_mixin_item.adapter_class,
+                 'adapter_layer_json':
+                            self.workspace_mixin_item.adapter_layer_json,
+                 'identifier': adapter_serialize(identifier)})
 
         render_kwargs = {
             'title': title,

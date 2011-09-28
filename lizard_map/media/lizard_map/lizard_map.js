@@ -547,7 +547,7 @@ function collagePopup(event) {
     $.getJSON(url, function (data) {
         show_popup(data);
         // Mark popup as being a collage popup
-        $("#dialog-content div:first-child").data("is_collage_popup", true);
+        //$("#dialog-content div:first-child").data("is_collage_popup", true);
     });
     dialogSize("");  // Reset to default.
     return false;

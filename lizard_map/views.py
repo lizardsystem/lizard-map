@@ -850,7 +850,8 @@ def popup_collage_json(collage_items, popup_id, request=None):
         collage_item = collage_items[0]  # Each group always has items.
         identifiers = [collage_item.identifier for
                        collage_item in collage_items]
-        html.append(collage_item.html(identifiers=identifiers))
+        html.append(
+            collage_item.html(identifiers=identifiers, is_collage=True))
 
     result = {'id': popup_id,
               'html': html,

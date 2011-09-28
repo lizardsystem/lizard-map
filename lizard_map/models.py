@@ -642,11 +642,13 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     class Meta:
         ordering = ()
 
-    def html(self, identifiers=None):
+    def html(self, identifiers=None, is_collage=False):
         if identifiers is None:
             identifiers = [self.identifier, ]
         try:
-            return self.adapter.html(identifiers=identifiers)
+            return self.adapter.html(
+                identifiers=identifiers,
+                layout_options={'is_collage': is_collage})
         except AttributeError:
             # if self.adapter crashes, it will return None
             return ""
