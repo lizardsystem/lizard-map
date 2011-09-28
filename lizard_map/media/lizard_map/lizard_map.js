@@ -3,7 +3,8 @@
 /*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
 stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
 alert, setUpTooltips,
-hover_popup, layers, wms_layers, map, refreshLayers, isCollagePopupVisible */
+hover_popup, layers, wms_layers, map, refreshLayers, isCollagePopupVisible,
+updateWorkspaceAcceptableStatus */
 
 var animationTimer, transparencyTimer;
 
@@ -223,6 +224,7 @@ function dialogContent(content) {
 
 /* L3 pop up the dialog */
 function dialogOverlay() {
+    var overlay;
     overlay = $("#dialog").overlay();
     overlay.load();  // Pop up
 }
@@ -242,7 +244,7 @@ function dialogClose() {
 
 /* L3 dialog replace ids */
 function dialogReplaceTitles(new_content) {
-    var replace_titles, id, ids, div, title;
+    var replace_titles, id, ids, div, title, i;
     // Create array with ids to be replaced.
     // There may be some empty strings in this list.
     ids = $("#dialog").data("replace-titles").split(" ");
@@ -251,11 +253,13 @@ function dialogReplaceTitles(new_content) {
     // root objects.
     div = $("<div/>").html(new_content);
 
-    for (var i in ids) {
-        id = ids[i];
-        if (id !== "") {
-            title = div.find("#" + id);
-            $("#" + id).attr("title", title.html());
+    for (i in ids) {
+        if (i !== undefined) {
+            id = ids[i];
+            if (id !== "") {
+                title = div.find("#" + id);
+                $("#" + id).attr("title", title.html());
+            }
         }
     }
 }
@@ -319,20 +323,21 @@ function dialogOnChange(event) {
         $form = $(event.target).parents("form");
         $.post(
             $form.attr("action"), $form.serialize(),
-            function (data, status, context) {
-                // Strange: everything goes to .error
-            }, "json")
-            .error(function (context) {
-                var div;
-                div = $("<div/>").html(context.responseText).find(
-                    ".dialog-box");
-                // Bad request: wrong input
-                // Or 200, or else... all the same
-                dialogReplaceTitles(context.responseText);
-                dialogContent(div);
-                dialogOverlay();
-                return false;
-            });
+            function (data, status, context) {/* Strange: never comes here*/},
+            "json")
+            .error(
+                function (context)
+                {
+                    var div;
+                    div = $("<div/>").html(context.responseText).find(
+                        ".dialog-box");
+                    // Bad request: wrong input
+                    // Or 200, or else... all the same
+                    dialogReplaceTitles(context.responseText);
+                    dialogContent(div);
+                    dialogOverlay();
+                    return false;
+                });
     }
     return false;
 }
@@ -346,11 +351,10 @@ function dialogSubmit(event, afterSubmit) {
     var $form;
     event.preventDefault();
     $form = $(event.target).parents("form");
+    // Strange: everything goes to .error
     $.post(
         $form.attr("action"), $form.serialize(),
-        function (data, status, context) {
-            // Strange: everything goes to .error
-        }, "json")
+        function (data, status, context) {}, "json")
         .error(function (context) {
             var div;
             div = $("<div/>").html(context.responseText).find(".dialog-box");
@@ -442,7 +446,7 @@ function actionPostClick(event, preAction, postAction, parameters) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
-    target_id = $(event.target).attr("data-target-id")
+    target_id = $(event.target).attr("data-target-id");
     if (target_id !== undefined) {
         target = $(target_id);
     } else {
@@ -456,6 +460,7 @@ function actionPostClick(event, preAction, postAction, parameters) {
     }
     $.post(url, parameters)
         .success(function (data) {
+            var div;
             if (target !== undefined) {
                 div = $("<div/>").html(data).find(".dialog-box").find(target_id);
                 target.html(div.html());
@@ -481,7 +486,7 @@ function postClickWorkspaceEmpty() {
 }
 
 
-function actionPostClickEmpty (event) {
+function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
         addProgressAnimationIntoWorkspace,
@@ -489,7 +494,7 @@ function actionPostClickEmpty (event) {
     );
 }
 
-function actionPostDeleteCollageItem (event) {
+function actionPostDeleteCollageItem(event) {
     var object_id;
     object_id = $(event.target).parents(
         ".collage-item").attr("data-object-id");
@@ -502,7 +507,7 @@ function actionPostDeleteCollageItem (event) {
 }
 
 /* Click checkbox on collage item. */
-function actionPostEditCollageItem (event) {
+function actionPostEditCollageItem(event) {
     var object_id, visible, $collage_item;
     $collage_item = $(event.target).parents(".collage-item");
     object_id = $collage_item.attr("data-object-id");
@@ -517,7 +522,7 @@ function actionPostEditCollageItem (event) {
 
 
 /* click on collage-add item */
-function actionPostCollageAdd (event) {
+function actionPostCollageAdd(event) {
     var $target, adapter_class, name, adapter_layer_json, identifier;
     $target = $(event.target);
     name = $target.attr("data-name");
@@ -534,7 +539,7 @@ function actionPostCollageAdd (event) {
 
 /* Collage popup: still old-fashioned. Same for single collage-item or
 whole collage. */
-function collagePopup (event) {
+function collagePopup(event) {
     var url;
     event.preventDefault();
 
