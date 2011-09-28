@@ -74,10 +74,11 @@ function refreshBackgroundLayers() {
     selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,
-        is_default, layer_names, identifier;
+        is_default, layer_names, identifier, is_base_layer;
         layer_type = $(this).attr("data-layer-type");
         layer_name = $(this).attr("data-layer-name");
         is_default = $(this).attr("data-default");
+        is_base_layer = ($(this).attr("data-is-base-layer") === 'True');
 
         // Three possible identificators.
         url = $(this).attr("data-layer-url");
@@ -119,8 +120,12 @@ function refreshBackgroundLayers() {
                     layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
-                     'maxResolution': 364},
-                    {'isBaseLayer': true, transitionEffect: 'resize', 'buffer': 1}
+                     'maxResolution': 364,
+                     'transparent': !is_base_layer},
+                    {'isBaseLayer': is_base_layer,
+                     'visibility': is_base_layer,
+                     'transitionEffect': 'resize',
+                     'buffer': 1}
                 );
             }
             // layers.base_layer

@@ -955,6 +955,7 @@ class BackgroundMap(models.Model):
     index = models.IntegerField(default=100)
     default = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    is_base_layer = models.BooleanField(default=True)
 
     layer_type = models.IntegerField(choices=LAYER_TYPE_CHOICES)
     google_type = models.IntegerField(
