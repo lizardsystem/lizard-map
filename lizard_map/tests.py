@@ -55,30 +55,30 @@ import lizard_map.urls
 import lizard_map.views
 
 
-# # New.
-# from lizard_map.test_models import CollageTest
-# from lizard_map.test_models import ExtentMixinTest
-# from lizard_map.test_models import PeriodMixinTest
-# from lizard_map.test_models import UserSessionMixinTest
-# from lizard_map.test_models import WorkspaceEditTest
-# from lizard_map.test_models import WorkspaceItemTest
-# from lizard_map.test_models import WorkspaceLoadSaveTest
-# from lizard_map.test_models import WorkspaceModelMixinTest
-# from lizard_map.test_templatetags import WorkspacesTest
+# New.
+from lizard_map.test_models import CollageTest
+from lizard_map.test_models import ExtentMixinTest
+from lizard_map.test_models import PeriodMixinTest
+from lizard_map.test_models import UserSessionMixinTest
+from lizard_map.test_models import WorkspaceEditTest
+from lizard_map.test_models import WorkspaceItemTest
+from lizard_map.test_models import WorkspaceLoadSaveTest
+from lizard_map.test_models import WorkspaceModelMixinTest
+from lizard_map.test_templatetags import WorkspacesTest
 
 
-# class Mixins(TestCase):
-#     # Satisfy pychecker
-#     def test_smoke(self):
-#         self.assertTrue(CollageTest)
-#         self.assertTrue(ExtentMixinTest)
-#         self.assertTrue(PeriodMixinTest)
-#         self.assertTrue(UserSessionMixinTest)
-#         self.assertTrue(WorkspaceEditTest)
-#         self.assertTrue(WorkspaceItemTest)
-#         self.assertTrue(WorkspaceLoadSaveTest)
-#         self.assertTrue(WorkspaceModelMixinTest)
-#         self.assertTrue(WorkspacesTest)
+class Mixins(TestCase):
+    # Satisfy pychecker
+    def test_smoke(self):
+        self.assertTrue(CollageTest)
+        self.assertTrue(ExtentMixinTest)
+        self.assertTrue(PeriodMixinTest)
+        self.assertTrue(UserSessionMixinTest)
+        self.assertTrue(WorkspaceEditTest)
+        self.assertTrue(WorkspaceItemTest)
+        self.assertTrue(WorkspaceLoadSaveTest)
+        self.assertTrue(WorkspaceModelMixinTest)
+        self.assertTrue(WorkspacesTest)
 
 
 class ViewsTest(TestCase):
