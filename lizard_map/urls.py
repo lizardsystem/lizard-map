@@ -17,7 +17,7 @@ urlpatterns = patterns(
     (r'^api/', include('lizard_map.api.urls')),
 
     # Actions/services on/from my workspace and my collage
-    url(r'^myworkspace/workspace_items/reorder/$', # L3
+    url(r'^myworkspace/workspace_items/reorder/$',  # L3
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
     url(r'^myworkspace/workspace_items/toggle/$',  # L3

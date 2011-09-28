@@ -155,4 +155,5 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-        self.fields['aggregation_period'].choices = StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+        self.fields['aggregation_period'].choices = (
+            StatisticsMixin.AGGREGATION_PERIOD_CHOICES)
