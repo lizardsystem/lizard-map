@@ -687,9 +687,10 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         """From collage snippet group. Brings statistics and collage
         properties together.
 
-        TODO: needs testing
         """
         adapter = self.adapter
+        if adapter is None:
+            return []
 
         # Calc periods based on aggregation period setting.
         periods = calc_aggregation_periods(start_date, end_date,

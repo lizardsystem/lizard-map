@@ -654,5 +654,10 @@ class CollageTest(TestCase):
         collage_item.html()
         collage_item.default_grouping_hint
         collage_item.grouping_hint
+        collage_item.form_initial()
+        collage_item.img_url()
+        collage_item.csv_url()
 
-
+        start_date = datetime.datetime(2011,1,1,0,0)
+        end_date = datetime.datetime(2011,1,10,0,0)
+        collage_item.statistics(start_date, end_date)
