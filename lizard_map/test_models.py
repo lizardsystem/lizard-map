@@ -17,6 +17,8 @@ from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorageItem
 
+from lizard_map.models import CollageEdit
+
 import lizard_map
 
 
@@ -636,3 +638,21 @@ class WorkspaceItemTest(TestCase):
         self.assertEquals(workspace_item.adapter, None)
         # Make sure the code doesn't hang in the __unicode__ after a deletion.
         self.assertTrue(unicode(workspace_item))
+
+
+class CollageTest(TestCase):
+    def test_collage_item(self):
+        user = User(username='lespaul')
+        collage = CollageEdit.get_or_create('asdf', user)
+        collage.collage_items.create(
+            name='f',
+            adapter_class='asdf',
+            adapter_layer_json='{}',
+            identifier='{"id": "id"}')
+        collage_item = collage.collage_items.all()[0]
+
+        collage_item.html()
+        collage_item.default_grouping_hint
+        collage_item.grouping_hint
+
+

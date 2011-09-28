@@ -56,6 +56,7 @@ import lizard_map.views
 
 
 # New.
+from lizard_map.test_models import CollageTest
 from lizard_map.test_models import ExtentMixinTest
 from lizard_map.test_models import PeriodMixinTest
 from lizard_map.test_models import UserSessionMixinTest
@@ -69,6 +70,7 @@ from lizard_map.test_templatetags import WorkspacesTest
 class Mixins(TestCase):
     # Satisfy pychecker
     def test_smoke(self):
+        self.assertTrue(CollageTest)
         self.assertTrue(ExtentMixinTest)
         self.assertTrue(PeriodMixinTest)
         self.assertTrue(UserSessionMixinTest)

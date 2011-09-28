@@ -383,7 +383,9 @@ class WorkspaceItemMixin(models.Model):
             logger.exception(
                 "Deleting problematic WorkspaceItem: %s", self)
                 # Trac #2470. Return a NullAdapter instead?
-            self.delete()
+            if self.id is not None:
+                # Only delete if it is not saved in the first place.
+                self.delete()
             return None
         return current_adapter
 
@@ -655,9 +657,13 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
 
     @property
     def grouping_hint(self):
-        adapter_location = self.adapter.location(**self.identifier)
-        return adapter_location.get('grouping_hint',
-                                    self.default_grouping_hint)
+        try:
+            adapter_location = self.adapter.location(**self.identifier)
+            return adapter_location.get('grouping_hint',
+                                        self.default_grouping_hint)
+        except AttributeError:
+            # Adapter is None
+            return self.default_grouping_hint
 
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""
