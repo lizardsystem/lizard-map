@@ -62,6 +62,7 @@ from lizard_map.test_models import ExtentMixinTest
 from lizard_map.test_models import PeriodMixinTest
 from lizard_map.test_models import UserSessionMixinTest
 from lizard_map.test_models import WorkspaceLoadSaveTest
+from lizard_map.test_templatetags import WorkspacesTest
 
 
 class Mixins(TestCase):

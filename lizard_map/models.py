@@ -639,7 +639,11 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     def html(self, identifiers=None):
         if identifiers is None:
             identifiers = [self.identifier, ]
-        return self.adapter.html(identifiers=identifiers)
+        try:
+            return self.adapter.html(identifiers=identifiers)
+        except AttributeError:
+            # if self.adapter crashes, it will return None
+            return ""
 
     @property
     def default_grouping_hint(self):
