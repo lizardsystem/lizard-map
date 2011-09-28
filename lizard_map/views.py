@@ -1133,6 +1133,7 @@ class CollageView(CollageMixin, ActionDialogView):
         for found_item in found:
             # Add all found items to collage.
             logger.debug("Adding collage item %s" % found_item['name'])
+            #print '%r' % found_item['identifier']
             collage.collage_items.create(
                 adapter_class=found_item['workspace_item'].adapter_class,
                 adapter_layer_json=found_item[
@@ -1153,11 +1154,13 @@ class CollageAddView(CollageMixin, ActionDialogView):
         data = form.cleaned_data
         collage = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
+        # Parse_identifier_json is unnecessary, but it provides an
+        # extra check.
         collage.collage_items.create(
             adapter_class=data['adapter_class'],
             adapter_layer_json=data['adapter_layer_json'],
             name=data['name'],
-            identifier=data['identifier'])
+            identifier=parse_identifier_json(data['identifier']))
 
 
 class CollageEmptyView(CollageView):

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 
+from lizard_map.adapter import adapter_serialize
 from lizard_map.models import ICON_ORIGINALS
 from lizard_map.models import Color
 from lizard_map.models import Legend
@@ -331,7 +332,7 @@ class WorkspaceItemAdapter(object):
              'adapter_class': self.workspace_mixin_item.adapter_class,
              'adapter_layer_json':
                         self.workspace_mixin_item.adapter_layer_json,
-             'identifier': identifier})
+             'identifier': adapter_serialize(identifier)})
 
         render_kwargs = {
             'title': title,
