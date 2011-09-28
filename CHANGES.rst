@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed "pan & zoom to default location". After changes in workspace
+  the button didn't work anymore.
 
 
 3.0 (2011-09-28)

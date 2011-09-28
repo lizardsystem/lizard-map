@@ -90,7 +90,7 @@ function setUpTransparencySlider() {
 
 /* L3 */
 function setUpMapLoadDefaultLocation() {
-    $("#map-load-default-location").click(function () {
+    $("#map-load-default-location").live("click", function () {
         var url;
         url = $(this).attr("data-url");
         $.getJSON(

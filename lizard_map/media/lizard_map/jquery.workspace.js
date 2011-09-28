@@ -64,25 +64,6 @@ jQuery.fn.liveCheckboxes = function () {
                 async: false
             });
         });
-        // $workspace.find(".snippet-checkbox").live('click', function () {
-        //     var url, $list_item;
-        //     url = $workspace.attr("data-url-lizard-map-snippet-edit");
-        //     $list_item = $(this).closest('li');
-        //     $list_item.addClass("waiting-lineitem");
-        //     $.ajax({
-        //         url: url,
-        //         data: { snippet_id: this.id, visible: this.checked },
-        //         success: function (snippet) {
-        //             $workspace.updateWorkspace();
-        //         },
-        //         type: "POST",
-        //         async: false
-        //     });
-        //     // Reload the collage_popup if it is already visible
-        //     if (isCollagePopupVisible()) {
-        //         $(".collage").collagePopup();
-        //     }
-        // });
     });
 };
 
