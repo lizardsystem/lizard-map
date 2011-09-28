@@ -1,4 +1,5 @@
 import datetime
+import pkg_resources
 
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.models import User
@@ -388,3 +389,242 @@ class WorkspaceLoadSaveTest(TestCase):
 
         # Nothing is changed.
         self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)
+
+
+class WorkspaceModelMixinTest(TestCase):
+    def setUp(self):
+        pass
+
+    def test_is_animatable(self):
+        user = User(username='lespaul')
+        workspace = WorkspaceEdit.get_or_create('fake session key', user)
+        self.assertFalse(workspace.is_animatable)
+
+    def test_is_animatable2(self):
+        user = User(username='lespaul')
+        workspace = WorkspaceEdit.get_or_create('fake session key', user)
+        workspace.workspace_items.create(
+            name='fake',
+            adapter_class='adapter_class',
+            adapter_layer_json='adapter_layer_json')
+        workspace.workspace_items.create(
+            name='fake2',
+            adapter_class='adapter_class',
+            adapter_layer_json='adapter_layer_json')
+        self.assertFalse(workspace.is_animatable)
+
+    def test_check_workspace_item_adapters(self):
+        user = User(username='lespaul')
+        workspace = WorkspaceEdit.get_or_create('fake session key', user)
+        workspace.workspace_items.create(
+            name='fake',
+            adapter_class='adapter_class',
+            adapter_layer_json='adapter_layer_json')
+        workspace.check_workspace_item_adapters()
+
+
+class WorkspaceEditTest(TestCase):
+
+    class MockRequest(object):
+        class MockSession(object):
+            session_key = 'mock'
+
+        def __init__(self, user):
+            self.session = self.MockSession()
+            self.user = user
+            self.POST = {}
+            self.GET = {}
+
+    def setUp(self):
+        self.client = Client()
+        self.user = User(username='jack')
+        self.request = self.MockRequest(self.user)
+
+    def test_workspace_item_add(self):
+        workspace = WorkspaceEdit()
+        workspace.save()
+        params = {'name': 'test workspace_item',
+                  'adapter_class': 'test adapter_class',
+                  'adapter_layer_json': '{"json"}'}
+        self.request.POST.update(params)
+        lizard_map.views.workspace_item_toggle(
+            self.request, workspace_edit=workspace)
+        self.assertTrue(workspace.workspace_items.filter())
+
+    def test_workspace_item_reorder(self):
+        """Test workspace items reorder
+
+        TODO: this is not a very good test, because indices are given
+        in the test. How to fake getlist in your view?
+        """
+        workspace = WorkspaceEdit()
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create()
+        workspace_item2 = workspace.workspace_items.create()
+        order = {str(workspace_item2.id): 10,
+                 str(workspace_item1.id): 20}
+        lizard_map.views.workspace_item_reorder(
+            self.request, workspace_edit=workspace,
+            workspace_items_order=order)
+
+        self.assertEqual(workspace.workspace_items.all()[0], workspace_item2)
+        self.assertEqual(workspace.workspace_items.all()[1], workspace_item1)
+
+    def test_workspace_edit_item(self):
+        workspace = WorkspaceEdit(
+            session_key=self.request.session.session_key,
+            user=self.request.user)
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create(
+            name='test workspaceitem')
+
+        lizard_map.views.workspace_edit_item(
+            self.request, workspace_edit=workspace,
+            workspace_item_id=str(workspace_item1.id),
+            visible='false')
+        self.assertEqual(
+            WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
+            False)
+        lizard_map.views.workspace_edit_item(
+            self.request, workspace_edit=workspace,
+            workspace_item_id=str(workspace_item1.id),
+            visible='true')
+        self.assertEqual(
+            WorkspaceEditItem.objects.get(name='test workspaceitem').visible,
+            True)
+
+    def test_workspace_item_delete(self):
+        workspace = WorkspaceEdit()
+        workspace.save()
+        workspace_item1 = workspace.workspace_items.create(
+            name='test workspaceitem')
+
+        self.request.POST['object_id'] = str(workspace_item1.id)
+        lizard_map.views.workspace_item_delete(
+            self.request, workspace_edit=workspace)
+        self.assertFalse(workspace.workspace_items.all())
+
+    def test_workspace_edit(self):
+        user = User(username='lespaul')
+        workspace = WorkspaceEdit.get_or_create('fake session key', user)
+        workspace.__unicode__()
+        workspace.wms_url()
+
+    # def test_workspace_extent_temp(self):
+    #     """
+    #     Tests if the workspace extent does not crash (although the
+    #     content will be meaningless).
+    #     """
+    #     url = reverse('lizard_map_session_workspace_extent_temp')
+    #     result = self.client.get(url, {})
+    #     self.assertEqual(result.status_code, 200)
+
+    # Not testable without adapter
+    # def test_workspace_extent(self):
+    #     """
+    #     Tests if the workspace extent does not crash (although the
+    #     content will be meaningless).
+    #     """
+    #     workspace = Workspace()
+    #     workspace.save()
+    #     workspace_item1 = workspace.workspace_items.create(
+    #         name='test workspaceitem')
+    #     url = reverse('lizard_map_workspace_item_extent')
+    #     result = self.client.get(url, {
+    #             'workspace_item_id': workspace_item1.id})
+    #     self.assertEqual(result.status_code, 200)
+    #     self.assertTrue('north' in result.content)
+
+
+    # Not testable without adapter
+    # def test_workspace_item_image(self):
+    #     workspace = Workspace()
+    #     workspace.save()
+    #     workspace_item1 = workspace.workspace_items.create(
+    #         name='test workspaceitem')
+
+    #     url = reverse('lizard_map_workspace_item_image')
+    #     url += '?identifier={test_identifier}'
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, 200)
+
+
+class WorkspaceItemTest(TestCase):
+
+    # def test_has_adapter(self):
+    #     """A workspace item can point to a method that returns a layer."""
+    #     workspace_item = WorkspaceEditItem()
+    #     self.assertFalse(workspace_item.has_adapter())
+    #     workspace_item.adapter_class = 'todo'
+    #     self.assertTrue(workspace_item.has_adapter())
+
+    def test_entry_points_exist(self):
+        """There's at least one adapter entry point registered."""
+        self.assertTrue(list(pkg_resources.iter_entry_points(
+                    group='lizard_map.adapter_class')))
+
+    def test_entry_point_lookup(self):
+        """The string that identifies a method is looked up as a so-called
+        entry point."""
+        workspace_item = WorkspaceEditItem()
+        workspace_item.adapter_class = 'adapter_dummy'
+        workspace_item.adapter_layer_json = ("{}")
+        self.assertTrue(isinstance(
+                workspace_item.adapter,
+                lizard_map.layers.AdapterDummy))
+
+    def test_adapter_arguments(self):
+        """The layer method probably needs arguments. You can store them as a
+        json string."""
+        workspace_item = WorkspaceEditItem()
+        self.assertTrue(isinstance(workspace_item._adapter_layer_arguments,
+                                   dict))
+        self.assertFalse(len(workspace_item._adapter_layer_arguments))
+        workspace_item.adapter_layer_json = '{"bla": "yes"}'
+        self.assertEquals(workspace_item._adapter_layer_arguments['bla'],
+                          'yes')
+
+    def test_name(self):
+        """A workspace item always has a name.  It is blank by default,
+        though."""
+        workspace_item = WorkspaceEditItem()
+        self.assertEquals(workspace_item.name, '')
+        workspace_item2 = WorkspaceEditItem(name='bla')
+        self.assertEquals(workspace_item2.name, 'bla')
+
+    def test_representation(self):
+        workspace = WorkspaceEdit()
+        workspace.save()
+        workspace_item = workspace.workspace_items.create(
+            name="workspace_item")
+        # No errors: fine.  As long as we return something.
+        self.assertTrue(unicode(workspace_item))
+
+    def test_delete_invalid_ws_item_1(self):
+        workspace = WorkspaceEdit()
+        workspace.save()
+        workspace_item = workspace.workspace_items.create(
+            adapter_class='adapter_dummy', name='reinout')
+        workspace_item.save()
+        self.assertTrue(isinstance(workspace_item.adapter,
+                                   lizard_map.layers.AdapterDummy))
+        workspace_item.adapter_layer_json = ''
+        workspace_item.save()
+        workspace_item.adapter_layer_json = '[{"invalid": "non existing"}a]'
+        # The workspace item should be deleted after .adapter() got an error.
+        self.assertTrue(workspace_item.adapter is None)
+        # Don't know why this doesn't work
+        # self.assertEquals(workspace_item.adapter, None)
+        # Make sure the code doesn't hang in the __unicode__ after a deletion.
+        self.assertTrue(unicode(workspace_item))
+
+    def test_delete_invalid_ws_item_2(self):
+        workspace = WorkspaceEdit()
+        workspace.save()
+        workspace_item = workspace.workspace_items.create(
+            adapter_class='adapter_does_not_exist', name='workspace-item')
+        workspace_item.save()
+        # The workspace item should be deleted after .adapter() got an error.
+        self.assertEquals(workspace_item.adapter, None)
+        # Make sure the code doesn't hang in the __unicode__ after a deletion.
+        self.assertTrue(unicode(workspace_item))

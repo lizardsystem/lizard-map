@@ -502,8 +502,12 @@ class WorkspaceModelMixin(object):
     def is_animatable(self):
         """Determine if any visible workspace_item is animatable."""
         for workspace_item in self.workspace_items.filter(visible=True):
-            if workspace_item.adapter.is_animatable:
-                return True
+            try:
+                if workspace_item.adapter.is_animatable:
+                    return True
+            except AttributeError:
+                # workspace_item/adapter is invalid.
+                pass
         return False
 
 
