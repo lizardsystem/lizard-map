@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Added option "add to selection" in map popup.
+
 - Removed console.log and alert from js.
 
 - Fixed popup dialog size, it will now always be the default size.

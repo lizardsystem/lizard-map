@@ -98,6 +98,16 @@ class CollageForm(forms.Form):
     srs = forms.CharField(max_length=100, required=True)
 
 
+class CollageAddForm(forms.Form):
+    """
+    Collage form. Never actually displayed.
+    """
+    name = forms.CharField(max_length=100, required=True)
+    adapter_class = forms.CharField(max_length=100, required=True)
+    adapter_layer_json = forms.CharField(max_length=100, required=True)
+    identifier = forms.CharField(max_length=100, required=True)
+
+
 class EmptyForm(forms.Form):
     """
     Empty form. Used by views.

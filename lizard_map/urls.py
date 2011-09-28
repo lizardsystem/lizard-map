@@ -51,9 +51,12 @@ urlpatterns = patterns(
     url(r'^mycollage/$',  # L3
         lizard_map.views.CollageDetailView.as_view(),
         name="lizard_map_collage_edit_detail"),
-    url(r'^mycollage/add_item/$',  # L3 add collage item
+    url(r'^mycollage/add_item_coordinates/$',  # L3 add collage item
         lizard_map.views.CollageView.as_view(),
         name="lizard_map_collage"),
+    url(r'^mycollage/add_item/$',  # L3 add collage item
+        lizard_map.views.CollageAddView.as_view(),
+        name="lizard_map_collage_add"),
     url(r'^mycollage/empty/$',  # L3 empty collage
         lizard_map.views.CollageEmptyView.as_view(),
         name="lizard_map_collage_empty"),

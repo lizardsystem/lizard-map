@@ -34,6 +34,7 @@ from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.forms import CollageForm
+from lizard_map.forms import CollageAddForm
 from lizard_map.forms import CollageItemEditorForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import EditForm
@@ -1138,6 +1139,25 @@ class CollageView(CollageMixin, ActionDialogView):
                     'workspace_item'].adapter_layer_json,
                 name=found_item['name'],
                 identifier=found_item['identifier'])
+
+
+class CollageAddView(CollageMixin, ActionDialogView):
+    """
+    Add collage item by name + adapter_class + adapter_layer_json + identifier.
+    """
+    template_name = 'lizard_map/box_collage.html'
+    template_name_success = template_name
+    form_class = CollageAddForm
+
+    def form_valid_action(self, form):
+        data = form.cleaned_data
+        collage = CollageEdit.get_or_create(
+            self.request.session.session_key, self.request.user)
+        collage.collage_items.create(
+            adapter_class=data['adapter_class'],
+            adapter_layer_json=data['adapter_layer_json'],
+            name=data['name'],
+            identifier=data['identifier'])
 
 
 class CollageEmptyView(CollageView):

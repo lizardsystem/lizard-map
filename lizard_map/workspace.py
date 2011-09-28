@@ -328,11 +328,19 @@ class WorkspaceItemAdapter(object):
         else:
             csv_url = None
 
+        # Makes it possible to create collage items from current selected objects.
+        collage_item_props = [
+            {'name': title,
+             'adapter_class': self.workspace_mixin_item.adapter_class,
+             'adapter_layer_json': self.workspace_mixin_item.adapter_layer_json,
+             'identifier': identifier} for identifier in identifiers]
+
         render_kwargs = {
             'title': title,
             'img_url': img_url,
             'csv_url': csv_url,
             'symbol_url': self.symbol_url(),
+            'collage_item_props': collage_item_props
             }
         if layout_options is not None:
             render_kwargs.update(layout_options)

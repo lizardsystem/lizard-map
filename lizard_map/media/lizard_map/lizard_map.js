@@ -443,12 +443,11 @@ function actionPostClick(event, preAction, postAction, parameters) {
 
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id")
-    if (target_id === undefined) {
-        // alert("Fout: data-target-id is undefined.");
-        // console.log("Fout: data-target-id is undefined.");
-        return false;
+    if (target_id !== undefined) {
+        target = $(target_id);
+    } else {
+        target = undefined;
     }
-    target = $(target_id);
     if (preAction !== undefined) {
         preAction();
     }
@@ -457,8 +456,10 @@ function actionPostClick(event, preAction, postAction, parameters) {
     }
     $.post(url, parameters)
         .success(function (data) {
-            div = $("<div/>").html(data).find(".dialog-box").find(target_id);
-            target.html(div.html());
+            if (target !== undefined) {
+                div = $("<div/>").html(data).find(".dialog-box").find(target_id);
+                target.html(div.html());
+            }
             if (postAction !== undefined) {
                 postAction();
             }
@@ -480,7 +481,7 @@ function postClickWorkspaceEmpty() {
 }
 
 
-function actionPostClickEmpty(event) {
+function actionPostClickEmpty (event) {
     return actionPostClick(
         event,
         addProgressAnimationIntoWorkspace,
@@ -488,7 +489,7 @@ function actionPostClickEmpty(event) {
     );
 }
 
-function actionPostDeleteCollageItem(event) {
+function actionPostDeleteCollageItem (event) {
     var object_id;
     object_id = $(event.target).parents(
         ".collage-item").attr("data-object-id");
@@ -501,7 +502,7 @@ function actionPostDeleteCollageItem(event) {
 }
 
 /* Click checkbox on collage item. */
-function actionPostEditCollageItem(event) {
+function actionPostEditCollageItem (event) {
     var object_id, visible, $collage_item;
     $collage_item = $(event.target).parents(".collage-item");
     object_id = $collage_item.attr("data-object-id");
@@ -514,9 +515,26 @@ function actionPostEditCollageItem(event) {
     );
 }
 
+
+/* click on collage-add item */
+function actionPostCollageAdd (event) {
+    var $target, adapter_class, name, adapter_layer_json, identifier;
+    $target = $(event.target);
+    name = $target.attr("data-name");
+    adapter_class = $target.attr("data-adapter-class");
+    adapter_layer_json = $target.attr("data-adapter-layer-json");
+    identifier = $target.attr("data-identifier");
+    return actionPostClick(
+        event,
+        undefined,
+        stretchOneSidebarBox,
+        {name: name, adapter_class: adapter_class, adapter_layer_json: adapter_layer_json, identifier: identifier}
+    );
+}
+
 /* Collage popup: still old-fashioned. Same for single collage-item or
 whole collage. */
-function collagePopup(event) {
+function collagePopup (event) {
     var url;
     event.preventDefault();
 
@@ -545,7 +563,10 @@ function setUpActions() {
     // Collage-popup.
     $(".collage-popup").live(
         "click", collagePopup);
+    // Add to collage
+    $(".collage-add").live("click", actionPostCollageAdd);
 }
+
 
 /*
 Erase the contents of the popup when the user closes the popup
