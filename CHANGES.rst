@@ -14,17 +14,31 @@ Lizard 3: Make sure you read the readme before upgrading to this version.
 
 - Integrated search_name in search_coordinates.
 
+- Various functions work on WorkspaceEdits and WorkspaceStorages.
+
 - Added generic dialog javascript code.
 
 - Added generic POST action javascript code.
 
-- Added all kinds of mixins for workspaces, collages, etc.
-
 - Made app_screen class-based, with helper class WorkspaceView.
 
-- Added new workspaces.
+- Added new workspaces, collages.
 
 - Added PeriodMixin with tests.
+
+- Added all kinds of mixins for workspaces, collages, etc:
+  GoogleTrackingMixin, WorkspaceMixin, WorkspaceEditMixin, MapMixin,
+  CollageMixin, DateRangeMixin.
+
+- Added class based views: AppView,
+  WorkspaceStorageView, HomepageView, CollageDetailView.
+
+- Added class based views for dialogs: ActionDialogView, WorkspaceSaveView,
+  WorkspaceLoadView, DateRangeView, CollageItemEditorView,
+  WorkspaceStorageListView, CollageView, CollageEmptyView,
+  CollageItemEditView, CollagePopupView, WorkspaceEmptyView.
+
+- Adapter stuff: AdapterMixin, ImageMixin, AdapterImageView, AdapterCsvView.
 
 
 2.5 (2011-09-23)

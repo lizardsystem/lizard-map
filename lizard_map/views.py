@@ -217,6 +217,7 @@ class AppView(
 
 class WorkspaceStorageListView(
     ViewContextMixin, GoogleTrackingMixin, TemplateView):
+    """Show list of storage workspaces."""
 
     template_name = 'lizard_map/workspace_storage_list.html'
 
@@ -229,7 +230,7 @@ class WorkspaceStorageView(
     GoogleTrackingMixin, TemplateView):
     """Workspace storage view.
 
-    TODO: load workspace in my workspace and go there"""
+    TODO: "load workspace in my workspace and go there" """
     template_name = 'lizard_map/workspace_storage_detail.html'
 
     def workspace(self):
