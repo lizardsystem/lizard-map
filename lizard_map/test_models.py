@@ -515,7 +515,7 @@ class WorkspaceEditTest(TestCase):
     def test_workspace_storage(self):
         user = User(username='lespaul')
         user.save()
-        workspace = WorkspaceStorage(name='adf', owner=user)
+        workspace = WorkspaceStorage(name='workspace-storage', owner=user)
         workspace.save()
         workspace.__unicode__()
         workspace.wms_url()
@@ -643,10 +643,10 @@ class WorkspaceItemTest(TestCase):
 class CollageTest(TestCase):
     def test_collage_item(self):
         user = User(username='lespaul')
-        collage = CollageEdit.get_or_create('asdf', user)
+        collage = CollageEdit.get_or_create('collage-edit', user)
         collage.collage_items.create(
             name='f',
-            adapter_class='asdf',
+            adapter_class='adapter-class',
             adapter_layer_json='{}',
             identifier='{"id": "id"}')
         collage_item = collage.collage_items.all()[0]
