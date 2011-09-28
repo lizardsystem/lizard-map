@@ -323,12 +323,15 @@ class WorkspaceItemAdapter(object):
 
         # Makes it possible to create collage items from current
         # selected objects.
-        collage_item_props = [
-            {'name': title,
+        collage_item_props = []
+        for identifier in identifiers:
+            location = self.location(**identifier)
+            collage_item_props.append(
+            {'name': location['name'],
              'adapter_class': self.workspace_mixin_item.adapter_class,
-             'adapter_layer_json': (
-                    self.workspace_mixin_item.adapter_layer_json, ),
-             'identifier': identifier} for identifier in identifiers]
+             'adapter_layer_json':
+                        self.workspace_mixin_item.adapter_layer_json,
+             'identifier': identifier})
 
         render_kwargs = {
             'title': title,
