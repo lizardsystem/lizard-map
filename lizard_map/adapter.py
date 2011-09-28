@@ -8,7 +8,6 @@ import pkg_resources
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils import simplejson as json
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas

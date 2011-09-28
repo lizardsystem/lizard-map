@@ -7,7 +7,8 @@ import re
 import tempfile
 
 from django.conf import settings
-# On some systems, hotshot is now available.
+
+# On some systems, hotshot is now available. How to avoid pyflakes error?
 try:
     import hotshot
     import hotshot.stats

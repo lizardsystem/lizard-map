@@ -7,7 +7,6 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render_to_response
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.template import RequestContext
@@ -29,6 +28,7 @@ from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
 from lizard_map.animation import slider_layout_extra
+from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.dateperiods import ALL
 from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_period
@@ -39,7 +39,6 @@ from lizard_map.forms import CollageItemEditorForm
 from lizard_map.forms import DateRangeForm
 from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
-from lizard_map.forms import SingleObjectForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import WorkspaceSaveForm
 from lizard_map.models import BackgroundMap
@@ -47,10 +46,8 @@ from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
-from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.utility import analyze_http_user_agent
-from lizard_map.utility import short_string
 from lizard_ui.models import ApplicationScreen
 from lizard_ui.views import ViewContextMixin
 
@@ -224,6 +221,7 @@ class WorkspaceStorageListView(
 
     def workspaces(self):
         return WorkspaceStorage.objects.all()
+
 
 class WorkspaceStorageView(
     WorkspaceMixin, CollageMixin, DateRangeMixin,
@@ -1074,8 +1072,10 @@ def search_coordinates(request, workspace_storage_id=None, format='popup'):
             # x, y = coordinates.google_to_srs(google_x, google_y, srs)
             # result['x'] = x
             # result['y'] = y
-            # For the x/y we use the original x/y value to position the popup to
-            # the lower right of the cursor to prevent click propagation problems.
+
+            # For the x/y we use the original x/y value to position
+            # the popup to the lower right of the cursor to prevent
+            # click propagation problems.
             result['x'] = x + (radius / 10)
             result['y'] = y - (radius / 10)
             return HttpResponse(json.dumps(result))
@@ -1238,7 +1238,8 @@ Export
 # def export_identifier_csv(request, workspace_item_id=None,
 #     identifier_json=None):
 #     """
-#     Uses adapter.values to get values. Then return these values in csv format.
+#     Uses adapter.values to get values. Then return these
+# #values in csv format.
 #     """
 #     # Collect input.
 #     if workspace_item_id is None:
@@ -1505,7 +1506,9 @@ class AdapterCsvView(AdapterMixin, View):
 
         # Make the csv output.
         response = HttpResponse(mimetype='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+        response['Content-Disposition'] = (
+            'attachment; filename="%s"' %
+            filename)
         writer = csv.writer(response)
         writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
         for row in values:

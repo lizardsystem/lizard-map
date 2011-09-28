@@ -9,7 +9,6 @@ from django.test.client import Client
 from django.utils import simplejson as json
 import pkg_resources
 
-from lizard_map.adapter import AdapterClassNotFoundError
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
@@ -18,7 +17,6 @@ from lizard_map.daterange import default_end
 from lizard_map.daterange import PERIOD_DAY
 from lizard_map.daterange import PERIOD_OTHER
 from lizard_map.daterange import PERIOD_DAYS
-from lizard_map.daterange import PERIOD_YEAR
 from lizard_map.daterange import SESSION_DT_PERIOD
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import SESSION_DT_START
@@ -416,7 +414,6 @@ class TestDateRange(TestCase):
         self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
         self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
 
-    """If Pieters update is applied, this test should succeed"""
     def test_set_date_range2(self):
         """Set custom date range, then retrieve it back"""
         # Fake Post
@@ -429,9 +426,7 @@ class TestDateRange(TestCase):
             'dt_end': dt_end_expected}
         self.request.META = {}
 
-
     #     period, dt_start, dt_end = self._test_set_date_range(self.request)
-
     #     self.assertEquals(period, PERIOD_OTHER)
     #     self.assertEquals(dt_start, dt_start_expected)
     #     self.assertEquals(dt_end, dt_end_expected)
@@ -467,7 +462,8 @@ class TestDateRange(TestCase):
 
     #     # Test on day accuracy, because "almost_one_day" is added to end.
     #     self.assertEquals(period, period_expected)
-    #     self.assertEquals(timedelta_start.days, timedelta_start_expected.days)
+    #     self.assertEquals(timedelta_start.days,
+    #                 timedelta_start_expected.days)
     #     self.assertEquals(timedelta_end.days, timedelta_end_expected.days)
 
     # def test_deltatime_range(self):

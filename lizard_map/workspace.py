@@ -2,17 +2,10 @@ import os
 import logging
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 
-from lizard_map.adapter import adapter_serialize
-from lizard_map.models import DEFAULT_WORKSPACES
 from lizard_map.models import ICON_ORIGINALS
-from lizard_map.models import OTHER_WORKSPACES
-from lizard_map.models import TEMP_WORKSPACES
-from lizard_map.models import USER_WORKSPACES
 from lizard_map.models import Color
 from lizard_map.models import Legend
 #from lizard_map.models import Workspace
@@ -328,11 +321,13 @@ class WorkspaceItemAdapter(object):
         else:
             csv_url = None
 
-        # Makes it possible to create collage items from current selected objects.
+        # Makes it possible to create collage items from current
+        # selected objects.
         collage_item_props = [
             {'name': title,
              'adapter_class': self.workspace_mixin_item.adapter_class,
-             'adapter_layer_json': self.workspace_mixin_item.adapter_layer_json,
+             'adapter_layer_json': (
+                    self.workspace_mixin_item.adapter_layer_json, ),
              'identifier': identifier} for identifier in identifiers]
 
         render_kwargs = {
@@ -340,8 +335,7 @@ class WorkspaceItemAdapter(object):
             'img_url': img_url,
             'csv_url': csv_url,
             'symbol_url': self.symbol_url(),
-            'collage_item_props': collage_item_props
-            }
+            'collage_item_props': collage_item_props}
         if layout_options is not None:
             render_kwargs.update(layout_options)
 
@@ -390,7 +384,8 @@ class WorkspaceItemAdapter(object):
     #             kwargs={'snippet_group_id': snippet_group.id},
     #             )
     #     else:
-    #         # Image url: static url composed with all options and layout tweaks
+    #         # Image url: static url composed wit
+    ##h all options and layout tweaks
     #         # L3: is workspace_item_edit ok?
     #         img_url = reverse(
     #             "lizard_map.workspace_edit_item_image",

@@ -31,6 +31,7 @@ from adapter import adapter_serialize
 
 # Temporary, because fewsjdbc api handler imports this.
 from adapter import ADAPTER_ENTRY_POINT
+ADAPTER_ENTRY_POINT
 
 # New imports
 import datetime
@@ -183,6 +184,7 @@ try:
 except:
     # South is not used.
     pass
+
 
 class JSONField(models.TextField):
     """JSONField is a generic textfield that neatly serializes/unserializes
@@ -707,8 +709,11 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
                     statistics_row['percentile_value'] = self.percentile_value
                     statistics.append(statistics_row)
         return statistics
+
+
 # TODO: Remove legend-shape dependencies of legend stuff, then remove
 # the legend stuff.
+
 
 class LegendManager(models.Manager):
     """Implements extra function 'find'
