@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-2.6 (unreleased)
+3.0 (2011-09-28)
 ----------------
 
 Lizard 3: Make sure you read the readme before upgrading to this version.
