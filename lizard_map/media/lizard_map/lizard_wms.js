@@ -2,7 +2,8 @@
 /*jslint evil: true */
 /*jslint nomen: false */
 /*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
-G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler */
+G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler,
+stretchOneSidebarBox */
 
 // OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
 OpenLayers.ImgPath = "/static_media/themes/dark/";
@@ -52,6 +53,7 @@ function addSelection(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               workspace_id: workspace_id},
             function (data, status, context) {
+                var div;
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
 
