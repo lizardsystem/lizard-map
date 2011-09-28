@@ -9,6 +9,7 @@ from django.test.client import Client
 from django.utils import simplejson as json
 import pkg_resources
 
+from lizard_map.adapter import AdapterClassNotFoundError
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
@@ -333,9 +334,11 @@ class WorkspaceItemTest(TestCase):
                                    lizard_map.layers.AdapterDummy))
         workspace_item.adapter_layer_json = ''
         workspace_item.save()
-        workspace_item.adapter_layer_json = '{"invalid": "non existing"}bbb'
+        workspace_item.adapter_layer_json = '[{"invalid": "non existing"}]'
         # The workspace item should be deleted after .adapter() got an error.
-        self.assertEquals(workspace_item.adapter, None)
+        self.assertTrue(workspace_item.adapter is None)
+        # Don't know why this doesn't work
+        # self.assertEquals(workspace_item.adapter, None)
         # Make sure the code doesn't hang in the __unicode__ after a deletion.
         self.assertTrue(unicode(workspace_item))
 
