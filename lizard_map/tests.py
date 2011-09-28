@@ -334,7 +334,7 @@ class WorkspaceItemTest(TestCase):
                                    lizard_map.layers.AdapterDummy))
         workspace_item.adapter_layer_json = ''
         workspace_item.save()
-        workspace_item.adapter_layer_json = '[{"invalid": "non existing"}]'
+        workspace_item.adapter_layer_json = '[{"invalid": "non existing"}a]'
         # The workspace item should be deleted after .adapter() got an error.
         self.assertTrue(workspace_item.adapter is None)
         # Don't know why this doesn't work
