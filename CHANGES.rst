@@ -4,6 +4,10 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Moved Grouping_hint check from adapter.location to
+  adapter.location['identifier']. Apparently this was the location of
+  the grouping hint.
+
 - Pylint.
 
 - Added option "add to selection" in map popup.

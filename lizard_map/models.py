@@ -659,8 +659,8 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     def grouping_hint(self):
         try:
             adapter_location = self.adapter.location(**self.identifier)
-            return adapter_location.get('grouping_hint',
-                                        self.default_grouping_hint)
+            return adapter_location['identifier'].get(
+                'grouping_hint', self.default_grouping_hint)
         except AttributeError:
             # Adapter is None
             return self.default_grouping_hint
