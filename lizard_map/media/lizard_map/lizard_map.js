@@ -617,6 +617,7 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
+                dialogSize("");  // default size
                 show_popup(data);
                 $("#map").css("cursor", "default");
             }
