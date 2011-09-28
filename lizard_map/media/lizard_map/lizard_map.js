@@ -255,7 +255,6 @@ function dialogReplaceTitles(new_content) {
         id = ids[i];
         if (id !== "") {
             title = div.find("#" + id);
-            console.log(title);
             $("#" + id).attr("title", title.html());
         }
     }
@@ -313,7 +312,7 @@ function dialogClick(event) {
 /* L3 Onchange on dialog: only on ajax-dialog-onchange */
 function dialogOnChange(event) {
     var $form;
-    console.log("dialog onchange");
+    // console.log("dialog onchange");
     event.preventDefault();
     if ($("#dialog").data("submit-on-change")) {
         // console.log("onchange submit");
@@ -345,7 +344,6 @@ function dialogSetupChange(event) {
 /* L3 Pressing submit in dialog box */
 function dialogSubmit(event, afterSubmit) {
     var $form;
-    console.log("dialog submit");
     event.preventDefault();
     $form = $(event.target).parents("form");
     $.post(
@@ -446,7 +444,8 @@ function actionPostClick(event, preAction, postAction, parameters) {
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id")
     if (target_id === undefined) {
-        alert("Fout: data-target-id is undefined.");
+        // alert("Fout: data-target-id is undefined.");
+        // console.log("Fout: data-target-id is undefined.");
         return false;
     }
     target = $(target_id);
