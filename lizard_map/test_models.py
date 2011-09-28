@@ -512,7 +512,9 @@ class WorkspaceEditTest(TestCase):
 
     def test_workspace_storage(self):
         user = User(username='lespaul')
-        workspace = WorkspaceStorage(name='adf')
+        user.save()
+        workspace = WorkspaceStorage(name='adf', owner=user)
+        workspace.save()
         workspace.__unicode__()
         workspace.wms_url()
 
