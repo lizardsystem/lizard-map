@@ -510,6 +510,12 @@ class WorkspaceEditTest(TestCase):
         workspace.__unicode__()
         workspace.wms_url()
 
+    def test_workspace_storage(self):
+        user = User(username='lespaul')
+        workspace = WorkspaceStorage(name='adf')
+        workspace.__unicode__()
+        workspace.wms_url()
+
     # def test_workspace_extent_temp(self):
     #     """
     #     Tests if the workspace extent does not crash (although the
