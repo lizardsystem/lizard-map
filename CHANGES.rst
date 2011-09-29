@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Added download-map button.
+
 - Added y-min and y-max option for collage detail screen.
 
 - Added csv statistics output for collage.

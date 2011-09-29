@@ -459,12 +459,12 @@ function getMapUrl() {
 Replaces a href attr. of 'Download' subelement
 */
 function setDownloadImageLink() {
-    $('span#download').click(function (e) {
-        var url = "/map/download/";
-        url = url + getMapUrl();
-        $(this).find("a").attr({
-            href: url
-        });
+    $('a#download-map').click(function (e) {
+        var url;
+        url = $(this).attr("href") + getMapUrl();
+        // Because the result is an image, a popup will occur.
+        window.location = url;
+        return false;
     });
 }
 
