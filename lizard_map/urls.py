@@ -104,9 +104,9 @@ urlpatterns = patterns(
     url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
         lizard_map.views.AdapterImageView.as_view(),
         name="lizard_map_adapter_image"),
-    url(r'^adapter/(?P<adapter_class>.*)/csv/$',  # L3
-        lizard_map.views.AdapterCsvView.as_view(),
-        name="lizard_map_adapter_csv"),
+    url(r'^adapter/(?P<adapter_class>.*)/values/(?P<output_type>.*)/$',  # L3
+        lizard_map.views.AdapterValuesView.as_view(),
+        name="lizard_map_adapter_values"),
 
     # Date range
     url(r'set_animation_date$',

@@ -70,6 +70,7 @@ def collage_item_statistics(request, collage_items):
     return {'statistics': statistics}
 
 
+# L3
 @register.simple_tag
 def collage_items_html(collage_items, is_collage=False):
     """
@@ -79,6 +80,13 @@ def collage_items_html(collage_items, is_collage=False):
         return ""
     identifiers = [collage_item.identifier for collage_item in collage_items]
     return collage_items[0].html(identifiers, is_collage)
+
+
+@register.simple_tag
+def adapter_url(collage_item, output_type=None):
+    return collage_item.url(
+        "lizard_map_adapter_values", [collage_item.identifier, ],
+        extra_kwargs={'output_type': output_type})
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")

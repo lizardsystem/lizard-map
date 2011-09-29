@@ -421,14 +421,17 @@ class WorkspaceItemMixin(models.Model):
                     identifier) for identifier in identifiers])
         return url_arguments
 
-    def url(self, url_name, identifiers):
+    def url(self, url_name, identifiers, extra_kwargs=None):
         """fetch url to adapter (img, csv, ...)
 
         example url_name: "lizard_map_adapter_image"
         """
+        kwargs = {'adapter_class': self.adapter_class}
+        if extra_kwargs is not None:
+            kwargs.update(extra_kwargs)
         url = reverse(
             url_name,
-            kwargs={'adapter_class': self.adapter_class},
+            kwargs=kwargs,
             )
         url += '?' + '&'.join(self._url_arguments(identifiers))
         return url
@@ -683,7 +686,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         return self.url("lizard_map_adapter_image", [self.identifier, ])
 
     def csv_url(self):
-        return self.url("lizard_map_adapter_csv", [self.identifier, ])
+        return self.url("lizard_map_adapter_values", [self.identifier, ])
 
     def statistics(self, start_date, end_date):
         """From collage snippet group. Brings statistics and collage

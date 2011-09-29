@@ -332,7 +332,8 @@ class WorkspaceItemAdapter(object):
                      self.workspace_mixin_item.adapter_layer_json,
                  'identifier': adapter_serialize(identifier),
                  'url': self.workspace_mixin_item.url(
-                        "lizard_map_adapter_csv", [identifier, ])})
+                        "lizard_map_adapter_values", [identifier, ],
+                        extra_kwargs={'output_type': 'csv'})})
 
         render_kwargs = {
             'title': title,

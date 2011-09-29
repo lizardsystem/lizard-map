@@ -1515,26 +1515,38 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
             layout_extra=layout_extra)
 
 
-class AdapterCsvView(AdapterMixin, View):
+class AdapterValuesView(AdapterMixin, ViewContextMixin, TemplateView):
     """
-    Export csv for a single identifier
+    Values for a single identifier
+
+    Format in csv, html
     """
+    template_name = 'lizard_map/box_table.html'
+
     def get(self, request, *args, **kwargs):
         adapter = self.adapter(kwargs['adapter_class'])
+        output_type = self.kwargs['output_type']
         identifier = self.identifier()
-        start_date, end_date = current_start_end_dates(self.request)
+        self.start_date, self.end_date = current_start_end_dates(self.request)
 
-        values = adapter.values(identifier, start_date, end_date)
-        filename = '%s.csv' % (
-            adapter.location(**identifier).get('name', 'export'))
+        self.values = adapter.values(
+            identifier, self.start_date, self.end_date)
 
-        # Make the csv output.
-        response = HttpResponse(mimetype='text/csv')
-        response['Content-Disposition'] = (
-            'attachment; filename="%s"' %
-            filename)
-        writer = csv.writer(response)
-        writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
-        for row in values:
-            writer.writerow([row['datetime'], row['value'], row['unit']])
-        return response
+        self.name = adapter.location(**identifier).get('name', 'export')
+
+        if output_type == 'csv':
+            filename = '%s.csv' % (
+                self.name)
+            # Make the csv output.
+            response = HttpResponse(mimetype='text/csv')
+            response['Content-Disposition'] = (
+                'attachment; filename="%s"' %
+                filename)
+            writer = csv.writer(response)
+            writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+            for row in self.values:
+                writer.writerow([row['datetime'], row['value'], row['unit']])
+            return response
+        else:
+            # Make html table using self.values
+            return super(AdapterValuesView, self).get(request, *args, **kwargs)

@@ -30,6 +30,8 @@
     <h3>Grafiek</h3>
     {% collage_items_html collage_items 'True' %}
     <div>&nbsp;</div>
+
+    {# Statistics #}
     {% collage_item_statistics view.request collage_items %}
 
     <h3>Bewerken</h3>
@@ -45,7 +47,8 @@
           <td>{{ collage_item.name }}</td>
           <td><a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
           </td>
-          <td><a href="" class="ss_sprite ss_table">Toon tabel</a></td>
+          <td><a href="{% adapter_url collage_item 'html' %}"
+                 class="ss_sprite ss_table ajax-dialog">Toon tabel</a></td>
         </tr>
         {% endfor %}
 

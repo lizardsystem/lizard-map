@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Added table view to collage edit detail screen.
+
 - Improved layout collage edit detail screen.
 
 - Improved export csv link in popup: now for every location.
