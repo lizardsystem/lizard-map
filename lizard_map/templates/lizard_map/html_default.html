@@ -24,7 +24,7 @@
   <li>
   <a href="{{ collage_item_prop.url }}"
      class="ss_table_save ss_sprite"
-     title="Export csv"></a>
+     title="Export csv">&nbsp;</a>
   {% if not is_collage %}
   <a href="{% url lizard_map_collage_add %}"
      class="ss_sprite ss_star collage-add"
@@ -33,8 +33,7 @@
      data-adapter-layer-json="{{ collage_item_prop.adapter_layer_json }}"
      data-identifier="{{ collage_item_prop.identifier }}"
      data-target-id="#edit-collage"
-     title="Toevoegen aan selectie">
-  </a>
+     title="Toevoegen aan selectie">&nbsp;</a>
   {% endif %}
     {{ collage_item_prop.name }}
   </li>

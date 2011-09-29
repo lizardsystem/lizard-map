@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Added non-blockable spaces to html_default.html to prevent
+  disappearing icons.
+
 - Improved float layout in collage detail: statistics.
 
 - Reload page after changing collage in collage detail screen.
