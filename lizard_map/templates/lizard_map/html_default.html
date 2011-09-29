@@ -17,7 +17,7 @@
 </div>
 {% endif %}
 
-{% if csv_url %}
+{% if csv_urls %}
 <div>
   <a href="{{ csv_url }}"
      class="ss_table_save ss_sprite"
@@ -30,6 +30,10 @@
   <ul class="without-bullets">
   {% for collage_item_prop in collage_item_props %}
   <li>
+  <a href="{{ collage_item_prop.url }}"
+     class="ss_table_save ss_sprite"
+     title="Export csv"></a>
+  {% if not is_collage %}
   <a href="{% url lizard_map_collage_add %}"
      class="ss_sprite ss_star collage-add"
      data-name="{{ collage_item_prop.name }}"
@@ -37,9 +41,10 @@
      data-adapter-layer-json="{{ collage_item_prop.adapter_layer_json }}"
      data-identifier="{{ collage_item_prop.identifier }}"
      data-target-id="#edit-collage"
-     title="{{ collage_item_prop.name }} toevoegen aan selectie">
-    {{ collage_item_prop.name }}
+     title="Toevoegen aan selectie">
   </a>
+  {% endif %}
+    {{ collage_item_prop.name }}
   </li>
   {% endfor %}
   </ul>

@@ -71,14 +71,14 @@ def collage_item_statistics(request, collage_items):
 
 
 @register.simple_tag
-def collage_items_html(collage_items):
+def collage_items_html(collage_items, is_collage=False):
     """
     Generate single html for multiple collage items.
     """
     if not collage_items:
         return ""
     identifiers = [collage_item.identifier for collage_item in collage_items]
-    return collage_items[0].html(identifiers)
+    return collage_items[0].html(identifiers, is_collage)
 
 
 @register.inclusion_tag("lizard_map/tag_table.html")

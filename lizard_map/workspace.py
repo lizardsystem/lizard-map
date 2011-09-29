@@ -320,123 +320,32 @@ class WorkspaceItemAdapter(object):
         img_url = self.workspace_mixin_item.url(
             "lizard_map_adapter_image", identifiers)
 
-        # Only place a link in case of a single object.
-        if len(identifiers) == 1:
-            csv_url = self.workspace_mixin_item.url(
-                "lizard_map_adapter_csv", identifiers)
-        else:
-            csv_url = None
-
         # Makes it possible to create collage items from current
         # selected objects.
         collage_item_props = []
-        if not is_collage:
-            for identifier in identifiers:
-                location = self.location(**identifier)
-                collage_item_props.append(
+        for identifier in identifiers:
+            location = self.location(**identifier)
+            collage_item_props.append(
                 {'name': location['name'],
                  'adapter_class': self.workspace_mixin_item.adapter_class,
                  'adapter_layer_json':
-                            self.workspace_mixin_item.adapter_layer_json,
-                 'identifier': adapter_serialize(identifier)})
+                     self.workspace_mixin_item.adapter_layer_json,
+                 'identifier': adapter_serialize(identifier),
+                 'url': self.workspace_mixin_item.url(
+                        "lizard_map_adapter_csv", [identifier, ])})
 
         render_kwargs = {
             'title': title,
             'img_url': img_url,
-            'csv_url': csv_url,
             'symbol_url': self.symbol_url(),
-            'collage_item_props': collage_item_props}
+            'collage_item_props': collage_item_props,
+            'is_collage': is_collage}
         if layout_options is not None:
             render_kwargs.update(layout_options)
 
         return render_to_string(
             template,
             render_kwargs)
-
-    # def html_default(self, snippet_group=None, identifiers=None,
-    #                  layout_options=None, template=None,
-    #                  extra_render_kwargs=None):
-    #     """
-    #     Returns html representation of given snippet_group OR
-    #     identifiers (snippet_group has priority). If a snippet_group
-    #     is provided, more options are available. Only snippets with
-    #     attribute visible=True are included in the result.
-
-    #     This particular view always renders a list of items, then 1
-    #     image.
-
-    #     Use this function if html function behaviour is default:
-    #     def html(self, identifiers):
-    #         return super(WorkspaceItemAdapterKrw, self).html_default(
-    #             identifiers)
-    #     """
-
-    #     if layout_options is None:
-    #         layout_options = {}
-    #     add_snippet = layout_options.get('add_snippet', False)
-    #     editing = layout_options.get('editing', False)
-    #     legend = layout_options.get('legend', False)
-
-    #     if snippet_group is not None:
-    #         snippets = snippet_group.snippets.filter(visible=True)
-    #         identifiers = [snippet.identifier for snippet in snippets]
-    #         title = str(snippet_group)
-    #     else:
-    #         snippets = []
-    #         title = self.workspace_mixin_item.name
-
-    #     # Image url: for snippet_group there is a special (dynamic) url.
-    #     if snippet_group:
-    #         # Image url for snippet_group: can change if snippet_group
-    #         # properties are altered.
-    #         img_url = reverse(
-    #             "lizard_map.snippet_group_image",
-    #             kwargs={'snippet_group_id': snippet_group.id},
-    #             )
-    #     else:
-    #         # Image url: static url composed wit
-    ##h all options and layout tweaks
-    #         # L3: is workspace_item_edit ok?
-    #         img_url = reverse(
-    #             "lizard_map.workspace_edit_item_image",
-    #             kwargs={'workspace_item_id': self.workspace_mixin_item.id},
-    #             )
-    #         # If legend option: add legend to layout of identifiers
-    #         if legend:
-    #             for identifier in identifiers:
-    #                 if not 'layout' in identifier:
-    #                     identifier['layout'] = {}
-    #                 identifier['layout']['legend'] = True
-
-    #         identifiers_escaped = [json.dumps(identifier).replace('"', '%22')
-    #                                for identifier in identifiers]
-    #         img_url = img_url + '?' + '&'.join(['identifier=%s' % i for i in
-    #                                             identifiers_escaped])
-
-    #     # Make 'display_group'
-    #     display_group = [self.location(**identifier) for identifier in
-    #                      identifiers]
-
-    #     if template is None:
-    #         template = 'lizard_map/popup.html'
-    #     render_kwargs = {
-    #         'title': title,
-    #         'display_group': display_group,
-    #         'img_url': img_url,
-    #         'symbol_url': self.symbol_url(),
-    #         'add_snippet': add_snippet,
-    #         'editing': editing,
-    #         'snippet_group': snippet_group,
-    #         'snippets': snippets,
-    #         'colors': COLORS_DEFAULT,
-    #         }
-
-    #     if extra_render_kwargs is not None:
-    #         render_kwargs.update(extra_render_kwargs)
-
-    #     return render_to_string(
-    #         template,
-    #         render_kwargs)
 
     def legend(self, updates=None):
         """

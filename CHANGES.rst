@@ -4,6 +4,10 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Improved layout collage edit detail screen.
+
+- Improved export csv link in popup: now for every location.
+
 - Moved Grouping_hint check from adapter.location to
   adapter.location['identifier']. Apparently this was the location of
   the grouping hint.
