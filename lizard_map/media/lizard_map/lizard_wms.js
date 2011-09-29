@@ -307,7 +307,7 @@ function showMap() {
     }
     else
     {
-        alert("Lizard-map onjuist geconfigureerd. Staat 'lizard_map.context_processors.processor.processor' in je context processors? Is de background_maps fixture geladen?");
+        alert("Lizard-map onjuist geconfigureerd. Wilt U een kaart op deze pagina? Gebruik anders een andere template.");
     }
 
     // Map is globally defined.

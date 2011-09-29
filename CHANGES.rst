@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Changed lizard-map client-side error.
+
 - Fixed google maps in wms.
 
 - Added date popup to collage detail view.
