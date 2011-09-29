@@ -52,10 +52,15 @@ def workspace_edit(context, workspace_edit):
 # L3
 @register.inclusion_tag("lizard_map/tag_collage_edit.html",
                         takes_context=True)
-def collage_edit(context, collage_edit):
-    """Display collage_edit"""
+def collage_edit(context, collage_edit, reload_after_action=False):
+    """Display collage_edit
+
+    If reload_after_action, then reload-after-action is added to
+    action items. The javascript should do the rest.
+    """
     return {
-        'collage_edit': collage_edit}
+        'collage_edit': collage_edit,
+        'reload_after_action': reload_after_action}
 
 
 # L3

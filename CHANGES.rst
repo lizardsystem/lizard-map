@@ -4,6 +4,12 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Reload page after changing collage in collage detail screen.
+
+- Fixed problem when adding collage items by coordinates (name too long).
+
+- Fixed (re-) sorting of collage items.
+
 - Fixed dialog box items first time popup in collage screen.
 
 - Removed setUpGraphEditPopup, it was used in the popup code.

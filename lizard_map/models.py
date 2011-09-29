@@ -643,7 +643,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     identifier = JSONField(default="")
 
     class Meta:
-        ordering = ()
+        ordering = ('name', )
 
     def html(self, identifiers=None, is_collage=False):
         if identifiers is None:

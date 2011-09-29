@@ -1114,7 +1114,7 @@ class CollageDetailView(
         """A grouped collage item is a collage item with property
         "identifiers": a list of identifiers """
         collage_items = group_collage_items(
-            self.collage_edit().collage_items.all())
+            self.collage_edit().collage_items.filter(visible=True))
 
         return collage_items
 
@@ -1156,7 +1156,7 @@ class CollageView(CollageMixin, ActionDialogView):
                 adapter_class=found_item['workspace_item'].adapter_class,
                 adapter_layer_json=found_item[
                     'workspace_item'].adapter_layer_json,
-                name=found_item['name'],
+                name=found_item['name'][:80],
                 identifier=found_item['identifier'])
 
 

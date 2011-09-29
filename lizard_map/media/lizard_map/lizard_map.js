@@ -462,13 +462,23 @@ function actionPostClick(event, preAction, postAction, parameters) {
     }
     $.post(url, parameters)
         .success(function (data) {
-            var div;
+            var div, html;
             if (target !== undefined) {
                 div = $("<div/>").html(data).find(".dialog-box").find(target_id);
                 target.html(div.html());
             }
             if (postAction !== undefined) {
                 postAction();
+            }
+            if ($(event.target).hasClass("reload-after-action")) {
+                // TODO: De-activate possible actions.
+                // Show dialog.
+                html = "<h1>Herladen pagina</h1>" +
+                    "<p>De pagina wordt opnieuw geladen.</p>";
+                dialogContent(html);
+                dialogSize("s");
+                dialogOverlay();
+                location.reload();
             }
         })
         .error(function (data) {
@@ -488,6 +498,7 @@ function postClickWorkspaceEmpty() {
 }
 
 
+/* Empty collage items */
 function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
@@ -496,6 +507,7 @@ function actionPostClickEmpty(event) {
     );
 }
 
+/* Delete collage item */
 function actionPostDeleteCollageItem(event) {
     var object_id;
     object_id = $(event.target).parents(
@@ -548,8 +560,6 @@ function collagePopup(event) {
     url = $(event.target).attr("href");
     $.getJSON(url, function (data) {
         show_popup(data);
-        // Mark popup as being a collage popup
-        //$("#dialog-content div:first-child").data("is_collage_popup", true);
     });
     dialogSize("");  // Reset to default.
     return false;

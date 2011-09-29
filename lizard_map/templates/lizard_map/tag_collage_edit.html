@@ -9,7 +9,7 @@
     <a id="collage-empty"
        href="{% url lizard_map_collage_empty %}"
        title="{% trans 'empty your collage' %}"
-       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty"
+       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty {% if reload_after_action %}reload-after-action{% endif %}"
        data-target-id="#edit-collage">
     </a>
     <a id="collage-popup"
@@ -35,26 +35,19 @@
         data-object-id="{{ collage_item.id }}">
       {# Delete collage item #}
       <a class="ss_sprite ss_delete sidebarbox-action-icon
-                   collage-item-delete"
+                collage-item-delete {% if reload_after_action %}reload-after-action{% endif %}"
             rel="tipsy"
             title="Verwijder"
             href="{% url lizard_map_collage_item_edit %}"
             data-target-id="#edit-collage">
       </a>
-      {# Pan to layer. #}
-      {% if workspace_item.has_extent %}
-      <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                   workspace-item-pan-to"
-            rel="tipsy"
-            title="Zoom"></span>
-      {% endif %}
       {# Symbol, appears left. #}
       <img class="collage-item-image"
            src="{{ collage_item.adapter.symbol_url }}"
            width="16"
            height="16" />
       <input id="{{ collage_item.id }}"
-             class="collage-item-checkbox"
+             class="collage-item-checkbox {% if reload_after_action %}reload-after-action{% endif %}"
              type="checkbox"
              {% if collage_item.visible %}
              checked="checked"
