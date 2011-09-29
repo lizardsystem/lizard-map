@@ -26,8 +26,8 @@
       <td class="number">{{ stat.min|float_or_exp|default:"-" }}</td>
       <td class="number">{{ stat.max|float_or_exp|default:"-" }}</td>
       <td class="number">{{ stat.avg|float_or_exp|default:"-" }}</td>
-      <td class="number">{{ stat.count_lt|floatformat|default:"" }} ({{ stat.boundary_value|floatformat|default:"stel grenswaarde in" }})</td>
-      <td class="number">{{ stat.count_gte|floatformat|default:"" }} ({{ stat.boundary_value|floatformat|default:"stel grenswaarde in" }})</td>
+      <td class="number">{{ stat.count_lt|floatformat|default:"" }} ({{ stat.boundary_value|floatformat:"-2"|default:"stel grenswaarde in" }})</td>
+      <td class="number">{{ stat.count_gte|floatformat|default:"" }} ({{ stat.boundary_value|floatformat:"-2"|default:"stel grenswaarde in" }})</td>
       <td class="number">{{ stat.percentile|floatformat|default:"" }} ({{ stat.percentile_value|floatformat|default:"-" }} percentiel)</td>
     </tr>
     {% endfor %}

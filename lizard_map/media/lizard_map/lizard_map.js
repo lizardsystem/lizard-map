@@ -599,7 +599,7 @@ function eraseDialogContentsOnClose() {
 function nothingFoundPopup() {
     var html;
     html = "<h1>Niets gevonden</h1>" +
-           "<p>Er is niets rond deze locatie gevonden.</p>";
+        "<p>Er is niets rond deze locatie gevonden</p>";
     dialogContent(html);
     dialogSize("s");
     dialogOverlay();

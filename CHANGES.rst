@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Improved float layout in collage detail: statistics.
+
 - Reload page after changing collage in collage detail screen.
 
 - Fixed problem when adding collage items by coordinates (name too long).

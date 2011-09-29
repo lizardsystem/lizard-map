@@ -52,15 +52,20 @@ def workspace_edit(context, workspace_edit):
 # L3
 @register.inclusion_tag("lizard_map/tag_collage_edit.html",
                         takes_context=True)
-def collage_edit(context, collage_edit, reload_after_action=False):
+def collage_edit(context, collage_edit, reload_after_action=False,
+                 stretched=False):
     """Display collage_edit
 
     If reload_after_action, then reload-after-action is added to
     action items. The javascript should do the rest.
+
+    By default, class sidebarbox is added to the class. If specifying
+    stretched=True, sidebarbox-stretched will be added as well.
     """
     return {
         'collage_edit': collage_edit,
-        'reload_after_action': reload_after_action}
+        'reload_after_action': reload_after_action,
+        'stretched': stretched}
 
 
 # L3
