@@ -136,20 +136,20 @@ class CollageItemEditorForm(forms.Form):
     """
     Form to edit collage item edits.
     """
-    title = forms.CharField(max_length=100, required=False)
-    #y_min = forms.FloatField(required=False)
-    #y_max = forms.FloatField(required=False)
-    x_label = forms.CharField(max_length=100, required=False)
-    y_label = forms.CharField(max_length=100, required=False)
+    title = forms.CharField(max_length=100, required=False, label='Titel')
+    y_min = forms.FloatField(required=False, label='Minimale y waarde')
+    y_max = forms.FloatField(required=False, label='Maximale y waarde')
+    x_label = forms.CharField(max_length=100, required=False, label='X label')
+    y_label = forms.CharField(max_length=100, required=False, label='Y label')
 
-    boundary_value = forms.FloatField(required=False)
-    percentile_value = forms.FloatField(required=False)
-    aggregation_period = forms.ChoiceField()
+    boundary_value = forms.FloatField(required=False, label='Grenswaarde')
+    percentile_value = forms.FloatField(required=False,
+                                        label='Percentielgrens')
+    aggregation_period = forms.ChoiceField(label='Aggregatie periode')
 
-    line_min = forms.BooleanField(required=False)
-    line_max = forms.BooleanField(required=False)
-    line_avg = forms.BooleanField(required=False)
-    # choices=StatisticsMixin.AGGREGATION_PERIOD_CHOICES
+    line_min = forms.BooleanField(required=False, label='Toon minimum')
+    line_max = forms.BooleanField(required=False, label='Toon maximum')
+    line_avg = forms.BooleanField(required=False, label='Toon gemiddelde')
 
     def __init__(self, *args, **kwargs):
         """

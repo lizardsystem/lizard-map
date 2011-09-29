@@ -414,6 +414,9 @@ class DateRangeView(DateRangeMixin, ActionDialogView):
 
 
 class CollageItemEditorView(ActionDialogView):
+    """
+    Popup per collage item for adjustments in the graph.
+    """
     template_name = 'lizard_map/box_collage_item_editor.html'
     template_name_success = 'lizard_map/box_collage_item_editor_success.html'
     form_class = CollageItemEditorForm
@@ -452,7 +455,11 @@ class CollageItemEditorView(ActionDialogView):
         # Non reserved keywords
         for k, v in data.items():
             if k not in reserved:
-                if v:
+                # Everything resulting in True must be saved
+                # 0.0 must be saved
+                # u'' must be deleted
+                # False must be deleted
+                if v or isinstance(v, float):
                     new_layout[k] = v
                 else:
                     if k in new_layout:
@@ -1460,6 +1467,8 @@ def statistics_csv(request):
 
     TODO: when statistics must be downloaded from other collage-items,
     we must pass the object in a different way.
+
+    TODO: make prettier
     """
     start_date, end_date = current_start_end_dates(request)
     collage = CollageEdit.get_or_create(
@@ -1469,7 +1478,6 @@ def statistics_csv(request):
     for collage_item in collage_items:
         statistics.extend(collage_item.statistics(start_date, end_date))
 
-    print statistics
     # Statistics as csv.
     filename = 'statistieken.csv'
 
