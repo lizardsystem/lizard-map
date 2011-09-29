@@ -225,7 +225,9 @@ function dialogContent(content) {
 /* L3 pop up the dialog */
 function dialogOverlay() {
     var overlay;
-    overlay = $("#dialog").overlay();
+    // In some screens it will not pop up the first time unless load: true
+    overlay = $("#dialog").overlay({load: true});
+    // load:true only works the first time.
     overlay.load();  // Pop up
 }
 
@@ -622,11 +624,6 @@ function setUpWorkspaceButtons() {
 }
 
 
-function setUpGraphEditPopup() {
-    $(".graph_edit_trigger").overlay();
-}
-
-
 /* Handle a click */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
 function popup_click_handler(x, y, map) {
@@ -766,6 +763,7 @@ function legend_action_reload(event) {
 }
 
 
+/* TODO: Upgrade to L3*/
 function setUpLegendEdit() {
     $(".legend-edit").live("mouseover", function () {
         if (!$(this).data("popup-initialized")) {
@@ -810,6 +808,7 @@ function mapSaveLocation() {
 }
 
 
+// TODO: Is this still used?
 function setupVideoPopup() {
     // Show popup
     $("#intro_popup").overlay({
@@ -826,6 +825,7 @@ function setupVideoPopup() {
 }
 
 
+// TODO: Can probably be removed.
 function setupTableToggle() {
     // For collapsible tables in popups
     $('.toggle_button').live('click', function (event) {
@@ -849,7 +849,6 @@ $(document).ready(function () {
     setUpWorkspaceButtons();
     setUpAnimationSlider();
     setUpTransparencySlider();
-    setUpGraphEditPopup();
     setUpWorkspaceItemPanToLayer();
 
     // Set up legend edit.

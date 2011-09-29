@@ -4,6 +4,10 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Fixed dialog box items first time popup in collage screen.
+
+- Removed setUpGraphEditPopup, it was used in the popup code.
+
 - Changed lizard-map client-side error.
 
 - Fixed google maps in wms.
