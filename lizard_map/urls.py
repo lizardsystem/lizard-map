@@ -72,6 +72,9 @@ urlpatterns = patterns(
     url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',  # L3 popup
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_item_popup"),
+    url(r'^mycollage/statistics/csv/$',
+        'lizard_map.views.statistics_csv',
+        name="lizard_map_statistics_csv"),
 
     # Search stuff for my workspace.
     url(r'^search_coordinates/',

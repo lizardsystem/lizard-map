@@ -67,7 +67,9 @@ def collage_item_statistics(request, collage_items):
     statistics = []
     for collage_item in collage_items:
         statistics.extend(collage_item.statistics(start_date, end_date))
-    return {'statistics': statistics}
+    return {
+        'statistics': statistics,
+        'collage_items': collage_items}
 
 
 # L3

@@ -1404,7 +1404,7 @@ def create_mapnik_image(request, data):
 
 
     #Zoom and create image
-    logger.debug("Zooming to box...")    
+    logger.debug("Zooming to box...")
     mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
     img = mapnik.Image(data['width'], data['height'])
     logger.debug("Rendering map...")
@@ -1427,13 +1427,13 @@ def mapnik_image_to_stream(request, data, img):
         "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
         "ogc.se_inimage&SRS=EPSG%3A28992&BBOX="+ str(bbox) +
         "&WIDTH="+ str(data['width']) +"&HEIGHT=" + str(data['height'])).read()
-    
+
     # ^^^ TODO: This should be configurable! (Added by gnijholt on Sep 28 2011)
     base_image = Image.open(StringIO.StringIO(geoserver_img))
     rgba_image = Image.fromstring('RGBA',
                                   (data['width'], data['height']),
                                   img.tostring()).convert("RGBA")
-                                  
+
     bg_w, bg_h = base_image.size
     img_w, img_h = rgba_image.size
 
@@ -1448,6 +1448,45 @@ def mapnik_image_to_stream(request, data, img):
         base_image.save(buf, data['format'])
     buf.seek(0)
     return buf
+
+
+# Statistics
+
+def statistics_csv(request):
+    """
+    Return csv for statistics of given collage_items.
+
+    Collage items are from your collage edit.
+
+    TODO: when statistics must be downloaded from other collage-items,
+    we must pass the object in a different way.
+    """
+    start_date, end_date = current_start_end_dates(request)
+    collage = CollageEdit.get_or_create(
+        request.session.session_key, request.user)
+    collage_items = collage.collage_items.filter(visible=True)
+    statistics = []
+    for collage_item in collage_items:
+        statistics.extend(collage_item.statistics(start_date, end_date))
+
+    print statistics
+    # Statistics as csv.
+    filename = 'statistieken.csv'
+
+    # Make the csv output.
+    response = HttpResponse(mimetype='text/csv')
+    response['Content-Disposition'] = ('attachment; filename="%s"' % filename)
+    writer = csv.writer(response)
+    writer.writerow(['Naam', 'Periode', 'Minimum', 'Maximum', 'Gemiddeld',
+                     'Percentiel grens', 'Percentiel waarde',
+                     'Grenswaarde', 'Aantal boven grenswaarde',
+                     'Aantal onder grenswaarde'])
+    for row in statistics:
+        writer.writerow([
+                row['name'], row['period'], row['min'], row['max'], row['avg'],
+                row['percentile_value'], row['percentile'],
+                row['boundary_value'], row['count_lt'], row['count_gte']])
+    return response
 
 
 # Adapter related views
