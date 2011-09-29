@@ -424,8 +424,9 @@ class CollageItemEditorView(ActionDialogView):
     def get(self, request, *args, **kwargs):
         self.collage_item_id = kwargs['collage_item_id']
 
-        collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
-        self.initial.update(collage_item.form_initial())
+        self.collage_item = CollageEditItem.objects.get(
+            pk=self.collage_item_id)
+        self.initial.update(self.collage_item.form_initial())
         return super(CollageItemEditorView, self).get(
             request, *args, **kwargs)
 

@@ -10,6 +10,8 @@ Changelog of lizard-map
 
 - Added table view to collage edit detail screen.
 
+- Improved layout collage-item editor popup.
+
 - Improved layout collage edit detail screen.
 
 - Improved export csv link in popup: now for every location.

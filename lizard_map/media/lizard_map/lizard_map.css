@@ -297,3 +297,28 @@ table.toggle_table
 li#map-multiple-selection.active {
     background-color: #00FF00;
 }
+
+
+/* Collage item editor */
+.collage-item-editor-box label {
+    display: block;
+    float: left;
+    clear: left;
+    padding-top: 7px;
+    width: 15em;
+}
+
+.collage-item-editor-box label[for="id_line_min"] {
+    padding-top: 5px;
+}
+
+.collage-item-editor-box label[for="id_line_max"] {
+    padding-top: 5px;
+}
+.collage-item-editor-box label[for="id_line_avg"] {
+    padding-top: 5px;
+}
+
+.collage-item-editor-box p {
+    margin: 0 1em 0.3em 1em;
+}

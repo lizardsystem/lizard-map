@@ -1,5 +1,6 @@
-<div class="dialog-box">
-  <h4>Aanpassen details selectie.</h4>
+<div class="dialog-box collage-item-editor-box">
+  <h3>Grafiekopties</h3>
+  {{ view.collage_item.name }}
   <form action="{% url lizard_map_collage_item_editor collage_item_id=view.collage_item_id %}" method="post">
     {{ form.as_p }}
     <p>
