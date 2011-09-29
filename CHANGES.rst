@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Added date popup to collage detail view.
+
 - Added download-map button.
 
 - Added y-min and y-max option for collage detail screen.

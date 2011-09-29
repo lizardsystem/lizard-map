@@ -25,20 +25,21 @@
 {% endblock map-javascript %}
 
 {% block above-content %}
-  {# date_popup is not a valid child of ul #}
 <ul class="map-actions">
   <li id="map-multiple-selection"
       class="action-icon map-multiple-selection"
       title="Multi-selectie vanaf de kaart."
       rel="tipsy-south">
   </li>
-  <a href="{% url lizard_map_date_range %}"
+  <li>
+    <a href="{% url lizard_map_date_range %}"
      id="date-range"
      title='Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}'
      class="title datepicker-icon action-icon ajax-dialog-onchange"
      data-replace-titles="date-range"
      data-size="s"
      rel="tipsy-south">&nbsp;</a>
+  </li>
   {# Load and save map locations #}
   <li id="map-load-default-location"
       class="map-action"

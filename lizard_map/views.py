@@ -1096,7 +1096,8 @@ def search_coordinates(request, workspace_storage_id=None, format='popup'):
         return popup_json([], request=request)
 
 
-class CollageDetailView(CollageMixin, ViewContextMixin, TemplateView):
+class CollageDetailView(
+    CollageMixin, DateRangeMixin, ViewContextMixin, TemplateView):
     """
     Shows "my collage" as big page.
     """
