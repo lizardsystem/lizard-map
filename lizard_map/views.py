@@ -118,8 +118,6 @@ class WorkspaceEditMixin(WorkspaceMixin):
 class MapMixin(object):
     """All map stuff
     """
-    has_google = False  # Can be set after calling background_maps
-
     # def maps(self):
     #     # Add map variables.
     #     self.map_variables = map_variables(self.request)
@@ -156,25 +154,34 @@ class MapMixin(object):
         else:
             return ""
 
-    def background_maps(self):
-        maps = BackgroundMap.objects.filter(active=True)
+    @property
+    def maps(self):
+        if not hasattr(self, '_maps'):
+            self._maps = BackgroundMap.objects.filter(active=True)
+        return self._maps
 
+    def has_google(self):
         # For the client side to determine is there is a google map.
-        if maps.filter(
+        if self.maps.filter(
             layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
 
-            self.has_google = True
+            return True
+        else:
+            return False
 
-        if not maps:
+    def background_maps(self):
+        if self.maps:
+            return self.maps
+        else:
             logger.warn("No background maps are active. Taking default.")
-            maps = BackgroundMap(
+            maps = [BackgroundMap(
                 name='Default map',
                 default=True,
                 active=True,
                 layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                layer_url=DEFAULT_OSM_LAYER_URL)
+                layer_url=DEFAULT_OSM_LAYER_URL), ]
 
-        return maps
+            return maps
 
 
 class CollageMixin(object):
