@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Moved from company-internal svn to github:
+  https://github.com/lizardsystem/lizard-map .
 
 
 3.1 (2011-09-30)
