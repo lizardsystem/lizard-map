@@ -1437,7 +1437,6 @@ def mapnik_image_to_stream(request, data, img):
     logger.debug("Converting image to rgba...")
 
     bbox = ",".join([str(x) for x in data['bbox']])
-    # -78512.5,354478.5,362109.5,550492.5
     geoserver_img = urllib2.urlopen("http://geoserver.lizard.net/geoserver/"+
         "wms?LAYERS=nhi%3Awaterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
         "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
@@ -1450,11 +1449,12 @@ def mapnik_image_to_stream(request, data, img):
                                   (data['width'], data['height']),
                                   img.tostring()).convert("RGBA")
 
-    bg_w, bg_h = base_image.size
-    img_w, img_h = rgba_image.size
+    base_w, base_h = base_image.size
+    rgba_w, rgba_h = rgba_image.size
 
-    offset = ((bg_w-img_w), bg_h-img_h)
+    offset = ((base_w-rgba_w), (base_h-rgba_h))
     base_image.paste(rgba_image, offset, rgba_image)
+    # ^^^ Passing rgba_image twice to get transparency working in paste()
 
     buf = StringIO.StringIO()
     if 'MSIE 6.0' in http_user_agent:
