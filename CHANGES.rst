@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1 (unreleased)
 ----------------
 
+- Fixed Color/Mapnik Color related bug.
+
 - Added non-blockable spaces to html_default.html to prevent
   disappearing icons.
 
