@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.1 (unreleased)
+3.1 (2011-09-30)
 ----------------
 
 - Fixed Color/Mapnik Color related bug.
