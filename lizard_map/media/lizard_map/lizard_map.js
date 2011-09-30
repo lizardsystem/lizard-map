@@ -315,6 +315,26 @@ function dialogClick(event) {
     return false;
 }
 
+function helpDialogClick(event) {
+    var url, overlay, size, msg;
+    event.preventDefault();
+    
+    $('a.ajax-help-dialog').each(function(index) {
+        url = $(this).attr("href");
+        $.get(url)
+            .success(function(data) {
+                dialogContent(data);
+                dialogOverlay();
+            })
+            .error(function(data) {
+                dialogContent("Fout bij laden van dialoog." +
+                              "Probeert u het later nog eens.");
+                dialogOverlay();
+                dialogCloseDelay();
+            });
+    });
+}
+
 /* L3 Onchange on dialog: only on ajax-dialog-onchange */
 function dialogOnChange(event) {
     var $form;
@@ -423,6 +443,7 @@ The actions are as follows:
 */
 function setUpDialogs() {
     $(".ajax-dialog").live("click", dialogClick);
+    $(".ajax-help-dialog").live("click", helpDialogClick);
     $(".ajax-dialog-onchange").live("click", dialogClick);
     $(".ajax-dialog-onchange").live("click", dialogSetupChange);
     // Handle submit button in forms in a dialog. Exclude alternative-submit.
