@@ -801,38 +801,25 @@ class Legend(models.Model):
         """ Updates model with updates dict. Color values have the
         following format: string rrggbb in hex """
 
-        def makecolor(c):
-            r, g, b = [int('0x%s' % c[r:r + 2], 0) for r in range(0, 6, 2)]
-            a = 1
-            return Color(a=a, r=r, g=g, b=b)
-
         for k, v in updates.items():
-            if k == 'min_value':
-                self.min_value = float(v)
-            elif k == 'max_value':
-                self.max_value = float(v)
-            elif k == 'steps':
-                self.steps = int(v)
-            elif k == 'min_color':
-                try:
-                    self.min_color = makecolor(v)
-                except ValueError:
-                    logger.warn('Could not parse min_color (%s)' % v)
-            elif k == 'max_color':
-                try:
-                    self.max_color = makecolor(v)
-                except ValueError:
-                    logger.warn('Could not parse max_color (%s)' % v)
-            elif k == 'too_low_color':
-                try:
-                    self.too_low_color = makecolor(v)
-                except ValueError:
-                    logger.warn('Could not parse too_low_color (%s)' % v)
-            elif k == 'too_high_color':
-                try:
-                    self.too_high_color = makecolor(v)
-                except ValueError:
-                    logger.warn('Could not parse too_high_color (%s)' % v)
+            try:
+                if k == 'min_value':
+                    self.min_value = float(v)
+                elif k == 'max_value':
+                    self.max_value = float(v)
+                elif k == 'steps':
+                    self.steps = int(v)
+                elif k == 'min_color':
+                    self.min_color = Color(v)
+                elif k == 'max_color':
+                    self.max_color = Color(v)
+                elif k == 'too_low_color':
+                    self.too_low_color = Color(v)
+                elif k == 'too_high_color':
+                    self.too_high_color = Color(v)
+            except ValueError, e:
+                logger.exception('Could not parse one of the colors')
+                raise WorkspaceItemError(e)
 
     def mapnik_style(self, value_field=None):
         """Return a Mapnik line/polystyle from Legend object"""
