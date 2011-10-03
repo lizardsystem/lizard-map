@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
+- Cleaned up unused code.
+
 - Moved export csv button to table "Bewerken".
 
 - Statistics in collage screen are now below edit options.

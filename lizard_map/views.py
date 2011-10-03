@@ -446,6 +446,7 @@ class CollageItemEditorView(ActionDialogView):
         """
         Change collage-item accordingly
         """
+
         reserved = {'boundary_value': None,
                     'percentile_value': None,
                     'aggregation_period': None}
@@ -619,124 +620,6 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
 #         extent['west'], extent['south'], srs)
 
 #     return HttpResponse(json.dumps(extent_converted))
-
-
-# # TODO: update to L3
-# @never_cache
-# def snippet_group_graph_edit(request, snippet_group_id):
-#     """Edits snippet_group properties using post.
-#     """
-#     post = request.POST
-#     title = post.get('title', None)
-#     x_label = post.get('x_label', None)
-#     y_label = post.get('y_label', None)
-#     y_min = post.get('y_min', None)
-#     y_max = post.get('y_max', None)
-#     boundary_value = post.get('boundary_value', None)
-#     percentile_value = post.get('percentile_value', None)
-#     aggregation_period = post.get('aggregation_period', None)
-#     restrict_to_month = post.get('restrict_to_month', None)
-#     if restrict_to_month is not None:
-#         try:
-#             restrict_to_month = int(restrict_to_month)
-#             assert restrict_to_month > 0
-#             assert restrict_to_month < 13
-#         except ValueError:
-#             restrict_to_month = None
-
-#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-#         pk=snippet_group_id)
-#     if title is not None:
-#         # Empty string is also good! it will force default title.
-#         snippet_group.layout_title = title
-#     if x_label is not None:
-#         snippet_group.layout_x_label = x_label
-#     if y_label is not None:
-#         snippet_group.layout_y_label = y_label
-#     snippet_group.restrict_to_month = restrict_to_month
-#     if aggregation_period is not None:
-#         snippet_group.aggregation_period = int(aggregation_period)
-#     try:
-#         snippet_group.layout_y_min = float(y_min)
-#     except (ValueError, TypeError):
-#         snippet_group.layout_y_min = None
-#     try:
-#         snippet_group.layout_y_max = float(y_max)
-#     except (ValueError, TypeError):
-#         snippet_group.layout_y_max = None
-#     try:
-#         snippet_group.boundary_value = float(boundary_value)
-#     except (ValueError, TypeError):
-#         snippet_group.boundary_value = None
-#     try:
-#         snippet_group.percentile_value = float(percentile_value)
-#     except (ValueError, TypeError):
-#         snippet_group.percentile_value = None
-#     snippet_group.save()
-#     return HttpResponse('')
-
-
-# # TODO: update to L3
-# @never_cache
-# def snippet_group_image(request, snippet_group_id, legend=True):
-#     """Draws a single image for the snippet_group. There MUST be at
-#     least 1 snippet in the group."""
-
-#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-#         pk=snippet_group_id)
-#     snippets = snippet_group.snippets.filter(visible=True)
-#     identifiers = [snippet.identifier for snippet in snippets]
-
-#     # Add aggregation_period to each identifier
-#     for identifier in identifiers:
-#         if not 'layout' in identifier:
-#             identifier['layout'] = {}
-#         identifier['layout'][
-#             'aggregation_period'] = snippet_group.aggregation_period
-
-#     # Add legend option ('layout' is always present).
-#     if legend:
-#         for identifier in identifiers:
-#             identifier['layout']['legend'] = True
-
-#     # Get width and height.
-#     width = request.GET.get('width')
-#     height = request.GET.get('height')
-#     if width:
-#         width = int(width)
-#     else:
-#         # We want None, not u''.
-#         width = None
-#     if height:
-#         height = int(height)
-#     else:
-#         # We want None, not u''.
-#         height = None
-
-#     using_workspace_item = snippets[0].workspace_item
-#     start_date, end_date = current_start_end_dates(request)
-#     layout_extra = snippet_group.layout()  # Basic extra's, x-min, title, ...
-
-#     # Add current position of slider, if available
-
-#     layout_extra.update(slider_layout_extra(request))
-
-#     return using_workspace_item.adapter.image(identifiers,
-#                                               start_date, end_date,
-#                                               width, height,
-#                                               layout_extra=layout_extra)
-
-
-# @never_cache
-# def session_workspace_extent(request, workspace_category='user'):
-#     """Returns extent for the workspace in json.
-#     """
-#     if 'workspaces' in request.session:
-#         workspace_id = request.session['workspaces'][workspace_category][0]
-#         workspace = get_object_or_404(Workspace, pk=workspace_id)
-#         return HttpResponse(json.dumps(workspace.extent()))
-#     else:
-#         return HttpResponse(json.dumps(''))
 
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
