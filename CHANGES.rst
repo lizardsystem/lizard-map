@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-3.2 (unreleased)
-----------------
+3.1.1 (2011-10-03)
+------------------
 
 - Fixed CollageEditItem.csv_url function.
 
