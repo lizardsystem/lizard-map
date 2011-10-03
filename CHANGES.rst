@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-3.2 (unreleased)
-----------------
+3.1.2 (2011-10-03)
+------------------
 
 - Fixed error in MANIFEST.in. 3.1.1 didn't include any lizard-map/* data.
 
