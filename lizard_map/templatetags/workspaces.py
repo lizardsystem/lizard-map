@@ -87,6 +87,8 @@ def collage_item_statistics(request, collage_items):
 def collage_items_html(collage_items, is_collage=False):
     """
     Generate single html for multiple collage items.
+
+    In case of collage, don't show "add to selection" and "export csv"
     """
     if not collage_items:
         return ""

@@ -326,27 +326,28 @@ class WorkspaceItemAdapter(object):
         # Makes it possible to create collage items from current
         # selected objects.
         collage_item_props = []
-        for identifier in identifiers:
-            identifier_str = {}
-            for k, v in identifier.items():
-                identifier_str[str(k)] = v
-            location = self.location(**identifier_str)
-            collage_item_props.append(
-                {'name': location['name'],
-                 'adapter_class': self.workspace_mixin_item.adapter_class,
-                 'adapter_layer_json':
-                     self.workspace_mixin_item.adapter_layer_json,
-                 'identifier': adapter_serialize(identifier),
-                 'url': self.workspace_mixin_item.url(
-                        "lizard_map_adapter_values", [identifier, ],
-                        extra_kwargs={'output_type': 'csv'})})
+        # No export and selection for collages.
+        if not is_collage:
+            for identifier in identifiers:
+                identifier_str = {}
+                for k, v in identifier.items():
+                    identifier_str[str(k)] = v
+                location = self.location(**identifier_str)
+                collage_item_props.append(
+                    {'name': location['name'],
+                     'adapter_class': self.workspace_mixin_item.adapter_class,
+                     'adapter_layer_json':
+                         self.workspace_mixin_item.adapter_layer_json,
+                     'identifier': adapter_serialize(identifier),
+                     'url': self.workspace_mixin_item.url(
+                            "lizard_map_adapter_values", [identifier, ],
+                            extra_kwargs={'output_type': 'csv'})})
 
         render_kwargs = {
             'title': title,
             'img_url': img_url,
             'symbol_url': self.symbol_url(),
-            'collage_item_props': collage_item_props,
-            'is_collage': is_collage}
+            'collage_item_props': collage_item_props}
         if layout_options is not None:
             render_kwargs.update(layout_options)
 

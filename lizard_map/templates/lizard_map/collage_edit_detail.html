@@ -46,15 +46,13 @@
     {% collage_items_html collage_items 'True' %}
     <div>&nbsp;</div>
 
-    {# Statistics #}
-    {% collage_item_statistics view.request collage_items %}
-
     <h3>Bewerken</h3>
     <table class="generic-table">
       <thead><tr>
         <th>Naam</th>
         <th>Bewerk</th>
         <th>Toon tabel</th>
+        <th>Export csv</th>
       </tr></thead>
       <tbody>
         {% for collage_item in collage_items %}
@@ -64,18 +62,29 @@
           </td>
           <td><a href="{% adapter_url collage_item 'html' %}"
                  class="ss_sprite ss_table ajax-dialog">Toon tabel</a></td>
+          <td><a href="{% adapter_url collage_item 'csv' %}"
+                 class="ss_sprite ss_table_save">Export csv</a></td>
         </tr>
         {% endfor %}
 
       </tbody>
     </table>
 
+    {# Statistics #}
+    <h3>Statistieken</h3>
+    {% if view.hide_statistics %}
+    <a href="./#" class="ss_sprite ss_table_add">Statistieken tonen</a>
+    {% else %}
+    <a href="?hide_statistics=True" class="ss_sprite ss_table_delete">Statistieken verbergen</a>
+    {% collage_item_statistics view.request collage_items %}
+    {% endif %}
+
     {% endfor %}
     <p>
       {# calculate stats for your collage-edits collage items #}
       <a href="{% url lizard_map_statistics_csv %}"
          class="ss_table_save ss_sprite noprint"
-         title="Export alle statistieken in csv">export alle statistieken</a>
+         title="Export alle statistieken in csv">Export alle statistieken</a>
     </p>
   </div>
 </div>

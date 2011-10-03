@@ -4,7 +4,15 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
-- And yet another (last) bug in **identifier in html_default.
+- Moved export csv button to table "Bewerken".
+
+- Statistics in collage screen are now below edit options.
+
+- Changed geoserver url to ip address, see #3283.
+
+- And yet another (last) bug in **identifier in
+  html_default. Apparently keys from identifiers are transformed to
+  unicode on the server, while the development environment works just fine.
 
 
 3.1.3 (2011-10-03)

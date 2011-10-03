@@ -1109,6 +1109,7 @@ class CollageDetailView(
     Shows "my collage" as big page.
     """
     template_name = 'lizard_map/collage_edit_detail.html'
+    hide_statistics = False
 
     def grouped_collage_items(self):
         """A grouped collage item is a collage item with property
@@ -1117,6 +1118,11 @@ class CollageDetailView(
             self.collage_edit().collage_items.filter(visible=True))
 
         return collage_items
+
+    def get(self, request, *args, **kwargs):
+        self.hide_statistics = request.GET.get('hide_statistics', False)
+
+        return super(CollageDetailView, self).get(request, *args, **kwargs)
 
 
 class CollageView(CollageMixin, ActionDialogView):
@@ -1394,6 +1400,8 @@ def save_map_as_image(request):
 
 
 def create_mapnik_image(request, data):
+    """TODO: remove copy-pasting.
+    """
     # Map settings
     mapnik_map = mapnik.Map(data['width'], data['height'])
     layers = data['layers']
@@ -1432,12 +1440,14 @@ def create_mapnik_image(request, data):
 def mapnik_image_to_stream(request, data, img):
     """
     Convert mapnik image object to bytes stream
+
+    TODO: remove hardcoding url
     """
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
     logger.debug("Converting image to rgba...")
 
     bbox = ",".join([str(x) for x in data['bbox']])
-    geoserver_img = urllib2.urlopen("http://geoserver.lizard.net/geoserver/"+
+    geoserver_img = urllib2.urlopen("http://10.100.130.132:8080/geoserver/"+
         "wms?LAYERS=nhi%3Awaterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
         "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
         "ogc.se_inimage&SRS=EPSG%3A28992&BBOX="+ str(bbox) +
