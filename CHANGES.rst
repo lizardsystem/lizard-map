@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- And yet another (last) bug in **identifier in html_default.
 
 
 3.1.3 (2011-10-03)

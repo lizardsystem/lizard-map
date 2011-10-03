@@ -327,7 +327,10 @@ class WorkspaceItemAdapter(object):
         # selected objects.
         collage_item_props = []
         for identifier in identifiers:
-            location = self.location(**identifier)
+            identifier_str = {}
+            for k, v in identifier.items():
+                identifier_str[str(k)] = v
+            location = self.location(**identifier_str)
             collage_item_props.append(
                 {'name': location['name'],
                  'adapter_class': self.workspace_mixin_item.adapter_class,
