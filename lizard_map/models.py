@@ -696,7 +696,8 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         return self.url("lizard_map_adapter_image", [self.identifier, ])
 
     def csv_url(self):
-        return self.url("lizard_map_adapter_values", [self.identifier, ])
+        return self.url("lizard_map_adapter_values", [self.identifier, ],
+                        extra_kwargs={'output_type': 'csv'})
 
     def statistics(self, start_date, end_date):
         """From collage snippet group. Brings statistics and collage

@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
+- Fixed CollageEditItem.csv_url function.
+
 - Fixed bug with collage items. The popup crashed as well as the
   collage screen.
 
