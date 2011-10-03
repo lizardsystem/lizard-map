@@ -309,7 +309,10 @@ class WorkspaceItemAdapter(object):
 
         # Fetch name
         if identifiers:
-            location = self.location(**identifiers[0])
+            identifier_str = {}
+            for k, v in identifiers[0].items():
+                identifier_str[str(k)] = v
+            location = self.location(**identifier_str)
             title = location['name']
             if len(identifiers) > 1:
                 title += ' + ...'

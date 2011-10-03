@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Convert keys of adapter.identifier to str before using it in
+  html_default.
 
 
 3.1.2 (2011-10-03)
