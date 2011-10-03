@@ -661,9 +661,19 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         return '%s::%s' % (self.adapter_class, self.adapter_layer_json)
 
     @property
+    def identifier_str(self):
+        """
+        Transform keys in identifier into strings before returning.
+        """
+        result = {}
+        for k, v in self.identifier.items():
+            result[str(k)] = v
+        return result
+
+    @property
     def grouping_hint(self):
         try:
-            adapter_location = self.adapter.location(**self.identifier)
+            adapter_location = self.adapter.location(**self.identifier_str)
             return adapter_location['identifier'].get(
                 'grouping_hint', self.default_grouping_hint)
         except AttributeError:

@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
+- Fixed bug with collage items. The popup crashed as well as the
+  collage screen.
+
 - Moved from company-internal svn to github:
   https://github.com/lizardsystem/lizard-map .
 
