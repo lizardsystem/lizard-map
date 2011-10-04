@@ -1,2 +1,2 @@
 include *.rst
-recursive-include lizard_map *.rst *.py *.html *.css *.js *.jpg *.png *.gif *.pdf *.shp *.json
+recursive-include lizard_map *.rst *.py *.html *.css *.js *.jpg *.png *.gif *.pdf *.shp *.json *.po *.mo
