@@ -4,8 +4,12 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
-- Collage editor: group fields are now filled in for every collage
-  item in the group.
+- Updated CollageItemEditorView to work correctly with adapter.image.
+
+- Collage item editor: No week and day.
+
+- Collage item editor: group fields are now filled in for every
+  collage item in the group.
 
 - Cleaned up unused code.
 

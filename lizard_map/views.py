@@ -2,6 +2,7 @@ import StringIO
 import datetime
 
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
@@ -442,6 +443,7 @@ class CollageItemEditorView(ActionDialogView):
         return super(CollageItemEditorView, self).post(
             request, *args, **kwargs)
 
+    @transaction.commit_on_success
     def form_valid_action(self, form):
         """
         Change collage-item(s) accordingly
@@ -452,20 +454,20 @@ class CollageItemEditorView(ActionDialogView):
 
         TODO: unit test.
         """
+
+        # Fields that must be applied to all group items
         group_fields = {'title': None,
                         'y_min': None,
                         'y_max': None,
                         'x_label': None,
                         'y_label': None,
                         'aggregation_period': None}
-        reserved = {'boundary_value': None,
-                    'percentile_value': None,
-                    'aggregation_period': None}
 
         data = form.cleaned_data
+        # The collage item being edited.
         collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
 
-        # Select group to update the parameters
+        # Select group to update the parameters.
         # Note: we also update invisible items
         grouped_collage_items, collage_item_group = group_collage_items(
             CollageEditItem.objects.all())
@@ -473,22 +475,26 @@ class CollageItemEditorView(ActionDialogView):
         grouping_hint = collage_item_group[collage_item.id]
         collage_items = grouped_collage_items[grouping_hint]
 
-        # Reserved keywords
-        collage_item.boundary_value = data['boundary_value']
-        collage_item.percentile_value = data['percentile_value']
-
         # Loop all collage_items in group
         for single_collage_item in collage_items:
+            # Model field for every collage item.
             single_collage_item.aggregation_period = data.get(
                 'aggregation_period', ALL)
 
             identifier = single_collage_item.identifier
             new_layout = identifier.get('layout', {})
-            # Non reserved keywords
+
+            # We have two instances of collage_item, only editing (and
+            # saving) the one in the group list.
+            if single_collage_item.id == collage_item.id:
+                single_collage_item.boundary_value = data['boundary_value']
+                single_collage_item.percentile_value = data['percentile_value']
+
+            # Layout properties
             for k, v in data.items():
                 # Check per field if it is a group field.
                 if (single_collage_item.id == collage_item.id or
-                    k in group_fields) and (k not in reserved):
+                    k in group_fields):
 
                     # Everything resulting in True must be saved
                     # 0.0 must be saved

@@ -117,7 +117,7 @@ def calc_aggregation_periods(start_date, end_date, aggregation_period):
         MONTH: next_month,
         WEEK: next_week,
         DAY: next_day}
-    next_period = next_period_functions[aggregation_period]
+    next_period = next_period_functions[int(aggregation_period)]
 
     next_period_start, next_period_end = next_period(start_date)
     periods.append((start_date, min(next_period_start, end_date)))

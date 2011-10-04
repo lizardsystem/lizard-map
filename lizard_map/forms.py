@@ -135,7 +135,12 @@ class EditForm(forms.Form):
 class CollageItemEditorForm(forms.Form):
     """
     Form to edit collage item edits.
+
+    TODO: split group fields and single item fields. The class-based
+    view must be updated too.
     """
+
+    # Group fields
     title = forms.CharField(max_length=100, required=False, label='Titel')
     y_min = forms.FloatField(required=False, label='Minimale y waarde')
     y_max = forms.FloatField(required=False, label='Maximale y waarde')
@@ -143,6 +148,7 @@ class CollageItemEditorForm(forms.Form):
     y_label = forms.CharField(max_length=100, required=False, label='Y label')
     aggregation_period = forms.ChoiceField(label='Aggregatie periode')
 
+    # Single item fields
     boundary_value = forms.FloatField(required=False, label='Grenswaarde')
     percentile_value = forms.FloatField(required=False,
                                         label='Percentielgrens')
@@ -154,5 +160,8 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
+        # Leave out week and day.
         self.fields['aggregation_period'].choices = (
-            StatisticsMixin.AGGREGATION_PERIOD_CHOICES)
+            StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
+
+
