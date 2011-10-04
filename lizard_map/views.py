@@ -1102,7 +1102,7 @@ class CollageAddView(CollageMixin, ActionDialogView):
         collage.collage_items.create(
             adapter_class=data['adapter_class'],
             adapter_layer_json=data['adapter_layer_json'],
-            name=data['name'],
+            name=data['name'][:80],
             identifier=parse_identifier_json(data['identifier']))
 
 
