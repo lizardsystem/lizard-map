@@ -76,7 +76,8 @@
     <a href="./#" class="ss_sprite ss_table_add">Statistieken tonen</a>
     {% else %}
     <a href="?hide_statistics=True" class="ss_sprite ss_table_delete">Statistieken verbergen</a>
-    <a href="{% collage_item_statistics_url collage_items %}">linkje</a>
+    <div class="data-from-url"
+         data-url="{% collage_item_statistics_url collage_items %}"></div>
     {% endif %}
 
     {% endfor %}

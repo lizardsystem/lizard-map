@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
-- Added view for statistics.
+- Added view for statistics, javascript loading statistics in collage
+  screen because that could take a while.
 
 - Added reload page + message when period is changed in collage screen.
 

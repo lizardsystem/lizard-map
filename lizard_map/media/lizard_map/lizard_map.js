@@ -880,6 +880,26 @@ function setupTableToggle() {
 }
 
 
+function setUpDataFromUrl() {
+    // A div with class "data-from-url" will fetch data from attribute
+    // data-url and paste the contents in the div. The reason is that
+    // the calculation time for some objects can be long.
+    var $div;
+    $div = $("div.data-from-url");
+    $div.each(function () {
+        var url;
+        url = $(this).attr("data-url");
+        if (url !== undefined) {
+            // Put in progress animation
+            $(this).html(
+                '<img src="/static_media/lizard_ui/ajax-loader.gif" />');
+            // Load actual data.
+            $(this).load(url + " .dialog-box");
+        }
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     // Touched/new for L3
@@ -887,6 +907,7 @@ $(document).ready(function () {
     setUpDialogs();
     eraseDialogContentsOnClose();
     setUpActions();
+    setUpDataFromUrl();
 
     // Untouched
     setUpWorkspaceButtons();
