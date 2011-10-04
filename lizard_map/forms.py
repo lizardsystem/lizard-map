@@ -141,12 +141,11 @@ class CollageItemEditorForm(forms.Form):
     y_max = forms.FloatField(required=False, label='Maximale y waarde')
     x_label = forms.CharField(max_length=100, required=False, label='X label')
     y_label = forms.CharField(max_length=100, required=False, label='Y label')
+    aggregation_period = forms.ChoiceField(label='Aggregatie periode')
 
     boundary_value = forms.FloatField(required=False, label='Grenswaarde')
     percentile_value = forms.FloatField(required=False,
                                         label='Percentielgrens')
-    aggregation_period = forms.ChoiceField(label='Aggregatie periode')
-
     line_min = forms.BooleanField(required=False, label='Toon minimum')
     line_max = forms.BooleanField(required=False, label='Toon maximum')
     line_avg = forms.BooleanField(required=False, label='Toon gemiddelde')

@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
+- Collage editor: group fields are now filled in for every collage
+  item in the group.
+
 - Cleaned up unused code.
 
 - Moved export csv button to table "Bewerken".

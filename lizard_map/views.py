@@ -444,39 +444,65 @@ class CollageItemEditorView(ActionDialogView):
 
     def form_valid_action(self, form):
         """
-        Change collage-item accordingly
-        """
+        Change collage-item(s) accordingly
 
+        This is a little tricky: some fields are for the graph itself,
+        like title or y_min. Since the graph is used for multiple
+        collage-items, all those items are updated.
+
+        TODO: unit test.
+        """
+        group_fields = {'title': None,
+                        'y_min': None,
+                        'y_max': None,
+                        'x_label': None,
+                        'y_label': None,
+                        'aggregation_period': None}
         reserved = {'boundary_value': None,
                     'percentile_value': None,
                     'aggregation_period': None}
 
         data = form.cleaned_data
         collage_item = CollageEditItem.objects.get(pk=self.collage_item_id)
-        identifier = collage_item.identifier
-        new_layout = identifier.get('layout', {})
+
+        # Select group to update the parameters
+        # Note: we also update invisible items
+        grouped_collage_items, collage_item_group = group_collage_items(
+            CollageEditItem.objects.all())
+
+        grouping_hint = collage_item_group[collage_item.id]
+        collage_items = grouped_collage_items[grouping_hint]
 
         # Reserved keywords
         collage_item.boundary_value = data['boundary_value']
         collage_item.percentile_value = data['percentile_value']
-        collage_item.aggregation_period = data.get('aggregation_period', ALL)
 
-        # Non reserved keywords
-        for k, v in data.items():
-            if k not in reserved:
-                # Everything resulting in True must be saved
-                # 0.0 must be saved
-                # u'' must be deleted
-                # False must be deleted
-                if v or isinstance(v, float):
-                    new_layout[k] = v
-                else:
-                    if k in new_layout:
-                        del new_layout[k]
+        # Loop all collage_items in group
+        for single_collage_item in collage_items:
+            single_collage_item.aggregation_period = data.get(
+                'aggregation_period', ALL)
 
-        identifier['layout'] = new_layout
-        collage_item.identifier = identifier
-        collage_item.save()
+            identifier = single_collage_item.identifier
+            new_layout = identifier.get('layout', {})
+            # Non reserved keywords
+            for k, v in data.items():
+                # Check per field if it is a group field.
+                if (single_collage_item.id == collage_item.id or
+                    k in group_fields) and (k not in reserved):
+
+                    # Everything resulting in True must be saved
+                    # 0.0 must be saved
+                    # u'' must be deleted
+                    # False must be deleted
+                    if v or isinstance(v, float):
+                        new_layout[k] = v
+                    else:
+                        if k in new_layout:
+                            del new_layout[k]
+
+            identifier['layout'] = new_layout
+            single_collage_item.identifier = identifier
+            single_collage_item.save()
 
 
 # L3
@@ -717,6 +743,8 @@ def group_collage_items(collage_items):
     The grouping is done automagically by adapter property "grouping
     hint", or adapter/adapter_layer_arguments by creating collage
     items with extra property "identifiers".
+
+    TODO: test
     """
     # for collage_item in collage_items:
     #     collage_item.identifiers = [collage_item.identifier, ]
@@ -724,6 +752,7 @@ def group_collage_items(collage_items):
     # Identifiers by grouping hint. Content is a list with collage
     # items.
     grouped_collage_items = {}
+    collage_item_group = {}  # For each collage_item_id: which grouping_hint?
 
     for collage_item in collage_items:
         grouping_hint = collage_item.grouping_hint
@@ -731,8 +760,9 @@ def group_collage_items(collage_items):
             grouped_collage_items[grouping_hint] = []
         grouped_collage_items[grouping_hint].append(
             collage_item)
+        collage_item_group[collage_item.id] = grouping_hint
 
-    return grouped_collage_items
+    return grouped_collage_items, collage_item_group
 
 
 # Updated for L3.
@@ -744,7 +774,7 @@ def popup_collage_json(collage_items, popup_id, request=None):
     html = []
     big_popup = True
 
-    grouped_collage_items = group_collage_items(collage_items)
+    grouped_collage_items, _ = group_collage_items(collage_items)
     for collage_items in grouped_collage_items.values():
         collage_item = collage_items[0]  # Each group always has items.
         identifiers = [collage_item.identifier for
@@ -997,7 +1027,7 @@ class CollageDetailView(
     def grouped_collage_items(self):
         """A grouped collage item is a collage item with property
         "identifiers": a list of identifiers """
-        collage_items = group_collage_items(
+        collage_items, _ = group_collage_items(
             self.collage_edit().collage_items.filter(visible=True))
 
         return collage_items
