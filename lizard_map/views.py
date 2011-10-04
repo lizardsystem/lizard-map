@@ -411,14 +411,25 @@ class DateRangeView(DateRangeMixin, ActionDialogView):
     template_name_success = template_name
     form_class = DateRangeForm  # Define your form
 
+    reload_screen_after = False  # Default.
+
     def form_valid_action(self, form):
         """
         Update date range
         """
         logger.debug("Updating date range...")
         date_range = form.cleaned_data
-
         compute_and_store_start_end(self.request.session, date_range)
+
+    def get(self, request, *args, **kwargs):
+        self.reload_screen_after = request.GET.__contains__(
+            'reload_screen_after')
+        return super(DateRangeView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.reload_screen_after = request.GET.__contains__(
+            'reload_screen_after')
+        return super(DateRangeView, self).post(request, *args, **kwargs)
 
 
 class CollageItemEditorView(ActionDialogView):

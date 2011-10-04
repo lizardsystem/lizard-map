@@ -222,6 +222,17 @@ function dialogContent(content) {
     $("#dialog-content").html(content);
 }
 
+
+function dialogText(title, content) {
+    var html;
+    html = "<h1>" + title + "</h1>" +
+        "<p>" + content + "</p>";
+    dialogContent(html);
+    dialogSize("s");
+    dialogOverlay();
+}
+
+
 /* L3 pop up the dialog */
 function dialogOverlay() {
     var overlay;
@@ -318,7 +329,7 @@ function dialogClick(event) {
 function helpDialogClick(event) {
     var url, overlay, size, msg;
     event.preventDefault();
-    
+
     $('a.ajax-help-dialog').each(function(index) {
         url = $(this).attr("href");
         $.get(url)
@@ -388,13 +399,18 @@ function dialogSubmit(event, afterSubmit) {
                 dialogReplaceTitles(context.responseText);
                 if ($("#dialog").data("submit-on-change")) {
                     // Close immediately, because the contents don't change.
-                    dialogClose();
+                    if (afterSubmit === undefined) {
+                        dialogClose();
+                    } else {
+                        afterSubmit(context);
+                    }
                 } else {
                     // Show success message, then close.
                     dialogContent(div);
                     dialogOverlay();
-                    dialogCloseDelay();
-                    if (afterSubmit !== undefined) {
+                    if (afterSubmit === undefined) {
+                        dialogCloseDelay();
+                    } else {
                         afterSubmit(context);
                     }
                 }
@@ -415,6 +431,7 @@ function dialogSubmit(event, afterSubmit) {
     return false;
 }
 
+
 function updateWorkspaceAfterSubmit(event) {
     return dialogSubmit(event, function (context) {
         return $(".workspace").updateWorkspace();
@@ -423,6 +440,8 @@ function updateWorkspaceAfterSubmit(event) {
 
 function reloadScreenAfterSubmit(event) {
     return dialogSubmit(event, function (context) {
+        dialogText("Herladen pagina",
+                   "De pagina wordt opnieuw geladen.");
         window.location.reload();
     });
 }
@@ -494,11 +513,8 @@ function actionPostClick(event, preAction, postAction, parameters) {
             if ($(event.target).hasClass("reload-after-action")) {
                 // TODO: De-activate possible actions.
                 // Show dialog.
-                html = "<h1>Herladen pagina</h1>" +
-                    "<p>De pagina wordt opnieuw geladen.</p>";
-                dialogContent(html);
-                dialogSize("s");
-                dialogOverlay();
+                dialogText("Herladen pagina",
+                           "De pagina wordt opnieuw geladen.");
                 location.reload();
             }
         })
@@ -618,12 +634,8 @@ function eraseDialogContentsOnClose() {
 
 /* L3 popup with "niets gevonden" */
 function nothingFoundPopup() {
-    var html;
-    html = "<h1>Niets gevonden</h1>" +
-        "<p>Er is niets rond deze locatie gevonden</p>";
-    dialogContent(html);
-    dialogSize("s");
-    dialogOverlay();
+    dialogText("Niets gevonden",
+               "Er is niets rond deze locatie gevonden.");
     dialogCloseDelay();
 }
 

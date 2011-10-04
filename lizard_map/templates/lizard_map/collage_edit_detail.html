@@ -21,10 +21,10 @@
 {% endblock %}
 
 {% block above-content %}
-  <a href="{% url lizard_map_date_range %}"
+  <a href="{% url lizard_map_date_range %}?reload_screen_after="
      id="date-range"
      title='Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}'
-     class="title datepicker-icon action-icon ajax-dialog-onchange"
+     class="title datepicker-icon action-icon ajax-dialog-onchange reload-after-submit"
      data-replace-titles="date-range"
      data-size="s"
      rel="tipsy-south">&nbsp;</a>
