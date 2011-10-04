@@ -32,6 +32,7 @@ from lizard_map.animation import AnimationSettings
 from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.dateperiods import ALL
+from lizard_map.dateperiods import MONTH
 from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
@@ -518,6 +519,11 @@ class CollageItemEditorView(ActionDialogView):
                     else:
                         if k in new_layout:
                             del new_layout[k]
+
+            # Restrict to month option which is used in NHI only.
+            if 'aggregation_period' in new_layout:
+                if int(new_layout['aggregation_period']) == MONTH:
+                    new_layout['restrict_to_month'] = 5  # Testing
 
             identifier['layout'] = new_layout
             single_collage_item.identifier = identifier
