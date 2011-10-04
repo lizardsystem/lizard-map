@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
+- Fixed javascript_hover_handler.
+
 - Updated CollageItemEditorView to work correctly with adapter.image.
 
 - Collage item editor: No week and day.
