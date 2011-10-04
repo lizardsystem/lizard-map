@@ -464,6 +464,8 @@ class CollageItemEditorView(ActionDialogView):
         collage-items, all those items are updated.
 
         TODO: unit test.
+        TODO: unit test.
+        TODO: unit test.
         """
 
         # Fields that must be applied to all group items
@@ -1053,6 +1055,22 @@ class CollageDetailView(
         self.hide_statistics = request.GET.get('hide_statistics', False)
 
         return super(CollageDetailView, self).get(request, *args, **kwargs)
+
+
+class CollageStatisticsView(
+    ViewContextMixin, TemplateView):
+    """
+    Shows statistics for collage items.
+    """
+    template_name = 'lizard_map/box_statistics.html'
+    collage_items = None
+
+    def get(self, request, *args, **kwargs):
+        collage_item_ids = request.GET.getlist('collage_item_id')
+        self.collage_items = CollageEditItem.objects.filter(
+            id__in=collage_item_ids)
+
+        return super(CollageStatisticsView, self).get(request, *args, **kwargs)
 
 
 class CollageView(CollageMixin, ActionDialogView):

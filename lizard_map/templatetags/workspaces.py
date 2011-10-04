@@ -1,5 +1,6 @@
 from django import template
 from django.utils import simplejson as json
+from django.core.urlresolvers import reverse
 
 from lizard_map.daterange import current_start_end_dates
 #from lizard_map.models import Workspace
@@ -68,7 +69,7 @@ def collage_edit(context, collage_edit, reload_after_action=False,
         'stretched': stretched}
 
 
-# L3
+# Obsolete, statistics are loaded with a separate request
 @register.inclusion_tag("lizard_map/tag_statistics.html")
 def collage_item_statistics(request, collage_items):
     if not collage_items:
@@ -80,6 +81,15 @@ def collage_item_statistics(request, collage_items):
     return {
         'statistics': statistics,
         'collage_items': collage_items}
+
+
+@register.simple_tag
+def collage_item_statistics_url(collage_items):
+    url = reverse("lizard_map_statistics")
+    url += '?' + '&'.join([
+            'collage_item_id=%d' % collage_item.id for
+                          collage_item in collage_items])
+    return url
 
 
 # L3

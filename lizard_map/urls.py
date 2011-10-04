@@ -72,6 +72,9 @@ urlpatterns = patterns(
     url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',  # L3 popup
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_item_popup"),
+    url(r'^mycollage/statistics/$',
+        lizard_map.views.CollageStatisticsView.as_view(),
+        name="lizard_map_statistics"),
     url(r'^mycollage/statistics/csv/$',
         'lizard_map.views.statistics_csv',
         name="lizard_map_statistics_csv"),

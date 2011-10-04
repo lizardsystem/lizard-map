@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
+- Added view for statistics.
+
 - Added reload page + message when period is changed in collage screen.
 
 - Fixed collage item add when name is too long.
