@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Updated MANIFEST.in to use graft.
 
 
 3.1.4 (2011-10-05)
