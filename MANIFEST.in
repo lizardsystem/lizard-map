@@ -1,2 +1,4 @@
+# Include docs in the root.
 include *.rst
-recursive-include lizard_map *.rst *.py *.html *.css *.js *.jpg *.png *.gif *.pdf *.shp *.json *.po *.mo
+# Include everything in our project directory.
+graft-dir lizard_map
