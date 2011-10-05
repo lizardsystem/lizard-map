@@ -379,6 +379,17 @@ jQuery.fn.lizardMapLink = function () {
 };
 
 
+/*
+Check if selector returns any elements
+
+Used like:
+$("#notAnElement").exists();
+*/
+jQuery.fn.exists = function () {
+    return this.length !== 0;
+}
+
+
 $(document).ready(function () {
     // Change "default" effect: reload graphs to fix layout.
     $.tools.tabs.addEffect(

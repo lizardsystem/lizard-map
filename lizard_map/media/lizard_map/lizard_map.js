@@ -264,13 +264,19 @@ function dialogReplaceItemIds() {
 }
 
 
-/* L3 dialog replace ids with same items in new_content */
+/* L3 dialog replace ids with same items in new_content
+
+Also refreshes known elements after replacing specific ids.
+*/
 function replaceItems(ids, new_content) {
-    var replace_items, id, div, $replace_with, i, replaced_count;
+    var replace_items, id, div, $replace_with, i, replaced_count,
+        refresh_map, refresh_animation_slider;
     // Place a div around everything to allow searching through the
     // root objects.
     div = $("<div/>").html(new_content);
-    replaced_count = 0;
+
+    refresh_map = false;
+    refresh_animation_slider = false;
 
     for (i in ids) {
         if (i !== undefined) {
@@ -279,20 +285,22 @@ function replaceItems(ids, new_content) {
                 $replace_with = div.find("#" + id);
                 // There should be only one.
                 $("#" + id).replaceWith($replace_with[0]);
-                replaced_count += 1;
+                if (id === 'date-range') {
+                    refresh_map = true;
+                    refresh_animation_slider = true;
+                }
             }
         }
     }
 
-    // TODO: this can be slow. In updateWorkspace these refreshes are
-    // also done. See if it can be done better.
-    if (replaced_count > 0) {
-        // Gui elements that should be initialized after
-        // replacing items.
+    // Gui elements that are initialized after replacing items.
+    if (refresh_animation_slider) {
         setUpAnimationSlider();
-        setUpTransparencySlider();
-        setUpTooltips();
-        refreshLayers(); // from lizard_wms.js
+    }
+    if (refresh_map) {
+        if ($("#map").exists()) {
+            refreshLayers(); // from lizard_wms.js
+        }
     }
 }
 

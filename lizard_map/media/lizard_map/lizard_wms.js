@@ -71,6 +71,10 @@ function refreshBackgroundLayers() {
     var $lizard_map_wms, selected_base_layer_name, base_layer,
     base_layer_type;
     $lizard_map_wms = $("#lizard-map-wms");
+    if (!$lizard_map_wms) {
+        // No element found, nothing to do.
+        return;
+    }
     selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,

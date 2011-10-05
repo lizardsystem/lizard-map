@@ -437,6 +437,8 @@ class DateRangeView(DateRangeMixin, WorkspaceEditMixin, ActionDialogView):
 class CollageItemEditorView(ActionDialogView):
     """
     Popup per collage item for adjustments in the graph.
+
+    TODO: make prettier. Split global settings and per collage-item settings.
     """
     template_name = 'lizard_map/box_collage_item_editor.html'
     template_name_success = 'lizard_map/box_collage_item_editor_success.html'
@@ -476,7 +478,8 @@ class CollageItemEditorView(ActionDialogView):
                         'y_max': None,
                         'x_label': None,
                         'y_label': None,
-                        'aggregation_period': None}
+                        'aggregation_period': None,
+                        'restrict_to_month': None}
 
         data = form.cleaned_data
         # The collage item being edited.
@@ -505,9 +508,6 @@ class CollageItemEditorView(ActionDialogView):
                 single_collage_item.boundary_value = data['boundary_value']
                 single_collage_item.percentile_value = data['percentile_value']
 
-            # Remove restrict_to_month. If we need it, we can add it later.
-            #del new_layout['restrict_to_month']
-
             # Layout properties
             for k, v in data.items():
                 # Check per field if it is a group field.
@@ -524,7 +524,7 @@ class CollageItemEditorView(ActionDialogView):
                         if k in new_layout:
                             del new_layout[k]
 
-            # Restrict to month option which is used in NHI only.
+            # Restrict to month option which is currently used in NHI only.
             if 'aggregation_period' in new_layout:
                 if int(new_layout['aggregation_period']) != MONTH:
                     # Should not be there, but you never know.
