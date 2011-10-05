@@ -7,6 +7,7 @@ from django.forms.widgets import RadioSelect
 
 from lizard_map.daterange import PERIOD_CHOICES
 from lizard_map.daterange import PERIOD_OTHER
+from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin
 from lizard_map.models import WorkspaceStorage
 
@@ -147,6 +148,7 @@ class CollageItemEditorForm(forms.Form):
     x_label = forms.CharField(max_length=100, required=False, label='X label')
     y_label = forms.CharField(max_length=100, required=False, label='Y label')
     aggregation_period = forms.ChoiceField(label='Aggregatie periode')
+    restrict_to_month = forms.ChoiceField(required=False, label='Maand')
 
     # Single item fields
     boundary_value = forms.FloatField(required=False, label='Grenswaarde')
@@ -160,8 +162,24 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-        # Leave out week and day.
+        # Leave out week and day [:4].
         self.fields['aggregation_period'].choices = (
             StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
-
-
+        self.fields['restrict_to_month'].choices = (
+            (0, 'alle'),
+            (1, 'alleen januari'),
+            (2, 'alleen februari'),
+            (3, 'alleen maart'),
+            (4, 'alleen april'),
+            (5, 'alleen mei'),
+            (6, 'alleen juni'),
+            (7, 'alleen juli'),
+            (8, 'alleen augustus'),
+            (9, 'alleen september'),
+            (10, 'alleen oktober'),
+            (11, 'alleen november'),
+            (12, 'alleen december'),
+            )
+        # Initial status
+        if int(kwargs['initial']['aggregation_period']) != MONTH:
+            self.fields['restrict_to_month'].widget.attrs['disabled'] = True
