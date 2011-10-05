@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.1.4 (unreleased)
+3.1.4 (2011-10-05)
 ------------------
 
 - Added option for restrict_to_month with javascript
