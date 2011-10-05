@@ -505,7 +505,7 @@ class CollageItemEditorView(ActionDialogView):
                 single_collage_item.percentile_value = data['percentile_value']
 
             # Remove restrict_to_month. If we need it, we can add it later.
-            del new_layout['restrict_to_month']
+            #del new_layout['restrict_to_month']
 
             # Layout properties
             for k, v in data.items():
@@ -525,8 +525,14 @@ class CollageItemEditorView(ActionDialogView):
 
             # Restrict to month option which is used in NHI only.
             if 'aggregation_period' in new_layout:
-                if int(new_layout['aggregation_period']) == MONTH:
-                    new_layout['restrict_to_month'] = 5  # Testing
+                if int(new_layout['aggregation_period']) != MONTH:
+                    # Should not be there, but you never know.
+                    if 'restrict_to_month' in new_layout:
+                        del new_layout['restrict_to_month']
+            if ('restrict_to_month' in new_layout and
+                new_layout['restrict_to_month'] == '0'):
+
+                del new_layout['restrict_to_month']
 
             identifier['layout'] = new_layout
             single_collage_item.identifier = identifier

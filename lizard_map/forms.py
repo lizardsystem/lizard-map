@@ -147,6 +147,7 @@ class CollageItemEditorForm(forms.Form):
     x_label = forms.CharField(max_length=100, required=False, label='X label')
     y_label = forms.CharField(max_length=100, required=False, label='Y label')
     aggregation_period = forms.ChoiceField(label='Aggregatie periode')
+    restrict_to_month = forms.ChoiceField(required=False, label='Maand')
 
     # Single item fields
     boundary_value = forms.FloatField(required=False, label='Grenswaarde')
@@ -163,5 +164,19 @@ class CollageItemEditorForm(forms.Form):
         # Leave out week and day.
         self.fields['aggregation_period'].choices = (
             StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
-
+        self.fields['restrict_to_month'].choices = (
+            (0, 'alle'),
+            (1, 'alleen januari'),
+            (2, 'alleen februari'),
+            (3, 'alleen maart'),
+            (4, 'alleen april'),
+            (5, 'alleen mei'),
+            (6, 'alleen juni'),
+            (7, 'alleen juli'),
+            (8, 'alleen augustus'),
+            (9, 'alleen september'),
+            (10, 'alleen oktober'),
+            (11, 'alleen november'),
+            (12, 'alleen december'),
+            )
 
