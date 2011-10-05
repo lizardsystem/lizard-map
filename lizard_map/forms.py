@@ -7,6 +7,7 @@ from django.forms.widgets import RadioSelect
 
 from lizard_map.daterange import PERIOD_CHOICES
 from lizard_map.daterange import PERIOD_OTHER
+from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin
 from lizard_map.models import WorkspaceStorage
 
@@ -161,7 +162,7 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
-        # Leave out week and day.
+        # Leave out week and day [:4].
         self.fields['aggregation_period'].choices = (
             StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
         self.fields['restrict_to_month'].choices = (
@@ -179,4 +180,6 @@ class CollageItemEditorForm(forms.Form):
             (11, 'alleen november'),
             (12, 'alleen december'),
             )
-
+        # Initial status
+        if int(kwargs['initial']['aggregation_period']) != MONTH:
+            self.fields['restrict_to_month'].widget.attrs['disabled'] = True
