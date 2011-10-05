@@ -346,7 +346,7 @@ function helpDialogClick(event) {
     });
 }
 
-/* L3 Onchange on dialog: only on ajax-dialog-onchange */
+/* L3 Onchange on dialog: only on ajax-dialog-onchange  */
 function dialogOnChange(event) {
     var $form;
     // console.log("dialog onchange");

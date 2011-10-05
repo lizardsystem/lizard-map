@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
+- Fixed animation slider bug.
+
 - Updated MANIFEST.in to use graft.
 
 

@@ -122,7 +122,8 @@ class AnimationSettings(object):
 
     def _get_slider_position(self):
         """Return value stored in the session."""
-        return self.request.session[ANIMATION_SETTINGS].get(
-            'slider_position', self.end_date_days)
+        return min(max(self.request.session[ANIMATION_SETTINGS].get(
+            'slider_position', self.end_date_days), self.start_date_days),
+                   self.end_date_days)
 
     slider_position = property(_get_slider_position, _set_slider_position)

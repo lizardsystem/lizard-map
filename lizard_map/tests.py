@@ -302,7 +302,7 @@ class TestDateRange(TestCase):
 class TestAnimationSettings(TestCase):
     """Tests for animation.py."""
 
-    def _fill_date_range(self, today):
+    def _fill_date_range(self):
         """Helper method: fill session with date range info.
 
         date_start is 730119 days from day_one
@@ -319,7 +319,7 @@ class TestAnimationSettings(TestCase):
 
     def _date_range_helper(self, today):
         """Make sure _fill_date_range() works."""
-        self._fill_date_range(today=today)
+        self._fill_date_range()
         start, end = current_start_end_dates(self.request, today=today)
         self.assertEquals(start.year, 2000)
         self.assertEquals(end.year, 2003)
@@ -367,7 +367,7 @@ class TestAnimationSettings(TestCase):
 
     def test_initial_info_gathering(self):
         """Do we return the correct date range and position?"""
-        self._fill_date_range(self.today)
+        self._fill_date_range()
         animation_settings = AnimationSettings(
             self.request, today=self.today)
         result = animation_settings.info()
@@ -379,7 +379,7 @@ class TestAnimationSettings(TestCase):
 
     def test_info_gathering(self):
         """Do we return the correct date range and position?"""
-        self._fill_date_range(self.today)
+        self._fill_date_range()
         animation_settings = AnimationSettings(
             self.request, today=self.today)
         animation_settings.slider_position = self.date_start_days + 375
@@ -392,7 +392,7 @@ class TestAnimationSettings(TestCase):
 
     def test_impossible_negative_corner_case(self):
         """Negative dates."""
-        self._fill_date_range(self.today)
+        self._fill_date_range()
         animation_settings = AnimationSettings(
             self.request, today=self.today)
         animation_settings.slider_position = -400
@@ -401,13 +401,35 @@ class TestAnimationSettings(TestCase):
 
     def test_impossible_beyond_max_corner_case(self):
         """Value beyond the max possible."""
-        self._fill_date_range(self.today)
+        self._fill_date_range()
         animation_settings = AnimationSettings(
             self.request, today=self.today)
         animation_settings.slider_position = 1000000
         result = animation_settings.info()
         # Max available.
         self.assertEquals(result['value'], self.date_end_days)
+
+    def test_change_period_after(self):
+        """
+        Change period after setting animationsettings.
+        """
+        self._fill_date_range()
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
+        animation_settings.slider_position = self.date_start_days + 10
+        self.assertEquals(animation_settings.slider_position,
+                          self.date_start_days+10)
+
+        # Now change "current date".
+        self.request.session[SESSION_DT_END] = self.request.session[
+            SESSION_DT_START] + datetime.timedelta(days=5)
+
+        # Because the current date is changed, the slider position
+        # should automatically change too.
+        animation_settings = AnimationSettings(
+            self.request, today=self.today)
+        self.assertEquals(animation_settings.slider_position,
+                          self.date_start_days+5)
 
 
 class UtilityTest(TestCase):

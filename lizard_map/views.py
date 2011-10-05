@@ -91,12 +91,13 @@ class WorkspaceMixin(object):
         pass
 
     def animation_slider(self):
-        """Add animation slider? Default: none."""
-        if not hasattr(self, '_animation_slider'):
-            self._animation_slider = None  # default
-            if self.workspace().is_animatable:
-                self._animation_slider = AnimationSettings(self.request).info()
-        return self._animation_slider
+        """Add animation slider? Default: none. Calculate each time,
+        because the datetime settings could be changed in the
+        meanwhile."""
+        animation_slider = None
+        if self.workspace().is_animatable:
+            animation_slider = AnimationSettings(self.request).info()
+        return animation_slider
 
     def javascript_hover_handler(self):
         if not hasattr(self, '_javascript_hover_handler'):
