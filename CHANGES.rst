@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-3.2 (unreleased)
-----------------
+3.1.5 (2011-10-05)
+------------------
 
 - Replaced dialogReplaceTitles with the more generic dialogReplaceIds
   and replaceItems. After submitting a dialog box you can now change
