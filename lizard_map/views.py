@@ -530,7 +530,8 @@ class CollageItemEditorView(ActionDialogView):
                     if 'restrict_to_month' in new_layout:
                         del new_layout['restrict_to_month']
             if ('restrict_to_month' in new_layout and
-                new_layout['restrict_to_month'] == '0'):
+                (new_layout['restrict_to_month'] == '0' or
+                new_layout['restrict_to_month'] is None)):
 
                 del new_layout['restrict_to_month']
 

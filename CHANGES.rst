@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.1.4 (unreleased)
 ------------------
 
-- Added option for restrict_to_month.
+- Added option for restrict_to_month with javascript
+  enabling/disabling field.
 
 - Added view for statistics, javascript loading statistics in collage
   screen because that could take a while.

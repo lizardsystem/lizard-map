@@ -900,6 +900,23 @@ function setUpDataFromUrl() {
 }
 
 
+function setUpCollageEditor() {
+    // Set restrict_to_month on enabled or disabled
+    $("select#id_aggregation_period").live("change", function (event) {
+        // 4 is MONTH
+        console.log(this.value);
+        if (this.value === "4") {
+            $("select#id_restrict_to_month").removeAttr("disabled");
+        } else {
+            $("select#id_restrict_to_month").attr("disabled", "True");
+            $("select#id_restrict_to_month").each(function () {
+                this.value = "0";
+            });
+        }
+    });
+}
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     // Touched/new for L3
@@ -908,6 +925,7 @@ $(document).ready(function () {
     eraseDialogContentsOnClose();
     setUpActions();
     setUpDataFromUrl();
+    setUpCollageEditor();
 
     // Untouched
     setUpWorkspaceButtons();
