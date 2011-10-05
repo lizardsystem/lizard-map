@@ -504,6 +504,9 @@ class CollageItemEditorView(ActionDialogView):
                 single_collage_item.boundary_value = data['boundary_value']
                 single_collage_item.percentile_value = data['percentile_value']
 
+            # Remove restrict_to_month. If we need it, we can add it later.
+            del new_layout['restrict_to_month']
+
             # Layout properties
             for k, v in data.items():
                 # Check per field if it is a group field.
