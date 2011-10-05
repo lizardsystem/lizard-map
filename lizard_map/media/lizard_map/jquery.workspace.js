@@ -270,8 +270,11 @@ jQuery.fn.updateWorkspace = function () {
                 if ($("#map").length > 0) {
                     refreshLayers(); // from lizard_wms.js
                 }
-                // Is this enough? See also refreshMapActionsDivs in lizard_map
+                // Is this enough? See also refreshMapActionsDivs in
+                // lizard_map
 
+                // TODO: there refreshes are also used in lizard_map:
+                // replaceItems. See if we can bring it together.
                 updateWorkspaceAcceptableStatus();
 
                 setUpAnimationSlider();

@@ -255,25 +255,44 @@ function dialogClose() {
 }
 
 
-/* L3 dialog replace ids */
-function dialogReplaceTitles(new_content) {
-    var replace_titles, id, ids, div, title, i;
-    // Create array with ids to be replaced.
-    // There may be some empty strings in this list.
-    ids = $("#dialog").data("replace-titles").split(" ");
+/* Create array with ids to be replaced.
+ There may be some empty strings in this list. */
+function dialogReplaceItemIds() {
+    var ids;
+    ids = $("#dialog").data("replace-items").split(" ");
+    return ids;
+}
 
+
+/* L3 dialog replace ids with same items in new_content */
+function replaceItems(ids, new_content) {
+    var replace_items, id, div, $replace_with, i, replaced_count;
     // Place a div around everything to allow searching through the
     // root objects.
     div = $("<div/>").html(new_content);
+    replaced_count = 0;
 
     for (i in ids) {
         if (i !== undefined) {
             id = ids[i];
             if (id !== "") {
-                title = div.find("#" + id);
-                $("#" + id).attr("title", title.html());
+                $replace_with = div.find("#" + id);
+                // There should be only one.
+                $("#" + id).replaceWith($replace_with[0]);
+                replaced_count += 1;
             }
         }
+    }
+
+    // TODO: this can be slow. In updateWorkspace these refreshes are
+    // also done. See if it can be done better.
+    if (replaced_count > 0) {
+        // Gui elements that should be initialized after
+        // replacing items.
+        setUpAnimationSlider();
+        setUpTransparencySlider();
+        setUpTooltips();
+        refreshLayers(); // from lizard_wms.js
     }
 }
 
@@ -319,9 +338,9 @@ function dialogClick(event) {
     $("#dialog").data("submit-on-change", false);
     // All ids that have to be replaced in the original page. Space
     // separated.
-    $("#dialog").data("replace-titles", "");  // Reset
+    $("#dialog").data("replace-items", "");  // Reset
     $("#dialog").data(
-        "replace-titles", $(event.target).attr("data-replace-titles"));
+        "replace-items", $(event.target).attr("data-replace-items"));
     dialogSize($(event.target).attr("data-size"));
     return false;
 }
@@ -348,7 +367,7 @@ function helpDialogClick(event) {
 
 /* L3 Onchange on dialog: only on ajax-dialog-onchange  */
 function dialogOnChange(event) {
-    var $form;
+    var $form, ids;
     // console.log("dialog onchange");
     event.preventDefault();
     if ($("#dialog").data("submit-on-change")) {
@@ -366,9 +385,11 @@ function dialogOnChange(event) {
                         ".dialog-box");
                     // Bad request: wrong input
                     // Or 200, or else... all the same
-                    dialogReplaceTitles(context.responseText);
+                    ids = dialogReplaceItemIds();
+                    replaceItems(ids, context.responseText);
                     dialogContent(div);
                     dialogOverlay();
+
                     return false;
                 });
     }
@@ -381,7 +402,7 @@ function dialogSetupChange(event) {
 
 /* L3 Pressing submit in dialog box */
 function dialogSubmit(event, afterSubmit) {
-    var $form;
+    var $form, ids;
     event.preventDefault();
     $form = $(event.target).parents("form");
     // Strange: everything goes to .error
@@ -396,7 +417,8 @@ function dialogSubmit(event, afterSubmit) {
                 dialogContent(div);
                 dialogOverlay();
             } else if (context.status === 200) {
-                dialogReplaceTitles(context.responseText);
+                ids = dialogReplaceItemIds();
+                replaceItems(ids, context.responseText);
                 if ($("#dialog").data("submit-on-change")) {
                     // Close immediately, because the contents don't change.
                     if (afterSubmit === undefined) {
@@ -451,7 +473,7 @@ function reloadScreenAfterSubmit(event) {
 - Define an a href with class "ajax-dialog" or "ajax-dialog-onchange"
 - Optionally add attributes:
   - data-reload-after-submit="true": reloads the page after successful submit
-  - data-replace-titles="title_id1 title_id2": replaces given tag ids
+  - data-replace-items="title_id1 title_id2": replaces given tag ids
     after submit (or onchange).
 
 The actions are as follows:
@@ -469,8 +491,10 @@ function setUpDialogs() {
     $("#dialog input:submit:not(.alternative-submit)").live(
         "click", dialogSubmit);
     // Handle ajax-dialog-onchange, which submit on changes.
-    $("#dialog form input").live("change", dialogOnChange);
-    $("#dialog form select").live("change", dialogOnChange);
+    $("#dialog form input").live(
+        "change", dialogOnChange);
+    $("#dialog form select").live(
+        "change", dialogOnChange);
 
     // TODO: split this part. It is for specific lizard-map workspace stuff.
     // For workspace changes: live our own handler

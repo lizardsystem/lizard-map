@@ -7,4 +7,26 @@
     <div><input type="submit" value="opslaan"{% if view.reload_screen_after %}  class="alternative-submit reload-screen-after"{% endif %} /></div>
   </form>
 </div>
-<div id="date-range">Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}</div>
+
+<a href="{% url lizard_map_date_range %}"
+   id="date-range"
+   title='Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}'
+   class="title datepicker-icon action-icon ajax-dialog-onchange"
+   data-replace-items="date-range animation-slider animation-date"
+   data-size="s"
+   rel="tipsy-south">&nbsp;</a>
+
+{# Animation slider html code is the same as in wms.html #}
+{% if view.animation_slider %}
+<li id="animation-slider"
+    class="map-action"
+    data-min="{{ view.animation_slider.min }}"
+    data-max="{{ view.animation_slider.max }}"
+    data-step="{{ view.animation_slider.step }}"
+    data-value="{{ view.animation_slider.value }}"
+    data-ajax-path="{% url lizard_map.set_animation_date %}">
+</li>
+<li id="animation-date" class="map-action">
+  <span id="selected-date">{{ view.animation_slider.selected_date|date:"d/m/Y" }}</span>
+</li>
+{% endif %}

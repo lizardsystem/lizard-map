@@ -4,6 +4,12 @@ Changelog of lizard-map
 3.2 (unreleased)
 ----------------
 
+- Replaced dialogReplaceTitles with the more generic dialogReplaceIds
+  and replaceItems. After submitting a dialog box you can now change
+  the items you like. Some gui elements will be re-initialized.
+
+- Fixed updating animation slider after changing period.
+
 - Fixed animation slider bug.
 
 - Updated MANIFEST.in to use graft.

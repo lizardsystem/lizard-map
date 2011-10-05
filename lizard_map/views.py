@@ -408,7 +408,7 @@ class WorkspaceLoadView(ActionDialogView):
         workspace_edit.load_from_storage(workspace_storage)
 
 
-class DateRangeView(DateRangeMixin, ActionDialogView):
+class DateRangeView(DateRangeMixin, WorkspaceEditMixin, ActionDialogView):
     template_name = 'lizard_map/box_daterange.html'
     template_name_success = template_name
     form_class = DateRangeForm  # Define your form
