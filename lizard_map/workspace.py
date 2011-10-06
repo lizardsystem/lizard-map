@@ -9,7 +9,7 @@ from lizard_map.adapter import adapter_serialize
 from lizard_map.models import ICON_ORIGINALS
 from lizard_map.models import Color
 from lizard_map.models import Legend
-#from lizard_map.models import Workspace
+#from lizard_map.models import Workspace foo
 from lizard_map.symbol_manager import SymbolManager
 
 logger = logging.getLogger('lizard_map.workspace')
@@ -378,7 +378,7 @@ class WorkspaceItemAdapter(object):
             # Fallback if no legend found (should not happen)
             logger.warn("Could not find legend for key '%s', "
                         "please configure the legend. "
-                        "Now using fallback (red).")
+                        "Now using fallback (red)." % legend_name)
             color = Color('ff0000')
             found_legend = Legend(descriptor="", min_color=color,
                                   max_color=color, too_low_color=color,
