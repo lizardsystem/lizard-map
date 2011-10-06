@@ -1,8 +1,8 @@
 from django.contrib import admin
 
 from lizard_map.models import BackgroundMap
-#from lizard_map.models import Legend
-#from lizard_map.models import LegendPoint
+from lizard_map.models import Legend
+from lizard_map.models import LegendPoint
 from lizard_map.models import Setting
 from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
@@ -96,8 +96,8 @@ class BackgroundMapAdmin(admin.ModelAdmin):
 admin.site.register(BackgroundMap, BackgroundMapAdmin)
 admin.site.register(CollageEdit, CollageEditAdmin)
 admin.site.register(CollageEditItem, CollageEditItemAdmin)
-# admin.site.register(Legend)
-# admin.site.register(LegendPoint)
+admin.site.register(Legend)
+admin.site.register(LegendPoint)
 admin.site.register(Setting)
 # admin.site.register(Workspace, WorkspaceAdmin)
 # admin.site.register(WorkspaceCollage, WorkspaceCollageAdmin)
