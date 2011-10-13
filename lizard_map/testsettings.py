@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     ]
 ROOT_URLCONF = 'lizard_map.urls'
 
-#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Used for django-staticfiles
 STATIC_URL = '/static_media/'
