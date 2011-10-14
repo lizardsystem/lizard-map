@@ -13,13 +13,16 @@ DATABASES = {
     }
 SITE_ID = 1
 INSTALLED_APPS = [
+    'lizard_map.testmodelapp',
+    # ^^^ Only for testing! Django-nose problem.
+    # See https://github.com/jbalogh/django-nose/issues/15
     'lizard_map',
     'lizard_ui',
     'staticfiles',
     'compressor',
-    'django_nose',
     'piston',
     'south',
+    'django_nose',
     'debug_toolbar',
     'django_extensions',
     'django.contrib.gis',
