@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.3 (unreleased)
 ----------------
 
+- Cleaned up admin.py.
+
 - Added experimental rest.js to handle rest apis.
 
 
