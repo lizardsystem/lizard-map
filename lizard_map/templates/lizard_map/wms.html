@@ -28,7 +28,7 @@
 <ul class="map-actions">
   <li id="map-multiple-selection"
       class="action-icon map-multiple-selection"
-      title="Multi-selectie vanaf de kaart."
+      title="Multi-selectie van items op de kaart"
       rel="tipsy-south">
   </li>
   <li>
@@ -45,11 +45,18 @@
       class="map-action"
       data-url="{% url lizard_map.map_location_load_default %}">
     <span rel="tipsy" class="map-location-icon action-icon"
-          title="{% trans 'Pan &amp; zoom naar standaard kaartlocatie.' %}"></span>
+          title="{% trans 'Pan &amp; zoom naar standaard kaartlocatie' %}"></span>
+  </li>
+  <li id="transparency-slider"
+      title="Pas transparantie aan"
+      class="map-action"
+      rel="tipsy-south">
   </li>
   {% if view.animation_slider %}
   <li id="animation-slider"
+      title="Pas huidige datum aan"
       class="map-action"
+      rel="tipsy-south"
       data-min="{{ view.animation_slider.min }}"
       data-max="{{ view.animation_slider.max }}"
       data-step="{{ view.animation_slider.step }}"
@@ -60,14 +67,6 @@
     <span id="selected-date">{{ view.animation_slider.selected_date|date:"d/m/Y" }}</span>
   </li>
   {% endif %}
-  <li id="transparency-slider"
-      title="Pas transparantie aan"
-      class="map-action"
-      rel="tipsy-south">
-  </li>
-  <li class="map-action">
-    &nbsp;
-  </li>
 </ul>
 {% endblock above-content %}
 
