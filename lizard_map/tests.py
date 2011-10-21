@@ -55,32 +55,6 @@ import lizard_map.urls
 import lizard_map.views
 
 
-# New.
-from lizard_map.test_models import CollageTest
-from lizard_map.test_models import ExtentMixinTest
-from lizard_map.test_models import PeriodMixinTest
-from lizard_map.test_models import UserSessionMixinTest
-from lizard_map.test_models import WorkspaceEditTest
-from lizard_map.test_models import WorkspaceItemTest
-from lizard_map.test_models import WorkspaceLoadSaveTest
-from lizard_map.test_models import WorkspaceModelMixinTest
-from lizard_map.test_templatetags import WorkspacesTest
-
-
-class Mixins(TestCase):
-    # Satisfy pychecker
-    def test_smoke(self):
-        self.assertTrue(CollageTest)
-        self.assertTrue(ExtentMixinTest)
-        self.assertTrue(PeriodMixinTest)
-        self.assertTrue(UserSessionMixinTest)
-        self.assertTrue(WorkspaceEditTest)
-        self.assertTrue(WorkspaceItemTest)
-        self.assertTrue(WorkspaceLoadSaveTest)
-        self.assertTrue(WorkspaceModelMixinTest)
-        self.assertTrue(WorkspacesTest)
-
-
 class ViewsTest(TestCase):
     fixtures = ('lizard_map', )
 
@@ -418,7 +392,7 @@ class TestAnimationSettings(TestCase):
             self.request, today=self.today)
         animation_settings.slider_position = self.date_start_days + 10
         self.assertEquals(animation_settings.slider_position,
-                          self.date_start_days+10)
+                          self.date_start_days + 10)
 
         # Now change "current date".
         self.request.session[SESSION_DT_END] = self.request.session[
@@ -429,7 +403,7 @@ class TestAnimationSettings(TestCase):
         animation_settings = AnimationSettings(
             self.request, today=self.today)
         self.assertEquals(animation_settings.slider_position,
-                          self.date_start_days+5)
+                          self.date_start_days + 5)
 
 
 class UtilityTest(TestCase):

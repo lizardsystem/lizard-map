@@ -7,24 +7,15 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.test import TestCase
 from django.test.client import Client
 
-
-from lizard_map.models import ExtentMixin
-from lizard_map.models import PeriodMixin
-from lizard_map.models import UserSessionMixin
-
-from lizard_map.models import WorkspaceEdit
-from lizard_map.models import WorkspaceStorage
-from lizard_map.models import WorkspaceEditItem
-from lizard_map.models import WorkspaceStorageItem
-
 from lizard_map.models import CollageEdit
-
+from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceEditItem
+from lizard_map.models import WorkspaceStorage
+from lizard_map.models import WorkspaceStorageItem
+from lizard_map.testmodelapp.models import Extent
+from lizard_map.testmodelapp.models import Period
+from lizard_map.testmodelapp.models import UserSession
 import lizard_map
-
-
-class Period(PeriodMixin):
-    """Test class to instantiate PeriodMixin"""
-    pass
 
 
 class PeriodMixinTest(TestCase):
@@ -137,10 +128,6 @@ class PeriodMixinTest(TestCase):
         self.assertEquals(dt, now)
 
 
-class Extent(ExtentMixin):
-    pass
-
-
 class ExtentMixinTest(TestCase):
     def setUp(self):
         pass
@@ -155,11 +142,6 @@ class ExtentMixinTest(TestCase):
         result = e.extent()
         expected = (1.0, 1.5, 2.0, 3.0)
         self.assertEquals(result, expected)
-
-
-class UserSession(UserSessionMixin):
-    """Test class to instantiate UserSessionMixin"""
-    pass
 
 
 class UserSessionMixinTest(TestCase):
@@ -656,6 +638,6 @@ class CollageTest(TestCase):
         collage_item.img_url()
         collage_item.csv_url()
 
-        start_date = datetime.datetime(2011,1,1,0,0)
-        end_date = datetime.datetime(2011,1,10,0,0)
+        start_date = datetime.datetime(2011, 1, 1, 0, 0)
+        end_date = datetime.datetime(2011, 1, 10, 0, 0)
         collage_item.statistics(start_date, end_date)
