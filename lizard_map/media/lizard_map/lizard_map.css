@@ -82,19 +82,18 @@
 #transparency-slider
 { display: block;
   float: left;
-  line-height: 1.5em;
-  margin-top: 0.4em;
-  width: 150px;
-  margin-left: 1em;
+  margin-top: 0.5em;
+  width: 90px;
 }
 
-#animation-slider
-{ width: 5em;
-  }
+#animation-slider {
+  margin-left: 30px;
+  margin-right: 8px;
+}
 
-#transparency-slider
-{ width: 5em;
-  }
+#transparency-slider {
+  margin-left: 15px;
+}
 
 .vertical-limited
 { height: 300px;
@@ -149,7 +148,6 @@
 .map-action
 { margin-left: 0.5em;
   float: left;
-  line-height: 1.3em;
   }
 
 .workspace-acceptable
