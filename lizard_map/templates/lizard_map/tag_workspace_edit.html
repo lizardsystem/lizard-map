@@ -1,6 +1,5 @@
 {# Display edit-workspace #}
-{% load workspaces %}
-{% load i18n %}
+{% load i18n workspaces %}
 <div id="edit-workspace"
      class="sidebarbox workspace"
      data-workspace-id="{{ workspace_edit.id }}"
@@ -15,27 +14,36 @@
      >
   <h2>
     <a id="workspace-empty"
+       rel="tipsy-south"
        href="{% url lizard_map_workspace_empty %}"
-       title="{% trans 'empty your workspace' %}"
+       title="{% trans 'Empty your workspace' %}"
        class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty"
        data-target-id="#edit-workspace">
     </a>
+    {% comment %}
+    The added value of next link might not be obvious to a user, because workspace-load
+    seems to offer comparable functionality. A subtle difference is that it reveals a
+    URL to a read-only workspace, which you can send around via email.
     <a id="workspace-link-to-stored"
+       rel="tipsy-south"
        href="{% url lizard_map_workspace_storage_list %}"
-       title="{% trans 'stored workspaces' %}"
+       title="{% trans 'Stored workspaces...' %}"
        class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog"
        data-size="xs">&nbsp;</a>
+    {% endcomment %}
     <a id="workspace-save"
+       rel="tipsy-south"
        href="{% url lizard_map_workspace_save %}"
-       title="{% trans 'save workspace...' %}"
+       title="{% trans 'Save workspace...' %}"
        class="title ss_sprite ss_database_save sidebarbox-action-icon ajax-dialog"
        data-size="xs">&nbsp;</a>
     <a id="workspace-load"
+       rel="tipsy-south"
        href="{% url lizard_map_workspace_load %}"
-       title="{% trans 'load workspace...' %}"
+       title="{% trans 'Load workspace...' %}"
        class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"
        data-size="xs">&nbsp;</a>
-    <span title="Dit is je workspace. Ga met je muis over de elementen heen om opties te zien.">
+    <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
       Workspace
     </span>
   </h2>
@@ -50,11 +58,10 @@
         data-visible="{{ workspace_item.visible }}">
       {# Legend. #}
       {% legend workspace_item.name workspace_item.adapter session %}
-      {# Delete workspace item #}
+      {# Delete workspace item. Tipsy tooltips won't disappear. #}
       <span class="ss_sprite ss_delete sidebarbox-action-icon
                    workspace-item-delete"
-            rel="tipsy"
-            title="Verwijder">
+            title="{% trans 'Delete item' %}">
       </span>
       {# Pan to layer. #}
       {% if workspace_item.has_extent %}
@@ -74,7 +81,6 @@
              {% if workspace_item.visible %}
              checked="checked"
              {% endif %}
-             title="Zichtbaar"
              data-workspace-id="{{ workspace.id }}" />
       <div class="workspace-item-name">
         {% firstof workspace_item.name '(noname)' %}
@@ -82,7 +88,7 @@
     </li>
     {% empty %}
       {# No workspaceitems #}
-      <li>Klik op items om deze toe te voegen aan je workspace.</li>
+      <li>{% trans 'Click on an item from the above list to add it to your workspace.' %}</li>
     {% endfor %}
   </ul>
 </div>

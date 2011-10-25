@@ -1,30 +1,31 @@
 {# Display edit-collage #}
-{% load workspaces %}
-{% load i18n %}
+{% load i18n workspaces %}
 <div id="edit-collage"
      class="sidebarbox collage{% if stretched %} sidebarbox-stretched{% endif %}"
      data-collage-id="{{ collage_edit.id }}"
      >
   <h2>
     <a id="collage-empty"
+       rel="tipsy-south"
        href="{% url lizard_map_collage_empty %}"
-       title="{% trans 'empty your collage' %}"
+       title="{% trans 'Empty your collage' %}"
        class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty{% if reload_after_action %} reload-after-action{% endif %}"
        data-target-id="#edit-collage">
     </a>
     <a id="collage-popup"
+       rel="tipsy-south"
        href="{% url lizard_map_collage_popup %}"
-       title="{% trans 'collage popup' %}"
+       title="{% trans 'Selection popup...' %}"
        class="title ss_sprite ss_chart_line sidebarbox-action-icon collage-popup">
     </a>
     {# Collage edit page #}
     <a class="ss_sprite ss_arrow_turn_right sidebarbox-action-icon"
-       rel="tipsy"
-       title="Ga naar pagina voor selectie"
+       rel="tipsy-south"
+       title="{% trans 'Selection page...' %}"
        href="{% url lizard_map_collage_edit_detail %}">
     </a>
-    <span title="Dit is je huidige selectie.">
-      Selectie
+    <span rel="tipsy-southwest" title="{% trans 'This is your current selection.' %}">
+      {% trans 'Selection' %}
     </span>
   </h2>
   <ul class="collage-items without-bullets">
@@ -33,11 +34,10 @@
         class="collage-item"
         title="{{ collage_item.name }}"
         data-object-id="{{ collage_item.id }}">
-      {# Delete collage item #}
+      {# Delete collage item. Tipsy tooltips won't disappear. #}
       <a class="ss_sprite ss_delete sidebarbox-action-icon
                 collage-item-delete{% if reload_after_action %} reload-after-action{% endif %}"
-            rel="tipsy"
-            title="Verwijder"
+            title="{% trans 'Delete item' %}"
             href="{% url lizard_map_collage_item_edit %}"
             data-target-id="#edit-collage">
       </a>
@@ -52,7 +52,6 @@
              {% if collage_item.visible %}
              checked="checked"
              {% endif %}
-             title="Zichtbaar"
              href="{% url lizard_map_collage_item_edit %}"
              data-target-id="#edit-collage"/>
       <a class="collage-item-name collage-popup"
@@ -62,7 +61,7 @@
     </li>
     {% empty %}
       {# No collage items #}
-      <li>Selecteer items op de kaart.</li>
+      <li>{% trans 'Select items on the map.' %}</li>
     {% endfor %}
   </ul>
 </div>
