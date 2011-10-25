@@ -8,6 +8,8 @@ Changelog of lizard-map
 
 - Added experimental rest.js to handle rest apis.
 
+- Improved i18n and tipsy tooltips.
+
 
 3.2 (2011-10-06)
 ----------------
