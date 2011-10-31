@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.3 (unreleased)
+3.3 (2011-10-31)
 ----------------
 
 - Added experimental rest.js to handle rest apis.
