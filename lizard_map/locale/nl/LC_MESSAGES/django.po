@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-25 07:52-0500\n"
+"POT-Creation-Date: 2011-10-31 11:08-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -153,32 +153,32 @@ msgstr "Voorbeelden"
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
 
-#: templates/lizard_map/tag_collage_edit.html:12
+#: templates/lizard_map/tag_collage_edit.html:11
 msgid "Empty your collage"
-msgstr "Workspace leegmaken"
+msgstr "Selectie leegmaken"
 
-#: templates/lizard_map/tag_collage_edit.html:19
+#: templates/lizard_map/tag_collage_edit.html:18
 msgid "Selection popup..."
 msgstr "Selectie pop-up..."
 
-#: templates/lizard_map/tag_collage_edit.html:25
+#: templates/lizard_map/tag_collage_edit.html:24
 msgid "Selection page..."
 msgstr "Naar selectiepagina..."
 
-#: templates/lizard_map/tag_collage_edit.html:28
+#: templates/lizard_map/tag_collage_edit.html:27
 msgid "This is your current selection."
 msgstr "Dit is jouw huidige selectie."
 
-#: templates/lizard_map/tag_collage_edit.html:29
+#: templates/lizard_map/tag_collage_edit.html:28
 msgid "Selection"
 msgstr "Selectie"
 
-#: templates/lizard_map/tag_collage_edit.html:41
+#: templates/lizard_map/tag_collage_edit.html:40
 #: templates/lizard_map/tag_workspace_edit.html:65
 msgid "Delete item"
 msgstr "Verwijder item"
 
-#: templates/lizard_map/tag_collage_edit.html:65
+#: templates/lizard_map/tag_collage_edit.html:64
 msgid "Select items on the map."
 msgstr "Selecteer items op de kaart."
 
