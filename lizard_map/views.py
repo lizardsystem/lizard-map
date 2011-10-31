@@ -1413,7 +1413,7 @@ def mapnik_image_to_stream(request, data, img):
 
     bbox = ",".join([str(x) for x in data['bbox']])
     geoserver_img = urllib2.urlopen("http://10.100.130.132:8080/geoserver/"+
-        "wms?LAYERS=nhi%3Awaterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
+        "wms?LAYERS=waterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
         "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
         "ogc.se_inimage&SRS=EPSG%3A28992&BBOX="+ str(bbox) +
         "&WIDTH="+ str(data['width']) +"&HEIGHT=" + str(data['height'])).read()
