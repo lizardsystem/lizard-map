@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added new adapter function identifiers.
 
 
 3.3 (2011-10-31)
