@@ -20,16 +20,10 @@ def slider_layout_extra(request, workspace_storage_id=None):
     Calculates layout_extra (used when drawing graphs) for current
     animation slider.
 
-    Requires request.
+    Requires request for session data.
     """
 
     layout_extra = {}
-
-    # workspace_manager = WorkspaceManager(request)
-    # workspace_groups = workspace_manager.load_or_create()
-
-    # for workspaces in workspace_groups.values():
-    #     for workspace in workspaces:
 
     if workspace_storage_id is None:
         workspace = WorkspaceEdit.get_or_create(request.session.session_key,

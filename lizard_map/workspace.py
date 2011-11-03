@@ -68,6 +68,19 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
+    @classmethod
+    def identifiers(self):
+        """
+        New in L3. Retrieve a list of all possible identifiers.
+
+        This function is optional. It is used with REST APIs.
+
+        Identifiers are dictionaries with for each adapter its custom
+        keys and values. The meaning is only useful within a single
+        adapter.
+        """
+        raise NotImplementedError
+
     # def extent(self, identifiers=None):
     #     """
     #     Returns extent {'west':.., 'north':.., 'east':.., 'south':..}

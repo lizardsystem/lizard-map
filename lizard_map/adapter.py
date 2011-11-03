@@ -76,7 +76,7 @@ class AdapterClassNotFoundError(Exception):
 
 
 def adapter_serialize(o):
-    return json.dumps(o).replace('"', '%22')
+    return json.dumps(o).replace('"', '%22').replace(' ', '%20')
 
 
 def adapter_class_names():

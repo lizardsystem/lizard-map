@@ -1,8 +1,21 @@
 Changelog of lizard-map
 =======================
 
-3.3 (unreleased)
+3.4 (unreleased)
 ----------------
+
+- Added layout_extra_from_request to AdapterMixin.
+
+- Updated adapter views for image and values: you can now provide start and
+  end dates in the url parameters.
+
+- Added new adapter function identifiers.
+
+
+3.3 (2011-10-31)
+----------------
+
+- Cleaned up admin.py.
 
 - Added experimental rest.js to handle rest apis.
 

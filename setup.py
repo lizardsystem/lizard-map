@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '3.3dev'
+version = '3.4dev'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
@@ -22,6 +22,7 @@ install_requires = [
     'pkginfo',
     'django-jsonfield',
     'south',
+    'iso8601',
     # 'pyproj', Including that as a dependency doesn't work right at the moment.
     # mapnik: sorry, there's no real package for that.  We do need it however.
     ],
