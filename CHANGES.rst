@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.4 (unreleased)
 ----------------
 
+- Updated adapter views for image and values: you can now provide start and
+  end dates in the url parameters.
+
 - Added new adapter function identifiers.
 
 

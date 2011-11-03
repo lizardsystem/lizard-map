@@ -18,6 +18,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 import Image
 import csv
+import iso8601
 import logging
 import mapnik
 import urllib2
@@ -1391,7 +1392,6 @@ def create_mapnik_image(request, data):
         for name in styles:
             mapnik_map.append_style(name, styles[name])
 
-
     #Zoom and create image
     logger.debug("Zooming to box...")
     mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
@@ -1412,13 +1412,16 @@ def mapnik_image_to_stream(request, data, img):
     logger.debug("Converting image to rgba...")
 
     bbox = ",".join([str(x) for x in data['bbox']])
-    geoserver_img = urllib2.urlopen("http://10.100.130.132:8080/geoserver/"+
-        "wms?LAYERS=waterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE"+
-        "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&EXCEPTIONS=application%2Fvnd."+
-        "ogc.se_inimage&SRS=EPSG%3A28992&BBOX="+ str(bbox) +
-        "&WIDTH="+ str(data['width']) +"&HEIGHT=" + str(data['height'])).read()
-
-    # ^^^ TODO: This should be configurable! (Added by gnijholt on Sep 28 2011)
+    geoserver_img = urllib2.urlopen(
+        "http://10.100.130.132:8080/geoserver/" +
+        "wms?LAYERS=waterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE" +
+        "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=" +
+        "&EXCEPTIONS=application%2Fvnd." +
+        "ogc.se_inimage&SRS=EPSG%3A28992&BBOX=" + str(bbox) +
+        "&WIDTH=" + str(data['width']) +
+        "&HEIGHT=" + str(data['height'])).read()
+    # ^^^ TODO: This should be configurable! (Added by gnijholt on Sep
+    # 28 2011)
     base_image = Image.open(StringIO.StringIO(geoserver_img))
     rgba_image = Image.fromstring('RGBA',
                                   (data['width'], data['height']),
@@ -1427,7 +1430,7 @@ def mapnik_image_to_stream(request, data, img):
     base_w, base_h = base_image.size
     rgba_w, rgba_h = rgba_image.size
 
-    offset = ((base_w-rgba_w), (base_h-rgba_h))
+    offset = ((base_w - rgba_w), (base_h - rgba_h))
     base_image.paste(rgba_image, offset, rgba_image)
     # ^^^ Passing rgba_image twice to get transparency working in paste()
 
@@ -1486,6 +1489,11 @@ def statistics_csv(request):
 class AdapterMixin(object):
     """
     Provide functions to get adapter stuff from get request
+
+    Supported URL GET parameters: adapter_layer_json, identifier
+    (multiple allowed), dt_start, dt_end.
+
+    TODO: tests
     """
     def adapter(self, adapter_class):
         """
@@ -1506,38 +1514,75 @@ class AdapterMixin(object):
         identifier = parse_identifier_json(identifier_json)
         return identifier
 
+    def start_end_dates_from_request(self):
+        """
+        Try to get dt_start, dt_end from url parameters, revert to
+        "current_start_end_dates".
+
+        dt_start and dt_end are in iso8601 format
+        """
+        current_start_date, current_end_date = current_start_end_dates(
+                self.request)
+
+        start_date_str = self.request.GET.get('dt_start', None)
+        if start_date_str is None:
+            start_date = current_start_date
+        else:
+            start_date = iso8601.parse_date(start_date_str)
+
+        end_date_str = self.request.GET.get('dt_end', None)
+        if end_date_str is None:
+            end_date = current_end_date
+        else:
+            end_date = iso8601.parse_date(end_date_str)
+
+        return start_date, end_date
+
 
 class ImageMixin(object):
+    """
+    Provide functions for a View that return an image.
+
+    Supported URL GET parameters: width, height.
+
+    TODO: tests
+    """
     def width_height(self):
-        width = self.request.GET.get('width')
-        height = self.request.GET.get('height')
+        width = self.request.GET.get('width', None)
+        height = self.request.GET.get('height', None)
 
-        if width:
+        if width is not None:
             width = int(width)
-        else:
-            # We want None, not u''.
-            width = None
 
-        if height:
+        if height is not None:
             height = int(height)
-        else:
-            # We want None, not u''.
-            height = None
+
         return width, height
 
 
 class AdapterImageView(AdapterMixin, ImageMixin, View):
+    """
+    Return result of adapter.image, using given parameters.
+
+    URL GET parameters:
+    - adapter_class (required)
+    - identifier (required, multiple supported)
+    - width, height (optional)
+    - start_date, end_date (optional, iso8601 format, default current)
+
+    """
+
     def get(self, request, *args, **kwargs):
         """
-        named url arguments become kwargs
+        Note: named url arguments become kwargs.
         """
         current_adapter = self.adapter(kwargs['adapter_class'])
         identifier_list = self.identifiers()
         width, height = self.width_height()
 
-        start_date, end_date = current_start_end_dates(self.request)
+        start_date, end_date = self.start_end_dates_from_request()
 
-        # add animation slider position
+        # Add animation slider position, info from session data.
         layout_extra = slider_layout_extra(self.request)
 
         return current_adapter.image(
@@ -1548,26 +1593,29 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
 
 class AdapterValuesView(AdapterMixin, ViewContextMixin, TemplateView):
     """
-    Values for a single identifier
+    Return values for a single identifier in csv or html.
 
-    Format in csv, html
+    URL GET parameters:
+    - adapter_class (required)
+    - identifier (required, single)
+    - output_type (optional, choices are 'csv' or 'html'. Default 'html')
+    - start_date, end_date (optional, iso8601 format, default current)
+
     """
     template_name = 'lizard_map/box_table.html'
 
     def get(self, request, *args, **kwargs):
         adapter = self.adapter(kwargs['adapter_class'])
-        output_type = self.kwargs['output_type']
+        output_type = self.kwargs.get('output_type', None)
         identifier = self.identifier()
-        self.start_date, self.end_date = current_start_end_dates(self.request)
+        start_date, end_date = self.start_end_dates_from_request()
 
-        self.values = adapter.values(
-            identifier, self.start_date, self.end_date)
+        self.values = adapter.values(identifier, start_date, end_date)
 
         self.name = adapter.location(**identifier).get('name', 'export')
 
         if output_type == 'csv':
-            filename = '%s.csv' % (
-                self.name)
+            filename = '%s.csv' % (self.name)
             # Make the csv output.
             response = HttpResponse(mimetype='text/csv')
             response['Content-Disposition'] = (
@@ -1580,4 +1628,5 @@ class AdapterValuesView(AdapterMixin, ViewContextMixin, TemplateView):
             return response
         else:
             # Make html table using self.values
-            return super(AdapterValuesView, self).get(request, *args, **kwargs)
+            return super(AdapterValuesView, self).get(
+                request, *args, **kwargs)
