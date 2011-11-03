@@ -1578,7 +1578,7 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
     - identifier (required, multiple supported)
     - width, height (optional)
     - start_date, end_date (optional, iso8601 format, default current)
-
+    - layout_extra (optional)
     """
 
     def get(self, request, *args, **kwargs):
