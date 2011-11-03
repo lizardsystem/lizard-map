@@ -991,7 +991,7 @@ def search(workspace, google_x, google_y, radius):
 
 
 # L3
-def search_coordinates(request, workspace_storage_id=None, format='popup'):
+def search_coordinates(request, workspace_storage_id=None, _format='popup'):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
 
@@ -1009,6 +1009,7 @@ def search_coordinates(request, workspace_storage_id=None, format='popup'):
     # xy params from the GET request.
     x = float(request.GET.get('x'))
     y = float(request.GET.get('y'))
+    format = request.GET.get('format', _format)
     # TODO: convert radius to correct scale (works now for google + rd)
     radius = float(request.GET.get('radius'))
     radius_search = radius
@@ -1045,6 +1046,15 @@ def search_coordinates(request, workspace_storage_id=None, format='popup'):
             result['x'] = x + (radius / 10)
             result['y'] = y - (radius / 10)
             return HttpResponse(json.dumps(result))
+        elif format == 'object':
+             print found
+
+             result = [{'id':f['identifier'], 'name':f['name']}
+             for f in found]
+
+             print result
+             return HttpResponse(json.dumps(result))
+
         else:
             # default: as popup
             return popup_json(found, request=request)

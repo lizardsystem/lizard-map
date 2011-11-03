@@ -85,7 +85,7 @@ urlpatterns = patterns(
         name="lizard_map.search_coordinates"),  # L3
     url(r'^search_name/',
         'lizard_map.views.search_coordinates',
-        {'format': 'name'},
+        {'_format': 'name'},
         name="lizard_map.search_name"),  # L3
 
     # Workspace storage
