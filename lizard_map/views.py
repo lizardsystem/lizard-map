@@ -1538,6 +1538,15 @@ class AdapterMixin(object):
 
         return start_date, end_date
 
+    def layout_extra_from_request(self):
+        """Check for url parameter layout_extra (in json) and return parsed.
+        """
+        result = {}
+        layout_extra_json = self.request.GET.get('layout_extra', None)
+        if layout_extra_json is not None:
+            result = json.loads(layout_extra_json)
+        return result
+
 
 class ImageMixin(object):
     """
@@ -1583,7 +1592,8 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
         start_date, end_date = self.start_end_dates_from_request()
 
         # Add animation slider position, info from session data.
-        layout_extra = slider_layout_extra(self.request)
+        layout_extra = self.layout_extra_from_request()
+        layout_extra.update(slider_layout_extra(self.request))
 
         return current_adapter.image(
             identifier_list, start_date, end_date,
