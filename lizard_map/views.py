@@ -1027,7 +1027,11 @@ def search_coordinates(request, workspace_storage_id=None, _format='popup'):
         workspace = WorkspaceStorage.objects.get(pk=workspace_storage_id)
     else:
         user_workspace_id = request.GET.get('user_workspace_id', None)
-        workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
+        if user_workspace_id is not None:
+            workspace = WorkspaceEdit.objects.get(pk=user_workspace_id)
+        else:
+            stored_workspace_id = request.GET.get('stored_workspace_id', None)
+            workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
     found = search(workspace, google_x, google_y, radius)
 
@@ -1048,19 +1052,19 @@ def search_coordinates(request, workspace_storage_id=None, _format='popup'):
             result['y'] = y - (radius / 10)
             return HttpResponse(json.dumps(result))
         elif format == 'object':
-             print found
-
              result = [{'id':f['identifier'], 'name':f['name']}
              for f in found]
 
-             print result
              return HttpResponse(json.dumps(result))
 
         else:
             # default: as popup
             return popup_json(found, request=request)
     else:
-        return popup_json([], request=request)
+        if format == 'object':
+            return HttpResponse([])
+        else:
+            return popup_json([], request=request)
 
 
 class CollageDetailView(
