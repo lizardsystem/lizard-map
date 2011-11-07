@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.4 (unreleased)
+3.4 (2011-11-07)
 ----------------
 
 - Added layout_extra_from_request to AdapterMixin.
