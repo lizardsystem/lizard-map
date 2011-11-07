@@ -23,6 +23,11 @@ Changelog of lizard-map
 
 - Added new adapter function identifiers.
 
+- Fixed bug where tipsy tooltips didn't close correctly
+  https://office.nelen-schuurmans.nl/trac/ticket/3378
+  https://github.com/jaz303/tipsy/issues/19
+
+- Added tooltip to the remove icon within the workspace
 
 3.3 (2011-10-31)
 ----------------

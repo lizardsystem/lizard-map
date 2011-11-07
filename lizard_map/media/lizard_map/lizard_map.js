@@ -518,7 +518,7 @@ postAction. */
 function actionPostClick(event, preAction, postAction, parameters) {
     var url, target, target_id;
     event.preventDefault();
-
+    
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id");
     if (target_id !== undefined) {
@@ -536,6 +536,9 @@ function actionPostClick(event, preAction, postAction, parameters) {
         .success(function (data) {
             var div, html;
             if (target !== undefined) {
+		// If there are any tipsy tooltips, hide them first
+                $(".tipsy").hide();
+
                 div = $("<div/>").html(data).find(".dialog-box").find(target_id);
                 target.html(div.html());
             }
