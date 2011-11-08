@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.4.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Textual changes to satisfy pyflakes/pep8.
 
 
 3.4.2 (2011-11-07)
