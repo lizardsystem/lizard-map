@@ -48,6 +48,5 @@ class WorkspacesTest(TestCase):
             adapter_class='fake adapter',
             adapter_layer_json='',
             identifier='{"id":"id"}')
-        mock_request = self.MockRequest()
         workspaces.collage_items_html(
             collage_edit.collage_items.all())

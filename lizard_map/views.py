@@ -1052,10 +1052,10 @@ def search_coordinates(request, workspace_storage_id=None, _format='popup'):
             result['y'] = y - (radius / 10)
             return HttpResponse(json.dumps(result))
         elif format == 'object':
-             result = [{'id':f['identifier'], 'name':f['name']}
-             for f in found]
+            result = [{'id':f['identifier'], 'name':f['name']}
+            for f in found]
 
-             return HttpResponse(json.dumps(result))
+            return HttpResponse(json.dumps(result))
 
         else:
             # default: as popup
