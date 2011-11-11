@@ -684,6 +684,9 @@ L3
 function setUpWorkspaceButtons() {
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {
+	// If there are any tipsy tooltips, hide them first
+        $(".tipsy").hide();
+
         var $workspace, workspace_id, url, object_id;
         $workspace = $(this).parents("div.workspace");
         workspace_id = $workspace.attr("data-workspace-id");
