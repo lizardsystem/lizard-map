@@ -8,11 +8,6 @@
         src="{{ STATIC_URL }}lizard_map/graph.js"></script>
 {% endblock %}
 
-{% block object-actions %}
-    <span class="ss_sprite ss_help"><a href="{% url help-collage %}" data-help-name="collage_help" class="ajax-help-dialog">Help</a></span> |
-    {{ block.super }}
-{% endblock %}
-
 {% block sidebar %}
 
 {# TODO slugs #}
