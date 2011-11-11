@@ -1,7 +1,13 @@
 Changelog of lizard-map
 =======================
 
-3.4.3 (unreleased)
+3.4.4 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+3.4.3 (2011-11-11)
 ------------------
 
 - Deleted collage help button because it didn't work.

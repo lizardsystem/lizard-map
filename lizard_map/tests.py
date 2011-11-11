@@ -130,7 +130,15 @@ class ViewsTest(TestCase):
             {'top': '6964942', 'right': '1254790',
              'left': '-14675', 'bottom': '6668977'})
 
+    def test_mixins(self):
+        view = views.AppView();
 
+        gtc = view.google_tracking_code()
+        if gtc is not None:
+            self.assertIsInstance(gtc, str)
+        
+        self.assertIsNone(view.workspace())
+        
 class TestDateRange(TestCase):
     """Test daterange.py"""
 
