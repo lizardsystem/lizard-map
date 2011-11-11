@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.4.3 (unreleased)
 ------------------
 
+- Deleted collage help button because it didn't work.
+
 - Textual changes to satisfy pyflakes/pep8.
 
 
