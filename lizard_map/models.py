@@ -503,6 +503,29 @@ class WorkspaceModelMixin(object):
             # Just request the adapter.
             workspace_item.adapter
 
+    def wms_layers(self):
+        """Getting lizard-wms to work by returning the appropriate values
+        used in lizard_map/wms.html. This is a hack in the sense that I
+        (Remco Gerlich) don't know what the best place for this function is,
+        or whether decoding the json already happens somewhere else."""
+
+        def to_template_data(workspace_item):
+            adapter_layer = json.loads(workspace_item.adapter_layer_json)
+
+            return {
+                'wms_id': workspace_item.id,
+                'name': workspace_item.name,
+                'url': adapter_layer.get('url', ''),
+                'params': adapter_layer.get('params', '{}'),
+                'options': adapter_layer.get('options', '{}'),
+             }
+                
+        return [ to_template_data(workspace_item)
+                 for workspace_item in self.workspace_items.all() 
+                 if workspace_item.adapter_class == ADAPTER_CLASS_WMS 
+                    and workspace_item.visible ]
+
+
     @property
     def is_animatable(self):
         """Determine if any visible workspace_item is animatable."""
