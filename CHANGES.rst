@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-3.4.4 (unreleased)
-------------------
+3.5 (2011-11-14)
+----------------
 
 - Added wms_layers function to base Workspace model so that lizard-wms
   can work.
