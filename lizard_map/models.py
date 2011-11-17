@@ -519,12 +519,11 @@ class WorkspaceModelMixin(object):
                 'params': adapter_layer.get('params', '{}'),
                 'options': adapter_layer.get('options', '{}'),
              }
-                
-        return [ to_template_data(workspace_item)
-                 for workspace_item in self.workspace_items.all() 
-                 if workspace_item.adapter_class == ADAPTER_CLASS_WMS 
-                    and workspace_item.visible ]
 
+        return [to_template_data(workspace_item)
+                for workspace_item in self.workspace_items.all()
+                if workspace_item.adapter_class == ADAPTER_CLASS_WMS
+                and workspace_item.visible]
 
     @property
     def is_animatable(self):
