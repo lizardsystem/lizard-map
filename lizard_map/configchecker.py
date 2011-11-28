@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 @configchecker.register
 def checker():  # Pragma: nocover
-
+    """Verify lizard_map's demands on settings.py."""
     if ('lizard_map.context_processors.processor.processor'
         in settings.TEMPLATE_CONTEXT_PROCESSORS):
         logger.warn(

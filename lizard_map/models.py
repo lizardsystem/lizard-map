@@ -24,6 +24,9 @@ from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
 # Unchecked end here
 
+import lizard_map.configchecker
+lizard_map.configchecker  # Pyflakes...
+
 from adapter import adapter_layer_arguments
 from adapter import adapter_entrypoint
 from adapter import adapter_class_names
@@ -520,11 +523,10 @@ class WorkspaceModelMixin(object):
                 'options': adapter_layer.get('options', '{}'),
              }
 
-        return [ to_template_data(workspace_item)
-                 for workspace_item in self.workspace_items.all()
-                 if workspace_item.adapter_class == ADAPTER_CLASS_WMS
-                    and workspace_item.visible ]
-
+        return [to_template_data(workspace_item)
+                for workspace_item in self.workspace_items.all()
+                if workspace_item.adapter_class == ADAPTER_CLASS_WMS
+                and workspace_item.visible ]
 
     @property
     def is_animatable(self):
@@ -668,13 +670,13 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     class Meta:
         ordering = ('name', )
 
-    def html(self, identifiers=None, is_collage=False):
+    def html(self, identifiers=None, is_collage=False, request=None):
         if identifiers is None:
             identifiers = [self.identifier, ]
         try:
             return self.adapter.html(
                 identifiers=identifiers,
-                layout_options={'is_collage': is_collage})
+                layout_options={'is_collage': is_collage, 'request': request})
         except AttributeError:
             # if self.adapter crashes, it will return None
             return ""

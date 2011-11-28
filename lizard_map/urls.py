@@ -6,9 +6,6 @@ from django.contrib import admin
 from lizard_ui.urls import debugmode_urlpatterns
 
 import lizard_map.views
-import lizard_map.configchecker
-
-lizard_map.configchecker  # Pyflakes...
 admin.autodiscover()
 
 urlpatterns = patterns(

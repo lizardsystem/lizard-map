@@ -12,7 +12,7 @@ from django.conf import settings
 try:
     import hotshot
     import hotshot.stats
-    hotshot = hotshot # pyflakes...
+    hotshot = hotshot  # pyflakes...
 except ImportError:
     hotshot = None
 

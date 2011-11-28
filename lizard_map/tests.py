@@ -131,7 +131,7 @@ class ViewsTest(TestCase):
              'left': '-14675', 'bottom': '6668977'})
 
     def test_mixins(self):
-        view = lizard_map.views.AppView();
+        view = lizard_map.views.AppView()
 
         gtc = view.google_tracking_code()
         if gtc is not None:
