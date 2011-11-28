@@ -24,6 +24,9 @@ from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
 # Unchecked end here
 
+import lizard_map.configchecker
+lizard_map.configchecker  # Pyflakes...
+
 from adapter import adapter_layer_arguments
 from adapter import adapter_entrypoint
 from adapter import adapter_class_names
