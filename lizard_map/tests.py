@@ -137,7 +137,7 @@ class ViewsTest(TestCase):
         if gtc is not None:
             self.assertIsInstance(gtc, str)
 
-        self.assertIsNone(view.workspace())
+        self.assertIsNone(gtc)
 
 
 class TestDateRange(TestCase):

@@ -6,6 +6,8 @@ Changelog of lizard-map
 
 - Restored a small feature that RainApp depends on.
 
+- Fixed test test_mixins.
+
 
 3.5 (2011-11-14)
 ----------------

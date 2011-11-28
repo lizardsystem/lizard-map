@@ -24,6 +24,9 @@ from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
 # Unchecked end here
 
+import lizard_map.configchecker
+lizard_map.configchecker  # Pyflakes...
+
 from adapter import adapter_layer_arguments
 from adapter import adapter_entrypoint
 from adapter import adapter_class_names
@@ -523,7 +526,7 @@ class WorkspaceModelMixin(object):
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()
                 if workspace_item.adapter_class == ADAPTER_CLASS_WMS
-                and workspace_item.visible]
+                and workspace_item.visible ]
 
     @property
     def is_animatable(self):
