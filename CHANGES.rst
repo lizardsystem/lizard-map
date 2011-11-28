@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Restored a small feature that RainApp depends on.
 
 
 3.5 (2011-11-14)
