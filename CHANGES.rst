@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed test test_mixins.
 
 
 3.5 (2011-11-14)

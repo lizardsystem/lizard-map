@@ -74,7 +74,7 @@ class GoogleTrackingMixin(object):
     """
     Google tracking code.
     """
-    def google_tracking_code():
+    def google_tracking_code(self):
         try:
             return settings.GOOGLE_TRACKING_CODE
         except AttributeError:
