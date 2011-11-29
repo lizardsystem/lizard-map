@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Removed object-actions block with the non-existing 'help-workspace' url that
+  broke the interface.
 
 
 3.5.1 (2011-11-28)
