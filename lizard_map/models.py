@@ -526,7 +526,7 @@ class WorkspaceModelMixin(object):
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()
                 if workspace_item.adapter_class == ADAPTER_CLASS_WMS
-                and workspace_item.visible ]
+                and workspace_item.visible]
 
     @property
     def is_animatable(self):
