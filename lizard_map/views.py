@@ -74,7 +74,7 @@ class GoogleTrackingMixin(object):
     """
     Google tracking code.
     """
-    def google_tracking_code():
+    def google_tracking_code(self):
         try:
             return settings.GOOGLE_TRACKING_CODE
         except AttributeError:
@@ -816,8 +816,10 @@ def popup_collage_json(collage_items, popup_id, request=None):
         collage_item = collage_items[0]  # Each group always has items.
         identifiers = [collage_item.identifier for
                        collage_item in collage_items]
+
         html.append(
-            collage_item.html(identifiers=identifiers, is_collage=True))
+            collage_item.html(identifiers=identifiers, is_collage=True,
+                              request=request))
 
     result = {'id': popup_id,
               'html': html,

@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '3.4.4dev'
+version = '3.6dev'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
@@ -50,7 +50,7 @@ setup(name='lizard-map',
       zip_safe=False,
       install_requires=install_requires,
       tests_require=tests_require,
-      extras_require = {'test': tests_require},
+      extras_require={'test': tests_require},
       entry_points={
           'console_scripts': [
             ],

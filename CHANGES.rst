@@ -1,10 +1,32 @@
 Changelog of lizard-map
 =======================
 
-3.4.4 (unreleased)
-------------------
+3.6 (unreleased)
+----------------
 
 - Nothing changed yet.
+
+
+3.5.2 (2011-11-29)
+------------------
+
+- Removed object-actions block with the non-existing 'help-workspace' url that
+  broke the interface.
+
+
+3.5.1 (2011-11-28)
+------------------
+
+- Restored a small feature that RainApp depends on.
+
+- Fixed test test_mixins.
+
+
+3.5 (2011-11-14)
+----------------
+
+- Added wms_layers function to base Workspace model so that lizard-wms
+  can work.
 
 
 3.4.3 (2011-11-11)

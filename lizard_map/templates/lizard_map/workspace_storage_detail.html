@@ -3,11 +3,6 @@
 {% load workspaces %}
 {% load i18n %}
 
-{% block object-actions %}
-    <span class="ss_sprite ss_help"><a href="{% url help-workspace %}" data-help-name="workspace_help" class="ajax-help-dialog">Help</a></span> |
-    {{ block.super }}
-{% endblock %}
-
 
 {% block sidebar %}
 <div id="workspace"
