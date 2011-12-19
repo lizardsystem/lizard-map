@@ -4,7 +4,13 @@ Changelog of lizard-map
 3.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- WorkspaceItemAdapter's html_default() can use the
+  extra_render_kwargs kwarg again. Subclasses can use it to send
+  variables to the template and still use the html_default method for
+  most of the work.
+
+- Added a block popup_title to html_default.html so that the title
+  can be changed in extending templates.
 
 
 3.5.2 (2011-11-29)

@@ -2,10 +2,12 @@
 {% load workspaces %}
 
 {# header #}
+{% block popup_title %}
 <div>
   <img src="{{ symbol_url }}" />&nbsp;
   <strong>{{ title|truncatewords:8 }}</strong>
 </div>
+{% endblock %}
 
 {% if img_url %}
 <div style="width: 100%; height: 240px;"

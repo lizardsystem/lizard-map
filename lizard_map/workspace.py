@@ -304,14 +304,19 @@ class WorkspaceItemAdapter(object):
         Default implementation for html view ("popup"). It returns an
         html snippet with links in it.
 
-        Not all kwargs are still used, but they exist for backwards
-        compatibility.
+        The 'snippet_group' kwarg is not used anymore, but exists for
+        backward compatibility. If settings.DEBUG is True, using this
+        causes a warning.
 
         Use this function if html function behaviour is default:
         def html(self, identifiers):
             return super(WorkspaceItemAdapterKrw, self).html_default(
                 identifiers)
         """
+        if snippet_group is not None and settings.DEBUG:
+            logger.warn('kwarg "snippet_group" supplied to html_default ' +
+                        'even though it is not used anymore.')
+
         if template is None:
             template = 'lizard_map/html_default.html'
 
@@ -361,8 +366,12 @@ class WorkspaceItemAdapter(object):
             'img_url': img_url,
             'symbol_url': self.symbol_url(),
             'collage_item_props': collage_item_props}
+
         if layout_options is not None:
             render_kwargs.update(layout_options)
+
+        if extra_render_kwargs is not None:
+            render_kwargs.update(extra_render_kwargs)
 
         return render_to_string(
             template,
