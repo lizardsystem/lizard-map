@@ -18,6 +18,7 @@ install_requires = [
     'django-piston',
     'django-staticfiles',
     'lizard-ui >= 3.1',
+    'lizard-help',
     'matplotlib',
     'pkginfo',
     'django-jsonfield',
