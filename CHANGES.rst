@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.6 (unreleased)
+3.6 (2011-12-19)
 ----------------
 
 - WorkspaceItemAdapter's html_default() can use the
