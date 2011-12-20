@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.8 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added 'transform_point' utility function that can use the site's
+  projection Setting to transform points to a desired projection.
 
 
 3.7 (2011-12-20)
