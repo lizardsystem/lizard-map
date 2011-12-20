@@ -3,7 +3,10 @@ import logging
 from pyproj import Proj
 from pyproj import transform
 
+from django.contrib.gis.geos import Point
+
 from lizard_map.models import BackgroundMap
+from lizard_map.models import Setting
 
 
 logger = logging.getLogger(__name__)
@@ -48,6 +51,56 @@ srs_to_mapnik_projection = {
     'EPSG:4326': WGS84,
     }
 
+string_to_srs = {
+    'rd': 'EPSG:28992',
+    'google': 'EPSG:900913',
+    'wgs84': 'EPSG:4326',
+}
+
+string_to_srid = {
+    'rd': 28992,
+    'google': 900913,
+    'wgs84': 4326,
+}
+
+srs_to_string = {
+    'EPSG:28992': "rd",
+    'EPSG:900913': "google",
+    'EPSG:4326': "wgs84",
+}
+
+def transform_point(x, y, from_proj=None, to_proj=None):
+    """Transform x and y from from_proj to to_proj. Return a Point
+    with the right srid set.
+
+    Possible values of from_proj and to_proj are "google", "rd"
+    and "wgs84".
+
+    If no from_proj is given, the "projection" Setting is used.
+    If no to_proj is given, ValueError is raised."""
+
+    if to_proj is None:
+        raise ValueError("No valid to_proj given.")
+    if to_proj not in string_to_srs:
+        raise ValueError("Value '%s' of to_proj invalid." % to_proj)
+    
+    to_srid = string_to_srid[to_proj]
+    to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
+    
+    if from_proj is None:
+        from_proj = Setting.get('projection')
+        
+        if not from_proj or from_proj not in srs_to_string:
+            raise ValueError("From_proj not given and no valid projection Setting present.")
+        from_proj = Proj(srs_to_mapnik_projection[from_proj])
+    elif from_proj not in string_to_srs:
+        raise ValueError("Value '%s' of from_proj invalid." % from_proj)
+    else:
+        from_proj = Proj(srs_to_mapnik_projection[string_to_srs[from_proj]])
+
+    p = Point(*transform(from_proj, to_proj, x, y))
+    p.srid = to_srid
+    return p
 
 def google_to_rd(x, y):
     """Return RD coordinates from GOOGLE coordinates."""
@@ -70,12 +123,12 @@ def google_to_wgs84(x, y):
 
 
 def rd_to_wgs84(x, y):
-    """Return GOOGLE coordinates from RD coordinates."""
+    """Return WGS84 coordinates from RD coordinates."""
     return transform(rd_projection, wgs84_projection, x, y)
 
 
 def wgs84_to_rd(x, y):
-    """Return GOOGLE coordinates from RD coordinates."""
+    """Return WGS84 coordinates from RD coordinates."""
     return transform(wgs84_projection, rd_projection, x, y)
 
 
