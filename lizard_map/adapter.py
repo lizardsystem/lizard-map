@@ -410,11 +410,20 @@ class Graph(object):
         self.axes = self.figure.add_subplot(111)
         self.axes.grid(True)
 
+        # We track whether y_lim has been set manually
+        self._y_min_set_manually = False
+        self._y_max_set_manually = False
+
         # Fixup_axes in init, so axes can be customised (for example set_ylim).
         self.fixup_axes()
 
         #deze kan je zelf zetten
         self.ax2 = None
+
+    def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
+        self.axes.set_ylim(y_min, y_max)
+        self._y_min_set_manually = min_manual
+        self._y_max_set_manually = max_manual
 
     def add_today(self):
         # Show line for today.
@@ -450,12 +459,21 @@ class Graph(object):
                     self.end_date.replace(tzinfo=data[0][0].tzinfo)
             index_in_daterange = ((data[0] < end_date_tz) &
                                   (data[0] > start_date_tz))
+
+            # Calculate correct y_min and y_max, but use old if they have
+            # already been set manually
             if index_in_daterange.any():
                 data_low = numpy.min(data[1, index_in_daterange])
                 data_high = numpy.max(data[1, index_in_daterange])
                 data_span = data_high - data_low
                 view_low = data_low - data_span * bottom
                 view_high = data_high + data_span * top
+
+                if self._y_min_set_manually:
+                    view_low, _ = self.axes.get_ylim()
+                if self._y_max_set_manually:
+                    _, view_high = self.axes.get_ylim()
+
                 self.axes.set_ylim(view_low, view_high)
         return None
 
