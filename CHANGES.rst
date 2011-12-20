@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.7 (unreleased)
+3.7 (2011-12-20)
 ----------------
 
 - Made it possible to scale y-axis of graphs manually (it used to be
