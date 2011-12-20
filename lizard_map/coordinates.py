@@ -69,6 +69,7 @@ srs_to_string = {
     'EPSG:4326': "wgs84",
 }
 
+
 def transform_point(x, y, from_proj=None, to_proj=None):
     """Transform x and y from from_proj to to_proj. Return a Point
     with the right srid set.
@@ -83,15 +84,16 @@ def transform_point(x, y, from_proj=None, to_proj=None):
         raise ValueError("No valid to_proj given.")
     if to_proj not in string_to_srs:
         raise ValueError("Value '%s' of to_proj invalid." % to_proj)
-    
+
     to_srid = string_to_srid[to_proj]
     to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
-    
+
     if from_proj is None:
         from_proj = Setting.get('projection')
-        
+
         if not from_proj or from_proj not in srs_to_string:
-            raise ValueError("From_proj not given and no valid projection Setting present.")
+            raise ValueError("From_proj not given and no " +
+                             "valid projection Setting present.")
         from_proj = Proj(srs_to_mapnik_projection[from_proj])
     elif from_proj not in string_to_srs:
         raise ValueError("Value '%s' of from_proj invalid." % from_proj)
@@ -101,6 +103,7 @@ def transform_point(x, y, from_proj=None, to_proj=None):
     p = Point(*transform(from_proj, to_proj, x, y))
     p.srid = to_srid
     return p
+
 
 def google_to_rd(x, y):
     """Return RD coordinates from GOOGLE coordinates."""
