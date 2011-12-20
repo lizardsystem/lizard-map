@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.8 (unreleased)
+3.8 (2011-12-20)
 ----------------
 
 - Added 'transform_point' utility function that can use the site's
