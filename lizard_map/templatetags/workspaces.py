@@ -68,6 +68,16 @@ def collage_edit(context, collage_edit, reload_after_action=False,
         'reload_after_action': reload_after_action,
         'stretched': stretched}
 
+@register.simple_tag
+def if_in_workspace_edit(workspace_edit, workspace_item_name, string):
+    """If the parameter name is already in the workspace_edit, return
+    the css class that turns shows it as in the workspace. If not,
+    return the css class that shows it as workspace-acceptable."""
+
+    if workspace_edit.in_workspace(workspace_item_name):
+        return string
+    else:
+        return ''
 
 # Obsolete, statistics are loaded with a separate request
 @register.inclusion_tag("lizard_map/tag_statistics.html")

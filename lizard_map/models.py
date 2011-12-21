@@ -583,6 +583,11 @@ class WorkspaceEdit(
         """Used by wms.html"""
         return reverse("lizard_map_workspace_edit_wms")
 
+    def in_workspace(self, workspace_item_name):
+        """Check if the workspace contains an item with the given
+        workspace_item_name."""
+        
+        return self.workspace_items.filter(name=workspace_item_name).count() > 0
 
 class WorkspaceEditItem(WorkspaceItemMixin):
     """

@@ -4,8 +4,8 @@ Changelog of lizard-map
 3.10 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- New template tag 'if_in_workspace_edit' that can return a string
+  if a given item's name is present in the workspace.
 
 3.9 (2011-12-21)
 ----------------
