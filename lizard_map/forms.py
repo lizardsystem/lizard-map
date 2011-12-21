@@ -103,10 +103,16 @@ class CollageAddForm(forms.Form):
     """
     Collage form. Never actually displayed.
     """
-    name = forms.CharField(max_length=100, required=True)
-    adapter_class = forms.CharField(max_length=100, required=True)
-    adapter_layer_json = forms.CharField(max_length=100, required=True)
-    identifier = forms.CharField(max_length=100, required=True)
+
+    # Name in the database is max 80 characters, but I still removed
+    # the max_length because the view takes care of it already, and
+    # clicks shouldn't silently fail.
+    name = forms.CharField(required=True)
+
+    # The others don't need a max_length either.
+    adapter_class = forms.CharField(required=True)
+    adapter_layer_json = forms.CharField(required=True)
+    identifier = forms.CharField(required=True)
 
 
 class EmptyForm(forms.Form):

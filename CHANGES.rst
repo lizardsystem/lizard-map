@@ -4,8 +4,9 @@ Changelog of lizard-map
 3.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- Removed some max_lengths in forms.py, because it caused valid forms
+  to fail. There is no reason JSON fields should have a hard limit,
+  and other fields should have the same limit as in the model.
 
 3.8 (2011-12-20)
 ----------------
