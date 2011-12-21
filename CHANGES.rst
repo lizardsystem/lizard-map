@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.10 (unreleased)
+3.10 (2011-12-21)
 -----------------
 
 - New template tag 'if_in_workspace_edit' that can return a string
