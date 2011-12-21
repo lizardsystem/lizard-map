@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.11 (unreleased)
+3.11 (2011-12-21)
 -----------------
 
 - Added functions in collage_edit and workspace_edit to check whether
