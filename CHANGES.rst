@@ -4,8 +4,10 @@ Changelog of lizard-map
 3.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added functions in collage_edit and workspace_edit to check whether
+  certain items already exist in them.
 
+- Fixed bug where items could be added to a collage several times.
 
 3.10 (2011-12-21)
 -----------------

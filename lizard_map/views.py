@@ -1140,12 +1140,21 @@ class CollageView(CollageMixin, ActionDialogView):
             # Add all found items to collage.
             logger.debug("Adding collage item %s" % found_item['name'])
             #print '%r' % found_item['identifier']
-            collage.collage_items.create(
-                adapter_class=found_item['workspace_item'].adapter_class,
-                adapter_layer_json=found_item[
-                    'workspace_item'].adapter_layer_json,
-                name=found_item['name'][:80],
-                identifier=found_item['identifier'])
+
+            # Don't add them if they already exist
+            adapter_class = found_item['workspace_item'].adapter_class
+            adapter_layer_json = (found_item['workspace_item']
+                                  .adapter_layer_json)
+            name = found_item['name'][:80]
+            identifier = found_item['identifier']
+
+            if not collage.data_in_collage(adapter_class, adapter_layer_json,
+                                           name, identifier):
+                collage.collage_items.create(
+                    adapter_class=adapter_class,
+                    adapter_layer_json=adapter_layer_json,
+                    name=name,
+                    identifier=identifier)
 
 
 class CollageAddView(CollageMixin, ActionDialogView):
@@ -1160,13 +1169,25 @@ class CollageAddView(CollageMixin, ActionDialogView):
         data = form.cleaned_data
         collage = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
+
         # Parse_identifier_json is unnecessary, but it provides an
         # extra check.
+        adapter_class = data['adapter_class']
+        adapter_layer_json = data['adapter_layer_json']
+        name = data['name'][:80]
+        identifier = parse_identifier_json(data['identifier'])
+
+        if collage.data_in_collage(adapter_class,
+                                   adapter_layer_json,
+                                   name,
+                                   identifier):
+            return
+
         collage.collage_items.create(
-            adapter_class=data['adapter_class'],
-            adapter_layer_json=data['adapter_layer_json'],
-            name=data['name'][:80],
-            identifier=parse_identifier_json(data['identifier']))
+            adapter_class=adapter_class,
+            adapter_layer_json=adapter_layer_json,
+            name=name,
+            identifier=identifier)
 
 
 class CollageEmptyView(CollageView):

@@ -586,8 +586,10 @@ class WorkspaceEdit(
     def in_workspace(self, workspace_item_name):
         """Check if the workspace contains an item with the given
         workspace_item_name."""
-        
-        return self.workspace_items.filter(name=workspace_item_name).count() > 0
+
+        return (self.workspace_items.filter(name=workspace_item_name)
+                .count()) > 0
+
 
 class WorkspaceEditItem(WorkspaceItemMixin):
     """
@@ -637,7 +639,19 @@ class CollageEdit(UserSessionMixin):
     """
     User selection of map locations.
     """
-    pass
+
+    def data_in_collage(self, adapter_class, adapter_layer_json,
+                        name, identifier):
+        """Check if an item with the same data already exists in the
+        collage."""
+        for item in (self.collage_items
+            .filter(adapter_class=adapter_class)
+            .filter(adapter_layer_json=adapter_layer_json)
+            .filter(name=name)):
+            # Easiest way to compare identifiers?
+            if json.dumps(item.identifier) == json.dumps(identifier):
+                return True
+        return False
 
 
 class StatisticsMixin(models.Model):
