@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.9 (unreleased)
+3.9 (2011-12-21)
 ----------------
 
 - Removed some max_lengths in forms.py, because it caused valid forms
