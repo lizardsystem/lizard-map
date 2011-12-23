@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.12 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- The workspace item zoom button is back and works.
 
 
 3.11 (2011-12-21)

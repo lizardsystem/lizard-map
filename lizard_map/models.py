@@ -439,6 +439,10 @@ class WorkspaceItemMixin(models.Model):
         url += '?' + '&'.join(self._url_arguments(identifiers))
         return url
 
+    def has_extent(self):
+        extent = self.adapter.extent()
+        return None not in extent.values()
+
 
 class UserSessionMixin(models.Model):
     """For objects that are bound to a user and/or session.

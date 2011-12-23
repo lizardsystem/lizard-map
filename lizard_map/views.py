@@ -32,6 +32,7 @@ from lizard_map.adapter import parse_identifier_json
 from lizard_map.animation import AnimationSettings
 from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
+from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
 from lizard_map.daterange import compute_and_store_start_end
@@ -665,24 +666,35 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     return HttpResponse(json.dumps(deleted))
 
 
-# #To be updated/tested
-# @never_cache
-# def workspace_item_extent(request, workspace_item_id=None):
-#     """Returns extent for the workspace in json.
+@never_cache
+def workspace_item_extent(request):
+    """Returns extent for the workspace in json.
+     Transform to correct client-side projection, then return coordinates.
+    """
+    logger.debug(">1<")
 
-#     Transform to correct client-side projection, then return coordinates.
-#     """
-#     workspace_item_id = request.GET['workspace_item_id']
-#     workspace_item = get_object_or_404(WorkspaceItem, pk=workspace_item_id)
-#     extent = workspace_item.adapter.extent()
+    workspace_item_id = request.GET['workspace_item_id']
+    workspace_edit = WorkspaceEdit.get_or_create(
+        request.session.session_key, request.user)
+    workspace_items = (workspace_edit.workspace_items
+                       .filter(pk=workspace_item_id))
 
-#     srs = Setting.get('projection', DEFAULT_PROJECTION)
-#     extent_converted['east'], extent_converted['north'] = google_to_srs(
-#         extent['east'], extent['north'], srs)
-#     extent_converted['west'], extent_converted['south'] = google_to_srs(
-#         extent['west'], extent['south'], srs)
+    if len(workspace_items) == 0:
+        return HttpResponse(json.dumps({}))
 
-#     return HttpResponse(json.dumps(extent_converted))
+    extent = workspace_items[0].adapter.extent()
+
+    peastnorth = transform_point(extent['east'], extent['north'],
+                                 from_proj='google')
+    pwestsouth = transform_point(extent['west'], extent['south'],
+                                 from_proj='google')
+
+    return HttpResponse(json.dumps({
+                'east': peastnorth.get_x(),
+                'north': peastnorth.get_y(),
+                'west': pwestsouth.get_x(),
+                'south': pwestsouth.get_y(),
+                }))
 
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):

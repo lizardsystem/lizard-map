@@ -77,23 +77,21 @@ def transform_point(x, y, from_proj=None, to_proj=None):
     Possible values of from_proj and to_proj are "google", "rd"
     and "wgs84".
 
-    If no from_proj is given, the "projection" Setting is used.
-    If no to_proj is given, ValueError is raised."""
+    If from_proj or to_project aren't given, the "projection" Setting
+    is used.  It makes no sense to give neither."""
 
     if to_proj is None:
-        raise ValueError("No valid to_proj given.")
-    if to_proj not in string_to_srs:
+        to_srs = Setting.get('projection', 'EPSG:900913')
+        to_srid = string_to_srid[srs_to_string[to_srs]]
+        to_proj = Proj(srs_to_mapnik_projection[to_srs])
+    elif to_proj not in string_to_srs:
         raise ValueError("Value '%s' of to_proj invalid." % to_proj)
-
-    to_srid = string_to_srid[to_proj]
-    to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
+    else:
+        to_srid = string_to_srid[to_proj]
+        to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
 
     if from_proj is None:
-        from_proj = Setting.get('projection')
-
-        if not from_proj or from_proj not in srs_to_string:
-            raise ValueError("From_proj not given and no " +
-                             "valid projection Setting present.")
+        from_proj = Setting.get('projection', 'EPSG:900913')
         from_proj = Proj(srs_to_mapnik_projection[from_proj])
     elif from_proj not in string_to_srs:
         raise ValueError("Value '%s' of from_proj invalid." % from_proj)

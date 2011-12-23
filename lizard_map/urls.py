@@ -38,12 +38,12 @@ urlpatterns = patterns(
     url(r'^myworkspace/load/$',  # L3
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
+
     # Partially the same actions as above,
     # you have to put workspace_id in GET parameter here...
-    # TODO: Update to L3
-    # url(r'^workspaceitem/extent/$',
-    #     'lizard_map.views.workspace_item_extent',
-    #     name="lizard_map_workspace_item_extent"),
+    url(r'^workspaceitem/extent/$',
+        'lizard_map.views.workspace_item_extent',
+        name="lizard_map_workspace_item_extent"),
 
     url(r'^mycollage/$',  # L3
         lizard_map.views.CollageDetailView.as_view(),
