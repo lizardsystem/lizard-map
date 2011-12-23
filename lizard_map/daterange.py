@@ -150,7 +150,10 @@ def current_period(request):
     """
     default_period = getattr(settings, 'DEFAULT_PERIOD', PERIOD_DAY)
 
-    return request.session.get(SESSION_DT_PERIOD, default_period)
+    if request is None:
+        return default_period
+    else:
+        return request.session.get(SESSION_DT_PERIOD, default_period)
 
 
 def current_start_end_dates(request, for_form=False, today=None,
@@ -170,8 +173,9 @@ def current_start_end_dates(request, for_form=False, today=None,
     """
     if today is None:
         today = datetime.datetime.now()
-
+        
     period = retrieve_period_function(request)
+
     if period == PERIOD_OTHER:
         session = request.session
         dt_start = session.get(SESSION_DT_START, default_start(today))
