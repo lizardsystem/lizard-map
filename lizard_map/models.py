@@ -440,6 +440,9 @@ class WorkspaceItemMixin(models.Model):
         return url
 
     def has_extent(self):
+        if not hasattr(self, 'adapter') or not hasattr(self.adapter, 'extent'):
+            return False
+
         extent = self.adapter.extent()
         return None not in extent.values()
 

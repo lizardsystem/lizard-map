@@ -1,10 +1,10 @@
 Changelog of lizard-map
 =======================
 
-3.13 (unreleased)
+3.12.1 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fix bug: not every adapter has an extent
 
 
 3.12 (2012-01-02)
