@@ -6,6 +6,7 @@ Changelog of lizard-map
 
 - The workspace item zoom button is back and works.
 
+- Changed "jouw" in some tooltip strings to "uw".
 
 3.11 (2011-12-21)
 -----------------

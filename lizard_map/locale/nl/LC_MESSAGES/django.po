@@ -167,7 +167,7 @@ msgstr "Naar selectiepagina..."
 
 #: templates/lizard_map/tag_collage_edit.html:27
 msgid "This is your current selection."
-msgstr "Dit is jouw huidige selectie."
+msgstr "Dit is uw huidige selectie."
 
 #: templates/lizard_map/tag_collage_edit.html:28
 msgid "Selection"
@@ -220,12 +220,12 @@ msgstr "Workspace laden..."
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
-msgstr "Dit is jouw workspace. Ga met je muis over items voor extra opties."
+msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
 #: templates/lizard_map/tag_workspace_edit.html:92
-msgid "Click on an item from the above list to add it to your workspace."
+msgid "Click on an item from the above list to add it to the workspace."
 msgstr ""
-"Klik op een item uit de bovenstaande lijst om deze aan je workspace toe te "
+"Klik op een item uit de bovenstaande lijst om deze aan de workspace toe te "
 "voegen."
 
 #: templates/lizard_map/wms.html:33
