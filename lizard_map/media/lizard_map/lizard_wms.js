@@ -445,6 +445,11 @@ function getMapUrl() {
         if (!map.layers[i].calculateInRange()) {
             continue;
         }
+	if (!map.layers[i].params) {
+	    /* Why does this happen? I don't know, but this appears necessary. */
+	    continue;
+	}
+
         activelayers[activelayers.length] = map.layers[i].params.LAYERS;
     }
 
@@ -465,7 +470,9 @@ Replaces a href attr. of 'Download' subelement
 function setDownloadImageLink() {
     $('a#download-map').click(function (e) {
         var url;
-        url = $(this).attr("href") + getMapUrl();
+        url = $(this).attr("href"); 
+
+	url += getMapUrl();
         // Because the result is an image, a popup will occur.
         window.location = url;
         return false;
