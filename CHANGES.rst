@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.13 (unreleased)
+3.13 (2012-01-04)
 -----------------
 
 - Skip map layers without params in downloaded image. (internal server
