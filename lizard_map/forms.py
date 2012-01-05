@@ -11,6 +11,8 @@ from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin
 from lizard_map.models import WorkspaceStorage
 
+import logging
+logger = logging.getLogger(__name__)
 
 class WorkspaceSaveForm(forms.Form):
     """
@@ -168,6 +170,7 @@ class CollageItemEditorForm(forms.Form):
         """
         """
         super(CollageItemEditorForm, self).__init__(*args, **kwargs)
+
         # Leave out week and day [:4].
         self.fields['aggregation_period'].choices = (
             StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
@@ -186,6 +189,9 @@ class CollageItemEditorForm(forms.Form):
             (11, 'alleen november'),
             (12, 'alleen december'),
             )
+        
         # Initial status
-        if int(kwargs['initial']['aggregation_period']) != MONTH:
+        # Sometimes this has no 'aggregation_period', for some reason
+        if int(kwargs.get('initial', dict()).
+               get('aggregation_period', None)) != MONTH:
             self.fields['restrict_to_month'].widget.attrs['disabled'] = True
