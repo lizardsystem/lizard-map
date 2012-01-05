@@ -38,7 +38,7 @@
     {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
 
     <h3>Grafiek</h3>
-    {% collage_items_html collage_items 'True' %}
+    {% collage_items_html collage_items 'True' view.date_start_period view.date_end_period %}
     <div>&nbsp;</div>
 
     <h3>Bewerken</h3>

@@ -173,7 +173,7 @@ def current_start_end_dates(request, for_form=False, today=None,
     """
     if today is None:
         today = datetime.datetime.now()
-        
+
     period = retrieve_period_function(request)
 
     if period == PERIOD_OTHER:

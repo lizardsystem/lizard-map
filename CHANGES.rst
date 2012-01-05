@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.14 (unreleased)
+3.14 (2012-01-05)
 -----------------
 
 - Hack to prevent error when a dictionary key doesn't exist.

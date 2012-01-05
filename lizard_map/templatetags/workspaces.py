@@ -106,7 +106,7 @@ def collage_item_statistics_url(collage_items):
 
 # L3
 @register.simple_tag
-def collage_items_html(collage_items, is_collage=False):
+def collage_items_html(collage_items, is_collage=False, start_period=None, end_period=None):
     """
     Generate single html for multiple collage items.
 
