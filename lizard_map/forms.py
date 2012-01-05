@@ -193,5 +193,5 @@ class CollageItemEditorForm(forms.Form):
         # Initial status
         # Sometimes this has no 'aggregation_period', for some reason
         if int(kwargs.get('initial', dict()).
-               get('aggregation_period', None)) != MONTH:
+               get('aggregation_period', '-1')) != MONTH:
             self.fields['restrict_to_month'].widget.attrs['disabled'] = True
