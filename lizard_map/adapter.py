@@ -45,7 +45,7 @@ ADAPTER_ENTRY_POINT = 'lizard_map.adapter_class'
 
 LEGEND_WIDTH = 200
 LEFT_LABEL_WIDTH = 100
-BOTTOM_LINE_HEIGHT = FONT_SIZE * 1.5
+BOTTOM_LINE_HEIGHT = FONT_SIZE * 2
 
 
 def _inches_from_pixels(pixels):

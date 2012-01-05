@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.15 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fix bug where X-label of graph wasn't visible.
 
 
 3.14.1 (2012-01-05)
