@@ -490,7 +490,7 @@ class CollageItemEditorView(ActionDialogView):
         # Select group to update the parameters.
         # Note: we also update invisible items
         grouped_collage_items, collage_item_group = group_collage_items(
-            CollageEditItem.objects.all())
+            CollageEditItem.objects.filter(collage=collage_item.collage))
 
         grouping_hint = collage_item_group[collage_item.id]
         collage_items = grouped_collage_items[grouping_hint]

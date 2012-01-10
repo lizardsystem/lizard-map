@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fix bug with editing collages.
 
 
 3.15 (2012-01-05)
