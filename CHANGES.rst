@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.17 (unreleased)
+3.17 (2012-01-13)
 -----------------
 
 - Fixed bug where items on the collage page didn't have access to the
