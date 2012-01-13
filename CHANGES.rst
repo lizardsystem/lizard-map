@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.17 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed bug where items on the collage page didn't have access to the
+  request (and therefore not to start- and end dates).
 
 
 3.16 (2012-01-10)
