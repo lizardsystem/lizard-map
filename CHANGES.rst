@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.18 (unreleased)
+3.18 (2012-01-17)
 -----------------
 
 - Breadcrumbs for application screens, first
