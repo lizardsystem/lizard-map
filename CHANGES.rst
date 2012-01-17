@@ -4,7 +4,10 @@ Changelog of lizard-map
 3.18 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Breadcrumbs for application screens, first
+  page of applications
+
+- Possibility for apps to add their own breadcrumbs
 
 
 3.17 (2012-01-13)

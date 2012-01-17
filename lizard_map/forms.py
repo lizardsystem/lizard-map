@@ -14,6 +14,7 @@ from lizard_map.models import WorkspaceStorage
 import logging
 logger = logging.getLogger(__name__)
 
+
 class WorkspaceSaveForm(forms.Form):
     """
     Save workspace from edit to storage
@@ -189,7 +190,7 @@ class CollageItemEditorForm(forms.Form):
             (11, 'alleen november'),
             (12, 'alleen december'),
             )
-        
+
         # Initial status
         # Sometimes this has no 'aggregation_period', for some reason
         if int(kwargs.get('initial', dict()).

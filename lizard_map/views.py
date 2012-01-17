@@ -9,13 +9,14 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.template.loader import render_to_string
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils import simplejson as json
+from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
-from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
+from django.views.generic.edit import FormView
 import Image
 import csv
 import iso8601
@@ -54,13 +55,13 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
 from lizard_map.utility import analyze_http_user_agent
 from lizard_ui.models import ApplicationScreen
+from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import ViewContextMixin
 
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
-CRUMBS_HOMEPAGE = {'name': 'home', 'title': 'hoofdpagina', 'url': '/'}
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
 
 
@@ -218,12 +219,80 @@ class DateRangeMixin(object):
         return DateRangeForm(self.current_date_range())
 
 
+class CrumbsMixin(object):
+    def find_app_description(self, url):
+        """An App doesn't generally know what it is called on the
+        current site.  E.g., if the front page has an app called
+        "Metingen" that links to "/fews/fewsjdbc/almere/", then the
+        breadcrumb should show "home > metingen" instead of "home >
+        fewsjdbc > almere", but the app doesn't know this.
+
+        This function tries to help. It returns a tuple with three
+        elements:
+        - A list of breadcrumbs consisting of app screens (other than
+          Home), the last item of which leads to this app
+        - The part of the URL that led to this guess
+        - The rest of the URL (that a view can use to build further
+          parts of the breadcrumbs list)
+
+        If there are multiple screens that appear to fit, we use the
+        one that "uses up" most of the URL.
+        """
+
+        maxlength = None
+        found = (None, None, None)
+
+        if not url.startswith('/'):
+            url = '/' + url
+
+        for icon in ApplicationIcon.objects.all():
+            iconurl = icon.url
+            if iconurl.startswith('http://'):
+                continue
+            if not iconurl.startswith('/'):
+                iconurl = '/' + iconurl
+
+            if url.startswith(iconurl):
+                if maxlength is not None and len(iconurl) < maxlength:
+                    continue
+
+                crumb = {'url': icon.url,
+                         'description': icon.name,
+                         'title': icon.description or icon.name}
+
+                maxlength = len(iconurl)
+                found = (icon.application_screen.crumbs() + [crumb],
+                         iconurl,
+                         url[len(iconurl):])
+
+        return found
+
+    def crumbs(self):
+        """Returns a list of dictionaries, with keys
+        'url', 'description' and 'title'. Views in Apps should
+        override this function, use super() to get this default, and
+        then add their own crumbs."""
+        pass
+
+        initial = [{
+                'url': '/',
+                'description': 'Home',
+                'title': _('Back to homepage')}]
+
+        toapp, self.url_to_app, self.url_after_app = (
+            self.find_app_description(self.request.path))
+
+        if toapp:
+            return initial + toapp
+        else:
+            return initial
+
+
 class AppView(
     WorkspaceEditMixin, CollageMixin, DateRangeMixin,
     ViewContextMixin, MapMixin,
-    GoogleTrackingMixin, TemplateView):
+    GoogleTrackingMixin, TemplateView, CrumbsMixin):
     """All-in-one"""
-    pass
 
 
 class WorkspaceStorageListView(
@@ -274,30 +343,24 @@ class HomepageView(AppView):
         application_screen_slug = kwargs.get('application_screen_slug', None)
         if application_screen_slug is None:
             application_screen_slug = self.request.GET.get('screen', None)
+
         context['application_screen_slug'] = application_screen_slug
-
-        # Breadcrumbs
-        crumbs_prepend = kwargs.get('crumbs_prepend', None)
-        if crumbs_prepend is None:
-            if application_screen_slug:
-                application_screen = get_object_or_404(
-                    ApplicationScreen,
-                    slug=application_screen_slug)
-                crumbs = [application_screen.crumb(), ]
-                if application_screen_slug != 'home':
-                    # prepend with "home"
-                    application_screen_home = get_object_or_404(
-                        ApplicationScreen,
-                        slug='home')
-                    crumbs = [application_screen_home.crumb(), ] + crumbs
-            else:
-                crumbs = [CRUMBS_HOMEPAGE]
-        else:
-            crumbs = list(kwargs['crumbs_prepend'])
-        context['crumbs'] = crumbs
-
+        self.application_screen_slug = application_screen_slug
         return context
 
+    def crumbs(self):
+        # Only called from the template, so
+        # self.application_screen_slug should exist by then
+        crumbs = super(HomepageView, self).crumbs()
+        if self.application_screen_slug:
+            try:
+                screen = (ApplicationScreen.objects.
+                          get(slug=self.application_screen_slug))
+                crumbs = crumbs + screen.crumbs()
+            except ApplicationScreen.DoesNotExist:
+                # Someone mistyped an URL, or something
+                pass
+        return crumbs
 
 ##### Edits on workspace ############
 

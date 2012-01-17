@@ -26,6 +26,15 @@
 {% endifequal %}
 {% endblock map-javascript %}
 
+{% block breadcrumbs %}
+{% if view.crumbs %}
+» <a href="{{ view.crumbs.0.url }}" rel="tipsy-south" title="{{ view.crumbs.0.title }}">{{ view.crumbs.0.description }}</a>
+{% for crumb in view.crumbs|slice:"1:" %}
+→ <a href="{{ crumb.url }}" rel="tipsy-south" title="{{ crumb.title }}">{{ crumb.description }}</a>
+{% endfor %}
+{% endif %}
+{% endblock breadcrumbs %}
+
 {% block above-content %}
 <ul class="map-actions">
   <li id="map-multiple-selection"
