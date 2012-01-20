@@ -81,11 +81,6 @@
 </ul>
 {% endblock above-content %}
 
-{% block object-actions %}
-<span class="ss_sprite ss_page_save"><a id="download-map" href="{% url lizard_map.views.save_map_as_image %}">Download</a></span> |
-{{ block.super }}
-{% endblock %}
-
 {% block content %}
 {# Popups: invisible #}
 <div id="dialog">
