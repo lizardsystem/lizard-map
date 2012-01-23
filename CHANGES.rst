@@ -4,7 +4,11 @@ Changelog of lizard-map
 3.19 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed Download button because we don't have working background maps
+
+- Added a nice calendar to the period selection dialog
+
+- Fixed bug with opacity slider and WMS layers
 
 
 3.18 (2012-01-17)

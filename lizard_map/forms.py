@@ -71,12 +71,12 @@ class DateRangeForm(forms.Form):
         label='',)
     # TODO: NL date format.  Also hardcoded in the js.
     dt_start = forms.DateTimeField(
-        label='van',
-        widget=SelectDateWidget(years=years_choices),
+        label='Van',
+        widget=forms.DateInput(attrs={'class':'datepicker'}),
         required=False)
     dt_end = forms.DateTimeField(
-        label='t/m',
-        widget=SelectDateWidget(years=years_choices),
+        label='Tot',
+        widget=forms.DateInput(attrs={'class':'datepicker'}),
         required=False)
 
     def __init__(self, *args, **kwargs):
@@ -89,7 +89,6 @@ class DateRangeForm(forms.Form):
         if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
             self.fields['dt_start'].widget.attrs['disabled'] = True
             self.fields['dt_end'].widget.attrs['disabled'] = True
-
 
 class CollageForm(forms.Form):
     """

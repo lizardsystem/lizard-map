@@ -1,9 +1,14 @@
 <div class="dialog-box date-range-box">
-  <div class="action-icon ss_sprite ss_calendar_view_day"></div>
-  <form action="{% url lizard_map_date_range %}{% if view.reload_screen_after %}?reload_screen_after={% endif %}"{# this url will result in this template #}
+   <form action="{% url lizard_map_date_range %}{% if view.reload_screen_after %}?reload_screen_after={% endif %}"{# this url will result in this template #}
         method="post">
     {% csrf_token %}
-    {{ view.date_range_form.as_p }}
+    <p>{% autoescape off %}{{ view.date_range_form.period }}{% endautoescape %}</p>
+    <p>
+      <label for="id_dt_start">Van:</label>
+      {{ view.date_range_form.dt_start }}
+      <label for="id_dt_end">Tot:</label>
+      {{ view.date_range_form.dt_end }}
+    </p>
     <div><input type="submit" value="opslaan"{% if view.reload_screen_after %}  class="alternative-submit reload-screen-after"{% endif %} /></div>
   </form>
 </div>

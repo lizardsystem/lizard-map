@@ -16,6 +16,15 @@ var animationTimer, transparencyTimer;
 //     console.log = function () {};
 // }
 
+function setupDatepicker(div) {
+    // Nice Jquery date picker with dropdowns for year and month
+    div.find(".datepicker").datepicker({
+	dateFormat:"yy-mm-dd",
+	changeMonth: true,
+	changeYear: true,
+	showAnim: ''
+    });
+}
 
 function setSliderDate(slider_value) {
     $.ajax({
@@ -79,10 +88,19 @@ function setUpTransparencySlider() {
             });
             // WMS layers
             for (index in wms_layers) {
-                // Lint wants an if statement.. why?
-                if (true) {
-                    wms_layers[index].setOpacity(ui.value / 100);
-                }
+		if (wms_layers.hasOwnProperty(index)) {
+		    // Some layers start out at a lower opacity. If the opacity slider
+		    // is set to 100%, they should be at that lower opacity.
+		    // Store the original opacity in the wms_layer object itself.
+		    if (!wms_layers[index].hasOwnProperty("originalOpacity") &&
+		       wms_layers[index].hasOwnProperty("opacity")) {
+			wms_layers[index].originalOpacity = wms_layers[index].opacity;
+		    } else {
+			wms_layers[index].originalOpacity = 1;
+		    }
+
+                    wms_layers[index].setOpacity((ui.value/100) * wms_layers[index].originalOpacity);
+		}
             }
         }
     });
@@ -336,6 +354,9 @@ function dialogClick(event) {
             div = $("<div/>").html(data).find(".dialog-box");
             dialogContent(div);
             dialogOverlay();
+
+	    // Dialogs may contain datepicker fields, activate them here.
+	    setupDatepicker(div);
         })
         .error(function (data) {
             dialogContent("Fout bij laden van dialoog. " +
@@ -397,7 +418,8 @@ function dialogOnChange(event) {
                     replaceItems(ids, context.responseText);
                     dialogContent(div);
                     dialogOverlay();
-
+		    
+		    setupDatepicker(div);
                     return false;
                 });
     }

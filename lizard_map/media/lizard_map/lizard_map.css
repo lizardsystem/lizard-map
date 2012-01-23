@@ -24,36 +24,21 @@
 /* Datepicker popup styling*/
 .date-popup p,
 .date-range-box p
-{ margin: 0px;
+{ margin-left: auto;
+  margin-right: auto;
   vertical-align: top;
 }
 
-.date-range-box label[for="id_dt_start_month"],
-.date-range-box label[for="id_dt_end_month"]
-{ display: block;
-  float: left;
-  clear: left;
-  width: 60px;
+.date-range-box label[for="id_dt_start"],
+.date-range-box label[for="id_dt_end"]
+{ width: 100px;
   text-align: right;
   height: 100%;
   padding-top: 7px;
 }
-
-.date-range-box #id_dt_start_day,
-.date-range-box #id_dt_end_day
-{ margin-left: 20px;
+.date-range-box input[type="text"]
+{ width: 100px;
 }
-
-.date-range-box #id_dt_start_month,
-.date-range-box #id_dt_end_month
-{ margin-left: 10px;
-}
-
-.date-range-box #id_dt_start_year,
-.date-range-box #id_dt_end_year
-{ margin-left: 10px;
-}
-
 
 /* OpenLayers popup*/
 .olPopup
