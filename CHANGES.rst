@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.19 (unreleased)
+3.19 (2012-01-23)
 -----------------
 
 - Removed Download button because we don't have working background maps
