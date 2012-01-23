@@ -10,6 +10,8 @@ Changelog of lizard-map
 
 - Fixed bug with opacity slider and WMS layers
 
+- Added some functions for the collage detail page, so that different apps
+  can show different titles and/or hide the Edit button.
 
 3.18 (2012-01-17)
 -----------------

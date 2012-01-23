@@ -458,3 +458,14 @@ class WorkspaceItemAdapter(object):
             legend_result = [{'img_url': self.symbol_url(),
                               'description': 'description'}]
         return legend_result
+
+    @property
+    def collage_detail_data_description(self):
+        return 'Grafiek'
+
+    @property
+    def collage_detail_edit_action(self):
+        # Assume adapter has a graph we can edit
+        # Override to return "None" if it doesn't
+        return 'graph'
+

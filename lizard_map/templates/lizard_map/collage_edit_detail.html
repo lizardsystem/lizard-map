@@ -37,7 +37,8 @@
     <h2>Selectie</h2>
     {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
 
-    <h3>Grafiek</h3>
+    <div>&nbsp;</div>
+    <h3>{{ collage_items.0.adapter.collage_detail_data_description }}</h3>
     {% collage_items_html collage_items 'True' view.request %}
     <div>&nbsp;</div>
 
@@ -53,7 +54,10 @@
         {% for collage_item in collage_items %}
         <tr>
           <td>{{ collage_item.name }}</td>
-          <td><a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
+          <td>
+	  {% if collage_item.adapter.collage_detail_edit_action == 'graph' %}
+	    <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
+	  {% endif %}
           </td>
           <td><a href="{% adapter_url collage_item 'html' %}"
                  class="ss_sprite ss_table ajax-dialog">Toon tabel</a></td>
