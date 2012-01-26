@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.20 (unreleased)
+3.20 (2012-01-26)
 -----------------
 
 - Changed waterstand icon from triangle pointing up to triangle
