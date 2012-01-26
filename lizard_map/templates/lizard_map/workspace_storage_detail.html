@@ -11,6 +11,7 @@ Opgeslagen workspace '{{view.workspace.name}}'
 <div id="workspace"
      class="sidebarbox workspace"
      data-workspace-id="{{ view.workspace.id }}"
+     data-workspace-type="workspace_storage"
      data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
      data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
      data-url-lizard-map-add-selection="{% url lizard_map_collage %}"

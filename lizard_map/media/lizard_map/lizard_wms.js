@@ -41,17 +41,22 @@ function multipleSelection() {
 Borrowed from popup_click_handler
 */
 function addSelection(x, y, map) {
-    var extent, radius, url, workspace_id;
+    var extent, radius, url, workspace_id, workspace_type;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
     $("#map_").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-add-selection");
     workspace_id = $(".workspace").attr("data-workspace-id");
+    workspace_type = $(".workspace").attr("data-workspace-type");
+    if (workspace_type === undefined) {
+	workspace_type = "workspace_edit"; // Default
+    }
+
     if (url !== undefined) {
         $.post(
             url,
             { x: x, y: y, radius: radius, srs: map.getProjection(),
-              workspace_id: workspace_id},
+              workspace_id: workspace_id, workspace_type: workspace_type},
             function (data, status, context) {
                 var div;
                 div = $(data).find("#edit-collage");

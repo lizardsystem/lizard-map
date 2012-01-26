@@ -1257,7 +1257,11 @@ class CollageView(CollageMixin, ActionDialogView):
         google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
         # Workspace.
-        workspace = WorkspaceEdit.objects.get(pk=workspace_id)
+        if form_data['workspace_type'] == 'workspace_storage':
+            workspace = WorkspaceStorage.objects.get(pk=workspace_id)
+        else:
+            workspace = WorkspaceEdit.objects.get(pk=workspace_id)
+
         collage = CollageEdit.get_or_create(
             self.request.session.session_key, self.request.user)
 

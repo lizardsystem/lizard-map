@@ -95,6 +95,10 @@ class CollageForm(forms.Form):
     Collage form. Never actually displayed.
     """
     workspace_id = forms.IntegerField(required=True)
+    
+    # Values should be "workspace_storage" or "workspace_edit", but this
+    # is not enforced. If no value is given, assume "workspace_edit".
+    workspace_type = forms.CharField(max_length=20, required=False)
     x = forms.FloatField(required=True)
     y = forms.FloatField(required=True)
     radius = forms.FloatField(required=True)
