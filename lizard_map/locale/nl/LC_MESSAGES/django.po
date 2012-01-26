@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-10-31 11:08-0500\n"
+"POT-Creation-Date: 2012-01-26 04:30-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -85,33 +85,37 @@ msgstr "December"
 msgid "Whole period"
 msgstr "Hele periode"
 
-#: models.py:154
+#: models.py:163
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: models.py:618
+#: models.py:690
 msgid "all"
 msgstr "alles"
 
-#: models.py:619
+#: models.py:691
 msgid "year"
 msgstr "jaar"
 
-#: models.py:620
+#: models.py:692
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:621
+#: models.py:693
 msgid "month"
 msgstr "maand"
 
-#: models.py:622
+#: models.py:694
 msgid "week"
 msgstr "week"
 
-#: models.py:623
+#: models.py:695
 msgid "day"
 msgstr "dag"
+
+#: views.py:281
+msgid "Back to homepage"
+msgstr ""
 
 #: workspace.py:19
 msgid "blue"
@@ -174,7 +178,7 @@ msgid "Selection"
 msgstr "Selectie"
 
 #: templates/lizard_map/tag_collage_edit.html:40
-#: templates/lizard_map/tag_workspace_edit.html:65
+#: templates/lizard_map/tag_workspace_edit.html:72
 msgid "Delete item"
 msgstr "Verwijder item"
 
@@ -204,50 +208,53 @@ msgstr ""
 msgid "popup"
 msgstr "popup"
 
-#: templates/lizard_map/tag_workspace_edit.html:19
+#: templates/lizard_map/tag_workspace_edit.html:20
 msgid "Empty your workspace"
 msgstr "Workspace leegmaken"
 
-#: templates/lizard_map/tag_workspace_edit.html:38
-msgid "Save workspace..."
-msgstr "Workspace opslaan..."
+#: templates/lizard_map/tag_workspace_edit.html:41
+msgid "Share workspace..."
+msgstr "Workspace delen..."
 
-#: templates/lizard_map/tag_workspace_edit.html:44
-msgid "Load workspace..."
-msgstr "Workspace laden..."
-
-#: templates/lizard_map/tag_workspace_edit.html:47
+#: templates/lizard_map/tag_workspace_edit.html:53
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
 msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
-#: templates/lizard_map/tag_workspace_edit.html:92
-msgid "Click on an item from the above list to add it to the workspace."
+#: templates/lizard_map/tag_workspace_edit.html:99
+#, fuzzy
+msgid "Click on an item from the above list to add it to your workspace."
 msgstr ""
 "Klik op een item uit de bovenstaande lijst om deze aan de workspace toe te "
 "voegen."
 
-#: templates/lizard_map/wms.html:33
+#: templates/lizard_map/wms.html:42
 msgid "Multi-selection of items on the map"
 msgstr "Multi-selectie van items op de kaart"
 
-#: templates/lizard_map/wms.html:39
+#: templates/lizard_map/wms.html:48
 msgid "From"
 msgstr "Van"
 
-#: templates/lizard_map/wms.html:39
+#: templates/lizard_map/wms.html:48
 msgid "until"
 msgstr "t/m"
 
-#: templates/lizard_map/wms.html:50
+#: templates/lizard_map/wms.html:59
 msgid "Pan &amp; zoom to default map location"
 msgstr "Pan &amp; zoom naar standaard kaartlocatie"
 
-#: templates/lizard_map/wms.html:53
+#: templates/lizard_map/wms.html:62
 msgid "Change transparency"
 msgstr "Verander de transparantie"
 
-#: templates/lizard_map/wms.html:59
+#: templates/lizard_map/wms.html:68
 msgid "Change current date"
 msgstr "Wijzig de huidige datum"
+
+#~ msgid "Save workspace..."
+#~ msgstr "Workspace opslaan..."
+
+#~ msgid "Load workspace..."
+#~ msgstr "Workspace laden..."
