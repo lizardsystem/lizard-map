@@ -3,6 +3,9 @@
 {% load workspaces %}
 {% load i18n %}
 
+{% block subtitle %}
+Opgeslagen workspace '{{view.workspace.name}}'
+{% endblock %}
 
 {% block sidebar %}
 <div id="workspace"
@@ -11,6 +14,7 @@
      data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
      data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
      data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
+     data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_storage_item_extent %}"
      >
   <h2>
     <span title="Dit is een opgeslagen workspace. Ga met je muis over de elementen heen om opties te zien.">

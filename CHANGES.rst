@@ -7,6 +7,17 @@ Changelog of lizard-map
 - Changed waterstand icon from triangle pointing up to triangle
   pointing down.
 
+- Changed workspace save/load functionality. Now workspaces can only
+  be saved, which gives them a "secret slug" (a string with random
+  characters), and the workspace detail page is opened in a new page.
+  The URL to this page includes the secret slug and can be shared with
+  others. The workspace shown on the page can't be changed. The
+  "workspace load" button is gone until we have a nice user interface
+  that can show many saved workspaces, and a way to deal with user
+  privileges.
+
+  This is minimal functionality that will be improved in later
+  versions.
 
 3.19 (2012-01-23)
 -----------------

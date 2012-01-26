@@ -2,11 +2,11 @@ import StringIO
 import datetime
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
-from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.template import RequestContext
@@ -53,6 +53,7 @@ from lizard_map.models import CollageEditItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
+from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
 from lizard_ui.models import ApplicationScreen
 from lizard_ui.models import ApplicationIcon
@@ -317,12 +318,17 @@ class WorkspaceStorageView(
     def workspace(self):
         """Return a workspace"""
         if not hasattr(self, '_workspace'):
-            self._workspace = WorkspaceStorage.objects.get(
-                pk=self.workspace_id)
+            if self.workspace_id:
+                self._workspace = WorkspaceStorage.objects.get(
+                    pk=self.workspace_id)
+            elif self.workspace_slug:
+                self._workspace = WorkspaceStorage.objects.get(
+                    secret_slug=self.workspace_slug)
         return self._workspace
 
     def get(self, request, *args, **kwargs):
-        self.workspace_id = kwargs['workspace_id']
+        self.workspace_id = kwargs.get('workspace_id', None)
+        self.workspace_slug = kwargs.get('workspace_storage_slug', None)
         return super(WorkspaceStorageView, self).get(
             request, *args, **kwargs)
 
@@ -443,15 +449,26 @@ class WorkspaceSaveView(ActionDialogView):
         workspace_edit = WorkspaceEdit.get_or_create(
            self.request.session.session_key, self.request.user)
         # TODO: quota, warning on duplicate names.
+
+        # For the initial release of Lizard, turn required authorization
+        # OFF.
         user = self.request.user
         if not user.is_authenticated():
-            html = render_to_string(
-                self.template_name_forbidden,
-                {'message': ('U kunt geen workspace opslaan als U '
-                             'niet bent ingelogd.')},
-                context_instance=RequestContext(self.request))
-            return HttpResponseForbidden(html)
-        workspace_edit.save_to_storage(name=form_data['name'], owner=user)
+            user = None
+            # html = render_to_string(
+            #     self.template_name_forbidden,
+            #     {'message': ('U kunt geen workspace opslaan als U '
+            #                  'niet bent ingelogd.')},
+            #     context_instance=RequestContext(self.request))
+            # return HttpResponseForbidden(html)
+        logger.debug("Before secret slug.")
+        secret_slug = (workspace_edit.
+                       save_to_storage(name=form_data['name'], owner=user))
+        logger.debug("After secret slug. slug=%s" % (secret_slug,))
+
+        self.saved_workspace_url = self.request.build_absolute_uri(
+            reverse('lizard_map_workspace_slug_storage',
+                    kwargs={'workspace_storage_slug': secret_slug}))
 
 
 class WorkspaceLoadView(ActionDialogView):
@@ -734,7 +751,6 @@ def workspace_item_extent(request):
     """Returns extent for the workspace in json.
      Transform to correct client-side projection, then return coordinates.
     """
-    logger.debug(">1<")
 
     workspace_item_id = request.GET['workspace_item_id']
     workspace_edit = WorkspaceEdit.get_or_create(
@@ -759,6 +775,33 @@ def workspace_item_extent(request):
                 'south': pwestsouth.get_y(),
                 }))
 
+@never_cache
+def workspace_storage_item_extent(request):
+    """Returns extent for the workspace in json.
+     Transform to correct client-side projection, then return coordinates.
+     Version of the function that works for workspace storages, not workspace
+     edits.
+    """
+
+    workspace_item_id = request.GET['workspace_item_id']
+    try:
+        workspace_item = WorkspaceStorageItem.objects.get(pk=workspace_item_id)
+    except WorkspaceStorageItem.DoesNotExist:
+        return HttpResponse(json.dumps({}))
+
+    extent = workspace_item.adapter.extent()
+
+    peastnorth = transform_point(extent['east'], extent['north'],
+                                 from_proj='google')
+    pwestsouth = transform_point(extent['west'], extent['south'],
+                                 from_proj='google')
+
+    return HttpResponse(json.dumps({
+                'east': peastnorth.get_x(),
+                'north': peastnorth.get_y(),
+                'west': pwestsouth.get_x(),
+                'south': pwestsouth.get_y(),
+                }))
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """Return html with info on list of 'found' objects.
@@ -974,20 +1017,23 @@ Map stuff
 """
 
 
-def wms(request, workspace_storage_id=None):
+def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
     """Return PNG as WMS service for given workspace_edit or
     workspace_storage.
 
-    if workspace_storage_id is not provided, it will take your own
-    WorkspaceEdit.
+    if workspace_storage_id and workspace_storage_slug are both not
+    provided, it will take your own WorkspaceEdit.
     """
 
-    if workspace_storage_id is None:
-        workspace = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
-    else:
+    if workspace_storage_id is not None:
         workspace = get_object_or_404(
             WorkspaceStorage, pk=workspace_storage_id)
+    elif workspace_storage_slug is not None:
+        workspace = get_object_or_404(
+            WorkspaceStorage, secret_slug=workspace_storage_slug)
+    else:
+        workspace = WorkspaceEdit.get_or_create(
+            request.session.session_key, request.user)
 
     # WMS standard parameters
     width = int(request.GET.get('WIDTH'))
@@ -1069,7 +1115,10 @@ def search(workspace, google_x, google_y, radius):
 
 
 # L3
-def search_coordinates(request, workspace_storage_id=None, _format='popup'):
+def search_coordinates(request,
+                       workspace_storage_id=None,
+                       workspace_storage_slug=None,
+                       _format='popup'):
     """searches for objects near GET x,y,radius returns json_popup of
     results.
 
@@ -1100,8 +1149,11 @@ def search_coordinates(request, workspace_storage_id=None, _format='popup'):
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
-    if workspace_storage_id:
+    if workspace_storage_id is not None:
         workspace = WorkspaceStorage.objects.get(pk=workspace_storage_id)
+    elif workspace_storage_slug is not None:
+        workspace = WorkspaceStorage.objects.get(
+            secret_slug=workspace_storage_slug)
     else:
         user_workspace_id = request.GET.get('user_workspace_id', None)
         if user_workspace_id is not None:

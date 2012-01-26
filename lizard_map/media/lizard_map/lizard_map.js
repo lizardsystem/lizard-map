@@ -498,6 +498,20 @@ function reloadScreenAfterSubmit(event) {
     });
 }
 
+function openNewWindowAfterSubmit(event) {  
+    return dialogSubmit(event, function(context) {
+	/* The URL to open is stored in a link with class
+	   "new-window-url". */
+	as = $('<div/>').
+	    html(context.responseText).
+	    find(".new-window-url");
+
+	as.each(function(i, a) {
+	    window.open(a.href, '_');
+	});
+    });
+}
+
 /* L3 Generic dialog code that works on a hrefs.
 
 - Define an a href with class "ajax-dialog" or "ajax-dialog-onchange"
@@ -532,6 +546,8 @@ function setUpDialogs() {
         "click", updateWorkspaceAfterSubmit);
     $("#dialog input:submit.reload-screen-after").live(
         "click", reloadScreenAfterSubmit);
+    $("#dialog input:submit.open-new-window-after").live(
+	"click", openNewWindowAfterSubmit);
 }
 
 

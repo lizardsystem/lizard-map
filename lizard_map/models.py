@@ -12,6 +12,8 @@ from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from south.modelsinspector import add_introspection_rules
 import pkg_resources
+import random
+import string
 
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import YEAR
@@ -35,6 +37,10 @@ from adapter import adapter_serialize
 # Temporary, because fewsjdbc api handler imports this.
 from adapter import ADAPTER_ENTRY_POINT
 ADAPTER_ENTRY_POINT
+
+# workspace storage's secret slugs
+SECRET_SLUG_CHARS = string.ascii_lowercase
+SECRET_SLUG_LENGTH = 8
 
 # New imports
 import datetime
@@ -567,13 +573,22 @@ class WorkspaceEdit(
         """
         workspace_storage, _ = WorkspaceStorage.objects.get_or_create(
             name=name, owner=owner)
+
         # Delete all existing workspace item storages.
         workspace_storage.workspace_items.all().delete()
+
+        # Init secret slug
+        workspace_storage.init_secret_slug()
+        workspace_storage.save()
+
         # Create new workspace items.
         for workspace_edit_item in self.workspace_items.all():
             workspace_storage_item = workspace_edit_item.as_storage(
                 workspace=workspace_storage)
             workspace_storage_item.save()
+
+        # Return slug so it can be shown
+        return workspace_storage.secret_slug
 
     def load_from_storage(self, workspace_storage):
         """Load model and workspace_items from Storage.
@@ -618,7 +633,8 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     """
     name = models.CharField(max_length=40)
     description = models.TextField(null=True, blank=True)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, null=True, blank=True)
+    secret_slug = models.CharField(max_length=16, null=True)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
@@ -627,6 +643,11 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
         """Used by wms.html"""
         return reverse("lizard_map_workspace_storage_wms",
                        kwargs={'workspace_storage_id': self.id})
+
+    def init_secret_slug(self):
+        if self.secret_slug is None:
+            self.secret_slug = ''.join(random.choice(SECRET_SLUG_CHARS)
+                                       for i in range(SECRET_SLUG_LENGTH))
 
 
 class WorkspaceStorageItem(WorkspaceItemMixin):

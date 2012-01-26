@@ -44,6 +44,10 @@ urlpatterns = patterns(
     url(r'^workspaceitem/extent/$',
         'lizard_map.views.workspace_item_extent',
         name="lizard_map_workspace_item_extent"),
+    # Same for workspace storages
+    url(r'^workspacestorageitem/extent/$',
+        'lizard_map.views.workspace_storage_item_extent',
+        name="lizard_map_workspace_storage_item_extent"),
 
     url(r'^mycollage/$',  # L3
         lizard_map.views.CollageDetailView.as_view(),
@@ -100,8 +104,12 @@ urlpatterns = patterns(
         name="lizard_map.search_coordinates"),  # L3
     url(r'^workspace/(?P<workspace_storage_id>\d+)/search_name/',
         'lizard_map.views.search_coordinates',
-        {'format': 'name'},
+        #{'format': 'name'},
         name="lizard_map.search_name"),  # L3
+    # Get to the workspace page by means of a slug
+    url(r'^workspace/(?P<workspace_storage_slug>\w+)/$',
+        lizard_map.views.WorkspaceStorageView.as_view(),
+        name="lizard_map_workspace_slug_storage"),
 
     # Adapter
     url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3

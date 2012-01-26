@@ -468,4 +468,3 @@ class WorkspaceItemAdapter(object):
         # Assume adapter has a graph we can edit
         # Override to return "None" if it doesn't
         return 'graph'
-
