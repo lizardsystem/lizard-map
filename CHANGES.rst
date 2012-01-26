@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.21 (unreleased)
+3.21 (2012-01-26)
 -----------------
 
 - Make sure graphs never zoom in so far that they show Y-axis values
