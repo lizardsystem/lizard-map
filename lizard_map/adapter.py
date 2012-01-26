@@ -3,6 +3,7 @@ Helper classes and functions for adapters
 """
 import datetime
 import locale
+import math
 import numpy
 import pkg_resources
 
@@ -421,6 +422,7 @@ class Graph(object):
         self.ax2 = None
 
     def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
+        logger.debug('set_ylim y_min = %f y_max = %f' % (y_min, y_max))
         self.axes.set_ylim(y_min, y_max)
         self._y_min_set_manually = min_manual
         self._y_max_set_manually = max_manual
@@ -466,8 +468,20 @@ class Graph(object):
                 data_low = numpy.min(data[1, index_in_daterange])
                 data_high = numpy.max(data[1, index_in_daterange])
                 data_span = data_high - data_low
+
                 view_low = data_low - data_span * bottom
                 view_high = data_high + data_span * top
+
+                # Don't zoom in too much if values are essentially the same
+                # and differ only in noise. Values shown at the Y-axis should
+                # only have 2 decimals.
+                view_low = math.floor(view_low*40)/40
+                view_high = math.ceil(view_high*40)/40
+                while (view_high - view_low) < 0.03:
+                    # Difference is only 0.025 (or 0!), differences of smaller than 0.01
+                    # show up at the y-axis.
+                    view_low -= 1.0/80
+                    view_high += 1.0/80
 
                 if self._y_min_set_manually:
                     view_low, _ = self.axes.get_ylim()

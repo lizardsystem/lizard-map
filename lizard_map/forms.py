@@ -18,7 +18,7 @@ class WorkspaceSaveForm(forms.Form):
     """
     Save workspace from edit to storage
     """
-    name = forms.CharField(max_length=100, required=True, label='naam')
+    name = forms.CharField(max_length=100, required=True, label='Naam')
 
 
 class WorkspaceLoadForm(forms.Form):

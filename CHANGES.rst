@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.21 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Make sure graphs never zoom in so far that they show Y-axis values
+  with more than 2 decimals.
 
 
 3.20 (2012-01-26)
