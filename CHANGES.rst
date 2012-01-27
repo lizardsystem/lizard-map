@@ -1,10 +1,11 @@
 Changelog of lizard-map
 =======================
 
-3.22 (unreleased)
+3.22 (2012-01-27)
 -----------------
 
-- Nothing changed yet.
+- Translation fixes, added breadcrumb to the workspace storage
+  page. Last fixes before "Lizard 3.0" release?
 
 
 3.21 (2012-01-26)
