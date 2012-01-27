@@ -7,6 +7,11 @@
 Opgeslagen workspace '{{view.workspace.name}}'
 {% endblock %}
 
+{% block breadcrumbs %}
+{% comment %}TODO These don't work in the workspace storage view yet, hacked them in.{% endcomment %}
+» <a href="/" rel="tipsy-south" title="Naar de voorpagina">Home</a>
+{% endblock %}
+
 {% block sidebar %}
 <div id="workspace"
      class="sidebarbox workspace"

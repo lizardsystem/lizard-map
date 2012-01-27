@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-26 04:30-0600\n"
+"POT-Creation-Date: 2012-01-27 03:56-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,8 +213,8 @@ msgid "Empty your workspace"
 msgstr "Workspace leegmaken"
 
 #: templates/lizard_map/tag_workspace_edit.html:41
-msgid "Share workspace..."
-msgstr "Workspace delen..."
+msgid "Save workspace..."
+msgstr "Workspace opslaan..."
 
 #: templates/lizard_map/tag_workspace_edit.html:53
 msgid ""
@@ -253,8 +253,8 @@ msgstr "Verander de transparantie"
 msgid "Change current date"
 msgstr "Wijzig de huidige datum"
 
-#~ msgid "Save workspace..."
-#~ msgstr "Workspace opslaan..."
+#~ msgid "Share workspace..."
+#~ msgstr "Workspace delen..."
 
 #~ msgid "Load workspace..."
 #~ msgstr "Workspace laden..."
