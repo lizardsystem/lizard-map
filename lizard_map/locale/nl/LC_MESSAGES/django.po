@@ -223,11 +223,8 @@ msgid ""
 msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
 #: templates/lizard_map/tag_workspace_edit.html:99
-#, fuzzy
 msgid "Click on an item from the above list to add it to your workspace."
-msgstr ""
-"Klik op een item uit de bovenstaande lijst om deze aan de workspace toe te "
-"voegen."
+msgstr "Klik op een item uit de bovenstaande lijst om deze aan de workspace toe te voegen."
 
 #: templates/lizard_map/wms.html:42
 msgid "Multi-selection of items on the map"
@@ -253,8 +250,8 @@ msgstr "Verander de transparantie"
 msgid "Change current date"
 msgstr "Wijzig de huidige datum"
 
-#~ msgid "Share workspace..."
-#~ msgstr "Workspace delen..."
+msgid "Share workspace..."
+msgstr "Workspace delen..."
 
-#~ msgid "Load workspace..."
-#~ msgstr "Workspace laden..."
+msgid "Load workspace..."
+msgstr "Workspace laden..."
