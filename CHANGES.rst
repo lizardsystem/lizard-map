@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.23 (unreleased)
+3.23 (2012-02-16)
 -----------------
 
 - Added grouping_hint option to the result of adapter.search(), to make it
