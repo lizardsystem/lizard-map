@@ -810,7 +810,12 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     everything.
 
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
-    'workspace_item': ..., 'identifier': ...}.
+    'workspace_item': ..., 'identifier': ..., ['grouping_hint'...]}.
+
+    If 'grouping_hint' is given, that is used to group items, otherwise
+    the workspace_item.id. This way a single workspace item can have things
+    show up in different tabs. Please don't use grouping_hints that can possible
+    come from other workspace items (use the workspace item id in the hint).
 
     Note: identifier must be a dict. {'id': the_real_id}.
 
@@ -832,12 +837,16 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     display_groups = {}
     display_group_order = []
     for display_object in found:
-        workspace_item = display_object['workspace_item']
-        if workspace_item.id not in display_groups:
-            display_groups[workspace_item.id] = []
-        display_groups[workspace_item.id].append(display_object)
-        if workspace_item.id not in display_group_order:
-            display_group_order.append(workspace_item.id)
+        if 'grouping_hint' in display_object:
+            key = display_object['grouping_hint']
+        else:
+            key = display_object['workspace_item'].id
+
+        if key not in display_groups:
+            display_groups[key] = []
+        display_groups[key].append(display_object)
+        if key not in display_group_order:
+            display_group_order.append(key)
 
     if len(display_groups) > 1:
         big_popup = True
@@ -845,7 +854,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         big_popup = False
 
     # Now display them.
-    for workspace_item_id, display_group in display_groups.items():
+    for key, display_group in display_groups.items():
         # There MUST be at least one item in the group
         workspace_item = display_group[0]['workspace_item']
 
@@ -876,9 +885,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
         # if 'google_coords' in display_object:
         #     x_found, y_found = display_object['google_coords']
-        html[workspace_item.id] = html_per_workspace_item
+        html[key] = html_per_workspace_item
 
-    result_html = [html[index] for index in display_group_order][:3]
+    result_html = [html[key] for key in display_group_order][:3]
 
     if popup_id is None:
         popup_id = 'popup-id'
@@ -1163,7 +1172,7 @@ def search_coordinates(request,
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
     found = search(workspace, google_x, google_y, radius)
-
+    logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])

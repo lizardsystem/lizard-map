@@ -104,11 +104,21 @@ class WorkspaceItemAdapter(object):
         'workspace_item': <...>,
         'identifier': {...},
         'google_coords': (x, y) coordinate in google,
-        'object': <object>} of closest fews point that matches x, y, radius.
+        'object': <object>,
+       ['grouping_hint': ... ] (optional)
+        } of closest fews point that matches x, y, radius.
 
         Required: distance, name, workspace_item, google_coords
         Highly recommended (else some functions will not work):
         identifier (for popups)
+
+        If 'grouping_hint' is given, that is used to group items,
+        otherwise the workspace_item.id. This way a single workspace
+        item can have things show up in different tabs. Please don't
+        use grouping_hints that can possible come from other workspace
+        items (use the workspace item id in the hint).
+
+
         """
         raise NotImplementedError
 
