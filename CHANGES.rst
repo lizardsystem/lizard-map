@@ -4,7 +4,8 @@ Changelog of lizard-map
 3.23 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added grouping_hint option to the result of adapter.search(), to make it
+  possible for a single workspace layer to open a popup with multiple tabs.
 
 
 3.22 (2012-01-27)
