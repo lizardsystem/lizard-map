@@ -329,7 +329,7 @@ function showMap() {
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': true}));
     // Click handling.
     javascript_click_handler_name = $lizard_map_wms.attr("data-javascript-click-handler");
-    if (javascript_click_handler_name !== undefined) {
+    if (javascript_click_handler_name) {
         MapClickControl = OpenLayers.Class(OpenLayers.Control, {
             defaultHandlerOptions: {
                 'single': true,
