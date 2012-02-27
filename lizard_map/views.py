@@ -87,6 +87,7 @@ class GoogleTrackingMixin(object):
 class WorkspaceMixin(object):
     """Add workspace and map variables.
     """
+    # Override with an empty string for no click handler.
     javascript_click_handler = 'popup_click_handler'
 
     def workspace(self):
