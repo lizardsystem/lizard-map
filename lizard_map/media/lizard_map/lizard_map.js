@@ -220,14 +220,14 @@ function setUpWorkspaceAcceptable() {
     });
 
     // Set initial status.
-    updateWorkspaceAcceptableStatus();
+    //updateWorkspaceAcceptableStatus();
 
     // We want to refresh workspace-acceptables after clicking an
     // accordion tab. Not accidently a click is also triggered after
     // loading next pane.
     try {
         $("#accordion").data("tabs").onClick(function (event) {
-            updateWorkspaceAcceptableStatus();
+            //updateWorkspaceAcceptableStatus();
         });
     } catch (e) {
         // Nothing. There is no accordion.
@@ -418,7 +418,7 @@ function dialogOnChange(event) {
                     replaceItems(ids, context.responseText);
                     dialogContent(div);
                     dialogOverlay();
-		    
+
 		    setupDatepicker(div);
                     return false;
                 });
@@ -498,7 +498,7 @@ function reloadScreenAfterSubmit(event) {
     });
 }
 
-function openNewWindowAfterSubmit(event) {  
+function openNewWindowAfterSubmit(event) {
     return dialogSubmit(event, function(context) {
 	/* The URL to open is stored in a link with class
 	   "new-window-url". */
@@ -556,7 +556,7 @@ postAction. */
 function actionPostClick(event, preAction, postAction, parameters) {
     var url, target, target_id;
     event.preventDefault();
-    
+
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id");
     if (target_id !== undefined) {
@@ -995,6 +995,11 @@ function setUpCollageEditor() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
+  // New bootstrappy stuff.
+  $("#map").height($("#content").height());
+
+
+
     // Touched/new for L3
     setUpWorkspaceAcceptable();
     setUpDialogs();
@@ -1005,8 +1010,8 @@ $(document).ready(function () {
 
     // Untouched
     setUpWorkspaceButtons();
-    setUpAnimationSlider();
-    setUpTransparencySlider();
+    //setUpAnimationSlider();
+    //setUpTransparencySlider();
     setUpWorkspaceItemPanToLayer();
 
     // Set up legend edit.
@@ -1015,13 +1020,13 @@ $(document).ready(function () {
     setUpMapLoadDefaultLocation();
 
     /* Workspace functions, requires jquery.workspace.js */
-    $(".workspace").workspaceInteraction();
+    //$(".workspace").workspaceInteraction();
 
     // voor collage view, nu nog nutteloos voor popup
     //$(".add-snippet").snippetInteraction();
     //$("a.lizard-map-link").lizardMapLink();
     // Optional popup video link.
-    setupVideoPopup();
+    //setupVideoPopup();
     setupTableToggle();
 });
 

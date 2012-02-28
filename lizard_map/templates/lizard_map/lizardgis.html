@@ -14,15 +14,13 @@
         type="text/javascript"
         src="{{ STATIC_URL }}openlayers/OpenLayers.js"
         data-openlayers-url="{{ STATIC_URL }}openlayers/"></script>
+<!-- jquery tools is gone for now.
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
+-->
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
 {% endblock javascript %}
-{% block above-content %}
-<ul class="map-actions">
-</ul>
-{% endblock above-content %}
 
 {% block content %}
 <div id="map"></div>

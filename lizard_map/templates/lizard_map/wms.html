@@ -1,14 +1,6 @@
 {% extends "lizard_map/lizardgis.html" %}
 {% load i18n map workspaces %}
 
-{% block css %}
-{{ block.super }}
-<!-- tab styling -->
-<link rel="stylesheet"
-      type="text/css"
-      href="{{ STATIC_URL }}lizard_ui/tabs.css" />
-{% endblock %}
-
 {% block map-javascript %}
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
@@ -26,60 +18,29 @@
 {% endifequal %}
 {% endblock map-javascript %}
 
-{% block breadcrumbs %}
-{% if view.crumbs %}
-» <a href="{{ view.crumbs.0.url }}" rel="tipsy-south" title="{{ view.crumbs.0.title }}">{{ view.crumbs.0.description }}</a>
-{% for crumb in view.crumbs|slice:"1:" %}
-→ <a href="{{ crumb.url }}" rel="tipsy-south" title="{{ crumb.title }}">{{ crumb.description }}</a>
-{% endfor %}
-{% endif %}
-{% endblock breadcrumbs %}
+{% block content-actions %}
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <a class="btn" href="">
+        <i class="icon-star"></i>
+        selecteer
+      </a>
+    </div>
+  </div>
+{% endblock content-actions %}
 
-{% block above-content %}
-<ul class="map-actions">
-  <li id="map-multiple-selection"
-      class="action-icon map-multiple-selection"
-      title="{% trans 'Multi-selection of items on the map' %}"
-      rel="tipsy-south">
-  </li>
-  <li>
-    <a href="{% url lizard_map_date_range %}"
-     id="date-range"
-     title='{% trans "From" %} {{ view.date_start_period|date:"d-m-Y" }} {% trans "until" %} {{ view.date_end_period|date:"d-m-Y" }}'
-     class="title datepicker-icon action-icon ajax-dialog-onchange alternative-submit submit-replace-items"
-     data-replace-items="date-range animation-slider animation-date"
-     data-size="s"
-     rel="tipsy-south">&nbsp;</a>
-  </li>
-  {# Load and save map locations #}
-  <li id="map-load-default-location"
-      class="map-action"
-      data-url="{% url lizard_map.map_location_load_default %}">
-    <span rel="tipsy" class="map-location-icon action-icon"
-          title="{% trans 'Pan &amp; zoom to default map location' %}"></span>
-  </li>
-  <li id="transparency-slider"
-      title="{% trans 'Change transparency' %}"
-      class="map-action"
-      rel="tipsy-south">
-  </li>
-  {% if view.animation_slider %}
-  <li id="animation-slider"
-      title="{% trans 'Change current date' %}"
-      class="map-action"
-      rel="tipsy-south"
-      data-min="{{ view.animation_slider.min }}"
-      data-max="{{ view.animation_slider.max }}"
-      data-step="{{ view.animation_slider.step }}"
-      data-value="{{ view.animation_slider.value }}"
-      data-ajax-path="{% url lizard_map.set_animation_date %}">
-  </li>
-  <li id="animation-date" class="map-action">
-    <span id="selected-date">{{ view.animation_slider.selected_date|date:"d/m/Y" }}</span>
-  </li>
-  {% endif %}
-</ul>
-{% endblock above-content %}
+{% block below-sidebar %}
+  <a class="btn" href="">
+    <i class="icon-arrow-left"></i>
+    Klap in
+  </a>
+
+  <a class="btn" id="map-layers" href="">
+    <i class="icon-list"></i>
+    Kaartlagen
+</a>
+{% endblock below-sidebar %}
+
 
 {% block content %}
 {# Popups: invisible #}
