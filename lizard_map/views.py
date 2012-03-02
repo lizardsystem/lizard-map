@@ -776,6 +776,7 @@ def workspace_item_extent(request):
                 'south': pwestsouth.get_y(),
                 }))
 
+
 @never_cache
 def workspace_storage_item_extent(request):
     """Returns extent for the workspace in json.
@@ -804,6 +805,7 @@ def workspace_storage_item_extent(request):
                 'south': pwestsouth.get_y(),
                 }))
 
+
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """Return html with info on list of 'found' objects.
 
@@ -813,10 +815,11 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     found: list of dictionaries {'distance': ..., 'timeserie': ...,
     'workspace_item': ..., 'identifier': ..., ['grouping_hint'...]}.
 
-    If 'grouping_hint' is given, that is used to group items, otherwise
-    the workspace_item.id. This way a single workspace item can have things
-    show up in different tabs. Please don't use grouping_hints that can possible
-    come from other workspace items (use the workspace item id in the hint).
+    If 'grouping_hint' is given, that is used to group items,
+    otherwise the workspace_item.id. This way a single workspace item
+    can have things show up in different tabs. Please don't use
+    grouping_hints that can possible come from other workspace items
+    (use the workspace item id in the hint).
 
     Note: identifier must be a dict. {'id': the_real_id}.
 

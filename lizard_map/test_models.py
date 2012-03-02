@@ -249,7 +249,7 @@ class WorkspaceLoadSaveTest(TestCase):
 
         class Mock(dict):
             def build_absolute_uri(self, arg):
-                return "http://example.com"+arg
+                return "http://example.com" + arg
 
         self.request = Mock()
         self.request.session = Mock()
@@ -374,7 +374,8 @@ class WorkspaceLoadSaveTest(TestCase):
         self.assertEquals(response, None)
 
         # Nothing is changed.
-        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces+1)
+        self.assertEquals(WorkspaceStorage.objects.count(),
+                          no_of_workspaces + 1)
 
 
 class WorkspaceModelMixinTest(TestCase):
