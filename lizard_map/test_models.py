@@ -248,7 +248,8 @@ class WorkspaceLoadSaveTest(TestCase):
         self.workspace_storage.save()
 
         class Mock(dict):
-            pass
+            def build_absolute_uri(self, arg):
+                return "http://example.com"+arg
 
         self.request = Mock()
         self.request.session = Mock()
@@ -369,10 +370,11 @@ class WorkspaceLoadSaveTest(TestCase):
         view.request = self.request  # Manually put request in view.
         response = view.form_valid_action(form)  # Perform save action.
 
-        self.assertTrue(response.status_code, 403)
+        # Changed -- unauthenticated save is now also possible.
+        self.assertEquals(response, None)
 
         # Nothing is changed.
-        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)
+        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces+1)
 
 
 class WorkspaceModelMixinTest(TestCase):
