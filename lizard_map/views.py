@@ -22,7 +22,8 @@ from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.models import ApplicationScreen
-from lizard_ui.views import ViewContextMixin
+from lizard_ui.views import UiView
+from lizard_ui.layout import Action
 import Image
 import iso8601
 import mapnik
@@ -292,13 +293,24 @@ class CrumbsMixin(object):
 
 class AppView(
     WorkspaceEditMixin, CollageMixin, DateRangeMixin,
-    ViewContextMixin, MapMixin,
-    GoogleTrackingMixin, TemplateView, CrumbsMixin):
+    UiView, MapMixin,
+    GoogleTrackingMixin, CrumbsMixin):
     """All-in-one"""
 
 
+class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin, UiView):
+    """Main map view (using twitter bootstrap). Replaces AppView."""
+
+    @property
+    def sidebar_actions(self):
+        actions = super(MapView, self).sidebar_actions
+        actions.append(Action(name=_('Layers'),
+                              icon='icon-list'))
+        return actions
+
+
 class WorkspaceStorageListView(
-    ViewContextMixin, GoogleTrackingMixin, TemplateView):
+    UiView, GoogleTrackingMixin):
     """Show list of storage workspaces."""
 
     template_name = 'lizard_map/workspace_storage_list.html'
@@ -309,8 +321,8 @@ class WorkspaceStorageListView(
 
 class WorkspaceStorageView(
     WorkspaceMixin, CollageMixin, DateRangeMixin,
-    ViewContextMixin, MapMixin,
-    GoogleTrackingMixin, TemplateView):
+    UiView, MapMixin,
+    GoogleTrackingMixin):
     """Workspace storage view.
 
     TODO: "load workspace in my workspace and go there" """
@@ -373,7 +385,7 @@ class HomepageView(AppView):
 
 
 # L3
-class ActionDialogView(ViewContextMixin, FormView):
+class ActionDialogView(UiView, FormView):
     """
     Generic Action Dialog View.
 
@@ -1207,7 +1219,7 @@ def search_coordinates(request,
 
 
 class CollageDetailView(
-    CollageMixin, DateRangeMixin, ViewContextMixin, TemplateView):
+    CollageMixin, DateRangeMixin, UiView):
     """
     Shows "my collage" as big page.
     """
@@ -1228,8 +1240,7 @@ class CollageDetailView(
         return super(CollageDetailView, self).get(request, *args, **kwargs)
 
 
-class CollageStatisticsView(
-    ViewContextMixin, TemplateView):
+class CollageStatisticsView(UiView):
     """
     Shows statistics for collage items.
     """
@@ -1779,7 +1790,7 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
             layout_extra=layout_extra)
 
 
-class AdapterValuesView(AdapterMixin, ViewContextMixin, TemplateView):
+class AdapterValuesView(AdapterMixin, UiView):
     """
     Return values for a single identifier in csv or html.
 

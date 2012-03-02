@@ -2,44 +2,23 @@
 {% load i18n map workspaces %}
 
 {% block map-javascript %}
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/rest.js"></script>
-{% if view.has_google %}
-<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}'></script>
-{% endif %}
-{% ifequal detected_browser 'iPad' %}
-{# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
-<script type="text/javascript"
-        src="{{ STATIC_URL }}touch/touch.js"></script>
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/lizard_touch.js"></script>
-{% endifequal %}
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/rest.js"></script>
+  {% if view.has_google %}
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}"></script>
+  {% endif %}
+  {% ifequal detected_browser 'iPad' %}
+    <!--
+    {# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}touch/touch.js"></script>
+    <script type="text/javascript"
+            src="{{ STATIC_URL }}lizard_map/lizard_touch.js"></script>
+    -->
+  {% endifequal %}
 {% endblock map-javascript %}
-
-{% block content-actions %}
-  <div class="btn-toolbar">
-    <div class="btn-group">
-      <a class="btn" href="">
-        <i class="icon-star"></i>
-        selecteer
-      </a>
-    </div>
-  </div>
-{% endblock content-actions %}
-
-{% block below-sidebar %}
-  <a class="btn" href="">
-    <i class="icon-arrow-left"></i>
-    Klap in
-  </a>
-
-  <a class="btn" id="map-layers" href="">
-    <i class="icon-list"></i>
-    Kaartlagen
-</a>
-{% endblock below-sidebar %}
 
 
 {% block content %}
