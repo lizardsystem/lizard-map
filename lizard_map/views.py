@@ -1,5 +1,8 @@
 import StringIO
+import csv
 import datetime
+import logging
+import urllib2
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -17,12 +20,12 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
+from lizard_ui.models import ApplicationIcon
+from lizard_ui.models import ApplicationScreen
+from lizard_ui.views import ViewContextMixin
 import Image
-import csv
 import iso8601
-import logging
 import mapnik
-import urllib2
 
 #from lizard_map.daterange import deltatime_range
 #from lizard_map.daterange import store_timedelta_range
@@ -55,9 +58,6 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
-from lizard_ui.models import ApplicationScreen
-from lizard_ui.models import ApplicationIcon
-from lizard_ui.views import ViewContextMixin
 
 
 CUSTOM_LEGENDS = 'custom_legends'
