@@ -153,6 +153,13 @@ urlpatterns = patterns(
     # url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
     #     'lizard_map.views.export_snippet_group_statistics_csv',
     #     name="lizard_map.export_snippet_group_statistics_csv"),
+
+    url(r'^(?P<slug>.*)/$',
+        lizard_map.views.MapIconView.as_view(),
+        name='lizard_ui.icons'),
+    url(r'^$',
+        lizard_map.views.MapIconView.as_view(),
+        name='lizard_ui.icons'),
     )
 
 urlpatterns += debugmode_urlpatterns()

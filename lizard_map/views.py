@@ -23,6 +23,7 @@ from django.views.generic.edit import FormView
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.models import ApplicationScreen
 from lizard_ui.views import UiView
+from lizard_ui.views import IconView
 from lizard_ui.layout import Action
 import Image
 import iso8601
@@ -1829,3 +1830,7 @@ class AdapterValuesView(AdapterMixin, UiView):
             # Make html table using self.values
             return super(AdapterValuesView, self).get(
                 request, *args, **kwargs)
+
+
+class MapIconView(MapView, IconView):
+    template_name = 'lizard_map/icons.html'
