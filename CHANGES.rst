@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.24 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- It's now possible to not use a popup_click_handler.
 
 
 3.23 (2012-02-16)
