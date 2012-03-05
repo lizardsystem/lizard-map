@@ -154,7 +154,7 @@ urlpatterns = patterns(
     #     'lizard_map.views.export_snippet_group_statistics_csv',
     #     name="lizard_map.export_snippet_group_statistics_csv"),
 
-    url(r'^(?P<slug>.*)/$',
+    url(r'^screen/(?P<slug>.*)/$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
     url(r'^$',
