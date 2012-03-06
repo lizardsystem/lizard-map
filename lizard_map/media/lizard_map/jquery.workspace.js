@@ -112,7 +112,7 @@ function show_popup(data) {
             dialogOverlay();
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
-                reloadGraphs();
+                //reloadGraphs();
             } else {
                 // Re-reload the first one.
                 reloadLocalizedGraphs(
@@ -156,6 +156,8 @@ the <div class="workspace">
 
 L3
 */
+
+/*
 jQuery.fn.workspaceInteraction = function () {
     return this.each(function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
@@ -194,6 +196,7 @@ jQuery.fn.workspaceInteraction = function () {
     });
 };
 
+*/
 
 /* Refresh workspace-acceptables. They should light up if the item is
 in given workspace. */
@@ -258,14 +261,14 @@ jQuery.fn.updateWorkspace = function () {
                     $('.workspace-items', $holder).html());
                 // $(".snippet-list", $workspace).html(
                 //     $('.snippet-list', $holder).html());
-                fillSidebar();
+                //fillSidebar();
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
                 // $("#collage").html(
                 //     $('#collage', $holder).html());
-                reloadGraphs();
+                //reloadGraphs();
                 // reload map layers
                 if ($("#map").length > 0) {
                     refreshLayers(); // from lizard_wms.js
@@ -277,12 +280,12 @@ jQuery.fn.updateWorkspace = function () {
                 // replaceItems. See if we can bring it together.
                 updateWorkspaceAcceptableStatus();
 
-                setUpAnimationSlider();
-                setUpTransparencySlider();
-                setUpTooltips();
+                //setUpAnimationSlider();
+                //setUpTransparencySlider();
+                //setUpTooltips();
                 // Enable sorting. Some functions
                 // (setUpAddWorkspaceItem) turns sorting off.
-                $(".workspace ul.workspace-items").sortable("enable");
+               //$(".workspace ul.workspace-items").sortable("enable");
             }
         );
     });
@@ -390,6 +393,7 @@ jQuery.fn.exists = function () {
 }
 
 
+/*
 $(document).ready(function () {
     // Change "default" effect: reload graphs to fix layout.
     $.tools.tabs.addEffect(
@@ -407,3 +411,5 @@ $(document).ready(function () {
             }
         });
 });
+
+*/
