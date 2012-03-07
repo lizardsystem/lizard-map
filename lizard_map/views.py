@@ -301,7 +301,9 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
     def sidebar_actions(self):
         actions = super(MapView, self).sidebar_actions
         actions.append(Action(name=_('Layers'),
-                              icon='icon-list'))
+                              icon='icon-list',
+                              klass='slide-in-slidebar-button'),
+                       )
         return actions
 
 
