@@ -174,24 +174,19 @@ class MapMixin(object):
         # For the client side to determine is there is a google map.
         if self.maps.filter(
             layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
-
             return True
-        else:
-            return False
+        return False
 
     def background_maps(self):
         if self.maps:
             return self.maps
-        else:
-            logger.warn("No background maps are active. Taking default.")
-            maps = [BackgroundMap(
-                name='Default map',
-                default=True,
-                active=True,
-                layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                layer_url=DEFAULT_OSM_LAYER_URL), ]
-
-            return maps
+        logger.warn("No background maps are active. Taking default.")
+        return [BackgroundMap(
+                    name='Default map',
+                    default=True,
+                    active=True,
+                    layer_type=BackgroundMap.LAYER_TYPE_OSM,
+                    layer_url=DEFAULT_OSM_LAYER_URL), ]
 
 
 class CollageMixin(object):
