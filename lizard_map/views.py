@@ -161,8 +161,7 @@ class MapMixin(object):
     def base_layer_name(self):
         if MAP_BASE_LAYER in self.request.session:
             return self.request.session[MAP_BASE_LAYER]
-        else:
-            return ""
+        return ""
 
     @property
     def maps(self):
