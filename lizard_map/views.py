@@ -302,7 +302,7 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
         actions = super(MapView, self).sidebar_actions
         actions.append(Action(name=_('Layers'),
                               icon='icon-list',
-                              klass='slide-in-slidebar-button'),
+                              klass='slide-in-sidebar-button'),
                        )
         return actions
 
