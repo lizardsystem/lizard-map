@@ -358,25 +358,6 @@ class WorkspaceLoadSaveTest(TestCase):
         self.assertEquals(WorkspaceStorage.objects.count(), 3)
         self.assertEquals(WorkspaceStorageItem.objects.count(), 3)
 
-    def test_save_not_authenticated(self):
-        data = {'name': 'test workspace'}
-        form = lizard_map.forms.WorkspaceSaveForm(data)
-        form.is_valid()  # it must succeed
-
-        # Count workspaces
-        no_of_workspaces = WorkspaceStorage.objects.count()
-
-        view = lizard_map.views.WorkspaceSaveView()
-        view.request = self.request  # Manually put request in view.
-        response = view.form_valid_action(form)  # Perform save action.
-
-        # Changed -- unauthenticated save is now also possible.
-        self.assertEquals(response, None)
-
-        # Nothing is changed.
-        self.assertEquals(WorkspaceStorage.objects.count(),
-                          no_of_workspaces + 1)
-
 
 class WorkspaceModelMixinTest(TestCase):
     def setUp(self):
