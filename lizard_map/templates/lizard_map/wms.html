@@ -21,15 +21,16 @@
 {% endblock map-javascript %}
 
 
+{% block secondary-sidebar %}
+  {% workspace_edit view.workspace_edit %}
+{% endblock secondary-sidebar %}
+
+
 {% block content %}
   {# Popups: invisible #}
   <div id="dialog">
     <div id="dialog-content">
     </div>
-  </div>
-
-  <div style="display: none;">
-  {% workspace_edit view.workspace_edit %}
   </div>
 
   {# data attributes wms #}
