@@ -475,13 +475,13 @@ class Graph(object):
                 # Don't zoom in too much if values are essentially the same
                 # and differ only in noise. Values shown at the Y-axis should
                 # only have 2 decimals.
-                view_low = math.floor(view_low*40)/40
-                view_high = math.ceil(view_high*40)/40
+                view_low = math.floor(view_low * 40) / 40
+                view_high = math.ceil(view_high * 40) / 40
                 while (view_high - view_low) < 0.03:
-                    # Difference is only 0.025 (or 0!), differences of smaller than 0.01
-                    # show up at the y-axis.
-                    view_low -= 1.0/80
-                    view_high += 1.0/80
+                    # Difference is only 0.025 (or 0!), differences of
+                    # smaller than 0.01 show up at the y-axis.
+                    view_low -= 1.0 / 80
+                    view_high += 1.0 / 80
 
                 if self._y_min_set_manually:
                     view_low, _ = self.axes.get_ylim()

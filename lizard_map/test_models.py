@@ -248,7 +248,8 @@ class WorkspaceLoadSaveTest(TestCase):
         self.workspace_storage.save()
 
         class Mock(dict):
-            pass
+            def build_absolute_uri(self, arg):
+                return "http://example.com" + arg
 
         self.request = Mock()
         self.request.session = Mock()
@@ -356,23 +357,6 @@ class WorkspaceLoadSaveTest(TestCase):
         # 3 workspaces, 3 workspace items should exist.
         self.assertEquals(WorkspaceStorage.objects.count(), 3)
         self.assertEquals(WorkspaceStorageItem.objects.count(), 3)
-
-    def test_save_not_authenticated(self):
-        data = {'name': 'test workspace'}
-        form = lizard_map.forms.WorkspaceSaveForm(data)
-        form.is_valid()  # it must succeed
-
-        # Count workspaces
-        no_of_workspaces = WorkspaceStorage.objects.count()
-
-        view = lizard_map.views.WorkspaceSaveView()
-        view.request = self.request  # Manually put request in view.
-        response = view.form_valid_action(form)  # Perform save action.
-
-        self.assertTrue(response.status_code, 403)
-
-        # Nothing is changed.
-        self.assertEquals(WorkspaceStorage.objects.count(), no_of_workspaces)
 
 
 class WorkspaceModelMixinTest(TestCase):
