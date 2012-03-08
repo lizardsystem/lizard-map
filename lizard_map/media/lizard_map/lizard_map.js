@@ -197,6 +197,50 @@ function setUpWorkspaceAcceptable() {
         $workspace = $(".workspace");
         url_item_toggle = $workspace.attr(
             "data-url-lizard-map-workspace-item-toggle");
+
+        /* New bootstrap-era interaction */
+        if (!$(this).hasClass('selected')) {
+            var $layer_button, $moving_box, move_down, move_right;
+            $layer_button = $(".secondary-sidebar-button");
+            $("#page").after('<div id="moving-box">');
+            $moving_box = $("#moving-box");
+            $moving_box.offset($(this).offset());
+            $moving_box.width($(this).width());
+            $moving_box.height($(this).height());
+            move_down = $layer_button.offset().top - $(this).offset().top;
+            move_right = $layer_button.offset().left - $(this).offset().left;
+            $moving_box.animate({
+                left: '+=' + move_right,
+                top: '+=' + move_down,
+                width: $layer_button.width(),
+                height: $layer_button.height()
+                }, 1000, function() {
+                    $moving_box.remove()
+                });
+            /* xxx */
+        }
+        if ($(this).hasClass('selected')) {
+            var $layer_button, $moving_box, move_up, move_left;
+            $layer_button = $(".secondary-sidebar-button");
+            $("#page").after('<div id="moving-box">');
+            $moving_box = $("#moving-box");
+            $moving_box.offset($layer_button.offset());
+            $moving_box.width($layer_button.width());
+            $moving_box.height($layer_button.height());
+            move_up = $layer_button.offset().top - $(this).offset().top;
+            move_left = $layer_button.offset().left - $(this).offset().left;
+            $moving_box.animate({
+                left: '-=' + move_left,
+                top: '-=' + move_up,
+                width: 0,
+                height: 0
+                }, 1000, function() {
+                    $moving_box.remove()
+                });
+            /* xxx */
+        }
+        /* End of new bootstrap-era interaction */
+
         $.post(
             url_item_toggle,
             {name: name,
@@ -220,7 +264,7 @@ function setUpWorkspaceAcceptable() {
     });
 
     // Set initial status.
-    //updateWorkspaceAcceptableStatus();
+    updateWorkspaceAcceptableStatus();
 
     // We want to refresh workspace-acceptables after clicking an
     // accordion tab. Not accidently a click is also triggered after
