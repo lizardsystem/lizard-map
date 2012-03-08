@@ -297,14 +297,8 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
               UiView):
     """Main map view (using twitter bootstrap). Replaces AppView."""
 
-    @property
-    def sidebar_actions(self):
-        actions = super(MapView, self).sidebar_actions
-        actions.append(Action(name=_('Layers'),
-                              icon='icon-list',
-                              klass='secondary-sidebar-button'),
-                       )
-        return actions
+    show_secondary_sidebar_title = _('Layers')
+    show_secondary_sidebar_icon = 'icon-list'
 
 
 class WorkspaceStorageListView(
