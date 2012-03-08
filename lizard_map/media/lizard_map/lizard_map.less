@@ -1,6 +1,19 @@
 .workspace-acceptable {
+  // Styling for an item that can become a workspace item.
   border: 1px solid transparent;
   &:hover {
     border: 1px solid gray;
   }
+}
+
+#map {
+  // A gray background makes it less conspicuous if background map tiles
+  // take a while to load.
+  background-color: #ddd;
+}
+
+#lizard-map-wms {
+  // Don't show the html elements that are only used to feed map layer info
+  // to openlayers.
+  display: none;
 }

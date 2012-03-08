@@ -1,7 +1,3 @@
-#map
-{ background-color: #ddd;
-}
-
 /* Popup styling */
 .popup,
 .date-popup
@@ -126,9 +122,6 @@
   }
 
 /* Data attributes for lizard map wms */
-#lizard-map-wms
-{ display: none;
-  }
 
 .map-action
 { margin-left: 0.5em;
