@@ -124,7 +124,7 @@ class Color(str):
         try:
             self.g = int(s[2:4], 16)
         except ValueError:
-            self.b = 128
+            self.g = 128
         try:
             self.b = int(s[4:6], 16)
         except ValueError:
