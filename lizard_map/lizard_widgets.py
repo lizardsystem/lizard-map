@@ -23,7 +23,7 @@ class WorkspaceAcceptable(object):
 
     """
 
-    template = 'lizard_map/workspace_acceptable.html'
+    template_name = 'lizard_map/workspace_acceptable.html'
 
     def __init__(self, name, adapter_name, adapter_layer_json,
                  description=None):
@@ -33,6 +33,6 @@ class WorkspaceAcceptable(object):
         self.description = description
 
     def to_html(self):
-        template = loader.get_template(self.template)
+        template = loader.get_template(self.template_name)
         context = Context({'acceptable': self})
         return mark_safe(template.render(context))
