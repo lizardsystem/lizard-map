@@ -157,12 +157,12 @@ the <div class="workspace">
 L3
 */
 
-/*
 jQuery.fn.workspaceInteraction = function () {
     return this.each(function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
+        /*  Reinout disabled jquery-ui, so sortable is out for the moment...
         workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
@@ -186,17 +186,17 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'ui-sortable-placeholder',
             items: 'li.workspace-item'
         });
+        */
         // // Make collage clickable. (DONE: should be collage-popup)
         // $(".collage-popup", $workspace).live('click',
         //                                $(".collage").collagePopup);
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.
-        $('#dialog').overlay({});  // Necessary?
+        //$('#dialog').overlay({});  // Necessary?
     });
 };
 
-*/
 
 /* Refresh workspace-acceptables. They should light up if the item is
 in given workspace. */

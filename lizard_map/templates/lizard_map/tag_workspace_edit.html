@@ -14,86 +14,109 @@
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
      >
   <h2>
-    <a id="workspace-empty"
-       rel="tipsy-south"
-       href="{% url lizard_map_workspace_empty %}"
-       title="{% trans 'Empty your workspace' %}"
-       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty">
-    </a>
+    <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
+      Workspace
+    </span>
+  </h2>
+
+  <ul class="workspace-items">
+    {% for workspace_item in workspace_edit.workspace_items.all %}
+      <li>
+        <div id="workspace-item-{{ workspace_item.id }}"
+             class="workspace-item"
+             data-toggle="workspace"
+             data-target="#below-workspace-item-{{ workspace_item.id }}"
+             {# ^^^ collapse target #}
+             data-object-id="{{ workspace_item.id }}"
+             data-adapter-class="{{ workspace_item.adapter_class }}"
+             data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
+             data-visible="{{ workspace_item.visible }}">
+          <div>
+            {# Symbol, appears left. #}
+            <img class="workspace-item-image"
+                 src="{{ workspace_item.adapter.symbol_url }}"
+                 width="16"
+                 height="16" />
+            <input id="{{ workspace_item.id }}"
+                   class="workspace-item-checkbox"
+                   type="checkbox"
+                   {% if workspace_item.visible %}
+                     checked="checked"
+                   {% endif %}
+                   data-workspace-id="{{ workspace.id }}" />
+            {% firstof workspace_item.name '(noname)' %}
+          </div>
+
+          <ul id="below-workspace-item-{{ workspace_item.id }}"
+               class="below-workspace-item">
+            {# This is normally collapsed. #}
+            <li>
+              <span class="ss_sprite ss_delete sidebarbox-action-icon
+                           workspace-item-delete">
+                {% trans 'Delete item' %}
+              </span>
+            </li>
+            {% if workspace_item.has_extent %}
+              <li>
+                <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                             workspace-item-pan-to">
+                  {% trans 'Zoom to extent' %}
+                </span>
+              </li>
+            {% endif %}
+            <li>
+              {% legend workspace_item.name workspace_item.adapter session %}
+            </li>
+          </ul>
+        </div>
+      </li>
+
+    {% endfor %}
+  </ul>
+
+  <ul class="workspace-actions">
+
+    <li>
+      <a id="workspace-empty"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_empty %}"
+         class="title ss_sprite ss_delete sidebarbox-action-icon
+                action-post-workspace-empty">
+         {% trans 'Empty your workspace' %}
+      </a>
+    </li>
+
     {% comment %}
     The added value of next link might not be obvious to a user, because workspace-load
     seems to offer comparable functionality. A subtle difference is that it reveals a
     URL to a read-only workspace, which you can send around via email.
     {% endcomment %}
     {% comment %}
-    <a id="workspace-link-to-stored"
-       rel="tipsy-south"
-       href="{% url lizard_map_workspace_storage_list %}"
-       title="{% trans 'Stored workspaces...' %}"
-       class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog"
-       data-size="xs">&nbsp;</a>
+      <a id="workspace-link-to-stored"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_storage_list %}"
+         title="{% trans 'Stored workspaces...' %}"
+         class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog"
+         data-size="xs">&nbsp;</a>
     {% endcomment %}
-    <a id="workspace-save"
-       rel="tipsy-south"
-       href="{% url lizard_map_workspace_save %}"
-       title="{% trans 'Save workspace...' %}"
-       class="title ss_sprite ss_database_save sidebarbox-action-icon ajax-dialog"
-       data-size="xs">&nbsp;</a>
-    {% comment %}
-    <a id="workspace-load"
-       rel="tipsy-south"
-       href="{% url lizard_map_workspace_load %}"
-       title="{% trans 'Load workspace...' %}"
-       class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"
-       data-size="xs">&nbsp;</a>
-    {% endcomment %}
-    <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
-      Workspace
-    </span>
-  </h2>
-  <ul class="workspace-items without-bullets">
-    {% for workspace_item in workspace_edit.workspace_items.all %}
-    <li id="workspace-items-{{ workspace_item.id }}"
-        class="workspace-item"
-        title="{{ workspace_item.name }}"
-        data-object-id="{{ workspace_item.id }}"
-        data-adapter-class="{{ workspace_item.adapter_class }}"
-        data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
-        data-visible="{{ workspace_item.visible }}">
-      {# Legend. #}
-      {% legend workspace_item.name workspace_item.adapter session %}
-      {# Delete workspace item. Tipsy tooltips won't disappear. #}
-      <span class="ss_sprite ss_delete sidebarbox-action-icon
-                   workspace-item-delete"
-	    rel="tipsy-south"
-            title="{% trans 'Delete item' %}">
-      </span>
-      {# Pan to layer. #}
-      {% if workspace_item.has_extent %}
-      <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                   workspace-item-pan-to"
-            rel="tipsy"
-            title="Zoom"></span>
-      {% endif %}
-      {# Symbol, appears left. #}
-      <img class="workspace-item-image"
-           src="{{ workspace_item.adapter.symbol_url }}"
-           width="16"
-           height="16" />
-      <input id="{{ workspace_item.id }}"
-             class="workspace-item-checkbox"
-             type="checkbox"
-             {% if workspace_item.visible %}
-             checked="checked"
-             {% endif %}
-             data-workspace-id="{{ workspace.id }}" />
-      <div class="workspace-item-name">
-        {% firstof workspace_item.name '(noname)' %}
-      </div>
+
+    <li>
+      <a id="workspace-save"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_save %}"
+         class="title ss_sprite ss_database_save sidebarbox-action-icon ajax-dialog"
+         data-size="xs">
+        {% trans 'Save workspace...' %}
+      </a>
     </li>
-    {% empty %}
-      {# No workspaceitems #}
-      <li>{% trans 'Click on an item from the above list to add it to your workspace.' %}</li>
-    {% endfor %}
+
+    {% comment %}
+      <a id="workspace-load"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_load %}"
+         title="{% trans 'Load workspace...' %}"
+         class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"
+         data-size="xs">&nbsp;</a>
+    {% endcomment %}
   </ul>
 </div>

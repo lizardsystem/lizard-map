@@ -475,7 +475,7 @@ Replaces a href attr. of 'Download' subelement
 function setDownloadImageLink() {
     $('a#download-map').click(function (e) {
         var url;
-        url = $(this).attr("href"); 
+        url = $(this).attr("href");
 
 	url += getMapUrl();
         // Because the result is an image, a popup will occur.
@@ -493,8 +493,18 @@ function setUpMultipleSelection() {
 }
 
 
+function setUpWorkspaceItemCollapse() {
+    $(".workspace-items .workspace-item").live("click", function() {
+        var id_to_show;
+        id_to_show = '#below-' + $(this).attr('id');
+        $(id_to_show).slideDown(500);
+    });
+}
+
+
 $(document).ready(function () {
     showMap();
     setDownloadImageLink();
     setUpMultipleSelection();
+    setUpWorkspaceItemCollapse();
 });

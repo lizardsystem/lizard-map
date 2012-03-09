@@ -4,6 +4,9 @@
   &:hover {
     border: 1px solid gray;
   }
+  &.selected {
+    font-weight: bold;
+  }
 }
 
 #map {
@@ -26,4 +29,24 @@
   top: 0;
   left: 0;
   border: 1px solid black;
+}
+
+.workspace-items {
+  margin-left: 0;
+  li {
+    list-style: none;
+    div {
+      line-height: 36px;
+    }
+  }
+  .below-workspace-item {
+    display: none;
+    text-align: right;
+  }
+}
+
+.workspace-actions {
+  margin-top: 1em;
+  border-top: 1px solid #111;
+  padding-top: 1em;
 }
