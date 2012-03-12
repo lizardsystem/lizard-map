@@ -129,11 +129,19 @@ function refreshBackgroundLayers() {
                     layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
-                     'maxResolution': 364,
                      'reproject': true,
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
+                     'numZoomLevels': 19,
+                     'units': "m",
+                     'maxResolution': 156543.03390625,
+                     'maxExtent': new OpenLayers.Bounds(
+                         -128 * 156543.03390625,
+                         -128 * 156543.03390625,
+                       128 * 156543.03390625,
+                       128 * 156543.03390625
+                     ),
                      'transitionEffect': 'resize',
                      'buffer': 1}
                 );
