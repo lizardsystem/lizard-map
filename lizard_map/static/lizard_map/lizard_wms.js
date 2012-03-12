@@ -130,6 +130,7 @@ function refreshBackgroundLayers() {
                     {'layers': layer_names,
                      'format': 'image/png',
                      'maxResolution': 364,
+                     'reproject': true,
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
