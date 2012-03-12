@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.25 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Renamed /media to /static. That's django-staticfile's new standard.
 
 
 3.24 (2012-03-05)
