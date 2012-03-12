@@ -133,6 +133,14 @@ class MapMixin(object):
     #     self.map_variables = map_variables(self.request)
     #     return ""
 
+    def ipad(self):
+        if 'HTTP_USER_AGENT' in self.request.META:
+            analyzed_user_agent = analyze_http_user_agent(
+                self.request.META['HTTP_USER_AGENT'])
+            if analyzed_user_agent['device'] == 'iPad':
+                return True
+        return False
+
     def max_extent(self):
         s = Setting.extent(
             'max_extent',
