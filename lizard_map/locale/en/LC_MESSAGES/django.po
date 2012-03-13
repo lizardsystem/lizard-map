@@ -19,190 +19,190 @@ msgstr ""
 
 #: dateperiods.py:12
 msgid "Quarter 1"
-msgstr "Eerste kwartaal"
+msgstr ""
 
 #: dateperiods.py:13
 msgid "Quarter 2"
-msgstr "Tweede kwartaal"
+msgstr ""
 
 #: dateperiods.py:14
 msgid "Quarter 3"
-msgstr "Derde kwartaal"
+msgstr ""
 
 #: dateperiods.py:15
 msgid "Quarter 4"
-msgstr "Vierde kwartaal"
+msgstr ""
 
 #: dateperiods.py:19
 msgid "January"
-msgstr "Januari"
+msgstr ""
 
 #: dateperiods.py:20
 msgid "February"
-msgstr "Februari"
+msgstr ""
 
 #: dateperiods.py:21
 msgid "March"
-msgstr "Maart"
+msgstr ""
 
 #: dateperiods.py:22
 msgid "April"
-msgstr "April"
+msgstr ""
 
 #: dateperiods.py:23
 msgid "May"
-msgstr "Mei"
+msgstr ""
 
 #: dateperiods.py:24
 msgid "June"
-msgstr "Juni"
+msgstr ""
 
 #: dateperiods.py:25
 msgid "July"
-msgstr "Juli"
+msgstr ""
 
 #: dateperiods.py:26
 msgid "August"
-msgstr "Augustus"
+msgstr ""
 
 #: dateperiods.py:27
 msgid "September"
-msgstr "September"
+msgstr ""
 
 #: dateperiods.py:28
 msgid "October"
-msgstr "Oktober"
+msgstr ""
 
 #: dateperiods.py:29
 msgid "November"
-msgstr "November"
+msgstr ""
 
 #: dateperiods.py:30
 msgid "December"
-msgstr "December"
+msgstr ""
 
 #: dateperiods.py:138
 msgid "Whole period"
-msgstr "Hele periode"
+msgstr ""
 
 #: fields.py:102
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
-msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
+msgstr ""
 
 #: models.py:509
 msgid "all"
-msgstr "alles"
+msgstr ""
 
 #: models.py:510
 msgid "year"
-msgstr "jaar"
+msgstr ""
 
 #: models.py:511
 msgid "quarter"
-msgstr "kwartaal"
+msgstr ""
 
 #: models.py:512
 msgid "month"
-msgstr "maand"
+msgstr ""
 
 #: models.py:513
 msgid "week"
-msgstr "week"
+msgstr ""
 
 #: models.py:514
 msgid "day"
-msgstr "dag"
+msgstr ""
 
 #: views.py:286
 msgid "Back to homepage"
-msgstr "Naar de beginpagina"
+msgstr ""
 
 #: views.py:308
 msgid "Layers"
-msgstr "Lagen"
+msgstr ""
 
 #: workspace.py:19
 msgid "blue"
-msgstr "blauw"
+msgstr ""
 
 #: workspace.py:20
 msgid "magenta"
-msgstr "magenta"
+msgstr ""
 
 #: workspace.py:21
 msgid "yellow"
-msgstr "geel"
+msgstr ""
 
 #: workspace.py:22
 msgid "black"
-msgstr "zwart"
+msgstr ""
 
 #: workspace.py:23
 msgid "cyan"
-msgstr "cyaan"
+msgstr ""
 
 #: workspace.py:24
 msgid "red"
-msgstr "rood"
+msgstr ""
 
 #: workspace.py:25
 msgid "lightblue"
-msgstr "lichtblauw"
+msgstr ""
 
 #: workspace.py:26
 msgid "grey"
-msgstr "grijs"
+msgstr ""
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
-msgstr "Voorbeelden"
+msgstr ""
 
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
-msgstr "Voorbeeld met vormbestand"
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:11
 msgid "Empty your collage"
-msgstr "Selectie leegmaken"
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:18
 msgid "Selection popup..."
-msgstr "Selectie pop-up..."
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:24
 msgid "Selection page..."
-msgstr "Naar selectiepagina..."
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:27
 msgid "This is your current selection."
-msgstr "Dit is uw huidige selectie."
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:28
 msgid "Selection"
-msgstr "Selectie"
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:40
 #: templates/lizard_map/tag_workspace_edit.html:56
 msgid "Delete item"
-msgstr "Verwijder item"
+msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:64
 msgid "Select items on the map."
-msgstr "Selecteer items op de kaart."
+msgstr ""
 
 #: templates/lizard_map/tag_workspace.html:28
 msgid "new workspace"
-msgstr "nieuwe workspace"
+msgstr ""
 
 #: templates/lizard_map/tag_workspace.html:36
 #: templates/lizard_map/tag_workspace.html:110
 msgid "empty"
-msgstr "leeg"
+msgstr ""
 
 #: templates/lizard_map/tag_workspace.html:41
 #: templates/lizard_map/tag_workspace.html:124
 msgid "link to"
-msgstr "link naar"
+msgstr ""
 
 #: templates/lizard_map/tag_workspace.html:118
 msgid "Grafieken en Statistieken"
@@ -210,18 +210,18 @@ msgstr ""
 
 #: templates/lizard_map/tag_workspace.html:133
 msgid "popup"
-msgstr "popup"
+msgstr ""
 
 #: templates/lizard_map/tag_workspace_edit.html:17
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
-msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
+msgstr ""
 
 #: templates/lizard_map/tag_workspace_edit.html:63
 msgid "Zoom to extent"
-msgstr "Zoom zodat alles hiervan in beeld is"
+msgstr ""
 
 #: templates/lizard_map/tag_workspace_edit.html:85
 msgid "Empty your workspace"
-msgstr "Workspace leegmaken"
+msgstr ""
