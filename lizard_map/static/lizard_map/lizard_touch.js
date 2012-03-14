@@ -68,8 +68,9 @@ function initializeTouch() {
         myLocationLayer.addFeatures(myLocation);
         map.addLayer(myLocationLayer);
 
-        navigator.geolocation.watchPosition(
-            positionUpdate, positionUpdateFail);
+        // navigator.geolocation.watchPosition(
+        //     positionUpdate, positionUpdateFail);
+        // ^^^ This caused an intermittend prompting for geolocation.. turning off for now (Gijs)
     }
 
 }
