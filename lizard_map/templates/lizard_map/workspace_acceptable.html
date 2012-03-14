@@ -1,10 +1,7 @@
-<div
+<div class="{{ classes }}"
   {% if acceptable.description %}
-    class="workspace-acceptable has_popover"
     data-content="{{ acceptable.description }}"
     title="{{ acceptable.name }}"
-  {% else %}
-    class="workspace-acceptable"
   {% endif %}
     data-adapter-layer-json="{{ acceptable.adapter_layer_json }}"
     data-adapter-class="{{ acceptable.adapter_name }}"

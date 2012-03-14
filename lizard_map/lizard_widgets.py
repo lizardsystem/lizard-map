@@ -25,14 +25,30 @@ class WorkspaceAcceptable(object):
 
     template_name = 'lizard_map/workspace_acceptable.html'
 
-    def __init__(self, name, adapter_name, adapter_layer_json,
-                 description=None):
+    def __init__(self,
+                 name=None,
+                 adapter_name=None,
+                 adapter_layer_json=None,
+                 description=None,
+                 enabled=True):
         self.name = name
         self.adapter_name = adapter_name
         self.adapter_layer_json = adapter_layer_json
         self.description = description
+        self.enabled = enabled
+
+    def classes(self):
+        """Return applicable css classes. Saves some if/else in the template.
+        """
+        result = []
+        if self.enabled:
+            result.append('workspace-acceptable')
+        if self.description:
+            result.append('has_popover')
+        return ' '.join(result)
 
     def to_html(self):
         template = loader.get_template(self.template_name)
-        context = Context({'acceptable': self})
+        context = Context({'acceptable': self,
+                           'classes': self.classes()})
         return mark_safe(template.render(context))
