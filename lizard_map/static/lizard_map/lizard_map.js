@@ -1037,8 +1037,8 @@ function setUpCollageEditor() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-  // New bootstrappy stuff.
-  $("#map").height($("#content").height());
+    // New bootstrappy stuff.
+	$("#map").height($("#content").height());
 
 
 
