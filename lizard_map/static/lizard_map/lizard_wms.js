@@ -269,6 +269,8 @@ function showMap() {
         start_extent_bottom, max_extent, max_extent_left, max_extent_top,
         max_extent_right, max_extent_bottom;
 
+    window.setUpMapDimensions();
+
     // Make custom OpenLayers._getScriptLocation
     // OpenLayers (OL) cannot get its script location if the filename
     // OpenLayers.js has been changed.
