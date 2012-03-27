@@ -307,6 +307,7 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
 
     show_secondary_sidebar_title = _('Layers')
     show_secondary_sidebar_icon = 'icon-list'
+    show_rightbar_title = _('Legend')
 
 
 class WorkspaceStorageListView(
