@@ -9,13 +9,7 @@
   {% if view.has_google %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}"></script>
   {% endif %}
-  {% if view.ipad %}
-    {# iPad touch extension from: http://anders.com/cms/352/OpenLayers/iPhone/Android/Touch.Gestures #}
-    <script type="text/javascript"
-            src="{{ STATIC_URL }}touch/touch.js"></script>
-    <script type="text/javascript"
-            src="{{ STATIC_URL }}lizard_map/lizard_touch.js"></script>
-  {% endif %}
+
 {% endblock map-javascript %}
 
 
