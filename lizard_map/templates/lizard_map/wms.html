@@ -17,6 +17,17 @@
   {% workspace_edit view.workspace_edit %}
 {% endblock secondary-sidebar %}
 
+{% block rightbar %}
+  <h2>{% trans "Legend" %}</h2>
+  {% for legend in view.legends %}
+    <h3>{{ legend.name }}</h3>
+    <div>
+      <img src="{{ legend.image_url }}"
+           alt="{% trans 'Legend' %}: {{ legend.name }}" />
+    </div>
+  {% endfor %}
+{% endblock rightbar %}
+
 
 {% block content %}
   {# Popups: invisible #}

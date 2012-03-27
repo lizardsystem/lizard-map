@@ -133,14 +133,6 @@ class MapMixin(object):
     #     self.map_variables = map_variables(self.request)
     #     return ""
 
-    def ipad(self):
-        if 'HTTP_USER_AGENT' in self.request.META:
-            analyzed_user_agent = analyze_http_user_agent(
-                self.request.META['HTTP_USER_AGENT'])
-            if analyzed_user_agent['device'] == 'iPad':
-                return True
-        return False
-
     def max_extent(self):
         s = Setting.extent(
             'max_extent',
@@ -148,6 +140,10 @@ class MapMixin(object):
         return s
 
     def start_extent(self):
+        # Hack: we need to have a session right away for toggling ws items.
+        self.request.session[
+            'make_sure_session_is_initialized'] = 'hurray'
+        # End of the hack.
         map_location = Setting.extent(
             'start_extent',
             DEFAULT_START_EXTENT)
@@ -308,6 +304,21 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
     show_secondary_sidebar_title = _('Layers')
     show_secondary_sidebar_icon = 'icon-list'
     show_rightbar_title = _('Legend')
+
+    def legends(self):
+        """Return legends for the rightbar."""
+        result = []
+        workspace_items = self.workspace().workspace_items.filter(
+            visible=True)
+        for workspace_item in workspace_items:
+            logger.debug("Looking for legend url for %s...", workspace_item)
+            if not hasattr(workspace_item.adapter, 'legend_image_url'):
+                logger.debug("No legend_image_url() on this ws item's adapter.")
+                continue
+            result.append({
+                    'name': workspace_item.name,
+                    'image_url': workspace_item.adapter.legend_image_url()})
+        return result
 
 
 class WorkspaceStorageListView(
@@ -680,11 +691,9 @@ def workspace_item_toggle(
     if workspace_edit is None:
         workspace_edit = WorkspaceEdit.get_or_create(
             request.session.session_key, request.user)
-
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
     adapter_layer_json = request.POST['adapter_layer_json']
-
     # Find out if it is already present.
     existing_workspace_items = workspace_edit.workspace_items.filter(
         adapter_class=adapter_class,
