@@ -305,7 +305,10 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
               UiView):
     """Main map view (using twitter bootstrap). Replaces AppView."""
 
-    show_secondary_sidebar_title = _('Layers')
+    @property
+    def show_secondary_sidebar_title(self):
+        return _('Layers')
+
     show_secondary_sidebar_icon = 'icon-list'
 
 
