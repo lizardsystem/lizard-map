@@ -315,7 +315,7 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
         """Return legends for the rightbar."""
         result = []
         workspace_items = self.workspace().workspace_items.filter(
-            visible=True)
+            visible=True).reverse()
         for workspace_item in workspace_items:
             logger.debug("Looking for legend url for %s...", workspace_item)
             if not hasattr(workspace_item.adapter, 'legend_image_url'):

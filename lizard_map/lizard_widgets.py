@@ -40,7 +40,7 @@ class WorkspaceAcceptable(object):
     def classes(self):
         """Return applicable css classes. Saves some if/else in the template.
         """
-        result = []
+        result = ['padded-sidebar-item']
         if self.enabled:
             result.append('workspace-acceptable')
         if self.description:

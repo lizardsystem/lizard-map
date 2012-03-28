@@ -4,9 +4,14 @@
   &:hover {
     border: 1px solid gray;
   }
+  .workspace-selected-icon {
+    display: none;
+  }
   &.selected {
     font-weight: bold;
-    border: 1px dotted gray;
+    .workspace-selected-icon {
+      display: inline-block;
+    }
   }
 }
 
@@ -17,7 +22,7 @@
 }
 
 #lizard-map-wms {
-  // Don't show the html elements that are only used to feed map layer info
+  // Do not show the html elements that are only used to feed map layer info
   // to openlayers.
   display: none;
 }
