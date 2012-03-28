@@ -504,18 +504,8 @@ function setUpMultipleSelection() {
 }
 
 
-function setUpWorkspaceItemCollapse() {
-    $(".workspace-items .workspace-item").live("click", function() {
-        var id_to_show;
-        id_to_show = '#below-' + $(this).attr('id');
-        $(id_to_show).slideDown(500);
-    });
-}
-
-
 $(document).ready(function () {
     showMap();
     setDownloadImageLink();
     setUpMultipleSelection();
-    setUpWorkspaceItemCollapse();
 });

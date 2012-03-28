@@ -1062,7 +1062,7 @@ $(document).ready(function () {
     setUpMapLoadDefaultLocation();
 
     /* Workspace functions, requires jquery.workspace.js */
-    //$(".workspace").workspaceInteraction();
+    $(".workspace").workspaceInteraction();
 
     // voor collage view, nu nog nutteloos voor popup
     //$(".add-snippet").snippetInteraction();

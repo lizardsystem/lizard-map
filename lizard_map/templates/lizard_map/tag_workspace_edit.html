@@ -24,9 +24,6 @@
       <li>
         <div id="workspace-item-{{ workspace_item.id }}"
              class="workspace-item"
-             data-toggle="workspace"
-             data-target="#below-workspace-item-{{ workspace_item.id }}"
-             {# ^^^ collapse target #}
              data-object-id="{{ workspace_item.id }}"
              data-adapter-class="{{ workspace_item.adapter_class }}"
              data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
@@ -80,9 +77,9 @@
       <a id="workspace-empty"
          rel="tipsy-south"
          href="{% url lizard_map_workspace_empty %}"
-         class="title ss_sprite ss_delete sidebarbox-action-icon
-                action-post-workspace-empty">
-         {% trans 'Empty your workspace' %}
+         class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty">
+        <i class="icon-trash icon-white"></i>
+        {% trans 'Empty your workspace' %}
       </a>
     </li>
 
