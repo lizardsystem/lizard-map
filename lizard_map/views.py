@@ -306,7 +306,10 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
         return _('Layers')
 
     show_secondary_sidebar_icon = 'icon-list'
-    show_rightbar_title = _('Legend')
+
+    @property
+    def show_rightbar_title(self):
+        return _('Legend')
 
     def legends(self):
         """Return legends for the rightbar."""
