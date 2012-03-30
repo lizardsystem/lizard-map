@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-28 03:42-0500\n"
+"POT-Creation-Date: 2012-03-30 04:31-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -118,9 +118,9 @@ msgstr "Naar de beginpagina"
 
 #: views.py:306
 msgid "Layers"
-msgstr "Lagen"
+msgstr "Kaartlagen"
 
-#: views.py:309 templates/lizard_map/wms.html:21
+#: views.py:312 templates/lizard_map/wms.html:21
 #: templates/lizard_map/wms.html.py:26
 msgid "Legend"
 msgstr "Legenda"
@@ -186,7 +186,7 @@ msgid "Selection"
 msgstr "Selectie"
 
 #: templates/lizard_map/tag_collage_edit.html:40
-#: templates/lizard_map/tag_workspace_edit.html:56
+#: templates/lizard_map/tag_workspace_edit.html:53
 msgid "Delete item"
 msgstr "Verwijder item"
 
@@ -222,10 +222,10 @@ msgid ""
 "options."
 msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
-#: templates/lizard_map/tag_workspace_edit.html:63
+#: templates/lizard_map/tag_workspace_edit.html:60
 msgid "Zoom to extent"
 msgstr "Zoom zodat alles hiervan in beeld is"
 
-#: templates/lizard_map/tag_workspace_edit.html:85
+#: templates/lizard_map/tag_workspace_edit.html:82
 msgid "Empty your workspace"
 msgstr "Workspace leegmaken"
