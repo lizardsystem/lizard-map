@@ -20,6 +20,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
+from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.models import ApplicationScreen
 from lizard_ui.views import UiView
@@ -325,6 +326,19 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
                     'name': workspace_item.name,
                     'image_url': workspace_item.adapter.legend_image_url()})
         return result
+
+    @property
+    def content_actions(self):
+        """Add default-location-zoom."""
+        actions = super(MapView, self).content_actions
+        zoom_to_default = Action(
+            name=_('Default zoom'),
+            description=_('Zoom to default location'),
+            url=reverse('lizard_map.map_location_load_default'),
+            icon='icon-screenshot',
+            klass='map-load-default-location')
+        actions.insert(0, zoom_to_default)
+        return actions
 
 
 class WorkspaceStorageListView(

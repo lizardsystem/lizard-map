@@ -109,9 +109,10 @@ function setUpTransparencySlider() {
 
 /* L3 */
 function setUpMapLoadDefaultLocation() {
-    $("#map-load-default-location").live("click", function () {
+    $(".map-load-default-location").live("click", function (event) {
         var url;
-        url = $(this).attr("data-url");
+        event.preventDefault();
+        url = $(this).attr("href");
         $.getJSON(
             url, function (data) {
                 var extent, zoom;
