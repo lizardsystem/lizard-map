@@ -43,6 +43,8 @@ class WorkspaceAcceptable(object):
         result = ['padded-sidebar-item']
         if self.enabled:
             result.append('workspace-acceptable')
+        else:
+            result.append('nonworking-workspace-acceptable')
         if self.description:
             result.append('has_popover')
         return ' '.join(result)
