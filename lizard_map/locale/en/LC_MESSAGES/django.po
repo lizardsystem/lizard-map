@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-30 04:31-0500\n"
+"POT-Creation-Date: 2012-03-30 05:39-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,17 +113,25 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: views.py:282
+#: views.py:283
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:306
+#: views.py:307
 msgid "Layers"
 msgstr ""
 
-#: views.py:312 templates/lizard_map/wms.html:21
+#: views.py:313 templates/lizard_map/wms.html:21
 #: templates/lizard_map/wms.html.py:26
 msgid "Legend"
+msgstr ""
+
+#: views.py:335
+msgid "Default zoom"
+msgstr ""
+
+#: views.py:336
+msgid "Zoom to default location"
 msgstr ""
 
 #: workspace.py:19
