@@ -54,3 +54,10 @@ class WorkspaceAcceptable(object):
         context = Context({'acceptable': self,
                            'classes': self.classes()})
         return mark_safe(template.render(context))
+
+    def html_tag(self):
+        """Return tag name. 'a' when enabled, 'div' when not."""
+        if self.enabled:
+            return 'a'
+        else:
+            return 'div'

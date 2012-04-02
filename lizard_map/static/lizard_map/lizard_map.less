@@ -1,8 +1,23 @@
-.workspace-acceptable {
+a.workspace-acceptable,
+div.nonworking-workspace-acceptable {
+  display: block;
+  font-decoration: none;
+  color: #333333;
+  &:hover {
+    font-decoration: none;
+  }
+  &:active {
+    font-decoration: none;
+    color: #333333;
+  }
+}
+
+a.workspace-acceptable {
   // Styling for an item that can become a workspace item.
   border: 1px solid transparent;
   &:hover {
     border: 1px solid gray;
+    font-decoration: none;
   }
   .workspace-selected-icon {
     display: none;
@@ -15,7 +30,7 @@
   }
 }
 
-.nonworking-workspace-acceptable {
+div.nonworking-workspace-acceptable {
   // Workspace item without adapter that cannot be used.
   font-style: italic;
 }

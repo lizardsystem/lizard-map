@@ -1,4 +1,5 @@
-<div class="{{ classes }}"
+<{{ acceptable.html_tag }} class="{{ classes }}"
+   href="#"
   {% if acceptable.description %}
     data-content="{{ acceptable.description }}"
     title="{{ acceptable.name }}"
@@ -10,4 +11,4 @@
     <i class="icon-ok workspace-selected-icon"></i>
   {% endif %}
   {{ acceptable.name }}
-</div>
+</{{ acceptable.html_tag }}>

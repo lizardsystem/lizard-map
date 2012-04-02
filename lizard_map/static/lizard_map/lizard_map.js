@@ -188,7 +188,7 @@ function setUpWorkspaceAcceptable() {
     $(".workspace-acceptable").live("click", function (event) {
         var name, adapter_class, adapter_layer_json, url_item_toggle,
         $workspace, html, $workspace_acceptable;
-
+        event.preventDefault();
         $workspace_acceptable = $(this);
         indicateWorkspaceItemBusy($workspace_acceptable);
 
