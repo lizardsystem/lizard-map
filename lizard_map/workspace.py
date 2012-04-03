@@ -204,19 +204,42 @@ class WorkspaceItemAdapter(object):
         return result
 
     def location(self, identifier=None, layout=None):
-        """Return fews point representation corresponding to filter_id,
-        location_id and parameter_id in same format as search function
+        """
+        This function is called with an identifier as **kwargs, so if
+        your layer's identifier is a dict with keys 'A' and 'B', your
+        layer's location() function will get keyword arguments A and
+        B.
 
-        layout is a dict with extra optional layout parameters:
-        y_min, y_max, y_label, x_label, line_avg, line_max, line_min
+        The result of this function should be a dict with at least the
+        following elements:
 
-        {'object': <...>,
-        'google_x': x coordinate in google,
-        'google_y': y coordinate in google,
-        'workspace_item': <...>,
-        'identifier': {...},
-        'grouping_hint': optional unique group identifier, i.e. unit m3/s}
+        'google_coords': an (x, y) tuple with this identifier's Google
+                         coordinates.
 
+        'name': A descriptive name for the object.
+
+        'shortname': A descriptive name for the object (optional? is
+                     this used?)
+
+        'workspace_item': self.workspace_item. Superfluous, it is
+                          possible that this is still used but in that
+                          case it should be factored out.
+
+        'identifier': An identifier in the exact same format as was
+                      used to call this function, except that if a
+                      'layout' argument was given to this function,
+                      identifier['layout'] should be set to that
+                      argument's value. Also superfluous, also unknown
+                      whether it is still used.
+
+        'grouping_hint': Optional. Normally objects with the same
+                         workspace_item are shown in the same tab on
+                         the collage page. If you want to split
+                         objects into several different pages, give
+                         them different grouping_hints.
+
+        One of the things that definitely uses this is the javascript
+        hover popup function.
         """
         raise NotImplementedError
 
