@@ -135,7 +135,6 @@ function refreshBackgroundLayers() {
                      'visibility': is_base_layer,
                      'numZoomLevels': 19,
                      'units': "m",
-                     'maxResolution': 156543.03390625,
                      'maxExtent': new OpenLayers.Bounds(
                          -128 * 156543.03390625,
                          -128 * 156543.03390625,
@@ -144,6 +143,17 @@ function refreshBackgroundLayers() {
                      ),
                      'transitionEffect': 'resize',
                      'buffer': 1}
+                );
+            }
+            else if (layer_type === "TMS")
+            {
+                base_layer = new OpenLayers.Layer.TMS(
+                    layer_name,
+                    url,
+                    {layername: layer_names,
+                     type: 'png',
+                     tileSize: new OpenLayers.Size(256, 256)
+                    }
                 );
             }
             // layers.base_layer
@@ -309,6 +319,7 @@ function showMap() {
             projection: new OpenLayers.Projection(projection),
             displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
             units: "m",
+            maxResolution: 78271.516964,
             numZoomLevels: 18,
             maxExtent: max_extent,
             controls: []

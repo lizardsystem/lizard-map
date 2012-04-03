@@ -846,11 +846,13 @@ class BackgroundMap(models.Model):
     LAYER_TYPE_GOOGLE = 1
     LAYER_TYPE_OSM = 2
     LAYER_TYPE_WMS = 3
+    LAYER_TYPE_TMS = 4
 
     LAYER_TYPE_CHOICES = (
         (LAYER_TYPE_GOOGLE, 'GOOGLE'),
         (LAYER_TYPE_OSM, 'OSM'),
         (LAYER_TYPE_WMS, 'WMS'),
+        (LAYER_TYPE_TMS, 'TMS'),
         )
 
     GOOGLE_TYPE_DEFAULT = 1
@@ -879,11 +881,11 @@ class BackgroundMap(models.Model):
     layer_url = models.CharField(
         max_length=200,
         null=True, blank=True,
-        help_text='Tile url for use with OSM or WMS',
+        help_text='Tile url for use with OSM or WMS or TMS',
         default='http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
     layer_names = models.TextField(
         null=True, blank=True,
-        help_text='Fill in layer names in case of WMS')
+        help_text='Fill in layer names in case of WMS or TMS')
 
     class Meta:
         ordering = ('index', )
