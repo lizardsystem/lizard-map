@@ -393,7 +393,7 @@ class WorkspaceItemMixin(models.Model):
                 "Deleting problematic WorkspaceItem: %s", self)
                 # Trac #2470. Return a NullAdapter instead?
             if self.id is not None:
-                # Only delete if it is not saved in the first place.
+                # Only delete if it is saved in the first place.
                 self.delete()
             return None
         return current_adapter
@@ -446,10 +446,25 @@ class WorkspaceItemMixin(models.Model):
         return url
 
     def has_extent(self):
+        """Return true if this workspace item's adapter can
+        successfully compute an extent and doesn't have "None" in the
+        extent's values."""
         if not hasattr(self, 'adapter') or not hasattr(self.adapter, 'extent'):
             return False
 
-        extent = self.adapter.extent()
+        try:
+            extent = self.adapter.extent()
+        except:
+            # Even if the hard disk is in fact on fire, we don't want to raise
+            # an exception here because that may break the whole page.
+            return False
+
+        if extent is None:
+            return False
+
+        if not isinstance(extent, dict):
+            return False
+
         return None not in extent.values()
 
 
