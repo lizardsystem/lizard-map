@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.25 (unreleased)
+3.25 (2012-04-04)
 -----------------
 
 - Improved docstrings at a few places (mainly location() in
