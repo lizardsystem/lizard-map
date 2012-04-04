@@ -4,8 +4,15 @@ Changelog of lizard-map
 3.25 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Improved docstrings at a few places (mainly location() in
+  WorkspaceItemAdapter)
 
+- Added method 'adapter_layer_json' to WorkspaceItemAdapter, helpful
+  to generate this bit of json when it's needed.
+
+- Added 'adapter': self to html_default's template context variables.
+  This gives templates access to adapter's methods and attributes,
+  like adapter.adapter_class and adapter.adapter_layer_json.
 
 3.24 (2012-03-05)
 -----------------

@@ -451,7 +451,7 @@ class WorkspaceSaveView(ActionDialogView):
            self.request.session.session_key, self.request.user)
         # TODO: quota, warning on duplicate names.
 
-        # For the initial release of Lizard, turn required authorization
+        # For the initial release of Lizard 3, turn required authorization
         # OFF.
         user = self.request.user
         if not user.is_authenticated():
@@ -1150,18 +1150,22 @@ def search_coordinates(request,
     x = float(request.GET.get('x'))
     y = float(request.GET.get('y'))
     format = request.GET.get('format', _format)
+
     # TODO: convert radius to correct scale (works now for google + rd)
     radius = float(request.GET.get('radius'))
     radius_search = radius
+
     if 'HTTP_USER_AGENT' in request.META:
         analyzed_user_agent = analyze_http_user_agent(
             request.META['HTTP_USER_AGENT'])
         # It's more difficult to point with your finger than with the mouse.
         if analyzed_user_agent['device'] == 'iPad':
             radius_search = radius_search * 3
+
     srs = request.GET.get('srs')
     google_x, google_y = coordinates.srs_to_google(srs, x, y)
 
+    # Load correct workspace, several possibilities
     if workspace_storage_id is not None:
         workspace = WorkspaceStorage.objects.get(pk=workspace_storage_id)
     elif workspace_storage_slug is not None:
@@ -1175,8 +1179,10 @@ def search_coordinates(request,
             stored_workspace_id = request.GET.get('stored_workspace_id', None)
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
+    # The actual search!
     found = search(workspace, google_x, google_y, radius)
     logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
+
     if found:
         # ``found`` is a list of dicts {'distance': ..., 'timeserie': ...}.
         found.sort(key=lambda item: item['distance'])
