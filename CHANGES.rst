@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.26 (unreleased)
+3.26 (2012-04-06)
 -----------------
 
 - Changed collage detail template so that apps can configure it a bit more.
