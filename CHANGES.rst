@@ -4,7 +4,28 @@ Changelog of lizard-map
 3.26 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Changed collage detail template so that apps can configure it a bit more.
+  Collage items (that are put in groups on the collage page) have properties
+  that control the header shown over the group (data_description), which edit
+  dialog to show for a collage item edit button (collage_detail_edit_action),
+  whether to show the whole Edit block at all (collage_detail_show_edit_block),
+  and whether to show the statistics block (collage_detail_show_statistics_block).
+
+  These functions in turn call functions in their adapters, with an identifier
+  as argument (because one adapter can have items in different groups, with different
+  settings. This way it gets the identifier of the first item in each group):
+
+    def collage_detail_data_description(self, identifier, *args, **kwargs):
+      default 'Grafiek'
+    def collage_detail_edit_action(self, identifier, *args, **kwargs):
+      default 'graph'
+    def collage_detail_show_edit_block(self, identifier, *args, **kwargs):
+      default True
+    def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
+      default True
+
+  *args and **kwargs are meaningless but present in case the functions' signatures
+  change in the future. These functions can be overridden in your adapter.
 
 
 3.25 (2012-04-04)

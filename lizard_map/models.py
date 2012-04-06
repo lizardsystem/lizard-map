@@ -767,6 +767,29 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
             # Adapter is None
             return self.default_grouping_hint
 
+    # The following methods are used from the collage_edit_detail
+    # page and control which things are shown on that page.
+    @property
+    def data_description(self):
+        """Title to show above this bit of data on the collage page."""
+        return self.adapter.collage_detail_data_description(self.identifier)
+
+    @property
+    def collage_detail_edit_action(self):
+        """Which edit action to show on the collage detail page. Currently
+        the only working option in collage_edit_detail is 'graph'. If this
+        data can't be edited on the collage detail page, return None.
+        Calls 'collage_detail_edit_action' in the adapter."""
+        return self.adapter.collage_detail_edit_action(self.identifier)
+
+    @property
+    def collage_detail_show_edit_block(self):
+        return self.adapter.collage_detail_show_edit_block(self.identifier)
+
+    @property
+    def collage_detail_show_statistics_block(self):
+        return self.adapter.collage_detail_show_statistics_block(self.identifier)
+
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""
         result = {}

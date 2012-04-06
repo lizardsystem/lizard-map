@@ -418,7 +418,7 @@ function dialogOnChange(event) {
                     replaceItems(ids, context.responseText);
                     dialogContent(div);
                     dialogOverlay();
-		    
+
 		    setupDatepicker(div);
                     return false;
                 });
@@ -498,7 +498,7 @@ function reloadScreenAfterSubmit(event) {
     });
 }
 
-function openNewWindowAfterSubmit(event) {  
+function openNewWindowAfterSubmit(event) {
     return dialogSubmit(event, function(context) {
 	/* The URL to open is stored in a link with class
 	   "new-window-url". */
@@ -556,7 +556,7 @@ postAction. */
 function actionPostClick(event, preAction, postAction, parameters) {
     var url, target, target_id;
     event.preventDefault();
-    
+
     url = $(event.target).attr("href");
     target_id = $(event.target).attr("data-target-id");
     if (target_id !== undefined) {

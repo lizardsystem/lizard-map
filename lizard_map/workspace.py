@@ -521,12 +521,21 @@ class WorkspaceItemAdapter(object):
                               'description': 'description'}]
         return legend_result
 
-    @property
-    def collage_detail_data_description(self):
+    def collage_detail_data_description(self, identifier, *args, **kwargs):
+        """Return the title to show over this bit of data on the
+        collage detail page."""
+
         return 'Grafiek'
 
-    @property
-    def collage_detail_edit_action(self):
-        # Assume adapter has a graph we can edit
-        # Override to return "None" if it doesn't
+    def collage_detail_edit_action(self, identifier, *args, **kwargs):
+        """On the collage detail page, we can show edit options below
+        a graph. Return 'graph' if this item does. Override to return
+        "None" if it doesn't."""
+
         return 'graph'
+
+    def collage_detail_show_edit_block(self, identifier, *args, **kwargs):
+        return True
+
+    def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
+        return True
