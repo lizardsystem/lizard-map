@@ -30,12 +30,6 @@
 
 
 {% block content %}
-  {# Popups: invisible #}
-  <div id="dialog">
-    <div id="dialog-content">
-    </div>
-  </div>
-
   {# data attributes wms #}
   {# All contents of lizard-map-wms must have class lizard-map-wms-item #}
   <div id="lizard-map-wms"
@@ -88,5 +82,5 @@
        {% endautoescape %}
      {% endfor %}
   </div>
-  <div id="map"></div>
+  <div id="map" class="give-me-height"></div>
 {% endblock content %}
