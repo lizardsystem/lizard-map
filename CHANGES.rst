@@ -4,8 +4,13 @@ Changelog of lizard-map
 3.27 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Required lizard-ui 3.14 (new Openlayers).
 
+- Removed touch.js, necessary with the new Openlayers version.
+
+- Uncommented extent() in WorkspaceItemAdapter. It should be there
+  because it is one of the methods that can be overridden by
+  implementing adapters.
 
 3.26 (2012-04-06)
 -----------------
