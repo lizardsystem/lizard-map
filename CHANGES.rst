@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.28 (unreleased)
+3.28 (2012-04-13)
 -----------------
 
 - Re-enabling hover functionality on saved workspaces.

@@ -61,7 +61,7 @@ BUILDOUT_DIR = os.path.abspath(os.path.join(SETTINGS_DIR, '..'))
 MEDIA_ROOT = os.path.join(BUILDOUT_DIR, 'var', 'media')
 STATIC_ROOT = os.path.join(BUILDOUT_DIR, 'var', 'static')
 MEDIA_URL = '/media/'
-STATIC_URL = '/static_media/'
+STATIC_URL = '/static_mediaaaaa/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 LOGGING = setup_logging(BUILDOUT_DIR)

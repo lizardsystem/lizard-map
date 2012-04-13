@@ -348,7 +348,8 @@ function showMap() {
                 );
                 this.handler = new OpenLayers.Handler.Click(
                     this, {
-                        'click': this.trigger
+                        'click': this.trigger,
+                        'touchstart': this.trigger
                     }, this.handlerOptions
                 );
             },
@@ -475,7 +476,7 @@ Replaces a href attr. of 'Download' subelement
 function setDownloadImageLink() {
     $('a#download-map').click(function (e) {
         var url;
-        url = $(this).attr("href"); 
+        url = $(this).attr("href");
 
 	url += getMapUrl();
         // Because the result is an image, a popup will occur.
