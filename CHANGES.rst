@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.28 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Also removed references to touch.js and lizard_touch.js from the templates...
 
 
 3.27 (2012-04-13)
