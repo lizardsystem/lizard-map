@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.27 (unreleased)
+3.27 (2012-04-13)
 -----------------
 
 - Required lizard-ui 3.14 (new Openlayers).
