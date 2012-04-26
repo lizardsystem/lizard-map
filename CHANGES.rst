@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.30 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Added one icon.
 
 
 3.29 (2012-04-25)
