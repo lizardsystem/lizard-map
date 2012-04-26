@@ -818,7 +818,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     If 'grouping_hint' is given, that is used to group items,
     otherwise the workspace_item.id. This way a single workspace item
     can have things show up in different tabs. Please don't use
-    grouping_hints that can possible come from other workspace items
+    grouping_hints that could possibly come from other workspace items
     (use the workspace item id in the hint).
 
     Note: identifier must be a dict. {'id': the_real_id}.
