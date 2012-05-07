@@ -13,7 +13,7 @@
      {% endifequal %}
      {% ifequal background_map.layer_type 3 %}{# WMS #}
      data-layer-type="WMS"
-     data-layer-url="{{ background_map.layer_url|safe }}"
+     data-layer-url="{{ background_map.layer_url }}"
      data-layer-layer-names="{{ background_map.layer_names }}"
      data-is-base-layer="{{ background_map.is_base_layer }}"
      {% endifequal %}
