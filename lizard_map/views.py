@@ -320,7 +320,8 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
         for workspace_item in workspace_items:
             logger.debug("Looking for legend url for %s...", workspace_item)
             if not hasattr(workspace_item.adapter, 'legend_image_url'):
-                logger.debug("No legend_image_url() on this ws item's adapter.")
+                logger.debug(
+                    "No legend_image_url() on this ws item's adapter.")
                 continue
             result.append({
                     'name': workspace_item.name,
