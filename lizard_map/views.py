@@ -821,6 +821,10 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     grouping_hints that could possibly come from other workspace items
     (use the workspace item id in the hint).
 
+    The maximum number of tabs in popups can be configured via
+    POPUP_MAX_TABS in your site's settings.py. POPUP_MAX_TABS
+    is optional and defaults to 3.
+
     Note: identifier must be a dict. {'id': the_real_id}.
 
     Result format (used by the javascript popup function):
@@ -891,7 +895,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         #     x_found, y_found = display_object['google_coords']
         html[key] = html_per_workspace_item
 
-    result_html = [html[key] for key in display_group_order][:3]
+    POPUP_MAX_TABS = getattr(settings, 'POPUP_MAX_TABS', 3)
+    result_html = [html[key] for key in display_group_order][:POPUP_MAX_TABS]
 
     if popup_id is None:
         popup_id = 'popup-id'

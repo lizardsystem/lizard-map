@@ -4,7 +4,7 @@ Changelog of lizard-map
 3.31 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- The maximum number of tabs in popups has been made configurable.
 
 
 3.30 (2012-04-26)
