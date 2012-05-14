@@ -6,6 +6,9 @@ Changelog of lizard-map
 
 - The maximum number of tabs in popups has been made configurable.
 
+- If an item is removed from the workspace while rendering (for instance because an Exception
+  was raised), the page loads without giving an internal server error caused by trying to
+  create a Legend.
 
 3.30 (2012-04-26)
 -----------------
