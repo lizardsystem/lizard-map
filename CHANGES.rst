@@ -13,6 +13,7 @@ Changelog of lizard-map
   was raised), the page loads without giving an internal server error caused by trying to
   create a Legend.
 
+
 3.30 (2012-04-26)
 -----------------
 
