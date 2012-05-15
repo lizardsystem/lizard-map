@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-3.31 (unreleased)
+3.31 (2012-05-15)
 -----------------
 
 - Changed map click popup to jQuery ui dialog: it is now movable and
