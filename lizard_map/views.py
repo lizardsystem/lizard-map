@@ -379,45 +379,6 @@ class WorkspaceStorageView(
             request, *args, **kwargs)
 
 
-class HomepageView(AppView):
-    """
-    Homepage view with apps on the left side
-
-    Try to fetch GET parameter 'screen' from url. It points to the
-    application_screen_slug.
-    """
-    template_name = 'lizard_map/app_screen.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(HomepageView, self).get_context_data(**kwargs)
-
-        # Application screen slug
-        application_screen_slug = kwargs.get('application_screen_slug', None)
-        if application_screen_slug is None:
-            application_screen_slug = self.request.GET.get('screen', None)
-
-        context['application_screen_slug'] = application_screen_slug
-        self.application_screen_slug = application_screen_slug
-        return context
-
-    def crumbs(self):
-        # Only called from the template, so
-        # self.application_screen_slug should exist by then
-        crumbs = super(HomepageView, self).crumbs()
-        if self.application_screen_slug:
-            try:
-                screen = (ApplicationScreen.objects.
-                          get(slug=self.application_screen_slug))
-                crumbs = crumbs + screen.crumbs()
-            except ApplicationScreen.DoesNotExist:
-                # Someone mistyped an URL, or something
-                pass
-        return crumbs
-
-##### Edits on workspace ############
-
-
-# L3
 class ActionDialogView(UiView, FormView):
     """
     Generic Action Dialog View.
@@ -1876,5 +1837,8 @@ class AdapterValuesView(AdapterMixin, UiView):
                 request, *args, **kwargs)
 
 
-class MapIconView(MapView, IconView):
+class HomepageView(MapView, IconView):
     template_name = 'lizard_map/icons.html'
+
+
+MapIconView = HomepageView  # BBB
