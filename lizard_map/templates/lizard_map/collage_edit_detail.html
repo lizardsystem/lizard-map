@@ -38,10 +38,11 @@
     {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
 
     <div>&nbsp;</div>
-    <h3>{{ collage_items.0.adapter.collage_detail_data_description }}</h3>
+    <h3>{{ collage_items.0.data_description }}</h3>
     {% collage_items_html collage_items 'True' view.request %}
     <div>&nbsp;</div>
 
+    {% if collage_items.0.collage_detail_show_edit_block %}
     <h3>Bewerken</h3>
     <table class="generic-table">
       <thead><tr>
@@ -55,7 +56,7 @@
         <tr>
           <td>{{ collage_item.name }}</td>
           <td>
-	  {% if collage_item.adapter.collage_detail_edit_action == 'graph' %}
+	  {% if collage_item.collage_detail_edit_action == 'graph' %}
 	    <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
 	  {% endif %}
           </td>
@@ -68,7 +69,10 @@
 
       </tbody>
     </table>
+    {% endif %}
 
+
+    {% if collage_items.0.collage_detail_show_statistics_block %}
     {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
     <h3>Statistieken</h3>
     {% if view.hide_statistics %}
@@ -78,6 +82,7 @@
     <div class="data-from-url"
          data-url="{% collage_item_statistics_url collage_items %}"></div>
     {% endif %}
+    {% endif %}
 
     {% endfor %}
     <p>
@@ -86,6 +91,7 @@
          class="ss_table_save ss_sprite noprint"
          title="Export alle statistieken in csv">Export alle statistieken</a>
     </p>
+
   </div>
 </div>
 

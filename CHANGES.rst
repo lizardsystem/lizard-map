@@ -1,11 +1,99 @@
 Changelog of lizard-map
 =======================
 
-3.25 (unreleased)
+3.32 (unreleased)
 -----------------
 
 - Renamed /media to /static. That's django-staticfile's new standard.
 
+
+3.31 (2012-05-15)
+-----------------
+
+- Changed map click popup to jQuery ui dialog: it is now movable and
+  resizable.
+
+- The maximum number of tabs in popups has been made configurable.
+
+- If an item is removed from the workspace while rendering (for instance because an Exception
+  was raised), the page loads without giving an internal server error caused by trying to
+  create a Legend.
+
+
+3.30 (2012-04-26)
+-----------------
+
+- Added one icon.
+
+
+3.29 (2012-04-25)
+-----------------
+
+- Added two icons.
+
+
+3.28 (2012-04-13)
+-----------------
+
+- Re-enabling hover functionality on saved workspaces.
+
+
+3.27.1 (2012-04-13)
+-------------------
+
+- Also removed references to touch.js and lizard_touch.js from the templates...
+
+
+3.27 (2012-04-13)
+-----------------
+
+- Required lizard-ui 3.14 (new Openlayers).
+
+- Removed touch.js, necessary with the new Openlayers version.
+
+- Uncommented extent() in WorkspaceItemAdapter. It should be there
+  because it is one of the methods that can be overridden by
+  implementing adapters.
+
+3.26 (2012-04-06)
+-----------------
+
+- Changed collage detail template so that apps can configure it a bit more.
+  Collage items (that are put in groups on the collage page) have properties
+  that control the header shown over the group (data_description), which edit
+  dialog to show for a collage item edit button (collage_detail_edit_action),
+  whether to show the whole Edit block at all (collage_detail_show_edit_block),
+  and whether to show the statistics block (collage_detail_show_statistics_block).
+
+  These functions in turn call functions in their adapters, with an identifier
+  as argument (because one adapter can have items in different groups, with different
+  settings. This way it gets the identifier of the first item in each group):
+
+    def collage_detail_data_description(self, identifier, *args, **kwargs):
+      default 'Grafiek'
+    def collage_detail_edit_action(self, identifier, *args, **kwargs):
+      default 'graph'
+    def collage_detail_show_edit_block(self, identifier, *args, **kwargs):
+      default True
+    def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
+      default True
+
+  *args and **kwargs are meaningless but present in case the functions' signatures
+  change in the future. These functions can be overridden in your adapter.
+
+
+3.25 (2012-04-04)
+-----------------
+
+- Improved docstrings at a few places (mainly location() in
+  WorkspaceItemAdapter)
+
+- Added method 'adapter_layer_json' to WorkspaceItemAdapter, helpful
+  to generate this bit of json when it's needed.
+
+- Added 'adapter': self to html_default's template context variables.
+  This gives templates access to adapter's methods and attributes,
+  like adapter.adapter_class and adapter.adapter_layer_json.
 
 3.24 (2012-03-05)
 -----------------

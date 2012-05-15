@@ -296,7 +296,7 @@ function dialogText(title, content) {
 }
 
 
-/* L3 pop up the dialog */
+/* L3 pop up the dialog: OBSOLETE */
 function dialogOverlay() {
     var overlay;
     // In some screens it will not pop up the first time unless load: true
@@ -304,6 +304,7 @@ function dialogOverlay() {
     // load:true only works the first time.
     overlay.load();  // Pop up
 }
+
 
 /* L3 close dialog after delay */
 function dialogCloseDelay() {

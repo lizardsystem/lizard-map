@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '3.25dev'
+version = '3.32dev'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
@@ -17,7 +17,7 @@ install_requires = [
     'django-nose',
     'django-piston',
     'django-staticfiles',
-    'lizard-ui >= 3.11',
+    'lizard-ui >= 3.14',
     'lizard-help',
     'matplotlib',
     'pkginfo',

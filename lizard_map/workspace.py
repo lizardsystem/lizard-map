@@ -1,4 +1,6 @@
+
 import os
+import json
 import logging
 
 from django.conf import settings
@@ -58,6 +60,15 @@ class WorkspaceItemAdapter(object):
         # All arguments, for passing through
         self.layer_arguments = layer_arguments
 
+    @property
+    def adapter_layer_json(self):
+        """Returns the adapter's layer_arguments as a JSON string.
+
+        This JSON string should be similar to the string that was
+        used to make the layer_arguments in the first place."""
+
+        return json.dumps(self.layer_arguments)
+
     def layer(self, layer_ids=None, request=None):
         """Generates and returns layers, styles.
 
@@ -81,18 +92,17 @@ class WorkspaceItemAdapter(object):
         """
         raise NotImplementedError
 
-    # def extent(self, identifiers=None):
-    #     """
-    #     Returns extent {'west':.., 'north':.., 'east':.., 'south':..}
-    #     in google projection. None for each key means unknown.
+    def extent(self, identifiers=None):
+        """
+        Returns extent {'west':.., 'north':.., 'east':.., 'south':..}
+        in google projection. None for each key means unknown.
+        Optional function. If available, there will be an magnifier in
+        your workspace -> workspace-item.
 
-    #     Optional function. If available, there will be an magnifier
-    #     in your workspace -> workspace-item.
-
-    #     Optional: If identifiers is given, return extent for those
-    #     identifiers only.
-    #     """
-    #     return {'north': None, 'south': None, 'east': None, 'west': None}
+        Optional: If identifiers is given, return extent for those
+        identifiers only.
+        """
+        return {'north': None, 'south': None, 'east': None, 'west': None}
 
     def search(self, x, y, radius=None):
         """Search by coordinates. Return list of dicts for matching
@@ -114,11 +124,10 @@ class WorkspaceItemAdapter(object):
 
         If 'grouping_hint' is given, that is used to group items,
         otherwise the workspace_item.id. This way a single workspace
-        item can have things show up in different tabs. Please don't
-        use grouping_hints that can possible come from other workspace
-        items (use the workspace item id in the hint).
-
-
+        item can have things show up in different tabs. Don't use
+        grouping_hints that can possibly come from other workspace
+        items (use the workspace item id as part of the
+        grouping_hint), unless you know what you are doing.
         """
         raise NotImplementedError
 
@@ -203,20 +212,61 @@ class WorkspaceItemAdapter(object):
             result[key] = result_value
         return result
 
-    def location(self, identifier=None, layout=None):
-        """Return fews point representation corresponding to filter_id,
-        location_id and parameter_id in same format as search function
+    def location(self, layout=None, **identifier):
+        """
+        Returns information about an object in this layer. The name is
+        historical; if the layer we are working with comes from FEWS,
+        then the layer is defined by a filter and a parameter, while
+        the objects within that layer are known as locations.
 
-        layout is a dict with extra optional layout parameters:
-        y_min, y_max, y_label, x_label, line_avg, line_max, line_min
+        The object's identifier dict will be used as **argument to
+        this function, so if your layer's identifiers are dicts with
+        keys 'A' and 'B', your layer's location() function will get
+        passed keyword arguments A and B. Change the function's
+        signature in your own layer to reflect that, or use a
+        '**identifier' argument as above.
 
-        {'object': <...>,
-        'google_x': x coordinate in google,
-        'google_y': y coordinate in google,
-        'workspace_item': <...>,
-        'identifier': {...},
-        'grouping_hint': optional unique group identifier, i.e. unit m3/s}
+        The argument 'layout' is sometimes passed; it is a hack to
+        pass some layout options to places where the result of this
+        function is used, and it should be factored out (see below).
 
+        The result of this function should be a dict with some of the
+        following elements that are used to describe the object (only
+        'name' is definitely used):
+
+        'google_coords': an (x, y) tuple with this identifier's Google
+                         coordinates (optional? possibly unused)
+
+        'name': A descriptive name for the object. Definitely used.
+
+        'shortname': A descriptive name for the object (optional? is
+                     this used?)
+
+        'workspace_item': self.workspace_item. Superfluous, it is
+                          possible that this is still used but in that
+                          case it should be factored out.
+
+        'identifier': An identifier in the exact same format as was
+                      used to call this function, except for two
+                      optional extra keys:
+
+                      - if a 'layout' argument was given to this
+                        function, identifier['layout'] should be set
+                        to that argument's value. Also superfluous,
+                        also unknown whether it is still used.
+
+                      - 'grouping_hint': Optional. Normally objects
+                        with the same workspace_item are shown in the
+                        same tab on the collage page. If you want to
+                        split objects into several different pages,
+                        give them different
+                        identifier['grouping_hint'] s.
+
+        'object': The object referred to by the identifier. Probably
+                  unused.
+
+        One of the things that definitely uses this is the javascript
+        hover popup function.
         """
         raise NotImplementedError
 
@@ -375,7 +425,9 @@ class WorkspaceItemAdapter(object):
             'title': title,
             'img_url': img_url,
             'symbol_url': self.symbol_url(),
-            'collage_item_props': collage_item_props}
+            'collage_item_props': collage_item_props,
+            'adapter': self,
+            }
 
         if layout_options is not None:
             render_kwargs.update(layout_options)
@@ -469,12 +521,21 @@ class WorkspaceItemAdapter(object):
                               'description': 'description'}]
         return legend_result
 
-    @property
-    def collage_detail_data_description(self):
+    def collage_detail_data_description(self, identifier, *args, **kwargs):
+        """Return the title to show over this bit of data on the
+        collage detail page."""
+
         return 'Grafiek'
 
-    @property
-    def collage_detail_edit_action(self):
-        # Assume adapter has a graph we can edit
-        # Override to return "None" if it doesn't
+    def collage_detail_edit_action(self, identifier, *args, **kwargs):
+        """On the collage detail page, we can show edit options below
+        a graph. Return 'graph' if this item does. Override to return
+        "None" if it doesn't."""
+
         return 'graph'
+
+    def collage_detail_show_edit_block(self, identifier, *args, **kwargs):
+        return True
+
+    def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
+        return True

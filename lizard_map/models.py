@@ -212,7 +212,7 @@ class WorkspaceItemMixin(models.Model):
                 "Deleting problematic WorkspaceItem: %s", self)
                 # Trac #2470. Return a NullAdapter instead?
             if self.id is not None:
-                # Only delete if it is not saved in the first place.
+                # Only delete if it is saved in the first place.
                 self.delete()
             return None
         return current_adapter
@@ -265,10 +265,25 @@ class WorkspaceItemMixin(models.Model):
         return url
 
     def has_extent(self):
+        """Return true if this workspace item's adapter can
+        successfully compute an extent and doesn't have "None" in the
+        extent's values."""
         if not hasattr(self, 'adapter') or not hasattr(self.adapter, 'extent'):
             return False
 
-        extent = self.adapter.extent()
+        try:
+            extent = self.adapter.extent()
+        except:
+            # Even if the hard disk is in fact on fire, we don't want to raise
+            # an exception here because that may break the whole page.
+            return False
+
+        if extent is None:
+            return False
+
+        if not isinstance(extent, dict):
+            return False
+
         return None not in extent.values()
 
 
@@ -570,6 +585,29 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
         except AttributeError:
             # Adapter is None
             return self.default_grouping_hint
+
+    # The following methods are used from the collage_edit_detail
+    # page and control which things are shown on that page.
+    @property
+    def data_description(self):
+        """Title to show above this bit of data on the collage page."""
+        return self.adapter.collage_detail_data_description(self.identifier)
+
+    @property
+    def collage_detail_edit_action(self):
+        """Which edit action to show on the collage detail page. Currently
+        the only working option in collage_edit_detail is 'graph'. If this
+        data can't be edited on the collage detail page, return None.
+        Calls 'collage_detail_edit_action' in the adapter."""
+        return self.adapter.collage_detail_edit_action(self.identifier)
+
+    @property
+    def collage_detail_show_edit_block(self):
+        return self.adapter.collage_detail_show_edit_block(self.identifier)
+
+    @property
+    def collage_detail_show_statistics_block(self):
+        return self.adapter.collage_detail_show_statistics_block(self.identifier)
 
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""

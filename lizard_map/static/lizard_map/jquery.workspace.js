@@ -89,7 +89,8 @@ function show_popup(data) {
         if (data.html && data.html.length !== 0) {
             // Generates pages with handlers. First only page 0 is visible.
             if (data.html.length === 1) {
-                dialogContent(data.html[0]);
+                // dialogContent(data.html[0]);
+                $("#movable-dialog-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
                 html = '<ul class="tabs css-tabs">';
@@ -105,11 +106,12 @@ function show_popup(data) {
                 }
                 html += '</div>';
 
-                dialogContent(html);
+                $("#movable-dialog-content").html(html);
                 $(".tabs").tabs("div.popup-panes > div.pane",
                                 {'effect': 'map_popup'});
             }
-            dialogOverlay();
+            //dialogOverlay();
+            $("#movable-dialog").dialog("open");
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
                 //reloadGraphs();
@@ -396,15 +398,34 @@ jQuery.fn.exists = function () {
 
 
 /*
+/* This wrapper is needed because the callback function of .dialog has
+ * function parameters. */
+function reloadGraphsTab() {
+    reloadGraphs();
+}
+
+
 $(document).ready(function () {
+    // Used by show_popup
+    $('#content').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
+    $('#movable-dialog')
+		.dialog({
+			autoOpen: false,
+			title: '',
+            resizeStop: reloadGraphsTab,
+            minWidth: 300,
+            minHeight: 300,
+            width: 800,
+            zIndex: 10000
+		})
     // Change "default" effect: reload graphs to fix layout.
     $.tools.tabs.addEffect(
         "map_popup",
         function (tabIndex, done) {
             // hide all panes and show the one that is clicked.
-	    this.getPanes().hide().eq(tabIndex).show();
+	        this.getPanes().hide().eq(tabIndex).show();
             done.call();
-            if ($('#dialog').is(":visible")) {
+            if ($('#movable-dialog').is(":visible")) {
                 // Don't reload the popup graph if the overlay isn't
                 // initialized yet.  There's no width then :-)
                 // It *does* reload twice when an overlay is already

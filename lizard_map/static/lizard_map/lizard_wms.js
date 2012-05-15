@@ -370,7 +370,8 @@ function showMap() {
                 );
                 this.handler = new OpenLayers.Handler.Click(
                     this, {
-                        'click': this.trigger
+                        'click': this.trigger,
+                        'touchstart': this.trigger
                     }, this.handlerOptions
                 );
             },

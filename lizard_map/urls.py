@@ -104,7 +104,7 @@ urlpatterns = patterns(
         name="lizard_map.search_coordinates"),  # L3
     url(r'^workspace/(?P<workspace_storage_id>\d+)/search_name/',
         'lizard_map.views.search_coordinates',
-        #{'format': 'name'},
+        {'format': 'name'},
         name="lizard_map.search_name"),  # L3
     # Get to the workspace page by means of a slug
     url(r'^workspace/(?P<workspace_storage_slug>\w+)/$',
