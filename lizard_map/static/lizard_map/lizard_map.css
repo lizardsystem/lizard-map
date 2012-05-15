@@ -1,300 +1,67 @@
-/* Popup styling */
-.popup,
-.date-popup
-{ display: none;
-  z-index: 10000;
-  padding: 1em;
-  border: 1px solid black;
-  background-color: white;
-  /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 40px 5px black;
-  -webkit-box-shadow: 0 0 40px black;
-}
-
-.popup-thin
-{  /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 10px 5px #aaa;
-  -webkit-box-shadow: 0 0 10px #aaa;
-}
-
-/* Datepicker popup styling*/
-.date-popup p,
-.date-range-box p
-{ margin-left: auto;
-  margin-right: auto;
-  vertical-align: top;
-}
-
-.date-range-box label[for="id_dt_start"],
-.date-range-box label[for="id_dt_end"]
-{ width: 100px;
-  text-align: right;
-  height: 100%;
-  padding-top: 7px;
-}
-.date-range-box input[type="text"]
-{ width: 100px;
-}
-
-/* OpenLayers popup*/
-.olPopup
-{
-  -moz-box-shadow:0 0 10px 1px black;
-  -webkit-box-shadow: 0 0 10px black;
-}
-
-.icon-action
-{ float: right;
-}
-
-.popup-graph-edit-form
-{ text-align: left;  /* We might be shown inside a centered table column... */
-  }
-
-.popup-form .fixed-label-width label
-{ width: 10em;
-  margin: 0.5em 0;
+a.workspace-acceptable,
+div.nonworking-workspace-acceptable {
   display: block;
-  float: left;
-  clear: left;
-  }
-
-#animation-slider,
-#transparency-slider
-{ display: block;
-  float: left;
-  margin-top: 0.5em;
-  width: 90px;
+  font-decoration: none;
+  color: #333333;
 }
-
-#animation-slider {
-  margin-left: 30px;
-  margin-right: 8px;
+a.workspace-acceptable:hover,
+div.nonworking-workspace-acceptable:hover {
+  font-decoration: none;
 }
-
-#transparency-slider {
-  margin-left: 15px;
+a.workspace-acceptable:active,
+div.nonworking-workspace-acceptable:active {
+  font-decoration: none;
+  color: #333333;
 }
-
-.vertical-limited
-{ height: 300px;
-  width: 100%;
-  overflow: scroll;
+a.workspace-acceptable {
+  border: 1px solid transparent;
 }
-
-#hover-popup_contentDiv
-{ padding-top: 0.75em;
-  overflow: hidden;
-  background-color: lightyellow;
-}
-
-
-
-#dialog
-{ display: none;
-  z-index: 10000;
-  padding: 1em;
-  width: 40em;  /* also set by lizard_map.js */
-  min-height: 15em;  /* also set by lizard_map.js */
+a.workspace-acceptable:hover {
   border: 1px solid gray;
-  background-color: #FEFFFE;
-/*  background-image: url('/static_media/lizard_ui/old_mathematics.png');*/
-  color: #000;
-  /* CSS3 styling for latest browsers */
-  -moz-box-shadow:0 0 40px 5px black;
-  -webkit-box-shadow: 0 0 40px black;
+  font-decoration: none;
 }
-
-#dialog table thead tr th{
-    background-color: #ccc;
-    color: #000;
-    border-color: gray;
+a.workspace-acceptable .workspace-selected-icon {
+  display: none;
 }
-
-#dialog table tbody tr td{
-    border-color: gray;
+a.workspace-acceptable.selected {
+  font-weight: bold;
 }
-
-#dialog-content,
-.popup-content
-{ overflow: auto;
-  max-height: 40em;
-  }
-
-/* Data attributes for lizard map wms */
-
-.map-action
-{ margin-left: 0.5em;
-  float: left;
-  }
-
-.workspace-acceptable
-{
-  min-height: 2em;
-  line-height: 2em;
-  }
-
-.workspace-item-image,
-.collage-item-image
-{ float: left;
-  display: block;
-  font-weight: normal;
-  margin: 4px 0 auto 0;
-  }
-
-.workspace-item,
-.collage-item
-{ overflow: hidden;
-  width: 100%;
-  height: 2em;
-  }
-
-.workspace-items .ui-sortable-placeholder
-{ height: 25px;
-  }
-
-.collage-item
-{ cursor: pointer;
+a.workspace-acceptable.selected .workspace-selected-icon {
+  display: inline-block;
 }
-
-.workspace-item-checkbox,
-.collage-item-checkbox
-{
-  float: left;
-  display: block;
-  font-weight: normal;
-  margin: 2px 0.75em auto 0.75em;
-  cursor: pointer;
-
-  }
-
-.workspace-item-name,
-.collage-item-name
-{ margin: 0 0 0 4.2em;
-  display: block;
-  /*  width: 14em;*/
-  /*  ^^^ Seems unnecessary and causes newlines in IE7... */
-  line-height: 2em;
+div.nonworking-workspace-acceptable {
+  font-style: italic;
 }
-
-
-/* Workspace items and collage items have icons that only show up when
-you hover over the item */
-
-.workspace-item:hover .sidebarbox-action-icon,
-.collage-item:hover .sidebarbox-action-icon
-{ display: block;
+#map {
+  background-color: #ddd;
 }
-
-.workspace-item .sidebarbox-action-icon,
-.collage-item .sidebarbox-action-icon
-{ display: None;
+#lizard-map-wms {
+  display: none;
 }
-
-.workspace h2 .sidebarbox-action-icon,
-.collage h2 .sidebarbox-action-icon
-{ display: None;
+#moving-box {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid black;
 }
-
-.workspace:hover h2 .sidebarbox-action-icon,
-.collage:hover h2 .sidebarbox-action-icon
-{ display: block;
+.workspace-items,
+.workspace-actions {
+  margin-left: 0;
 }
-
-.waiting-lineitem
-{ background-image: url(/static_media/lizard_ui/ajax-loader3.gif);
-  background-repeat: no-repeat;
-  background-position: right;
+.workspace-items li,
+.workspace-actions li {
+  list-style: none;
+  line-height: 36px;
 }
-
-/* div.popup-panes div.pane */
-/* { display: none; */
-/* } */
-
-table.toggle_table
-{ display: none;
-  }
-
-/* video popup. Brittle because of fixed sizes: videos might have a different size... */
-#intro_popup {
-    /* overlay is hidden before loading */
-    display:none;
-
-    /* standard decorations */
-    width: 560px;
-    /* height: 349px; */
-    border: 10px solid #666;
-    background-color: #fff;
-    /* for modern browsers use semi-transparent color on the border. nice! */
-    border: 10px solid rgba(82, 82, 82, 0.698);
-
-    /* hot CSS3 features for mozilla and webkit-based browsers (rounded borders) */
-    -moz-border-radius:8px;
-    -webkit-border-radius:8px;
-}
-
-#intro_popup h2 {
-    margin:-11px;
-    margin-bottom:0px;
-    color:#fff;
-    background-color:#6D84B4;
-    padding:5px 10px;
-    border:1px solid #3B5998;
-    font-size:20px;
-}
-
-#intro_popup .to-site-link {
+.workspace-items .below-workspace-item,
+.workspace-actions .below-workspace-item {
+  display: none;
   text-align: right;
-  margin-right: 1em;
-  font-size: 1.5em;
 }
-
-.show_on_date_change
-{ display: none;
-  }
-
-
-/* The other part is in lizard.css in lizard-ui. TODO: merge in one place */
-#sidebar .selected-invisible {
-    background-color: #f4f4f4;
-}
-
-
-/* Multiple selection button styling */
-
-.map-multiple-selection{
-    margin-top: 3px;
-    height: 18px;
-    width: 18px;
-    background-image: url('/static_media/sprites/star-light.png');
-}
-
-
-li#map-multiple-selection.active {
-    background-color: #00FF00;
-}
-
-
-/* Collage item editor */
-.collage-item-editor-box label {
-    display: block;
-    float: left;
-    clear: left;
-    padding-top: 7px;
-    width: 15em;
-}
-
-.collage-item-editor-box label[for="id_line_min"] {
-    padding-top: 5px;
-}
-
-.collage-item-editor-box label[for="id_line_max"] {
-    padding-top: 5px;
-}
-.collage-item-editor-box label[for="id_line_avg"] {
-    padding-top: 5px;
-}
-
-.collage-item-editor-box p {
-    margin: 0 1em 0.3em 1em;
+.workspace-actions {
+  margin-top: 1em;
+  border-top: 1px solid #111;
+  padding-top: 1em;
 }
