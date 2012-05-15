@@ -171,6 +171,13 @@ def legend(name, adapter, session=None):
 
     """
 
+    if not adapter:
+        # Something went wrong with the adapter
+        # The template does nothing if legend is false
+        return {
+            'legend': False
+            }
+
     updates = None
     if session:
         custom_legends = session.get(CUSTOM_LEGENDS, {})
