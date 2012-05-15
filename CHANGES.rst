@@ -6,6 +6,8 @@ Changelog of lizard-map
 
 - Nothing changed yet.
 
+- Timeseries can now be localized in Graph object.
+
 
 3.31 (2012-05-15)
 -----------------
