@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.31 (unreleased)
 -----------------
 
+- Changed map click popup to jQuery ui dialog: it is now movable and
+  resizable.
+
 - The maximum number of tabs in popups has been made configurable.
 
 

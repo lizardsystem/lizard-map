@@ -392,6 +392,13 @@ jQuery.fn.exists = function () {
 }
 
 
+/* This wrapper is needed because the callback function of .dialog has
+ * function parameters. */
+function reloadGraphsTab() {
+    reloadGraphs();
+}
+
+
 $(document).ready(function () {
     // Used by show_popup
     $('#content').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
@@ -399,16 +406,20 @@ $(document).ready(function () {
 		.dialog({
 			autoOpen: false,
 			title: '',
-            resizeStop: reloadGraphs
+            resizeStop: reloadGraphsTab,
+            minWidth: 300,
+            minHeight: 300,
+            width: 800,
+            zIndex: 10000
 		})
     // Change "default" effect: reload graphs to fix layout.
     $.tools.tabs.addEffect(
         "map_popup",
         function (tabIndex, done) {
             // hide all panes and show the one that is clicked.
-	    this.getPanes().hide().eq(tabIndex).show();
+	        this.getPanes().hide().eq(tabIndex).show();
             done.call();
-            if ($('#dialog').is(":visible")) {
+            if ($('#movable-dialog').is(":visible")) {
                 // Don't reload the popup graph if the overlay isn't
                 // initialized yet.  There's no width then :-)
                 // It *does* reload twice when an overlay is already
