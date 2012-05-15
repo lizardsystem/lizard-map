@@ -272,7 +272,7 @@ function setUpWorkspaceAcceptable() {
     // loading next pane.
     try {
         $("#accordion").data("tabs").onClick(function (event) {
-            //updateWorkspaceAcceptableStatus();
+            // updateWorkspaceAcceptableStatus();
         });
     } catch (e) {
         // Nothing. There is no accordion.

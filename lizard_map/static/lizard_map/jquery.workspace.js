@@ -397,14 +397,13 @@ jQuery.fn.exists = function () {
 }
 
 
-/*
 /* This wrapper is needed because the callback function of .dialog has
  * function parameters. */
 function reloadGraphsTab() {
     reloadGraphs();
 }
 
-
+/*
 $(document).ready(function () {
     // Used by show_popup
     $('#content').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
@@ -434,5 +433,4 @@ $(document).ready(function () {
             }
         });
 });
-
 */
