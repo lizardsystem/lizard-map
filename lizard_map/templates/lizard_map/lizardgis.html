@@ -2,6 +2,8 @@
 {% load workspaces %}
 {% block css %}
 {{ block.super }}
+    <link rel="stylesheet" href="{{ STATIC_URL }}leaflet/leaflet.css" />
+    <!--[if lte IE 8]><link rel="stylesheet" href="{{ STATIC_URL }}leaflet/leaflet.ie.css" /><![endif]-->
 <link type="text/css"
       href="{{ STATIC_URL }}lizard_map/lizard_map.css"
       media="screen, projection"
@@ -10,10 +12,11 @@
 
 {% block javascript %}
 {{ block.super }}
-<script id="openlayers-script"
+<script id="leaflet-script"
         type="text/javascript"
-        src="{{ STATIC_URL }}openlayers/OpenLayers.js"
-        data-openlayers-url="{{ STATIC_URL }}openlayers/"></script>
+        src="{{ STATIC_URL }}leaflet/leaflet.js"></script>
+<script src="{{ STATIC_URL }}proj4js/proj4js-compressed.js"></script>
+<script src="{{ STATIC_URL }}leaflet/proj4leaflet.js"></script>
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/jquery.workspace.js"></script>
 <script type="text/javascript"

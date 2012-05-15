@@ -6,7 +6,7 @@ G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler,
 stretchOneSidebarBox */
 
 // OpenLayers.ImgPath = "http://js.mapbox.com/theme/dark/";
-OpenLayers.ImgPath = "/static_media/themes/dark/";
+//OpenLayers.ImgPath = "/static_media/themes/dark/";
 
 var layers, wms_layers, background_layers, map;
 layers = [];  // Used in an associative way.
@@ -250,7 +250,6 @@ function ZoomSlider(options) {
     return this.control;
 }
 
-
 function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, zoom_panel, map_hover_control,
@@ -264,10 +263,10 @@ function showMap() {
     // OpenLayers (OL) cannot get its script location if the filename
     // OpenLayers.js has been changed.
     // This function is needed when loading images etc for OL.
-    OpenLayers._getScriptLocation = function () {
+    //OpenLayers._getScriptLocation = function () {
         //return $("#openlayers-script").attr("data-openlayers-url");
-        return "/static_media/openlayers/";
-    };
+    //    return "/static_media/openlayers/";
+    //};
 
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
@@ -279,52 +278,52 @@ function showMap() {
     start_extent_top = $lizard_map_wms.attr("data-start-extent-top");
     start_extent_right = $lizard_map_wms.attr("data-start-extent-right");
     start_extent_bottom = $lizard_map_wms.attr("data-start-extent-bottom");
-    start_extent = new OpenLayers.Bounds(
-        parseFloat(start_extent_left), parseFloat(start_extent_bottom),
-        parseFloat(start_extent_right), parseFloat(start_extent_top));
+    start_extent = new L.LatLngBounds(
+        new L.LatLng(parseFloat(start_extent_bottom), parseFloat(start_extent_left)),
+        new L.LatLng(parseFloat(start_extent_top), parseFloat(start_extent_right))
+    );
 
     max_extent_left = $lizard_map_wms.attr("data-max-extent-left");
     max_extent_top = $lizard_map_wms.attr("data-max-extent-top");
     max_extent_right = $lizard_map_wms.attr("data-max-extent-right");
     max_extent_bottom = $lizard_map_wms.attr("data-max-extent-bottom");
-    max_extent = new OpenLayers.Bounds(
-        parseFloat(max_extent_left), parseFloat(max_extent_bottom),
-        parseFloat(max_extent_right), parseFloat(max_extent_top));
+    max_extent = new L.LatLngBounds(
+        new L.LatLng(parseFloat(max_extent_left), parseFloat(max_extent_bottom)),
+        new L.LatLng(parseFloat(max_extent_right), parseFloat(max_extent_top))
+    );
 
     // Set up projection and bounds.
-    if (projection === "EPSG:900913")
-    {
-        options = {
-            projection: new OpenLayers.Projection(projection),
-            displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
-            units: "m",
-            numZoomLevels: 18,
-            maxExtent: max_extent,
-            controls: []
-        };
-    }
-    else if (projection === "EPSG:28992")
-    {
-        options = {
-            projection: new OpenLayers.Projection(projection),
-            displayProjection: new OpenLayers.Projection(display_projection),
-            units: "m",
-            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
-            maxExtent: max_extent,
-            controls: []
-        };
-    }
-    else
-    {
-        alert("Lizard-map onjuist geconfigureerd. Wilt U een kaart op deze pagina? Gebruik anders een andere template.");
-    }
+    // ...
+    //var res = [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2];
+    var rdProjStr = "+title=Amersfoort / RD New +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs <>";
+    var crs = L.CRS.proj4js(
+        'EPSG:28992',
+        rdProjStr,
+        new L.Transformation(1, 0, -1, 0)
+    );
+    alert(crs);
+    var options = {
+        crs: crs,
+        //scale: function(zoom) {
+        //    return 1 / res[zoom];
+        //},
+        //continuousWorld: true,
+    };
 
     // Map is globally defined.
-    map = new OpenLayers.Map('map', options);
+    map = new L.Map('map', options);
     // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
-    refreshLayers();
+    // add OSM map layer (hosted by cloudmade)
+    var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png';
+    var cloudmadeAttribution = 'Map data &copy; 2011 OpenStreetMap contributors, Imagery &copy; 2011 CloudMade';
+    var cloudmade = new L.TileLayer(cloudmadeUrl, {maxZoom: 18, attribution: cloudmadeAttribution});
+    map.addLayer(cloudmade);
 
+    //refreshLayers();
+    //map.fitBounds(start_extent);
+
+    /*
     // Set up controls, zoom and center.
     map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': true}));
     // Click handling.
@@ -427,6 +426,7 @@ function showMap() {
     // level that most closely fits the specified bounds.
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
+    */
 }
 
 
