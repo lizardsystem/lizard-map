@@ -16,7 +16,7 @@
            {% else %}
              class="notworking"
            {% endif %}>
-          <img src="{{ icon.icon }}"
+          <img src="{{ STATIC_URL }}/{{ icon.icon }}"
                alt="{{ icon.name }}" />
           <div>{{ icon.name }}</div>
         </a>
