@@ -41,7 +41,9 @@
                      checked="checked"
                    {% endif %}
                    data-workspace-id="{{ workspace.id }}" />
+            <label for="{{ workspace_item.id }}">
             {% firstof workspace_item.name '(noname)' %}
+            </label>
           </div>
 
           <ul id="below-workspace-item-{{ workspace_item.id }}"
