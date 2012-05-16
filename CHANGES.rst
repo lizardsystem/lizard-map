@@ -4,6 +4,9 @@ Changelog of lizard-map
 3.32 (unreleased)
 -----------------
 
+- Using new twitter-bootstrap layout. Using the MapView class based view is
+  now really mandatory to get everything to work.
+
 - Renamed /media to /static. That's django-staticfile's new standard.
 
 - Timeseries can now be localized in Graph object.

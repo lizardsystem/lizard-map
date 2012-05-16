@@ -291,14 +291,7 @@ class CrumbsMixin(object):
             return initial
 
 
-class AppView(
-    WorkspaceEditMixin, CollageMixin, DateRangeMixin,
-    UiView, MapMixin,
-    GoogleTrackingMixin, CrumbsMixin):
-    """All-in-one"""
-
-
-class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
+class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMixin, MapMixin,
               UiView):
     """Main map view (using twitter bootstrap). Replaces AppView."""
 
@@ -340,6 +333,9 @@ class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
             klass='map-load-default-location')
         actions.insert(0, zoom_to_default)
         return actions
+
+
+MapView = AppView  # BBB
 
 
 class WorkspaceStorageListView(
