@@ -4,6 +4,8 @@ Changelog of lizard-map
 3.32 (unreleased)
 -----------------
 
+- Requiring lizard-ui 4.0 alpha: the new twitter bootstrap layout.
+
 - Using compiled css instead of less.
 
 - Removed old HomepageView and renamed the MapIconView.

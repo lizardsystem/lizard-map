@@ -17,7 +17,7 @@ install_requires = [
     'django-nose',
     'django-piston',
     'django-staticfiles',
-    'lizard-ui >= 3.14',
+    'lizard-ui >= 4.0a1',
     'lizard-help',
     'matplotlib',
     'pkginfo',
