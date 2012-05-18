@@ -4,12 +4,22 @@ Changelog of lizard-map
 3.32 (unreleased)
 -----------------
 
+- Using compiled css instead of less.
+
+- Removed old HomepageView and renamed the MapIconView.
+
 - Using new twitter-bootstrap layout. Using the MapView class based view is
   now really mandatory to get everything to work.
 
 - Renamed /media to /static. That's django-staticfile's new standard.
 
 - Timeseries can now be localized in Graph object.
+
+- Fixed syntax error in jquery.workspace.js.
+
+- Adds STATIC_URL to application icons.
+
+- Making the normal AppView the main cbv instead of the temporary MapView name.
 
 
 3.31 (2012-05-15)
