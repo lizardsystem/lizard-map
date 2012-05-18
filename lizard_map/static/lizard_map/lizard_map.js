@@ -216,7 +216,7 @@ function setUpWorkspaceAcceptable() {
                 width: $layer_button.width(),
                 height: $layer_button.height()
                 }, 1000, function() {
-                    $moving_box.remove()
+                    $moving_box.remove();
                 });
             /* xxx */
         }
@@ -236,7 +236,7 @@ function setUpWorkspaceAcceptable() {
                 width: 0,
                 height: 0
                 }, 1000, function() {
-                    $moving_box.remove()
+                    $moving_box.remove();
                 });
             /* xxx */
         }
@@ -790,6 +790,7 @@ function setUpWorkspaceButtons() {
 /* Handle a click */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
 function popup_click_handler(x, y, map) {
+    console.log("popup_click_handler:", map);
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
@@ -802,6 +803,7 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
+                console.log("Success handler:", data);
                 dialogSize("");  // default size
                 show_popup(data);
                 $("#map").css("cursor", "default");

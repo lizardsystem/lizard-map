@@ -1,3 +1,19 @@
+div.workspace-item label {
+  display: inline;
+}
+li.workspace-acceptable {
+  cursor: pointer;
+  margin: 2px 0;
+}
+li.workspace-acceptable:hover {
+  outline: 1px solid #000;
+}
+li.workspace-acceptable.selected {
+  background-color: #d9d9d6;
+}
+img.workspace-item-image {
+  vertical-align: middle;
+}
 a.workspace-acceptable,
 div.nonworking-workspace-acceptable {
   display: block;
@@ -53,7 +69,6 @@ div.nonworking-workspace-acceptable {
 .workspace-items li,
 .workspace-actions li {
   list-style: none;
-  line-height: 36px;
 }
 .workspace-items .below-workspace-item,
 .workspace-actions .below-workspace-item {
@@ -64,4 +79,30 @@ div.nonworking-workspace-acceptable {
   margin-top: 1em;
   border-top: 1px solid #111;
   padding-top: 1em;
+}
+ul.treeview {
+  list-style: none outside none;
+  margin: 0;
+  padding: 0;
+}
+ul.treeview ul {
+  list-style: none outside none;
+  padding: 0;
+}
+ul.treeview div.hitarea {
+  width: 16px;
+  height: 16px;
+  float: left;
+  cursor: pointer;
+}
+ul.treeview div.expandable-hitarea {
+  background: url("arrows.png") no-repeat scroll 6px -10px transparent;
+}
+ul.treeview div.collapsable-hitarea {
+  background: url("arrows.png") no-repeat scroll -7px 5px transparent;
+}
+ul.treeview a.file {
+  display: block;
+}
+ul.treeview a.file.hover {
 }
