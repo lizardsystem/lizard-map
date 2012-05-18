@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-3.32 (unreleased)
------------------
+4.0a1 (2012-05-18)
+------------------
 
 - Requiring lizard-ui 4.0 alpha: the new twitter bootstrap layout.
 
