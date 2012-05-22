@@ -19,9 +19,9 @@
     </span>
   </h2>
 
-  <ul class="workspace-items">
+  <ul class="workspace-items ui-sortable">
     {% for workspace_item in workspace_edit.workspace_items.all %}
-      <li>
+      <li class="workspace-item">
         <div id="workspace-item-{{ workspace_item.id }}"
              class="workspace-item"
              data-object-id="{{ workspace_item.id }}"
