@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     # See https://github.com/jbalogh/django-nose/issues/15
     'lizard_map',
     'lizard_ui',
+    'lizard_security',
     'staticfiles',
     'compressor',
     'piston',

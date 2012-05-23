@@ -21,6 +21,8 @@ Changelog of lizard-map
 
 - Making the normal AppView the main cbv instead of the temporary MapView name.
 
+- Added missing dependency lizard_security.
+
 
 3.31 (2012-05-15)
 -----------------
