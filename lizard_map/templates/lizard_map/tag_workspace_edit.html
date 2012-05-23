@@ -30,10 +30,15 @@
              data-visible="{{ workspace_item.visible }}">
           <div>
             {# Symbol, appears left. #}
+            {% if workspace_item.adapter.symbol_url %}
             <img class="workspace-item-image"
                  src="{{ workspace_item.adapter.symbol_url }}"
                  width="16"
                  height="16" />
+            {% else %}
+            <span class="no-image-spacer"></span>
+            {% endif %}
+            <label>
             <input id="{{ workspace_item.id }}"
                    class="workspace-item-checkbox"
                    type="checkbox"
@@ -41,7 +46,6 @@
                      checked="checked"
                    {% endif %}
                    data-workspace-id="{{ workspace.id }}" />
-            <label for="{{ workspace_item.id }}">
             {% firstof workspace_item.name '(noname)' %}
             </label>
           </div>
