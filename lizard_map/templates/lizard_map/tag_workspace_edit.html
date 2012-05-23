@@ -29,6 +29,8 @@
              data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
              data-visible="{{ workspace_item.visible }}">
           <div>
+            <span class="ss_sprite ss_delete sidebarbox-action-icon workspace-item-delete" rel="tipsy-south" original-title="Verwijder item"></span>
+            <span class="ss_sprite ss_magnifier sidebarbox-action-icon workspace-item-pan-to" rel="tipsy" original-title="Zoom"></span>
             {# Symbol, appears left. #}
             {% if workspace_item.adapter.symbol_url %}
             <img class="workspace-item-image"
