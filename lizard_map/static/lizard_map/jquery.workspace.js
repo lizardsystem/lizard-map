@@ -164,7 +164,6 @@ jQuery.fn.workspaceInteraction = function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        /*  Reinout disabled jquery-ui, so sortable is out for the moment...
         workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
@@ -188,7 +187,6 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'ui-sortable-placeholder',
             items: 'li.workspace-item'
         });
-        */
         // // Make collage clickable. (DONE: should be collage-popup)
         // $(".collage-popup", $workspace).live('click',
         //                                $(".collage").collagePopup);

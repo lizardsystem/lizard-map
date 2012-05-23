@@ -1,26 +1,5 @@
 {% extends "lizard_map/wms.html" %}
-{# Keep in sync with lizard_ui/icons.html until we have a better solution #}
 
 {% block sidebar %}
-  <h2>{{ view.application_screen.name }}</h2>
-  <ul class="ui-icon-list">
-    {% for icon in view.icons %}
-      <li title="{{ icon.name }}"
-          {% if icon.description %}
-            data-content="{{ icon.description }}"
-            class="has_popover"
-          {% endif %}
-        >
-        <a {% if icon.get_absolute_url %}
-             href="{{ icon.get_absolute_url }}"
-           {% else %}
-             class="notworking"
-           {% endif %}>
-          <img src="{{ STATIC_URL }}/{{ icon.icon }}"
-               alt="{{ icon.name }}" />
-          <div>{{ icon.name }}</div>
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+  {% include 'lizard_ui/icon_include.html' %}
 {% endblock sidebar %}

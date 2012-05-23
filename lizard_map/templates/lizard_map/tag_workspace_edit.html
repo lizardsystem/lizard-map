@@ -19,9 +19,9 @@
     </span>
   </h2>
 
-  <ul class="workspace-items">
+  <ul class="workspace-items ui-sortable">
     {% for workspace_item in workspace_edit.workspace_items.all %}
-      <li>
+      <li class="workspace-item">
         <div id="workspace-item-{{ workspace_item.id }}"
              class="workspace-item"
              data-object-id="{{ workspace_item.id }}"
@@ -29,11 +29,18 @@
              data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
              data-visible="{{ workspace_item.visible }}">
           <div>
+            <span class="ss_sprite ss_delete sidebarbox-action-icon workspace-item-delete" rel="tipsy-south" original-title="Verwijder item"></span>
+            <span class="ss_sprite ss_magnifier sidebarbox-action-icon workspace-item-pan-to" rel="tipsy" original-title="Zoom"></span>
             {# Symbol, appears left. #}
+            {% if workspace_item.adapter.symbol_url %}
             <img class="workspace-item-image"
                  src="{{ workspace_item.adapter.symbol_url }}"
                  width="16"
                  height="16" />
+            {% else %}
+            <span class="no-image-spacer"></span>
+            {% endif %}
+            <label>
             <input id="{{ workspace_item.id }}"
                    class="workspace-item-checkbox"
                    type="checkbox"
@@ -41,7 +48,6 @@
                      checked="checked"
                    {% endif %}
                    data-workspace-id="{{ workspace.id }}" />
-            <label for="{{ workspace_item.id }}">
             {% firstof workspace_item.name '(noname)' %}
             </label>
           </div>
