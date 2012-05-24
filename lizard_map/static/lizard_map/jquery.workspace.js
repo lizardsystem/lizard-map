@@ -93,7 +93,7 @@ function show_popup(data) {
                 $("#movable-dialog-content").html(data.html[0]);
             } else {
                 // Build up html with tabs.
-                html = '<ul class="tabs css-tabs">';
+                html = '<ul class="nav nav-tabs css-tabs">';
                 for (i = 0; i < data.html.length; i += 1) {
                     html += '<li><a href="#">Resultaat ';
                     html += (i + 1) + '</a></li>';
@@ -107,7 +107,7 @@ function show_popup(data) {
                 html += '</div>';
 
                 $("#movable-dialog-content").html(html);
-                $(".tabs").tabs("div.popup-panes > div.pane",
+                $(".nav-tabs").tabs("div.popup-panes > div.pane",
                                 {'effect': 'map_popup'});
             }
             //dialogOverlay();
