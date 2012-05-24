@@ -671,7 +671,7 @@ function actionPostDeleteCollageItem(event) {
     return actionPostClick(
         event,
         undefined,
-        stretchOneSidebarBox,
+        undefined,
         {object_id: object_id, action: 'delete'}
     );
 }
@@ -685,7 +685,7 @@ function actionPostEditCollageItem(event) {
     return actionPostClick(
         event,
         undefined,
-        stretchOneSidebarBox,
+        undefined,
         {object_id: object_id, visible: visible, action: 'update'}
     );
 }
@@ -702,7 +702,7 @@ function actionPostCollageAdd(event) {
     return actionPostClick(
         event,
         undefined,
-        stretchOneSidebarBox,
+        undefined,
         {name: name, adapter_class: adapter_class, adapter_layer_json: adapter_layer_json, identifier: identifier}
     );
 }
