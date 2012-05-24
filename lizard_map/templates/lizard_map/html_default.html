@@ -27,14 +27,15 @@
   <a href="{{ collage_item_prop.url }}"
      class="ss_table_save ss_sprite"
      title="Export csv">&nbsp;</a>
-  <a href="{% url lizard_map_collage_add %}"
+  <span
+     href="{% url lizard_map_collage_add %}"
      class="ss_sprite ss_star collage-add"
      data-name="{{ collage_item_prop.name }}"
      data-adapter-class="{{ collage_item_prop.adapter_class }}"
      data-adapter-layer-json="{{ collage_item_prop.adapter_layer_json }}"
      data-identifier="{{ collage_item_prop.identifier }}"
      data-target-id="#edit-collage"
-     title="Toevoegen aan selectie">&nbsp;</a>
+     title="Toevoegen aan selectie">&nbsp;</span>
     {{ collage_item_prop.name }}
   </li>
   {% endfor %}
