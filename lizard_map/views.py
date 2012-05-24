@@ -1816,7 +1816,7 @@ class AdapterValuesView(AdapterMixin, UiView):
         self.name = adapter.location(**identifier).get('name', 'export')
 
         if output_type == 'csv':
-            filename = '%s.csv' % (self.name)
+            filename = ('%s.csv' % (self.name)).encode('us-ascii', errors='ignore')
             # Make the csv output.
             response = HttpResponse(mimetype='text/csv')
             response['Content-Disposition'] = (
