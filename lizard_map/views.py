@@ -641,7 +641,7 @@ def workspace_item_reorder(
         workspace_items_order = dict([
                 (workspace_item_id, index * 10) for
                 index, workspace_item_id in enumerate(
-                    request.POST.getlist('workspace-items[]'))])
+                    request.POST.getlist('workspace-item[]'))])
 
     for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.index = workspace_items_order.get(
