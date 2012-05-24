@@ -21,14 +21,12 @@
 
   <ul class="workspace-items ui-sortable">
     {% for workspace_item in workspace_edit.workspace_items.all %}
-      <li class="workspace-item">
-        <div id="workspace-item-{{ workspace_item.id }}"
-             class="workspace-item"
-             data-object-id="{{ workspace_item.id }}"
-             data-adapter-class="{{ workspace_item.adapter_class }}"
-             data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
-             data-visible="{{ workspace_item.visible }}">
-          <div>
+      <li id="workspace-item-{{ workspace_item.id }}"
+          class="workspace-item"
+          data-object-id="{{ workspace_item.id }}"
+          data-adapter-class="{{ workspace_item.adapter_class }}"
+          data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
+          data-visible="{{ workspace_item.visible }}">
             <span class="ss_sprite ss_delete sidebarbox-action-icon workspace-item-delete" rel="tipsy-south" original-title="Verwijder item"></span>
             <span class="ss_sprite ss_magnifier sidebarbox-action-icon workspace-item-pan-to" rel="tipsy" original-title="Zoom"></span>
             {# Symbol, appears left. #}
@@ -50,7 +48,6 @@
                    data-workspace-id="{{ workspace.id }}" />
             {% firstof workspace_item.name '(noname)' %}
             </label>
-          </div>
 
           <ul id="below-workspace-item-{{ workspace_item.id }}"
                class="below-workspace-item">
@@ -73,7 +70,6 @@
               {% legend workspace_item.name workspace_item.adapter session %}
             </li>
           </ul>
-        </div>
       </li>
 
     {% endfor %}
