@@ -114,7 +114,7 @@ function show_popup(data) {
             $("#movable-dialog").dialog("open");
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
-                //reloadGraphs();
+                reloadGraphs();
             } else {
                 // Re-reload the first one.
                 reloadLocalizedGraphs(

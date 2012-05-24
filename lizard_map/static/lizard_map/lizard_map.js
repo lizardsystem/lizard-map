@@ -715,9 +715,9 @@ function collagePopup(event) {
 
     url = $(event.target).attr("href");
     $.getJSON(url, function (data) {
+        dialogSize("");  // Reset to default.
         show_popup(data);
     });
-    dialogSize("");  // Reset to default.
     return false;
 }
 
