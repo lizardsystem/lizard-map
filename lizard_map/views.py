@@ -22,7 +22,6 @@ from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
-from lizard_ui.models import ApplicationScreen
 from lizard_ui.views import UiView
 from lizard_ui.views import IconView
 import Image
@@ -60,6 +59,7 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
+from lizard_map.lizard_widgets import Legend
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -305,6 +305,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
     def show_rightbar_title(self):
         return _('Legend')
 
+    @property
     def legends(self):
         """Return legends for the rightbar."""
         result = []
@@ -316,9 +317,9 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
                 logger.debug(
                     "No legend_image_url() on this ws item's adapter.")
                 continue
-            result.append({
-                    'name': workspace_item.name,
-                    'image_url': workspace_item.adapter.legend_image_url()})
+            result.append(Legend(
+                    name=workspace_item.name,
+                    image_url=workspace_item.adapter.legend_image_url()))
         return result
 
     @property
