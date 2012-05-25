@@ -164,7 +164,7 @@ jQuery.fn.workspaceInteraction = function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        workspaceItems = $workspace.find("ul.workspace-items");
+        workspaceItems = $workspace.find(".workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
                 var url, order;
@@ -185,7 +185,7 @@ jQuery.fn.workspaceInteraction = function () {
             cursor: 'move',
             revert: 'true',
             placeholder: 'ui-sortable-placeholder',
-            items: 'li.workspace-item'
+            items: '.workspace-item'
         });
         // // Make collage clickable. (DONE: should be collage-popup)
         // $(".collage-popup", $workspace).live('click',

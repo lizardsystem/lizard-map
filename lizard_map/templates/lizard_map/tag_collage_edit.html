@@ -5,47 +5,25 @@
      data-collage-id="{{ collage_edit.id }}"
      >
   <h2>
-    <a id="collage-empty"
-       rel="tipsy-south"
-       href="{% url lizard_map_collage_empty %}"
-       title="{% trans 'Empty your collage' %}"
-       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty{% if reload_after_action %} reload-after-action{% endif %}"
-       data-target-id="#edit-collage">
-    </a>
-    <a id="collage-popup"
-       rel="tipsy-south"
-       href="{% url lizard_map_collage_popup %}"
-       title="{% trans 'Selection popup...' %}"
-       class="title ss_sprite ss_chart_line sidebarbox-action-icon collage-popup">
-    </a>
-    {# Collage edit page #}
-    <a class="ss_sprite ss_arrow_turn_right sidebarbox-action-icon"
-       rel="tipsy-south"
-       title="{% trans 'Selection page...' %}"
-       href="{% url lizard_map_collage_edit_detail %}">
-    </a>
     <span rel="tipsy-southwest" title="{% trans 'This is your current selection.' %}">
       {% trans 'Selection' %}
     </span>
   </h2>
-  <ul class="collage-items without-bullets">
+  <table id="edit-collage-table" class="wscol-table">
+  <tbody>
     {% for collage_item in collage_edit.collage_items.all %}
-    <li id="collage-items-{{ collage_item.id }}"
-        class="collage-item"
+    <tr id="collage-items-{{ collage_item.id }}"
+        class="collage-item paddme"
         title="{{ collage_item.name }}"
         data-object-id="{{ collage_item.id }}">
-      {# Delete collage item. Tipsy tooltips won't disappear. #}
-      <a class="ss_sprite ss_delete sidebarbox-action-icon
-                collage-item-delete{% if reload_after_action %} reload-after-action{% endif %}"
-            title="{% trans 'Delete item' %}"
-            href="{% url lizard_map_collage_item_edit %}"
-            data-target-id="#edit-collage">
-      </a>
       {# Symbol, appears left. #}
+      <td class="rspacing">
       <img class="collage-item-image"
            src="{{ collage_item.adapter.symbol_url }}"
            width="16"
            height="16" />
+      </td>
+      <td class="rspacing">
       <input id="{{ collage_item.id }}"
              class="collage-item-checkbox{% if reload_after_action %} reload-after-action{% endif %}"
              type="checkbox"
@@ -54,14 +32,57 @@
              {% endif %}
              href="{% url lizard_map_collage_item_edit %}"
              data-target-id="#edit-collage"/>
+      </td>
+      <td>
       <a class="collage-item-name collage-popup"
          href="{% url lizard_map_collage_item_popup collage_item_id=collage_item.id %}">
         {% firstof collage_item.name '(noname)' %}
       </a>
-    </li>
+      </td>
+      {# Delete collage item. Tipsy tooltips won't disappear. #}
+      <td class="lasttd">
+      <a class="ss_sprite ss_delete sidebarbox-action-icon
+                collage-item-delete{% if reload_after_action %} reload-after-action{% endif %}"
+            title="{% trans 'Delete item' %}"
+            href="{% url lizard_map_collage_item_edit %}"
+            data-target-id="#edit-collage">
+      </a>
+      </td>
+    </tr>
     {% empty %}
       {# No collage items #}
-      <li>{% trans 'Select items on the map.' %}</li>
+      <tr><td>{% trans 'Select items on the map.' %}</td></tr>
     {% endfor %}
+  </tbody>
+  </table>
+  <ul class="wscol-actions">
+    <li>
+    <a id="collage-empty"
+       rel="tipsy-south"
+       href="{% url lizard_map_collage_empty %}"
+       title="{% trans 'Empty your collage' %}"
+       class="title btn btn-danger sidebarbox-action-icon action-post-workspace-empty{% if reload_after_action %} reload-after-action{% endif %}"
+       data-target-id="#edit-collage">
+      <i class="icon-trash icon-white"></i>
+    </a>
+    </li>
+    <li>
+    <a id="collage-popup"
+       rel="tipsy-south"
+       href="{% url lizard_map_collage_popup %}"
+       title="{% trans 'Selection popup...' %}"
+       class="title btn sidebarbox-action-icon collage-popup">
+      <i class="ss_sprite ss_chart_line"></i>
+    </a>
+    </li>
+    {# Collage edit page #}
+    <li>
+    <a class="btn sidebarbox-action-icon"
+       rel="tipsy-south"
+       title="{% trans 'Selection page...' %}"
+       href="{% url lizard_map_collage_edit_detail %}">
+      <i class="ss_sprite ss_arrow_turn_right"></i>
+    </a>
+    </li>
   </ul>
 </div>

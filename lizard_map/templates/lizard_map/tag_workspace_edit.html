@@ -19,64 +19,60 @@
     </span>
   </h2>
 
-  <ul class="workspace-items ui-sortable">
+  <table id="edit-workspace-table" class="workspace-items ui-sortable wscol-table">
+  <tbody>
     {% for workspace_item in workspace_edit.workspace_items.all %}
-      <li id="workspace-item-{{ workspace_item.id }}"
-          class="workspace-item"
+      <tr id="workspace-item-{{ workspace_item.id }}"
+          class="workspace-item paddme"
           data-object-id="{{ workspace_item.id }}"
           data-adapter-class="{{ workspace_item.adapter_class }}"
           data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
           data-visible="{{ workspace_item.visible }}">
-            <span class="ss_sprite ss_delete sidebarbox-action-icon workspace-item-delete" rel="tipsy-south" original-title="Verwijder item"></span>
-            <span class="ss_sprite ss_magnifier sidebarbox-action-icon workspace-item-pan-to" rel="tipsy" original-title="Zoom"></span>
-            {# Symbol, appears left. #}
-            {% if workspace_item.adapter.symbol_url %}
-            <img class="workspace-item-image"
-                 src="{{ workspace_item.adapter.symbol_url }}"
-                 width="16"
-                 height="16" />
-            {% else %}
-            <span class="no-image-spacer"></span>
-            {% endif %}
-            <label>
-            <input id="{{ workspace_item.id }}"
-                   class="workspace-item-checkbox"
-                   type="checkbox"
-                   {% if workspace_item.visible %}
-                     checked="checked"
-                   {% endif %}
-                   data-workspace-id="{{ workspace.id }}" />
-            {% firstof workspace_item.name '(noname)' %}
-            </label>
-
-          <ul id="below-workspace-item-{{ workspace_item.id }}"
-               class="below-workspace-item">
-            {# This is normally collapsed. #}
-            <li>
-              <span class="ss_sprite ss_delete sidebarbox-action-icon
-                           workspace-item-delete">
-                {% trans 'Delete item' %}
-              </span>
-            </li>
-            {% if workspace_item.has_extent %}
-              <li>
-                <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                             workspace-item-pan-to">
-                  {% trans 'Zoom to extent' %}
-                </span>
-              </li>
-            {% endif %}
-            <li>
-              {% legend workspace_item.name workspace_item.adapter session %}
-            </li>
-          </ul>
-      </li>
-
+        <td>
+          {# Symbol, appears left. #}
+          {% if workspace_item.adapter.symbol_url %}
+          <img class="workspace-item-image"
+               src="{{ workspace_item.adapter.symbol_url }}"
+               width="16"
+               height="16" />
+          {% endif %}
+        </td>
+        <td>
+          <input id="{{ workspace_item.id }}"
+                 class="workspace-item-checkbox"
+                 type="checkbox"
+                 {% if workspace_item.visible %}
+                   checked="checked"
+                 {% endif %}
+                 data-workspace-id="{{ workspace.id }}" />
+        </td>
+        <td>
+          {% firstof workspace_item.name '(noname)' %}
+        </td>
+        <td class="lasttd">
+        {% if workspace_item.has_extent %}
+          <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                       workspace-item-pan-to"
+                title="{% trans 'Zoom to extent' %}" />
+        {% else %}
+          <span class="no-image-spacer" />
+        {% endif %}
+          <span class="ss_sprite ss_delete sidebarbox-action-icon
+                       workspace-item-delete"
+                title="{% trans 'Delete item' %}" />
+        {% comment TODO needs some refactoring %}
+        {% legend workspace_item.name workspace_item.adapter session %}
+        {% endcomment %}
+        </td>
+      </tr>
+    {% empty %}
+      {# No workspace items #}
+      <tr><td>Geen kaartlagen geselecteerd.</td></tr>
     {% endfor %}
-  </ul>
+  </tbody>
+  </table>
 
-  <ul class="workspace-actions">
-
+  <ul class="wscol-actions">
     <li>
       <a id="workspace-empty"
          rel="tipsy-south"

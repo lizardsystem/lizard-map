@@ -713,7 +713,7 @@ function collagePopup(event) {
     var url;
     event.preventDefault();
 
-    url = $(event.target).attr("href");
+    url = $(event.target).parents('a.collage-popup').attr("href");
     $.getJSON(url, function (data) {
         dialogSize("");  // Reset to default.
         show_popup(data);
@@ -887,7 +887,7 @@ implemented for that particilar workspace item. */
 function setUpWorkspaceItemPanToLayer() {
     $(".workspace-item-pan-to").live("click", function () {
         var url, workspace_item_id;
-        workspace_item_id = $(this).parent().attr(
+        workspace_item_id = $(this).parents("[data-object-id]").attr(
             "data-object-id");
         url = $(this).parents(".workspace").attr(
             "data-url-lizard-map-workspace-item-extent");
