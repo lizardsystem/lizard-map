@@ -6,6 +6,10 @@ Changelog of lizard-map
 
 - Added missing dependency lizard_security.
 
+- Fixed popup and popup contents styling.
+
+- Collage and workspace UI working again.
+
 
 4.0a1 (2012-05-18)
 ------------------
