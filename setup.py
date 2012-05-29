@@ -5,7 +5,6 @@ version = '4.0a2.dev0'
 long_description = '\n\n'.join([
     open('README.rst').read(),
     # open(os.path.join('lizard_map', 'USAGE.rst')).read(),
-    open('TODO.rst').read(),
     open('CREDITS.rst').read(),
     open('CHANGES.rst').read(),
     ])
@@ -17,7 +16,7 @@ install_requires = [
     'django-nose',
     'django-piston',
     'django-staticfiles',
-    'lizard-ui >= 4.0a1',
+    'lizard-ui >= 4.0b1',
     'lizard-help',
     'matplotlib',
     'pkginfo',
