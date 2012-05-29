@@ -604,7 +604,15 @@ function actionPostClick(event, preAction, postAction, parameters) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
+    if (url == undefined) {
+        // find in parents
+        url = $(event.target).parents('a').attr("href");
+    }
     target_id = $(event.target).attr("data-target-id");
+    if (target_id == undefined) {
+        // find in parents
+        target_id = $(event.target).parents('a').attr("data-target-id");
+    }
     if (target_id !== undefined) {
         target = $(target_id);
     } else {
@@ -654,7 +662,7 @@ function postClickWorkspaceEmpty() {
 }
 
 
-/* Empty collage items */
+/* Empty workspace and collage items */
 function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
@@ -662,6 +670,7 @@ function actionPostClickEmpty(event) {
         postClickWorkspaceEmpty
     );
 }
+
 
 /* Delete collage item */
 function actionPostDeleteCollageItem(event) {
@@ -713,7 +722,12 @@ function collagePopup(event) {
     var url;
     event.preventDefault();
 
-    url = $(event.target).parents('a.collage-popup').attr("href");
+    url = $(event.target).attr("href");
+    if (url == undefined) {
+        // find in parents
+        url = $(event.target).parents('a.collage-popup').attr("href");
+    }
+
     $.getJSON(url, function (data) {
         dialogSize("");  // Reset to default.
         show_popup(data);
