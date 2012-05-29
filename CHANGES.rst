@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.0b2 (unreleased)
+4.0b3 (2012-05-29)
 ------------------
 
 - Collage and workspace are now styled using tables.
