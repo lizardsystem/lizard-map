@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.0b4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed Javascript not finding href attributes during click events.
 
 
 4.0b3 (2012-05-29)
