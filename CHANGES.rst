@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.0a2 (unreleased)
+4.0b1 (2012-05-29)
 ------------------
 
 - Added missing dependency lizard_security.
