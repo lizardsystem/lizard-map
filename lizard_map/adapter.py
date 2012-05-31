@@ -2,6 +2,7 @@
 Helper classes and functions for adapters
 """
 import datetime
+import time
 import locale
 import math
 import numpy
@@ -659,3 +660,125 @@ class Graph(object):
         response = HttpResponse(content_type='image/png')
         canvas.print_png(response)
         return response
+
+    def render(self):
+        '''
+        more general alias for http_png(), to support FlotGraph
+        should return a valid HttpResponse
+        '''
+        return self.http_png()
+
+class FlotGraphAxes(object):
+    legend_ = None
+
+    def __init__(self):
+        self.lines = [] # list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
+
+    def set_ylabel(self, ylabel):
+        self.ylabel = ylabel
+
+    def axhline(
+        self,
+        ybase,
+        color=None,
+        lw=None,
+        ls=None,
+        label=None
+    ):
+        '''no-op for FlotGraph'''
+        pass
+
+    def plot(
+        self,
+        xvalues,
+        yvalues,
+        lw=None,
+        color=None,
+        label=None
+    ):
+        # convert xvalues to timestamps for flot.js
+        xvalues = [float(time.mktime(x.timetuple()) * 1000) for x in xvalues]
+        self.lines.append({
+            'label': label,
+            'data': zip(xvalues, yvalues),
+            'color': color
+        })
+
+    def grid(self, grid):
+        '''no-op for FlotGraph'''
+        pass
+
+    def get_ylim(self):
+        '''no-op for FlotGraph'''
+        return None, None
+
+class FlotGraph(object):
+    """
+    Class for flot graphs, i.e. for popups, krw graphs
+
+    - horizontal axis = dates
+    - vertical axis = user defined
+    - outputs a dict (which in turn gets converted to Json) conforming to the client-side
+      JavaScript code which uses flot.js
+    """
+
+    def __init__(
+        self,
+        start_date, end_date,
+        today=datetime.datetime.now(),
+        restrict_to_month=None,
+        tz=None
+    ):
+        self.start_date = start_date
+        self.end_date = end_date
+        self.today = today
+        self.restrict_to_month = restrict_to_month
+        self.tz = tz
+
+        self.axes = FlotGraphAxes()
+
+    def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
+        self.y_min = y_min
+        self.y_max = y_max
+        self.min_manual = min_manual
+        self.max_manual = max_manual
+
+    def add_today(self):
+        '''no-op for FlotGraph'''
+        '''should add a vertical line for the current day?'''
+        pass
+
+    def set_xlabel(self, xlabel):
+        self.xlabel = xlabel
+
+    def fixup_axes(self, second=False):
+        '''no-op for FlotGraph'''
+        pass
+
+    def legend_space(self):
+        '''no-op for FlotGraph'''
+        pass
+
+    def legend(
+       self,
+       handles=None,
+       labels=None,
+       ncol=1,
+       force_legend_below=False
+    ):
+        '''no-op for FlotGraph'''
+        pass
+
+    def init_second_axes(self):
+        '''no-op for FlotGraph'''
+        pass
+
+    def http_png(self):
+        raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
+
+    def render(self):
+        return {
+            'y_min': None, # TODO
+            'y_max': None, # TODO
+            'series': self.axes.lines
+        }
