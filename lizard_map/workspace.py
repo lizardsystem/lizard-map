@@ -400,6 +400,8 @@ class WorkspaceItemAdapter(object):
         # Build "adapter-image" url for current adapter and identifiers.
         img_url = self.workspace_mixin_item.url(
             "lizard_map_adapter_image", identifiers)
+        flot_graph_data_url = self.workspace_mixin_item.url(
+            "lizard_map_adapter_flot_graph_data", identifiers)
 
         # Makes it possible to create collage items from current
         # selected objects.
@@ -424,6 +426,7 @@ class WorkspaceItemAdapter(object):
         render_kwargs = {
             'title': title,
             'img_url': img_url,
+            'flot_graph_data_url': flot_graph_data_url,
             'symbol_url': self.symbol_url(),
             'collage_item_props': collage_item_props,
             'adapter': self,
