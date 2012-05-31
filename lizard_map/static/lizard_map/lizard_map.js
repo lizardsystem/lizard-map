@@ -804,7 +804,6 @@ function setUpWorkspaceButtons() {
 /* Handle a click */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
 function popup_click_handler(x, y, map) {
-    console.log("popup_click_handler:", map);
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
