@@ -1805,6 +1805,8 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
     - layout_extra (optional)
     """
 
+    _IGNORE_IE_ACCEPT_HEADER = False # Keep this, if you want IE to work
+
     def get(self, request, *args, **kwargs):
         """
         Note: named url arguments become kwargs.
