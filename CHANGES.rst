@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.0b5 (unreleased)
+4.0b5 (2012-05-31)
 ------------------
 
 - Removed OpenLayers.ImgPath of theme 'Dark'.
