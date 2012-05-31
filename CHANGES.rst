@@ -6,6 +6,9 @@ Changelog of lizard-map
 
 - Removed OpenLayers.ImgPath of theme 'Dark'.
 
+- Minor styling fix for workspaces.
+
+- Add the new FlotGraph.
 
 4.0b4 (2012-05-29)
 ------------------
