@@ -45,6 +45,7 @@ class WorkspaceItemAdapter(object):
     layer_arguments = {}
     is_animatable = False
     allow_custom_legend = False
+    support_flot_graph = False # set this once flot graphs are supported by the adapter
 
     def __init__(self, workspace_item, layer_arguments=None,
                  adapter_class=None):
