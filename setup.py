@@ -21,6 +21,7 @@ install_requires = [
     'matplotlib',
     'pkginfo',
     'django-jsonfield',
+    'djangorestframework',
     'south',
     'iso8601',
     # 'pyproj', Including that as a dependency
