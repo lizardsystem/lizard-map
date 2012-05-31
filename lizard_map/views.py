@@ -20,6 +20,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
+from djangorestframework.views import View as JsonView
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import UiView
@@ -1790,6 +1791,35 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
         return current_adapter.image(
             identifier_list, start_date, end_date,
             width, height,
+            layout_extra=layout_extra)
+
+
+class AdapterFlotGraphDataView(AdapterMixin, JsonView):
+    """
+    Return result of adapter.flot_graph_data, using given parameters.
+
+    URL GET parameters:
+    - adapter_class (required)
+    - identifier (required, multiple supported)
+    - start_date, end_date (optional, iso8601 format, default current)
+    - layout_extra (optional)
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Note: named url arguments become kwargs.
+        """
+        current_adapter = self.adapter(kwargs['adapter_class'])
+        identifier_list = self.identifiers()
+
+        start_date, end_date = self.start_end_dates_from_request()
+
+        # Add animation slider position, info from session data.
+        layout_extra = self.layout_extra_from_request()
+        layout_extra.update(slider_layout_extra(self.request))
+
+        return current_adapter.flot_graph_data(
+            identifier_list, start_date, end_date,
             layout_extra=layout_extra)
 
 

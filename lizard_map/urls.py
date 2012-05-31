@@ -115,6 +115,9 @@ urlpatterns = patterns(
     url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
         lizard_map.views.AdapterImageView.as_view(),
         name="lizard_map_adapter_image"),
+    url(r'^adapter/(?P<adapter_class>.*)/flot_graph_data/$',  # L3
+        lizard_map.views.AdapterFlotGraphDataView.as_view(),
+        name="lizard_map_adapter_flot_graph_data"),
     url(r'^adapter/(?P<adapter_class>.*)/values/(?P<output_type>.*)/$',  # L3
         lizard_map.views.AdapterValuesView.as_view(),
         name="lizard_map_adapter_values"),
