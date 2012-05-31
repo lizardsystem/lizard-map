@@ -28,7 +28,7 @@
           data-adapter-class="{{ workspace_item.adapter_class }}"
           data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
           data-visible="{{ workspace_item.visible }}">
-        <td>
+        <td class="icontd">
           {# Symbol, appears left. #}
           {% if workspace_item.adapter.symbol_url %}
           <img class="workspace-item-image"
@@ -37,7 +37,7 @@
                height="16" />
           {% endif %}
         </td>
-        <td>
+        <td class="icontd">
           <input id="{{ workspace_item.id }}"
                  class="workspace-item-checkbox"
                  type="checkbox"
@@ -46,7 +46,7 @@
                  {% endif %}
                  data-workspace-id="{{ workspace.id }}" />
         </td>
-        <td>
+        <td class="maintd">
           {% firstof workspace_item.name '(noname)' %}
         </td>
         <td class="lasttd">
