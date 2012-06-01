@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.0b6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for bar graphs (Flot).
+
+- Remove an obsolete console.log call.
 
 
 4.0b5 (2012-05-31)
