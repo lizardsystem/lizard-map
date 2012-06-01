@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.0b6 (unreleased)
+4.0b6 (2012-06-01)
 ------------------
 
 - Add support for bar graphs (Flot).
