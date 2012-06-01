@@ -613,9 +613,9 @@ class Graph(object):
                 ncol=ncol,
                 fancybox=True,
                 shadow=True,)
-         #legend.set_size('medium')
-         # TODO: get rid of the border around the legend.
-         # to get rid of the border: graph.axes.legend_.draw_frame(False)
+            #legend.set_size('medium')
+            # TODO: get rid of the border around the legend.
+            # to get rid of the border: graph.axes.legend_.draw_frame(False)
 
     def init_second_axes(self):
         """ init second axes """
@@ -672,7 +672,7 @@ class FlotGraphAxes(object):
     legend_ = None
 
     def __init__(self):
-        self.lines = [] # list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
+        self.flot_data = [] # list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
 
     def set_ylabel(self, ylabel):
         self.ylabel = ylabel
@@ -698,10 +698,28 @@ class FlotGraphAxes(object):
     ):
         # convert xvalues to timestamps for flot.js
         xvalues = [float(time.mktime(x.timetuple()) * 1000) for x in xvalues]
-        self.lines.append({
+        self.flot_data.append({
             'label': label,
             'data': zip(xvalues, yvalues),
-            'color': color
+            'color': color,
+            'lines': {'show': True}
+        })
+
+    def bar(
+        self,
+        xvalues,
+        yvalues,
+        edgecolor='blue',
+        width=0,
+        label=None
+    ):
+        # convert xvalues to timestamps for flot.js
+        xvalues = [float(time.mktime(x.timetuple()) * 1000) for x in xvalues]
+        self.flot_data.append({
+            'label': label,
+            'data': zip(xvalues, yvalues),
+            'color': edgecolor,
+            'bars': {'show': True, 'barWidth': width}
         })
 
     def grid(self, grid):
@@ -736,6 +754,7 @@ class FlotGraph(object):
         self.tz = tz
 
         self.axes = FlotGraphAxes()
+        self.responseobject = None # unused
 
     def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
         self.y_min = y_min
@@ -750,6 +769,12 @@ class FlotGraph(object):
 
     def set_xlabel(self, xlabel):
         self.xlabel = xlabel
+
+    def set_ylabel(self, ylabel):
+        self.ylabel = ylabel
+
+    def suptitle(self, suptitle):
+        self.suptitle = suptitle
 
     def fixup_axes(self, second=False):
         '''no-op for FlotGraph'''
@@ -773,12 +798,14 @@ class FlotGraph(object):
         '''no-op for FlotGraph'''
         pass
 
+    def get_bar_width(self, delta_t):
+        '''assumes xvalues are always dates'''
+        return float(delta_t.total_seconds() * 1000)
+
     def http_png(self):
         raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
 
     def render(self):
         return {
-            'y_min': None, # TODO
-            'y_max': None, # TODO
-            'series': self.axes.lines
+            'data': self.axes.flot_data
         }
