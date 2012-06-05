@@ -719,7 +719,7 @@ class FlotGraphAxes(object):
             'label': label,
             'data': zip(xvalues, yvalues),
             'color': edgecolor,
-            'bars': {'show': True, 'barWidth': width}
+            'bars': {'show': True, 'barWidth': width, 'align': 'center'}
         })
 
     def grid(self, grid):
@@ -755,6 +755,8 @@ class FlotGraph(object):
 
         self.axes = FlotGraphAxes()
         self.responseobject = None # unused
+        self.xlabel = None
+        self.ylabel = None
 
     def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
         self.y_min = y_min
@@ -807,5 +809,7 @@ class FlotGraph(object):
 
     def render(self):
         return {
-            'data': self.axes.flot_data
+            'data': self.axes.flot_data,
+            'x_label': self.xlabel,
+            'y_label': self.ylabel
         }
