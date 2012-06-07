@@ -334,6 +334,13 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
             icon='icon-screenshot',
             klass='map-load-default-location')
         actions.insert(0, zoom_to_default)
+        set_date_range = Action(
+            name=_('Verander datumbereik'),
+            description=_('Verander het datumbereik van de metingen.'),
+            url=reverse('lizard_map_date_range'),
+            icon='icon-time',
+            klass='popup-date-range')
+        actions.insert(1, set_date_range)
         return actions
 
 
