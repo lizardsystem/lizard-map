@@ -112,15 +112,19 @@ function show_popup(data) {
             }
             //dialogOverlay();
             $("#movable-dialog").dialog("open");
-            if (data.html.length === 1) {
+            //if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
                 reloadGraphs();
-            } else {
+            //} else {
                 // Re-reload the first one.
-                reloadLocalizedGraphs(
-                    $("div.popup-panes > div.pane")[0]);
-            }
+                //reloadLocalizedGraphs(
+                    //$("div.popup-panes > div.pane")[0]);
+            //}
             $(".add-snippet").snippetInteraction();
+        }
+        else if (data.indexOf("div") != -1) {
+            $("#movable-dialog-content").html(data);
+            $("#movable-dialog").dialog("open");
         }
         else {
             nothingFoundPopup();
