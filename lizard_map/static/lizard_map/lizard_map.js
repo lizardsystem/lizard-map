@@ -129,6 +129,31 @@ function setUpMapLoadDefaultLocation() {
     });
 }
 
+function refreshDateRangePopup(data) {
+    dialogSize("");  // Reset to default.
+    show_popup(data);
+    setupDatepicker($('#date-range-form'));
+    $('#date-range-submit').click(function(event) {
+        event.preventDefault();
+        $("#movable-dialog").dialog("close");
+    });
+}
+
+
+function setUpDateRangePopup() {
+    $(".popup-date-range").live("click", function (event) {
+        var url;
+        event.preventDefault();
+        url = $(this).attr("href");
+        $.get(
+            url,
+            function(data) {
+                refreshDateRangePopup(data);
+            }
+        );
+    });
+}
+
 
 /* set up map actions */
 function setUpMapActions() {
@@ -323,7 +348,7 @@ function dialogClose() {
  There may be some empty strings in this list. */
 function dialogReplaceItemIds() {
     var ids;
-    ids = $("#dialog").data("replace-items").split(" ");
+    ids = $("#movable-dialog").data("replace-items").split(" ");
     return ids;
 }
 
@@ -445,30 +470,18 @@ function dialogOnChange(event) {
     var $form, ids;
     // console.log("dialog onchange");
     event.preventDefault();
-    if ($("#dialog").data("submit-on-change")) {
+    //if ($("#movable-dialog").data("submit-on-change")) {
         // console.log("onchange submit");
         $form = $(event.target).parents("form");
         $.post(
-            $form.attr("action"), $form.serialize(),
-            function (data, status, context) {/* Strange: never comes here*/},
-            "json")
-            .error(
-                function (context)
-                {
-                    var div;
-                    div = $("<div/>").html(context.responseText).find(
-                        ".dialog-box");
-                    // Bad request: wrong input
-                    // Or 200, or else... all the same
-                    ids = dialogReplaceItemIds();
-                    replaceItems(ids, context.responseText);
-                    dialogContent(div);
-                    dialogOverlay();
-
-		    setupDatepicker(div);
-                    return false;
-                });
-    }
+            $form.attr("action"), $form.serialize()
+        )
+        .success(
+            function (data) {
+                refreshDateRangePopup(data);
+            }
+        );
+    //}
     return false;
 }
 
@@ -578,21 +591,21 @@ function setUpDialogs() {
     $(".ajax-dialog-onchange").live("click", dialogClick);
     $(".ajax-dialog-onchange").live("click", dialogSetupChange);
     // Handle submit button in forms in a dialog. Exclude alternative-submit.
-    $("#dialog input:submit:not(.alternative-submit)").live(
-        "click", dialogSubmit);
+    //$("#movable-dialog input:submit:not(.alternative-submit)").live(
+    //    "click", dialogSubmit);
     // Handle ajax-dialog-onchange, which submit on changes.
-    $("#dialog form input").live(
+    $("#movable-dialog form input").live(
         "change", dialogOnChange);
-    $("#dialog form select").live(
+    $("#movable-dialog form select").live(
         "change", dialogOnChange);
 
     // TODO: split this part. It is for specific lizard-map workspace stuff.
     // For workspace changes: live our own handler
-    $("#dialog input:submit.update-workspace-after").live(
+    $("#movable-dialog input:submit.update-workspace-after").live(
         "click", updateWorkspaceAfterSubmit);
-    $("#dialog input:submit.reload-screen-after").live(
+    $("#movable-dialog input:submit.reload-screen-after").live(
         "click", reloadScreenAfterSubmit);
-    $("#dialog input:submit.open-new-window-after").live(
+    $("#movable-dialog input:submit.open-new-window-after").live(
 	"click", openNewWindowAfterSubmit);
 }
 
@@ -1077,6 +1090,7 @@ $(document).ready(function () {
     setUpLegendEdit();
 
     setUpMapLoadDefaultLocation();
+    setUpDateRangePopup();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
