@@ -4,7 +4,11 @@ Changelog of lizard-map
 4.0b7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Added flot graph axis label support.
+
+- Some table styling.
+
+- Fix date range popup.
 
 
 4.0b6 (2012-06-01)
