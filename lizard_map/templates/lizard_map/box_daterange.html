@@ -1,6 +1,7 @@
 <div class="dialog-box date-range-box">
-   <form action="{% url lizard_map_date_range %}{% if view.reload_screen_after %}?reload_screen_after={% endif %}"{# this url will result in this template #}
-        method="post">
+   <form id="date-range-form"
+         action="{% url lizard_map_date_range %}"
+         method="post">
     {% csrf_token %}
     <p>{% autoescape off %}{{ view.date_range_form.period }}{% endautoescape %}</p>
     <p>
@@ -9,17 +10,9 @@
       <label for="id_dt_end">Tot:</label>
       {{ view.date_range_form.dt_end }}
     </p>
-    <div><input type="submit" value="opslaan"{% if view.reload_screen_after %}  class="alternative-submit reload-screen-after"{% endif %} /></div>
+    <div><input id="date-range-submit" type="submit" value="opslaan"/></div>
   </form>
 </div>
-
-<a href="{% url lizard_map_date_range %}"
-   id="date-range"
-   title='Van {{ view.date_start_period|date:"d-m-Y" }} t/m {{ view.date_end_period|date:"d-m-Y" }}'
-   class="title datepicker-icon action-icon ajax-dialog-onchange"
-   data-replace-items="date-range animation-slider animation-date"
-   data-size="s"
-   rel="tipsy-south">&nbsp;</a>
 
 {# Animation slider html code is the same as in wms.html #}
 {% if view.animation_slider %}
