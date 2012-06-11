@@ -795,9 +795,8 @@ function eraseDialogContentsOnClose() {
 
 /* L3 popup with "niets gevonden" */
 function nothingFoundPopup() {
-    dialogText("Niets gevonden",
-               "Er is niets rond deze locatie gevonden.");
-    dialogCloseDelay();
+    $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
+    $("#movable-dialog").dialog("open");
 }
 
 

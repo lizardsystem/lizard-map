@@ -122,7 +122,7 @@ function show_popup(data) {
             //}
             $(".add-snippet").snippetInteraction();
         }
-        else if (data.indexOf("div") != -1) {
+        else if (data.indexOf && data.indexOf("div") != -1) {
             $("#movable-dialog-content").html(data);
             $("#movable-dialog").dialog("open");
         }
