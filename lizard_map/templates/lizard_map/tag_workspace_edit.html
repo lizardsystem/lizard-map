@@ -53,13 +53,13 @@
         {% if workspace_item.has_extent %}
           <span class="ss_sprite ss_magnifier sidebarbox-action-icon
                        workspace-item-pan-to"
-                title="{% trans 'Zoom to extent' %}" />
+                title="{% trans 'Zoom to extent' %}"></span>
         {% else %}
-          <span class="no-image-spacer" />
+          <span class="no-image-spacer"></span>
         {% endif %}
           <span class="ss_sprite ss_delete sidebarbox-action-icon
                        workspace-item-delete"
-                title="{% trans 'Delete item' %}" />
+                title="{% trans 'Delete item' %}"></span>
         {% comment TODO needs some refactoring %}
         {% legend workspace_item.name workspace_item.adapter session %}
         {% endcomment %}
@@ -83,6 +83,16 @@
       </a>
     </li>
 
+    <li>
+      <a id="workspace-save"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_save %}"
+         class="btn sidebarbox-action-icon popup-workspace-save"
+         data-size="xs">
+        <i class="ss_sprite ss_database_save"></i>
+      </a>
+    </li>
+
     {% comment %}
     The added value of next link might not be obvious to a user, because workspace-load
     seems to offer comparable functionality. A subtle difference is that it reveals a
@@ -98,16 +108,6 @@
     {% endcomment %}
 
     {% comment %}
-      <li>
-        <a id="workspace-save"
-           rel="tipsy-south"
-           href="{% url lizard_map_workspace_save %}"
-           class="title ss_sprite ss_database_save sidebarbox-action-icon ajax-dialog"
-           data-size="xs">
-          {% trans 'Save workspace...' %}
-        </a>
-      </li>
-
       <a id="workspace-load"
          rel="tipsy-south"
          href="{% url lizard_map_workspace_load %}"

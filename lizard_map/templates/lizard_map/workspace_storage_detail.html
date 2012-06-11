@@ -9,7 +9,9 @@ Opgeslagen workspace '{{view.workspace.name}}'
 
 {% block breadcrumbs %}
 {% comment %}TODO These don't work in the workspace storage view yet, hacked them in.{% endcomment %}
-» <a href="/" rel="tipsy-south" title="Naar de voorpagina">Home</a>
+<ul>
+    <li><a href="/" rel="tipsy-south" title="Naar de voorpagina">Home</a></li>
+</ul>
 {% endblock %}
 
 {% block sidebar %}
@@ -27,38 +29,42 @@ Opgeslagen workspace '{{view.workspace.name}}'
       {{ view.workspace.name }}
     </span>
   </h2>
-  <ul class="workspace-items without-bullets">
+  <table id="edit-workspace-table" class="workspace-items ui-sortable wscol-table">
+  <tbody>
     {% for workspace_item in view.workspace.workspace_items.all %}
-    <li id="workspace-items-{{ workspace_item.id }}"
+    <tr id="workspace-items-{{ workspace_item.id }}"
         class="workspace-item"
         title="{{ workspace_item.name }}"
         data-object-id="{{ workspace_item.id }}"
         data-adapter-class="{{ workspace_item.adapter_class }}"
         data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
         data-visible="{{ workspace_item.visible }}">
-      {# Legend. #}
-      {% legend workspace_item.name workspace_item.adapter view.request.session %}
-      {# Pan to layer. #}
-      {% if workspace_item.has_extent %}
-      <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                   workspace-item-pan-to"
-            rel="tipsy"
-            title="Zoom"></span>
-      {% endif %}
       {# Symbol, appears left. #}
-      <img class="workspace-item-image"
-           src="{{ workspace_item.adapter.symbol_url }}"
-           width="16"
-           height="16" />
-      <div class="workspace-item-name">
+      <td class="icontd">
+        <img class="workspace-item-image"
+             src="{{ workspace_item.adapter.symbol_url }}"
+             width="16"
+             height="16" />
+      </td>
+      <td class="maintd">
         {% firstof workspace_item.name '(noname)' %}
-      </div>
-    </li>
+      </td>
+      <td class="lasttd">
+      {% if workspace_item.has_extent %}
+        <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                     workspace-item-pan-to"
+              title="{% trans 'Zoom to extent' %}"></span>
+      {% else %}
+        <span class="no-image-spacer"></span>
+      {% endif %}
+      </td>
+    </tr>
     {% empty %}
       {# No workspaceitems #}
-      <li>Geen workspace items in opgeslagen workspace.</li>
+      <tr><td>Geen workspace items in opgeslagen workspace.</td></tr>
     {% endfor %}
-  </ul>
+  </tbody>
+  </table>
 </div>
 
 {% collage_edit view.collage_edit %}

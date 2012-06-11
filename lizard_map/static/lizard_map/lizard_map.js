@@ -140,6 +140,21 @@ function refreshDateRangePopup(data) {
 }
 
 
+function setWorkspaceSavePopup() {
+    $(".popup-workspace-save").live("click", function (event) {
+        var url;
+        event.preventDefault();
+        url = $(this).attr("href");
+        $.get(
+            url,
+            function(data) {
+                dialogSize("");  // Reset to default.
+                show_popup(data);
+            }
+        );
+    });
+}
+
 function setUpDateRangePopup() {
     $(".popup-date-range").live("click", function (event) {
         var url;
@@ -1090,6 +1105,7 @@ $(document).ready(function () {
     setUpLegendEdit();
 
     setUpMapLoadDefaultLocation();
+    setWorkspaceSavePopup();
     setUpDateRangePopup();
 
     /* Workspace functions, requires jquery.workspace.js */

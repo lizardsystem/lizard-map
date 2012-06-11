@@ -61,7 +61,7 @@ from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
 from lizard_map.lizard_widgets import Legend
-
+from lizard_ui.views import ViewContextMixin
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
@@ -357,10 +357,7 @@ class WorkspaceStorageListView(
         return WorkspaceStorage.objects.all()
 
 
-class WorkspaceStorageView(
-    WorkspaceMixin, CollageMixin, DateRangeMixin,
-    UiView, MapMixin,
-    GoogleTrackingMixin):
+class WorkspaceStorageView(AppView):
     """Workspace storage view.
 
     TODO: "load workspace in my workspace and go there" """
@@ -384,7 +381,7 @@ class WorkspaceStorageView(
             request, *args, **kwargs)
 
 
-class ActionDialogView(UiView, FormView):
+class ActionDialogView(ViewContextMixin, FormView):
     """
     Generic Action Dialog View.
 
