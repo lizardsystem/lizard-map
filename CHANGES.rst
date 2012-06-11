@@ -12,6 +12,8 @@ Changelog of lizard-map
 
 - Readded the option to save a workspace.
 
+- Readded the nothingFoundPopup.
+
 
 4.0b6 (2012-06-01)
 ------------------
