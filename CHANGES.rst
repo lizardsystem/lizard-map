@@ -10,6 +10,8 @@ Changelog of lizard-map
 
 - Fix date range popup.
 
+- Readded the option to save a workspace.
+
 
 4.0b6 (2012-06-01)
 ------------------
