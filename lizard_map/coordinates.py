@@ -48,6 +48,7 @@ wgs84_projection = Proj(WGS84)
 srs_to_mapnik_projection = {
     'EPSG:28992': RD,
     'EPSG:900913': GOOGLE,
+    'EPSG:3857': GOOGLE,
     'EPSG:4326': WGS84,
     }
 
