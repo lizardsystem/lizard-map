@@ -310,7 +310,7 @@ function showMap() {
         parseFloat(max_extent_right), parseFloat(max_extent_top));
 
     // Set up projection and bounds.
-    if (projection === "EPSG:900913")
+    if (projection === "EPSG:900913" || projection === "EPSG:3857")
     {
         options = {
             projection: new OpenLayers.Projection(projection),
