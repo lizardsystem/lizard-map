@@ -67,6 +67,7 @@ string_to_srid = {
 srs_to_string = {
     'EPSG:28992': "rd",
     'EPSG:900913': "google",
+    'EPSG:3857': "google",
     'EPSG:4326': "wgs84",
 }
 
