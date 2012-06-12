@@ -14,6 +14,8 @@ Changelog of lizard-map
 
 - Readded the nothingFoundPopup.
 
+- Support EPSG:3857 alias for google coordinates.
+
 
 4.0b6 (2012-06-01)
 ------------------
