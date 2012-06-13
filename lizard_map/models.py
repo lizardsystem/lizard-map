@@ -276,6 +276,7 @@ class WorkspaceItemMixin(models.Model):
         except:
             # Even if the hard disk is in fact on fire, we don't want to raise
             # an exception here because that may break the whole page.
+            logger.exception("Error when calling .extent()")
             return False
 
         if extent is None:
