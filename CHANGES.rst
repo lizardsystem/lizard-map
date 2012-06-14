@@ -16,6 +16,8 @@ Changelog of lizard-map
 
 - Support EPSG:3857 alias for google coordinates.
 
+- Add moving box on collage-add.
+
 
 4.0b6 (2012-06-01)
 ------------------
