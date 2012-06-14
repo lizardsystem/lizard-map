@@ -362,7 +362,9 @@ class WorkspaceStorageView(AppView):
 
     TODO: "load workspace in my workspace and go there" """
     template_name = 'lizard_map/workspace_storage_detail.html'
+    show_secondary_sidebar_title = False  # Don't show the 'layers' button.
 
+    @property
     def workspace(self):
         """Return a workspace"""
         if not hasattr(self, '_workspace'):
@@ -379,6 +381,17 @@ class WorkspaceStorageView(AppView):
         self.workspace_slug = kwargs.get('workspace_storage_slug', None)
         return super(WorkspaceStorageView, self).get(
             request, *args, **kwargs)
+
+    @property
+    def page_title(self):
+        return self.workspace.name
+
+    @property
+    def breadcrumbs(self):
+        """Return homepage + ourselves as breadcrumbs."""
+        result = [self.home_breadcrumb_element,
+                  Action(name=self.workspace.name)]
+        return result
 
 
 class ActionDialogView(ViewContextMixin, FormView):
