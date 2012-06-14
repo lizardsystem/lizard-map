@@ -57,11 +57,11 @@
           <td>{{ collage_item.name }}</td>
           <td>
 	  {% if collage_item.collage_detail_edit_action == 'graph' %}
-	    <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit ajax-dialog">Bewerk</a>
+	    <a href="{% url lizard_map_collage_item_editor collage_item_id=collage_item.id %}" class="ss_sprite ss_chart_line_edit collate-edit-popup">Bewerk</a>
 	  {% endif %}
           </td>
           <td><a href="{% adapter_url collage_item 'html' %}"
-                 class="ss_sprite ss_table ajax-dialog">Toon tabel</a></td>
+                 class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
           <td><a href="{% adapter_url collage_item 'csv' %}"
                  class="ss_sprite ss_table_save">Export csv</a></td>
         </tr>

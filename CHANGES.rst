@@ -18,6 +18,8 @@ Changelog of lizard-map
 
 - Add moving box on collage-add.
 
+- Fix my-collage popups.
+
 
 4.0b6 (2012-06-01)
 ------------------
