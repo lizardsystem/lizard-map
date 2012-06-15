@@ -366,9 +366,7 @@ class WorkspaceStorageListView(
 
 
 class WorkspaceStorageView(AppView):
-    """Workspace storage view.
-
-    TODO: "load workspace in my workspace and go there" """
+    """Workspace storage view."""
     template_name = 'lizard_map/workspace_storage_detail.html'
     show_secondary_sidebar_title = False  # Don't show the 'layers' button.
 
@@ -779,62 +777,35 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
 
 
 @never_cache
-def workspace_item_extent(request):
-    """Returns extent for the workspace in json.
-     Transform to correct client-side projection, then return coordinates.
+def workspace_item_extent(request, item_class=WorkspaceEdit):
+    """Return extent for the workspace item in json.
+
+    Transform to correct client-side projection, then return coordinates.
+
+    With ``item_class`` we can customize it in
+    ``saved_workspace_item_extent()``.
+
     """
 
     workspace_item_id = request.GET['workspace_item_id']
-    workspace_edit = WorkspaceEdit.get_or_create(
-        request.session.session_key, request.user)
-    workspace_items = (workspace_edit.workspace_items
-                       .filter(pk=workspace_item_id))
-
-    if len(workspace_items) == 0:
-        return HttpResponse(json.dumps({}))
-
-    extent = workspace_items[0].adapter.extent()
-
+    workspace_item = get_object_or_404(item_class, pk=workspace_item_id)
+    extent = workspace_item.adapter.extent()
     peastnorth = transform_point(extent['east'], extent['north'],
                                  from_proj='google')
     pwestsouth = transform_point(extent['west'], extent['south'],
                                  from_proj='google')
-
     return HttpResponse(json.dumps({
                 'east': peastnorth.get_x(),
                 'north': peastnorth.get_y(),
                 'west': pwestsouth.get_x(),
                 'south': pwestsouth.get_y(),
                 }))
-
 
 @never_cache
-def workspace_storage_item_extent(request):
-    """Returns extent for the workspace in json.
-     Transform to correct client-side projection, then return coordinates.
-     Version of the function that works for workspace storages, not workspace
-     edits.
+def saved_workspace_item_extent(request):
+    """Return extent for the *saved* workspace item in json.
     """
-
-    workspace_item_id = request.GET['workspace_item_id']
-    try:
-        workspace_item = WorkspaceStorageItem.objects.get(pk=workspace_item_id)
-    except WorkspaceStorageItem.DoesNotExist:
-        return HttpResponse(json.dumps({}))
-
-    extent = workspace_item.adapter.extent()
-
-    peastnorth = transform_point(extent['east'], extent['north'],
-                                 from_proj='google')
-    pwestsouth = transform_point(extent['west'], extent['south'],
-                                 from_proj='google')
-
-    return HttpResponse(json.dumps({
-                'east': peastnorth.get_x(),
-                'north': peastnorth.get_y(),
-                'west': pwestsouth.get_x(),
-                'south': pwestsouth.get_y(),
-                }))
+    return workspace_item_extent(request, item_class=WorkspaceStorageItem)
 
 
 def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
