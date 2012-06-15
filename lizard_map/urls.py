@@ -46,7 +46,7 @@ urlpatterns = patterns(
         name="lizard_map_workspace_item_extent"),
     # Same for workspace storages
     url(r'^workspacestorageitem/extent/$',
-        'lizard_map.views.workspace_storage_item_extent',
+        'lizard_map.views.saved_workspace_item_extent',
         name="lizard_map_workspace_storage_item_extent"),
 
     url(r'^mycollage/$',  # L3
