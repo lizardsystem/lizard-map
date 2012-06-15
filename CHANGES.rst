@@ -16,6 +16,8 @@ Changelog of lizard-map
 
 - Support EPSG:3857 alias for google coordinates.
 
+- Added feature to load stored workspace in editable workspace.
+
 - Add moving box on collage-add.
 
 - Fix my-collage popups.

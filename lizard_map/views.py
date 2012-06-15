@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson as json
@@ -508,6 +509,10 @@ class WorkspaceLoadView(ActionDialogView):
         # TODO: check permissions.
         workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
         workspace_edit.load_from_storage(workspace_storage)
+        redirect = {
+            "redirect": reverse("lizard_map_homepage")
+        }
+        return HttpResponse(json.dumps(redirect))
 
 
 class DateRangeView(DateRangeMixin, WorkspaceEditMixin, ActionDialogView):
