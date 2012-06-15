@@ -1,6 +1,7 @@
 """
 Helper classes and functions for adapters
 """
+from __future__ import division
 import datetime
 import time
 import locale
@@ -802,7 +803,10 @@ class FlotGraph(object):
 
     def get_bar_width(self, delta_t):
         '''assumes xvalues are always dates'''
-        return float(delta_t.total_seconds() * 1000)
+        # seconds = delta_t.total_seconds()  # 2.7 only.
+        seconds = (delta_t.microseconds +
+                   (delta_t.seconds + delta_t.days * 24 * 3600) * 10**6) / 10**6
+        return float(seconds * 1000)
 
     def http_png(self):
         raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
