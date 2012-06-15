@@ -155,6 +155,26 @@ function setWorkspaceSavePopup() {
     });
 }
 
+function setWorkspaceLoadPopup() {
+    $(".popup-workspace-load").live("click", function (event) {
+        var url;
+        event.preventDefault();
+        url = $(this).attr("href");
+        id = $(this).attr("data-workspace-id");
+        $.post(
+            url,
+            {
+                id: id
+            },
+            function(data) {
+            	result = $.parseJSON(data);
+            	if (result['redirect'])
+            	    window.location.href = result['redirect'];
+            }
+        );
+    });
+}
+
 function setUpDateRangePopup() {
     $(".popup-date-range").live("click", function (event) {
         var url;
@@ -1105,6 +1125,7 @@ $(document).ready(function () {
 
     setUpMapLoadDefaultLocation();
     setWorkspaceSavePopup();
+    setWorkspaceLoadPopup();
     setUpDateRangePopup();
 
     /* Workspace functions, requires jquery.workspace.js */

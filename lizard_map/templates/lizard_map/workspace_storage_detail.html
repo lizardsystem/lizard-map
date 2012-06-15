@@ -65,6 +65,19 @@ Opgeslagen workspace '{{view.workspace.name}}'
     {% endfor %}
   </tbody>
   </table>
+  <ul class="wscol-actions">
+    <li>
+      <a id="workspace-load"
+         rel="tipsy-south"
+         href="{% url lizard_map_workspace_load %}"
+         title="{% trans 'Edit this workspace...' %}"
+         class="btn sidebarbox-action-icon popup-workspace-load"
+         data-workspace-id="{{ view.workspace.id }}"
+         data-size="xs">
+        <i class="ss_sprite ss_database_go"></i>
+      </a>
+    </li>
+  </ul>
 </div>
 
 {% collage_edit view.collage_edit %}
