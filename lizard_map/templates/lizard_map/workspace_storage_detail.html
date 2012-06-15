@@ -3,53 +3,55 @@
 {% load i18n %}
 
 {% block sidebar %}
-<div id="workspace"
+
+<div id="edit-workspace"
      class="sidebarbox workspace"
      data-workspace-id="{{ view.workspace.id }}"
-     data-workspace-type="workspace_storage"
-     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
-     data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
-     data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
+     data-url-wms="{% url lizard_map_workspace_edit_wms %}"
+     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates %}"
+     data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_storage_item_extent %}"
      >
   <h2>
-    <span title="Dit is een opgeslagen workspace. Ga met je muis over de elementen heen om opties te zien.">
-      {{ view.workspace.name }}
+    <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
+      Workspace
     </span>
   </h2>
+
   <table id="edit-workspace-table" class="workspace-items ui-sortable wscol-table">
   <tbody>
     {% for workspace_item in view.workspace.workspace_items.all %}
-    <tr id="workspace-items-{{ workspace_item.id }}"
-        class="workspace-item"
-        title="{{ workspace_item.name }}"
-        data-object-id="{{ workspace_item.id }}"
-        data-adapter-class="{{ workspace_item.adapter_class }}"
-        data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
-        data-visible="{{ workspace_item.visible }}">
-      {# Symbol, appears left. #}
-      <td class="icontd">
-        <img class="workspace-item-image"
-             src="{{ workspace_item.adapter.symbol_url }}"
-             width="16"
-             height="16" />
-      </td>
-      <td class="maintd">
-        {% firstof workspace_item.name '(noname)' %}
-      </td>
-      <td class="lasttd">
-      {% if workspace_item.has_extent %}
-        <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                     workspace-item-pan-to"
-              title="{% trans 'Zoom to extent' %}"></span>
-      {% else %}
-        <span class="no-image-spacer"></span>
-      {% endif %}
-      </td>
-    </tr>
+      <tr id="workspace-item-{{ workspace_item.id }}"
+          class="paddme"
+          data-object-id="{{ workspace_item.id }}"
+          data-adapter-class="{{ workspace_item.adapter_class }}"
+          data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
+          data-visible="{{ workspace_item.visible }}">
+        <td class="icontd">
+          {# Symbol, appears left. #}
+          {% if workspace_item.adapter.symbol_url %}
+          <img class="workspace-item-image"
+               src="{{ workspace_item.adapter.symbol_url }}"
+               width="16"
+               height="16" />
+          {% endif %}
+        </td>
+        <td class="maintd">
+          {% firstof workspace_item.name '(noname)' %}
+        </td>
+        <td class="lasttd">
+        {% if workspace_item.has_extent %}
+          <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                       workspace-item-pan-to"
+                title="{% trans 'Zoom to extent' %}"></span>
+        {% else %}
+          <span class="no-image-spacer"></span>
+        {% endif %}
+        </td>
+      </tr>
     {% empty %}
-      {# No workspaceitems #}
-      <tr><td>Geen workspace items in opgeslagen workspace.</td></tr>
+      {# No workspace items #}
+      <tr><td>Geen kaartlagen geselecteerd.</td></tr>
     {% endfor %}
   </tbody>
   </table>
