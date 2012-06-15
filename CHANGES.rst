@@ -18,7 +18,7 @@ Changelog of lizard-map
 
 - Added feature to load stored workspace in editable workspace.
 
-- Add moving box on collage-add.
+- Add moving box on collage-add and multiple select.
 
 - Fix my-collage popups.
 
