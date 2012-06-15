@@ -8,8 +8,8 @@
      class="sidebarbox workspace"
      data-workspace-id="{{ view.workspace.id }}"
      data-url-wms="{% url lizard_map_workspace_edit_wms %}"
-     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates %}"
-     data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
+     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
+     data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_storage_item_extent %}"
      >
   <h2>
