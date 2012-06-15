@@ -173,7 +173,7 @@ function setUpDateRangePopup() {
     });
 }
 
-function setWorkspaceLoadPopup() {
+function setUpWorkspaceLoadPopup() {
     $(".popup-workspace-load").live("click", function (event) {
         var url;
         event.preventDefault();
@@ -193,7 +193,25 @@ function setWorkspaceLoadPopup() {
     });
 }
 
-function setWorkspaceSavePopup() {
+function workspaceSavePopup(data) {
+    show_popup(data);
+    $('#workspace-save-submit').click(function(event) {
+        event.preventDefault();
+        $form = $('#workspace-save-form');
+        $.post(
+            $form.attr("action"), $form.serialize()
+        )
+        .success(
+            function (data) {
+                // send result to popup
+                show_popup(data);
+            }
+        );
+        return false;
+    });
+}
+
+function setUpWorkspaceSavePopup() {
     $(".popup-workspace-save").live("click", function (event) {
         var url;
         event.preventDefault();
@@ -201,7 +219,7 @@ function setWorkspaceSavePopup() {
         $.get(
             url,
             function(data) {
-                show_popup(data);
+                workspaceSavePopup(data);
             }
         );
     });
@@ -1188,8 +1206,8 @@ $(document).ready(function () {
     setUpLegendEdit();
 
     setUpMapLoadDefaultLocation();
-    setWorkspaceSavePopup();
-    setWorkspaceLoadPopup();
+    setUpWorkspaceLoadPopup();
+    setUpWorkspaceSavePopup();
     setUpDateRangePopup();
     setUpCollageEditPopup();
     setUpCollageTablePopup();
