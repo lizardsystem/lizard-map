@@ -266,6 +266,25 @@ function ZoomSlider(options) {
     return this.control;
 }
 
+function spawnCustomMovingBox(width, height, x, y) {
+    var $layer_button, $moving_box, move_down, move_right;
+    $layer_button = $(".secondary-sidebar-button");
+    $("#page").after('<div id="moving-box">');
+    $moving_box = $("#moving-box");
+    $moving_box.offset({left:x, top:y});
+    $moving_box.width(width);
+    $moving_box.height(height);
+    move_down = $layer_button.offset().top - y;
+    move_right = $layer_button.offset().left - x;
+    $moving_box.animate({
+        left: '+=' + move_right,
+        top: '+=' + move_down,
+        width: $layer_button.width(),
+        height: $layer_button.height()
+        }, 1000, function() {
+            $moving_box.remove();
+        });
+}
 
 function showMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
@@ -377,6 +396,7 @@ function showMap() {
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
                 if (multipleSelection()) {
+                    spawnCustomMovingBox(10, 10, e.pageX, e.pageY);
                     addSelection(lonlat.lon, lonlat.lat, map);
                 } else {
                     eval(javascript_click_handler_name)(
