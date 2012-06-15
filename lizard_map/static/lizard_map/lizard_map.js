@@ -173,8 +173,8 @@ function setUpDateRangePopup() {
     });
 }
 
-function setUpWorkspaceLoadPopup() {
-    $(".popup-workspace-load").live("click", function (event) {
+function setUpWorkspaceLoad() {
+    $(".workspace-load").live("click", function (event) {
         var url;
         event.preventDefault();
         url = $(this).attr("href");
@@ -1206,7 +1206,7 @@ $(document).ready(function () {
     setUpLegendEdit();
 
     setUpMapLoadDefaultLocation();
-    setUpWorkspaceLoadPopup();
+    setUpWorkspaceLoad();
     setUpWorkspaceSavePopup();
     setUpDateRangePopup();
     setUpCollageEditPopup();

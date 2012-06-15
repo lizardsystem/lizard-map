@@ -58,11 +58,11 @@
       <a id="workspace-load"
          rel="tipsy-south"
          href="{% url lizard_map_workspace_load %}"
-         title="{% trans 'Edit this workspace...' %}"
-         class="btn sidebarbox-action-icon popup-workspace-load"
-         data-workspace-id="{{ view.workspace.id }}"
-         data-size="xs">
+         title="{% trans 'Edit this workspace' %}"
+         class="btn sidebarbox-action-icon workspace-load"
+         data-workspace-id="{{ view.workspace.id }}">
         <i class="ss_sprite ss_database_go"></i>
+        {% trans 'Edit this workspace' %}
       </a>
     </li>
   </ul>
