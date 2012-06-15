@@ -59,7 +59,7 @@ function addSelection(x, y, map) {
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
 
-                stretchOneSidebarBox();
+                //stretchOneSidebarBox();
                 //show_popup(data);
                 //$("#map").css("cursor", "default");
             }
