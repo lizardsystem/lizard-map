@@ -1,6 +1,6 @@
 """Coordinates and projection constants and helpers"""
 import logging
-from pyproj import Proj
+from pyproj import Proj, Geod
 from pyproj import transform
 
 from django.contrib.gis.geos import Point
@@ -44,6 +44,7 @@ DEFAULT_MAP_SETTINGS = {
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
 wgs84_projection = Proj(WGS84)
+geodesic = Geod('+ellps=sphere')
 
 srs_to_mapnik_projection = {
     'EPSG:28992': RD,
@@ -166,3 +167,6 @@ def detect_prj(prj):
     if 'GCS_WGS_1984' in prj:
         return WGS84
     return RD
+
+def translate_coords(lons, lats, az, dist):
+    return geodesic.fwd(lons, lats, az, dist)

@@ -1,18 +1,6 @@
 {# Workspace (storage) view: shows workspace on the left, map on the right #}
 {% extends "lizard_map/wms.html" %}
-{% load workspaces %}
 {% load i18n %}
-
-{% block subtitle %}
-Opgeslagen workspace '{{view.workspace.name}}'
-{% endblock %}
-
-{% block breadcrumbs %}
-{% comment %}TODO These don't work in the workspace storage view yet, hacked them in.{% endcomment %}
-<ul>
-    <li><a href="/" rel="tipsy-south" title="Naar de voorpagina">Home</a></li>
-</ul>
-{% endblock %}
 
 {% block sidebar %}
 <div id="workspace"
@@ -79,6 +67,4 @@ Opgeslagen workspace '{{view.workspace.name}}'
     </li>
   </ul>
 </div>
-
-{% collage_edit view.collage_edit %}
 {% endblock sidebar %}

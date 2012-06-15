@@ -129,27 +129,45 @@ function setUpMapLoadDefaultLocation() {
     });
 }
 
-function refreshDateRangePopup(data) {
-    dialogSize("");  // Reset to default.
+function dateRangePopup(data) {
     show_popup(data);
     setupDatepicker($('#date-range-form'));
     $('#date-range-submit').click(function(event) {
         event.preventDefault();
         $("#movable-dialog").dialog("close");
+        return false;
     });
+    $("#date-range-form input").change(
+        dateRangeOnChange);
+    $("#date-range-form select").change(
+        dateRangeOnChange);
 }
 
+function dateRangeOnChange(event) {
+    var $form;
+    event.preventDefault();
+    $form = $('#date-range-form');
+    $.post(
+        $form.attr("action"), $form.serialize()
+    )
+    .success(
+        function (data) {
+            // send result to popup again
+            dateRangePopup(data);
+        }
+    );
+    return false;
+}
 
-function setWorkspaceSavePopup() {
-    $(".popup-workspace-save").live("click", function (event) {
+function setUpDateRangePopup() {
+    $(".popup-date-range").live("click", function (event) {
         var url;
         event.preventDefault();
         url = $(this).attr("href");
         $.get(
             url,
             function(data) {
-                dialogSize("");  // Reset to default.
-                show_popup(data);
+                dateRangePopup(data);
             }
         );
     });
@@ -175,20 +193,19 @@ function setWorkspaceLoadPopup() {
     });
 }
 
-function setUpDateRangePopup() {
-    $(".popup-date-range").live("click", function (event) {
+function setWorkspaceSavePopup() {
+    $(".popup-workspace-save").live("click", function (event) {
         var url;
         event.preventDefault();
         url = $(this).attr("href");
         $.get(
             url,
             function(data) {
-                refreshDateRangePopup(data);
+                show_popup(data);
             }
         );
     });
 }
-
 
 /* set up map actions */
 function setUpMapActions() {
@@ -430,6 +447,8 @@ function replaceItems(ids, new_content) {
 
 /* L3 Dialog size */
 function dialogSize(size) {
+    // new dialog in L3.1
+    /*
     if (size === "xs") {
         // Extra Small
         $("#dialog").css("width", "20em");
@@ -443,6 +462,7 @@ function dialogSize(size) {
         $("#dialog").css("width", "40em");
         $("#dialog").css("min-height", "15em");
     }
+    */
 }
 
 
@@ -457,18 +477,16 @@ function dialogClick(event) {
         .success(function (data) {
             var div;
             // Put data in extra html to find root-level .dialog-box
-            div = $("<div/>").html(data).find(".dialog-box");
-            dialogContent(div);
-            dialogOverlay();
-
-	    // Dialogs may contain datepicker fields, activate them here.
-	    setupDatepicker(div);
+            //div = $("<div/>").html(data).find(".dialog-box");
+            //dialogContent(div);
+            //dialogOverlay();
+            show_popup(data);
+            // Dialogs may contain datepicker fields, activate them here.
+            setupDatepicker(div);
         })
         .error(function (data) {
-            dialogContent("Fout bij laden van dialoog. " +
-                          "Probeert U het later nog eens.");
-            dialogOverlay();
-            dialogCloseDelay();
+            messagePopup("Fout bij laden van dialoog. " +
+                         "Probeert U het later nog eens.");
         });
     $("#dialog").data("submit-on-change", false);
     // All ids that have to be replaced in the original page. Space
@@ -476,7 +494,7 @@ function dialogClick(event) {
     $("#dialog").data("replace-items", "");  // Reset
     $("#dialog").data(
         "replace-items", $(event.target).attr("data-replace-items"));
-    dialogSize($(event.target).attr("data-size"));
+    //dialogSize($(event.target).attr("data-size"));
     return false;
 }
 
@@ -488,36 +506,13 @@ function helpDialogClick(event) {
         url = $(this).attr("href");
         $.get(url)
             .success(function(data) {
-                dialogContent(data);
-                dialogOverlay();
+                show_popup(data);
             })
             .error(function(data) {
-                dialogContent("Fout bij laden van dialoog." +
-                              "Probeert u het later nog eens.");
-                dialogOverlay();
-                dialogCloseDelay();
+                messagePopup("Fout bij laden van dialoog." +
+                             "Probeert u het later nog eens.");
             });
     });
-}
-
-/* L3 Onchange on dialog: only on ajax-dialog-onchange  */
-function dialogOnChange(event) {
-    var $form, ids;
-    // console.log("dialog onchange");
-    event.preventDefault();
-    //if ($("#movable-dialog").data("submit-on-change")) {
-        // console.log("onchange submit");
-        $form = $(event.target).parents("form");
-        $.post(
-            $form.attr("action"), $form.serialize()
-        )
-        .success(
-            function (data) {
-                refreshDateRangePopup(data);
-            }
-        );
-    //}
-    return false;
 }
 
 function dialogSetupChange(event) {
@@ -621,27 +616,27 @@ The actions are as follows:
 
 */
 function setUpDialogs() {
-    $(".ajax-dialog").live("click", dialogClick);
-    $(".ajax-help-dialog").live("click", helpDialogClick);
-    $(".ajax-dialog-onchange").live("click", dialogClick);
-    $(".ajax-dialog-onchange").live("click", dialogSetupChange);
+    //$(".ajax-dialog").live("click", dialogClick);
+    //$(".ajax-help-dialog").live("click", helpDialogClick);
+    //$(".ajax-dialog-onchange").live("click", dialogClick);
+    //$(".ajax-dialog-onchange").live("click", dialogSetupChange);
     // Handle submit button in forms in a dialog. Exclude alternative-submit.
     //$("#movable-dialog input:submit:not(.alternative-submit)").live(
     //    "click", dialogSubmit);
     // Handle ajax-dialog-onchange, which submit on changes.
-    $("#movable-dialog form input").live(
-        "change", dialogOnChange);
-    $("#movable-dialog form select").live(
-        "change", dialogOnChange);
+    //$("#movable-dialog form input").live(
+    //    "change", dialogOnChange);
+    //$("#movable-dialog form select").live(
+    //    "change", dialogOnChange);
 
     // TODO: split this part. It is for specific lizard-map workspace stuff.
     // For workspace changes: live our own handler
-    $("#movable-dialog input:submit.update-workspace-after").live(
-        "click", updateWorkspaceAfterSubmit);
-    $("#movable-dialog input:submit.reload-screen-after").live(
-        "click", reloadScreenAfterSubmit);
-    $("#movable-dialog input:submit.open-new-window-after").live(
-	"click", openNewWindowAfterSubmit);
+    //$("#movable-dialog input:submit.update-workspace-after").live(
+    //    "click", updateWorkspaceAfterSubmit);
+    //$("#movable-dialog input:submit.reload-screen-after").live(
+    //    "click", reloadScreenAfterSubmit);
+    //$("#movable-dialog input:submit.open-new-window-after").live(
+	//"click", openNewWindowAfterSubmit);
 }
 
 
@@ -676,7 +671,7 @@ function actionPostClick(event, preAction, postAction, parameters) {
         .success(function (data) {
             var div, html;
             if (target !== undefined) {
-		// If there are any tipsy tooltips, hide them first
+                // If there are any tipsy tooltips, hide them first
                 $(".tipsy").hide();
 
                 div = $("<div/>").html(data).find(".dialog-box").find(target_id);
@@ -751,6 +746,26 @@ function actionPostEditCollageItem(event) {
 /* click on collage-add item */
 function actionPostCollageAdd(event) {
     var $target, adapter_class, name, adapter_layer_json, identifier;
+    /* New bootstrap-era interaction */
+   {
+        var $layer_button, $moving_box, move_down, move_right;
+        $layer_button = $(".secondary-sidebar-button");
+        $("#page").after('<div id="moving-box">');
+        $moving_box = $("#moving-box");
+        $moving_box.offset($(this).offset());
+        $moving_box.width($(this).width());
+        $moving_box.height($(this).height());
+        move_down = $layer_button.offset().top - $(this).offset().top;
+        move_right = $layer_button.offset().left - $(this).offset().left;
+        $moving_box.animate({
+            left: '+=' + move_right,
+            top: '+=' + move_down,
+            width: $layer_button.width(),
+            height: $layer_button.height()
+            }, 1000, function() {
+                $moving_box.remove();
+            });
+    }
     $target = $(event.target);
     name = $target.attr("data-name");
     adapter_class = $target.attr("data-adapter-class");
@@ -777,7 +792,6 @@ function collagePopup(event) {
     }
 
     $.getJSON(url, function (data) {
-        dialogSize("");  // Reset to default.
         show_popup(data);
     });
     return false;
@@ -813,9 +827,14 @@ function eraseDialogContentsOnClose() {
 }
 
 
-/* L3 popup with "niets gevonden" */
+/* L3.1 popup with "niets gevonden" */
 function nothingFoundPopup() {
-    $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
+    messagePopup("Er is niets rond deze locatie gevonden.");
+}
+
+
+function messagePopup(message) {
+    $("#movable-dialog-content").html(message);
     $("#movable-dialog").dialog("open");
 }
 
@@ -864,7 +883,6 @@ function popup_click_handler(x, y, map) {
               user_workspace_id: user_workspace_id},
             function (data) {
                 console.log("Success handler:", data);
-                dialogSize("");  // default size
                 show_popup(data);
                 $("#map").css("cursor", "default");
             }
@@ -1081,10 +1099,42 @@ function setUpDataFromUrl() {
     });
 }
 
+function collageEditPopup(data) {
+    show_popup(data);
+    //setupDatepicker($('#collage-edit-form'));
+    setUpAggPeriodField();
+    $('#collage-edit-submit').click(function(event) {
+        event.preventDefault();
+        $form = $('#collage-edit-form');
+        $.post(
+            $form.attr("action"), $form.serialize()
+        )
+        .success(
+            function (data) {
+                // send result to popup again
+                collageEditPopup(data);
+            }
+        );
+    });
+}
 
-function setUpCollageEditor() {
+function setUpCollageEditPopup() {
+    $(".collate-edit-popup").click(function (event) {
+        var url;
+        event.preventDefault();
+        url = $(this).attr("href");
+        $.get(
+            url,
+            function(data) {
+                collageEditPopup(data);
+            }
+        );
+    });
+}
+
+function setUpAggPeriodField() {
     // Set restrict_to_month on enabled or disabled
-    $("select#id_aggregation_period").live("change", function (event) {
+    $("select#id_aggregation_period").change(function (event) {
         // 4 is MONTH
         console.log(this.value);
         if (this.value === "4") {
@@ -1095,6 +1145,21 @@ function setUpCollageEditor() {
                 this.value = "0";
             });
         }
+    });
+}
+
+
+function setUpCollageTablePopup() {
+    $(".collage-table-popup").click(function (event) {
+        var url;
+        event.preventDefault();
+        url = $(this).attr("href");
+        $.get(
+            url,
+            function(data) {
+                show_popup(data);
+            }
+        );
     });
 }
 
@@ -1112,7 +1177,6 @@ $(document).ready(function () {
     eraseDialogContentsOnClose();
     setUpActions();
     setUpDataFromUrl();
-    setUpCollageEditor();
 
     // Untouched
     setUpWorkspaceButtons();
@@ -1127,6 +1191,8 @@ $(document).ready(function () {
     setWorkspaceSavePopup();
     setWorkspaceLoadPopup();
     setUpDateRangePopup();
+    setUpCollageEditPopup();
+    setUpCollageTablePopup();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
