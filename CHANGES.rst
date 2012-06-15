@@ -22,6 +22,8 @@ Changelog of lizard-map
 
 - Fix my-collage popups.
 
+- Reinstated multi-select functionality.
+
 
 4.0b6 (2012-06-01)
 ------------------

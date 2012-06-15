@@ -342,6 +342,13 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
             icon='icon-time',
             klass='popup-date-range')
         actions.insert(1, set_date_range)
+        activate_multiselect = Action(
+            name=_('Multi-select'),
+            description=_('Selecteer meerdere items.'),
+            url="javascript:void(null)",
+            icon='icon-multi-select',
+            klass='map-multiple-selection')
+        actions.insert(2, activate_multiselect)
         return actions
 
 

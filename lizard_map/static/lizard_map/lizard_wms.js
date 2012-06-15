@@ -30,7 +30,7 @@ function updateLayers() {
 
 /* L3 is multiple selection turned on? */
 function multipleSelection() {
-    return $("li#map-multiple-selection").hasClass("active");
+    return $("a.map-multiple-selection").hasClass("active");
 }
 
 /* L3 click on (lon, lat) in multiple select mode
@@ -507,7 +507,7 @@ function setDownloadImageLink() {
 
 /* map-multiple-selection button */
 function setUpMultipleSelection() {
-    $("#map-multiple-selection").live("click", function () {
+    $(".map-multiple-selection").live("click", function () {
         $(this).toggleClass("active");
     });
 }
