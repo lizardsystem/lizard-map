@@ -777,7 +777,7 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
 
 
 @never_cache
-def workspace_item_extent(request, item_class=WorkspaceEdit):
+def workspace_item_extent(request, item_class=WorkspaceEditItem):
     """Return extent for the workspace item in json.
 
     Transform to correct client-side projection, then return coordinates.
