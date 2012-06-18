@@ -58,6 +58,7 @@ from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
+from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
