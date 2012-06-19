@@ -518,7 +518,7 @@ class WorkspaceLoadView(ActionDialogView):
         workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
         workspace_edit.load_from_storage(workspace_storage)
         redirect = {
-            "redirect": reverse("lizard_map_homepage")
+            "redirect": reverse("lizard_ui.icons")
         }
         return HttpResponse(json.dumps(redirect))
 
