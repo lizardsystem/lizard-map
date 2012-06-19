@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-4.0b7 (unreleased)
-------------------
+4.0 (2012-06-19)
+----------------
 
 - Added flot graph axis label support.
 
