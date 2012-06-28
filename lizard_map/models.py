@@ -13,6 +13,7 @@ from django.utils.translation import ugettext as _
 import pkg_resources
 import random
 import string
+import jsonfield
 
 from lizard_map import dateperiods
 from lizard_map.exceptions import WorkspaceItemError
@@ -547,7 +548,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     collage = models.ForeignKey(
         CollageEdit,
         related_name='collage_items')
-    identifier = fields.JSONField()
+    identifier = jsonfield.JSONField()
 
     class Meta:
         ordering = ('name', )

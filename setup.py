@@ -20,7 +20,7 @@ install_requires = [
     'lizard-help',
     'matplotlib',
     'pkginfo',
-    'django-jsonfield',
+    'django-jsonfield >= 0.8.10',
     'djangorestframework',
     'south',
     'iso8601',
