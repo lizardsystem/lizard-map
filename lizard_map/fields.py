@@ -166,3 +166,7 @@ JSON objects seamlessly"""
         # Changed connection to kwarg to fix error.
         return super(JSONField, self).get_db_prep_save(
             value, connection=connection)
+
+
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^lizard_map\.fields\.JSONField"])
