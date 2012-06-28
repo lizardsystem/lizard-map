@@ -547,7 +547,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     collage = models.ForeignKey(
         CollageEdit,
         related_name='collage_items')
-    identifier = fields.JSONField(default="")
+    identifier = fields.JSONField()
 
     class Meta:
         ordering = ('name', )
