@@ -1,47 +1,39 @@
-# Unchecked imports start here
+import datetime
 import logging
-import mapnik
+import random
+import string
 
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import post_save
 from django.db.models.signals import post_delete
+from django.db.models.signals import post_save
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
-import pkg_resources
-import random
-import string
 import jsonfield
+import lizard_map.configchecker
+import mapnik
+import pkg_resources
 
 from lizard_map import dateperiods
+from lizard_map import fields
+from lizard_map.adapter import AdapterClassNotFoundError
+from lizard_map.adapter import adapter_class_names
+from lizard_map.adapter import adapter_entrypoint
+from lizard_map.adapter import adapter_layer_arguments
+from lizard_map.adapter import adapter_serialize
 from lizard_map.exceptions import WorkspaceItemError
 from lizard_map.mapnik_helper import point_rule
-from lizard_map import fields
-
-# Unchecked end here
-
-import lizard_map.configchecker
-lizard_map.configchecker  # Pyflakes...
-
-from adapter import adapter_layer_arguments
-from adapter import adapter_entrypoint
-from adapter import adapter_class_names
-from adapter import adapter_serialize
-
 # Temporary, because fewsjdbc api handler imports this.
-from adapter import ADAPTER_ENTRY_POINT
-ADAPTER_ENTRY_POINT
+from lizard_map.adapter import ADAPTER_ENTRY_POINT
+
+ADAPTER_ENTRY_POINT  # Pyflakes...
+lizard_map.configchecker  # Pyflakes...
 
 # workspace storage's secret slugs
 SECRET_SLUG_CHARS = string.ascii_lowercase
 SECRET_SLUG_LENGTH = 8
-
-# New imports
-import datetime
-
-from lizard_map.adapter import AdapterClassNotFoundError
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -61,8 +53,6 @@ LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 ADAPTER_CLASS_WMS = 'wms'
 
 logger = logging.getLogger(__name__)
-
-#### L3 models ####
 
 
 class PeriodMixin(models.Model):
@@ -609,7 +599,8 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
 
     @property
     def collage_detail_show_statistics_block(self):
-        return self.adapter.collage_detail_show_statistics_block(self.identifier)
+        return self.adapter.collage_detail_show_statistics_block(
+            self.identifier)
 
     def form_initial(self):
         """Initial values from object for CollageItemEditorForm."""
