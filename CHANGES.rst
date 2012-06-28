@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.1 (unreleased)
+4.1 (2012-06-28)
 ----------------
 
 - Requiring newer django-jsonfield version (which works with django's multi-db
