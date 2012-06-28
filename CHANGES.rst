@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Requiring newer django-jsonfield version (which works with django's multi-db
+  functionality). Removed our custom JSONField in favour of
+  django-jsonfield's one.
 
 
 4.0 (2012-06-19)
