@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from south.modelsinspector import add_introspection_rules
+from jsonfield import JSONField
+
+JSONField  # Needed for migrations because there was once a JSONField in here.
 
 
 def legend_values(min_value, max_value, min_color, max_color, steps):

@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Importing JSONField in fields.py as otherwise the migrations fail.
 
 
 4.1 (2012-06-28)
