@@ -296,7 +296,7 @@ class CrumbsMixin(object):
 
 class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMixin, MapMixin,
               UiView):
-    """Main map view (using twitter bootstrap). Replaces AppView."""
+    """Main map view (using twitter bootstrap)."""
 
     @property
     def show_secondary_sidebar_title(self):
@@ -328,7 +328,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
     @property
     def content_actions(self):
         """Add default-location-zoom."""
-        actions = super(MapView, self).content_actions
+        actions = super(AppView, self).content_actions
         zoom_to_default = Action(
             name=_('Default zoom'),
             description=_('Zoom to default location'),
@@ -1867,7 +1867,7 @@ class AdapterValuesView(AdapterMixin, UiView):
                 request, *args, **kwargs)
 
 
-class HomepageView(MapView, IconView):
+class HomepageView(AppView, IconView):
     template_name = 'lizard_map/icons.html'
 
 
