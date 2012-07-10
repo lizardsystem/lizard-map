@@ -172,21 +172,21 @@ class MapMixin(object):
         return ""
 
     @property
-    def maps(self):
-        if not hasattr(self, '_maps'):
-            self._maps = BackgroundMap.objects.filter(active=True)
-        return self._maps
+    def backgrounds(self):
+        if not hasattr(self, '_backgrounds'):
+            self._backgrounds = BackgroundMap.objects.filter(active=True)
+        return self._backgrounds
 
     def has_google(self):
         # For the client side to determine is there is a google map.
-        if self.maps.filter(
+        if self.backgrounds.filter(
             layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
             return True
         return False
 
     def background_maps(self):
-        if self.maps:
-            return self.maps
+        if self.backgrounds:
+            return self.backgrounds
         logger.warn("No background maps are active. Taking default.")
         return [BackgroundMap(
                     name='Default map',
