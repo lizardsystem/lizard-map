@@ -116,6 +116,29 @@ class WorkspaceMixin(object):
                 'javascript_hover_handler', None)
         return self._javascript_hover_handler
 
+    def extra_wms_layers(self):
+        """Overwrite to add custom WMS layers to your view.
+
+        Every item should be a dict with five items. ``models.py`` puts the
+        following in there for example::
+
+               {'wms_id': workspace_item.id,
+                'name': workspace_item.name,
+                'url': adapter_layer.get('url', ''),
+                'params': adapter_layer.get('params', '{}'),
+                'options': adapter_layer.get('options', '{}'),
+               }
+
+        """
+        return []
+
+    def wms_layers(self):
+        """Return the workspace's and our own extra wms layers."""
+        from_workspace = self.workspace().wms_layers()
+        extra = self.extra_wms_layers() or []
+        # ^^^ To work around '[] + None' error.
+        return from_workspace + extra
+
 
 class WorkspaceEditMixin(WorkspaceMixin):
     def workspace_edit(self):

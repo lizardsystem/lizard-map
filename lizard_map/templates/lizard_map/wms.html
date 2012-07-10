@@ -65,7 +65,7 @@
          data-workspace-wms="{{ view.workspace.wms_url }}">
     </div>
     {# Add wms layers from workspace #}
-    {% for wms_layer in view.workspace.wms_layers %}
+    {% for wms_layer in view.wms_layers %}
       {% autoescape off %}
         <div class="workspace-wms-layer lizard-map-wms-item"
              data-workspace-wms-id="{{ wms_layer.wms_id }}"

@@ -4,7 +4,10 @@ Changelog of lizard-map
 4.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- In a map view, you can now provide ``.extra_wms_layers()`` to add extra
+  WMS to the map. Handy for layers that are really part of a specific content
+  item. The list of dictionaries that this method has to return is really an
+  unfriendly API: this needs refactoring later on.
 
 
 4.1.1 (2012-06-29)
