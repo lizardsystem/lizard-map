@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.3 (unreleased)
+4.3 (2012-07-10)
 ----------------
 
 - If a legend_image url is empty, we don't show the legend anymore.
