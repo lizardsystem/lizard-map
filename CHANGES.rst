@@ -9,6 +9,9 @@ Changelog of lizard-map
   item. The list of dictionaries that this method has to return is really an
   unfriendly API: this needs refactoring later on.
 
+- Internal refactoring. Renamed ``.maps()`` to ``.backgrounds()`` in the
+  views. This (hopefully) isn't used externally.
+
 
 4.1.1 (2012-06-29)
 ------------------
