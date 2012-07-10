@@ -336,7 +336,7 @@ function showMap() {
             displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
             units: "m",
             maxResolution: 78271.516964,
-            numZoomLevels: 18,
+            numZoomLevels: 21,
             maxExtent: max_extent,
             controls: []
         };
