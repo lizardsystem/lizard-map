@@ -343,9 +343,13 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
                 logger.debug(
                     "No legend_image_url() on this ws item's adapter.")
                 continue
+            image_url = workspace_item.adapter.legend_image_url()
+            if not image_url:
+                # Don't show a non-existant image.
+                continue
             result.append(Legend(
                     name=workspace_item.name,
-                    image_url=workspace_item.adapter.legend_image_url()))
+                    image_url=image_url))
         return result
 
     @property
