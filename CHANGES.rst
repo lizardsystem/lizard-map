@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.2 (unreleased)
+4.2 (2012-07-10)
 ----------------
 
 - In a map view, you can now provide ``.extra_wms_layers()`` to add extra
