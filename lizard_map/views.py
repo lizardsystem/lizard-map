@@ -326,6 +326,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
         return _('Layers')
 
     show_secondary_sidebar_icon = 'icon-list'
+    map_div_class = 'give-me-height'  # CSS class for positioning of the map.
 
     @property
     def show_rightbar_title(self):
