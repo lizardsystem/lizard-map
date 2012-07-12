@@ -4,7 +4,12 @@ Changelog of lizard-map
 4.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- #map's 'give-me-height' class is now customizable by the ``map_div_class``
+  attribute on a lizard-map view.
+
+- Allowing deeper zoom level (21) to max out what we can do with google.
+  Openstreetmap can only go to 18, btw. Incidentally, 18 was the old max zoom
+  level.
 
 
 4.3 (2012-07-10)
