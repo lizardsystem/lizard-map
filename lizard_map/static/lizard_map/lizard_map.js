@@ -1185,8 +1185,9 @@ function setUpCollageTablePopup() {
 // Initialize all workspace actions.
 $(document).ready(function () {
     // New bootstrappy stuff.
-	$("#map").height($("#content").height());
-
+    // $("#map").height($("#content").height());
+    // ^^^ This is handled by lizard-ui's setUpMapDimensions, provided you
+    // have the default 'give-me-height' class on #map.
 
 
     // Touched/new for L3
