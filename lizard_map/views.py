@@ -95,6 +95,7 @@ class WorkspaceMixin(object):
     # Override with an empty string for no click handler.
     javascript_click_handler = 'popup_click_handler'
     # javascript_click_handler = ''
+    workspace_on_top = False  # Should we be above our WMS layers?
 
     def workspace(self):
         """Implement a function that returns a workspace-storage,

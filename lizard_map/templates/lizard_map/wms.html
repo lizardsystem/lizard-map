@@ -61,6 +61,9 @@
     {# Make a layer for workspace. #}
     <div class="workspace-layer lizard-map-wms-item"
          data-workspace-id="{{ view.workspace.id }}"
+         {% if view.workspace_on_top %}
+           data-workspace-on-top="1"
+         {% endif %}
          data-workspace-name="{{ view.workspace.name }}"
          data-workspace-wms="{{ view.workspace.wms_url }}">
     </div>

@@ -194,6 +194,9 @@ function refreshWorkspaceLayers() {
             // It exists: refresh it.
             layers[workspace_id].mergeNewParams({'random': Math.random()});
         }
+        if ($(this).attr("data-workspace-on-top")) {
+            layers[workspace_id].setZIndex(600);
+        }
     });
 }
 
