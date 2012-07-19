@@ -1,4 +1,5 @@
 """Lizard Widgets"""
+import json
 
 from django.utils.safestring import mark_safe
 from django.template import Context, loader
@@ -17,7 +18,8 @@ class WorkspaceAcceptable(object):
 
     - **adapter_name**: name of the adapter.
 
-    - **adapter_layer_json**: json for the adapter layer.
+    - **adapter_layer_json**: json for the adapter layer. You can pass it as a
+      dict, too: it will be automatically converted.
 
     - **description**: optional description for the workspace acceptable.
 
@@ -33,9 +35,12 @@ class WorkspaceAcceptable(object):
                  enabled=True):
         self.name = name
         self.adapter_name = adapter_name
-        self.adapter_layer_json = adapter_layer_json
         self.description = description
         self.enabled = enabled
+        if isinstance(adapter_layer_json, dict):
+            # First convert it to a json string.
+            adapter_layer_json = json.dumps(adapter_layer_json)
+        self.adapter_layer_json = adapter_layer_json
 
     def classes(self):
         """Return applicable css classes. Saves some if/else in the template.
