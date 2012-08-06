@@ -812,8 +812,17 @@ class FlotGraph(object):
         raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
 
     def render(self):
+        # determine y axis label
+        # In matplotlib, both the graph and the individual axes can have their label set.
+        # Flot only support a single label.
+        # So, to emulate this behaviour, we simply fallback to whatever label has been set. 
+        ylabel = None
+        if not self.ylabel and self.axes.ylabel:
+            ylabel = self.axes.ylabel
+        else:
+            ylabel = self.ylabel
         return {
             'data': self.axes.flot_data,
             'x_label': self.xlabel,
-            'y_label': self.ylabel
+            'y_label': ylabel
         }
