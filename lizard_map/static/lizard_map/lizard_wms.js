@@ -37,7 +37,7 @@ function multipleSelection() {
 
 Borrowed from popup_click_handler
 */
-function addSelection(x, y, map) {
+function addMultipleSelection(x, y, map, e) {
     var extent, radius, url, workspace_id, workspace_type;
     extent = map.getExtent();
     radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
@@ -55,6 +55,7 @@ function addSelection(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               workspace_id: workspace_id, workspace_type: workspace_type},
             function (data, status, context) {
+                spawnCustomMovingBox(10, 10, e.pageX, e.pageY);
                 var div;
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
@@ -396,8 +397,7 @@ function showMap() {
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
                 if (multipleSelection()) {
-                    spawnCustomMovingBox(10, 10, e.pageX, e.pageY);
-                    addSelection(lonlat.lon, lonlat.lat, map);
+                    addMultipleSelection(lonlat.lon, lonlat.lat, map, e);
                 } else {
                     eval(javascript_click_handler_name)(
                         lonlat.lon, lonlat.lat, map);

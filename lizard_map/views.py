@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponse
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -1339,6 +1339,10 @@ class CollageView(CollageMixin, ActionDialogView):
                     adapter_layer_json=adapter_layer_json,
                     name=name,
                     identifier=identifier)
+
+        if not found:
+            # Nothing found on this coordinates, return a 404
+            return HttpResponseNotFound()
 
 
 class CollageAddView(CollageMixin, ActionDialogView):
