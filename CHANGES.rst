@@ -6,6 +6,9 @@ Changelog of lizard-map
 
 - Flot graphs: fallback to .axes label if one is available, because flot only supports a single ylabel.
 
+- Multiple select: don't show animation when nothing is found.
+
+
 4.3 (2012-07-10)
 ----------------
 
