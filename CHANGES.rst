@@ -8,6 +8,8 @@ Changelog of lizard-map
 
 - Multiple select: don't show animation when nothing is found.
 
+- mapnik WMS rendering: reduce memory usage because of buffers being copied multiple times.
+
 
 4.3 (2012-07-10)
 ----------------
