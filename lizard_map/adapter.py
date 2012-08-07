@@ -669,11 +669,20 @@ class Graph(object):
         '''
         return self.http_png()
 
+def mk_js_timestamp(datetime_utc):
+    '''
+    Convert to a JavaScript compatible timestamp.
+    Warning: truncates milliseconds.
+    '''
+    return float(time.mktime(datetime_utc.timetuple()) * 1000)
+
 class FlotGraphAxes(object):
     legend_ = None
 
     def __init__(self):
         self.flot_data = [] # list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
+        self.y_min = None
+        self.y_max = None
 
     def set_ylabel(self, ylabel):
         self.ylabel = ylabel
@@ -689,6 +698,14 @@ class FlotGraphAxes(object):
         '''no-op for FlotGraph'''
         pass
 
+    def _update_y_limits(self, yvalues):
+        # determine y_min, y_max for this dataset
+        y_min = min(yvalues)
+        y_max = max(yvalues)
+        # update global y_min, y_max if necessary
+        self.y_min = min(self.y_min, y_min) if self.y_min is not None else y_min
+        self.y_max = max(self.y_max, y_max) if self.y_max is not None else y_max
+
     def plot(
         self,
         xvalues,
@@ -698,7 +715,8 @@ class FlotGraphAxes(object):
         label=None
     ):
         # convert xvalues to timestamps for flot.js
-        xvalues = [float(time.mktime(x.timetuple()) * 1000) for x in xvalues]
+        xvalues = [mk_js_timestamp(x) for x in xvalues]
+        self._update_y_limits(yvalues)
         self.flot_data.append({
             'label': label,
             'data': zip(xvalues, yvalues),
@@ -715,7 +733,8 @@ class FlotGraphAxes(object):
         label=None
     ):
         # convert xvalues to timestamps for flot.js
-        xvalues = [float(time.mktime(x.timetuple()) * 1000) for x in xvalues]
+        xvalues = [mk_js_timestamp(x) for x in xvalues]
+        self._update_y_limits(yvalues)
         self.flot_data.append({
             'label': label,
             'data': zip(xvalues, yvalues),
@@ -760,10 +779,8 @@ class FlotGraph(object):
         self.ylabel = None
 
     def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
-        self.y_min = y_min
-        self.y_max = y_max
-        self.min_manual = min_manual
-        self.max_manual = max_manual
+        '''no-op for FlotGraph, these are calculated in FlotGraphAxes for now'''
+        pass
 
     def add_today(self):
         '''no-op for FlotGraph'''
@@ -812,8 +829,22 @@ class FlotGraph(object):
         raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
 
     def render(self):
+        # determine y axis label
+        # In matplotlib, both the graph and the individual axes can have their label set.
+        # Flot only support a single label.
+        # So, to emulate this behaviour, we simply fallback to whatever label has been set. 
+        ylabel = None
+        if not self.ylabel and self.axes.ylabel:
+            ylabel = self.axes.ylabel
+        else:
+            ylabel = self.ylabel
         return {
             'data': self.axes.flot_data,
             'x_label': self.xlabel,
-            'y_label': self.ylabel
+            'y_label': ylabel,
+            'x_min': mk_js_timestamp(self.start_date),
+            'x_max': mk_js_timestamp(self.end_date),
+            'y_min': self.axes.y_min,
+            'y_max': self.axes.y_max,
+            'today': mk_js_timestamp(self.today)
         }

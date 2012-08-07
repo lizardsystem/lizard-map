@@ -1,4 +1,7 @@
-import StringIO
+try:
+    import cStringIO as StringIO
+except ImportError:
+    import StringIO
 import csv
 import datetime
 import logging
@@ -6,10 +9,11 @@ import urllib2
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.servers.basehttp import FileWrapper
 from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponse
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.shortcuts import redirect
@@ -1125,18 +1129,9 @@ def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
     logger.debug("Rendering map...")
     mapnik.render(mapnik_map, img)
     http_user_agent = request.META.get('HTTP_USER_AGENT', '')
-
-    logger.debug("Converting image to rgba...")
-    rgba_image = Image.fromstring('RGBA', (width, height), img.tostring())
-    buf = StringIO.StringIO()
-    if 'MSIE 6.0' in http_user_agent:
-        imgPIL = rgba_image.convert('P')
-        imgPIL.save(buf, 'png', transparency=0)
-    else:
-        rgba_image.save(buf, 'png')
-    buf.seek(0)
-    response = HttpResponse(buf.read())
-    response['Content-type'] = 'image/png'
+    # just have mapnik render the png, as it should be faster
+    # unfortunately mapnik doesn't support rendering to a stream (yet?)
+    response = HttpResponse(img.tostring('png'), content_type='image/png')
     return response
 
 
@@ -1339,6 +1334,10 @@ class CollageView(CollageMixin, ActionDialogView):
                     adapter_layer_json=adapter_layer_json,
                     name=name,
                     identifier=identifier)
+
+        if not found:
+            # Nothing found on this coordinates, return a 404
+            return HttpResponseNotFound()
 
 
 class CollageAddView(CollageMixin, ActionDialogView):

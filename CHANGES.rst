@@ -4,6 +4,14 @@ Changelog of lizard-map
 4.4 (unreleased)
 ----------------
 
+- Flot graphs: fallback to .axes label if one is available, because flot only supports a single ylabel.
+
+- Flot graphs: pass x and y limits so we can determine tick size.
+
+- Multiple select: don't show animation when nothing is found.
+
+- mapnik WMS rendering: reduce memory usage because of buffers being copied multiple times.
+
 - Added multi-url legend support.
 
 
