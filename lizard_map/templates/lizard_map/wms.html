@@ -58,12 +58,6 @@
     {% for background_map in view.background_maps %}
       {% background_map background_map %}
     {% endfor %}
-    {# Make a layer for workspace. #}
-    <div class="workspace-layer lizard-map-wms-item"
-         data-workspace-id="{{ view.workspace.id }}"
-         data-workspace-name="{{ view.workspace.name }}"
-         data-workspace-wms="{{ view.workspace.wms_url }}">
-    </div>
     {# Add wms layers from workspace #}
     {% for wms_layer in view.wms_layers %}
       {% autoescape off %}
@@ -73,7 +67,8 @@
              data-workspace-wms-url="{{ wms_layer.url }}"
              {# json uses "" #}
              data-workspace-wms-params='{{ wms_layer.params }}'
-             data-workspace-wms-options='{{ wms_layer.options }}'>
+             data-workspace-wms-options='{{ wms_layer.options }}'
+             data-workspace-wms-index='{{ wms_layer.index }}'>
          </div>
        {% endautoescape %}
      {% endfor %}

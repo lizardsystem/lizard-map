@@ -1069,7 +1069,7 @@ Map stuff
 """
 
 
-def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
+def wms(request, workspace_item_id, workspace_storage_id=None, workspace_storage_slug=None):
     """Return PNG as WMS service for given workspace_edit or
     workspace_storage.
 
@@ -1090,8 +1090,8 @@ def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
     # WMS standard parameters
     width = int(request.GET.get('WIDTH'))
     height = int(request.GET.get('HEIGHT'))
-    layers = request.GET.get('LAYERS')
-    layers = [layer.strip() for layer in layers.split(',')]
+    req_layers = request.GET.get('LAYERS')
+    req_layers = [layer.strip() for layer in req_layers.split(',')]
     bbox = request.GET.get('BBOX')
     bbox = tuple([float(i.strip()) for i in bbox.split(',')])
     srs = request.GET.get('SRS')
@@ -1104,12 +1104,13 @@ def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
     mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
-    workspace_items = workspace.workspace_items.filter(visible=True).reverse()
+    workspace_items = workspace.workspace_items.filter(visible=True, id=workspace_item_id).reverse()
+    # len(workspace_items) should be 1: we no longer combine all generated layers into a single WMS layer
     for workspace_item in workspace_items:
         logger.debug("Drawing layer for %s..." % workspace_item)
         try:
             layers, styles = workspace_item.adapter.layer(
-                layer_ids=layers,
+                layer_ids=req_layers,
                 request=request)
             layers.reverse()  # first item should be drawn on top (=last)
             for layer in layers:
@@ -1125,12 +1126,11 @@ def wms(request, workspace_storage_id=None, workspace_storage_slug=None):
     logger.debug("Zooming to box...")
     mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
     # mapnik_map.zoom_to_box(layer.envelope())
+    # just have mapnik render the png, as it should be faster
+    # unfortunately mapnik doesn't support rendering to a stream (yet?)
     img = mapnik.Image(width, height)
     logger.debug("Rendering map...")
     mapnik.render(mapnik_map, img)
-    http_user_agent = request.META.get('HTTP_USER_AGENT', '')
-    # just have mapnik render the png, as it should be faster
-    # unfortunately mapnik doesn't support rendering to a stream (yet?)
     response = HttpResponse(img.tostring('png'), content_type='image/png')
     return response
 

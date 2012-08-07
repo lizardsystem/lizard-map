@@ -169,8 +169,8 @@ function refreshBackgroundLayers() {
     });
 }
 
-
-
+// obsolete as everything is a WMS layer now
+/*
 function refreshWorkspaceLayers() {
     var $lizard_map_wms, wms_layers, osm_url;
     $lizard_map_wms = $("#lizard-map-wms");
@@ -197,7 +197,7 @@ function refreshWorkspaceLayers() {
         }
     });
 }
-
+*/
 
 
 function refreshWmsLayers() {
@@ -206,19 +206,28 @@ function refreshWmsLayers() {
     ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
-        var name, url, params, options, id;
+        var name, url, params, options, id, index;
         // WMS id, different than workspace ids.
         id = $(this).attr("data-workspace-wms-id");
         ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
         url = $(this).attr("data-workspace-wms-url");
         params = $(this).attr("data-workspace-wms-params");
+        params = $.parseJSON(params);
         options = $(this).attr("data-workspace-wms-options");
+        options = $.parseJSON(options);
+        index = parseInt($(this).attr("data-workspace-wms-index"));
         if (wms_layers[id] === undefined) {
             // Create it.
-            wms_layers[id] = new OpenLayers.Layer.WMS(
-                name, url, $.parseJSON(params), $.parseJSON(options));
-            map.addLayer(wms_layers[id]);
+            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            wms_layers[id] = layer;
+            map.addLayer(layer);
+            layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
+        }
+        else {
+            // Update it.
+            var layer = wms_layers[id];
+            layer.setZIndex(1000 - index);
         }
     });
     // Remove unused ones.
@@ -237,7 +246,7 @@ workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
     // Set up all layers.
     refreshBackgroundLayers();
-    refreshWorkspaceLayers();
+    //refreshWorkspaceLayers();
     refreshWmsLayers();
 }
 

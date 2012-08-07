@@ -352,20 +352,43 @@ class WorkspaceModelMixin(object):
         or whether decoding the json already happens somewhere else."""
 
         def to_template_data(workspace_item):
-            adapter_layer = json.loads(workspace_item.adapter_layer_json)
-
-            return {
-                'wms_id': workspace_item.id,
-                'name': workspace_item.name,
-                'url': adapter_layer.get('url', ''),
-                'params': adapter_layer.get('params', '{}'),
-                'options': adapter_layer.get('options', '{}'),
-             }
-
+            if workspace_item.adapter_class == ADAPTER_CLASS_WMS:
+                # item is located on an external WMS server
+                # EJVOS: why this is stored as a JSON string is beyond me...
+                adapter_layer = json.loads(workspace_item.adapter_layer_json)
+                return {
+                    'wms_id': workspace_item.id,
+                    'name': workspace_item.name,
+                    'url': adapter_layer.get('url', ''),
+                    'params': adapter_layer.get('params', '{}'),
+                    'options': adapter_layer.get('options', '{}'),
+                    'index': workspace_item.index,
+                }
+            else:
+                # item is served by our local simulated WMS server
+                # using mapnik etc.
+                params = json.dumps({
+                    #'params': '{"height": "256", "width": "256", "layers": "lizard:generated_layer", "styles": "", "format": "image/png", "tiled": "true", "transparent": "true"}',
+                    'layers': 'lizard:generated_layer_%s'.format(workspace_item.id),
+                })
+                options = json.dumps({
+                    'transitionEffect': 'resize',
+                    'displayInLayerSwitcher': False,
+                    'singleTile': True,
+                    'isBaseLayer': False,
+                    'opacity': 1.0
+                })
+                return {
+                    'wms_id': workspace_item.id,
+                    'name': workspace_item.name,
+                    'url': reverse('lizard_map_workspace_edit_wms', kwargs={'workspace_item_id': workspace_item.id}),
+                    'params': params,
+                    'options': options,
+                    'index': workspace_item.index,
+                }
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()
-                if workspace_item.adapter_class == ADAPTER_CLASS_WMS
-                and workspace_item.visible]
+                if workspace_item.visible]
 
     @property
     def is_animatable(self):
@@ -427,10 +450,6 @@ class WorkspaceEdit(
                 workspace=self)
             workspace_edit_item.save()
 
-    def wms_url(self):
-        """Used by wms.html"""
-        return reverse("lizard_map_workspace_edit_wms")
-
     def in_workspace(self, workspace_item_name):
         """Check if the workspace contains an item with the given
         workspace_item_name."""
@@ -464,11 +483,6 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
-
-    def wms_url(self):
-        """Used by wms.html"""
-        return reverse("lizard_map_workspace_storage_wms",
-                       kwargs={'workspace_storage_id': self.id})
 
     def init_secret_slug(self):
         if self.secret_slug is None:
