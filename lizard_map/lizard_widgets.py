@@ -81,7 +81,7 @@ class Legend(object):
 
     template_name = 'lizard_map/legend_item.html'
     name = None
-    image_url = None
+    image_urls = None
 
     def __init__(self, **kwargs):
         for key, value in kwargs.items():

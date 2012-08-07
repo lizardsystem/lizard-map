@@ -14,6 +14,8 @@ Changelog of lizard-map
 
 - Changed lots of core stuff: no longer combine workspace layers into a single WMS layer.
 
+- Added multi-url legend support.
+
 
 4.3 (2012-07-10)
 ----------------
