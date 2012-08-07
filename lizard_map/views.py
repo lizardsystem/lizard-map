@@ -339,17 +339,17 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMi
             visible=True).reverse()
         for workspace_item in workspace_items:
             logger.debug("Looking for legend url for %s...", workspace_item)
-            if not hasattr(workspace_item.adapter, 'legend_image_url'):
+            if not hasattr(workspace_item.adapter, 'legend_image_urls'):
                 logger.debug(
-                    "No legend_image_url() on this ws item's adapter.")
+                    "No legend_image_urls() on this ws item's adapter.")
                 continue
-            image_url = workspace_item.adapter.legend_image_url()
-            if not image_url:
+            image_urls = workspace_item.adapter.legend_image_urls()
+            if not image_urls:
                 # Don't show a non-existant image.
                 continue
             result.append(Legend(
                     name=workspace_item.name,
-                    image_url=image_url))
+                    image_urls=image_urls))
         return result
 
     @property

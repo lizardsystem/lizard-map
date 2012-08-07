@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added multi-url legend support.
 
 
 4.3 (2012-07-10)
