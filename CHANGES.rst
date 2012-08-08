@@ -16,6 +16,8 @@ Changelog of lizard-map
 
 - Added multi-url legend support.
 
+- Fix some bad hover_popup code.
+
 
 4.3 (2012-07-10)
 ----------------
