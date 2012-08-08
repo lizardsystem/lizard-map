@@ -900,7 +900,6 @@ function popup_click_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                console.log("Success handler:", data);
                 show_popup(data);
                 $("#map").css("cursor", "default");
             }
@@ -1154,7 +1153,6 @@ function setUpAggPeriodField() {
     // Set restrict_to_month on enabled or disabled
     $("select#id_aggregation_period").change(function (event) {
         // 4 is MONTH
-        console.log(this.value);
         if (this.value === "4") {
             $("select#id_restrict_to_month").removeAttr("disabled");
         } else {
