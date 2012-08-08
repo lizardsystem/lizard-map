@@ -132,26 +132,36 @@ function show_popup(data) {
     }
 }
 
+var hover_popup;
 
-function hover_popup(data, map) {
-    if (data.name !== "" &&
-        data.name !== undefined) {
-        var popup, content;
-        content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
+function init_hover_popup(map) {
+    hover_popup = new OpenLayers.Popup('hover-popup',
+                                 new OpenLayers.LonLat(0, 0),
+                                 new OpenLayers.Size(300, 300),
+                                 '',
+                                 false);
+    hover_popup.maxSize = new OpenLayers.Size(300, 300);
+    hover_popup.border = "1px solid black";
+    hover_popup.autoSize = true;
+    map.addPopup(hover_popup);
+}
+
+function show_hover_popup(data, map) {
+    if (data.name !== "" && data.name !== undefined) {
+        var content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
             '&nbsp;&nbsp;&nbsp;&nbsp;';
-        $("#hover-popup").remove(); // remove existing popup, if exists
-        popup = new OpenLayers.Popup('hover-popup',
-                                     new OpenLayers.LonLat(data.x, data.y),
-                                     new OpenLayers.Size(300, 300),
-                                     content,
-                                     false);
-        popup.maxSize = new OpenLayers.Size(300, 300);
-        popup.border = "1px solid black";
-        popup.autoSize = true;
-        map.addPopup(popup);
+        hover_popup.lonlat = new OpenLayers.LonLat(data.x, data.y);
+        hover_popup.setContentHTML(content);
+        hover_popup.updatePosition();
+        hover_popup.updateSize();
+        hover_popup.show();
     }
 }
 
+function hide_hover_popup() {
+    hover_popup.contentHTML = '';
+    hover_popup.hide();
+}
 
 /* Make workspaces sortable and droppable
 

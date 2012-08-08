@@ -382,7 +382,7 @@ function showMap() {
             defaultHandlerOptions: {
                 'single': true,
                 'double': false,
-                'pixelTolerance': null,
+                'pixelTolerance': 0,
                 'stopSingle': false,
                 'stopDouble': false
             },
@@ -448,11 +448,10 @@ function showMap() {
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
                 eval(javascript_hover_handler_name)(
                     lonlat.lon, lonlat.lat, map);
-
             },
 
             onMove: function (evt) {
-                $("#hover-popup").remove();
+                hide_hover_popup();
             }
         });
 
@@ -475,6 +474,7 @@ function showMap() {
     // level that most closely fits the specified bounds.
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
+    init_hover_popup(map);
 }
 
 

@@ -924,7 +924,7 @@ function popup_hover_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                hover_popup(data, map);
+                show_hover_popup(data, map);
             }
         );
     }
