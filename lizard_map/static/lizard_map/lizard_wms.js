@@ -407,9 +407,6 @@ function showMap() {
                 }
             }
         });
-        map_click_control = new MapClickControl();
-        map.addControl(map_click_control);
-        map_click_control.activate();
     }
     // Hover handling.
     javascript_hover_handler_name = $lizard_map_wms.attr("data-javascript-hover-handler");
@@ -450,9 +447,6 @@ function showMap() {
             }
         });
 
-        map_hover_control = new MapHoverControl();
-        map.addControl(map_hover_control);
-        map_hover_control.activate();
     }
 
     zoom_panel = new OpenLayers.Control.Panel();
@@ -469,6 +463,12 @@ function showMap() {
     // level that most closely fits the specified bounds.
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
+    map_click_control = new MapClickControl();
+    map.addControl(map_click_control);
+    map_click_control.activate();
+    map_hover_control = new MapHoverControl();
+    map.addControl(map_hover_control);
+    map_hover_control.activate();
 }
 
 
