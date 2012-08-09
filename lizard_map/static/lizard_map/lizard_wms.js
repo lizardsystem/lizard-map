@@ -396,8 +396,7 @@ function showMap() {
                 );
                 this.handler = new OpenLayers.Handler.Click(
                     this, {
-                        'click': this.trigger,
-                        'touchstart': this.trigger
+                        'click': this.trigger
                     }, this.handlerOptions
                 );
             },
@@ -413,9 +412,6 @@ function showMap() {
                 }
             }
         });
-        map_click_control = new MapClickControl();
-        map.addControl(map_click_control);
-        map_click_control.activate();
     }
     // Hover handling.
     javascript_hover_handler_name = $lizard_map_wms.attr("data-javascript-hover-handler");
@@ -454,10 +450,6 @@ function showMap() {
                 hide_hover_popup();
             }
         });
-
-        map_hover_control = new MapHoverControl();
-        map.addControl(map_hover_control);
-        map_hover_control.activate();
     }
 
     zoom_panel = new OpenLayers.Control.Panel();
@@ -475,6 +467,14 @@ function showMap() {
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
     init_hover_popup(map);
+
+    // actually add the handers: keep these here for full iPad compatibility
+    map_click_control = new MapClickControl();
+    map.addControl(map_click_control);
+    map_click_control.activate();
+    map_hover_control = new MapHoverControl();
+    map.addControl(map_hover_control);
+    map_hover_control.activate();
 }
 
 

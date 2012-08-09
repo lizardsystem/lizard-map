@@ -18,6 +18,7 @@ Changelog of lizard-map
 
 - Fix some bad hover_popup code.
 
+- OpenLayers: fix iPad.
 
 4.3 (2012-07-10)
 ----------------
