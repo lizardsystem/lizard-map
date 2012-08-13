@@ -375,7 +375,7 @@ function showMap() {
             defaultHandlerOptions: {
                 'single': true,
                 'double': false,
-                'pixelTolerance': null,
+                'pixelTolerance': 0, // null means drag start is interpreted as click
                 'stopSingle': false,
                 'stopDouble': false
             },
@@ -389,8 +389,7 @@ function showMap() {
                 );
                 this.handler = new OpenLayers.Handler.Click(
                     this, {
-                        'click': this.trigger,
-                        'touchstart': this.trigger
+                        'click': this.trigger
                     }, this.handlerOptions
                 );
             },
