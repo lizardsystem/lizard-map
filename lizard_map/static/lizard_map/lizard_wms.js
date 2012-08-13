@@ -214,7 +214,7 @@ function refreshWmsLayers() {
         url = $(this).attr("data-workspace-wms-url");
         params = $(this).attr("data-workspace-wms-params");
         params = $.parseJSON(params);
-        params['tiled'] = true;
+        // Fix for partial images on tiles
         params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
