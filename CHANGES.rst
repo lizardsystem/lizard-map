@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.5 (unreleased)
+4.5 (2012-08-14)
 ----------------
 
 - Fix OpenStreetMap pink tiles at Firefox.
