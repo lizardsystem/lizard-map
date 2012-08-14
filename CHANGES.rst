@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.4 (unreleased)
+4.4 (2012-08-14)
 ----------------
 
 - Flot graphs: fallback to .axes label if one is available, because flot only supports a single ylabel.
