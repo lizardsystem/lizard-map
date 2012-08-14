@@ -469,12 +469,16 @@ function showMap() {
     init_hover_popup(map);
 
     // actually add the handers: keep these here for full iPad compatibility
-    map_click_control = new MapClickControl();
-    map.addControl(map_click_control);
-    map_click_control.activate();
-    map_hover_control = new MapHoverControl();
-    map.addControl(map_hover_control);
-    map_hover_control.activate();
+    if (javascript_click_handler_name) {
+        map_click_control = new MapClickControl();
+        map.addControl(map_click_control);
+        map_click_control.activate();
+    }
+    if (javascript_hover_handler_name !== undefined) {
+        map_hover_control = new MapHoverControl();
+        map.addControl(map_hover_control);
+        map_hover_control.activate();
+    }
 }
 
 
