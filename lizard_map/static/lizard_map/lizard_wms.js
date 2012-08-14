@@ -119,7 +119,9 @@ function refreshBackgroundLayers() {
                 base_layer = new OpenLayers.Layer.OSM(
                     layer_name, url,
                     {buffer: 0,
-                     transitionEffect: 'resize'});
+                     transitionEffect: 'resize',
+                     tileOptions: {crossOriginKeyword: null}
+                    });
             }
             else if (layer_type === "WMS")
             {
