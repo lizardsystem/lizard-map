@@ -9,14 +9,12 @@ import urllib2
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.servers.basehttp import FileWrapper
 from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
-from django.shortcuts import redirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson as json
@@ -321,7 +319,8 @@ class CrumbsMixin(object):
             return initial
 
 
-class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin, DateRangeMixin, MapMixin,
+class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
+              DateRangeMixin, MapMixin,
               UiView):
     """Main map view (using twitter bootstrap)."""
 
@@ -833,6 +832,7 @@ def workspace_item_extent(request, item_class=WorkspaceEditItem):
                 'south': pwestsouth.get_y(),
                 }))
 
+
 @never_cache
 def saved_workspace_item_extent(request):
     """Return extent for the *saved* workspace item in json.
@@ -1069,7 +1069,8 @@ Map stuff
 """
 
 
-def wms(request, workspace_item_id, workspace_storage_id=None, workspace_storage_slug=None):
+def wms(request, workspace_item_id, workspace_storage_id=None,
+        workspace_storage_slug=None):
     """Return PNG as WMS service for given workspace_edit or
     workspace_storage.
 
@@ -1104,8 +1105,10 @@ def wms(request, workspace_item_id, workspace_storage_id=None, workspace_storage
     mapnik_map.background = mapnik.Color('transparent')
     #m.background = mapnik.Color('blue')
 
-    workspace_items = workspace.workspace_items.filter(visible=True, id=workspace_item_id).reverse()
-    # len(workspace_items) should be 1: we no longer combine all generated layers into a single WMS layer
+    workspace_items = workspace.workspace_items.filter(
+        visible=True, id=workspace_item_id).reverse()
+    # len(workspace_items) should be 1:
+    # we no longer combine all generated layers into a single WMS layer
     for workspace_item in workspace_items:
         logger.debug("Drawing layer for %s..." % workspace_item)
         try:
@@ -1832,7 +1835,7 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
     - layout_extra (optional)
     """
 
-    _IGNORE_IE_ACCEPT_HEADER = False # Keep this, if you want IE to work
+    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
     def get(self, request, *args, **kwargs):
         """
@@ -1876,7 +1879,8 @@ class AdapterValuesView(AdapterMixin, UiView):
         self.name = adapter.location(**identifier).get('name', 'export')
 
         if output_type == 'csv':
-            filename = ('%s.csv' % (self.name)).encode('us-ascii', errors='ignore')
+            filename = ('%s.csv' % (self.name)).encode('us-ascii',
+                                                       errors='ignore')
             # Make the csv output.
             response = HttpResponse(mimetype='text/csv')
             response['Content-Disposition'] = (
