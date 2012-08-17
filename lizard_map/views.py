@@ -1,8 +1,5 @@
 import StringIO
-import csv
 import datetime
-import logging
-import urllib2
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -20,14 +17,12 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from lizard_ui.layout import Action
-from lizard_ui.models import ApplicationIcon
-from lizard_ui.models import ApplicationScreen
-from lizard_ui.views import UiView
-from lizard_ui.views import IconView
 import Image
+import csv
 import iso8601
+import logging
 import mapnik
+import urllib2
 
 #from lizard_map.daterange import deltatime_range
 #from lizard_map.daterange import store_timedelta_range
@@ -60,6 +55,9 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
+from lizard_ui.models import ApplicationScreen
+from lizard_ui.models import ApplicationIcon
+from lizard_ui.views import ViewContextMixin
 
 
 CUSTOM_LEGENDS = 'custom_legends'
@@ -90,8 +88,7 @@ class WorkspaceMixin(object):
     """Add workspace and map variables.
     """
     # Override with an empty string for no click handler.
-    # javascript_click_handler = 'popup_click_handler'
-    javascript_click_handler = ''
+    javascript_click_handler = 'popup_click_handler'
 
     def workspace(self):
         """Implement a function that returns a workspace-storage,
@@ -141,10 +138,6 @@ class MapMixin(object):
         return s
 
     def start_extent(self):
-        # Hack: we need to have a session right away for toggling ws items.
-        self.request.session[
-            'make_sure_session_is_initialized'] = 'hurray'
-        # End of the hack.
         map_location = Setting.extent(
             'start_extent',
             DEFAULT_START_EXTENT)
@@ -166,7 +159,8 @@ class MapMixin(object):
     def base_layer_name(self):
         if MAP_BASE_LAYER in self.request.session:
             return self.request.session[MAP_BASE_LAYER]
-        return ""
+        else:
+            return ""
 
     @property
     def maps(self):
@@ -178,19 +172,24 @@ class MapMixin(object):
         # For the client side to determine is there is a google map.
         if self.maps.filter(
             layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
+
             return True
-        return False
+        else:
+            return False
 
     def background_maps(self):
         if self.maps:
             return self.maps
-        logger.warn("No background maps are active. Taking default.")
-        return [BackgroundMap(
-                    name='Default map',
-                    default=True,
-                    active=True,
-                    layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                    layer_url=DEFAULT_OSM_LAYER_URL), ]
+        else:
+            logger.warn("No background maps are active. Taking default.")
+            maps = [BackgroundMap(
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=BackgroundMap.LAYER_TYPE_OSM,
+                layer_url=DEFAULT_OSM_LAYER_URL), ]
+
+            return maps
 
 
 class CollageMixin(object):
@@ -293,57 +292,13 @@ class CrumbsMixin(object):
 
 class AppView(
     WorkspaceEditMixin, CollageMixin, DateRangeMixin,
-    UiView, MapMixin,
-    GoogleTrackingMixin, CrumbsMixin):
+    ViewContextMixin, MapMixin,
+    GoogleTrackingMixin, TemplateView, CrumbsMixin):
     """All-in-one"""
 
 
-class MapView(WorkspaceEditMixin, CollageMixin, DateRangeMixin, MapMixin,
-              UiView):
-    """Main map view (using twitter bootstrap). Replaces AppView."""
-
-    @property
-    def show_secondary_sidebar_title(self):
-        return _('Layers')
-
-    show_secondary_sidebar_icon = 'icon-list'
-
-    @property
-    def show_rightbar_title(self):
-        return _('Legend')
-
-    def legends(self):
-        """Return legends for the rightbar."""
-        result = []
-        workspace_items = self.workspace().workspace_items.filter(
-            visible=True).reverse()
-        for workspace_item in workspace_items:
-            logger.debug("Looking for legend url for %s...", workspace_item)
-            if not hasattr(workspace_item.adapter, 'legend_image_url'):
-                logger.debug(
-                    "No legend_image_url() on this ws item's adapter.")
-                continue
-            result.append({
-                    'name': workspace_item.name,
-                    'image_url': workspace_item.adapter.legend_image_url()})
-        return result
-
-    @property
-    def content_actions(self):
-        """Add default-location-zoom."""
-        actions = super(MapView, self).content_actions
-        zoom_to_default = Action(
-            name=_('Default zoom'),
-            description=_('Zoom to default location'),
-            url=reverse('lizard_map.map_location_load_default'),
-            icon='icon-screenshot',
-            klass='map-load-default-location')
-        actions.insert(0, zoom_to_default)
-        return actions
-
-
 class WorkspaceStorageListView(
-    UiView, GoogleTrackingMixin):
+    ViewContextMixin, GoogleTrackingMixin, TemplateView):
     """Show list of storage workspaces."""
 
     template_name = 'lizard_map/workspace_storage_list.html'
@@ -354,8 +309,8 @@ class WorkspaceStorageListView(
 
 class WorkspaceStorageView(
     WorkspaceMixin, CollageMixin, DateRangeMixin,
-    UiView, MapMixin,
-    GoogleTrackingMixin):
+    ViewContextMixin, MapMixin,
+    GoogleTrackingMixin, TemplateView):
     """Workspace storage view.
 
     TODO: "load workspace in my workspace and go there" """
@@ -379,7 +334,46 @@ class WorkspaceStorageView(
             request, *args, **kwargs)
 
 
-class ActionDialogView(UiView, FormView):
+class HomepageView(AppView):
+    """
+    Homepage view with apps on the left side
+
+    Try to fetch GET parameter 'screen' from url. It points to the
+    application_screen_slug.
+    """
+    template_name = 'lizard_map/app_screen.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(HomepageView, self).get_context_data(**kwargs)
+
+        # Application screen slug
+        application_screen_slug = kwargs.get('application_screen_slug', None)
+        if application_screen_slug is None:
+            application_screen_slug = self.request.GET.get('screen', None)
+
+        context['application_screen_slug'] = application_screen_slug
+        self.application_screen_slug = application_screen_slug
+        return context
+
+    def crumbs(self):
+        # Only called from the template, so
+        # self.application_screen_slug should exist by then
+        crumbs = super(HomepageView, self).crumbs()
+        if self.application_screen_slug:
+            try:
+                screen = (ApplicationScreen.objects.
+                          get(slug=self.application_screen_slug))
+                crumbs = crumbs + screen.crumbs()
+            except ApplicationScreen.DoesNotExist:
+                # Someone mistyped an URL, or something
+                pass
+        return crumbs
+
+##### Edits on workspace ############
+
+
+# L3
+class ActionDialogView(ViewContextMixin, FormView):
     """
     Generic Action Dialog View.
 
@@ -673,9 +667,11 @@ def workspace_item_toggle(
     if workspace_edit is None:
         workspace_edit = WorkspaceEdit.get_or_create(
             request.session.session_key, request.user)
+
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
     adapter_layer_json = request.POST['adapter_layer_json']
+
     # Find out if it is already present.
     existing_workspace_items = workspace_edit.workspace_items.filter(
         adapter_class=adapter_class,
@@ -1225,7 +1221,7 @@ def search_coordinates(request,
 
 
 class CollageDetailView(
-    CollageMixin, DateRangeMixin, UiView):
+    CollageMixin, DateRangeMixin, ViewContextMixin, TemplateView):
     """
     Shows "my collage" as big page.
     """
@@ -1246,7 +1242,8 @@ class CollageDetailView(
         return super(CollageDetailView, self).get(request, *args, **kwargs)
 
 
-class CollageStatisticsView(UiView):
+class CollageStatisticsView(
+    ViewContextMixin, TemplateView):
     """
     Shows statistics for collage items.
     """
@@ -1796,7 +1793,7 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
             layout_extra=layout_extra)
 
 
-class AdapterValuesView(AdapterMixin, UiView):
+class AdapterValuesView(AdapterMixin, ViewContextMixin, TemplateView):
     """
     Return values for a single identifier in csv or html.
 
@@ -1835,10 +1832,3 @@ class AdapterValuesView(AdapterMixin, UiView):
             # Make html table using self.values
             return super(AdapterValuesView, self).get(
                 request, *args, **kwargs)
-
-
-class HomepageView(MapView, IconView):
-    template_name = 'lizard_map/icons.html'
-
-
-MapIconView = HomepageView  # BBB

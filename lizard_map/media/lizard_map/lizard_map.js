@@ -109,10 +109,9 @@ function setUpTransparencySlider() {
 
 /* L3 */
 function setUpMapLoadDefaultLocation() {
-    $(".map-load-default-location").live("click", function (event) {
+    $("#map-load-default-location").live("click", function () {
         var url;
-        event.preventDefault();
-        url = $(this).attr("href");
+        url = $(this).attr("data-url");
         $.getJSON(
             url, function (data) {
                 var extent, zoom;
@@ -188,7 +187,7 @@ function setUpWorkspaceAcceptable() {
     $(".workspace-acceptable").live("click", function (event) {
         var name, adapter_class, adapter_layer_json, url_item_toggle,
         $workspace, html, $workspace_acceptable;
-        event.preventDefault();
+
         $workspace_acceptable = $(this);
         indicateWorkspaceItemBusy($workspace_acceptable);
 
@@ -198,50 +197,6 @@ function setUpWorkspaceAcceptable() {
         $workspace = $(".workspace");
         url_item_toggle = $workspace.attr(
             "data-url-lizard-map-workspace-item-toggle");
-
-        /* New bootstrap-era interaction */
-        if (!$(this).hasClass('selected')) {
-            var $layer_button, $moving_box, move_down, move_right;
-            $layer_button = $(".secondary-sidebar-button");
-            $("#page").after('<div id="moving-box">');
-            $moving_box = $("#moving-box");
-            $moving_box.offset($(this).offset());
-            $moving_box.width($(this).width());
-            $moving_box.height($(this).height());
-            move_down = $layer_button.offset().top - $(this).offset().top;
-            move_right = $layer_button.offset().left - $(this).offset().left;
-            $moving_box.animate({
-                left: '+=' + move_right,
-                top: '+=' + move_down,
-                width: $layer_button.width(),
-                height: $layer_button.height()
-                }, 1000, function() {
-                    $moving_box.remove()
-                });
-            /* xxx */
-        }
-        if ($(this).hasClass('selected')) {
-            var $layer_button, $moving_box, move_up, move_left;
-            $layer_button = $(".secondary-sidebar-button");
-            $("#page").after('<div id="moving-box">');
-            $moving_box = $("#moving-box");
-            $moving_box.offset($layer_button.offset());
-            $moving_box.width($layer_button.width());
-            $moving_box.height($layer_button.height());
-            move_up = $layer_button.offset().top - $(this).offset().top;
-            move_left = $layer_button.offset().left - $(this).offset().left;
-            $moving_box.animate({
-                left: '-=' + move_left,
-                top: '-=' + move_up,
-                width: 0,
-                height: 0
-                }, 1000, function() {
-                    $moving_box.remove()
-                });
-            /* xxx */
-        }
-        /* End of new bootstrap-era interaction */
-
         $.post(
             url_item_toggle,
             {name: name,
@@ -272,7 +227,7 @@ function setUpWorkspaceAcceptable() {
     // loading next pane.
     try {
         $("#accordion").data("tabs").onClick(function (event) {
-            // updateWorkspaceAcceptableStatus();
+            updateWorkspaceAcceptableStatus();
         });
     } catch (e) {
         // Nothing. There is no accordion.
@@ -768,6 +723,8 @@ L3
 function setUpWorkspaceButtons() {
     // Delete workspace item
     $(".workspace-item-delete").live('click', function () {
+	// If there are any tipsy tooltips, hide them first
+        $(".tipsy").hide();
 
         var $workspace, workspace_id, url, object_id;
         $workspace = $(this).parents("div.workspace");
@@ -1039,11 +996,6 @@ function setUpCollageEditor() {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-    // New bootstrappy stuff.
-	$("#map").height($("#content").height());
-
-
-
     // Touched/new for L3
     setUpWorkspaceAcceptable();
     setUpDialogs();
@@ -1054,8 +1006,8 @@ $(document).ready(function () {
 
     // Untouched
     setUpWorkspaceButtons();
-    //setUpAnimationSlider();
-    //setUpTransparencySlider();
+    setUpAnimationSlider();
+    setUpTransparencySlider();
     setUpWorkspaceItemPanToLayer();
 
     // Set up legend edit.
@@ -1070,7 +1022,7 @@ $(document).ready(function () {
     //$(".add-snippet").snippetInteraction();
     //$("a.lizard-map-link").lizardMapLink();
     // Optional popup video link.
-    //setupVideoPopup();
+    setupVideoPopup();
     setupTableToggle();
 });
 

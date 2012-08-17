@@ -10,15 +10,20 @@ from django.db.models.signals import post_save
 from django.db.models.signals import post_delete
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
+from south.modelsinspector import add_introspection_rules
 import pkg_resources
 import random
 import string
 
-from lizard_map import dateperiods
-from lizard_map.exceptions import WorkspaceItemError
+from lizard_map.dateperiods import ALL
+from lizard_map.dateperiods import YEAR
+from lizard_map.dateperiods import QUARTER
+from lizard_map.dateperiods import MONTH
+from lizard_map.dateperiods import WEEK
+from lizard_map.dateperiods import DAY
+from lizard_map.dateperiods import calc_aggregation_periods
+from lizard_map.dateperiods import fancy_period
 from lizard_map.mapnik_helper import point_rule
-from lizard_map import fields
-
 # Unchecked end here
 
 import lizard_map.configchecker
@@ -39,8 +44,11 @@ SECRET_SLUG_LENGTH = 8
 
 # New imports
 import datetime
+from django.core.serializers.json import DjangoJSONEncoder
 
 from lizard_map.adapter import AdapterClassNotFoundError
+#from jsonfield.fields import JSONField
+
 
 # Do not change the following items!
 GROUPING_HINT = 'grouping_hint'
@@ -60,6 +68,179 @@ LOCATION_ENTRY_POINT = 'lizard_map.location_method'
 ADAPTER_CLASS_WMS = 'wms'
 
 logger = logging.getLogger(__name__)
+# Add introspection rules for ColorField
+add_introspection_rules([], ["lizard_map.models.ColorField"])
+
+
+def legend_values(min_value, max_value, min_color, max_color, steps):
+    """Interpolates colors between min_value and max_value, calc
+    corresponding colors and gives boundary values for each band.
+
+    Makes list of dictionaries: {'color': Color, 'low_value':
+    low value, 'high_value': high value}"""
+    result = []
+    value_per_step = (max_value - min_value) / steps
+    for step in range(steps):
+        try:
+            fraction = float(step) / (steps - 1)
+        except ZeroDivisionError:
+            fraction = 0
+        alpha = (min_color.a * (1 - fraction) +
+                 max_color.a * fraction)
+        red = (min_color.r * (1 - fraction) +
+               max_color.r * fraction)
+        green = (min_color.g * (1 - fraction) +
+                 max_color.g * fraction)
+        blue = (min_color.b * (1 - fraction) +
+                max_color.b * fraction)
+        color = Color('%02x%02x%02x%02x' % (red, green, blue, alpha))
+
+        low_value = min_value + step * value_per_step
+        high_value = min_value + (step + 1) * value_per_step
+        result.append({
+                'color': color,
+                'low_value': low_value,
+                'high_value': high_value,
+                })
+    return result
+
+
+class Color(str):
+    """Simple color object: r, g, b, a.
+
+    The object is in fact a string with class variables.
+    """
+
+    def __init__(self, s):
+        self.r = None
+        self.g = None
+        self.b = None
+        if s is None:
+            return
+        try:
+            self.r = int(s[0:2], 16)
+        except ValueError:
+            self.r = 128
+        try:
+            self.g = int(s[2:4], 16)
+        except ValueError:
+            self.b = 128
+        try:
+            self.b = int(s[4:6], 16)
+        except ValueError:
+            self.b = 128
+        try:
+            # Alpha is optional.
+            self.a = int(s[6:8], 16)
+        except ValueError:
+            self.a = 255
+
+    def to_tuple(self):
+        """
+        Returns color values in a tuple. Values are 0..1
+        """
+        result = (self.r / 255.0, self.g / 255.0,
+                  self.b / 255.0, self.a / 255.0)
+        return result
+
+    @property
+    def html(self):
+        """
+        Returns color in html format.
+        """
+        if self.r is not None and self.g is not None and self.b is not None:
+            return '#%02x%02x%02x' % (self.r, self.g, self.b)
+        else:
+            return '#ff0000'  # Red as alarm color
+
+
+class ColorField(models.CharField):
+    """Custom ColorField for use in Django models. It's an extension
+    of CharField."""
+
+    default_error_messages = {
+        'invalid': _(
+            u'Enter a valid color code rrggbbaa, '
+            'where aa is optional.'),
+        }
+    description = "Color representation in rgb"
+
+    # Ensures that to_python is always called.
+    __metaclass__ = models.SubfieldBase
+
+    def __init__(self, *args, **kwargs):
+        kwargs['max_length'] = 8
+        super(ColorField, self).__init__(*args, **kwargs)
+
+    def get_prep_value(self, value):
+        return str(value)
+
+    def to_python(self, value):
+        if isinstance(value, Color):
+            return value
+        return Color(value)
+
+
+#From:
+#https://github.com/bradjasper/django-jsonfield/blob/master/jsonfield/fields.py
+#Using djang-jsonfield results in an error in admin pages using this
+#field.
+
+# Add south introspection rules.
+try:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules([], ["^lizard_map\.models\.JSONField"])
+except:
+    # South is not used.
+    pass
+
+
+class JSONField(models.TextField):
+    """JSONField is a generic textfield that neatly serializes/unserializes
+JSON objects seamlessly"""
+
+    # Used so to_python() is called
+    __metaclass__ = models.SubfieldBase
+
+    def to_python(self, value):
+        """Convert our string value to JSON after we load it from the DB"""
+
+        if value == "":
+            return None
+
+        try:
+            if isinstance(value, basestring):
+                return json.loads(value)
+        except ValueError:
+            pass
+
+        return value
+
+    def get_db_prep_save(self, value, connection):
+        """Convert our JSON object to a string before we save"""
+
+        if not value or value == "":
+            return None
+
+        if isinstance(value, (dict, list)):
+            value = json.dumps(value, cls=DjangoJSONEncoder)
+
+        # Changed connection to kwarg to fix error.
+        return super(JSONField, self).get_db_prep_save(
+            value, connection=connection)
+
+
+class WorkspaceItemError(Exception):
+    """To be raised when a WorkspaceItem is out of date.
+
+    A WorkspaceItem can represent something that does no longer exist.
+    For example, it may refer to a shape that has been deleted from
+    the database. This error may trigger deletion of such orphans.
+    """
+    pass
+
+
+###### Models start here ######
 
 #### L3 models ####
 
@@ -521,12 +702,12 @@ class StatisticsMixin(models.Model):
     Statistics mixin.
     """
     AGGREGATION_PERIOD_CHOICES = (
-        (dateperiods.ALL, _('all')),
-        (dateperiods.YEAR, _('year')),
-        (dateperiods.QUARTER, _('quarter')),
-        (dateperiods.MONTH, _('month')),
-        (dateperiods.WEEK, _('week')),
-        (dateperiods.DAY, _('day')),
+        (ALL, _('all')),
+        (YEAR, _('year')),
+        (QUARTER, _('quarter')),
+        (MONTH, _('month')),
+        (WEEK, _('week')),
+        (DAY, _('day')),
         )
 
     # Boundary value for statistics.
@@ -536,7 +717,7 @@ class StatisticsMixin(models.Model):
     # Restrict_to_month is used to filter the data.
     restrict_to_month = models.IntegerField(blank=True, null=True)
     aggregation_period = models.IntegerField(
-        choices=AGGREGATION_PERIOD_CHOICES, default=dateperiods.ALL)
+        choices=AGGREGATION_PERIOD_CHOICES, default=ALL)
 
     class Meta:
         abstract = True
@@ -546,7 +727,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
     collage = models.ForeignKey(
         CollageEdit,
         related_name='collage_items')
-    identifier = fields.JSONField(default="")
+    identifier = JSONField(default="")
 
     class Meta:
         ordering = ('name', )
@@ -638,13 +819,13 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
             return []
 
         # Calc periods based on aggregation period setting.
-        periods = dateperiods.calc_aggregation_periods(start_date, end_date,
+        periods = calc_aggregation_periods(start_date, end_date,
                                            self.aggregation_period)
         statistics = []
         for period_start_date, period_end_date in periods:
             if not self.restrict_to_month or (
-                self.aggregation_period != dateperiods.MONTH) or (
-                self.aggregation_period == dateperiods.MONTH and
+                self.aggregation_period != MONTH) or (
+                self.aggregation_period == MONTH and
                 self.restrict_to_month == period_start_date.month):
 
                 # Base statistics for each period.
@@ -662,7 +843,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
                 # Add name.
                 if statistics_row:
                     statistics_row['name'] = self.name
-                    statistics_row['period'] = dateperiods.fancy_period(
+                    statistics_row['period'] = fancy_period(
                         period_start_date, period_end_date,
                         self.aggregation_period)
                     statistics_row['boundary_value'] = self.boundary_value
@@ -706,11 +887,11 @@ class Legend(models.Model):
     max_value = models.FloatField(default=100)
     steps = models.IntegerField(default=10)
 
-    default_color = fields.ColorField()
-    min_color = fields.ColorField()
-    max_color = fields.ColorField()
-    too_low_color = fields.ColorField()
-    too_high_color = fields.ColorField()
+    default_color = ColorField()
+    min_color = ColorField()
+    max_color = ColorField()
+    too_low_color = ColorField()
+    too_high_color = ColorField()
 
     objects = LegendManager()
 
@@ -733,7 +914,7 @@ class Legend(models.Model):
 
     def legend_values(self):
         """Determines legend steps and values. Required by legend_default."""
-        return fields.legend_values(
+        return legend_values(
             self.min_value, self.max_value,
             self.min_color, self.max_color, self.steps)
 
@@ -750,13 +931,13 @@ class Legend(models.Model):
                 elif k == 'steps':
                     self.steps = int(v)
                 elif k == 'min_color':
-                    self.min_color = fields.Color(v)
+                    self.min_color = Color(v)
                 elif k == 'max_color':
-                    self.max_color = fields.Color(v)
+                    self.max_color = Color(v)
                 elif k == 'too_low_color':
-                    self.too_low_color = fields.Color(v)
+                    self.too_low_color = Color(v)
                 elif k == 'too_high_color':
-                    self.too_high_color = fields.Color(v)
+                    self.too_high_color = Color(v)
             except ValueError, e:
                 logger.exception('Could not parse one of the colors')
                 raise WorkspaceItemError(e)
@@ -884,13 +1065,11 @@ class BackgroundMap(models.Model):
     LAYER_TYPE_GOOGLE = 1
     LAYER_TYPE_OSM = 2
     LAYER_TYPE_WMS = 3
-    LAYER_TYPE_TMS = 4
 
     LAYER_TYPE_CHOICES = (
         (LAYER_TYPE_GOOGLE, 'GOOGLE'),
         (LAYER_TYPE_OSM, 'OSM'),
         (LAYER_TYPE_WMS, 'WMS'),
-        (LAYER_TYPE_TMS, 'TMS'),
         )
 
     GOOGLE_TYPE_DEFAULT = 1
@@ -919,11 +1098,11 @@ class BackgroundMap(models.Model):
     layer_url = models.CharField(
         max_length=200,
         null=True, blank=True,
-        help_text='Tile url for use with OSM or WMS or TMS',
+        help_text='Tile url for use with OSM or WMS',
         default='http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
     layer_names = models.TextField(
         null=True, blank=True,
-        help_text='Fill in layer names in case of WMS or TMS')
+        help_text='Fill in layer names in case of WMS')
 
     class Meta:
         ordering = ('index', )

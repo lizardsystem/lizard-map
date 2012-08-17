@@ -11,21 +11,19 @@
      data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates %}"
      data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
      data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
-     data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
      >
   <h2>
     <a id="workspace-empty"
        rel="tipsy-south"
        href="{% url lizard_map_workspace_empty %}"
        title="{% trans 'Empty your workspace' %}"
-       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty">
+       class="title ss_sprite ss_delete sidebarbox-action-icon action-post-workspace-empty"
+      d ata-target-id="#edit-workspace">
     </a>
     {% comment %}
     The added value of next link might not be obvious to a user, because workspace-load
     seems to offer comparable functionality. A subtle difference is that it reveals a
     URL to a read-only workspace, which you can send around via email.
-    {% endcomment %}
-    {% comment %}
     <a id="workspace-link-to-stored"
        rel="tipsy-south"
        href="{% url lizard_map_workspace_storage_list %}"
@@ -39,14 +37,12 @@
        title="{% trans 'Save workspace...' %}"
        class="title ss_sprite ss_database_save sidebarbox-action-icon ajax-dialog"
        data-size="xs">&nbsp;</a>
-    {% comment %}
     <a id="workspace-load"
        rel="tipsy-south"
        href="{% url lizard_map_workspace_load %}"
        title="{% trans 'Load workspace...' %}"
        class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"
        data-size="xs">&nbsp;</a>
-    {% endcomment %}
     <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
       Workspace
     </span>
@@ -65,7 +61,6 @@
       {# Delete workspace item. Tipsy tooltips won't disappear. #}
       <span class="ss_sprite ss_delete sidebarbox-action-icon
                    workspace-item-delete"
-	    rel="tipsy-south"
             title="{% trans 'Delete item' %}">
       </span>
       {# Pan to layer. #}

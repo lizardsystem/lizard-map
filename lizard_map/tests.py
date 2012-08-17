@@ -29,8 +29,8 @@ from lizard_map.dateperiods import WEEK
 from lizard_map.dateperiods import DAY
 from lizard_map.dateperiods import calc_aggregation_periods
 from lizard_map.dateperiods import fancy_period
-from lizard_map.fields import Color
 from lizard_map.mapnik_helper import database_settings
+from lizard_map.models import Color
 from lizard_map.models import Legend
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem

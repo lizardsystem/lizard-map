@@ -114,7 +114,7 @@ function show_popup(data) {
             $("#movable-dialog").dialog("open");
             if (data.html.length === 1) {
                 // The tabs don't do their reload magic.
-                //reloadGraphs();
+                reloadGraphs();
             } else {
                 // Re-reload the first one.
                 reloadLocalizedGraphs(
@@ -158,13 +158,11 @@ the <div class="workspace">
 
 L3
 */
-
 jQuery.fn.workspaceInteraction = function () {
     return this.each(function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
         // Make the items in a workspace sortable.
         $workspace = $(this);
-        /*  Reinout disabled jquery-ui, so sortable is out for the moment...
         workspaceItems = $workspace.find("ul.workspace-items");
         workspaceItems.sortable({
             update: function (event, ui) {
@@ -188,14 +186,13 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'ui-sortable-placeholder',
             items: 'li.workspace-item'
         });
-        */
         // // Make collage clickable. (DONE: should be collage-popup)
         // $(".collage-popup", $workspace).live('click',
         //                                $(".collage").collagePopup);
         // Make checkboxes work.
         $workspace.liveCheckboxes();
         // Initialize the graph popup.
-        //$('#dialog').overlay({});  // Necessary?
+        $('#dialog').overlay({});  // Necessary?
     });
 };
 
@@ -263,16 +260,14 @@ jQuery.fn.updateWorkspace = function () {
                     $('.workspace-items', $holder).html());
                 // $(".snippet-list", $workspace).html(
                 //     $('.snippet-list', $holder).html());
-                //fillSidebar();
+                fillSidebar();
                 $(".map-actions").html(
                     $('.map-actions', $holder).html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
-                $("#rightbar").html(
-                    $('#rightbar', $holder).html());
                 // $("#collage").html(
                 //     $('#collage', $holder).html());
-                //reloadGraphs();
+                reloadGraphs();
                 // reload map layers
                 if ($("#map").length > 0) {
                     refreshLayers(); // from lizard_wms.js
@@ -284,12 +279,12 @@ jQuery.fn.updateWorkspace = function () {
                 // replaceItems. See if we can bring it together.
                 updateWorkspaceAcceptableStatus();
 
-                //setUpAnimationSlider();
-                //setUpTransparencySlider();
-                //setUpTooltips();
+                setUpAnimationSlider();
+                setUpTransparencySlider();
+                setUpTooltips();
                 // Enable sorting. Some functions
                 // (setUpAddWorkspaceItem) turns sorting off.
-               //$(".workspace ul.workspace-items").sortable("enable");
+                $(".workspace ul.workspace-items").sortable("enable");
             }
         );
     });
@@ -403,7 +398,7 @@ function reloadGraphsTab() {
     reloadGraphs();
 }
 
-/*
+
 $(document).ready(function () {
     // Used by show_popup
     $('#content').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
@@ -433,4 +428,3 @@ $(document).ready(function () {
             }
         });
 });
-*/

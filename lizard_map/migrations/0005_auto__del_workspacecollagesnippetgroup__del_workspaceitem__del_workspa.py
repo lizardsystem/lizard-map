@@ -67,7 +67,7 @@ class Migration(SchemaMigration):
             ('restrict_to_month', self.gf('django.db.models.fields.IntegerField')(null=True, blank=True)),
             ('aggregation_period', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('collage', self.gf('django.db.models.fields.related.ForeignKey')(related_name='collage_items', to=orm['lizard_map.CollageEdit'])),
-            ('identifier', self.gf('lizard_map.fields.JSONField')(default='')),
+            ('identifier', self.gf('lizard_map.models.JSONField')(default='')),
         ))
         db.send_create_signal('lizard_map', ['CollageEditItem'])
 
@@ -263,7 +263,7 @@ class Migration(SchemaMigration):
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'collage': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'collage_items'", 'to': "orm['lizard_map.CollageEdit']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'identifier': ('lizard_map.fields.JSONField', [], {'default': "''"}),
+            'identifier': ('lizard_map.models.JSONField', [], {'default': "''"}),
             'index': ('django.db.models.fields.IntegerField', [], {'default': '100', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
             'percentile_value': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
@@ -272,16 +272,16 @@ class Migration(SchemaMigration):
         },
         'lizard_map.legend': {
             'Meta': {'object_name': 'Legend'},
-            'default_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'default_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'descriptor': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'max_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'max_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'max_value': ('django.db.models.fields.FloatField', [], {'default': '100'}),
-            'min_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'min_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'min_value': ('django.db.models.fields.FloatField', [], {'default': '0'}),
             'steps': ('django.db.models.fields.IntegerField', [], {'default': '10'}),
-            'too_high_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
-            'too_low_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'})
+            'too_high_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
+            'too_low_color': ('lizard_map.models.ColorField', [], {'max_length': '8'})
         },
         'lizard_map.legendpoint': {
             'Meta': {'object_name': 'LegendPoint', '_ormbases': ['lizard_map.Legend']},

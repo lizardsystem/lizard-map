@@ -129,31 +129,12 @@ function refreshBackgroundLayers() {
                     layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
-                     'reproject': true,
+                     'maxResolution': 364,
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
-                     'numZoomLevels': 19,
-                     'units': "m",
-                     'maxExtent': new OpenLayers.Bounds(
-                         -128 * 156543.03390625,
-                         -128 * 156543.03390625,
-                       128 * 156543.03390625,
-                       128 * 156543.03390625
-                     ),
                      'transitionEffect': 'resize',
                      'buffer': 1}
-                );
-            }
-            else if (layer_type === "TMS")
-            {
-                base_layer = new OpenLayers.Layer.TMS(
-                    layer_name,
-                    url,
-                    {layername: layer_names,
-                     type: 'png',
-                     tileSize: new OpenLayers.Size(256, 256)
-                    }
                 );
             }
             // layers.base_layer
@@ -279,8 +260,6 @@ function showMap() {
         start_extent_bottom, max_extent, max_extent_left, max_extent_top,
         max_extent_right, max_extent_bottom;
 
-    window.setUpMapDimensions();
-
     // Make custom OpenLayers._getScriptLocation
     // OpenLayers (OL) cannot get its script location if the filename
     // OpenLayers.js has been changed.
@@ -319,7 +298,6 @@ function showMap() {
             projection: new OpenLayers.Projection(projection),
             displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
             units: "m",
-            maxResolution: 78271.516964,
             numZoomLevels: 18,
             maxExtent: max_extent,
             controls: []

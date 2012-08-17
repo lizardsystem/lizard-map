@@ -381,13 +381,11 @@ class Graph(object):
                  start_date, end_date,
                  width=None, height=None,
                  today=datetime.datetime.now(),
-                 restrict_to_month=None,
-                 tz=None):
+                 restrict_to_month=None):
+        self.restrict_to_month = restrict_to_month
         self.start_date = start_date
         self.end_date = end_date
         self.today = today
-        self.restrict_to_month = restrict_to_month
-        self.tz = tz
 
         self.figure = Figure()
         if width is None or not width:
@@ -522,7 +520,7 @@ class Graph(object):
             axes_to_change.xaxis.set_major_locator(major_locator)
 
             major_formatter = MultilineAutoDateFormatter(
-                major_locator, axes_to_change, tz=self.tz)
+                major_locator, axes_to_change)
             axes_to_change.xaxis.set_major_formatter(major_formatter)
 
         available_height = (self.height -

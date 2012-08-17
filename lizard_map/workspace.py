@@ -8,8 +8,8 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 
 from lizard_map.adapter import adapter_serialize
-from lizard_map.fields import Color
 from lizard_map.models import ICON_ORIGINALS
+from lizard_map.models import Color
 from lizard_map.models import Legend
 #from lizard_map.models import Workspace foo
 from lizard_map.symbol_manager import SymbolManager

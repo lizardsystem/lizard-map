@@ -91,16 +91,16 @@ class Migration(SchemaMigration):
         },
         'lizard_map.legend': {
             'Meta': {'object_name': 'Legend'},
-            'default_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'default_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'descriptor': ('django.db.models.fields.CharField', [], {'max_length': '80'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'max_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'max_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'max_value': ('django.db.models.fields.FloatField', [], {'default': '100'}),
-            'min_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
+            'min_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
             'min_value': ('django.db.models.fields.FloatField', [], {'default': '0'}),
             'steps': ('django.db.models.fields.IntegerField', [], {'default': '10'}),
-            'too_high_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'}),
-            'too_low_color': ('lizard_map.fields.ColorField', [], {'max_length': '8'})
+            'too_high_color': ('lizard_map.models.ColorField', [], {'max_length': '8'}),
+            'too_low_color': ('lizard_map.models.ColorField', [], {'max_length': '8'})
         },
         'lizard_map.legendpoint': {
             'Meta': {'object_name': 'LegendPoint', '_ormbases': ['lizard_map.Legend']},

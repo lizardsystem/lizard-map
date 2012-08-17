@@ -1,18 +1,10 @@
 Changelog of lizard-map
 =======================
 
-3.31.2 (unreleased)
--------------------
+3.32 (unreleased)
+-----------------
 
 - Nothing changed yet.
-
-
-3.31.1 (2012-08-17)
--------------------
-
-- Renamed /media to /static. That's django-staticfile's new standard.
-
-- Timeseries can now be localized in Graph object.
 
 
 3.31 (2012-05-15)

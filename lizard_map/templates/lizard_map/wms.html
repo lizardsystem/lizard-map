@@ -1,85 +1,139 @@
 {% extends "lizard_map/lizardgis.html" %}
 {% load i18n map workspaces %}
 
+{% block css %}
+{{ block.super }}
+<!-- tab styling -->
+<link rel="stylesheet"
+      type="text/css"
+      href="{{ STATIC_URL }}lizard_ui/tabs.css" />
+{% endblock %}
+
 {% block map-javascript %}
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}lizard_map/rest.js"></script>
-  {% if view.has_google %}
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}"></script>
-  {% endif %}
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/lizard_wms.js"></script>
+<script type="text/javascript"
+        src="{{ STATIC_URL }}lizard_map/rest.js"></script>
+{% if view.has_google %}
+<script src='http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}'></script>
+{% endif %}
 {% endblock map-javascript %}
 
+{% block breadcrumbs %}
+{% if view.crumbs %}
+» <a href="{{ view.crumbs.0.url }}" rel="tipsy-south" title="{{ view.crumbs.0.title }}">{{ view.crumbs.0.description }}</a>
+{% for crumb in view.crumbs|slice:"1:" %}
+→ <a href="{{ crumb.url }}" rel="tipsy-south" title="{{ crumb.title }}">{{ crumb.description }}</a>
+{% endfor %}
+{% endif %}
+{% endblock breadcrumbs %}
 
-{% block secondary-sidebar %}
-  {% workspace_edit view.workspace_edit %}
-{% endblock secondary-sidebar %}
-
-{% block rightbar %}
-  <h2>{% trans "Legend" %}</h2>
-  {% for legend in view.legends %}
-    <h3>{{ legend.name }}</h3>
-    <div>
-      <img src="{{ legend.image_url }}"
-           alt="{% trans 'Legend' %}: {{ legend.name }}" />
-    </div>
-  {% endfor %}
-{% endblock rightbar %}
-
+{% block above-content %}
+<ul class="map-actions">
+  <li id="map-multiple-selection"
+      class="action-icon map-multiple-selection"
+      title="{% trans 'Multi-selection of items on the map' %}"
+      rel="tipsy-south">
+  </li>
+  <li>
+    <a href="{% url lizard_map_date_range %}"
+     id="date-range"
+     title='{% trans "From" %} {{ view.date_start_period|date:"d-m-Y" }} {% trans "until" %} {{ view.date_end_period|date:"d-m-Y" }}'
+     class="title datepicker-icon action-icon ajax-dialog-onchange alternative-submit submit-replace-items"
+     data-replace-items="date-range animation-slider animation-date"
+     data-size="s"
+     rel="tipsy-south">&nbsp;</a>
+  </li>
+  {# Load and save map locations #}
+  <li id="map-load-default-location"
+      class="map-action"
+      data-url="{% url lizard_map.map_location_load_default %}">
+    <span rel="tipsy" class="map-location-icon action-icon"
+          title="{% trans 'Pan &amp; zoom to default map location' %}"></span>
+  </li>
+  <li id="transparency-slider"
+      title="{% trans 'Change transparency' %}"
+      class="map-action"
+      rel="tipsy-south">
+  </li>
+  {% if view.animation_slider %}
+  <li id="animation-slider"
+      title="{% trans 'Change current date' %}"
+      class="map-action"
+      rel="tipsy-south"
+      data-min="{{ view.animation_slider.min }}"
+      data-max="{{ view.animation_slider.max }}"
+      data-step="{{ view.animation_slider.step }}"
+      data-value="{{ view.animation_slider.value }}"
+      data-ajax-path="{% url lizard_map.set_animation_date %}">
+  </li>
+  <li id="animation-date" class="map-action">
+    <span id="selected-date">{{ view.animation_slider.selected_date|date:"d/m/Y" }}</span>
+  </li>
+  {% endif %}
+</ul>
+{% endblock above-content %}
 
 {% block content %}
-  {# data attributes wms #}
-  {# All contents of lizard-map-wms must have class lizard-map-wms-item #}
-  <div id="lizard-map-wms"
-       data-javascript-click-handler="{{ view.javascript_click_handler }}"
-       {% if view.javascript_hover_handler %}
-         {% ifnotequal view.javascript_hover_handler 'None' %}
-         data-javascript-hover-handler="{{ view.javascript_hover_handler }}"
-         {% endifnotequal %}
-       {% endif %}
-       {# New style maps #}
-       data-max-extent-left="{{ view.max_extent.left }}"
-       data-max-extent-top="{{ view.max_extent.top }}"
-       data-max-extent-right="{{ view.max_extent.right }}"
-       data-max-extent-bottom="{{ view.max_extent.bottom }}"
-       data-start-extent-left="{{ view.start_extent.left }}"
-       data-start-extent-top="{{ view.start_extent.top }}"
-       data-start-extent-right="{{ view.start_extent.right }}"
-       data-start-extent-bottom="{{ view.start_extent.bottom }}"
-       {# for WMS: EPSG:28992, EPSG:900913 #}
-       data-projection="{{ view.projection }}"
-       {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
-       data-display-projection="{{ view.display_projection }}"
-       {# URLS for saving, loading map locations #}
-       data-save-location-url="{% url lizard_map.map_location_save %}"
-       data-load-location-url="{% url lizard_map.map_location_load_default %}"
-       {# Selected base layer #}
-       data-selected-base-layer="{{ view.base_layer_name }}"
-       >
-    {# Make a layer for every background map #}
-    {% for background_map in view.background_maps %}
-      {% background_map background_map %}
-    {% endfor %}
-    {# Make a layer for workspace. #}
-    <div class="workspace-layer lizard-map-wms-item"
-         data-workspace-id="{{ view.workspace.id }}"
-         data-workspace-name="{{ view.workspace.name }}"
-         data-workspace-wms="{{ view.workspace.wms_url }}">
-    </div>
-    {# Add wms layers from workspace #}
-    {% for wms_layer in view.workspace.wms_layers %}
-      {% autoescape off %}
-        <div class="workspace-wms-layer lizard-map-wms-item"
-             data-workspace-wms-id="{{ wms_layer.wms_id }}"
-             data-workspace-wms-name="{{ wms_layer.name }}"
-             data-workspace-wms-url="{{ wms_layer.url }}"
-             {# json uses "" #}
-             data-workspace-wms-params='{{ wms_layer.params }}'
-             data-workspace-wms-options='{{ wms_layer.options }}'>
-         </div>
-       {% endautoescape %}
-     {% endfor %}
+{# Popups: invisible #}
+{% comment %}
+Dialog is used for fixed dialogs.
+{% endcomment %}
+<div id="dialog">
+  <div id="dialog-content">
   </div>
-  <div id="map" class="give-me-height"></div>
+</div>
+{# data attributes wms #}
+{# All contents of lizard-map-wms must have class lizard-map-wms-item #}
+<div id="lizard-map-wms"
+     data-javascript-click-handler="{{ view.javascript_click_handler }}"
+     {% if view.javascript_hover_handler %}
+       {% ifnotequal view.javascript_hover_handler 'None' %}
+       data-javascript-hover-handler="{{ view.javascript_hover_handler }}"
+       {% endifnotequal %}
+     {% endif %}
+     {# New style maps #}
+     data-max-extent-left="{{ view.max_extent.left }}"
+     data-max-extent-top="{{ view.max_extent.top }}"
+     data-max-extent-right="{{ view.max_extent.right }}"
+     data-max-extent-bottom="{{ view.max_extent.bottom }}"
+     data-start-extent-left="{{ view.start_extent.left }}"
+     data-start-extent-top="{{ view.start_extent.top }}"
+     data-start-extent-right="{{ view.start_extent.right }}"
+     data-start-extent-bottom="{{ view.start_extent.bottom }}"
+     {# for WMS: EPSG:28992, EPSG:900913 #}
+     data-projection="{{ view.projection }}"
+     {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
+     data-display-projection="{{ view.display_projection }}"
+     {# URLS for saving, loading map locations #}
+     data-save-location-url="{% url lizard_map.map_location_save %}"
+     data-load-location-url="{% url lizard_map.map_location_load_default %}"
+     {# Selected base layer #}
+     data-selected-base-layer="{{ view.base_layer_name }}"
+     >
+  {# Make a layer for every background map #}
+  {% for background_map in view.background_maps %}
+  {% background_map background_map %}
+  {% endfor %}
+  {# Make a layer for workspace. #}
+  <div class="workspace-layer lizard-map-wms-item"
+       data-workspace-id="{{ view.workspace.id }}"
+       data-workspace-name="{{ view.workspace.name }}"
+       data-workspace-wms="{{ view.workspace.wms_url }}">
+  </div>
+  {# Add wms layers from workspace #}
+  {% for wms_layer in view.workspace.wms_layers %}
+  {% autoescape off %}
+  <div class="workspace-wms-layer lizard-map-wms-item"
+       data-workspace-wms-id="{{ wms_layer.wms_id }}"
+       data-workspace-wms-name="{{ wms_layer.name }}"
+       data-workspace-wms-url="{{ wms_layer.url }}"
+       {# json uses "" #}
+       data-workspace-wms-params='{{ wms_layer.params }}'
+       data-workspace-wms-options='{{ wms_layer.options }}'>
+   </div>
+   {% endautoescape %}
+   {% endfor %}
+</div>
+<div id="map"></div>
 {% endblock content %}
