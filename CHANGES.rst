@@ -1,10 +1,18 @@
 Changelog of lizard-map
 =======================
 
-4.6 (unreleased)
+4.7 (unreleased)
 ----------------
 
 - Added popup with subtabs.
+
+
+4.6 (2012-08-23)
+----------------
+
+- Fix graphs and popups: switch from jquery-tools tabs to superior jquery-ui tabs.
+
+- Properly resize graphs instead of reloading them.
 
 
 4.5 (2012-08-14)
