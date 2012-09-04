@@ -359,27 +359,30 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def content_actions(self):
         """Add default-location-zoom."""
         actions = super(AppView, self).content_actions
-        zoom_to_default = Action(
-            name=_('Default zoom'),
-            description=_('Zoom to default location'),
-            url=reverse('lizard_map.map_location_load_default'),
-            icon='icon-screenshot',
-            klass='map-load-default-location')
-        actions.insert(0, zoom_to_default)
-        set_date_range = Action(
-            name=_('Verander datumbereik'),
-            description=_('Verander het datumbereik van de metingen.'),
-            url=reverse('lizard_map_date_range'),
-            icon='icon-time',
-            klass='popup-date-range')
-        actions.insert(1, set_date_range)
-        activate_multiselect = Action(
-            name=_('Multi-select'),
-            description=_('Selecteer meerdere items.'),
-            url="javascript:void(null)",
-            icon='icon-multi-select',
-            klass='map-multiple-selection')
-        actions.insert(2, activate_multiselect)
+        if getattr(settings, 'MAP_SHOW_MULTISELECT', True):
+            activate_multiselect = Action(
+                name=_('Multi-select'),
+                description=_('Selecteer meerdere items.'),
+                url="javascript:void(null)",
+                icon='icon-multi-select',
+                klass='map-multiple-selection')
+            actions.insert(0, activate_multiselect)
+        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
+            set_date_range = Action(
+                name=_('Verander datumbereik'),
+                description=_('Verander het datumbereik van de metingen.'),
+                url=reverse('lizard_map_date_range'),
+                icon='icon-time',
+                klass='popup-date-range')
+            actions.insert(0, set_date_range)
+        if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
+            zoom_to_default = Action(
+                name=_('Default zoom'),
+                description=_('Zoom to default location'),
+                url=reverse('lizard_map.map_location_load_default'),
+                icon='icon-screenshot',
+                klass='map-load-default-location')
+            actions.insert(0, zoom_to_default)
         return actions
 
 
