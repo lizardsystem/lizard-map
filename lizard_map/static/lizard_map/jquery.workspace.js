@@ -439,7 +439,7 @@ $(document).ready(function () {
 		autoOpen: false,
 		title: '',
         //resize: resizeCurrentGraph,
-        width: 800,
+        width: 450,
         height: 480,
         zIndex: 10000
 	});
