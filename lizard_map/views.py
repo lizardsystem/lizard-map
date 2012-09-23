@@ -28,7 +28,7 @@ from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import UiView
 from lizard_ui.views import IconView
-import Image
+from PIL import Image
 import iso8601
 import mapnik
 

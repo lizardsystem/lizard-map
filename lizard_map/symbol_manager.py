@@ -5,8 +5,8 @@
 import logging
 import os.path
 import fnmatch
-import Image
-import ImageFilter
+from PIL import Image
+from PIL import ImageFilter
 import pkg_resources
 
 logger = logging.getLogger(__name__)
