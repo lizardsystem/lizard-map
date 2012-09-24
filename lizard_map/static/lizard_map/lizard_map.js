@@ -1,47 +1,7 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
-/*global $, OpenLayers, window, updateLayers, addProgressAnimationIntoWorkspace,
-stretchOneSidebarBox, reloadGraphs, fillSidebar, show_popup,
-alert, setUpTooltips,
-hover_popup, layers, wms_layers, map, refreshLayers, isCollagePopupVisible,
-updateWorkspaceAcceptableStatus */
 
 var animationTimer, transparencyTimer;
-
-// if (typeof(console) === 'undefined') {
-//     // Prevents the firebug console from throwing errors in browsers other
-//     // than Firefox/Chrome/Chromium
-//     // From http://gist.github.com/384113
-//     var console = {};
-//     console.log = function () {};
-// }
-
-
-/*
-Workspace plugin
-
-A workspace needs to have a couple of data items (defined on the <div
-class="workspace>):
-
-data-url-lizard-map-workspace-item-edit
-data-url-lizard-map-workspace-item-reorder
-data-url-lizard-map-workspace-item-add
-data-url-lizard-map-workspace-item-delete
-
-css class drophover
-
-A workspace needs:
-
-attr("data-workspace_id")
-<ul> inside with class workspace_items at depth 2
-workspace_trash class inside workspace
-workspace_item_checkbox class in ul.workspace_items
-*/
-
-/* Bind/Live checkboxes
-
-$("a.url-lizard-map-workspace-item-edit").attr("href");
-*/
 
 function isCollagePopupVisible() {
     return ($("#dialog-content div:first-child").length !== 0 &&
@@ -304,11 +264,8 @@ jQuery.fn.updateWorkspace = function () {
 };
 
 /* React on click "add snippet"
-
 requires
-
 .data-url-lizard-map-snippet-add
-
 */
 jQuery.fn.snippetInteraction = function () {
     return this.each(function () {
@@ -1721,7 +1678,6 @@ function refreshBackgroundLayers() {
                     layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
-                     'reproject': true,
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
@@ -1763,37 +1719,6 @@ function refreshBackgroundLayers() {
     });
 }
 
-// obsolete as everything is a WMS layer now
-/*
-function refreshWorkspaceLayers() {
-    var $lizard_map_wms, wms_layers, osm_url;
-    $lizard_map_wms = $("#lizard-map-wms");
-    $(".workspace-layer").each(function () {
-        var workspace_id, workspace_name, workspace_wms;
-        workspace_id = $(this).attr("data-workspace-id");
-        workspace_name = $(this).attr("data-workspace-name");
-        workspace_wms = $(this).attr("data-workspace-wms");
-        if (layers[workspace_id] === undefined) {
-            // It doesn't exist yet.
-            layers[workspace_id] = new OpenLayers.Layer.WMS(
-                workspace_name,
-                workspace_wms,
-                {layers: 'basic'},
-                {singleTile: true,
-                 transitionEffect: 'resize',
-                 displayInLayerSwitcher: false,
-                 isBaseLayer: false});
-            layers[workspace_id].mergeNewParams({'random': Math.random()});
-            map.addLayer(layers[workspace_id]);
-        } else {
-            // It exists: refresh it.
-            layers[workspace_id].mergeNewParams({'random': Math.random()});
-        }
-    });
-}
-*/
-
-
 function refreshWmsLayers() {
     // Add wms layers from workspace items.
     var $lizard_map_wms, osm_url, i, ids_found;
@@ -1812,6 +1737,11 @@ function refreshWmsLayers() {
         params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
+        // HACK: force reproject = false for layers which still have this defined (in the database no less)
+        // reprojection is deprecated
+        if (options.reproject) {
+            delete options['reproject'];
+        }
         index = parseInt($(this).attr("data-workspace-wms-index"));
         if (wms_layers[id] === undefined) {
             // Create it.
@@ -1964,6 +1894,13 @@ function showMap() {
     }
 
     // Map is globally defined.
+    // Configure OpenLayers to retry loading tiles once
+    OpenLayers.IMAGE_RELOAD_ATTEMPTS = 2;
+
+    // Tell OpenLayers we manually load the theme, so we can control
+    // the load order.
+    options.theme = null;
+
     map = new OpenLayers.Map('map', options);
     // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
 
@@ -2288,9 +2225,6 @@ $(document).ready(function () {
 
 // Initialize all workspace actions.
 $(document).ready(function () {
-    // New bootstrappy stuff.
-    // TODO EJVOS $("#map").height($("#content").height());
-
     // Touched/new for L3
     setUpWorkspaceAcceptable();
     setUpDialogs();
