@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-15 04:46-0500\n"
+"POT-Creation-Date: 2012-09-24 02:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,62 +84,70 @@ msgstr "December"
 msgid "Whole period"
 msgstr "Hele periode"
 
-#: fields.py:102
+#: fields.py:101
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: models.py:525
+#: models.py:530
 msgid "all"
 msgstr "alles"
 
-#: models.py:526
+#: models.py:531
 msgid "year"
 msgstr "jaar"
 
-#: models.py:527
+#: models.py:532
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:528
+#: models.py:533
 msgid "month"
 msgstr "maand"
 
-#: models.py:529
+#: models.py:534
 msgid "week"
 msgstr "week"
 
-#: models.py:530
+#: models.py:535
 msgid "day"
 msgstr "dag"
 
-#: views.py:285
+#: views.py:311
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:302
+#: views.py:329
 msgid "Layers"
 msgstr "Kaartlagen"
 
-#: views.py:308 templates/lizard_map/legend_item.html:5
-#: templates/lizard_map/wms.html:21
+#: views.py:335 templates/lizard_map/legend_item.html:6
+#: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:332
-msgid "Default zoom"
-msgstr "Beginlocatie"
+#: views.py:364
+msgid "Multi-select"
+msgstr ""
 
-#: views.py:333
-msgid "Zoom to default location"
-msgstr "Zoom naar de standaard beginlocatie"
+#: views.py:365
+msgid "Selecteer meerdere items."
+msgstr ""
 
-#: views.py:339
+#: views.py:372
 msgid "Verander datumbereik"
 msgstr ""
 
-#: views.py:340
+#: views.py:373
 msgid "Verander het datumbereik van de metingen."
 msgstr ""
+
+#: views.py:380
+msgid "Default zoom"
+msgstr "Beginlocatie"
+
+#: views.py:381
+msgid "Zoom to default location"
+msgstr "Zoom naar de standaard beginlocatie"
 
 #: workspace.py:21
 msgid "blue"
@@ -190,7 +198,7 @@ msgid "Selection"
 msgstr "Selectie"
 
 #: templates/lizard_map/tag_collage_edit.html:46
-#: templates/lizard_map/tag_workspace_edit.html:62
+#: templates/lizard_map/tag_workspace_edit.html:61
 msgid "Delete item"
 msgstr "Verwijder item"
 
@@ -203,51 +211,46 @@ msgid "Empty your collage"
 msgstr "Selectie leegmaken"
 
 #: templates/lizard_map/tag_collage_edit.html:73
-msgid "Selection popup..."
-msgstr "Selectie pop-up..."
+msgid "Selection popup"
+msgstr "Selectie pop-up"
 
 #: templates/lizard_map/tag_collage_edit.html:82
-msgid "Selection page..."
-msgstr "Naar selectiepagina..."
+msgid "Selection page"
+msgstr "Naar selectiepagina"
 
-#: templates/lizard_map/tag_workspace.html:28
-msgid "new workspace"
-msgstr "nieuwe workspace"
-
-#: templates/lizard_map/tag_workspace.html:36
-#: templates/lizard_map/tag_workspace.html:110
-msgid "empty"
-msgstr "leeg"
-
-#: templates/lizard_map/tag_workspace.html:41
-#: templates/lizard_map/tag_workspace.html:124
-msgid "link to"
-msgstr "link naar"
-
-#: templates/lizard_map/tag_workspace.html:118
-msgid "Grafieken en Statistieken"
-msgstr ""
-
-#: templates/lizard_map/tag_workspace.html:133
-msgid "popup"
-msgstr "popup"
-
-#: templates/lizard_map/tag_workspace_edit.html:17
+#: templates/lizard_map/tag_workspace_edit.html:16
+#: templates/lizard_map/workspace_storage_detail.html:15
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
 msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
-#: templates/lizard_map/tag_workspace_edit.html:56
-#: templates/lizard_map/workspace_storage_detail.html:44
+#: templates/lizard_map/tag_workspace_edit.html:55
+#: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
 msgstr "Zoom zodat alles hiervan in beeld is"
 
-#: templates/lizard_map/tag_workspace_edit.html:82
+#: templates/lizard_map/tag_workspace_edit.html:80
 msgid "Empty your workspace"
 msgstr "Workspace leegmaken"
 
-#: templates/lizard_map/workspace_storage_detail.html:61
-#: templates/lizard_map/workspace_storage_detail.html:65
+#: templates/lizard_map/tag_workspace_edit.html:91
+msgid "Save your workspace"
+msgstr "Workspace opslaan"
+
+#: templates/lizard_map/workspace_storage_detail.html:62
+#: templates/lizard_map/workspace_storage_detail.html:66
 msgid "Edit this workspace"
 msgstr "Deze workspace bewerken"
+
+#~ msgid "new workspace"
+#~ msgstr "nieuwe workspace"
+
+#~ msgid "empty"
+#~ msgstr "leeg"
+
+#~ msgid "link to"
+#~ msgstr "link naar"
+
+#~ msgid "popup"
+#~ msgstr "popup"
