@@ -378,7 +378,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
                 name=_('Default zoom'),
-                description=_('Zoom to default location'),
+                description=_('Zoom to default location.'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
                 klass='map-load-default-location')

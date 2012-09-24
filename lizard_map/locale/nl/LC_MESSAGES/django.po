@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-24 02:33+0200\n"
+"POT-Creation-Date: 2012-09-24 07:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,7 +121,7 @@ msgid "Layers"
 msgstr "Kaartlagen"
 
 #: views.py:335 templates/lizard_map/legend_item.html:6
-#: templates/lizard_map/wms.html:19
+#: templates/lizard_map/wms.html:17
 msgid "Legend"
 msgstr "Legenda"
 
@@ -146,8 +146,8 @@ msgid "Default zoom"
 msgstr "Beginlocatie"
 
 #: views.py:381
-msgid "Zoom to default location"
-msgstr "Zoom naar de standaard beginlocatie"
+msgid "Zoom to default location."
+msgstr "Zoom naar de standaard beginlocatie."
 
 #: workspace.py:21
 msgid "blue"
