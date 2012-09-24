@@ -339,7 +339,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         """Return legends for the rightbar."""
         result = []
         workspace_items = self.workspace().workspace_items.filter(
-            visible=True).reverse()
+            visible=True)
         for workspace_item in workspace_items:
             logger.debug("Looking for legend url for %s...", workspace_item)
             if not hasattr(workspace_item.adapter, 'legend_image_urls'):
