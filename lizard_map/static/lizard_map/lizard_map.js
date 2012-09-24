@@ -16,6 +16,407 @@ var animationTimer, transparencyTimer;
 //     console.log = function () {};
 // }
 
+
+/*
+Workspace plugin
+
+A workspace needs to have a couple of data items (defined on the <div
+class="workspace>):
+
+data-url-lizard-map-workspace-item-edit
+data-url-lizard-map-workspace-item-reorder
+data-url-lizard-map-workspace-item-add
+data-url-lizard-map-workspace-item-delete
+
+css class drophover
+
+A workspace needs:
+
+attr("data-workspace_id")
+<ul> inside with class workspace_items at depth 2
+workspace_trash class inside workspace
+workspace_item_checkbox class in ul.workspace_items
+*/
+
+/* Bind/Live checkboxes
+
+$("a.url-lizard-map-workspace-item-edit").attr("href");
+*/
+
+function isCollagePopupVisible() {
+    return ($("#dialog-content div:first-child").length !== 0 &&
+            $("#dialog-content div:first-child").data("is_collage_popup") &&
+            $("#dialog").css("display") === "block");
+}
+
+jQuery.fn.liveCheckboxes = function () {
+    return this.each(function () {
+        var $workspace;
+        $workspace = $(this);
+        $workspace.find(".workspace-item-checkbox").live('click', function () {
+            var url, $list_item;
+            url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
+            $list_item = $(this).closest('li');
+            $list_item.addClass("waiting-lineitem");
+            $.ajax({
+                url: url,
+                data: { workspace_item_id: this.id, visible: this.checked },
+                success: function () {
+                    $workspace.updateWorkspace();
+                },
+                type: "POST",
+                async: false
+            });
+        });
+    });
+};
+
+function show_popup(data) {
+    var html, overlay, i;
+    if (data !== null) {
+        if (data.html && data.html.length !== 0) {
+            // We got at least 1 result back.
+            if (data.html.length === 1) {
+                // Just copy the contents directly into the target div.
+                $("#movable-dialog-content").html(data.html[0]);
+            } else {
+                // Build up html with tabs.
+                html = '<div id="popup-tabs"><ul>';
+                for (i = 0; i < data.html.length; i += 1) {
+                    html += '<li><a href="#popup-tab-' + (i + 1) + '">Tabblad ';
+                    html += (i + 1) + '</a></li>';
+                }
+                html += '</ul>';
+                for (i = 0; i < data.html.length; i += 1) {
+                    html += '<div id="popup-tab-' + (i + 1) + '">';
+                    html += data.html[i];
+                    html += '</div>';
+                }
+                html += '</div>';
+
+                // Copy the prepared HTML to the target div.
+                $("#movable-dialog-content").html(html);
+
+                // Call jQuery UI Tabs to actually instantiate some tabs.
+                $("#popup-tabs").tabs({
+                    idPrefix: 'popup-tab',
+                    selected: 0,
+                    show: function(event, ui) {
+                        // Do an initial resize for IE8.
+                        resizeGraph($(ui.panel).find('.flot-graph'));
+                    }
+                });
+            }
+            $("#popup-subtabs").tabs({
+                idPrefix: 'popup-subtab',
+                selected: 0
+            });
+            // All set, open the dialog.
+            $("#movable-dialog").dialog("open");
+            // Have the graphs fetch their data.
+            reloadGraphs();
+            $(".add-snippet").snippetInteraction();
+        }
+        else if (data.indexOf && data.indexOf("div") != -1) {
+            // Apparantly data can also contain an entire <html> document
+            $("#movable-dialog-content").html(data);
+            $("#movable-dialog").dialog("open");
+        }
+        else {
+            nothingFoundPopup();
+        }
+    }
+}
+
+var hover_popup;
+
+function init_hover_popup(map) {
+    hover_popup = new OpenLayers.Popup('hover-popup',
+                                 new OpenLayers.LonLat(0, 0),
+                                 new OpenLayers.Size(300, 300),
+                                 '',
+                                 false);
+    hover_popup.maxSize = new OpenLayers.Size(300, 300);
+    hover_popup.border = "1px solid black";
+    hover_popup.autoSize = true;
+    map.addPopup(hover_popup);
+}
+
+function show_hover_popup(data, map) {
+    if (data.name !== "" && data.name !== undefined) {
+        var content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
+            '&nbsp;&nbsp;&nbsp;&nbsp;';
+        hover_popup.lonlat = new OpenLayers.LonLat(data.x, data.y);
+        hover_popup.setContentHTML(content);
+        hover_popup.updatePosition();
+        hover_popup.updateSize();
+        hover_popup.show();
+    }
+}
+
+function hide_hover_popup() {
+    hover_popup.contentHTML = '';
+    hover_popup.hide();
+}
+
+/* Make workspaces sortable and droppable
+
+Needed: data attribute .data-url-lizard-map-workspace-item-reorder on
+the <div class="workspace">
+
+<ul> at depth 2
+
+L3
+*/
+
+jQuery.fn.workspaceInteraction = function () {
+    return this.each(function () {
+        var $workspace, workspace_id, workspaceItems, snippet_list;
+        // Make the items in a workspace sortable.
+        $workspace = $(this);
+        workspaceItems = $workspace.find(".workspace-items");
+        workspaceItems.sortable({
+            update: function (event, ui) {
+                var url, order;
+                // very strange... $workspace becomes the <ul> element
+                // (which is workspaceItems)...  using workspaceItems
+                url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
+                order = workspaceItems.sortable("serialize");
+                $.post(
+                    url,
+                    order,
+                    function () {
+                        workspaceItems.parent().parent().updateWorkspace();
+                    }
+                );
+            },
+            helper: 'clone',
+            connectWith: '.workspace-items',
+            cursor: 'move',
+            revert: 'true',
+            placeholder: 'ui-sortable-placeholder',
+            items: '.workspace-item'
+        });
+        // // Make collage clickable. (DONE: should be collage-popup)
+        // $(".collage-popup", $workspace).live('click',
+        //                                $(".collage").collagePopup);
+        // Make checkboxes work.
+        $workspace.liveCheckboxes();
+        // Initialize the graph popup.
+        //$('#dialog').overlay({});  // Necessary?
+    });
+};
+
+
+/* Refresh workspace-acceptables. They should light up if the item is
+in given workspace. */
+function updateWorkspaceAcceptableStatus() {
+    var workspace_items, $workspace;
+    $workspace = $(".workspace");  // Later make this an option?
+    workspace_items = $workspace.find(".workspace-item");
+
+    $(".workspace-acceptable").each(function () {
+        var wa_adapter_class, wa_adapter_layer_json, selected, visible;
+        selected = false;
+        visible = true;
+        wa_adapter_class = $(this).attr("data-adapter-class");
+        wa_adapter_layer_json = $(this).attr(
+            "data-adapter-layer-json");
+
+        workspace_items.each(function () {
+            var adapter_class, adapter_layer_json, $workspace_item;
+            $workspace_item = $(this);
+            adapter_class = $workspace_item.attr(
+                "data-adapter-class");
+
+            if (wa_adapter_class === adapter_class) {
+                adapter_layer_json = $workspace_item.attr(
+                    "data-adapter-layer-json");
+                if (wa_adapter_layer_json === adapter_layer_json) {
+                    selected = true;
+                    if ($workspace_item.attr("data-visible") === "False") {
+                        visible = false;
+                    }
+                }
+            }
+        });
+        if (selected && visible) {
+            $(this).addClass("selected");
+            $(this).removeClass("selected-invisible");
+        } else if (selected && !visible) {
+            $(this).addClass("selected-invisible");
+            $(this).removeClass("selected");
+        } else {
+            $(this).removeClass("selected");
+            $(this).removeClass("selected-invisible");
+        }
+    });
+}
+
+
+// Update workspace boxes and their visible layers. L3
+jQuery.fn.updateWorkspace = function () {
+    return this.each(function () {
+        var $workspace, workspace_id, $holder;
+        $workspace = $(this);
+        workspace_id = $workspace.attr("data-workspace-id");
+        $holder = $('<div/>');
+
+        // Holder trick for replacing several items with just one server call:
+        // see http://tinyurl.com/32xacr4 .
+        $holder.load(
+            './ #page',
+            function () {
+                $(".workspace-items", $workspace).html(
+                    $('.workspace-items', $holder).html());
+                // $(".snippet-list", $workspace).html(
+                //     $('.snippet-list', $holder).html());
+                //fillSidebar();
+                $(".map-actions").html(
+                    $('.map-actions', $holder).html());
+                $("#lizard-map-wms").html(
+                    $('#lizard-map-wms', $holder).html());
+                $("#rightbar").html(
+                    $('#rightbar', $holder).html());
+                // $("#collage").html(
+                //     $('#collage', $holder).html());
+                //reloadGraphs();
+                // reload map layers
+                if ($("#map").length > 0) {
+                    refreshLayers(); // from lizard_wms.js
+                }
+                // Is this enough? See also refreshMapActionsDivs in
+                // lizard_map
+
+                // TODO: there refreshes are also used in lizard_map:
+                // replaceItems. See if we can bring it together.
+                updateWorkspaceAcceptableStatus();
+
+                //setUpAnimationSlider();
+                //setUpTransparencySlider();
+                //setUpTooltips();
+                // Enable sorting. Some functions
+                // (setUpAddWorkspaceItem) turns sorting off.
+               //$(".workspace ul.workspace-items").sortable("enable");
+            }
+        );
+    });
+};
+
+/* React on click "add snippet"
+
+requires
+
+.data-url-lizard-map-snippet-add
+
+*/
+jQuery.fn.snippetInteraction = function () {
+    return this.each(function () {
+        $(this).click(function (event) {
+            var workspace_id, url, workspace_item_id,
+                workspace_item_location_identifier,
+                workspace_item_location_shortname,
+                workspace_item_location_name;
+            event.preventDefault();
+            workspace_id = $(this).attr("data-workspace-id");
+            url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");  // should work, but workspace id is wrong
+            // url = $(".workspace").attr("data-url-lizard-map-snippet-add");
+            workspace_item_id = $(this).attr("data-workspace-item-id");
+            workspace_item_location_identifier = $(this).attr("data-item-identifier");
+            workspace_item_location_shortname = $(this).attr("data-item-shortname");
+            workspace_item_location_name = $(this).attr("data-item-name");
+            if (url !== undefined) {
+                $.post(
+                    url,
+                    {
+                        workspace_item_id: workspace_item_id,
+                        workspace_item_location_identifier: workspace_item_location_identifier,
+                        workspace_item_location_shortname: workspace_item_location_shortname,
+                        workspace_item_location_name: workspace_item_location_name
+                    },
+                    function () {
+                        // refresh collage
+                        $(".workspace").find(".snippet-list").load("./ .snippet",
+                                                                   fillSidebar);
+                        // Optional: close ourselves?
+                    });
+            }
+        });
+    });
+};
+
+
+// Obsolete
+function workspaceItemOrSnippet(object) {
+    if ($(object).is(".workspace-item")) {
+        return true;
+    }
+    if ($(object).is(".snippet")) {
+        return true;
+    }
+    return false;
+    //.workspace_item .snippet
+}
+
+
+function addProgressAnimationIntoWorkspace() {
+    $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
+}
+
+
+/* Load a lizard-map page by only replacing necessary parts
+
+Replaces:
+- breadcrumbs
+- app part
+
+Setup the js of page
+Load workspaces
+
+Then change the url (???)
+
+*/
+
+jQuery.fn.lizardMapLink = function () {
+    $(this).click(function (event) {
+        var popup_login, next;
+        popup_login = $(this).attr("data-popup-login");
+        if (popup_login !== undefined) {
+            // So we need login.
+            event.preventDefault();
+            // Fill "next" field.
+            next = $(this).attr("href");
+            $("#login-form-next").attr("value", next);
+            // "Click" on it.
+            $("#login-button").click();
+        }
+    });
+};
+
+
+/*
+Check if selector returns any elements
+
+Used like:
+$("#notAnElement").exists();
+*/
+jQuery.fn.exists = function () {
+    return this.length !== 0;
+}
+
+function resizeGraph($el) {
+    if ($el) {
+        var plot = $el.data('plot');
+        if (plot) {
+            plot.resize();
+            plot.setupGrid();
+            plot.draw();
+            return true;
+        }
+    }
+    return false;
+}
+
 function setupDatepicker(div) {
     // Nice Jquery date picker with dropdowns for year and month
     div.find(".datepicker").datepicker({
@@ -1180,12 +1581,715 @@ function setUpCollageTablePopup() {
 }
 
 
+// Beforeunload: this function is called just before leaving the page
+// and loading the new page. Unload however is called after loading
+// the new page.
+$(window).bind('beforeunload', function () {
+    mapSaveLocation(); // Save map location when 'before' leaving page.
+});
+
+
+
+/*jslint browser: true */
+/*jslint evil: true */
+/*jslint nomen: false */
+/*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
+G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler,
+stretchOneSidebarBox */
+
+var layers, wms_layers, background_layers, map;
+layers = [];  // Used in an associative way.
+background_layers = [];  // Just the identifiers.
+wms_layers = {};
+
+//layer_names = []; // stores all names, so we can loop through the layers
+
+//layers is globally defined
+function updateLayer(workspace_id) {
+    layers[workspace_id].mergeNewParams({'random': Math.random()});
+}
+
+
+function updateLayers() {
+    var i;
+    for (i = 0; i < layers.length; i += 1) {
+        if (layers[i] !== undefined) {
+            updateLayer(i);
+        }
+    }
+}
+
+
+/* L3 is multiple selection turned on? */
+function multipleSelection() {
+    return $("a.map-multiple-selection").hasClass("active");
+}
+
+/* L3 click on (lon, lat) in multiple select mode
+
+Borrowed from popup_click_handler
+*/
+function addMultipleSelection(x, y, map, e) {
+    var extent, radius, url, workspace_id, workspace_type;
+    extent = map.getExtent();
+    radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
+    $("#map_").css("cursor", "progress");
+    url = $(".workspace").attr("data-url-lizard-map-add-selection");
+    workspace_id = $(".workspace").attr("data-workspace-id");
+    workspace_type = $(".workspace").attr("data-workspace-type");
+    if (workspace_type === undefined) {
+    workspace_type = "workspace_edit"; // Default
+    }
+
+    if (url !== undefined) {
+        $.post(
+            url,
+            { x: x, y: y, radius: radius, srs: map.getProjection(),
+              workspace_id: workspace_id, workspace_type: workspace_type},
+            function (data, status, context) {
+                spawnCustomMovingBox(10, 10, e.pageX, e.pageY);
+                var div;
+                div = $(data).find("#edit-collage");
+                $("#edit-collage").html(div.html());
+
+                //stretchOneSidebarBox();
+                //show_popup(data);
+                //$("#map").css("cursor", "default");
+            }
+        );
+    }
+}
+
+
+// Refresh/setup background layers only when they're not available yet.
+function refreshBackgroundLayers() {
+    var $lizard_map_wms, selected_base_layer_name, base_layer,
+    base_layer_type;
+    $lizard_map_wms = $("#lizard-map-wms");
+    if (!$lizard_map_wms) {
+        // No element found, nothing to do.
+        return;
+    }
+    selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
+    $lizard_map_wms.find(".background-layer").each(function () {
+        var google_type, data_google_type, layer_name, layer_type, url,
+        is_default, layer_names, identifier, is_base_layer;
+        layer_type = $(this).attr("data-layer-type");
+        layer_name = $(this).attr("data-layer-name");
+        is_default = $(this).attr("data-default");
+        is_base_layer = ($(this).attr("data-is-base-layer") === 'True');
+
+        // Three possible identificators.
+        url = $(this).attr("data-layer-url");
+        layer_names = $(this).attr("data-layer-layer-names");
+        data_google_type = $(this).attr("data-google-layer-type");
+        identifier = url + layer_names + data_google_type;
+        if ($.inArray(identifier, background_layers) === -1) {
+            // Not already present, adding it.
+            if (layer_type === "GOOGLE")
+            {
+                // default=1, physical=2, hybrid=3, satellite=4
+                if (data_google_type === "2") {
+                    google_type = G_PHYSICAL_MAP;
+                }
+                else if (data_google_type === "3") {
+                    google_type = G_HYBRID_MAP;
+                }
+                else if (data_google_type === "4") {
+                    google_type = G_SATELLITE_MAP;
+                } else {
+                    google_type = G_NORMAL_MAP;
+                }
+                base_layer = new OpenLayers.Layer.Google(
+                    layer_name,
+                    {type: google_type,
+                     transitionEffect: 'resize',
+                     sphericalMercator: true});
+            }
+            else if (layer_type === "OSM")
+            {
+                base_layer = new OpenLayers.Layer.OSM(
+                    layer_name, url,
+                    {buffer: 0,
+                     transitionEffect: 'resize',
+                     tileOptions: {crossOriginKeyword: null}
+                    });
+            }
+            else if (layer_type === "WMS")
+            {
+                base_layer = new OpenLayers.Layer.WMS(
+                    layer_name, url,
+                    {'layers': layer_names,
+                     'format': 'image/png',
+                     'reproject': true,
+                     'transparent': !is_base_layer},
+                    {'isBaseLayer': is_base_layer,
+                     'visibility': is_base_layer,
+                     'numZoomLevels': 19,
+                     'units': "m",
+                     'maxExtent': new OpenLayers.Bounds(
+                         -128 * 156543.03390625,
+                         -128 * 156543.03390625,
+                       128 * 156543.03390625,
+                       128 * 156543.03390625
+                     ),
+                     'transitionEffect': 'resize',
+                     'buffer': 1}
+                );
+            }
+            else if (layer_type === "TMS")
+            {
+                base_layer = new OpenLayers.Layer.TMS(
+                    layer_name,
+                    url,
+                    {layername: layer_names,
+                     type: 'png',
+                     tileSize: new OpenLayers.Size(256, 256)
+                    }
+                );
+            }
+            // layers.base_layer
+            map.addLayer(base_layer);
+            background_layers.push(identifier);
+            // Set base layer if is_default.
+            if ((selected_base_layer_name === "") &&
+                (is_default === "True")) {
+
+                map.setBaseLayer(base_layer);
+            } else if (selected_base_layer_name === layer_name) {
+                map.setBaseLayer(base_layer);
+            }
+        }
+    });
+}
+
+// obsolete as everything is a WMS layer now
+/*
+function refreshWorkspaceLayers() {
+    var $lizard_map_wms, wms_layers, osm_url;
+    $lizard_map_wms = $("#lizard-map-wms");
+    $(".workspace-layer").each(function () {
+        var workspace_id, workspace_name, workspace_wms;
+        workspace_id = $(this).attr("data-workspace-id");
+        workspace_name = $(this).attr("data-workspace-name");
+        workspace_wms = $(this).attr("data-workspace-wms");
+        if (layers[workspace_id] === undefined) {
+            // It doesn't exist yet.
+            layers[workspace_id] = new OpenLayers.Layer.WMS(
+                workspace_name,
+                workspace_wms,
+                {layers: 'basic'},
+                {singleTile: true,
+                 transitionEffect: 'resize',
+                 displayInLayerSwitcher: false,
+                 isBaseLayer: false});
+            layers[workspace_id].mergeNewParams({'random': Math.random()});
+            map.addLayer(layers[workspace_id]);
+        } else {
+            // It exists: refresh it.
+            layers[workspace_id].mergeNewParams({'random': Math.random()});
+        }
+    });
+}
+*/
+
+
+function refreshWmsLayers() {
+    // Add wms layers from workspace items.
+    var $lizard_map_wms, osm_url, i, ids_found;
+    ids_found = [];
+    $lizard_map_wms = $("#lizard-map-wms");
+    $(".workspace-wms-layer").each(function () {
+        var name, url, params, options, id, index;
+        // WMS id, different than workspace ids.
+        id = $(this).attr("data-workspace-wms-id");
+        ids_found.push(id);
+        name = $(this).attr("data-workspace-wms-name");
+        url = $(this).attr("data-workspace-wms-url");
+        params = $(this).attr("data-workspace-wms-params");
+        params = $.parseJSON(params);
+        // Fix for partial images on tiles
+        params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
+        options = $(this).attr("data-workspace-wms-options");
+        options = $.parseJSON(options);
+        index = parseInt($(this).attr("data-workspace-wms-index"));
+        if (wms_layers[id] === undefined) {
+            // Create it.
+            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            wms_layers[id] = layer;
+            map.addLayer(layer);
+            layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
+        }
+        else {
+            // Update it.
+            var layer = wms_layers[id];
+            layer.setZIndex(1000 - index);
+        }
+    });
+    // Remove unused ones.
+    $.each(wms_layers, function (key, value) {
+        if ($.inArray(key, ids_found) === -1) {
+            // Remove now-unused layer.
+            map.removeLayer(value);
+            delete wms_layers[key];
+        }
+    });
+}
+
+
+/* Adds all layers (base + workspaces) to map. Refreshes all
+workspaces. Layers from other sources are assumed to be 'static' */
+function refreshLayers() {
+    // Set up all layers.
+    refreshBackgroundLayers();
+    //refreshWorkspaceLayers();
+    refreshWmsLayers();
+}
+
+
+function ZoomSlider(options) {
+    this.control = new OpenLayers.Control.PanZoomBar(options);
+
+    OpenLayers.Util.extend(this.control, {
+        draw: function (px) {
+            // initialize our internal div
+            OpenLayers.Control.prototype.draw.apply(this, arguments);
+            px = this.position.clone();
+
+            // place the controls
+            this.buttons = [];
+
+            var sz, centered;
+            sz = new OpenLayers.Size(18, 18);
+            centered = new OpenLayers.Pixel(px.x + sz.w / 2, px.y);
+
+            this._addButton("zoomin", "zoom-plus-mini.png", centered.add(0, 5), sz);
+            centered = this._addZoomBar(centered.add(0, sz.h + 5));
+            this._addButton("zoomout", "zoom-minus-mini.png", centered, sz);
+            return this.div;
+        }
+    });
+    return this.control;
+}
+
+function spawnCustomMovingBox(width, height, x, y) {
+    var $layer_button, $moving_box, move_down, move_right;
+    $layer_button = $(".secondary-sidebar-button");
+    $("#page").after('<div id="moving-box">');
+    $moving_box = $("#moving-box");
+    $moving_box.offset({left:x, top:y});
+    $moving_box.width(width);
+    $moving_box.height(height);
+    move_down = $layer_button.offset().top - y;
+    move_right = $layer_button.offset().left - x;
+    $moving_box.animate({
+        left: '+=' + move_right,
+        top: '+=' + move_down,
+        width: $layer_button.width(),
+        height: $layer_button.height()
+        }, 1000, function() {
+            $moving_box.remove();
+        });
+}
+
+function showMap() {
+    var options, base_layer, MapClickControl, MapHoverControl,
+        map_click_control, zoom_panel, map_hover_control,
+        javascript_click_handler_name, javascript_hover_handler_name,
+        $lizard_map_wms, projection, display_projection, start_extent,
+        start_extent_left, start_extent_top, start_extent_right,
+        start_extent_bottom, max_extent, max_extent_left, max_extent_top,
+        max_extent_right, max_extent_bottom;
+
+    window.setUpMapDimensions();
+
+    // Make custom OpenLayers._getScriptLocation
+    // OpenLayers (OL) cannot get its script location if the filename
+    // OpenLayers.js has been changed.
+    // This function is needed when loading images etc for OL.
+    OpenLayers._getScriptLocation = function () {
+        //return $("#openlayers-script").attr("data-openlayers-url");
+        return "/static_media/openlayers/";
+    };
+
+    // Find client-side extra data.
+    $lizard_map_wms = $("#lizard-map-wms");
+
+    projection = $lizard_map_wms.attr("data-projection");
+    display_projection = $lizard_map_wms.attr("data-display-projection");
+
+    start_extent_left = $lizard_map_wms.attr("data-start-extent-left");
+    start_extent_top = $lizard_map_wms.attr("data-start-extent-top");
+    start_extent_right = $lizard_map_wms.attr("data-start-extent-right");
+    start_extent_bottom = $lizard_map_wms.attr("data-start-extent-bottom");
+    start_extent = new OpenLayers.Bounds(
+        parseFloat(start_extent_left), parseFloat(start_extent_bottom),
+        parseFloat(start_extent_right), parseFloat(start_extent_top));
+
+    max_extent_left = $lizard_map_wms.attr("data-max-extent-left");
+    max_extent_top = $lizard_map_wms.attr("data-max-extent-top");
+    max_extent_right = $lizard_map_wms.attr("data-max-extent-right");
+    max_extent_bottom = $lizard_map_wms.attr("data-max-extent-bottom");
+    max_extent = new OpenLayers.Bounds(
+        parseFloat(max_extent_left), parseFloat(max_extent_bottom),
+        parseFloat(max_extent_right), parseFloat(max_extent_top));
+
+    // Set up projection and bounds.
+    if (projection === "EPSG:900913" || projection === "EPSG:3857")
+    {
+        options = {
+            projection: new OpenLayers.Projection(projection),
+            displayProjection: new OpenLayers.Projection(display_projection),  // "EPSG:4326"
+            units: "m",
+            maxResolution: 78271.516964,
+            numZoomLevels: 18,
+            maxExtent: max_extent,
+            controls: []
+        };
+    }
+    else if (projection === "EPSG:28992")
+    {
+        options = {
+            projection: new OpenLayers.Projection(projection),
+            displayProjection: new OpenLayers.Projection(display_projection),
+            units: "m",
+            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
+            maxExtent: max_extent,
+            controls: []
+        };
+    }
+    else
+    {
+        alert("Lizard-map onjuist geconfigureerd. Wilt U een kaart op deze pagina? Gebruik anders een andere template.");
+    }
+
+    // Map is globally defined.
+    map = new OpenLayers.Map('map', options);
+    // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+
+    refreshLayers();
+
+    // Set up controls, zoom and center.
+    map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': true}));
+    // Click handling.
+    javascript_click_handler_name = $lizard_map_wms.attr("data-javascript-click-handler");
+    if (javascript_click_handler_name) {
+        MapClickControl = OpenLayers.Class(OpenLayers.Control, {
+            defaultHandlerOptions: {
+                'single': true,
+                'double': false,
+                'pixelTolerance': 0,
+                'stopSingle': false,
+                'stopDouble': false
+            },
+
+            initialize: function (options) {
+                this.handlerOptions = OpenLayers.Util.extend(
+                    {}, this.defaultHandlerOptions
+                );
+                OpenLayers.Control.prototype.initialize.apply(
+                    this, arguments
+                );
+                this.handler = new OpenLayers.Handler.Click(
+                    this, {
+                        'click': this.trigger
+                    }, this.handlerOptions
+                );
+            },
+
+            trigger: function (e) {
+                var lonlat;
+                lonlat = map.getLonLatFromViewPortPx(e.xy);
+                if (multipleSelection()) {
+                    addMultipleSelection(lonlat.lon, lonlat.lat, map, e);
+                } else {
+                    eval(javascript_click_handler_name)(
+                        lonlat.lon, lonlat.lat, map);
+                }
+            }
+        });
+    }
+    // Hover handling.
+    javascript_hover_handler_name = $lizard_map_wms.attr("data-javascript-hover-handler");
+    if (javascript_hover_handler_name !== undefined) {
+        // Example code from
+        // http://trac.openlayers.org/browser/trunk/openlayers/examples/hover-handler.html
+        MapHoverControl = OpenLayers.Class(OpenLayers.Control, {
+            defaultHandlerOptions: {
+                'delay': 500,
+                'pixelTolerance': null,
+                'stopMove': false
+            },
+
+            initialize: function (options) {
+                this.handlerOptions = OpenLayers.Util.extend(
+                    {}, this.defaultHandlerOptions
+                );
+                OpenLayers.Control.prototype.initialize.apply(
+                    this, arguments
+                );
+                this.handler = new OpenLayers.Handler.Hover(
+                    this,
+                    {'pause': this.onPause, 'move': this.onMove},
+                    this.handlerOptions
+                );
+            },
+
+            onPause: function (e) {
+                var lonlat;
+                lonlat = map.getLonLatFromViewPortPx(e.xy);
+                eval(javascript_hover_handler_name)(
+                    lonlat.lon, lonlat.lat, map);
+            },
+
+            onMove: function (evt) {
+                hide_hover_popup();
+            }
+        });
+    }
+
+    zoom_panel = new OpenLayers.Control.Panel();
+    zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
+    map.addControl(zoom_panel);
+    map.addControl(new OpenLayers.Control.Navigation());
+
+    // Zoom to startpoint. Important to parse numbers, else a bug in
+    // OpenLayers will initially prevent "+" from working.
+    //
+    // Saving and subsequently restoring a start_extent often results in a
+    // zoom level that is decreased by -1. This might be due to rounding
+    // errors. By passing true to zoomToExtent, we will get the zoom
+    // level that most closely fits the specified bounds.
+    // See #2762 and #2794.
+    map.zoomToExtent(start_extent, true);
+    init_hover_popup(map);
+
+    // actually add the handers: keep these here for full iPad compatibility
+    if (javascript_click_handler_name) {
+        map_click_control = new MapClickControl();
+        map.addControl(map_click_control);
+        map_click_control.activate();
+    }
+    if (javascript_hover_handler_name !== undefined) {
+        map_hover_control = new MapHoverControl();
+        map.addControl(map_hover_control);
+        map_hover_control.activate();
+    }
+}
+
+
+/*
+Creates parameters part of url
+*/
+function getMapUrl() {
+    var extent, srs, activelayers, url, width, height, i;
+    extent  = map.getExtent();
+    extent  = [extent.left, extent.bottom,
+               extent.right, extent.top].join(',');
+    srs = map.getProjectionObject();
+    activelayers = [];
+    url = "?";
+    width   = map.getSize().w;
+    height  = map.getSize().h;
+
+    for (i = map.layers.length - 1; i >= 0; i -= 1) {
+        if (!map.layers[i].getVisibility()) {
+            continue;
+        }
+        if (!map.layers[i].calculateInRange()) {
+            continue;
+        }
+    if (!map.layers[i].params) {
+        /* Why does this happen? I don't know, but this appears necessary. */
+        continue;
+    }
+
+        activelayers[activelayers.length] = map.layers[i].params.LAYERS;
+    }
+
+    activelayers = activelayers.join(',');
+
+    url += "LAYERS=" + activelayers;
+    url += "&SRS=" + srs;
+    url += "&BBOX=" + extent;
+    url += "&WIDTH=" + width;
+    url += "&HEIGHT=" + height;
+
+    return url;
+}
+
+/*
+Replaces a href attr. of 'Download' subelement
+*/
+function setDownloadImageLink() {
+    $('a#download-map').click(function (e) {
+        var url;
+        url = $(this).attr("href");
+
+    url += getMapUrl();
+        // Because the result is an image, a popup will occur.
+        window.location = url;
+        return false;
+    });
+}
+
+
+/* map-multiple-selection button */
+function setUpMultipleSelection() {
+    $(".map-multiple-selection").live("click", function () {
+        $(this).toggleClass("active");
+    });
+}
+
+
+
+/* Helper functions in graph edit screen.  Needs lizard.js in
+order to function correctly.  */
+function graph_save_snippet() {
+    // The actual graph props are already stored in session on server
+    var url, workspace_item_id, workspace_item_location_identifier,
+        workspace_item_location_shortname, workspace_item_location_name;
+    url = $(this).attr("data-url");
+    workspace_item_id = $(this).attr("data-workspace-item-id");
+    workspace_item_location_identifier = $(this).attr("data-workspace-item-location-identifier");
+    workspace_item_location_shortname = $(this).attr("data-workspace-item-location-shortname");
+    workspace_item_location_name = $(this).attr("data-workspace-item-location-name");
+    $.post(
+        url,
+        {workspace_item_id: workspace_item_id,
+         workspace_item_location_identifier: workspace_item_location_identifier,
+         workspace_item_location_shortname: workspace_item_location_shortname,
+         workspace_item_location_name: workspace_item_location_name
+        }, function () {
+            reloadGraphs();
+        });
+}
+
+function graph_options_submit(event) {
+    // send all graph properties to server and reload page
+    var $form, url;
+    event.preventDefault();
+    $form = $(this).parents("form.graph-options");
+    url = $form.attr("action");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            // Always reload page: statistics & graphs can be different.
+            location.reload();
+        });
+}
+
+function graph_line_options_submit(event) {
+    // send all graph properties to server and reload graphs
+    var $form, url;
+    event.preventDefault();
+    $form = $(this).parents("form.graph-line-options");
+    url = $form.attr("action");
+    $.post(
+        url,
+        $form.serialize(),
+        function () {
+            reloadGraphs();
+            $("div.close").click();
+        });
+}
+
+function setGraphFilterMonth() {
+    var $form, status;
+    $form = $(".popup-graph-edit-global");
+    $form.each(function () {
+        status = $(this).find("input:radio:checked").attr("value");
+        if (status === "4") { // 4 is "MONTH"
+            $(this).find(".graph-filter-month").attr("disabled", false);
+        } else {
+            $(this).find(".graph-filter-month").attr("disabled", true);
+        }
+    });
+}
+
+function setUpGraphForm() {
+    // Set current status.
+    setGraphFilterMonth();
+
+    // Setup click.
+    $(".popup-graph-edit-global input:radio").click(setGraphFilterMonth);
+}
+
+
+
+/* REST api with jQuery */
+
+
+function makeHtml(data) {
+    var items = [];
+    console.log(typeof data);
+    if (typeof data === "string") {
+        return data;
+    }
+    if (typeof data === "function") {
+        return data;
+    }
+    $.each(data, function (key, val) {
+        console.log(key, val);
+        if (val === null) {
+            items.push('<li><span>' + key + '</span></li>');
+        } else if ((typeof val === "string") && (val.indexOf('http://') === 0)) {
+            items.push('<li><a href="' + val + '" class="rest-api">' + key + '</a></li>');
+        } else {
+            //console.log(val);
+            items.push('<li><span>' + key + '</span>' + makeHtml(val) + '</li>');
+        }
+     });
+    //console.log(items);
+    return $('<ul/>', {html: items.join('')}).html();
+}
+
+
+function apiRequest(target) {
+    var url;
+    url = $(target).attr("href");
+    $.getJSON(url, function (data) {
+        $(target).parents(".rest-api-container").html(makeHtml(data));
+    });
+ }
+
+
+/* a hrefs with class "rest-api":
+fetch url and build "something" out of it.
+*/
+function setUpRestApiLinks() {
+    $("a.rest-api").live("click", function(event) {
+        event.preventDefault();
+        apiRequest(event.target);
+        return false;
+    });
+
+    // Initial
+    $("a.rest-api").each(function () {
+        apiRequest(this);
+    });
+}
+
+
+
+$(document).ready(function () {
+    // Used by show_popup
+    $('body').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
+    $('#movable-dialog').dialog({
+        autoOpen: false,
+        title: '',
+        width: 450,
+        height: 480,
+        zIndex: 10000
+    });
+});
+
+
 // Initialize all workspace actions.
 $(document).ready(function () {
     // New bootstrappy stuff.
-	$("#map").height($("#content").height());
-
-
+    // TODO EJVOS $("#map").height($("#content").height());
 
     // Touched/new for L3
     setUpWorkspaceAcceptable();
@@ -1222,9 +2326,22 @@ $(document).ready(function () {
 });
 
 
-// Beforeunload: this function is called just before leaving the page
-// and loading the new page. Unload however is called after loading
-// the new page.
-$(window).bind('beforeunload', function () {
-    mapSaveLocation(); // Save map location when 'before' leaving page.
+
+$(document).ready(function () {
+    showMap();
+    setDownloadImageLink();
+    setUpMultipleSelection();
+});
+
+
+$(document).ready(function () {
+    $(".graph-save-snippet").click(graph_save_snippet);
+    $("input.graph-line-options-submit").click(graph_line_options_submit);
+    $("input.graph-options-submit").click(graph_options_submit);
+    setUpGraphForm();
+});
+
+
+$(document).ready(function () {
+    setUpRestApiLinks();
 });
