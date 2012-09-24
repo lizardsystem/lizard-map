@@ -76,9 +76,9 @@
       <a id="workspace-empty"
          rel="tipsy-south"
          href="{% url lizard_map_workspace_empty %}"
-         class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty">
+         class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty"
+         title="{% trans 'Empty your workspace' %}">
         <i class="icon-trash icon-white"></i>
-        {% trans 'Empty your workspace' %}
       </a>
     </li>
 
@@ -87,7 +87,8 @@
          rel="tipsy-south"
          href="{% url lizard_map_workspace_save %}"
          class="btn sidebarbox-action-icon popup-workspace-save"
-         data-size="xs">
+         data-size="xs"
+         title="{% trans 'Save your workspace' %}">
         <i class="ss_sprite ss_database_save"></i>
       </a>
     </li>
