@@ -1,4 +1,4 @@
-{% extends "lizard_ui/lizardbase.html" %}
+{% extends "lizard_map/lizardgis.html" %}
 {% load i18n workspaces %}
 
 {% block sidebar %}
@@ -20,17 +20,10 @@
 {% endblock %}
 
 {% block content %}
-{# Popups: invisible #}
-<div id="dialog">
-  <div id="dialog-content">
-  </div>
-</div>
 <div id="textual">
   <div id="collage">
     <h2>Selectie</h2>
     {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
-
-    <div>&nbsp;</div>
     <h3>{{ collage_items.0.data_description }}</h3>
     {% collage_items_html collage_items 'True' view.request %}
     <div>&nbsp;</div>
@@ -41,7 +34,7 @@
       <thead><tr>
         <th>Naam</th>
         <th>Toon tabel</th>
-        <th>Export csv</th>
+        <th>Exporteer csv</th>
       </tr></thead>
       <tbody>
         {% for collage_item in collage_items %}
@@ -50,7 +43,7 @@
           <td><a href="{% adapter_url collage_item 'html' %}"
                  class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
           <td><a href="{% adapter_url collage_item 'csv' %}"
-                 class="ss_sprite ss_table_save">Export csv</a></td>
+                 class="ss_sprite ss_table_save">Exporteer csv</a></td>
         </tr>
         {% endfor %}
 
