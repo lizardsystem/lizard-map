@@ -1256,8 +1256,23 @@ class CollageDetailView(
     """
     Shows "my collage" as big page.
     """
+    title = _('Collage')
     template_name = 'lizard_map/collage_edit_detail.html'
     hide_statistics = False
+
+    def breadcrumbs(self):
+        initial = [
+            Action(
+                name=_('Home'),
+                url='/',
+                description=_('Back to homepage')
+            ),
+            Action(
+                name=_('Collage'),
+                url=reverse('lizard_map_collage_edit_detail')
+            ),
+        ]
+        return initial
 
     def grouped_collage_items(self):
         """A grouped collage item is a collage item with property
@@ -1269,7 +1284,6 @@ class CollageDetailView(
 
     def get(self, request, *args, **kwargs):
         self.hide_statistics = request.GET.get('hide_statistics', False)
-
         return super(CollageDetailView, self).get(request, *args, **kwargs)
 
 
