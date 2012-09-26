@@ -21,10 +21,9 @@
 
 {% if flot_graph_data_url and adapter.support_flot_graph %}
 <div style="width: 100%; height: 240px;"
-     class="img-use-my-size flot-graph"
+     class="flot-graph"
      data-flot-graph-data-url="{{ flot_graph_data_url }}">
 </div>
-<input class="flot-graph-reload" type="button" value="Zoom uit" />
 {% endif %}
 
 {% if collage_item_props %}
