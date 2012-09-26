@@ -3,12 +3,6 @@
 
 var animationTimer, transparencyTimer;
 
-function isCollagePopupVisible() {
-    return ($("#dialog-content div:first-child").length !== 0 &&
-            $("#dialog-content div:first-child").data("is_collage_popup") &&
-            $("#dialog").css("display") === "block");
-}
-
 jQuery.fn.liveCheckboxes = function () {
     return this.each(function () {
         var $workspace;
@@ -167,7 +161,6 @@ jQuery.fn.workspaceInteraction = function () {
     });
 };
 
-
 /* Refresh workspace-acceptables. They should light up if the item is
 in given workspace. */
 function updateWorkspaceAcceptableStatus() {
@@ -213,7 +206,6 @@ function updateWorkspaceAcceptableStatus() {
     });
 }
 
-
 // Update workspace boxes and their visible layers. L3
 jQuery.fn.updateWorkspace = function () {
     return this.each(function () {
@@ -229,11 +221,6 @@ jQuery.fn.updateWorkspace = function () {
             function () {
                 $(".workspace-items", $workspace).html(
                     $('.workspace-items', $holder).html());
-                // $(".snippet-list", $workspace).html(
-                //     $('.snippet-list', $holder).html());
-                //fillSidebar();
-                $(".map-actions").html(
-                    $('.map-actions', $holder).html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
                 $("#rightbar").html(
@@ -251,13 +238,6 @@ jQuery.fn.updateWorkspace = function () {
                 // TODO: there refreshes are also used in lizard_map:
                 // replaceItems. See if we can bring it together.
                 updateWorkspaceAcceptableStatus();
-
-                //setUpAnimationSlider();
-                //setUpTransparencySlider();
-                //setUpTooltips();
-                // Enable sorting. Some functions
-                // (setUpAddWorkspaceItem) turns sorting off.
-               //$(".workspace ul.workspace-items").sortable("enable");
             }
         );
     });
@@ -302,54 +282,9 @@ jQuery.fn.snippetInteraction = function () {
     });
 };
 
-
-// Obsolete
-function workspaceItemOrSnippet(object) {
-    if ($(object).is(".workspace-item")) {
-        return true;
-    }
-    if ($(object).is(".snippet")) {
-        return true;
-    }
-    return false;
-    //.workspace_item .snippet
-}
-
-
 function addProgressAnimationIntoWorkspace() {
     $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
 }
-
-
-/* Load a lizard-map page by only replacing necessary parts
-
-Replaces:
-- breadcrumbs
-- app part
-
-Setup the js of page
-Load workspaces
-
-Then change the url (???)
-
-*/
-
-jQuery.fn.lizardMapLink = function () {
-    $(this).click(function (event) {
-        var popup_login, next;
-        popup_login = $(this).attr("data-popup-login");
-        if (popup_login !== undefined) {
-            // So we need login.
-            event.preventDefault();
-            // Fill "next" field.
-            next = $(this).attr("href");
-            $("#login-form-next").attr("value", next);
-            // "Click" on it.
-            $("#login-button").click();
-        }
-    });
-};
-
 
 /*
 Check if selector returns any elements
@@ -381,86 +316,6 @@ function setupDatepicker(div) {
 	changeMonth: true,
 	changeYear: true,
 	showAnim: ''
-    });
-}
-
-function setSliderDate(slider_value) {
-    $.ajax({
-        type: "POST",
-        url: $("#animation-slider").attr("data-ajax-path"),
-        data: "slider_value=" + slider_value,
-        success: function (data) {
-            // Update the date label span with the returned data
-            $('span#selected-date').html($.parseJSON(data));
-        }
-    });
-}
-
-
-function setUpAnimationSlider() {
-    var workspace_item_id;
-    $("#animation-slider").slider({
-        min: parseInt($("#animation-slider").attr("data-min"), 10),
-        max: parseInt($("#animation-slider").attr("data-max"), 10),
-        step: parseInt($("#animation-slider").attr("data-step"), 10),
-        value: parseInt($("#animation-slider").attr("data-value"), 10),
-        slide: function (event, ui) {
-            if (animationTimer) {
-                clearTimeout(animationTimer);
-            }
-            animationTimer = setTimeout(
-                function () {
-                    // Only run after nothing happened for 300ms.
-                    setSliderDate(ui.value);
-                },
-                300);
-        },
-        change: function (event, ui) {
-            setSliderDate(ui.value);
-            updateLayers();
-            reloadGraphs();
-        }
-    });
-}
-
-
-function setUpTransparencySlider() {
-    var transparency_slider_value;
-    transparency_slider_value = 100;
-    if ($('#map').data("transparency_slider_value")) {
-        transparency_slider_value = $("#map").data(
-            "transparency_slider_value");
-    }
-    $("#transparency-slider").slider({
-        min: 0,
-        max: 100,
-        step: 1,
-        value: transparency_slider_value,
-        slide: function (event, ui) {
-            var index;
-            $('#map').data("transparency_slider_value", ui.value);
-            $(layers).each(function (i, layer) {
-                if (layer !== undefined) {
-                    layer.setOpacity(ui.value / 100);
-                }
-            });
-            // WMS layers
-            for (index in wms_layers) {
-		if (wms_layers.hasOwnProperty(index)) {
-		    // Some layers start out at a lower opacity. If the opacity slider
-		    // is set to 100%, they should be at that lower opacity.
-		    // Store the original opacity in the wms_layer object itself.
-		    if (!wms_layers[index].hasOwnProperty("originalOpacity") &&
-		       wms_layers[index].hasOwnProperty("opacity")) {
-			wms_layers[index].originalOpacity = wms_layers[index].opacity;
-		    } else {
-			wms_layers[index].originalOpacity = 1;
-		    }
-
-                    wms_layers[index].setOpacity((ui.value/100) * wms_layers[index].originalOpacity);
-		}
-            }
-        }
     });
 }
 
@@ -586,39 +441,7 @@ function setUpWorkspaceSavePopup() {
 /* set up map actions */
 function setUpMapActions() {
     fillSidebar();
-    setUpAnimationSlider();
-    setUpTransparencySlider();
     setUpMapLoadDefaultLocation();
-}
-
-
-/* Refreshes map-actions and lizard-map-wms divs, then inits js. */
-/* Looks a bit like jQuery.fn.updateWorkspace part. Needs refactoring. */
-function refreshMapActionsDivs() {
-    var $holder;
-    $holder = $('<div/>');
-    $holder.load(
-        './ #page',
-        function () {
-            $(".map-actions").html(
-                $('.map-actions', $holder).html());
-            $("#lizard-map-wms").html(
-                $('#lizard-map-wms', $holder).html());
-            refreshLayers();
-            setUpMapActions();
-        });
-}
-
-/* Reload map-actions: put all initialization functions here for map actions
-(above map, load/save location/ empty temp workspace)
-
-OBSOLETE, should be integrated with other load functions
-*/
-function reloadMapActions() {
-    $(".map-actions").load(
-        "./ .map-action",
-        setUpMapActions
-    );
 }
 
 
@@ -1381,19 +1204,6 @@ function legend_action_reload(event) {
 }
 
 
-/* TODO: Upgrade to L3*/
-function setUpLegendEdit() {
-    $(".legend-edit").live("mouseover", function () {
-        if (!$(this).data("popup-initialized")) {
-            $(this).data("popup-initialized", true);
-            $(this).overlay();
-            setUpLegendColorPickers();
-        }
-    });
-    $(".legend-action-reload").live("click", legend_action_reload);
-}
-
-
 /*
 Sends current extent and name of visible base layer.
 */
@@ -1426,35 +1236,6 @@ function mapSaveLocation() {
 }
 
 
-// TODO: Is this still used?
-function setupVideoPopup() {
-    // Show popup
-    $("#intro_popup").overlay({
-        // custom top position
-        top: 200,
-        mask: {
-            color: '#fff',
-            loadSpeed: 200,
-            opacity: 0.5
-        },
-        closeOnClick: true,
-        load: true
-    });
-}
-
-
-// TODO: Can probably be removed.
-function setupTableToggle() {
-    // For collapsible tables in popups
-    $('.toggle_button').live('click', function (event) {
-        var $wrapper;
-        $wrapper = $(this).closest('.toggle_table_wrapper');
-        $('table', $wrapper).slideDown('fast');
-        $(this).hide();
-    });
-}
-
-
 function setUpDataFromUrl() {
     // A div with class "data-from-url" will fetch data from attribute
     // data-url and paste the contents in the div. The reason is that
@@ -1473,55 +1254,6 @@ function setUpDataFromUrl() {
         }
     });
 }
-
-function collageEditPopup(data) {
-    show_popup(data);
-    //setupDatepicker($('#collage-edit-form'));
-    setUpAggPeriodField();
-    $('#collage-edit-submit').click(function(event) {
-        event.preventDefault();
-        $form = $('#collage-edit-form');
-        $.post(
-            $form.attr("action"), $form.serialize()
-        )
-        .success(
-            function (data) {
-                // send result to popup again
-                collageEditPopup(data);
-            }
-        );
-    });
-}
-
-function setUpCollageEditPopup() {
-    $(".collate-edit-popup").click(function (event) {
-        var url;
-        event.preventDefault();
-        url = $(this).attr("href");
-        $.get(
-            url,
-            function(data) {
-                collageEditPopup(data);
-            }
-        );
-    });
-}
-
-function setUpAggPeriodField() {
-    // Set restrict_to_month on enabled or disabled
-    $("select#id_aggregation_period").change(function (event) {
-        // 4 is MONTH
-        if (this.value === "4") {
-            $("select#id_restrict_to_month").removeAttr("disabled");
-        } else {
-            $("select#id_restrict_to_month").attr("disabled", "True");
-            $("select#id_restrict_to_month").each(function () {
-                this.value = "0";
-            });
-        }
-    });
-}
-
 
 function setUpCollageTablePopup() {
     $(".collage-table-popup").click(function (event) {
@@ -1778,9 +1510,9 @@ function refreshLayers() {
 
 
 function ZoomSlider(options) {
-    this.control = new OpenLayers.Control.PanZoomBar(options);
+    var control = new OpenLayers.Control.PanZoomBar(options);
 
-    OpenLayers.Util.extend(this.control, {
+    OpenLayers.Util.extend(control, {
         draw: function (px) {
             // initialize our internal div
             OpenLayers.Control.prototype.draw.apply(this, arguments);
@@ -1799,7 +1531,7 @@ function ZoomSlider(options) {
             return this.div;
         }
     });
-    return this.control;
+    return control;
 }
 
 function spawnCustomMovingBox(width, height, x, y) {
@@ -1822,7 +1554,7 @@ function spawnCustomMovingBox(width, height, x, y) {
         });
 }
 
-function showMap() {
+function setUpMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
         map_click_control, zoom_panel, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
@@ -2014,63 +1746,6 @@ function showMap() {
     }
 }
 
-
-/*
-Creates parameters part of url
-*/
-function getMapUrl() {
-    var extent, srs, activelayers, url, width, height, i;
-    extent  = map.getExtent();
-    extent  = [extent.left, extent.bottom,
-               extent.right, extent.top].join(',');
-    srs = map.getProjectionObject();
-    activelayers = [];
-    url = "?";
-    width   = map.getSize().w;
-    height  = map.getSize().h;
-
-    for (i = map.layers.length - 1; i >= 0; i -= 1) {
-        if (!map.layers[i].getVisibility()) {
-            continue;
-        }
-        if (!map.layers[i].calculateInRange()) {
-            continue;
-        }
-    if (!map.layers[i].params) {
-        /* Why does this happen? I don't know, but this appears necessary. */
-        continue;
-    }
-
-        activelayers[activelayers.length] = map.layers[i].params.LAYERS;
-    }
-
-    activelayers = activelayers.join(',');
-
-    url += "LAYERS=" + activelayers;
-    url += "&SRS=" + srs;
-    url += "&BBOX=" + extent;
-    url += "&WIDTH=" + width;
-    url += "&HEIGHT=" + height;
-
-    return url;
-}
-
-/*
-Replaces a href attr. of 'Download' subelement
-*/
-function setDownloadImageLink() {
-    $('a#download-map').click(function (e) {
-        var url;
-        url = $(this).attr("href");
-
-    url += getMapUrl();
-        // Because the result is an image, a popup will occur.
-        window.location = url;
-        return false;
-    });
-}
-
-
 /* map-multiple-selection button */
 function setUpMultipleSelection() {
     $(".map-multiple-selection").live("click", function () {
@@ -2078,86 +1753,7 @@ function setUpMultipleSelection() {
     });
 }
 
-
-
-/* Helper functions in graph edit screen.  Needs lizard.js in
-order to function correctly.  */
-function graph_save_snippet() {
-    // The actual graph props are already stored in session on server
-    var url, workspace_item_id, workspace_item_location_identifier,
-        workspace_item_location_shortname, workspace_item_location_name;
-    url = $(this).attr("data-url");
-    workspace_item_id = $(this).attr("data-workspace-item-id");
-    workspace_item_location_identifier = $(this).attr("data-workspace-item-location-identifier");
-    workspace_item_location_shortname = $(this).attr("data-workspace-item-location-shortname");
-    workspace_item_location_name = $(this).attr("data-workspace-item-location-name");
-    $.post(
-        url,
-        {workspace_item_id: workspace_item_id,
-         workspace_item_location_identifier: workspace_item_location_identifier,
-         workspace_item_location_shortname: workspace_item_location_shortname,
-         workspace_item_location_name: workspace_item_location_name
-        }, function () {
-            reloadGraphs();
-        });
-}
-
-function graph_options_submit(event) {
-    // send all graph properties to server and reload page
-    var $form, url;
-    event.preventDefault();
-    $form = $(this).parents("form.graph-options");
-    url = $form.attr("action");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            // Always reload page: statistics & graphs can be different.
-            location.reload();
-        });
-}
-
-function graph_line_options_submit(event) {
-    // send all graph properties to server and reload graphs
-    var $form, url;
-    event.preventDefault();
-    $form = $(this).parents("form.graph-line-options");
-    url = $form.attr("action");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            reloadGraphs();
-            $("div.close").click();
-        });
-}
-
-function setGraphFilterMonth() {
-    var $form, status;
-    $form = $(".popup-graph-edit-global");
-    $form.each(function () {
-        status = $(this).find("input:radio:checked").attr("value");
-        if (status === "4") { // 4 is "MONTH"
-            $(this).find(".graph-filter-month").attr("disabled", false);
-        } else {
-            $(this).find(".graph-filter-month").attr("disabled", true);
-        }
-    });
-}
-
-function setUpGraphForm() {
-    // Set current status.
-    setGraphFilterMonth();
-
-    // Setup click.
-    $(".popup-graph-edit-global input:radio").click(setGraphFilterMonth);
-}
-
-
-
 /* REST api with jQuery */
-
-
 function makeHtml(data) {
     var items = [];
     console.log(typeof data);
@@ -2192,31 +1788,13 @@ function apiRequest(target) {
  }
 
 
-/* a hrefs with class "rest-api":
-fetch url and build "something" out of it.
-*/
-function setUpRestApiLinks() {
-    $("a.rest-api").live("click", function(event) {
-        event.preventDefault();
-        apiRequest(event.target);
-        return false;
-    });
-
-    // Initial
-    $("a.rest-api").each(function () {
-        apiRequest(this);
-    });
-}
-
-
-
 $(document).ready(function () {
     // Used by show_popup
     $('body').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
     $('#movable-dialog').dialog({
         autoOpen: false,
         title: '',
-        width: 450,
+        width: 650,
         height: 480,
         zIndex: 10000
     });
@@ -2234,48 +1812,20 @@ $(document).ready(function () {
 
     // Untouched
     setUpWorkspaceButtons();
-    //setUpAnimationSlider();
-    //setUpTransparencySlider();
     setUpWorkspaceItemPanToLayer();
-
-    // Set up legend edit.
-    setUpLegendEdit();
 
     setUpMapLoadDefaultLocation();
     setUpWorkspaceLoad();
     setUpWorkspaceSavePopup();
     setUpDateRangePopup();
-    setUpCollageEditPopup();
     setUpCollageTablePopup();
 
     /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
-
-    // voor collage view, nu nog nutteloos voor popup
-    //$(".add-snippet").snippetInteraction();
-    //$("a.lizard-map-link").lizardMapLink();
-    // Optional popup video link.
-    //setupVideoPopup();
-    setupTableToggle();
 });
 
 
-
 $(document).ready(function () {
-    showMap();
-    setDownloadImageLink();
+    setUpMap();
     setUpMultipleSelection();
-});
-
-
-$(document).ready(function () {
-    $(".graph-save-snippet").click(graph_save_snippet);
-    $("input.graph-line-options-submit").click(graph_line_options_submit);
-    $("input.graph-options-submit").click(graph_options_submit);
-    setUpGraphForm();
-});
-
-
-$(document).ready(function () {
-    setUpRestApiLinks();
 });
