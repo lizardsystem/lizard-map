@@ -1943,13 +1943,14 @@ class JsonDateTimeField(forms.DateTimeField):
         return value
 
 class ViewStateForm(forms.Form):
-    start = JsonDateTimeField()
-    end = JsonDateTimeField()
+    range_type = forms.CharField(required=False)
+    start = JsonDateTimeField(required=False)
+    end = JsonDateTimeField(required=False)
 
 SESSION_DT_START = 'dt_start_2'
 SESSION_DT_END = 'dt_end_2'
 
-class ViewStateService(JsonView):
+class ViewStateService(JsonView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
 
@@ -1979,7 +1980,9 @@ class ViewStateService(JsonView):
         session = request.session
 
         # self.CONTENT contains the validated values
-        # it will raise a proper exception upon first access
+        # it will raise an error 400 exception upon first access
+        start = None
+        end = None
         try:
             start = self.CONTENT['start']
             session[SESSION_DT_START] = start
@@ -1990,3 +1993,9 @@ class ViewStateService(JsonView):
             session[SESSION_DT_END] = end
         except KeyError:
             logger.debug('Got an invalid or no end date, ignoring')
+        # also store in database: why in two places?
+        if start and end:
+            workspace_edit = self.workspace_edit()
+            workspace_edit.dt_start = start
+            workspace_edit.dt_end = end
+            workspace_edit.save()
