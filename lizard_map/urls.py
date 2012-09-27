@@ -130,6 +130,9 @@ urlpatterns = patterns(
     url(r'^date_range/$',  # L3
         lizard_map.views.DateRangeView.as_view(),
         name="lizard_map_date_range"),
+    url(r'^view_state_service/$',
+        lizard_map.views.ViewStateService.as_view(),
+        name="lizard_map_view_state_service"),
 
     # Load and save map location
     (r'^map_location_save$',
