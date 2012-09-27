@@ -1,8 +1,8 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 
-var animationTimer, transparencyTimer;
-
+// in use (26-09-2012)
+// left workspace + collage checkboxes
 jQuery.fn.liveCheckboxes = function () {
     return this.each(function () {
         var $workspace;
@@ -25,6 +25,8 @@ jQuery.fn.liveCheckboxes = function () {
     });
 };
 
+// in use (26-09-2012)
+// main (single) popup
 function show_popup(data) {
     var html, overlay, i;
     if (data !== null) {
@@ -82,8 +84,9 @@ function show_popup(data) {
     }
 }
 
+// in use (26-09-2012)
+// mouseover when hovering over the map
 var hover_popup;
-
 function init_hover_popup(map) {
     hover_popup = new OpenLayers.Popup('hover-popup',
                                  new OpenLayers.LonLat(0, 0),
@@ -95,7 +98,6 @@ function init_hover_popup(map) {
     hover_popup.autoSize = true;
     map.addPopup(hover_popup);
 }
-
 function show_hover_popup(data, map) {
     if (data.name !== "" && data.name !== undefined) {
         var content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
@@ -107,7 +109,6 @@ function show_hover_popup(data, map) {
         hover_popup.show();
     }
 }
-
 function hide_hover_popup() {
     hover_popup.contentHTML = '';
     hover_popup.hide();
@@ -117,12 +118,11 @@ function hide_hover_popup() {
 
 Needed: data attribute .data-url-lizard-map-workspace-item-reorder on
 the <div class="workspace">
-
 <ul> at depth 2
-
-L3
 */
 
+// in use (26-09-2012)
+// draggable workspace items (left)
 jQuery.fn.workspaceInteraction = function () {
     return this.each(function () {
         var $workspace, workspace_id, workspaceItems, snippet_list;
@@ -151,18 +151,15 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'ui-sortable-placeholder',
             items: '.workspace-item'
         });
-        // // Make collage clickable. (DONE: should be collage-popup)
-        // $(".collage-popup", $workspace).live('click',
-        //                                $(".collage").collagePopup);
-        // Make checkboxes work.
         $workspace.liveCheckboxes();
-        // Initialize the graph popup.
-        //$('#dialog').overlay({});  // Necessary?
     });
 };
 
 /* Refresh workspace-acceptables. They should light up if the item is
 in given workspace. */
+
+// in use (26-09-2012)
+// highlight item in left map tree on select
 function updateWorkspaceAcceptableStatus() {
     var workspace_items, $workspace;
     $workspace = $(".workspace");  // Later make this an option?
@@ -207,6 +204,9 @@ function updateWorkspaceAcceptableStatus() {
 }
 
 // Update workspace boxes and their visible layers. L3
+
+// in use (26-09-2012)
+// new map or reordered layers
 jQuery.fn.updateWorkspace = function () {
     return this.each(function () {
         var $workspace, workspace_id, $holder;
@@ -247,6 +247,9 @@ jQuery.fn.updateWorkspace = function () {
 requires
 .data-url-lizard-map-snippet-add
 */
+
+// in use (26-09-2012)
+// when something is added to the collage
 jQuery.fn.snippetInteraction = function () {
     return this.each(function () {
         $(this).click(function (event) {
@@ -273,8 +276,7 @@ jQuery.fn.snippetInteraction = function () {
                     },
                     function () {
                         // refresh collage
-                        $(".workspace").find(".snippet-list").load("./ .snippet",
-                                                                   fillSidebar);
+                        $(".workspace").find(".snippet-list").load("./ .snippet");
                         // Optional: close ourselves?
                     });
             }
@@ -282,20 +284,8 @@ jQuery.fn.snippetInteraction = function () {
     });
 };
 
-function addProgressAnimationIntoWorkspace() {
-    $("#trash1").after('<img src="/static_media/lizard_ui/ajax-loader3.gif" class="sidebarbox-action-progress" data-src="" />');
-}
-
-/*
-Check if selector returns any elements
-
-Used like:
-$("#notAnElement").exists();
-*/
-jQuery.fn.exists = function () {
-    return this.length !== 0;
-}
-
+// in use (26-09-2012)
+// when popup with possible graphs is first opened
 function resizeGraph($el) {
     if ($el) {
         var plot = $el.data('plot');
@@ -309,18 +299,8 @@ function resizeGraph($el) {
     return false;
 }
 
-function setupDatepicker(div) {
-    // Nice Jquery date picker with dropdowns for year and month
-    div.find(".datepicker").datepicker({
-	dateFormat:"yy-mm-dd",
-	changeMonth: true,
-	changeYear: true,
-	showAnim: ''
-    });
-}
-
-
-/* L3 */
+// in use (26-09-2012)
+// zoom to extent button
 function setUpMapLoadDefaultLocation() {
     $(".map-load-default-location").live("click", function (event) {
         var url;
@@ -342,50 +322,8 @@ function setUpMapLoadDefaultLocation() {
     });
 }
 
-function dateRangePopup(data) {
-    show_popup(data);
-    setupDatepicker($('#date-range-form'));
-    $('#date-range-submit').click(function(event) {
-        event.preventDefault();
-        $("#movable-dialog").dialog("close");
-        return false;
-    });
-    $("#date-range-form input").change(
-        dateRangeOnChange);
-    $("#date-range-form select").change(
-        dateRangeOnChange);
-}
-
-function dateRangeOnChange(event) {
-    var $form;
-    event.preventDefault();
-    $form = $('#date-range-form');
-    $.post(
-        $form.attr("action"), $form.serialize()
-    )
-    .success(
-        function (data) {
-            // send result to popup again
-            dateRangePopup(data);
-        }
-    );
-    return false;
-}
-
-function setUpDateRangePopup() {
-    $(".popup-date-range").live("click", function (event) {
-        var url;
-        event.preventDefault();
-        url = $(this).attr("href");
-        $.get(
-            url,
-            function(data) {
-                dateRangePopup(data);
-            }
-        );
-    });
-}
-
+// in use (26-09-2012)
+// used by a button when a saved workspace is opened
 function setUpWorkspaceLoad() {
     $(".workspace-load").live("click", function (event) {
         var url;
@@ -398,14 +336,16 @@ function setUpWorkspaceLoad() {
                 id: id
             },
             function(data) {
-            	result = $.parseJSON(data);
-            	if (result['redirect'])
-            	    window.location.href = result['redirect'];
+                result = $.parseJSON(data);
+                if (result['redirect'])
+                    window.location.href = result['redirect'];
             }
         );
     });
 }
 
+// in use (26-09-2012)
+// when clicked left near workspace empty button
 function workspaceSavePopup(data) {
     show_popup(data);
     $('#workspace-save-submit').click(function(event) {
@@ -423,7 +363,6 @@ function workspaceSavePopup(data) {
         return false;
     });
 }
-
 function setUpWorkspaceSavePopup() {
     $(".popup-workspace-save").live("click", function (event) {
         var url;
@@ -438,17 +377,13 @@ function setUpWorkspaceSavePopup() {
     });
 }
 
-/* set up map actions */
-function setUpMapActions() {
-    fillSidebar();
-    setUpMapLoadDefaultLocation();
-}
-
-
 /* L3 */
 /* Clicking a workspace-acceptable toggles the
    workspace-acceptable. If it is enabled it also shows up in your
    workspace (if it is visible). */
+
+// in use (26-09-2012)
+// list of map layers (workspace)
 function setUpWorkspaceAcceptable() {
 
     function indicateWorkspaceItemBusy($workspace_item) {
@@ -555,290 +490,6 @@ function setUpWorkspaceAcceptable() {
     }
 }
 
-
-/* L3 dialog contents */
-function dialogContent(content) {
-    $("#dialog-content").html(content);
-}
-
-
-function dialogText(title, content) {
-    var html;
-    html = "<h1>" + title + "</h1>" +
-        "<p>" + content + "</p>";
-    dialogContent(html);
-    dialogSize("s");
-    dialogOverlay();
-}
-
-
-/* L3 pop up the dialog: OBSOLETE */
-function dialogOverlay() {
-    var overlay;
-    // In some screens it will not pop up the first time unless load: true
-    overlay = $("#dialog").overlay({load: true});
-    // load:true only works the first time.
-    overlay.load();  // Pop up
-}
-
-
-/* L3 close dialog after delay */
-function dialogCloseDelay() {
-    setTimeout(function () {
-        $("#dialog .close").click();
-    }, 2000);
-}
-
-/* L3 close dialog */
-function dialogClose() {
-    $("#dialog .close").click();
-}
-
-
-/* Create array with ids to be replaced.
- There may be some empty strings in this list. */
-function dialogReplaceItemIds() {
-    var ids;
-    ids = $("#movable-dialog").data("replace-items").split(" ");
-    return ids;
-}
-
-
-/* L3 dialog replace ids with same items in new_content
-
-Also refreshes known elements after replacing specific ids.
-*/
-function replaceItems(ids, new_content) {
-    var replace_items, id, div, $replace_with, i, replaced_count,
-        refresh_map, refresh_animation_slider;
-    // Place a div around everything to allow searching through the
-    // root objects.
-    div = $("<div/>").html(new_content);
-
-    refresh_map = false;
-    refresh_animation_slider = false;
-
-    for (i in ids) {
-        if (i !== undefined) {
-            id = ids[i];
-            if (id !== "") {
-                $replace_with = div.find("#" + id);
-                // There should be only one.
-                $("#" + id).replaceWith($replace_with[0]);
-                if (id === 'date-range') {
-                    refresh_map = true;
-                    refresh_animation_slider = true;
-                }
-            }
-        }
-    }
-
-    // Gui elements that are initialized after replacing items.
-    if (refresh_animation_slider) {
-        setUpAnimationSlider();
-    }
-    if (refresh_map) {
-        if ($("#map").exists()) {
-            refreshLayers(); // from lizard_wms.js
-        }
-    }
-}
-
-/* L3 Dialog size */
-function dialogSize(size) {
-    // new dialog in L3.1
-    /*
-    if (size === "xs") {
-        // Extra Small
-        $("#dialog").css("width", "20em");
-        $("#dialog").css("min-height", "7em");
-    } else if (size === "s") {
-        // Small
-        $("#dialog").css("width", "30em");
-        $("#dialog").css("min-height", "10em");
-    } else {
-        // Default
-        $("#dialog").css("width", "40em");
-        $("#dialog").css("min-height", "15em");
-    }
-    */
-}
-
-
-/* L3 Click on dialog. Initially fill contents by get. Configure some
-settings. */
-function dialogClick(event) {
-    var url, overlay, size;
-    event.preventDefault();
-
-    url = $(event.target).attr("href");
-    $.get(url)
-        .success(function (data) {
-            var div;
-            // Put data in extra html to find root-level .dialog-box
-            //div = $("<div/>").html(data).find(".dialog-box");
-            //dialogContent(div);
-            //dialogOverlay();
-            show_popup(data);
-            // Dialogs may contain datepicker fields, activate them here.
-            setupDatepicker(div);
-        })
-        .error(function (data) {
-            messagePopup("Fout bij laden van dialoog. " +
-                         "Probeert U het later nog eens.");
-        });
-    $("#dialog").data("submit-on-change", false);
-    // All ids that have to be replaced in the original page. Space
-    // separated.
-    $("#dialog").data("replace-items", "");  // Reset
-    $("#dialog").data(
-        "replace-items", $(event.target).attr("data-replace-items"));
-    //dialogSize($(event.target).attr("data-size"));
-    return false;
-}
-
-function helpDialogClick(event) {
-    var url, overlay, size, msg;
-    event.preventDefault();
-
-    $('a.ajax-help-dialog').each(function(index) {
-        url = $(this).attr("href");
-        $.get(url)
-            .success(function(data) {
-                show_popup(data);
-            })
-            .error(function(data) {
-                messagePopup("Fout bij laden van dialoog." +
-                             "Probeert u het later nog eens.");
-            });
-    });
-}
-
-function dialogSetupChange(event) {
-    $("#dialog").data("submit-on-change", true);
-}
-
-/* L3 Pressing submit in dialog box */
-function dialogSubmit(event, afterSubmit) {
-    var $form, ids;
-    event.preventDefault();
-    $form = $(event.target).parents("form");
-    // Strange: everything goes to .error
-    $.post(
-        $form.attr("action"), $form.serialize(),
-        function (data, status, context) {}, "json")
-        .error(function (context) {
-            var div;
-            div = $("<div/>").html(context.responseText).find(".dialog-box");
-            if (context.status === 400) {
-                // Bad request: wrong input
-                dialogContent(div);
-                dialogOverlay();
-            } else if (context.status === 200) {
-                ids = dialogReplaceItemIds();
-                replaceItems(ids, context.responseText);
-                if ($("#dialog").data("submit-on-change")) {
-                    // Close immediately, because the contents don't change.
-                    if (afterSubmit === undefined) {
-                        dialogClose();
-                    } else {
-                        afterSubmit(context);
-                    }
-                } else {
-                    // Show success message, then close.
-                    dialogContent(div);
-                    dialogOverlay();
-                    if (afterSubmit === undefined) {
-                        dialogCloseDelay();
-                    } else {
-                        afterSubmit(context);
-                    }
-                }
-            } else if (context.status === 403) {
-                // Forbidden: display whole page
-                dialogContent(context.responseText);
-                dialogOverlay();
-                dialogCloseDelay();
-            } else {
-                // Unknown error
-                dialogContent("Fout bij opslaan, " +
-                              "probeert U het later nog eens.");
-                dialogOverlay();
-                dialogCloseDelay();
-            }
-            return false;
-        });
-    return false;
-}
-
-
-function updateWorkspaceAfterSubmit(event) {
-    return dialogSubmit(event, function (context) {
-        return $(".workspace").updateWorkspace();
-    });
-}
-
-function reloadScreenAfterSubmit(event) {
-    return dialogSubmit(event, function (context) {
-        dialogText("Herladen pagina",
-                   "De pagina wordt opnieuw geladen.");
-        window.location.reload();
-    });
-}
-
-function openNewWindowAfterSubmit(event) {
-    return dialogSubmit(event, function(context) {
-	/* The URL to open is stored in a link with class
-	   "new-window-url". */
-	as = $('<div/>').
-	    html(context.responseText).
-	    find(".new-window-url");
-
-	as.each(function(i, a) {
-	    window.open(a.href, '_');
-	});
-    });
-}
-
-/* L3 Generic dialog code that works on a hrefs.
-
-- Define an a href with class "ajax-dialog" or "ajax-dialog-onchange"
-- Optionally add attributes:
-  - data-reload-after-submit="true": reloads the page after successful submit
-  - data-replace-items="title_id1 title_id2": replaces given tag ids
-    after submit (or onchange).
-
-The actions are as follows:
-1) Click: get contents from href url and display in div #dialog
-2) On submit, check result and close if success. Remain open with
-   result if error.
-
-*/
-function setUpDialogs() {
-    //$(".ajax-dialog").live("click", dialogClick);
-    //$(".ajax-help-dialog").live("click", helpDialogClick);
-    //$(".ajax-dialog-onchange").live("click", dialogClick);
-    //$(".ajax-dialog-onchange").live("click", dialogSetupChange);
-    // Handle submit button in forms in a dialog. Exclude alternative-submit.
-    //$("#movable-dialog input:submit:not(.alternative-submit)").live(
-    //    "click", dialogSubmit);
-    // Handle ajax-dialog-onchange, which submit on changes.
-    //$("#movable-dialog form input").live(
-    //    "change", dialogOnChange);
-    //$("#movable-dialog form select").live(
-    //    "change", dialogOnChange);
-
-    // TODO: split this part. It is for specific lizard-map workspace stuff.
-    // For workspace changes: live our own handler
-    //$("#movable-dialog input:submit.update-workspace-after").live(
-    //    "click", updateWorkspaceAfterSubmit);
-    //$("#movable-dialog input:submit.reload-screen-after").live(
-    //    "click", reloadScreenAfterSubmit);
-    //$("#movable-dialog input:submit.open-new-window-after").live(
-	//"click", openNewWindowAfterSubmit);
-}
-
-
 /* Generic POST click handling: do preAction, post, if success do
 postAction. */
 function actionPostClick(event, preAction, postAction, parameters) {
@@ -908,7 +559,7 @@ function postClickWorkspaceEmpty() {
 function actionPostClickEmpty(event) {
     return actionPostClick(
         event,
-        addProgressAnimationIntoWorkspace,
+        undefined,
         postClickWorkspaceEmpty
     );
 }
@@ -1028,12 +679,7 @@ function eraseDialogContentsOnClose() {
 
 /* L3.1 popup with "niets gevonden" */
 function nothingFoundPopup() {
-    messagePopup("Er is niets rond deze locatie gevonden.");
-}
-
-
-function messagePopup(message) {
-    $("#movable-dialog-content").html(message);
+    $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
     $("#movable-dialog").dialog("open");
 }
 
@@ -1111,53 +757,6 @@ function popup_hover_handler(x, y, map) {
 }
 
 
-/* Legend edit functions. */
-function setUpLegendColorPickers() {
-    var submit, beforeshow;
-    submit = function (hsb, hex, rgb, el) {
-	    $(el).val(hex);
-	    $(el).ColorPickerHide();
-    };
-    beforeshow = function () {
-        $(this).ColorPickerSetColor(this.value);
-    };
-
-    $("input[name=min_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
-    $("input[name=max_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
-    $("input[name=too_low_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
-    $("input[name=too_high_color]").ColorPicker({onSubmit: submit, onBeforeShow: beforeshow});
-
-    // Setup widget colors.
-    $("#colorSelector").each(function () {
-        var div, rel, color;
-        rel = $(this).attr("rel");
-        color = $(rel).attr("value");
-        div = $(this).find("div");
-        div.css('backgroundColor', '#' + color);
-    });
-
-    // Make the widget clickable.
-    $("#colorSelector").ColorPicker({
-        onBeforeShow: function () {
-            var rel, color;
-            rel = $(this).attr("rel");
-            color = $(rel).attr("value");
-            $(this).ColorPickerSetColor(color);
-        },
-        onChange: function (hsb, hex, rgb) {
-            $("#colorSelector div").css('backgroundColor', '#' + hex);
-        },
-        onSubmit: function (hsb, hex, rgb, el) {
-            var rel;
-            rel = $(el).attr("rel");
-            $(rel).val(hex);
-            $(el).ColorPickerHide();
-        }
-    });
-
-}
-
-
 /* Pans to workspace item. Only works if extent function is
 implemented for that particilar workspace item. */
 function setUpWorkspaceItemPanToLayer() {
@@ -1185,22 +784,6 @@ function setUpWorkspaceItemPanToLayer() {
                 }
             });
     });
-}
-
-
-function legend_action_reload(event) {
-    // send all legend properties to server and reload page
-    var $form, url, name;
-    event.preventDefault();
-    $form = $(this).parents("form.legend-options");
-    url = $form.attr("data-url");
-    $.post(
-        url,
-        $form.serialize(),
-        function () {
-            // Reload page after posting.
-            location.reload();
-        });
 }
 
 
@@ -1255,6 +838,7 @@ function setUpDataFromUrl() {
     });
 }
 
+
 function setUpCollageTablePopup() {
     $(".collage-table-popup").click(function (event) {
         var url;
@@ -1277,14 +861,6 @@ $(window).bind('beforeunload', function () {
     mapSaveLocation(); // Save map location when 'before' leaving page.
 });
 
-
-
-/*jslint browser: true */
-/*jslint evil: true */
-/*jslint nomen: false */
-/*global $, OpenLayers, popup_click_handler, popup_hover_handler, alert,
-G_PHYSICAL_MAP, G_SATELLITE_MAP, G_NORMAL_MAP, G_HYBRID_MAP, TouchHandler,
-stretchOneSidebarBox */
 
 var layers, wms_layers, background_layers, map;
 layers = [];  // Used in an associative way.
@@ -1314,10 +890,7 @@ function multipleSelection() {
     return $("a.map-multiple-selection").hasClass("active");
 }
 
-/* L3 click on (lon, lat) in multiple select mode
-
-Borrowed from popup_click_handler
-*/
+// handle a click in multiselect mode
 function addMultipleSelection(x, y, map, e) {
     var extent, radius, url, workspace_id, workspace_type;
     extent = map.getExtent();
@@ -1327,9 +900,8 @@ function addMultipleSelection(x, y, map, e) {
     workspace_id = $(".workspace").attr("data-workspace-id");
     workspace_type = $(".workspace").attr("data-workspace-type");
     if (workspace_type === undefined) {
-    workspace_type = "workspace_edit"; // Default
+        workspace_type = "workspace_edit"; // Default
     }
-
     if (url !== undefined) {
         $.post(
             url,
@@ -1340,10 +912,6 @@ function addMultipleSelection(x, y, map, e) {
                 var div;
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
-
-                //stretchOneSidebarBox();
-                //show_popup(data);
-                //$("#map").css("cursor", "default");
             }
         );
     }
@@ -1502,9 +1070,7 @@ function refreshWmsLayers() {
 /* Adds all layers (base + workspaces) to map. Refreshes all
 workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
-    // Set up all layers.
     refreshBackgroundLayers();
-    //refreshWorkspaceLayers();
     refreshWmsLayers();
 }
 
@@ -1770,11 +1336,9 @@ function makeHtml(data) {
         } else if ((typeof val === "string") && (val.indexOf('http://') === 0)) {
             items.push('<li><a href="' + val + '" class="rest-api">' + key + '</a></li>');
         } else {
-            //console.log(val);
             items.push('<li><span>' + key + '</span>' + makeHtml(val) + '</li>');
         }
      });
-    //console.log(items);
     return $('<ul/>', {html: items.join('')}).html();
 }
 
@@ -1785,10 +1349,146 @@ function apiRequest(target) {
     $.getJSON(url, function (data) {
         $(target).parents(".rest-api-container").html(makeHtml(data));
     });
- }
+}
 
+// keep keys short in this associative array: they
+// are serialized to the URL hash
+var _view_state = {
+    start: null, // JSON date object
+    end: null    // JSON date object
+};
+function get_view_state() {
+    return _view_state;
+}
+function set_view_state(params) {
+    if (params.start !== undefined && typeof params.start !== 'object') {
+        throw 'start need to be a Date object';
+    }
 
-$(document).ready(function () {
+    // update the session on the server side
+    $.ajax({
+        url: '/map/view_state_service/', // TODO
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: $.toJSON(params),
+        success: function (data) {
+            console.log('put success: ', data);
+        }
+    });
+
+    // just update the hash, have onhashchange handle updating _view_state
+    save_view_state_to_hash(params);
+}
+function save_view_state_to_hash(params) {
+    var new_state = {};
+    // serialize parameters
+    if (params.start !== undefined) {
+        new_state.start = params.start.toJSON();
+    }
+    if (params.end !== undefined) {
+        new_state.end = params.end.toJSON();
+    }
+    window.location.hash = $.param(new_state);
+}
+function read_view_state_from_hash() {
+    if (window.location.hash.length > 1) {
+        try {
+            var hash_state = $.deparam(window.location.hash.substring(1));
+            var new_state = {};
+            // deserialize parameters
+            if (hash_state.start !== undefined) {
+                new_state.start = new Date(hash_state.start);
+            }
+            // deserialize parameters
+            if (hash_state.end !== undefined) {
+                new_state.end = new Date(hash_state.end);
+            }
+            // updates the global assoc. array
+            $.extend(_view_state, new_state);
+            on_view_state_update();
+            return true;
+        }
+        catch (error) {
+            console.error('Could not deserialize view state')
+        }
+    }
+    return false;
+}
+function read_view_state_from_server() {
+    // update the session on the server side
+    $.ajax({
+        url: '/map/view_state_service/', // TODO
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (data) {
+            var new_state = {};
+            // deserialize parameters
+            if (data.start !== undefined) {
+                new_state.start = new Date(data.start);
+            }
+            // deserialize parameters
+            if (data.end !== undefined) {
+                new_state.end = new Date(data.end);
+            }
+            // updates the global assoc. array
+            $.extend(_view_state, new_state);
+            on_view_state_update();
+        }
+    });
+}
+function setup_view_state() {
+    window.onhashchange = function (event) { read_view_state_from_hash(); };
+    // read initial state on page load
+    var success = read_view_state_from_hash();
+    if (!success) {
+        // no view state found in hash
+        // retrieve it from the server instead
+        read_view_state_from_server();
+    }
+}
+function on_view_state_update() {
+    var view_state = get_view_state();
+    $('.popup-date-range span.action-text').html(
+        view_state.start.toLocaleDateString() + ' &mdash; ' + view_state.end.toLocaleDateString()
+        //view_state.start.toString() + ' &mdash; ' + view_state.end.toString()
+    );
+}
+
+function setUpDateRangePicker() {
+    $('.popup-date-range').daterangepicker({
+        maxDate: Date.today(),
+        format: 'dd-MM-yyyy',
+        locale: {
+            applyLabel:'Bevestigen',
+            fromLabel:'Van',
+            toLabel:'Tot',
+            customRangeLabel:'Handmatige invoer',
+            daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
+            monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+            firstDay:0
+        },
+        ranges: {
+            'Afgelopen dag':   ['yesterday',                      'today', 'day'],
+            'Laatste 2 dagen': [Date.today().add({ days:   -2 }), 'today', '2_day'],
+            'Afgelopen week':  [Date.today().add({ days:   -7 }), 'today', 'week'],
+            'Afgelopen maand': [Date.today().add({ months: -1 }), 'today', 'month'],
+            'Jaar':            [Date.today().add({ years:  -1 }), 'today', 'year']
+        }
+    },
+    function (start, end) {
+        // $('.popup-date-range span.action-text').html(start.toString('d MMMM yyyy') + ' - ' + end.toString('d MMMM yyyy'));
+        set_view_state({start: start, end: end});
+    },
+    function () {
+        // $('.popup-date-range span.action-text').html(start.toString('d MMMM yyyy') + ' - ' + end.toString('d MMMM yyyy'));
+        var view_state = get_view_state();
+        return [view_state.start, view_state.end];
+    });
+}
+
+function setUpMovableDialog() {
     // Used by show_popup
     $('body').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
     $('#movable-dialog').dialog({
@@ -1798,34 +1498,24 @@ $(document).ready(function () {
         height: 480,
         zIndex: 10000
     });
-});
+}
 
-
-// Initialize all workspace actions.
 $(document).ready(function () {
-    // Touched/new for L3
+    setup_view_state();
+    setUpDateRangePicker();
+    setUpMovableDialog();
     setUpWorkspaceAcceptable();
-    setUpDialogs();
-    eraseDialogContentsOnClose();
     setUpActions();
     setUpDataFromUrl();
-
-    // Untouched
     setUpWorkspaceButtons();
     setUpWorkspaceItemPanToLayer();
-
     setUpMapLoadDefaultLocation();
     setUpWorkspaceLoad();
     setUpWorkspaceSavePopup();
-    setUpDateRangePopup();
     setUpCollageTablePopup();
-
-    /* Workspace functions, requires jquery.workspace.js */
     $(".workspace").workspaceInteraction();
-});
-
-
-$(document).ready(function () {
-    setUpMap();
-    setUpMultipleSelection();
+    if ($('#map').exists()) {
+        setUpMap();
+        setUpMultipleSelection();
+    }
 });
