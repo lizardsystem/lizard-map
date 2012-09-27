@@ -22,14 +22,11 @@
 {% block content %}
 <div id="textual">
   <div id="collage">
-    <h2>Selectie</h2>
     {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
     <h3>{{ collage_items.0.data_description }}</h3>
     {% collage_items_html collage_items 'True' view.request %}
-    <div>&nbsp;</div>
-
     {% if collage_items.0.collage_detail_show_edit_block %}
-    <h3>Bewerken</h3>
+    <h3>Gegevens</h3>
     <table class="table">
       <thead><tr>
         <th>Naam</th>
@@ -55,23 +52,18 @@
     {% if collage_items.0.collage_detail_show_statistics_block %}
     {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
     <h3>Statistieken</h3>
-    {% if view.hide_statistics %}
-    <a href="./#" class="ss_sprite ss_table_add">Statistieken tonen</a>
-    {% else %}
-    <a href="?hide_statistics=True" class="ss_sprite ss_table_delete">Statistieken verbergen</a>
     <div class="data-from-url"
          data-url="{% collage_item_statistics_url collage_items %}"></div>
     {% endif %}
-    {% endif %}
 
     {% endfor %}
+
     <p>
       {# calculate stats for your collage-edits collage items #}
       <a href="{% url lizard_map_statistics_csv %}"
          class="ss_table_save ss_sprite noprint"
          title="Export alle statistieken in csv">Export alle statistieken</a>
     </p>
-
   </div>
 </div>
 
