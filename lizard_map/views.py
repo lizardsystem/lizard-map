@@ -24,6 +24,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from djangorestframework.views import View as JsonView
+from djangorestframework.resources import Resource
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import UiView
@@ -372,8 +373,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 name=_('Verander datumbereik'),
                 description=_('Verander het datumbereik van de metingen.'),
                 url=reverse('lizard_map_date_range'),
-                icon='icon-time',
-                klass='popup-date-range')
+                icon='icon-calendar',
+                klass='popup-date-range pull-right')
             actions.insert(0, set_date_range)
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
@@ -1841,37 +1842,6 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
             layout_extra=layout_extra)
 
 
-class AdapterFlotGraphDataView(AdapterMixin, JsonView):
-    """
-    Return result of adapter.flot_graph_data, using given parameters.
-
-    URL GET parameters:
-    - adapter_class (required)
-    - identifier (required, multiple supported)
-    - start_date, end_date (optional, iso8601 format, default current)
-    - layout_extra (optional)
-    """
-
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
-
-    def get(self, request, *args, **kwargs):
-        """
-        Note: named url arguments become kwargs.
-        """
-        current_adapter = self.adapter(kwargs['adapter_class'])
-        identifier_list = self.identifiers()
-
-        start_date, end_date = self.start_end_dates_from_request()
-
-        # Add animation slider position, info from session data.
-        layout_extra = self.layout_extra_from_request()
-        layout_extra.update(slider_layout_extra(self.request))
-
-        return current_adapter.flot_graph_data(
-            identifier_list, start_date, end_date,
-            layout_extra=layout_extra)
-
-
 class AdapterValuesView(AdapterMixin, UiView):
     """
     Return values for a single identifier in csv or html.
@@ -1919,3 +1889,104 @@ class HomepageView(AppView, IconView):
 
 
 MapIconView = HomepageView  # BBB
+
+#
+# new RESTful Lizard API
+#
+
+class AdapterFlotGraphDataView(AdapterMixin, JsonView):
+    """
+    Return result of adapter.flot_graph_data, using given parameters.
+
+    URL GET parameters:
+    - adapter_class (required)
+    - identifier (required, multiple supported)
+    - start_date, end_date (optional, iso8601 format, default current)
+    - layout_extra (optional)
+    """
+
+    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
+
+    def get(self, request, *args, **kwargs):
+        """
+        Note: named url arguments become kwargs.
+        """
+        current_adapter = self.adapter(kwargs['adapter_class'])
+        identifier_list = self.identifiers()
+
+        start_date, end_date = self.start_end_dates_from_request()
+
+        # Add animation slider position, info from session data.
+        layout_extra = self.layout_extra_from_request()
+        layout_extra.update(slider_layout_extra(self.request))
+
+        return current_adapter.flot_graph_data(
+            identifier_list, start_date, end_date,
+            layout_extra=layout_extra)
+
+from django import forms
+from dateutil import parser as date_parser
+from django.core.exceptions import ValidationError
+
+class JsonDateTimeField(forms.DateTimeField):
+    '''
+    Supports field value as ISO 8601 string.
+    '''
+    def to_python(self, value):
+        try:
+            value = super(JsonDateTimeField, self).to_python(value)
+        except ValidationError as parent_exception:
+            try:
+                value = date_parser.parse(value)
+            except ValueError:
+                raise parent_exception
+        return value
+
+class ViewStateForm(forms.Form):
+    start = JsonDateTimeField()
+    end = JsonDateTimeField()
+
+SESSION_DT_START = 'dt_start_2'
+SESSION_DT_END = 'dt_end_2'
+
+class ViewStateService(JsonView):
+    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
+    form = ViewStateForm
+
+    def get(self, request, *args, **kwargs):
+        session = request.session
+
+        # try getting values from session
+        dt_start = session.get(SESSION_DT_START, None)
+        dt_end = session.get(SESSION_DT_END, None)
+
+        today = datetime.datetime.now()
+        if not dt_start:
+            # not found in session, return a default range based on current date
+            default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
+            dt_start = today + datetime.timedelta(days=default_start_days)
+        if not dt_end:
+            # not found in session, return a default range based on current date
+            default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
+            dt_end = today + datetime.timedelta(days=default_end_days)
+
+        return {
+            'start': dt_start,
+            'end': dt_end
+        }
+
+    def put(self, request, *args, **kwargs):
+        session = request.session
+
+        # self.CONTENT contains the validated values
+        # it will raise a proper exception upon first access
+        try:
+            start = self.CONTENT['start']
+            session[SESSION_DT_START] = start
+        except KeyError:
+            logger.debug('Got an invalid or no start date, ignoring')
+        try:
+            end = self.CONTENT['end']
+            session[SESSION_DT_END] = end
+        except KeyError:
+            logger.debug('Got an invalid or no end date, ignoring')
