@@ -27,7 +27,16 @@ jQuery.fn.liveCheckboxes = function () {
 
 // in use (26-09-2012)
 // main (single) popup
-function show_popup(data) {
+function open_popup() {
+    $("#movable-dialog-content").empty();
+    var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+    $("#movable-dialog-content").append($loading);
+    $("#movable-dialog").dialog("open");
+}
+
+// in use (26-09-2012)
+// main (single) popup
+function set_popup_content(data) {
     var html, overlay, i;
     if (data !== null) {
         if (data.html && data.html.length !== 0) {
@@ -67,8 +76,6 @@ function show_popup(data) {
                 idPrefix: 'popup-subtab',
                 selected: 0
             });
-            // All set, open the dialog.
-            $("#movable-dialog").dialog("open");
             // Have the graphs fetch their data.
             reloadGraphs();
             $(".add-snippet").snippetInteraction();
@@ -76,10 +83,9 @@ function show_popup(data) {
         else if (data.indexOf && data.indexOf("div") != -1) {
             // Apparantly data can also contain an entire <html> document
             $("#movable-dialog-content").html(data);
-            $("#movable-dialog").dialog("open");
         }
         else {
-            nothingFoundPopup();
+            $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
         }
     }
 }
@@ -347,7 +353,8 @@ function setUpWorkspaceLoad() {
 // in use (26-09-2012)
 // when clicked left near workspace empty button
 function workspaceSavePopup(data) {
-    show_popup(data);
+    open_popup();
+    set_popup_content(data);
     $('#workspace-save-submit').click(function(event) {
         event.preventDefault();
         $form = $('#workspace-save-form');
@@ -357,7 +364,7 @@ function workspaceSavePopup(data) {
         .success(
             function (data) {
                 // send result to popup
-                show_popup(data);
+                set_popup_content(data);
             }
         );
         return false;
@@ -641,8 +648,9 @@ function collagePopup(event) {
         url = $(event.target).parents('a.collage-popup').attr("href");
     }
 
+    open_popup();
     $.getJSON(url, function (data) {
-        show_popup(data);
+        set_popup_content(data);
     });
     return false;
 }
@@ -674,13 +682,6 @@ function eraseDialogContentsOnClose() {
     $("#dialog").live("onClose", function () {
         $("#dialog-content").empty();
     });
-}
-
-
-/* L3.1 popup with "niets gevonden" */
-function nothingFoundPopup() {
-    $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
-    $("#movable-dialog").dialog("open");
 }
 
 
@@ -722,12 +723,13 @@ function popup_click_handler(x, y, map) {
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
+        open_popup();
         $.getJSON(
             url,
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                show_popup(data);
+                set_popup_content(data);
                 $("#map").css("cursor", "default");
             }
         );
@@ -844,10 +846,11 @@ function setUpCollageTablePopup() {
         var url;
         event.preventDefault();
         url = $(this).attr("href");
+        open_popup();
         $.get(
             url,
             function(data) {
-                show_popup(data);
+                set_popup_content(data);
             }
         );
     });
