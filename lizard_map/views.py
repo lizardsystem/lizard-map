@@ -1964,11 +1964,11 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
         today = datetime.datetime.now()
         if not dt_start:
             # not found in session, return a default range based on current date
-            default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -1000)
+            default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -10)
             dt_start = today + datetime.timedelta(days=default_start_days)
         if not dt_end:
             # not found in session, return a default range based on current date
-            default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 10)
+            default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 0)
             dt_end = today + datetime.timedelta(days=default_end_days)
 
         return {

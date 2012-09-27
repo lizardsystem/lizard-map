@@ -1398,11 +1398,11 @@ function read_view_state_from_hash() {
             var new_state = {};
             // deserialize parameters
             if (hash_state.start !== undefined) {
-                new_state.start = new Date(hash_state.start);
+                new_state.start = Date.parse(hash_state.start);
             }
             // deserialize parameters
             if (hash_state.end !== undefined) {
-                new_state.end = new Date(hash_state.end);
+                new_state.end = Date.parse(hash_state.end);
             }
             // updates the global assoc. array
             $.extend(_view_state, new_state);
@@ -1426,11 +1426,11 @@ function read_view_state_from_server() {
             var new_state = {};
             // deserialize parameters
             if (data.start !== undefined) {
-                new_state.start = new Date(data.start);
+                new_state.start = Date.parse(data.start);
             }
             // deserialize parameters
             if (data.end !== undefined) {
-                new_state.end = new Date(data.end);
+                new_state.end = Date.parse(data.end);
             }
             // updates the global assoc. array
             $.extend(_view_state, new_state);
