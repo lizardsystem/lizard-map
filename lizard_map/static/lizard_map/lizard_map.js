@@ -42,6 +42,8 @@ function setup_movable_dialog() {
     if (isAppleMobile) {
         // dragging on touchscreens isn't practical
         options.draggable = false;
+        // resizing neither
+        options.resizable = false;
         // make it 90% of the entire window
         options.width = $(window).width() * 0.9;
         options.height = $(window).height() * 0.9;
