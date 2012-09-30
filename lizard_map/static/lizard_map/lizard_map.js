@@ -1141,15 +1141,6 @@ function setUpMap() {
 
     window.setUpMapDimensions();
 
-    // Make custom OpenLayers._getScriptLocation
-    // OpenLayers (OL) cannot get its script location if the filename
-    // OpenLayers.js has been changed.
-    // This function is needed when loading images etc for OL.
-    OpenLayers._getScriptLocation = function () {
-        //return $("#openlayers-script").attr("data-openlayers-url");
-        return "/static_media/openlayers/";
-    };
-
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
 
@@ -1187,11 +1178,12 @@ function setUpMap() {
     }
     else if (projection === "EPSG:28992")
     {
+        // rijksdriehoek
         options = {
             projection: new OpenLayers.Projection(projection),
             displayProjection: new OpenLayers.Projection(display_projection),
             units: "m",
-            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2],
+            resolutions: [364, 242, 161, 107, 71, 47, 31, 21, 14, 9, 6, 4, 2.7, 1.8, 0.9, 0.45, 0.2, 0.1, 0.05, 0.025, 0.0125],
             maxExtent: max_extent,
             controls: []
         };
