@@ -25,6 +25,28 @@ jQuery.fn.liveCheckboxes = function () {
     });
 };
 
+// in use (03-02-2012)
+// main (single) popup
+function setup_movable_dialog() {
+    // used by open_popup
+    $('body').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
+    var options = {
+        autoOpen: false,
+        title: '',
+        width: 650,
+        height: 480,
+        zIndex: 10000
+    };
+
+    // make an exception for iPad
+    if (isAppleMobile) {
+        options.width = '100%';
+        options.height = '100%';
+    }
+
+    $('#movable-dialog').dialog(options);
+}
+
 // in use (26-09-2012)
 // main (single) popup
 function open_popup() {
@@ -1581,22 +1603,10 @@ function setup_daterangepicker() {
     });
 }
 
-function setUpMovableDialog() {
-    // Used by show_popup
-    $('body').append('<div id="movable-dialog"><div id="movable-dialog-content"></div></div>');
-    $('#movable-dialog').dialog({
-        autoOpen: false,
-        title: '',
-        width: 650,
-        height: 480,
-        zIndex: 10000
-    });
-}
-
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
-    setUpMovableDialog();
+    setup_movable_dialog();
     setUpWorkspaceAcceptable();
     setUpActions();
     setUpDataFromUrl();
