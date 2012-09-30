@@ -44,6 +44,8 @@ function set_popup_content(data) {
             if (data.html.length === 1) {
                 // Just copy the contents directly into the target div.
                 $("#movable-dialog-content").html(data.html[0]);
+                // Have the graphs fetch their data.
+                reloadGraphs();
             } else {
                 // Build up html with tabs.
                 html = '<div id="popup-tabs"><ul>';
@@ -66,9 +68,13 @@ function set_popup_content(data) {
                 $("#popup-tabs").tabs({
                     idPrefix: 'popup-tab',
                     selected: 0,
-                    show: function(event, ui) {
-                        // Do an initial resize for IE8.
-                        resizeGraph($(ui.panel).find('.flot-graph'));
+                    show: function (event, ui) {
+                        // Have the graphs fetch their data.
+                        reloadGraphs();
+                    },
+                    create: function (event, ui) {
+                        // Have the graphs fetch their data.
+                        reloadGraphs();
                     }
                 });
             }
@@ -76,13 +82,13 @@ function set_popup_content(data) {
                 idPrefix: 'popup-subtab',
                 selected: 0
             });
-            // Have the graphs fetch their data.
-            reloadGraphs();
             $(".add-snippet").snippetInteraction();
         }
         else if (data.indexOf && data.indexOf("div") != -1) {
             // Apparantly data can also contain an entire <html> document
             $("#movable-dialog-content").html(data);
+            // Have the graphs fetch their data.
+            reloadGraphs();
         }
         else {
             $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
@@ -103,6 +109,7 @@ function init_hover_popup(map) {
     hover_popup.border = "1px solid black";
     hover_popup.autoSize = true;
     map.addPopup(hover_popup);
+    hover_popup.hide();
 }
 function show_hover_popup(data, map) {
     if (data.name !== "" && data.name !== undefined) {
@@ -1354,62 +1361,138 @@ function apiRequest(target) {
     });
 }
 
-// keep keys short in this associative array: they
+/**
+ * Take an associative array, and convert all Moment.js objects to
+ * ISO8601 datetime strings.
+ *
+ * @param {Array} assoc_array An associative array containing Moment.js objects.
+ * @param {boolean} [inplace] When evaluated to true, conversion happens in place
+ * and the original array is modified.
+ */
+var to_date_strings = function (assoc_array, inplace) {
+    if (!inplace)
+        assoc_array = $.extend({}, assoc_array);
+    $.each(assoc_array, function(k, v) {
+        if (v) {
+            if (moment.isMoment(v)) {
+                assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
+            }
+            else if (v instanceof Object) {
+                to_date_strings(v, true)
+            }
+        }
+    });
+    return assoc_array;
+};
+ 
+/**
+ * Take an associative array, and convert all string items whose key contain 'date', or
+ * starting with 'dt', to a Moment.js date object.
+ *
+ * @param {Object} An associative array containing dates, e.g.
+ *                 <pre>{'a': 'foo', 'dt_start': '2012-09-28T22:00:00.000Z'}</pre>.
+ * @param {boolean} [inplace] When evaluated to true, conversion happens in place
+ * and the original array is modified.
+ */
+var to_date_objects = function (assoc_array, inplace) {
+    if (!inplace)
+        assoc_array = $.extend({}, assoc_array);
+    $.each(assoc_array, function(k, v) {
+        if (v) {
+            if (typeof v == 'string' && (
+                 k.substring(0, 2) == 'dt'
+                 || k.indexOf('date') != -1
+                 || k == 'start'
+                 || k == 'end'
+            )) {
+                // convert to Moment.js date object
+                assoc_array[k] = moment.utc(v);
+            }
+            else if (v instanceof Object) {
+                to_date_objects(v, true)
+            }
+        }
+    });
+    return assoc_array;
+};
+
+/**
+ * Like $.ajax, but data is converted to json (with datetime-awareness).
+ */
+var lizard_api_put = function (ajax_opts) {
+    var opts = {
+        type: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json'
+    };
+    $.extend(opts, ajax_opts);
+    opts.data = $.toJSON(to_date_strings(opts.data))
+    return $.ajax(opts);
+};
+
+/**
+ * Like $.ajax, but datetimes in the data are parsed to Moment.js objects.
+ */
+var lizard_api_get = function (ajax_opts) {
+    var opts = {
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json'
+    };
+    $.extend(opts, ajax_opts);
+    var _success = opts.success;
+    if (_success) {
+        opts.success = function (data, textStatus, jqXHR) {
+            return _success(to_date_objects(data), textStatus, jqXHR);
+        };
+    }
+    return $.ajax(opts);
+};
+
+// note: keep keys short in this associative array: they
 // are serialized to the URL hash
 var _view_state = {
-    start: null, // JSON date object
-    end: null    // JSON date object
+    range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
+    dt_start: moment.utc().subtract('days', 2), // Moment.js date object
+    dt_end: moment.utc()                        // Moment.js date object
 };
 function get_view_state() {
     return _view_state;
 }
 function set_view_state(params) {
-    if (params.start !== undefined && typeof params.start !== 'object') {
-        throw 'start need to be a Date object';
-    }
-
-    // update the session on the server side
-    $.ajax({
-        url: '/map/view_state_service/', // TODO
-        type: 'PUT',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: $.toJSON(params),
-        success: function (data) {
-            console.log('put success: ', data);
-        }
-    });
-
-    // just update the hash, have onhashchange handle updating _view_state
-    save_view_state_to_hash(params);
+    $.extend(_view_state, params);
+    save_view_state_to_hash();
+    save_view_state_to_server();
 }
-function save_view_state_to_hash(params) {
-    var new_state = {};
-    // serialize parameters
-    if (params.start !== undefined) {
-        new_state.start = params.start.toJSON();
+function save_view_state_to_hash() {
+    var view_state = get_view_state();
+    // serialize view state to a format suitable for the URL hash
+    view_state = to_date_strings(view_state);
+    var hash = {};
+    // only add defined items in the hash
+    if (view_state.dt_start && view_state.dt_end) {
+        hash.dt_start = view_state.dt_start;
+        hash.dt_end = view_state.dt_end;
     }
-    if (params.end !== undefined) {
-        new_state.end = params.end.toJSON();
-    }
-    window.location.hash = $.param(new_state);
+    // change the window hash (serialize with $.param)
+    window.location.hash = $.param(hash);
 }
 function read_view_state_from_hash() {
     if (window.location.hash.length > 1) {
         try {
-            var hash_state = $.deparam(window.location.hash.substring(1));
+            var hash = window.location.hash.substring(1);
+            // derialize with $.deparam (jquery plugin)
+            hash = $.deparam(hash);
+            // detect and datetime string and convert them to Moment.js objects
+            hash = to_date_objects(hash);
             var new_state = {};
-            // deserialize parameters
-            if (hash_state.start !== undefined) {
-                new_state.start = Date.parseISO8601(hash_state.start);
+            // only merge valid entries to the view state
+            if (hash.dt_start && hash.dt_end) {
+                new_state.dt_start = hash.dt_start;
+                new_state.dt_end = hash.dt_end;
             }
-            // deserialize parameters
-            if (hash_state.end !== undefined) {
-                new_state.end = Date.parseISO8601(hash_state.end);
-            }
-            // updates the global assoc. array
+            // update the global state array
             $.extend(_view_state, new_state);
-            on_view_state_update();
             return true;
         }
         catch (error) {
@@ -1418,77 +1501,91 @@ function read_view_state_from_hash() {
     }
     return false;
 }
-function read_view_state_from_server() {
-    // update the session on the server side
-    $.ajax({
+function read_view_state_from_server(on_success) {
+    lizard_api_get({
         url: '/map/view_state_service/', // TODO
-        type: 'GET',
-        contentType: 'application/json',
-        dataType: 'json',
         success: function (data) {
             var new_state = {};
             // deserialize parameters
-            if (data.start !== undefined) {
-                new_state.start = Date.parseISO8601(data.start);
+            if (data.range_type) {
+                new_state.range_type = data.range_type;
+
+                if (data.dt_start && data.dt_end) {
+                    new_state.dt_start = moment.utc(data.dt_start);
+                    new_state.dt_end = moment.utc(data.dt_end);
+                }
             }
-            // deserialize parameters
-            if (data.end !== undefined) {
-                new_state.end = Date.parseISO8601(data.end);
-            }
-            // updates the global assoc. array
+
+            // update the global state array
             $.extend(_view_state, new_state);
-            on_view_state_update();
+            if (on_success) on_success(_view_state);
+        }
+    });
+}
+function save_view_state_to_server() {
+    // update the session on the server side
+    var view_state = get_view_state();
+    lizard_api_put({
+        url: '/map/view_state_service/', // TODO
+        data: view_state,
+        success: function (data) {
+            console.log('put success: ', data);
         }
     });
 }
 function setup_view_state() {
-    window.onhashchange = function (event) { read_view_state_from_hash(); };
+    // TODO add a timer for refreshing hash state
+    //window.onhashchange = function (event) { read_view_state_from_hash(); };
     // read initial state on page load
+    var update_state = function (state) {
+        if (state.dt_start && state.dt_end) {
+            $('.popup-date-range').data('daterangepicker').setRange(state.range_type, state.dt_start, state.dt_end);
+            daterangepicker_label_update();
+        }
+    };
     var success = read_view_state_from_hash();
-    if (!success) {
+    if (success) {
+        update_state(get_view_state());
+    }
+    else {
         // no view state found in hash
         // retrieve it from the server instead
-        read_view_state_from_server();
+        read_view_state_from_server(update_state);
     }
 }
-function on_view_state_update() {
+function daterangepicker_label_update() {
     var view_state = get_view_state();
-    $('.popup-date-range span.action-text').html(
-        view_state.start.toLocaleDateString() + ' &mdash; ' + view_state.end.toLocaleDateString()
-        //view_state.start.toString() + ' &mdash; ' + view_state.end.toString()
-    );
+    var html = view_state.dt_start.format('LL') + ' &mdash; ' + view_state.dt_end.format('LL');
+    $('.popup-date-range span.action-text').html(html);
+    // fix IE9 not being able to determine width
+    if (isIE && ieVersion == 9) {
+        $('.popup-date-range span.action-text').parent().parent().width(300);
+    }
 }
 
-function setUpDateRangePicker() {
-    $('.popup-date-range').daterangepicker({
-        maxDate: Date.today(),
-        format: 'dd-MM-yyyy',
+function setup_daterangepicker() {
+    var picker = $('.popup-date-range').daterangepicker({
+        maxDate: moment.utc(),
+        format: 'DD-MM-YYYY',
         locale: {
             applyLabel:'Bevestigen',
             cancelLabel:'Annuleren',
-            fromLabel:'Van',
-            toLabel:'Tot',
             customRangeLabel:'Handmatige invoer',
             daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
             monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
             firstDay:0
         },
         ranges: {
-            'Afgelopen dag':   ['yesterday',                      'today', 'day'],
-            'Laatste 2 dagen': [Date.today().add({ days:   -2 }), 'today', '2_day'],
-            'Afgelopen week':  [Date.today().add({ days:   -7 }), 'today', 'week'],
-            'Afgelopen maand': [Date.today().add({ months: -1 }), 'today', 'month'],
-            'Jaar':            [Date.today().add({ years:  -1 }), 'today', 'year']
+            'Afgelopen dag':   [moment.utc().subtract('days',   1), moment.utc(), 'day'],
+            'Laatste 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
+            'Afgelopen week':  [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
+            'Afgelopen maand': [moment.utc().subtract('months', 1), moment.utc(), 'month'],
+            'Jaar':            [moment.utc().subtract('years',  1), moment.utc(), 'year']
         }
     },
-    function (start, end) {
-        // $('.popup-date-range span.action-text').html(start.toString('d MMMM yyyy') + ' - ' + end.toString('d MMMM yyyy'));
-        set_view_state({start: start, end: end});
-    },
-    function () {
-        // $('.popup-date-range span.action-text').html(start.toString('d MMMM yyyy') + ' - ' + end.toString('d MMMM yyyy'));
-        var view_state = get_view_state();
-        return [view_state.start, view_state.end];
+    function (range_type, dt_start, dt_end) {
+        set_view_state({dt_start: dt_start, dt_end: dt_end});
+        daterangepicker_label_update();
     });
 }
 
@@ -1505,8 +1602,8 @@ function setUpMovableDialog() {
 }
 
 $(document).ready(function () {
+    setup_daterangepicker();
     setup_view_state();
-    setUpDateRangePicker();
     setUpMovableDialog();
     setUpWorkspaceAcceptable();
     setUpActions();

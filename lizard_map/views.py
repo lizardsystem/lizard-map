@@ -370,9 +370,9 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, activate_multiselect)
         if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
             set_date_range = Action(
-                name=_('Verander datumbereik'),
+                name='',
                 description=_('Verander het datumbereik van de metingen.'),
-                url=reverse('lizard_map_date_range'),
+                url='javascript:void(null)', #reverse('lizard_map_date_range'),
                 icon='icon-calendar',
                 klass='popup-date-range pull-right')
             actions.insert(0, set_date_range)
@@ -1943,37 +1943,40 @@ class JsonDateTimeField(forms.DateTimeField):
         return value
 
 class ViewStateForm(forms.Form):
-    range_type = forms.CharField(required=False)
-    start = JsonDateTimeField(required=False)
-    end = JsonDateTimeField(required=False)
+    range_type = forms.CharField(required=False, help_text='custom, day, week, year, et cetera')
+    dt_start = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
+    dt_end = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
 
-SESSION_DT_START = 'dt_start_2'
-SESSION_DT_END = 'dt_end_2'
+SESSION_DT_RANGETYPE = 'dt_rangetype_3'
+SESSION_DT_START = 'dt_start_3'
+SESSION_DT_END = 'dt_end_3'
 
-class ViewStateService(JsonView, WorkspaceEditMixin):
+class ViewStateService(JsonView): #, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
+
+    @never_cache
+    def dispatch(self, request, *args, **kwargs):
+        return super(ViewStateService, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         session = request.session
 
         # try getting values from session
+        range_type = session.get(SESSION_DT_RANGETYPE, None)
         dt_start = session.get(SESSION_DT_START, None)
         dt_end = session.get(SESSION_DT_END, None)
 
         today = datetime.datetime.now()
-        if not dt_start:
-            # not found in session, return a default range based on current date
-            default_start_days = getattr(settings, 'DEFAULT_START_DAYS', -10)
-            dt_start = today + datetime.timedelta(days=default_start_days)
-        if not dt_end:
-            # not found in session, return a default range based on current date
-            default_end_days = getattr(settings, 'DEFAULT_END_DAYS', 0)
-            dt_end = today + datetime.timedelta(days=default_end_days)
+        if not range_type:
+            range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
+        elif range_type == 'custom' and not (dt_start and dt_end):
+            range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
 
         return {
-            'start': dt_start,
-            'end': dt_end
+            'range_type': range_type,
+            'dt_start': dt_start,
+            'dt_end': dt_end
         }
 
     def put(self, request, *args, **kwargs):
@@ -1981,21 +1984,15 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
 
         # self.CONTENT contains the validated values
         # it will raise an error 400 exception upon first access
-        start = None
-        end = None
-        try:
-            start = self.CONTENT['start']
-            session[SESSION_DT_START] = start
-        except KeyError:
-            logger.debug('Got an invalid or no start date, ignoring')
-        try:
-            end = self.CONTENT['end']
-            session[SESSION_DT_END] = end
-        except KeyError:
-            logger.debug('Got an invalid or no end date, ignoring')
+        range_type = self.CONTENT['range_type']
+        dt_start = self.CONTENT['dt_start']
+        dt_end = self.CONTENT['dt_end']
+        session[SESSION_DT_RANGETYPE] = range_type
+        session[SESSION_DT_START] = dt_start
+        session[SESSION_DT_END] = dt_end
         # also store in database: why in two places?
-        if start and end:
+        if dt_start and dt_end:
             workspace_edit = self.workspace_edit()
-            workspace_edit.dt_start = start
-            workspace_edit.dt_end = end
+            workspace_edit.dt_start = dt_start
+            workspace_edit.dt_end = dt_end
             workspace_edit.save()
