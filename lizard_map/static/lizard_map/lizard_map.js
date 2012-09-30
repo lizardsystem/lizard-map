@@ -40,8 +40,9 @@ function setup_movable_dialog() {
 
     // make an exception for iPad
     if (isAppleMobile) {
-        options.width = '100%';
-        options.height = '100%';
+        options.draggable = false;
+        options.width = $(window).width();
+        options.height = $(window).height();
     }
 
     $('#movable-dialog').dialog(options);
