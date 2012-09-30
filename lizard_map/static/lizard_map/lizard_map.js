@@ -1496,7 +1496,7 @@ function read_view_state_from_hash() {
             return true;
         }
         catch (error) {
-            console.error('Could not deserialize view state')
+            console.error('Could not deserialize view state from hash')
         }
     }
     return false;
