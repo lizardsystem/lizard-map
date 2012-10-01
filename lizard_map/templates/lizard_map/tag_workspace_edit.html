@@ -13,7 +13,7 @@
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
      >
   <h2>
-    <span rel="tipsy-southwest" title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
+    <span title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
       Workspace
     </span>
   </h2>
@@ -74,7 +74,6 @@
   <ul class="wscol-actions">
     <li>
       <a id="workspace-empty"
-         rel="tipsy-south"
          href="{% url lizard_map_workspace_empty %}"
          class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty"
          title="{% trans 'Empty your workspace' %}">
@@ -84,7 +83,6 @@
 
     <li>
       <a id="workspace-save"
-         rel="tipsy-south"
          href="{% url lizard_map_workspace_save %}"
          class="btn sidebarbox-action-icon popup-workspace-save"
          data-size="xs"
@@ -100,7 +98,6 @@
     {% endcomment %}
     {% comment %}
       <a id="workspace-link-to-stored"
-         rel="tipsy-south"
          href="{% url lizard_map_workspace_storage_list %}"
          title="{% trans 'Stored workspaces...' %}"
          class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog"
@@ -109,7 +106,6 @@
 
     {% comment %}
       <a id="workspace-load"
-         rel="tipsy-south"
          href="{% url lizard_map_workspace_load %}"
          title="{% trans 'Load workspace...' %}"
          class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"

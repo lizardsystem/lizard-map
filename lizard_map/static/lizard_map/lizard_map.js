@@ -48,9 +48,10 @@ function setup_movable_dialog() {
         options.draggable = false;
         // resizing neither
         options.resizable = false;
-        // make it 90% of the entire window
+        // make width 90% of the entire window
         options.width = $(window).width() * 0.9;
-        options.height = $(window).height() * 0.9;
+        // make height 80% of the entire window
+        options.height = $(window).height() * 0.8;
     }
 
     $('#movable-dialog').dialog(options);
@@ -571,9 +572,6 @@ function actionPostClick(event, preAction, postAction, parameters) {
         .success(function (data) {
             var div, html;
             if (target !== undefined) {
-                // If there are any tipsy tooltips, hide them first
-                $(".tipsy").hide();
-
                 div = $("<div/>").html(data).find(".dialog-box").find(target_id);
                 target.html(div.html());
             }
@@ -581,11 +579,7 @@ function actionPostClick(event, preAction, postAction, parameters) {
                 postAction();
             }
             if ($(event.target).hasClass("reload-after-action")) {
-                // TODO: De-activate possible actions.
-                // Show dialog.
-                dialogText("Herladen pagina",
-                           "De pagina wordt opnieuw geladen.");
-                location.reload();
+                window.location.reload();
             }
         })
         .error(function (data) {
@@ -1418,7 +1412,7 @@ var to_date_strings = function (assoc_array, inplace) {
  * starting with 'dt', to a Moment.js date object.
  *
  * @param {Object} An associative array containing dates, e.g.
- *                 <pre>{'a': 'foo', 'dt_start': '2012-09-28T22:00:00.000Z'}</pre>.
+ * <pre>{'a': 'foo', 'dt_start': '2012-09-28T22:00:00.000Z'}</pre>.
  * @param {boolean} [inplace] When evaluated to true, conversion happens in place
  * and the original array is modified.
  */
@@ -1445,16 +1439,19 @@ var to_date_objects = function (assoc_array, inplace) {
 };
 
 /**
- * Like $.ajax, but data is converted to json (with datetime-awareness).
+ * Like $.ajax, but data is converted to json (with optional datetime-awareness).
  */
-var lizard_api_put = function (ajax_opts) {
+var lizard_api_put = function (ajax_opts, convert_datetimes) {
     var opts = {
         type: 'PUT',
         contentType: 'application/json',
         dataType: 'json'
     };
     $.extend(opts, ajax_opts);
-    opts.data = $.toJSON(to_date_strings(opts.data))
+    if (convert_datetimes)
+        opts.data = $.toJSON(to_date_strings(opts.data));
+    else
+        opts.data = $.toJSON(opts.data);
     return $.ajax(opts);
 };
 
@@ -1479,6 +1476,36 @@ var lizard_api_get = function (ajax_opts, convert_datetimes) {
 
 // note: keep keys short in this associative array: they
 // are serialized to the URL hash
+function ViewState () {
+    this.state = {
+        range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
+        dt_start: moment.utc().subtract('days', 2), // Moment.js date object
+        dt_end: moment.utc()                        // Moment.js date object
+    };
+    this.events
+}
+
+ViewState.prototype.get = function () {
+};
+
+ViewState.prototype.set = function (new_state) {
+};
+
+ViewState.prototype.read_from_hash = function () {
+};
+
+ViewState.prototype.save_to_hash = function () {
+};
+
+ViewState.prototype.read_from_server = function () {
+};
+
+ViewState.prototype.save_to_server = function () {
+};
+
+ViewState.prototype.sync = function () {
+};
+
 var _view_state = {
     range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
     dt_start: moment.utc().subtract('days', 2), // Moment.js date object
@@ -1489,7 +1516,8 @@ function get_view_state() {
 }
 function set_view_state(params) {
     $.extend(_view_state, params);
-    save_view_state_to_hash();
+    // disabled for now
+    //save_view_state_to_hash();
     save_view_state_to_server();
 }
 function save_view_state_to_hash() {
@@ -1565,7 +1593,7 @@ function save_view_state_to_server() {
         success: function (data) {
             console.log('put success: ', data);
         }
-    });
+    }, true);
 }
 function setup_view_state() {
     // TODO add a timer for refreshing hash state
@@ -1577,7 +1605,9 @@ function setup_view_state() {
             daterangepicker_label_update();
         }
     };
-    var success = read_view_state_from_hash();
+    // disabled for now
+    //var success = read_view_state_from_hash();
+    var success = false;
     if (success) {
         update_state(get_view_state());
     }
@@ -1621,6 +1651,10 @@ function setup_daterangepicker() {
     function (range_type, dt_start, dt_end) {
         set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
         daterangepicker_label_update();
+        // hack to support reloading after changing the date (collage page)
+        if ($('.popup-date-range').hasClass('reload-after-action')) {
+            setTimeout(window.location.reload, 1337);
+        }
     });
 }
 

@@ -5,7 +5,7 @@
      data-collage-id="{{ collage_edit.id }}"
      >
   <h2>
-    <span rel="tipsy-southwest" title="{% trans 'This is your current selection.' %}">
+    <span title="{% trans 'This is your current selection.' %}">
       {% trans 'Selection' %}
     </span>
   </h2>
@@ -58,7 +58,6 @@
   <ul class="wscol-actions">
     <li>
     <a id="collage-empty"
-       rel="tipsy-south"
        href="{% url lizard_map_collage_empty %}"
        title="{% trans 'Empty your collage' %}"
        class="title btn btn-danger sidebarbox-action-icon action-post-workspace-empty{% if reload_after_action %} reload-after-action{% endif %}"
@@ -68,7 +67,6 @@
     </li>
     <li>
     <a id="collage-popup"
-       rel="tipsy-south"
        href="{% url lizard_map_collage_popup %}"
        title="{% trans 'Selection popup' %}"
        class="title btn sidebarbox-action-icon collage-popup">
@@ -78,7 +76,6 @@
     {# Collage edit page #}
     <li>
     <a class="btn sidebarbox-action-icon"
-       rel="tipsy-south"
        title="{% trans 'Selection page' %}"
        href="{% url lizard_map_collage_edit_detail %}">
       <i class="ss_sprite ss_arrow_turn_right"></i>

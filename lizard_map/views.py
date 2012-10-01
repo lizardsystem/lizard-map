@@ -1263,14 +1263,26 @@ def search_coordinates(request,
             return popup_json([], request=request)
 
 
-class CollageDetailView(
-    CollageMixin, DateRangeMixin, UiView):
+class CollageDetailView(CollageMixin, DateRangeMixin, UiView):
     """
     Shows "my collage" as big page.
     """
     title = _('Collage')
     template_name = 'lizard_map/collage_edit_detail.html'
     hide_statistics = False
+
+    @property
+    def content_actions(self):
+        actions = super(CollageDetailView, self).content_actions
+        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
+            set_date_range = Action(
+                name='',
+                description=_('Verander het datumbereik van de metingen.'),
+                url='javascript:void(null)', #reverse('lizard_map_date_range'),
+                icon='icon-calendar',
+                klass='popup-date-range reload-after-action')
+            actions.insert(0, set_date_range)
+        return actions
 
     def breadcrumbs(self):
         initial = [
