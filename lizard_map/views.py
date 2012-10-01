@@ -933,8 +933,10 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         #     x_found, y_found = display_object['google_coords']
         html[key] = html_per_workspace_item
 
-    POPUP_MAX_TABS = getattr(settings, 'POPUP_MAX_TABS', 3)
-    result_html = [html[key] for key in display_group_order][:POPUP_MAX_TABS]
+    popup_max_tabs = Setting.get('popup_max_tabs', None)
+    if popup_max_tabs is None:
+        popup_max_tabs = getattr(settings, 'POPUP_MAX_TABS', 3)
+    result_html = [html[key] for key in display_group_order][:popup_max_tabs]
 
     if popup_id is None:
         popup_id = 'popup-id'
