@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-24 07:17+0200\n"
+"POT-Creation-Date: 2012-10-01 14:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,41 +113,53 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: views.py:311
+#: views.py:312 views.py:1279
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:329
+#: views.py:330
 msgid "Layers"
 msgstr ""
 
-#: views.py:335 templates/lizard_map/legend_item.html:6
+#: views.py:336 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:17
 msgid "Legend"
 msgstr ""
 
-#: views.py:364
+#: views.py:365
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:365
+#: views.py:366
 msgid "Selecteer meerdere items."
 msgstr ""
 
-#: views.py:372
-msgid "Verander datumbereik"
-msgstr ""
-
-#: views.py:373
+#: views.py:374
 msgid "Verander het datumbereik van de metingen."
 msgstr ""
 
-#: views.py:380
+#: views.py:381
+msgid "Locations"
+msgstr ""
+
+#: views.py:382
+msgid "Search for locations."
+msgstr ""
+
+#: views.py:389
 msgid "Default zoom"
 msgstr ""
 
-#: views.py:381
+#: views.py:390
 msgid "Zoom to default location."
+msgstr ""
+
+#: views.py:1270 views.py:1282
+msgid "Collage"
+msgstr ""
+
+#: views.py:1277
+msgid "Home"
 msgstr ""
 
 #: workspace.py:21
@@ -155,11 +167,11 @@ msgid "blue"
 msgstr ""
 
 #: workspace.py:22
-msgid "magenta"
+msgid "darkred"
 msgstr ""
 
 #: workspace.py:23
-msgid "yellow"
+msgid "green"
 msgstr ""
 
 #: workspace.py:24
@@ -171,7 +183,7 @@ msgid "cyan"
 msgstr ""
 
 #: workspace.py:26
-msgid "red"
+msgid "yellow"
 msgstr ""
 
 #: workspace.py:27

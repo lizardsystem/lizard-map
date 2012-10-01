@@ -35,7 +35,11 @@ function setup_movable_dialog() {
         title: '',
         width: 650,
         height: 480,
-        zIndex: 10000
+        zIndex: 10000,
+        close: function (event, ui) {
+            // clear contents on close
+            $('#movable-dialog-content').empty();
+        }
     };
 
     // make an exception for iPad
@@ -54,10 +58,12 @@ function setup_movable_dialog() {
 
 // in use (26-09-2012)
 // main (single) popup
-function open_popup() {
+function open_popup(show_spinner) {
     $("#movable-dialog-content").empty();
-    var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
-    $("#movable-dialog-content").append($loading);
+    if (show_spinner == undefined || show_spinner) {
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+        $("#movable-dialog-content").append($loading);
+    }
     $("#movable-dialog").dialog("open");
 }
 
@@ -66,7 +72,10 @@ function open_popup() {
 function set_popup_content(data) {
     var html, overlay, i;
     if (data !== null) {
-        if (data.html && data.html.length !== 0) {
+        if (data instanceof jQuery) {
+            $("#movable-dialog-content").empty().append(data);
+        }
+        else if (data.html && data.html.length !== 0) {
             // We got at least 1 result back.
             if (data.html.length === 1) {
                 // Just copy the contents directly into the target div.
@@ -1417,7 +1426,7 @@ var to_date_objects = function (assoc_array, inplace) {
     if (!inplace)
         assoc_array = $.extend({}, assoc_array);
     $.each(assoc_array, function(k, v) {
-        if (v) {
+        if (k && v) {
             if (typeof v == 'string' && (
                  k.substring(0, 2) == 'dt'
                  || k.indexOf('date') != -1
@@ -1452,7 +1461,7 @@ var lizard_api_put = function (ajax_opts) {
 /**
  * Like $.ajax, but datetimes in the data are parsed to Moment.js objects.
  */
-var lizard_api_get = function (ajax_opts) {
+var lizard_api_get = function (ajax_opts, convert_datetimes) {
     var opts = {
         type: 'GET',
         contentType: 'application/json',
@@ -1460,7 +1469,7 @@ var lizard_api_get = function (ajax_opts) {
     };
     $.extend(opts, ajax_opts);
     var _success = opts.success;
-    if (_success) {
+    if (convert_datetimes && _success) {
         opts.success = function (data, textStatus, jqXHR) {
             return _success(to_date_objects(data), textStatus, jqXHR);
         };
@@ -1545,7 +1554,7 @@ function read_view_state_from_server(on_success) {
             $.extend(_view_state, new_state);
             if (on_success) on_success(_view_state);
         }
-    });
+    }, true);
 }
 function save_view_state_to_server() {
     // update the session on the server side
@@ -1610,15 +1619,89 @@ function setup_daterangepicker() {
         }
     },
     function (range_type, dt_start, dt_end) {
-        set_view_state({dt_start: dt_start, dt_end: dt_end});
+        set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
         daterangepicker_label_update();
     });
+}
+
+function setup_location_list () {
+    var $element = $('.popup-location-list');
+    var template = '' +
+    '<div class="location-list">' +
+        '<form class="form-search">' +
+            '<legend>Zoek naar locaties</legend>' +
+            '<input type="text" class="search-query" placeholder="Type een naam..." />' +
+            '<button type="submit" class="btn">Zoek</button>' +
+        '</form>' +
+        '<div class="results" />' +
+    '</div>';
+    var $container = $(template);
+    var $form = $container.find('.form-search');
+    var $input = $container.find('input');
+    var $button = $container.find('button');
+    var $results = $container.find('.results');
+
+    function show (e) {
+        open_popup(false);
+        set_popup_content($container);
+
+        $input.focus();
+        $button.click(search);
+        $form.submit(search);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+    function search (e) {
+        var params = $.param({
+            name: $input.val()
+        });
+        $results.empty();
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+        $results.append($loading);
+        lizard_api_get({
+            url: '/map/location_list_service/?' + params, // TODO
+            success: function (data) {
+                $results.empty();
+                if (data.length == 0) {
+                    $results.html('Niets gevonden.');
+                }
+                else {
+                    $.each(data, function () {
+                        var item = this;
+                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" href="/webmap/map/mycollage/add_item/"/>')
+                            .attr('data-adapter-class', item[0])
+                            .attr('data-adapter-layer-json', item[1])
+                            .attr('data-identifier', item[2])
+                            .attr('data-name', item[3])
+                            .html(item[3]);
+                        var $div = $('<div/>')
+                            .append($link);
+                        $results.append($div);
+                    });
+                }
+            }
+        }, false);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+    $element.on('click', show);
 }
 
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
     setup_movable_dialog();
+    setup_location_list();
     setUpWorkspaceAcceptable();
     setUpActions();
     setUpDataFromUrl();

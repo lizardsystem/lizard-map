@@ -134,6 +134,10 @@ urlpatterns = patterns(
         lizard_map.views.ViewStateService.as_view(),
         name="lizard_map_view_state_service"),
 
+    url(r'^location_list_service/$',
+        lizard_map.views.LocationListService.as_view(),
+        name="lizard_map_location_list_service"),
+
     # Load and save map location
     (r'^map_location_save$',
      'lizard_map.views.map_location_save',

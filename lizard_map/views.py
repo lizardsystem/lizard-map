@@ -6,6 +6,7 @@ import csv
 import datetime
 import logging
 import urllib2
+import re
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -376,6 +377,14 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-calendar',
                 klass='popup-date-range')
             actions.insert(0, set_date_range)
+        if getattr(settings, 'MAP_SHOW_LOCATION_LIST', True):
+            location_list = Action(
+                name=_('Locations'),
+                description=_('Search for locations.'),
+                url='javascript:void(null)',
+                icon='icon-search',
+                klass='popup-location-list')
+            actions.insert(0, location_list)
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
                 name=_('Default zoom'),
@@ -1998,3 +2007,52 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
             workspace_edit.dt_start = dt_start
             workspace_edit.dt_end = dt_end
             workspace_edit.save()
+
+
+MAX_LOCATIONS = getattr(settings, 'MAX_LOCATIONS', 50)
+# no way to know how the database driver escapes things, so apply
+# a whitelist to strings, before passing them in the raw SQL query
+location_name_character_whitelist = re.compile(r'''[\W^ ^\,^\-^\.]''')
+
+class LocationListService(JsonView, WorkspaceEditMixin):
+    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
+
+    @never_cache
+    def dispatch(self, request, *args, **kwargs):
+        return super(LocationListService, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        name = request.GET.get('name', None)
+        # don't return anything in case name isn't passed, or is an empty string
+        if not name:
+            return []
+        # clean weird character from the name
+        name = name.strip()
+        name = location_name_character_whitelist.sub('', name)
+        # don't return anything in case a very short string is passed
+        if len(name) < 3:
+            return []
+        # grab this users workspace
+        workspace_edit = self.workspace_edit()
+        locations = []
+        # iterate trough all selected layers
+        for workspace_item in workspace_edit.workspace_items.all():
+            # skip invisible items
+            if not workspace_item.visible:
+                continue
+            adapter = workspace_item.adapter
+            adapter_class = adapter.adapter_class
+            layer_arguments = json.dumps(adapter.layer_arguments)
+            # skip items whose workspace adapter don't support location searching
+            if not hasattr(adapter, 'location_list'):
+                logger.debug("No location_list() on this ws item's adapter.")
+                continue
+            # request the list of locations from the adapter
+            for identifier, location_name in adapter.location_list(name):
+                identifier = json.dumps(identifier)
+                locations.append((adapter_class, layer_arguments, identifier, location_name))
+            # we can stop searching the remaining adapters in case MAX_LOCATIONS is already reached
+            if len(locations) > MAX_LOCATIONS:
+                break
+        # ensure we don't return more than MAX_LOCATIONS values
+        return locations[:MAX_LOCATIONS]
