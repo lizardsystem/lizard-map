@@ -746,6 +746,10 @@ class FlotGraphAxes(object):
         '''no-op for FlotGraph'''
         pass
 
+    def set_ylim(self, y_min, y_max):
+        '''no-op for FlotGraph'''
+        pass
+
     def get_ylim(self):
         '''no-op for FlotGraph'''
         return None, None
