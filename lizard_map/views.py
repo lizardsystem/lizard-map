@@ -374,7 +374,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 description=_('Verander het datumbereik van de metingen.'),
                 url='javascript:void(null)', #reverse('lizard_map_date_range'),
                 icon='icon-calendar',
-                klass='popup-date-range pull-right')
+                klass='popup-date-range')
             actions.insert(0, set_date_range)
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
@@ -1953,7 +1953,7 @@ SESSION_DT_RANGETYPE = 'dt_rangetype_3'
 SESSION_DT_START = 'dt_start_3'
 SESSION_DT_END = 'dt_end_3'
 
-class ViewStateService(JsonView): #, WorkspaceEditMixin):
+class ViewStateService(JsonView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
 

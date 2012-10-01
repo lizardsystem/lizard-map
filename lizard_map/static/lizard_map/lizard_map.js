@@ -1590,6 +1590,7 @@ function daterangepicker_label_update() {
 
 function setup_daterangepicker() {
     var picker = $('.popup-date-range').daterangepicker({
+        opens: 'left',
         maxDate: moment.utc(),
         format: 'DD-MM-YYYY',
         locale: {
