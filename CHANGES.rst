@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.7 (unreleased)
 ----------------
 
+- Relicensed from GPL to LGPL.
+
 - Added MAP_SHOW_MULTISELECT, MAP_SHOW_DATE_RANGE and MAP_SHOW_DEFAULT_ZOOM
   optional settings to make it possible to hide the three default lizard-map
   content actions. They're True by default.
