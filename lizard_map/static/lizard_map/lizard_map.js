@@ -1507,6 +1507,7 @@ function read_view_state_from_hash() {
             var new_state = {};
             // only merge valid entries to the view state
             if (hash.dt_start && hash.dt_end) {
+                new_state.range_type = 'custom';
                 new_state.dt_start = hash.dt_start;
                 new_state.dt_end = hash.dt_end;
             }
@@ -1528,10 +1529,15 @@ function read_view_state_from_server(on_success) {
             // deserialize parameters
             if (data.range_type) {
                 new_state.range_type = data.range_type;
-
-                if (data.dt_start && data.dt_end) {
+                if (data.range_type == 'custom' && data.dt_start && data.dt_end) {
                     new_state.dt_start = moment.utc(data.dt_start);
                     new_state.dt_end = moment.utc(data.dt_end);
+                }
+                else {
+                    // use a relative date range from the datepicker
+                    var range = $('.popup-date-range').data('daterangepicker').getRange(data.range_type);
+                    new_state.dt_start = range[0];
+                    new_state.dt_end = range[1];
                 }
             }
 
