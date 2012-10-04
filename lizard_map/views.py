@@ -2067,4 +2067,7 @@ class LocationListService(JsonView, WorkspaceEditMixin):
             if len(locations) > MAX_LOCATIONS:
                 break
         # ensure we don't return more than MAX_LOCATIONS values
-        return locations[:MAX_LOCATIONS]
+        locations = locations[:MAX_LOCATIONS]
+        add_href = reverse('lizard_map_collage_add')
+        locations = [loc + (add_href,) for loc in locations]
+        return locations

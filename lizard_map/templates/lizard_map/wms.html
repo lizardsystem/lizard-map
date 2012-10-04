@@ -69,5 +69,29 @@
        {% endautoescape %}
      {% endfor %}
   </div>
+{# comment #}
+<script id="location-list" type="text/html">
+    <div class="location-list">
+        <form class="form-search">
+            <legend>Zoek naar locaties</legend>
+            <input type="text" class="search-query" placeholder="Type een naam..." />
+            <button type="submit" class="btn">Zoek</button>
+        </form>
+        <div class="results">
+        [[ #results ]]
+            <a title="Toevoegen aan selectie"
+               data-target-id="#edit-collage"
+               data-adapter-class="[[ item[0] ]]"
+               data-adapter-layer-json="[[ item[1] ]]"
+               data-identifier="[[ item[2] ]]"
+               data-name="[[ item[3] ]]"
+               class="ss_sprite ss_star collage-add"
+               href="/webmap/map/mycollage/add_item/"
+            >[[ item[3] ]]</a>
+        [[ /results ]]
+        </div>
+    </div>
+</script>
+{# endcomment #}
   <div id="map"></div>
 {% endblock content %}

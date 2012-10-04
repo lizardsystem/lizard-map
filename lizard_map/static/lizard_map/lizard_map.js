@@ -1705,13 +1705,17 @@ function setup_location_list () {
                     $results.html('Niets gevonden.');
                 }
                 else {
+                    /*
+                    var mtemplate = ich['location-list'](data);
+                    */
                     $.each(data, function () {
                         var item = this;
-                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" href="/webmap/map/mycollage/add_item/"/>')
+                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
                             .attr('data-adapter-class', item[0])
                             .attr('data-adapter-layer-json', item[1])
                             .attr('data-identifier', item[2])
                             .attr('data-name', item[3])
+                            .attr('href', item[4])
                             .html(item[3]);
                         var $div = $('<div/>')
                             .append($link);
