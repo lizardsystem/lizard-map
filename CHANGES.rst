@@ -12,6 +12,37 @@ Changelog of lizard-map
 
 - Added popup with subtabs.
 
+- Merged and cleaned various JavaScript files.
+
+- Link to Pillow instead of PIL.
+
+- Move most CSS styling to lizard-ui.
+
+- Fix some styling issues, typo's.
+
+- Revived the collage page.
+
+- Switch to a Twitter Bootstrap based date-range selector.
+
+- Fix legend order.
+
+- Disable obsolete OpenLayers reprojection.
+
+- Changed default graph colours.
+
+- Popup is shown directly after click on map.
+
+- Add some iPad exceptions and add graph navigation.
+
+- Add support for location search.
+
+- Add more resolutions for Rijksdriehoek.
+
+- Started a simple JavaScript view state holder on the client.
+  In the future this will hold map extent, map layers etc. as well.
+
+- Tables now have borders, as requested.
+
 
 4.6 (2012-08-23)
 ----------------
