@@ -1705,9 +1705,6 @@ function setup_location_list () {
                     $results.html('Niets gevonden.');
                 }
                 else {
-                    /*
-                    var mtemplate = ich['location-list'](data);
-                    */
                     $.each(data, function () {
                         var item = this;
                         var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
