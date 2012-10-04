@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.7 (unreleased)
+4.7 (2012-10-04)
 ----------------
 
 - Relicensed from GPL to LGPL.
