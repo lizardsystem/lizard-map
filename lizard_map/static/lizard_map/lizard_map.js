@@ -1596,25 +1596,27 @@ function save_view_state_to_server() {
     }, true);
 }
 function setup_view_state() {
-    // TODO add a timer for refreshing hash state
-    //window.onhashchange = function (event) { read_view_state_from_hash(); };
-    // read initial state on page load
-    var update_state = function (state) {
-        if (state.dt_start && state.dt_end) {
-            $('.popup-date-range').data('daterangepicker').setRange(state.range_type, state.dt_start, state.dt_end);
-            daterangepicker_label_update();
+    if ($('.popup-date-range').exists()) {
+        // TODO add a timer for refreshing hash state
+        //window.onhashchange = function (event) { read_view_state_from_hash(); };
+        // read initial state on page load
+        var update_state = function (state) {
+            if (state.dt_start && state.dt_end) {
+                $('.popup-date-range').data('daterangepicker').setRange(state.range_type, state.dt_start, state.dt_end);
+                daterangepicker_label_update();
+            }
+        };
+        // disabled for now
+        //var success = read_view_state_from_hash();
+        var success = false;
+        if (success) {
+            update_state(get_view_state());
         }
-    };
-    // disabled for now
-    //var success = read_view_state_from_hash();
-    var success = false;
-    if (success) {
-        update_state(get_view_state());
-    }
-    else {
-        // no view state found in hash
-        // retrieve it from the server instead
-        read_view_state_from_server(update_state);
+        else {
+            // no view state found in hash
+            // retrieve it from the server instead
+            read_view_state_from_server(update_state);
+        }
     }
 }
 function daterangepicker_label_update() {
@@ -1662,76 +1664,78 @@ function setup_daterangepicker() {
 
 function setup_location_list () {
     var $element = $('.popup-location-list');
-    var template = '' +
-    '<div class="location-list">' +
-        '<form class="form-search">' +
-            '<legend>Zoek naar locaties</legend>' +
-            '<input type="text" class="search-query" placeholder="Type een naam..." />' +
-            '<button type="submit" class="btn">Zoek</button>' +
-        '</form>' +
-        '<div class="results" />' +
-    '</div>';
-    var $container = $(template);
-    var $form = $container.find('.form-search');
-    var $input = $container.find('input');
-    var $button = $container.find('button');
-    var $results = $container.find('.results');
+    if ($element.exists()) {
+        var template = '' +
+        '<div class="location-list">' +
+            '<form class="form-search">' +
+                '<legend>Zoek naar locaties</legend>' +
+                '<input type="text" class="search-query" placeholder="Type een naam..." />' +
+                '<button type="submit" class="btn">Zoek</button>' +
+            '</form>' +
+            '<div class="results" />' +
+        '</div>';
+        var $container = $(template);
+        var $form = $container.find('.form-search');
+        var $input = $container.find('input');
+        var $button = $container.find('button');
+        var $results = $container.find('.results');
 
-    function show (e) {
-        open_popup(false);
-        set_popup_content($container);
+        function show (e) {
+            open_popup(false);
+            set_popup_content($container);
 
-        $input.focus();
-        $button.click(search);
-        $form.submit(search);
+            $input.focus();
+            $button.click(search);
+            $form.submit(search);
 
-        if (e) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-        return false;
-    }
-
-    function search (e) {
-        var params = $.param({
-            name: $input.val()
-        });
-        $results.empty();
-        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
-        $results.append($loading);
-        lizard_api_get({
-            url: '/map/location_list_service/?' + params, // TODO
-            success: function (data) {
-                $results.empty();
-                if (data.length == 0) {
-                    $results.html('Niets gevonden.');
-                }
-                else {
-                    $.each(data, function () {
-                        var item = this;
-                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
-                            .attr('data-adapter-class', item[0])
-                            .attr('data-adapter-layer-json', item[1])
-                            .attr('data-identifier', item[2])
-                            .attr('data-name', item[3])
-                            .attr('href', item[4])
-                            .html(item[3]);
-                        var $div = $('<div/>')
-                            .append($link);
-                        $results.append($div);
-                    });
-                }
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
             }
-        }, false);
-
-        if (e) {
-            e.stopPropagation();
-            e.preventDefault();
+            return false;
         }
-        return false;
-    }
 
-    $element.on('click', show);
+        function search (e) {
+            var params = $.param({
+                name: $input.val()
+            });
+            $results.empty();
+            var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+            $results.append($loading);
+            lizard_api_get({
+                url: '/map/location_list_service/?' + params, // TODO
+                success: function (data) {
+                    $results.empty();
+                    if (data.length == 0) {
+                        $results.html('Niets gevonden.');
+                    }
+                    else {
+                        $.each(data, function () {
+                            var item = this;
+                            var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
+                                .attr('data-adapter-class', item[0])
+                                .attr('data-adapter-layer-json', item[1])
+                                .attr('data-identifier', item[2])
+                                .attr('data-name', item[3])
+                                .attr('href', item[4])
+                                .html(item[3]);
+                            var $div = $('<div/>')
+                                .append($link);
+                            $results.append($div);
+                        });
+                    }
+                }
+            }, false);
+
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            return false;
+        }
+
+        $element.on('click', show);
+    }
 }
 
 $(document).ready(function () {
