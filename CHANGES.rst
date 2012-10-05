@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.8 (unreleased)
+4.8 (2012-10-05)
 ----------------
 
 - Fix a missing css and made some javascript code optional.
