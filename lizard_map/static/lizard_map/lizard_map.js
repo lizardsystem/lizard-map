@@ -1628,34 +1628,36 @@ function daterangepicker_label_update() {
 }
 
 function setup_daterangepicker() {
-    var picker = $('.popup-date-range').daterangepicker({
-        opens: 'left',
-        maxDate: moment.utc(),
-        format: 'DD-MM-YYYY',
-        locale: {
-            applyLabel:'Bevestigen',
-            cancelLabel:'Annuleren',
-            customRangeLabel:'Handmatige invoer',
-            daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
-            monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
-            firstDay:0
+    if ($('.popup-date-range').exists()) {
+        var picker = $('.popup-date-range').daterangepicker({
+            opens: 'left',
+            maxDate: moment.utc(),
+            format: 'DD-MM-YYYY',
+            locale: {
+                applyLabel:'Bevestigen',
+                cancelLabel:'Annuleren',
+                customRangeLabel:'Handmatige invoer',
+                daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
+                monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+                firstDay:0
+            },
+            ranges: {
+                'Afgelopen dag':   [moment.utc().subtract('days',   1), moment.utc(), 'day'],
+                'Laatste 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
+                'Afgelopen week':  [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
+                'Afgelopen maand': [moment.utc().subtract('months', 1), moment.utc(), 'month'],
+                'Jaar':            [moment.utc().subtract('years',  1), moment.utc(), 'year']
+            }
         },
-        ranges: {
-            'Afgelopen dag':   [moment.utc().subtract('days',   1), moment.utc(), 'day'],
-            'Laatste 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
-            'Afgelopen week':  [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
-            'Afgelopen maand': [moment.utc().subtract('months', 1), moment.utc(), 'month'],
-            'Jaar':            [moment.utc().subtract('years',  1), moment.utc(), 'year']
-        }
-    },
-    function (range_type, dt_start, dt_end) {
-        set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-        daterangepicker_label_update();
-        // hack to support reloading after changing the date (collage page)
-        if ($('.popup-date-range').hasClass('reload-after-action')) {
-            setTimeout(window.location.reload, 1337);
-        }
-    });
+        function (range_type, dt_start, dt_end) {
+            set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
+            daterangepicker_label_update();
+            // hack to support reloading after changing the date (collage page)
+            if ($('.popup-date-range').hasClass('reload-after-action')) {
+                setTimeout(window.location.reload, 1337);
+            }
+        });
+    }
 }
 
 function setup_location_list () {
