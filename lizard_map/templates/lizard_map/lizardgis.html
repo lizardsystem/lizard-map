@@ -1,14 +1,6 @@
 {% extends "lizard_ui/lizardbase.html" %}
 {% load workspaces %}
 
-{% block css %}
-  {{ block.super }}
-  <link type="text/css"
-        href="{{ STATIC_URL }}lizard_map/lizard_map.css"
-        media="screen, projection"
-        rel="stylesheet" />
-{% endblock css %}
-
 {% block javascript %}
   {{ block.super }}
   <script type="text/javascript"
