@@ -2,7 +2,7 @@ language: python
 python:
   - 2.7
 before_install:
-  - sudo apt-get install python-psycopg2 libgeos-dev python-matplotlib
+  - sudo apt-get install python-psycopg2 libgeos-dev python-matplotlib python-pyproj python-mapnik
 notifications:
   irc:
     channels: "irc.freenode.org#nens"
