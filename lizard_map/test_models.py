@@ -476,7 +476,6 @@ class WorkspaceEditTest(TestCase):
         user = User(username='lespaul')
         workspace = WorkspaceEdit.get_or_create('fake session key', user)
         workspace.__unicode__()
-        workspace.wms_url()
 
     def test_workspace_storage(self):
         user = User(username='lespaul')
@@ -484,7 +483,6 @@ class WorkspaceEditTest(TestCase):
         workspace = WorkspaceStorage(name='workspace-storage', owner=user)
         workspace.save()
         workspace.__unicode__()
-        workspace.wms_url()
 
     # def test_workspace_extent_temp(self):
     #     """
