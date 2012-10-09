@@ -378,10 +378,17 @@ class WorkspaceModelMixin(object):
                     'isBaseLayer': False,
                     'opacity': 1.0
                 })
+                if isinstance(workspace_item, WorkspaceStorageItem):
+                    url = reverse('lizard_map_workspace_storage_wms', kwargs={
+                        'workspace_storage_id': workspace_item.workspace.id,
+                        'workspace_item_id': workspace_item.id
+                    })
+                else:
+                    url = reverse('lizard_map_workspace_edit_wms', kwargs={'workspace_item_id': workspace_item.id})
                 return {
                     'wms_id': workspace_item.id,
                     'name': workspace_item.name,
-                    'url': reverse('lizard_map_workspace_edit_wms', kwargs={'workspace_item_id': workspace_item.id}),
+                    'url': url,
                     'params': params,
                     'options': options,
                     'index': workspace_item.index,
