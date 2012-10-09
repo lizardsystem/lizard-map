@@ -1674,8 +1674,8 @@ function setup_location_list () {
         '<div class="location-list">' +
             '<form class="form-search">' +
                 '<legend>Zoek naar locaties</legend>' +
-                '<input type="text" class="search-query" placeholder="Type een naam..." />' +
-                '<button type="submit" class="btn">Zoek</button>' +
+                '<input type="text" class="search-query" placeholder="Type ten minste drie karakters..." style="width:300px"/>' +
+                '<button type="submit" class="btn" style="margin-left:10px">Zoek</button>' +
             '</form>' +
             '<div class="results" />' +
         '</div>';
