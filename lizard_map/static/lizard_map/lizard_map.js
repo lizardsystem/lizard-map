@@ -1646,11 +1646,11 @@ function setup_daterangepicker() {
                 firstDay:0
             },
             ranges: {
-                'Afgelopen dag':   [moment.utc().subtract('days',   1), moment.utc(), 'day'],
-                'Laatste 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
-                'Afgelopen week':  [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
-                'Afgelopen maand': [moment.utc().subtract('months', 1), moment.utc(), 'month'],
-                'Jaar':            [moment.utc().subtract('years',  1), moment.utc(), 'year']
+                'Afgelopen dag':     [moment.utc().subtract('days',   1), moment.utc(), 'day'],
+                'Afgelopen 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
+                'Afgelopen week':    [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
+                'Afgelopen maand':   [moment.utc().subtract('months', 1), moment.utc(), 'month'],
+                'Afgelopen jaar':    [moment.utc().subtract('years',  1), moment.utc(), 'year']
             }
         },
         function (range_type, dt_start, dt_end) {
