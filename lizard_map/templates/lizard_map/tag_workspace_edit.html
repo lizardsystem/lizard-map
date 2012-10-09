@@ -27,51 +27,7 @@
           data-adapter-class="{{ workspace_item.adapter_class }}"
           data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
           data-visible="{{ workspace_item.visible }}">
-        
-        <td>
-          <ul style="list-style:none;">
-            <li>{% firstof workspace_item.name '(noname)' %}</li>
-            <li>
-                  {# Symbol, appears left. #}
-                  {% if workspace_item.adapter.symbol_url %}
-                  <img class="workspace-item-image"
-                       src="{{ workspace_item.adapter.symbol_url }}"
-                       width="16"
-                       height="16" />
-                  {% endif %}
-            </li>
-            <li>                    
-               <input id="{{ workspace_item.id }}"
-                     class="workspace-item-checkbox"
-                     type="checkbox"
-                     {% if workspace_item.visible %}
-                     checked="checked"
-                     {% endif %}
-                     data-workspace-id="{{ workspace.id }}" />
-<!--                 <div class="toggle-button" data-toggleButton-width="80">
-                    <input id="checkbox1" type="checkbox" value="value1" checked="checked">
-                </div> -->
-            </li>
-            <li>
-                  {% if workspace_item.has_extent %}
-                  <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                               workspace-item-pan-to"
-                        title="{% trans 'Zoom to extent' %}"></span>
-                {% endif %}
-                  <span class="ss_sprite ss_delete sidebarbox-action-icon
-                               workspace-item-delete"
-                        title="{% trans 'Delete item' %}"></span>
-                {% comment TODO needs some refactoring %}
-                {% legend workspace_item.name workspace_item.adapter session %}
-                {% endcomment %}
-              </li>
-            </ul>
-        </td> 
-      </tr>
-
-
-        
-<!--         <td class="icontd">
+        <td class="icontd">
           {# Symbol, appears left. #}
           {% if workspace_item.adapter.symbol_url %}
           <img class="workspace-item-image"
@@ -106,8 +62,8 @@
         {% comment TODO needs some refactoring %}
         {% legend workspace_item.name workspace_item.adapter session %}
         {% endcomment %}
-        </td> 
-      </tr> -->
+        </td>
+      </tr>
     {% empty %}
       {# No workspace items #}
       <tr><td>Geen kaartlagen geselecteerd.</td></tr>
