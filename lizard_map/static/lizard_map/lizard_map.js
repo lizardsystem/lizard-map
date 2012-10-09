@@ -1660,6 +1660,9 @@ function setup_daterangepicker() {
             if ($('.popup-date-range').hasClass('reload-after-action')) {
                 setTimeout(window.location.reload, 1337);
             }
+            else {
+                reloadGraphs(undefined, undefined, true);
+            }
         });
     }
 }
