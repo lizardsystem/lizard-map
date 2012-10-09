@@ -682,7 +682,7 @@ function collagePopup(event) {
     url = $(event.target).attr("href");
     if (url == undefined) {
         // find in parents
-        url = $(event.target).parents('a.collage-popup').attr("href");
+        url = $(event.target).parents('.collage-popup').attr("href");
     }
 
     open_popup();
@@ -1347,6 +1347,8 @@ function setUpMap() {
 /* map-multiple-selection button */
 function setUpMultipleSelection() {
     $(".map-multiple-selection").live("click", function () {
+        $(this).find('i').toggleClass("icon-star-empty");
+        $(this).find('i').toggleClass("icon-star");
         $(this).toggleClass("active");
     });
 }
@@ -1482,7 +1484,7 @@ function ViewState () {
         dt_start: moment.utc().subtract('days', 2), // Moment.js date object
         dt_end: moment.utc()                        // Moment.js date object
     };
-    this.events
+    //this.events
 }
 
 ViewState.prototype.get = function () {
