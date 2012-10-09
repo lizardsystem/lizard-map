@@ -82,13 +82,14 @@
     </li>
 
     <li>
-      <a id="workspace-save"
+      <button id="workspace-save"
          href="{% url lizard_map_workspace_save %}"
          class="btn sidebarbox-action-icon popup-workspace-save"
          data-size="xs"
-         title="{% trans 'Save your workspace' %}">
+         title="{% trans 'Save your workspace' %}"
+         {% if not workspace_edit.workspace_items.exists %} disabled="disabled" {% endif %}>
         <i class="ss_sprite ss_database_save"></i>
-      </a>
+      </button>
     </li>
 
     {% comment %}
