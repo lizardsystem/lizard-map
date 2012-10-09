@@ -96,7 +96,7 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/$',
         lizard_map.views.WorkspaceStorageView.as_view(),
         name="lizard_map_workspace_storage"),
-    url(r'^workspace/(?P<workspace_storage_id>\d+)/wms/$',  # L3
+    url(r'^workspace/(?P<workspace_storage_id>\d+)/(?P<workspace_item_id>\d+)/wms/$',  # L3
         'lizard_map.views.wms',
         name="lizard_map_workspace_storage_wms"),
     url(r'^workspace/(?P<workspace_storage_id>\d+)/search_coordinates/',
