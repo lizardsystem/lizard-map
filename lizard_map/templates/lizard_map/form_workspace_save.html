@@ -1,13 +1,25 @@
 <div class="dialog-box">
-Workspace opslaan
-<form id="workspace-save-form" action="{% url lizard_map_workspace_save %}" method="POST">
+<form id="workspace-save-form" class="form-horizontal" action="{% url lizard_map_workspace_save %}" method="POST">
 {% csrf_token %}
-{{ form.as_p }}
-<div>
+<legend>Workspace opslaan</legend>
+
+{% for field in form %}
+<fieldset class="control-group">
+    <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+    <div class="controls">
+        {{ field }}
+        <p class="help-text">{{ field.help_text }} </p>
+    </div>
+</fieldset>
+{% endfor %}
+
+<div class="control-group">
+<div class="controls">
   <input id="workspace-save-submit"
-	 class="alternative-submit open-new-window-after"
+	 class="alternative-submit open-new-window-after btn btn-success"
          type="submit"
          value="opslaan" />
+</div>
 </div>
 </form>
 </div>
