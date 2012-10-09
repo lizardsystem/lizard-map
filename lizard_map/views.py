@@ -100,6 +100,7 @@ class WorkspaceMixin(object):
     javascript_click_handler = 'popup_click_handler'
     # javascript_click_handler = ''
 
+    @property
     def workspace(self):
         """Implement a function that returns a workspace-storage,
         workspace-edit or other workspace."""
@@ -110,7 +111,7 @@ class WorkspaceMixin(object):
         because the datetime settings could be changed in the
         meanwhile."""
         animation_slider = None
-        if self.workspace().is_animatable:
+        if self.workspace.is_animatable:
             animation_slider = AnimationSettings(self.request).info()
         return animation_slider
 
@@ -138,7 +139,7 @@ class WorkspaceMixin(object):
 
     def wms_layers(self):
         """Return the workspace's and our own extra wms layers."""
-        from_workspace = self.workspace().wms_layers()
+        from_workspace = self.workspace.wms_layers()
         extra = self.extra_wms_layers() or []
         # ^^^ To work around '[] + None' error.
         return from_workspace + extra
@@ -152,6 +153,7 @@ class WorkspaceEditMixin(WorkspaceMixin):
                 self.request.session.session_key, user=self.request.user)
         return self._workspace_edit
 
+    @property
     def workspace(self):
         return self.workspace_edit()
 
@@ -340,7 +342,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def legends(self):
         """Return legends for the rightbar."""
         result = []
-        workspace_items = self.workspace().workspace_items.filter(
+        workspace_items = self.workspace.workspace_items.filter(
             visible=True)
         for workspace_item in workspace_items:
             logger.debug("Looking for legend url for %s...", workspace_item)
@@ -364,23 +366,23 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         if getattr(settings, 'MAP_SHOW_MULTISELECT', True):
             activate_multiselect = Action(
                 name=_('Multi-select'),
-                description=_('Selecteer meerdere items.'),
+                description=_('Select multiple items'),
                 url="javascript:void(null)",
-                icon='icon-multi-select',
+                icon='icon-star-empty',
                 klass='map-multiple-selection')
             actions.insert(0, activate_multiselect)
         if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
             set_date_range = Action(
                 name='',
-                description=_('Verander het datumbereik van de metingen.'),
-                url='javascript:void(null)', #reverse('lizard_map_date_range'),
+                description=_('Change the date range of the measurements'),
+                url='javascript:void(null)',
                 icon='icon-calendar',
                 klass='popup-date-range')
             actions.insert(0, set_date_range)
         if getattr(settings, 'MAP_SHOW_LOCATION_LIST', True):
             location_list = Action(
                 name=_('Locations'),
-                description=_('Search for locations.'),
+                description=_('Search for locations'),
                 url='javascript:void(null)',
                 icon='icon-search',
                 klass='popup-location-list')
@@ -388,7 +390,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
                 name=_('Default zoom'),
-                description=_('Zoom to default location.'),
+                description=_('Zoom to default location'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
                 klass='map-load-default-location')
@@ -1093,7 +1095,10 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
     provided, it will take your own WorkspaceEdit.
     """
 
+    workspace_item_id = int(workspace_item_id)
+
     if workspace_storage_id is not None:
+        workspace_storage_id = int(workspace_storage_id)
         workspace = get_object_or_404(
             WorkspaceStorage, pk=workspace_storage_id)
     elif workspace_storage_slug is not None:

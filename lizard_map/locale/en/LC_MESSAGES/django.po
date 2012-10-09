@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-01 14:43+0200\n"
+"POT-Creation-Date: 2012-10-09 01:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,52 +112,56 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: views.py:312 views.py:1279
+#: views.py:313 views.py:1292
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:330
+#: views.py:331
 msgid "Layers"
 msgstr ""
 
-#: views.py:336 templates/lizard_map/legend_item.html:6
+#: views.py:337 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:17
 msgid "Legend"
 msgstr ""
 
-#: views.py:365
+#: views.py:366
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:366
-msgid "Selecteer meerdere items."
+#: views.py:367
+msgid "Select multiple items"
 msgstr ""
 
-#: views.py:374
-msgid "Verander het datumbereik van de metingen."
-msgstr ""
-
-#: views.py:381
-msgid "Locations"
+#: views.py:375
+msgid "Change the date range of the measurements"
 msgstr ""
 
 #: views.py:382
-msgid "Search for locations."
+msgid "Locations"
 msgstr ""
 
-#: views.py:389
-msgid "Default zoom"
+#: views.py:383
+msgid "Search for locations"
 msgstr ""
 
 #: views.py:390
-msgid "Zoom to default location."
+msgid "Default zoom"
 msgstr ""
 
-#: views.py:1270 views.py:1282
+#: views.py:391
+msgid "Zoom to default location"
+msgstr ""
+
+#: views.py:1270 views.py:1295
 msgid "Collage"
 msgstr ""
 
-#: views.py:1277
+#: views.py:1280
+msgid "Verander het datumbereik van de metingen."
+msgstr ""
+
+#: views.py:1290
 msgid "Home"
 msgstr ""
 
@@ -219,15 +222,15 @@ msgstr ""
 msgid "Select items on the map."
 msgstr ""
 
-#: templates/lizard_map/tag_collage_edit.html:63
+#: templates/lizard_map/tag_collage_edit.html:62
 msgid "Empty your collage"
 msgstr ""
 
-#: templates/lizard_map/tag_collage_edit.html:73
+#: templates/lizard_map/tag_collage_edit.html:71
 msgid "Selection popup"
 msgstr ""
 
-#: templates/lizard_map/tag_collage_edit.html:82
+#: templates/lizard_map/tag_collage_edit.html:79
 msgid "Selection page"
 msgstr ""
 
@@ -243,15 +246,15 @@ msgstr ""
 msgid "Zoom to extent"
 msgstr ""
 
-#: templates/lizard_map/tag_workspace_edit.html:80
+#: templates/lizard_map/tag_workspace_edit.html:79
 msgid "Empty your workspace"
 msgstr ""
 
-#: templates/lizard_map/tag_workspace_edit.html:91
+#: templates/lizard_map/tag_workspace_edit.html:89
 msgid "Save your workspace"
 msgstr ""
 
-#: templates/lizard_map/workspace_storage_detail.html:62
-#: templates/lizard_map/workspace_storage_detail.html:66
+#: templates/lizard_map/workspace_storage_detail.html:61
+#: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
 msgstr ""
