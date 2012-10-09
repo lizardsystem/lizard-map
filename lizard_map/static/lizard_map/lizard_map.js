@@ -1660,6 +1660,9 @@ function setup_daterangepicker() {
             if ($('.popup-date-range').hasClass('reload-after-action')) {
                 setTimeout(window.location.reload, 1337);
             }
+            else {
+                reloadGraphs(undefined, undefined, true);
+            }
         });
     }
 }
@@ -1667,24 +1670,30 @@ function setup_daterangepicker() {
 function setup_location_list () {
     var $element = $('.popup-location-list');
     if ($element.exists()) {
-        var template = '' +
-        '<div class="location-list">' +
-            '<form class="form-search">' +
-                '<legend>Zoek naar locaties</legend>' +
-                '<input type="text" class="search-query" placeholder="Type een naam..." />' +
-                '<button type="submit" class="btn">Zoek</button>' +
-            '</form>' +
-            '<div class="results" />' +
-        '</div>';
+        var template = '<div data-bind="template: \'location-list-template\'" />';
         var $container = $(template);
-        var $form = $container.find('.form-search');
-        var $input = $container.find('input');
-        var $button = $container.find('button');
-        var $results = $container.find('.results');
+
+        var ViewModel = function () {
+            var self = this;
+            self.results = ko.observableArray([{name: 'eerste', url: 'http'}]);
+        };
+        var vm = new ViewModel();
+
+        var $form;
+        var $input;
+        var $button;
+        var $results;
 
         function show (e) {
             open_popup(false);
             set_popup_content($container);
+
+            ko.applyBindings(vm, $container.get(0));
+
+            $form = $container.find('.form-search');
+            $input = $container.find('input');
+            $button = $container.find('button');
+            $results = $container.find('.results');
 
             $input.focus();
             $button.click(search);
@@ -1698,6 +1707,21 @@ function setup_location_list () {
         }
 
         function search (e) {
+            //ko.cleanNode($container);
+            var start = new Date().getTime();
+            var results = [];
+            var m = 100; //Math.round(1000 * Math.random());
+            for (var i = 0; i < m; i++) {
+                results.push({name: 'asdf '+i, url: '/href'+i});
+            }
+            vm.results(results);
+            console.log((new Date().getTime() - start)/1000 + 'ms');
+            if (e) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            return false;
+
             var params = $.param({
                 name: $input.val()
             });
