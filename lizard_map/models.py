@@ -438,7 +438,7 @@ class WorkspaceEdit(
         workspace_storage.save()
 
         # Create new workspace items.
-        for workspace_edit_item in self.workspace_items.all():
+        for workspace_edit_item in self.workspace_items.filter(visible=True):
             workspace_storage_item = workspace_edit_item.as_storage(
                 workspace=workspace_storage)
             workspace_storage_item.save()
