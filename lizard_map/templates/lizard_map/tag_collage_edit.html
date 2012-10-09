@@ -76,11 +76,19 @@
     </li>
     {# Collage edit page #}
     <li>
-    <a class="btn sidebarbox-action-icon {% if not collage_edit.collage_items.exists %} disabled {% endif %}"
-       title="{% trans 'Selection page' %}"
-       href="{% url lizard_map_collage_edit_detail %}">
-      <i class="ss_sprite ss_arrow_turn_right"></i>
-    </a>
+    {% if not collage_edit.collage_items.exists %}
+      <a class="btn sidebarbox-action-icon disabled"
+         title="{% trans 'Selection page' %}"
+         href="javascript:void(null)">
+        <i class="ss_sprite ss_arrow_turn_right"></i>
+      </a>
+    {% else %}
+      <a class="btn sidebarbox-action-icon"
+         title="{% trans 'Selection page' %}"
+         href="{% url lizard_map_collage_edit_detail %}">
+        <i class="ss_sprite ss_arrow_turn_right"></i>
+      </a>
+    {% endif %}
     </li>
   </ul>
 </div>
