@@ -66,13 +66,12 @@
     </a>
     </li>
     <li>
-    <button id="collage-popup"
+    <a id="collage-popup"
        href="{% url lizard_map_collage_popup %}"
        title="{% trans 'Selection popup' %}"
-       class="title btn sidebarbox-action-icon collage-popup"
-       {% if not collage_edit.collage_items.exists %} disabled="disabled" {% endif %}>
+       class="title btn sidebarbox-action-icon collage-popup {% if not collage_edit.collage_items.exists %} disabled {% endif %}">
       <i class="ss_sprite ss_chart_line"></i>
-    </button>
+    </a>
     </li>
     {# Collage edit page #}
     <li>
