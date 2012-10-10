@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '4.6'
+version = '4.7deltaportaal.dev0'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
