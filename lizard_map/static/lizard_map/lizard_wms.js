@@ -158,6 +158,7 @@ function refreshBackgroundLayers() {
             }
             // layers.base_layer
             map.addLayer(base_layer);
+
             background_layers.push(identifier);
             // Set base layer if is_default.
             if ((selected_base_layer_name === "") &&

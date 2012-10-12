@@ -431,6 +431,30 @@ class WorkspaceStorageView(AppView):
         return result
 
 
+class WorkspacePrintableView(AppView):
+    """Workspace editable printable view."""
+    template_name = 'lizard_map/workspace_printable.html'
+    show_secondary_sidebar_title = False  # Don't show the 'layers' button.
+
+    # @property
+    def workspace(self):
+        """Return a workspace"""
+        if not hasattr(self, '_workspace'):
+            self._workspace = get_object_or_404(WorkspaceEdit, pk=int(self.kwargs['workspace_id']))
+        return self._workspace
+
+    @property
+    def page_title(self):
+        return self.workspace.name
+
+    @property
+    def breadcrumbs(self):
+        """Return homepage + ourselves as breadcrumbs."""
+        result = [self.home_breadcrumb_element,
+                  Action(name=self.workspace.name)]
+        return result
+
+
 class ActionDialogView(ViewContextMixin, FormView):
     """
     Generic Action Dialog View.
