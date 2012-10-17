@@ -116,15 +116,13 @@ def adapter_entrypoint(adapter_class, layer_arguments, workspace_item=None):
         group=ADAPTER_ENTRY_POINT):
         if entrypoint.name == adapter_class:
             try:
-                real_adapter = entrypoint.load()
-                real_adapter = real_adapter(
-                    workspace_item,
-                    layer_arguments=layer_arguments,
-                    adapter_class=adapter_class)
+                adapter = entrypoint.load()
             except ImportError, e:
                 logger.critical("Invalid entry point: %s", e)
                 raise
-            return real_adapter
+            return adapter(workspace_item,
+                           layer_arguments=layer_arguments,
+                           adapter_class=adapter_class)
     raise AdapterClassNotFoundError(
         u'Entry point for %r not found' % adapter_class)
 
@@ -836,7 +834,7 @@ class FlotGraph(object):
         # determine y axis label
         # In matplotlib, both the graph and the individual axes can have their label set.
         # Flot only support a single label.
-        # So, to emulate this behaviour, we simply fallback to whatever label has been set. 
+        # So, to emulate this behaviour, we simply fallback to whatever label has been set.
         ylabel = None
         if not self.ylabel and self.axes.ylabel:
             ylabel = self.axes.ylabel
