@@ -1,0 +1,16 @@
+language: python
+python:
+  - 2.7
+before_install:
+  - sudo apt-get install python-psycopg2
+notifications:
+  irc:
+    channels: "irc.freenode.org#nens"
+    on_success: change
+  email: false
+install:
+  - deactivate
+  - python bootstrap.py
+  - bin/buildout
+script:
+  - bin/test
