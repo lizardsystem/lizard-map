@@ -160,6 +160,11 @@ urlpatterns = patterns(
     #     'lizard_map.views.export_snippet_group_statistics_csv',
     #     name="lizard_map.export_snippet_group_statistics_csv"),
 
+    # Experimental compare page.
+    url(r'^compare/$',
+        lizard_map.views.CompareView.as_view(),
+        name='lizard_map.compare'),
+
     url(r'^screen/(?P<slug>.*)/$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
