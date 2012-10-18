@@ -713,9 +713,7 @@ def workspace_item_reorder(
 
 # L3
 @never_cache
-def workspace_item_toggle(
-    request,
-    workspace_edit=None):
+def workspace_item_toggle(request, workspace_edit=None):
 
     """Toggle workspace item in workspace.
 
@@ -762,8 +760,8 @@ def workspace_item_toggle(
 
 # L3
 @never_cache
-def workspace_edit_item(
-    request, workspace_edit=None, workspace_item_id=None, visible=None):
+def workspace_edit_item(request, workspace_edit=None, workspace_item_id=None,
+                        visible=None):
     """Sets (in)visibility of a workspace_item
 
     workspace_edit is added for testing
