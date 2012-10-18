@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.7deltaportaal (unreleased)
 ----------------------------
 
-- Nothing changed yet.
+- CQL_filtering is possible on featureinfo items on wms layers.
 
 
 4.6 (2012-08-23)
