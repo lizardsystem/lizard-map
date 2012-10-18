@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.9 (unreleased)
+4.9 (2012-10-18)
 ----------------
 
 - Fixed some styling issues.
