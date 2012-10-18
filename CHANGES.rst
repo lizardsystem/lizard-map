@@ -5,6 +5,7 @@ Changelog of lizard-map
 ----------------------------
 
 - CQL_filtering is possible on featureinfo items on wms layers.
+- Content actions can now be turned off via settings.
 
 
 4.6 (2012-08-23)
