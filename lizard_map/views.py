@@ -955,6 +955,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     popup_max_tabs = Setting.get('popup_max_tabs', None)
     if popup_max_tabs is None:
         popup_max_tabs = getattr(settings, 'POPUP_MAX_TABS', 3)
+    else:
+        popup_max_tabs = int(popup_max_tabs)
     result_html = [html[key] for key in display_group_order][:popup_max_tabs]
 
     if popup_id is None:
