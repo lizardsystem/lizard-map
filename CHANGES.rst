@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.9 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Fixed some styling issues.
+
+- Fix test build config, travis & pep8.
 
 
 4.8 (2012-10-05)
