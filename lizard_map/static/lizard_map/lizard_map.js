@@ -948,7 +948,12 @@ function addMultipleSelection(x, y, map, e) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               workspace_id: workspace_id, workspace_type: workspace_type},
             function (data, status, context) {
-                spawnCustomMovingBox(10, 10, e.pageX, e.pageY);
+                var box_x = e.pageX, box_y = e.pageY;
+                if (isIE && ieVersion == 8) {
+                    box_x = e.clientX;
+                    box_y = e.clientY;
+                }
+                spawnCustomMovingBox(10, 10, box_x, box_y);
                 var div;
                 div = $(data).find("#edit-collage");
                 $("#edit-collage").html(div.html());
