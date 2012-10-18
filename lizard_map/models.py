@@ -519,12 +519,13 @@ class CollageEdit(UserSessionMixin):
                         name, identifier):
         """Check if an item with the same data already exists in the
         collage."""
+        adapter_layer_json = json.loads(adapter_layer_json)
         for item in (self.collage_items
             .filter(adapter_class=adapter_class)
-            .filter(adapter_layer_json=adapter_layer_json)
             .filter(name=name)):
             # Easiest way to compare identifiers?
-            if json.dumps(item.identifier) == json.dumps(identifier):
+            if item.identifier == identifier and \
+               json.loads(item.adapter_layer_json) == adapter_layer_json:
                 return True
         return False
 
