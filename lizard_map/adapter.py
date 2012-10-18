@@ -692,6 +692,7 @@ class FlotGraphAxes(object):
         # ^^^ list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
         self.y_min = None
         self.y_max = None
+        self.ylabel = None
 
     def set_ylabel(self, ylabel):
         self.ylabel = ylabel
