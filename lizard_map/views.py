@@ -386,6 +386,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
 MapView = AppView  # BBB
 
 
+class CompareView(AppView):
+    """View for visually comparing items in the workspace.
+
+    Experimental at the moment!
+
+    """
+    template_name = 'lizard_map/compare.html'
+
+
 class WorkspaceStorageListView(
     UiView, GoogleTrackingMixin):
     """Show list of storage workspaces."""
@@ -418,6 +427,30 @@ class WorkspaceStorageView(AppView):
         self.workspace_slug = kwargs.get('workspace_storage_slug', None)
         return super(WorkspaceStorageView, self).get(
             request, *args, **kwargs)
+
+    @property
+    def page_title(self):
+        return self.workspace.name
+
+    @property
+    def breadcrumbs(self):
+        """Return homepage + ourselves as breadcrumbs."""
+        result = [self.home_breadcrumb_element,
+                  Action(name=self.workspace.name)]
+        return result
+
+
+class WorkspacePrintableView(AppView):
+    """Workspace editable printable view."""
+    template_name = 'lizard_map/workspace_printable.html'
+    show_secondary_sidebar_title = False  # Don't show the 'layers' button.
+
+    # @property
+    def workspace(self):
+        """Return a workspace"""
+        if not hasattr(self, '_workspace'):
+            self._workspace = get_object_or_404(WorkspaceEdit, pk=int(self.kwargs['workspace_id']))
+        return self._workspace
 
     @property
     def page_title(self):

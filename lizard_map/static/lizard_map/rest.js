@@ -7,7 +7,7 @@
 
 function makeHtml(data) {
     var items = [];
-    console.log(typeof data);
+    // console.log(typeof data);
     if (typeof data === "string") {
         return data;
     }
@@ -15,7 +15,7 @@ function makeHtml(data) {
         return data;
     }
     $.each(data, function (key, val) {
-        console.log(key, val);
+        // console.log(key, val);
         if (val === null) {
             items.push('<li><span>' + key + '</span></li>');
         } else if ((typeof val === "string") && (val.indexOf('http://') === 0)) {

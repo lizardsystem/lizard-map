@@ -93,6 +93,9 @@ urlpatterns = patterns(
     url(r'^workspace/$',
         lizard_map.views.WorkspaceStorageListView.as_view(),
         name="lizard_map_workspace_storage_list"),
+    url(r'^workspace/print/(?P<workspace_id>\d+)/$',
+        lizard_map.views.WorkspacePrintableView.as_view(),
+        name="lizard_map_workspace_printable"),
     url(r'^workspace/(?P<workspace_id>\d+)/$',
         lizard_map.views.WorkspaceStorageView.as_view(),
         name="lizard_map_workspace_storage"),
@@ -156,6 +159,11 @@ urlpatterns = patterns(
     # url(r'^snippet_group/(?P<snippet_group_id>\d+)/statistics/csv/',
     #     'lizard_map.views.export_snippet_group_statistics_csv',
     #     name="lizard_map.export_snippet_group_statistics_csv"),
+
+    # Experimental compare page.
+    url(r'^compare/$',
+        lizard_map.views.CompareView.as_view(),
+        name='lizard_map.compare'),
 
     url(r'^screen/(?P<slug>.*)/$',
         lizard_map.views.MapIconView.as_view(),

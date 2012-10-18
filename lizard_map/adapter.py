@@ -222,7 +222,8 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
     ticks need to be known as well. For some scales, instead of showing a
     predetermined date label at any tick, the labels are chosen dependent of
     the tick position. Note that some labels are multiline, so make sure
-    there is space for them in your figure."""
+    there is space for them in your figure.
+    """
 
     def __init__(self, locator, axes, tz=None):
         self._locator = locator
@@ -268,10 +269,11 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
         return self._formatter(x, pos)
 
     class Tickinfo(object):
-        """ Class with tick information.
+        """Class with tick information.
 
         The methods are used to determine what kind of label to put at a
-        particular tick."""
+        particular tick.
+        """
 
         def __init__(self, ticks):
             self.ticks = ticks
@@ -282,7 +284,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
             self.mid = ticks[int((len(ticks) - 1) / 2)]
 
         def show_day(self, tick):
-            """ Return true or false to show day at this tick."""
+            """Return true or false to show day at this tick."""
 
             # If there is only one day in the ticks, show it at the center
             if (num2date(self.min).day == num2date(self.max).day):
@@ -303,7 +305,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                     return False
 
         def show_month(self, tick):
-            """ Return true or false to show month at this tick."""
+            """Return true or false to show month at this tick."""
 
             # If there is only one month in the ticks, show it at the center
             if (num2date(self.min).month == num2date(self.max).month):
@@ -324,7 +326,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                     return False
 
         def show_year(self, tick):
-            """ Return true or false to show year at this tick."""
+            """Return true or false to show year at this tick."""
 
             # If there is only one year in the ticks, show it at the center
             if (num2date(self.min).year == num2date(self.max).year):
@@ -345,25 +347,25 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                     return False
 
         def middle_of_day(self, tick):
-            """ Return the middle of the day as matplotlib number. """
+            """Return the middle of the day as matplotlib number."""
             dt = num2date(tick)
             middle_of_day = datetime.datetime(dt.year, dt.month, dt.day, 12)
             return date2num(middle_of_day)
 
         def middle_of_month(self, tick):
-            """ Return the middle of the month as matplotlib number. """
+            """Return the middle of the month as matplotlib number. """
             dt = num2date(tick)
             middle_of_month = datetime.datetime(dt.year, dt.month, 16)
             return date2num(middle_of_month)
 
         def middle_of_year(self, tick):
-            """ Return the middle of the year as matplotlib number. """
+            """Return the middle of the year as matplotlib number."""
             dt = num2date(tick)
             middle_of_year = datetime.datetime(dt.year, 7, 1)
             return date2num(middle_of_year)
 
         def first_of_year(self, tick):
-            """ Return the middle of the year as matplotlib number. """
+            """Return the middle of the year as matplotlib number."""
             dt = num2date(tick)
             middle_of_year = datetime.datetime(dt.year, 1, 1)
             return date2num(middle_of_year)
@@ -373,10 +375,13 @@ class Graph(object):
     """
     Class for matplotlib graphs, i.e. for popups, krw graphs
 
-    - calculates correct size
-    - horizontal axis = dates
-    - vertical axis = user defined
-    - outputs httpresponse for png
+    - Calculates correct size
+
+    - Horizontal axis = dates
+
+    - Vertical axis = user defined
+
+    - Outputs httpresponse for png
     """
 
     def __init__(self,
@@ -445,7 +450,8 @@ class Graph(object):
         Note that it is assumed here that the y-axis is not reversed.
 
         From matplotlib 1.0 on there is a set_ymargin method
-        like this already."""
+        like this already.
+        """
 
         lines = self.axes.lines
         arrays = [numpy.array(l.get_data()) for l in lines]
@@ -546,8 +552,9 @@ class Graph(object):
         self.axes.set_ylabel(self.axes.get_ylabel(), size='x-large')
 
     def legend_space(self):
-        """reserve space for legend (on the right side). even when
-        there is no legend displayed"""
+        """Reserve space for legend (on the right side). even when
+        there is no legend displayed
+        """
         self.legend_width = LEGEND_WIDTH / self.width
 
     def legend(self,
@@ -559,8 +566,9 @@ class Graph(object):
         Displays legend. Default is right side, but if the width is
         too small, it will display under the graph.
 
-        handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)
-        labels is list of strings
+        Handles is list of matplotlib objects (e.g. matplotlib.lines.Line2D)
+
+        Labels is list of strings
         """
         # experimental update: do not reserve space for legend by
         # default, just place over graph. use legend_space to manually
@@ -619,7 +627,7 @@ class Graph(object):
             # to get rid of the border: graph.axes.legend_.draw_frame(False)
 
     def init_second_axes(self):
-        """ init second axes """
+        """Init second axes """
         self.ax2 = self.axes.twinx()
         self.fixup_axes(second=True)
 
@@ -669,6 +677,7 @@ class Graph(object):
         '''
         return self.http_png()
 
+
 def mk_js_timestamp(datetime_utc):
     '''
     Convert to a JavaScript compatible timestamp.
@@ -676,11 +685,13 @@ def mk_js_timestamp(datetime_utc):
     '''
     return float(time.mktime(datetime_utc.timetuple()) * 1000)
 
+
 class FlotGraphAxes(object):
     legend_ = None
 
     def __init__(self):
-        self.flot_data = [] # list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
+        self.flot_data = []
+        # ^^^ list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
         self.y_min = None
         self.y_max = None
 
@@ -703,8 +714,12 @@ class FlotGraphAxes(object):
         y_min = min(yvalues)
         y_max = max(yvalues)
         # update global y_min, y_max if necessary
-        self.y_min = min(self.y_min, y_min) if self.y_min is not None else y_min
-        self.y_max = max(self.y_max, y_max) if self.y_max is not None else y_max
+        self.y_min = (min(self.y_min, y_min)
+                      if self.y_min is not None
+                      else y_min)
+        self.y_max = (max(self.y_max, y_max)
+                      if self.y_max is not None
+                      else y_max)
 
     def plot(
         self,
@@ -750,14 +765,18 @@ class FlotGraphAxes(object):
         '''no-op for FlotGraph'''
         return None, None
 
+
 class FlotGraph(object):
     """
     Class for flot graphs, i.e. for popups, krw graphs
 
-    - horizontal axis = dates
-    - vertical axis = user defined
-    - outputs a dict (which in turn gets converted to Json) conforming to the client-side
-      JavaScript code which uses flot.js
+    - Horizontal axis = dates
+
+    - Vertical axis = user defined
+
+    - Outputs a dict (which in turn gets converted to Json) conforming to the
+      client-side JavaScript code which uses flot.js
+
     """
 
     def __init__(
@@ -774,17 +793,18 @@ class FlotGraph(object):
         self.tz = tz
 
         self.axes = FlotGraphAxes()
-        self.responseobject = None # unused
+        self.responseobject = None  # Unused
         self.xlabel = None
         self.ylabel = None
 
     def set_ylim(self, y_min, y_max, min_manual=False, max_manual=False):
-        '''no-op for FlotGraph, these are calculated in FlotGraphAxes for now'''
+        """No-op for FlotGraph, these are calculated in FlotGraphAxes for now.
+        """
         pass
 
     def add_today(self):
-        '''no-op for FlotGraph'''
-        '''should add a vertical line for the current day?'''
+        """No-op for FlotGraph"""
+        # Should add a vertical line for the current day?
         pass
 
     def set_xlabel(self, xlabel):
@@ -797,42 +817,43 @@ class FlotGraph(object):
         self.suptitle = suptitle
 
     def fixup_axes(self, second=False):
-        '''no-op for FlotGraph'''
+        """No-op for FlotGraph"""
         pass
 
     def legend_space(self):
-        '''no-op for FlotGraph'''
+        """No-op for FlotGraph"""
         pass
 
-    def legend(
-       self,
-       handles=None,
-       labels=None,
-       ncol=1,
-       force_legend_below=False
-    ):
-        '''no-op for FlotGraph'''
+    def legend(self,
+               handles=None,
+               labels=None,
+               ncol=1,
+               force_legend_below=False):
+        """No-op for FlotGraph"""
         pass
 
     def init_second_axes(self):
-        '''no-op for FlotGraph'''
+        """No-op for FlotGraph"""
         pass
 
     def get_bar_width(self, delta_t):
-        '''assumes xvalues are always dates'''
+        """Assumes xvalues are always dates"""
         # seconds = delta_t.total_seconds()  # 2.7 only.
-        seconds = (delta_t.microseconds +
-                   (delta_t.seconds + delta_t.days * 24 * 3600) * 10**6) / 10**6
+        seconds = (
+            delta_t.microseconds +
+            (delta_t.seconds + delta_t.days * 24 * 3600) * 10 ** 6) / 10 ** 6
         return float(seconds * 1000)
 
     def http_png(self):
-        raise NotImplementedError('not implemented for a FlotGraph, perhaps you meant to use Graph?')
+        raise NotImplementedError(
+            'Not implemented for a FlotGraph, perhaps you meant to use Graph?')
 
     def render(self):
         # determine y axis label
-        # In matplotlib, both the graph and the individual axes can have their label set.
-        # Flot only support a single label.
-        # So, to emulate this behaviour, we simply fallback to whatever label has been set. 
+        # In matplotlib, both the graph and the individual axes can have their
+        # label set.  Flot only support a single label.
+        # So, to emulate this behaviour, we simply fallback to whatever label
+        # has been set.
         ylabel = None
         if not self.ylabel and self.axes.ylabel:
             ylabel = self.axes.ylabel

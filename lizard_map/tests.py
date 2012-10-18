@@ -72,7 +72,9 @@ class ViewsTest(TestCase):
     #     self.assertEqual(response.status_code, 200)
 
     def test_workspace_edit_wms(self):
-        url = reverse('lizard_map_workspace_edit_wms')
+        url = reverse('lizard_map_workspace_edit_wms',
+                      kwargs={'workspace_item_id': self.workspace.id})
+        # ^^^ Check; that's workspace ID instead of workspaceitem ID.
         url += ('?LAYERS=basic&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&'
                 'STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&'
                 'FORMAT=image%2Fjpeg&SRS=EPSG%3A900913&'
