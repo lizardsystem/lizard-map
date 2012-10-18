@@ -30,6 +30,7 @@ from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import UiView
 from lizard_ui.views import IconView
+from lizard_map.adapter import adapter_serialize
 from PIL import Image
 import iso8601
 import mapnik
@@ -394,14 +395,6 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-calendar',
                 klass='popup-date-range')
             actions.insert(0, set_date_range)
-        if getattr(settings, 'MAP_SHOW_LOCATION_LIST', True):
-            location_list = Action(
-                name=_('Locations'),
-                description=_('Search for locations'),
-                url='javascript:void(null)',
-                icon='icon-search',
-                klass='popup-location-list')
-            actions.insert(0, location_list)
         if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
             zoom_to_default = Action(
                 name=_('Default zoom'),
@@ -2081,7 +2074,7 @@ class LocationListService(JsonView, WorkspaceEditMixin):
                 continue
             # request the list of locations from the adapter
             for identifier, location_name in adapter.location_list(name):
-                identifier = json.dumps(identifier)
+                identifier = adapter_serialize(identifier)
                 locations.append((adapter_class, layer_arguments, identifier, location_name))
             # we can stop searching the remaining adapters in case MAX_LOCATIONS is already reached
             if len(locations) > MAX_LOCATIONS:
