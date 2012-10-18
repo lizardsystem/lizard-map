@@ -59,8 +59,7 @@ class WorkspaceAcceptable(object):
         """Return tag name. 'a' when enabled, 'div' when not."""
         if self.enabled:
             return 'a'
-        else:
-            return 'div'
+        return 'div'
 
 
 class Legend(object):
