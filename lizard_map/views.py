@@ -394,6 +394,11 @@ class CompareView(AppView):
     """
     template_name = 'lizard_map/compare.html'
 
+    @property
+    def workspace_items(self):
+        return self.workspace().workspace_items.filter(
+            visible=True).reverse()
+
 
 class WorkspaceStorageListView(
     UiView, GoogleTrackingMixin):
