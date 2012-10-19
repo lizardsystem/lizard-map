@@ -396,7 +396,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
 MapView = AppView  # BBB
 
 
-class CompareView(AppView):
+class CompareView(AppView, WorkspaceMixin):
     """View for visually comparing items in the workspace.
 
     Experimental at the moment!
