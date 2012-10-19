@@ -4,10 +4,7 @@
 {% load utility %}
 
 
-
-
 {% block javascript %}
-
 <style>
 ul.workspaces {
     list-style: none;
@@ -45,7 +42,7 @@ $(document).ready(function() {
     $('#map-a').css('height',  ($("#content").height()/2) + 'px');
     $('#map-b').css('height',  ($("#content").height()/2) + 'px');
 
-    // Define the base layers
+    // Define the two base layers
     var baseLayerA = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/wms", {
         layers: 'basiskaart',
         format: 'image/png',
@@ -60,13 +57,6 @@ $(document).ready(function() {
         reuseTiles: true,
         attribution: "KAART B"
     });
-
-    // var baseLayerA = L.tileLayer("http://test.deltaportaal.lizardsystem.nl/tms/1.0.0/deltaportaal_EPSG900913/{z}/{x}/{y}.png", {
-    //     attribution: "Workspace A"
-    // });
-    // var baseLayerB = L.tileLayer("http://test.deltaportaal.lizardsystem.nl/tms/1.0.0/deltaportaal_EPSG900913/{z}/{x}/{y}.png", {
-    //     attribution: "Workspace B"
-    // });
 
     // Read, split and parse lng/lat/zoom from hash
     var h = document.location.hash.replace('#', '').split(',');
@@ -87,6 +77,65 @@ $(document).ready(function() {
     mapa.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerA);
     mapb.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerB);
 
+
+
+
+
+    /*********************************/
+    // Define test layers
+    var layertesta = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
+        layers: 'LIR_2e_referentie',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true
+    });
+
+    var layertestb = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
+        layers: 'LIR_2e_referentie',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true
+    });
+
+    // Add these two layers
+    mapa.addLayer(layertesta);
+    mapb.addLayer(layertestb);
+
+    /***  ^^^^ OK, SO THIS WORKS ******************************/
+    /*** BUT THE FOLLOWING DOESN'T.. GIVES ERRORS ABOUT TRANSFER TYPE XML? */
+
+    // Loop over the ws-a-item's
+    $('.ws-a-item').each(function(e,v) {
+
+        // Get and parse the params (parse, because it's a JSON object)
+        params = $.parseJSON($(v).data("params"));
+
+        // Get the url
+        url = $(v).data("url");
+
+        if(params && params.layers) {
+            // Create two tileLayers
+            var layerA = L.tileLayer(url, {
+                layers: params.layers,
+                format: 'image/png',
+                transparent: true,
+                reuseTiles: true
+            });
+            var layerB = L.tileLayer(url, {
+                layers: params.layers,
+                format: 'image/png',
+                transparent: true,
+                reuseTiles: true
+            });
+            // And add them
+            mapa.addLayer(layerA);
+            mapb.addLayer(layerB);
+        }
+    });
+
+    /**********************************/
+
+
     var mapaMove = function(e) {
         // Stuff to do when Map A is being panned/zoomed
         var c = mapa.getCenter();
@@ -105,6 +154,24 @@ $(document).ready(function() {
     // Bind mapaMove and mapbMove to the 'move' events of Leaflet's Map
     mapa.on('move', mapaMove);
     mapb.on('move', mapbMove);
+
+
+    $('.ws-a-item').click(function() {
+        // Skeleton code for handling the checkbox interaction later on
+        if($(this).prop("checked")) {
+            console.log("Checked in A");
+        }
+    });
+
+    $('.ws-b-item').click(function() {
+        // Skeleton code for handling the checkbox interaction later on
+        if($(this).prop("checked")) {
+            console.log("Checked in B");   
+        }
+    });
+
+
+
 });
 </script>
 {% endblock javascript %}
@@ -116,15 +183,16 @@ $(document).ready(function() {
 <h3>Kaart A</h3>
 <div style="margin:10px 0px 5px 0px;">
 <ul class="workspaces">
-    {% for workspace in view.workspace_items %}
+    {% for w in view.wms_layers %}
+    <!-- {{ w|safe }} -->
         <li>
             <table>
             <tr valign="top">
                 <td>
-                    <input type="checkbox" name="map-a-item[]" id="ws-a-{{ workspace.id }}" value="{{ workspace.id }}"/>
+                    <input type="checkbox" data-url="{{ w.url }}" data-params='{{ w.params|safe }}' class="ws-a-item" name="map-a-item[]" id="ws-a-{{ w.wms_id }}" value="{{ w.id }}"/>
                 </td>
                 <td>
-                    <label for="ws-a-{{ workspace.id }}">&nbsp;{{ workspace.name }}</label>
+                    <label for="ws-a-{{ w.wms_id }}">&nbsp;{{ w.name }}</label>
                 </td>
             </tr>
             </table>
@@ -136,15 +204,15 @@ $(document).ready(function() {
 <h3>Kaart B</h3>
 <div style="margin:10px 0px 5px 0px;">
 <ul class="workspaces">
-    {% for workspace in view.workspace_items %}
+    {% for w in view.wms_layers %}
         <li>
             <table>
             <tr valign="top">
                 <td>
-                    <input type="checkbox" name="map-b-item[]" id="ws-b-{{ workspace.id }}" value="{{ workspace.id }}"/>
+                    <input type="checkbox" data-url="{{ w.url }}" data-params='{{ w.params|safe }}' class="ws-b-item" name="map-b-item[]" id="ws-b-{{ w.wms_id }}" value="{{ w.id }}"/>
                 </td>
                 <td>
-                    <label for="ws-b-{{ workspace.id }}">&nbsp;{{ workspace.name }}</label>
+                    <label for="ws-b-{{ w.wms_id }}">&nbsp;{{ w.name }}</label>
                 </td>
             </tr>
             </table>
