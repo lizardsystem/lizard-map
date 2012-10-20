@@ -1,4 +1,5 @@
 import datetime
+import pytz
 from django.utils.translation import ugettext as _
 
 ALL = 1
@@ -35,7 +36,7 @@ def next_all(dt):
     """
     Return period that is in the future for sure
     """
-    return datetime.datetime(2100, 1, 1), datetime.datetime(2200, 1, 1)
+    return datetime.datetime(2100, 1, 1, tzinfo=pytz.UTC), datetime.datetime(2200, 1, 1, tzinfo=pytz.UTC)
 
 
 def next_year(dt):
@@ -44,7 +45,7 @@ def next_year(dt):
     """
     dttuple = dt.timetuple()
     year = dttuple[0] + 1
-    return datetime.datetime(year, 1, 1), datetime.datetime(year + 1, 1, 1)
+    return datetime.datetime(year, 1, 1, tzinfo=pytz.UTC), datetime.datetime(year + 1, 1, 1, tzinfo=pytz.UTC)
 
 
 def next_quarter(dt):
@@ -63,8 +64,8 @@ def next_quarter(dt):
         next_quarter_month %= 12
         next_quarter_year += 1
     return (
-        datetime.datetime(year, month + 1, 1),
-        datetime.datetime(next_quarter_year, next_quarter_month + 1, 1))
+        datetime.datetime(year, month + 1, 1, tzinfo=pytz.UTC),
+        datetime.datetime(next_quarter_year, next_quarter_month + 1, 1, tzinfo=pytz.UTC))
 
 
 def next_month(dt):
@@ -83,15 +84,15 @@ def next_month(dt):
         next_month_month %= 12
         next_month_year += 1
     return (
-        datetime.datetime(year, month + 1, 1),
-        datetime.datetime(next_month_year, next_month_month + 1, 1))
+        datetime.datetime(year, month + 1, 1, tzinfo=pytz.UTC),
+        datetime.datetime(next_month_year, next_month_month + 1, 1, tzinfo=pytz.UTC))
 
 
 def next_week(dt):
     """
     Returns 2-tuple of next week: start/end date. Week starts on monday.
     """
-    day = datetime.datetime(*dt.timetuple()[:3])
+    day = datetime.datetime(*dt.timetuple()[:3], tzinfo=pytz.UTC)
     days_to_next_week = 7 - day.weekday()
     day += datetime.timedelta(days=days_to_next_week)
     return day, day + datetime.timedelta(weeks=1)
@@ -101,7 +102,7 @@ def next_day(dt):
     """
     Returns 2-tuple of next week: start/end date
     """
-    day = datetime.datetime(*dt.timetuple()[:3])
+    day = datetime.datetime(*dt.timetuple()[:3], tzinfo=pytz.UTC)
     day += datetime.timedelta(days=1)
     return day, day + datetime.timedelta(days=1)
 

@@ -5,6 +5,8 @@ import logging
 
 from django.conf import settings
 
+import pytz
+
 # NOTE: this module is obsolete as date ranges are entirely handled in javascript
 # and should be passed as request parameter
 
@@ -60,7 +62,7 @@ def current_start_end_dates(request, for_form=False, today=None,
          function to retrieve the period type (for testing purposes)
 
     """
-    today = datetime.datetime.now()
+    today = datetime.datetime.now(tz=pytz.UTC)
 
     session = request.session
     dt_start = session.get(SESSION_DT_START, default_start(today))
