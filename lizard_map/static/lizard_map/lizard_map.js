@@ -1611,6 +1611,7 @@ function setup_view_state() {
             if (state.dt_start && state.dt_end) {
                 $('.popup-date-range').data('daterangepicker').setRange(state.range_type, state.dt_start, state.dt_end);
                 daterangepicker_label_update();
+                reloadGraphs();
             }
         };
         // disabled for now
