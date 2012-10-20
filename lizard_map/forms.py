@@ -4,8 +4,6 @@ from django.conf import settings
 
 from django.forms.widgets import RadioSelect
 
-from lizard_map.daterange import PERIOD_CHOICES
-from lizard_map.daterange import PERIOD_OTHER
 from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin
 from lizard_map.models import WorkspaceStorage
@@ -47,47 +45,6 @@ class HorizontalRadioRenderer(forms.RadioSelect.renderer):
     def render(self):
         """Outputs radios"""
         return (u'\n'.join([u'%s\n' % widget for widget in self]))
-
-
-class DateRangeForm(forms.Form):
-    """
-    Date range form.
-    """
-    # Settings
-    start_year = getattr(settings,
-                         'START_YEAR',
-                          datetime.date.today().year - 7)
-    end_year = getattr(settings,
-                       'END_YEAR',
-                        datetime.date.today().year + 3)
-    years_choices = range(start_year, end_year + 1)
-
-    # Form fields
-    period = forms.ChoiceField(
-        required=True,
-        widget=RadioSelect(renderer=HorizontalRadioRenderer),
-        choices=PERIOD_CHOICES,
-        label='',)
-    # TODO: NL date format.  Also hardcoded in the js.
-    dt_start = forms.DateTimeField(
-        label='Van',
-        widget=forms.DateInput(attrs={'class': 'datepicker'}),
-        required=False)
-    dt_end = forms.DateTimeField(
-        label='Tot',
-        widget=forms.DateInput(attrs={'class': 'datepicker'}),
-        required=False)
-
-    def __init__(self, *args, **kwargs):
-        # # Add argument period, if not available.
-        # if 'period' not in args[0]:
-        #     args[0]['period'] = PERIOD_DAY
-        super(DateRangeForm, self).__init__(*args, **kwargs)
-
-        # Set initial dt_start/end on disabled when not selected.
-        if args and 'period' in args[0] and args[0]['period'] != PERIOD_OTHER:
-            self.fields['dt_start'].widget.attrs['disabled'] = "disabled"
-            self.fields['dt_end'].widget.attrs['disabled'] = "disabled"
 
 
 class CollageForm(forms.Form):
