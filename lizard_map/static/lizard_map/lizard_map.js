@@ -1498,9 +1498,12 @@ function reloadDynamicGraph($graph, callback, force) {
         // for static image graphs, just load the image as <img> element
         else if (graph_type == 'image') {
             var get_url_with_size = function () {
+                // compensate width slightly to prevent a race condition
+                // with the parent element
+                var width = Math.round($graph.width() * 0.95);
                 // add available width and height to url
                 var url_with_size = url + '&' + $.param({
-                    width: $graph.width(),
+                    width: width,
                     height: $graph.height()
                 });
                 return url_with_size;
@@ -1534,6 +1537,8 @@ function reloadDynamicGraph($graph, callback, force) {
                 $img.attr('src', get_url_with_size());
             };
 
+            // list to parent div resizes, but dont trigger updating the image
+            // until some time (> 1 sec) has passed.
             var timeout = null;
             $graph.resize(function () {
                 if (timeout) {
