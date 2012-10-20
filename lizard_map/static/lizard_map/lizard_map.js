@@ -1399,6 +1399,328 @@ function apiRequest(target) {
 }
 
 /**
+ * Resize the graphs to the given maximum width and reload them.
+ *
+ * @param {number} max_image_width maximum width to resize each graph to
+ * @param {function} callback function to call when a graph has been reloaded
+ */
+function reloadGraphs(max_image_width, callback, force) {
+    // New Flot graphs
+    $('.dynamic-graph').each(function () {
+        reloadDynamicGraph($(this), callback, force);
+    });
+}
+
+function reloadDynamicGraph($graph, callback, force) {
+    // check if graph is already loaded
+    if (force !== true && $graph.attr('data-graph-loaded')) return;
+
+    // the wonders of asynchronous programming
+    if ($graph.attr('data-graph-loading')) return;
+
+    // check if element is visible (again):
+    // flot can't draw on an invisible surface
+    if ($graph.is(':hidden')) return;
+
+    // determine whether to use flot or the image graph
+    var flot_graph_data_url = $graph.attr('data-flot-graph-data-url');
+    var image_graph_url = $graph.attr('data-image-graph-url');
+    var graph_type;
+    if (isIE && ieVersion < 9) {
+        graph_type = 'image';
+    }
+    else {
+        graph_type = (flot_graph_data_url) ? 'flot' : 'image';
+    }
+    var url = (graph_type == 'flot') ? flot_graph_data_url : image_graph_url;
+
+    // add currently selected date range to url
+    // HACK: viewstate is currently only in lizard_map,
+    // but graphs are here, in lizard_ui, for some reason
+    var view_state = get_view_state();
+    view_state = to_date_strings(view_state);
+    if (view_state !== undefined) {
+        if (view_state.dt_start && view_state.dt_end) {
+            url += '&' + $.param({
+                dt_start: view_state.dt_start,
+                dt_end: view_state.dt_end
+            });
+        }
+    }
+
+    if (url) {
+        // add a spinner
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="graph-loading-animation" />');
+        $graph.empty().append($loading);
+        $graph.attr('data-graph-loading', 'true');
+
+        // remove spinner when loading has finished (either with or without an error)
+        var on_loaded = function () {
+            $graph.removeAttr('data-graph-loading');
+            $loading.remove();
+        };
+
+        // set attribute and call callback when drawing has finished
+        var on_drawn = function () {
+            $graph.attr('data-graph-loaded', 'true');
+            if (callback !== undefined) {
+                callback();
+            }
+        };
+
+        // show a message when loading has failed
+        var on_error = function () {
+            on_loaded();
+            $graph.html('Fout bij het laden van de gegevens.');
+        };
+
+        // for flot graphs, grab the JSON data and call Flot
+        if (graph_type == 'flot') {
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    on_loaded();
+
+                    // tab might have been hidden in the meantime
+                    // so check if element is visible again:
+                    // we can't draw on an invisible surface
+                    if ($graph.is(':hidden')) return;
+
+                    var plot = flotGraphLoadData($graph, response);
+                    on_drawn();
+                },
+                timeout: 20000,
+                error: on_error
+            });
+        }
+        // for static image graphs, just load the image as <img> element
+        else if (graph_type == 'image') {
+            var get_url_with_size = function () {
+                // add available width and height to url
+                var url_with_size = url + '&' + $.param({
+                    width: $graph.width(),
+                    height: $graph.height()
+                });
+                return url_with_size;
+            };
+
+            var update_size = function () {
+                var $img = $(this);
+                $img.data('current-loaded-width', $img.width());
+                $img.data('current-loaded-height', $img.height());
+            };
+
+            var on_load_once = function () {
+                on_loaded();
+
+                // tab might have been hidden in the meantime
+                // so check if element is visible again:
+                // we can't draw on an invisible surface
+                if ($graph.is(':hidden')) return;
+
+                $graph.append($(this));
+                on_drawn();
+            };
+
+            var $img = $('<img/>')
+                .one('load', on_load_once) // ensure this is only called once
+                .load(update_size)
+                .error(on_error)
+                .attr('src', get_url_with_size());
+
+            var update_src = function () {
+                $img.attr('src', get_url_with_size());
+            };
+
+            var timeout = null;
+            $graph.resize(function () {
+                if (timeout) {
+                    // clear old timeout first
+                    clearTimeout(timeout);
+                }
+                timeout = setTimeout(update_src, 1500);
+            });
+        }
+    }
+}
+
+var MS_SECOND = 1000;
+var MS_MINUTE = 60 * MS_SECOND;
+var MS_HOUR = 60 * MS_MINUTE;
+var MS_DAY = 24 * MS_HOUR;
+var MS_MONTH = 30 * MS_DAY;
+var MS_YEAR = 365 * MS_DAY;
+
+/**
+ * Draw the response data to a canvas in DOM element $graph using Flot.
+ *
+ * @param {$graph} DOM element which will be replaced by the graph
+ * @param {response} a dictionary containing graph data such as x/y values and labels
+ */
+function flotGraphLoadData($container, response) {
+    var data = response.data;
+    if (data.length === 0) {
+        $container.html('Geen gegevens beschikbaar.');
+        return;
+    }
+    var defaultOpts = {
+        series: {
+            points: { show: true, hoverable: true, radius: 1 },
+            shadowSize: 0
+        },
+        yaxis: {
+            zoomRange: [false, false],
+            panRange: false
+        },
+        xaxis: {
+            mode: "time",
+            zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR]
+        },
+        grid: { hoverable: true, labelMargin: 15 },
+        pan: { interactive: true },
+        zoom: { interactive: true }
+    };
+    if (isAppleMobile) {
+        // enable touch
+        defaultOpts.touch = { pan: 'xy', scale: 'x', autoWidth: false, autoHeight: false };
+        // disable flot.navigate pan & zoom
+        defaultOpts.pan.interactive = false;
+        defaultOpts.zoom.interactive = false;
+    }
+
+    // set up elements nested in our assigned parent div
+    $container.css('position', 'relative');
+    // first row
+    var $graph_row = $('<div class="flot-graph-row" />')
+        .css({
+            position: 'absolute',
+            left: 0, top: 0, bottom: 48, right: 0
+        });
+    var $y_label_text_wrapper = $('<div/>')
+        .css({
+            position: 'absolute',
+            bottom: 25,
+            width: 20
+        });
+    var $y_label_text = $('<div class="flot-graph-y-label-text" />')
+        .css({
+            'white-space': 'nowrap',
+            'background-color': '#fff'
+        })
+        .transform({rotate: '-90deg'})
+        .html(response.y_label);
+    $y_label_text_wrapper.append($y_label_text);
+    var $y_label = $('<span class="flot-graph-y-label" />')
+        .css({
+            position: 'absolute',
+            left: 0, top: 0, bottom: 0, width: 20
+        });
+    $y_label.append($y_label_text_wrapper);
+    $graph_row.append($y_label);
+    var $graph = $('<span class="flot-graph-canvas" />')
+        .css({
+            position: 'absolute',
+            left: 20, top: 0, bottom: 0, right: 0
+        });
+    $graph_row.append($graph);
+    $container.append($graph_row);
+
+    // second row
+    // just a spacer for now, have jquery.flot.axislabels.js draw the actual label
+    var $x_label = $('<div class="flot-graph-x-label" />')
+        .css({
+            position: 'absolute',
+            left: 60, bottom: 30, right: 0,
+            height: 18
+        })
+        .html(response.x_label);
+    $container.append($x_label);
+
+    // third row
+    var $control_row = $('<div class="flot-graph-control-row" />')
+        .css({
+            position: 'absolute',
+            left: 0, bottom: 0, right: 0,
+            height: 30
+        });
+    // controls
+    // TODO should implement JavaScript gettext / i18n
+    var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
+    $control_row.append($c_reset);
+
+    var $c_plus = $('<button title="Zoom in" class="btn" type="button"><i class="icon-zoom-in"></i></button>');
+    $control_row.append($c_plus);
+
+    var $c_min = $('<button title="Zoom uit" class="btn" type="button"><i class="icon-zoom-out"></i></button>');
+    $control_row.append($c_min);
+
+    var $c_bwd = $('<button title="Schuif naar links" class="btn" type="button"><i class="icon-backward"></i></button>');
+    $control_row.append($c_bwd);
+
+    var $c_fwd = $('<button title="Schuif naar rechts" class="btn" type="button"><i class="icon-forward"></i></button>');
+    $control_row.append($c_fwd);
+
+    $container.append($control_row);
+
+    // initial plot
+    var plot = $.plot($graph, data, defaultOpts);
+
+    if (!isAppleMobile) {
+        function showGraphTooltip(x, y, datapoint) {
+            var formatted = moment.utc(datapoint[0]).format('LL h:mm');
+            $('<div id="graphtooltip">' + formatted + ': '+ datapoint[1] + '</div>').css({
+                'position': 'absolute',
+                'top': y - 25,
+                'left': x + 5,
+                'padding': '0.4em 0.6em',
+                'border-radius': '0.5em',
+                'border': '1px solid #111',
+                'background-color': '#fff',
+                'z-index': 11000
+            }).appendTo("body");
+        }
+
+        $graph.bind("plothover", function (event, pos, item) {
+            if (item) {
+                $("#graphtooltip").remove();
+                showGraphTooltip(item.pageX, item.pageY, item.datapoint);
+            } else {
+                $("#graphtooltip").remove();
+            }
+        });
+    }
+
+    $c_reset.click(function () {
+        $.each(plot.getXAxes(), function (idx, axis) {
+            axis.options.min = null;
+            axis.options.max = null;
+        });
+        $.each(plot.getYAxes(), function (idx, axis) {
+            axis.options.min = null;
+            axis.options.max = null;
+        });
+        plot.setupGrid();
+        plot.draw();
+    });
+    $c_plus.click(function () {
+        plot.zoom({ amount: 2 });
+    });
+    $c_min.click(function () {
+        plot.zoom({ amount: 0.5 });
+    });
+    $c_bwd.click(function () {
+        plot.pan({ left: -500 });
+    });
+    $c_fwd.click(function () {
+        plot.pan({ left: 500 });
+    });
+
+    return plot;
+}
+
+/**
  * Take an associative array, and convert all Moment.js objects to
  * ISO8601 datetime strings.
  *
