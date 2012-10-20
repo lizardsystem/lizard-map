@@ -35,25 +35,20 @@ from PIL import Image
 import iso8601
 import mapnik
 
-#from lizard_map.daterange import deltatime_range
-#from lizard_map.daterange import store_timedelta_range
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.animation import AnimationSettings
-from lizard_map.animation import slider_layout_extra
 from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
-from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
+from lizard_map.daterange import SESSION_DT_RANGETYPE, SESSION_DT_START, SESSION_DT_END
 from lizard_map.forms import CollageForm
 from lizard_map.forms import CollageAddForm
 from lizard_map.forms import CollageItemEditorForm
-from lizard_map.forms import DateRangeForm
 from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
 from lizard_map.forms import WorkspaceLoadForm
@@ -574,32 +569,6 @@ class WorkspaceLoadView(ActionDialogView):
             "redirect": reverse("lizard_ui.icons")
         }
         return HttpResponse(json.dumps(redirect))
-
-
-class DateRangeView(DateRangeMixin, WorkspaceEditMixin, ActionDialogView):
-    template_name = 'lizard_map/box_daterange.html'
-    template_name_success = template_name
-    form_class = DateRangeForm  # Define your form
-
-    reload_screen_after = False  # Default.
-
-    def form_valid_action(self, form):
-        """
-        Update date range
-        """
-        logger.debug("Updating date range...")
-        date_range = form.cleaned_data
-        compute_and_store_start_end(self.request.session, date_range)
-
-    def get(self, request, *args, **kwargs):
-        self.reload_screen_after = request.GET.__contains__(
-            'reload_screen_after')
-        return super(DateRangeView, self).get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        self.reload_screen_after = request.GET.__contains__(
-            'reload_screen_after')
-        return super(DateRangeView, self).post(request, *args, **kwargs)
 
 
 class CollageItemEditorView(ActionDialogView):
@@ -1482,95 +1451,6 @@ class WorkspaceEmptyView(WorkspaceEditMixin, ActionDialogView):
             self.request.session.session_key, self.request.user)
         workspace_edit.workspace_items.all().delete()
 
-
-"""
-Export
-"""
-
-
-# # TODO: update to L3
-# def export_snippet_group_csv(request, snippet_group_id):
-#     """
-#     Creates a table with each location as column. Each row is a datetime.
-#     """
-#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-#         pk=snippet_group_id)
-#     start_date, end_date = current_start_end_dates(request)
-#     table = snippet_group.values_table(start_date, end_date)
-
-#     response = HttpResponse(mimetype='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename=export.csv'
-#     writer = csv.writer(response)
-#     for row in table:
-#         writer.writerow(row)
-#     return response
-
-
-# # TODO: update to L3
-# def export_identifier_csv(request, workspace_item_id=None,
-#     identifier_json=None):
-#     """
-#     Uses adapter.values to get values. Then return these
-# #values in csv format.
-#     """
-#     # Collect input.
-#     if workspace_item_id is None:
-#         workspace_item_id = request.GET.get('workspace_item_id')
-#     if identifier_json is None:
-#         identifier_json = request.GET.get('identifier_json')
-#     workspace_item = WorkspaceItem.objects.get(pk=workspace_item_id)
-#     identifier = parse_identifier_json(identifier_json)
-#     start_date, end_date = current_start_end_dates(request)
-#     adapter = workspace_item.adapter
-#     values = adapter.values(identifier, start_date, end_date)
-#     filename = '%s.csv' % (
-#         adapter.location(**identifier).get('name', 'export'))
-
-#     # Make the csv output.
-#     response = HttpResponse(mimetype='text/csv')
-#     response['Content-Disposition'] = 'attachment; filename="%s"' % filename
-#     writer = csv.writer(response)
-#     writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
-#     for row in values:
-#         writer.writerow([row['datetime'], row['value'], row['unit']])
-#     return response
-
-
-# # TODO: update to L3
-# def export_snippet_group_statistics_csv(request, snippet_group_id=None):
-#     """
-#     Exports snippet_group statistics as csv.
-#     """
-#     if snippet_group_id is None:
-#         snippet_group_id = request.GET.get('snippet_group_id')
-#     snippet_group = WorkspaceCollageSnippetGroup.objects.get(
-#         pk=snippet_group_id)
-#     start_date, end_date = current_start_end_dates(request)
-#     statistics = snippet_group.statistics(start_date, end_date)
-
-#     response = HttpResponse(mimetype='text/csv')
-#     response['Content-Disposition'] = ('attachment; '
-#                                        'filename=export_statistics.csv')
-#     writer = csv.writer(response)
-#     colnames = ['min', 'max', 'avg']
-#     colnamesdisplay = ['min', 'max', 'avg']
-#     if snippet_group.boundary_value is not None:
-#         colnames.append('count_lt')
-#         colnames.append('count_gte')
-#         colnamesdisplay.append(
-#             '# < %s' % snippet_group.boundary_value)
-#         colnamesdisplay.append(
-#             '# >= %s' % snippet_group.boundary_value)
-#     if snippet_group.percentile_value is not None:
-#         colnames.append('percentile')
-#         colnamesdisplay.append(
-#             'percentile %f' % snippet_group.percentile_value)
-#     writer.writerow(colnamesdisplay)
-#     for row in statistics:
-#         writer.writerow([row[colname] for colname in colnames])
-#     return response
-
-
 """
 Map locations are stored in the session with key MAP_SESSION. It
 contains a dictionary with fields x, y and zoom.
@@ -1872,7 +1752,6 @@ class AdapterImageView(AdapterMixin, ImageMixin, View):
 
         # Add animation slider position, info from session data.
         layout_extra = self.layout_extra_from_request()
-        layout_extra.update(slider_layout_extra(self.request))
 
         return current_adapter.image(
             identifier_list, start_date, end_date,
@@ -1956,7 +1835,6 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
 
         # Add animation slider position, info from session data.
         layout_extra = self.layout_extra_from_request()
-        layout_extra.update(slider_layout_extra(self.request))
 
         return current_adapter.flot_graph_data(
             identifier_list, start_date, end_date,
