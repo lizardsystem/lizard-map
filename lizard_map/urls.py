@@ -123,13 +123,6 @@ urlpatterns = patterns(
         name="lizard_map_adapter_values"),
 
     # Date range
-    url(r'set_animation_date$',
-     'lizard_map.animation.set_animation_date',
-     {},
-     name="lizard_map.set_animation_date"),
-    url(r'^date_range/$',  # L3
-        lizard_map.views.DateRangeView.as_view(),
-        name="lizard_map_date_range"),
     url(r'^view_state_service/$',
         lizard_map.views.ViewStateService.as_view(),
         name="lizard_map_view_state_service"),
