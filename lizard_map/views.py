@@ -1863,10 +1863,6 @@ class ViewStateForm(forms.Form):
     dt_start = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
     dt_end = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
 
-SESSION_DT_RANGETYPE = 'dt_rangetype_3'
-SESSION_DT_START = 'dt_start_3'
-SESSION_DT_END = 'dt_end_3'
-
 class ViewStateService(JsonView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
