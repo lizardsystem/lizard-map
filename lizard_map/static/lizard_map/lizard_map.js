@@ -135,33 +135,40 @@ function set_popup_content(data) {
 
 // in use (26-09-2012)
 // mouseover when hovering over the map
-var hover_popup;
-function init_hover_popup(map) {
-    hover_popup = new OpenLayers.Popup('hover-popup',
-                                 new OpenLayers.LonLat(0, 0),
-                                 new OpenLayers.Size(300, 300),
-                                 '',
-                                 false);
-    hover_popup.maxSize = new OpenLayers.Size(300, 300);
-    hover_popup.border = "1px solid black";
-    hover_popup.autoSize = true;
-    map.addPopup(hover_popup);
-    hover_popup.hide();
+var $map_tooltip;
+function init_map_tooltip(map) {
+    $map_tooltip = $('<div id="maptooltip"/>')
+        .css({
+            'position': 'absolute',
+            'top': 0,
+            'left': 0,
+            'padding': '0.4em 0.6em',
+            'border-radius': '0.5em',
+            'border': '1px solid #111',
+            'background-color': '#fff',
+            'z-index': 2000,
+            'display': 'none'
+        })
+        .appendTo("#map");
 }
-function show_hover_popup(data, map) {
+function show_map_tooltip(data, map) {
     if (data.name !== "" && data.name !== undefined) {
         var content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
             '&nbsp;&nbsp;&nbsp;&nbsp;';
-        hover_popup.lonlat = new OpenLayers.LonLat(data.x, data.y);
-        hover_popup.setContentHTML(content);
-        hover_popup.updatePosition();
-        hover_popup.updateSize();
-        hover_popup.show();
+        var lonlat = new OpenLayers.LonLat(data.x, data.y);
+        var pixel = map.baseLayer.getViewPortPxFromLonLat(lonlat);
+        $map_tooltip.css({
+            top: pixel.y + 10,
+            left: pixel.x + 10
+        });
+        $map_tooltip.html(content);
+        $map_tooltip.show();
     }
 }
-function hide_hover_popup() {
-    hover_popup.contentHTML = '';
-    hover_popup.hide();
+function hide_map_tooltip() {
+    if ($map_tooltip) {
+        $map_tooltip.hide();
+    }
 }
 
 /* Make workspaces sortable and droppable
@@ -789,7 +796,7 @@ function popup_hover_handler(x, y, map) {
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                show_hover_popup(data, map);
+                show_map_tooltip(data, map);
             }
         );
     }
@@ -1270,6 +1277,7 @@ function setUpMap() {
             },
 
             trigger: function (e) {
+                hide_map_tooltip();
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
                 if (multipleSelection()) {
@@ -1315,7 +1323,7 @@ function setUpMap() {
             },
 
             onMove: function (evt) {
-                hide_hover_popup();
+                hide_map_tooltip();
             }
         });
     }
@@ -1334,7 +1342,7 @@ function setUpMap() {
     // level that most closely fits the specified bounds.
     // See #2762 and #2794.
     map.zoomToExtent(start_extent, true);
-    init_hover_popup(map);
+    init_map_tooltip(map);
 
     // actually add the handers: keep these here for full iPad compatibility
     if (javascript_click_handler_name) {
