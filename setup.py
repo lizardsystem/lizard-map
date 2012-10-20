@@ -25,6 +25,7 @@ install_requires = [
     'djangorestframework',
     'south',
     'iso8601',
+    'pytz',
     # 'pyproj', Including that as a dependency
     # doesn't work right at the moment.
     # mapnik: sorry, there's no real package for that.  We do need it however.
