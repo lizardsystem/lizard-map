@@ -1026,7 +1026,7 @@ function refreshBackgroundLayers() {
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
-                     'numZoomLevels': 19,
+                     'numZoomLevels': 25,
                      'units': "m",
                      'maxExtent': new OpenLayers.Bounds(
                          -128 * 156543.03390625,
