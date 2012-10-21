@@ -929,6 +929,9 @@ function updateLayers() {
             updateLayer(i);
         }
     }
+    $.each(wms_layers, function (k, v) {
+        v.mergeNewParams({'random': Math.random()});
+    });
 }
 
 
