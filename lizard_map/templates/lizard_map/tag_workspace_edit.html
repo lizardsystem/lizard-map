@@ -63,7 +63,7 @@
             <dl>
               {% for key, value in workspace_item.adapter.metadata %}
                 <dt>{{ key }}</dt>
-                <dd>{{ value }}</dd>
+                <dd>{{ value|urlizetrunc:35 }}</dd>
               {% endfor %}
             </dl>
           {% endif %}
