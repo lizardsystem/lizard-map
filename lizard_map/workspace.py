@@ -1,4 +1,3 @@
-
 import os
 import json
 import logging
@@ -11,10 +10,9 @@ from lizard_map.adapter import adapter_serialize
 from lizard_map.fields import Color
 from lizard_map.models import ICON_ORIGINALS
 from lizard_map.models import Legend
-#from lizard_map.models import Workspace foo
 from lizard_map.symbol_manager import SymbolManager
 
-logger = logging.getLogger('lizard_map.workspace')
+logger = logging.getLogger(__name__)
 
 # The colors that are used in graphs
 COLORS_DEFAULT = [
@@ -524,6 +522,16 @@ class WorkspaceItemAdapter(object):
             legend_result = [{'img_url': self.symbol_url(),
                               'description': 'description'}]
         return legend_result
+
+    def metadata(self):
+        """Return key/value metadata.
+
+        The goal: return metadata like "Created in: 1972" and "Copyright:
+        Reinout". The metadata is returned as a list (or tuple) of two-item
+        tuples, so ``[['Created in', '1972'], [...]]``.
+
+        """
+        pass
 
     def collage_detail_data_description(self, identifier, *args, **kwargs):
         """Return the title to show over this bit of data on the
