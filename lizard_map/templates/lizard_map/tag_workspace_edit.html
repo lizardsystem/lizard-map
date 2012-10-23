@@ -47,21 +47,27 @@
         </td>
         <td class="maintd">
           {% firstof workspace_item.name '(noname)' %}
-        </td>
-        <td class="lasttd">
-        {% if workspace_item.has_extent %}
-          <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                       workspace-item-pan-to"
-                title="{% trans 'Zoom to extent' %}"></span>
-        {% else %}
-          <span class="no-image-spacer"></span>
-        {% endif %}
+          {% if workspace_item.has_extent %}
+            <br />
+            <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                         workspace-item-pan-to">
+              {% trans 'Zoom to extent' %}
+            </span>
+          {% endif %}
+          <br />
           <span class="ss_sprite ss_delete sidebarbox-action-icon
-                       workspace-item-delete"
-                title="{% trans 'Delete item' %}"></span>
-        {% comment TODO needs some refactoring %}
-        {% legend workspace_item.name workspace_item.adapter session %}
-        {% endcomment %}
+                       workspace-item-delete">
+            {% trans 'Delete item' %}
+          </span>
+          {% if workspace_item.adapter.metadata %}
+            <dl>
+              {% for key, value in workspace_item.adapter.metadata %}
+                <dt>{{ key }}</dt>
+                <dd>{{ value }}</dd>
+              {% endfor %}
+            </dl>
+          {% endif %}
+
         </td>
       </tr>
     {% empty %}
