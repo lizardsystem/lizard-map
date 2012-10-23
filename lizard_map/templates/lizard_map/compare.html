@@ -3,6 +3,261 @@
 {% load workspaces %}
 {% load utility %}
 
-{% block sidebar %}
 
-{% endblock %}
+{% block javascript %}
+<style>
+ul.workspaces {
+    list-style: none;
+    margin: 0px;
+}
+ul.workspaces li:not(:last-child) {
+    border-bottom: 1px solid #e6e6e3;
+}
+ul.workspaces li input {
+    
+}
+</style>
+
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.css" />
+<!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.ie.css" />
+<![endif]-->
+
+<script src="http://cdn.leafletjs.com/leaflet-0.4.4/leaflet.js"></script>
+<script>
+// Prevent stray console.log's from messing up in IE.
+if ( ! window.console ) console = { log: function(){} };
+
+
+// Resize map viewports on window resize.
+$(function(){
+    $(window).resize(function(){
+        $('#map-a').css('height',  ($("#content").height()/2) + 'px');
+        $('#map-b').css('height',  ($("#content").height()/2) + 'px');
+    });
+});
+
+$(document).ready(function() {
+    // Resize map viewports on initial page load.
+    $('#map-a').css('height',  ($("#content").height()/2) + 'px');
+    $('#map-b').css('height',  ($("#content").height()/2) + 'px');
+
+    // Define the two base layers
+    var baseLayerA = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/wms", {
+        layers: 'basiskaart',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true,
+        attribution: "KAART A"
+    });
+    var baseLayerB = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/wms", {
+        layers: 'basiskaart',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true,
+        attribution: "KAART B"
+    });
+
+    // Read, split and parse lng/lat/zoom from hash
+    var h = document.location.hash.replace('#', '').split(',');
+
+    // Default initial lng/lat/zoom values
+    var lat = 52.26815737376817, lng = 6.6796875, z = 8;
+    if (h[0] && h[1] && h[2]) {
+        lat = parseFloat(h[0]);
+        lng = parseFloat(h[1]);
+        z   = parseFloat(h[2]);
+    }
+
+    // Initialize Leaflet Map instances for Map A and Map B
+    var mapa = new L.Map('map-a');
+    var mapb = new L.Map('map-b');
+
+    // Set the locations and add the baselayer for both maps
+    mapa.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerA);
+    mapb.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerB);
+
+
+
+
+
+    /*********************************/
+    // Define test layers
+    var layertesta = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
+        layers: 'LIR_2e_referentie',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true
+    });
+
+    var layertestb = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
+        layers: 'LIR_2e_referentie',
+        format: 'image/png',
+        transparent: true,
+        reuseTiles: true
+    });
+
+    // Add these two layers
+    mapa.addLayer(layertesta);
+    mapb.addLayer(layertestb);
+
+    /***  ^^^^ OK, SO THIS WORKS ******************************/
+    /*** BUT THE FOLLOWING DOESN'T.. GIVES ERRORS ABOUT TRANSFER TYPE XML? */
+
+    // Loop over the ws-a-item's
+    $('.ws-a-item').each(function(e,v) {
+
+        // Get and parse the params (parse, because it's a JSON object)
+        params = $.parseJSON($(v).data("params"));
+
+        // Get the url
+        url = $(v).data("url");
+
+        if(params && params.layers) {
+            // Create two tileLayers
+            var layerA = L.tileLayer(url, {
+                layers: params.layers,
+                format: 'image/png',
+                transparent: true,
+                reuseTiles: true
+            });
+            var layerB = L.tileLayer(url, {
+                layers: params.layers,
+                format: 'image/png',
+                transparent: true,
+                reuseTiles: true
+            });
+            // And add them
+            mapa.addLayer(layerA);
+            mapb.addLayer(layerB);
+        }
+    });
+
+    /**********************************/
+
+
+    var mapaMove = function(e) {
+        // Stuff to do when Map A is being panned/zoomed
+        var c = mapa.getCenter();
+        var z = mapa.getZoom();
+        mapb.setView(new L.LatLng(c.lat, c.lng), z);
+        document.location.hash = [c.lat, c.lng, z].join(',');
+    }
+    var mapbMove = function(e) {
+        // Stuff to do when Map B is being panned/zoomed
+        var c = mapb.getCenter();
+        var z = mapb.getZoom();
+        mapa.setView(new L.LatLng(c.lat, c.lng), z);
+        document.location.hash = [c.lat, c.lng, z].join(',');
+    }
+
+    // Bind mapaMove and mapbMove to the 'move' events of Leaflet's Map
+    mapa.on('move', mapaMove);
+    mapb.on('move', mapbMove);
+
+
+    $('.ws-a-item').click(function() {
+        // Skeleton code for handling the checkbox interaction later on
+        if($(this).prop("checked")) {
+            console.log("Checked in A");
+        }
+    });
+
+    $('.ws-b-item').click(function() {
+        // Skeleton code for handling the checkbox interaction later on
+        if($(this).prop("checked")) {
+            console.log("Checked in B");   
+        }
+    });
+
+
+
+});
+</script>
+{% endblock javascript %}
+
+{% block map-javascript %}{% endblock %}
+
+{% block sidebar %}
+<h2>Kaarten vergelijken</h2>
+<h3>Kaart A</h3>
+<div style="margin:10px 0px 5px 0px;">
+<ul class="workspaces">
+    {% for w in view.wms_layers %}
+    <!-- {{ w|safe }} -->
+        <li>
+            <table>
+            <tr valign="top">
+                <td>
+                    <input type="checkbox" data-url="{{ w.url }}" data-params='{{ w.params|safe }}' class="ws-a-item" name="map-a-item[]" id="ws-a-{{ w.wms_id }}" value="{{ w.id }}"/>
+                </td>
+                <td>
+                    <label for="ws-a-{{ w.wms_id }}">&nbsp;{{ w.name }}</label>
+                </td>
+            </tr>
+            </table>
+        </li>
+    {% endfor %}
+</ul>
+</div>
+
+<h3>Kaart B</h3>
+<div style="margin:10px 0px 5px 0px;">
+<ul class="workspaces">
+    {% for w in view.wms_layers %}
+        <li>
+            <table>
+            <tr valign="top">
+                <td>
+                    <input type="checkbox" data-url="{{ w.url }}" data-params='{{ w.params|safe }}' class="ws-b-item" name="map-b-item[]" id="ws-b-{{ w.wms_id }}" value="{{ w.id }}"/>
+                </td>
+                <td>
+                    <label for="ws-b-{{ w.wms_id }}">&nbsp;{{ w.name }}</label>
+                </td>
+            </tr>
+            </table>
+        </li>
+    {% endfor %}
+</ul>
+</div>
+
+
+{% endblock sidebar %}
+
+
+{% block content %}
+<div class="row-fluid">
+    <div class"map" id="map-a" style="height:400px;"></div>
+</div>
+<div class="row-fluid">
+    <div class"map" id="map-b" style="height:400px;"></div>
+</div>
+{% endblock content %}
+
+{% block breadcrumbs %}
+<ul>
+    <li>
+      <a href="/map/">
+        
+        Home
+      </a>
+        →
+    </li>
+  
+    <li data-content="Workspace items met elkaar vergelijken." class="has_popover" data-original-title="Workspace items vergelijken">
+      <a href="/map/compare/">
+        
+        Vergelijken
+      </a>
+      
+    </li>
+  
+</ul>
+{% endblock breadcrumbs %}
+{% block secondary-sidebar %}{% endblock secondary-sidebar %}
+{% block rightbar %}{% endblock rightbar %}
+{% block sidebar-actions %}{% endblock sidebar-actions %}
+{% block rightbar-actions %}{% endblock rightbar-actions %}
+{% block content-actions %}{% endblock content-actions %}
+{% block orthogonal-actions %}{% endblock orthogonal-actions %}
+

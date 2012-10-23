@@ -68,7 +68,8 @@
              {# json uses "" #}
              data-workspace-wms-params='{{ wms_layer.params }}'
              data-workspace-wms-options='{{ wms_layer.options }}'
-             data-workspace-wms-index='{{ wms_layer.index }}'>
+             data-workspace-wms-index='{{ wms_layer.index }}'
+             data-workspace-wms-cql_filters='{{ wms_layer.cql_filters }}'>
          </div>
        {% endautoescape %}
      {% endfor %}

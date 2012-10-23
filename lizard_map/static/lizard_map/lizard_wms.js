@@ -172,37 +172,6 @@ function refreshBackgroundLayers() {
     });
 }
 
-// obsolete as everything is a WMS layer now
-/*
-function refreshWorkspaceLayers() {
-    var $lizard_map_wms, wms_layers, osm_url;
-    $lizard_map_wms = $("#lizard-map-wms");
-    $(".workspace-layer").each(function () {
-        var workspace_id, workspace_name, workspace_wms;
-        workspace_id = $(this).attr("data-workspace-id");
-        workspace_name = $(this).attr("data-workspace-name");
-        workspace_wms = $(this).attr("data-workspace-wms");
-        if (layers[workspace_id] === undefined) {
-            // It doesn't exist yet.
-            layers[workspace_id] = new OpenLayers.Layer.WMS(
-                workspace_name,
-                workspace_wms,
-                {layers: 'basic'},
-                {singleTile: true,
-                 transitionEffect: 'resize',
-                 displayInLayerSwitcher: false,
-                 isBaseLayer: false});
-            layers[workspace_id].mergeNewParams({'random': Math.random()});
-            map.addLayer(layers[workspace_id]);
-        } else {
-            // It exists: refresh it.
-            layers[workspace_id].mergeNewParams({'random': Math.random()});
-        }
-    });
-}
-*/
-
-
 function refreshWmsLayers() {
     // Add wms layers from workspace items.
     var $lizard_map_wms, osm_url, i, ids_found;
@@ -215,23 +184,44 @@ function refreshWmsLayers() {
         ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
         url = $(this).attr("data-workspace-wms-url");
-        params = $(this).attr("data-workspace-wms-params");
-        params = $.parseJSON(params);
+        params = $.parseJSON($(this).attr("data-workspace-wms-params"));
         // Fix for partial images on tiles
         params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
-        options = $(this).attr("data-workspace-wms-options");
-        options = $.parseJSON(options);
+
+        options = $(this).data("workspace-wms-options");
         index = parseInt($(this).attr("data-workspace-wms-index"));
+
+		// Add cql_filtering
+        var layer_filters = $(this).data("workspace-wms-cql_filters");
+        var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
+		var cql_filters = ''
+		// Add the filters that are selected and available for this layer.
+        for (key in selected_filters){
+            if ($.inArray(key, layer_filters) !== -1){
+                cql_filters += key + '=' + selected_filters[key];
+            }
+        }
+
         if (wms_layers[id] === undefined) {
             // Create it.
+            if (cql_filters.length > 0){
+				// There are filters so add them to the request.
+                params['cql_filter'] = cql_filters
+            }
+
             var layer = new OpenLayers.Layer.WMS(name, url, params, options);
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
         }
         else {
-            // Update it.
-            var layer = wms_layers[id];
+			var layer = wms_layers[id];
+			if (cql_filters.length > 0){
+				// Update the layer if a cql_filter is used
+				// with the new cql_filter params.
+				layer.mergeNewParams({'cql_filter': cql_filters});
+			}
+            // set the correct Zindex
             layer.setZIndex(1000 - index);
         }
     });

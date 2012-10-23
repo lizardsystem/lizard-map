@@ -356,6 +356,10 @@ class WorkspaceModelMixin(object):
                 # item is located on an external WMS server
                 # EJVOS: why this is stored as a JSON string is beyond me...
                 adapter_layer = json.loads(workspace_item.adapter_layer_json)
+                cql_filters_unicode = adapter_layer.get('cql_filters', [])
+                cql_filters = json.dumps(
+                    [i.encode('utf-8') for i in cql_filters_unicode])
+
                 return {
                     'wms_id': workspace_item.id,
                     'name': workspace_item.name,
@@ -363,13 +367,14 @@ class WorkspaceModelMixin(object):
                     'params': adapter_layer.get('params', '{}'),
                     'options': adapter_layer.get('options', '{}'),
                     'index': workspace_item.index,
+                    'cql_filters': cql_filters,
                 }
             else:
                 # item is served by our local simulated WMS server
                 # using mapnik etc.
                 params = json.dumps({
-                    #'params': '{"height": "256", "width": "256", "layers": "lizard:generated_layer", "styles": "", "format": "image/png", "tiled": "true", "transparent": "true"}',
-                    'layers': 'lizard:generated_layer_%s'.format(workspace_item.id),
+                        'layers': 'lizard:generated_layer_%s'.format(
+                            workspace_item.id),
                 })
                 options = json.dumps({
                     'transitionEffect': 'resize',
@@ -381,7 +386,9 @@ class WorkspaceModelMixin(object):
                 return {
                     'wms_id': workspace_item.id,
                     'name': workspace_item.name,
-                    'url': reverse('lizard_map_workspace_edit_wms', kwargs={'workspace_item_id': workspace_item.id}),
+                    'url': reverse(
+                        'lizard_map_workspace_edit_wms',
+                        kwargs={'workspace_item_id': workspace_item.id}),
                     'params': params,
                     'options': options,
                     'index': workspace_item.index,
