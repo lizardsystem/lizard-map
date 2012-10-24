@@ -79,62 +79,46 @@ $(document).ready(function() {
 
 
 
+    // var mapaLayers = [];
+    // var i = 0;
+    // $('.ws-a-item').each(function(e, v) {
+    //     i++;
 
+    //     params = $.parseJSON($(v).data("params"));
+        
+    //     url = $(v).data("url");        
 
-    /*********************************/
-    // Define test layers
-    var layertesta = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
-        layers: 'LIR_2e_referentie',
-        format: 'image/png',
-        transparent: true,
-        reuseTiles: true
-    });
+        
+    //     if(params && params.layers) {
 
-    var layertestb = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/deltaportaal/wms", {
-        layers: 'LIR_2e_referentie',
-        format: 'image/png',
-        transparent: true,
-        reuseTiles: true
-    });
+    //         mapaLayers[i] = L.tileLayer.wms(url, {
+    //             layers: params.layers,
+    //             format: 'image/png',
+    //             transparent: true,
+    //             reuseTiles: true
+    //         });
+    //         mapa.addLayer(mapaLayers[i]);            
+    //     }
+    // });
 
-    // Add these two layers
-    mapa.addLayer(layertesta);
-    mapb.addLayer(layertestb);
+    // var mapbLayers = [];
+    // var j = 0;
+    // $('.ws-b-item').each(function(e, v) {
+    //     j++;
+    //     params = $.parseJSON($(v).data("params"));
+    //     url = $(v).data("url");
 
-    /***  ^^^^ OK, SO THIS WORKS ******************************/
-    /*** BUT THE FOLLOWING DOESN'T.. GIVES ERRORS ABOUT TRANSFER TYPE XML? */
-
-    // Loop over the ws-a-item's
-    $('.ws-a-item').each(function(e,v) {
-
-        // Get and parse the params (parse, because it's a JSON object)
-        params = $.parseJSON($(v).data("params"));
-
-        // Get the url
-        url = $(v).data("url");
-
-        if(params && params.layers) {
-            // Create two tileLayers
-            var layerA = L.tileLayer(url, {
-                layers: params.layers,
-                format: 'image/png',
-                transparent: true,
-                reuseTiles: true
-            });
-            var layerB = L.tileLayer(url, {
-                layers: params.layers,
-                format: 'image/png',
-                transparent: true,
-                reuseTiles: true
-            });
-            // And add them
-            mapa.addLayer(layerA);
-            mapb.addLayer(layerB);
-        }
-    });
-
-    /**********************************/
-
+    //     if(params && params.layers) {
+    //         mapbLayers[j] = L.tileLayer.wms(url, {
+    //             layers: params.layers,
+    //             format: 'image/png',
+    //             transparent: true,
+    //             reuseTiles: true
+    //         });
+    //         mapb.addLayer(mapbLayers[j]);
+    //     }
+    // });
+    
 
     var mapaMove = function(e) {
         // Stuff to do when Map A is being panned/zoomed
@@ -151,22 +135,53 @@ $(document).ready(function() {
         document.location.hash = [c.lat, c.lng, z].join(',');
     }
 
-    // Bind mapaMove and mapbMove to the 'move' events of Leaflet's Map
-    mapa.on('move', mapaMove);
-    mapb.on('move', mapbMove);
+
+    // Bind mapaMove and mapbMove to the 'mouseup' events of Leaflet's Map
+    mapa.on('moveend', mapaMove);
+    mapb.on('moveend', mapbMove);
 
 
+    var mapaLayers = [];
+    var i = 0;
     $('.ws-a-item').click(function() {
-        // Skeleton code for handling the checkbox interaction later on
         if($(this).prop("checked")) {
-            console.log("Checked in A");
+            i++;
+            params = $.parseJSON($(this).data("params"));
+            url = $(this).data("url");
+
+            if(params && params.layers) {
+                mapaLayers[i] = L.tileLayer.wms(url, {
+                    layers: params.layers,
+                    format: 'image/png',
+                    transparent: true,
+                    reuseTiles: true
+                });
+                mapa.addLayer(mapaLayers[i]);
+            }
+        } else {
+            mapa.removeLayer(mapaLayers[i]);
         }
     });
 
+    var mapbLayers = [];
+    var j = 0;
     $('.ws-b-item').click(function() {
-        // Skeleton code for handling the checkbox interaction later on
         if($(this).prop("checked")) {
-            console.log("Checked in B");   
+            j++;
+            params = $.parseJSON($(this).data("params"));
+            url = $(this).data("url");
+
+            if(params && params.layers) {
+                mapbLayers[j] = L.tileLayer.wms(url, {
+                    layers: params.layers,
+                    format: 'image/png',
+                    transparent: true,
+                    reuseTiles: true
+                });
+                mapb.addLayer(mapbLayers[j]);
+            }
+        } else {
+            mapb.removeLayer(mapbLayers[j]);
         }
     });
 
