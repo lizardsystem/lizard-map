@@ -21,6 +21,9 @@ It provides:
 - An extention mechanism to plug more or less arbitrary map sources into the
   workspace so that they can be displayed, searched, etc.
 
+.. image:: https://secure.travis-ci.org/lizardsystem/lizard-map.png?branch=master
+   :target: http://travis-ci.org/#!/lizardsystem/lizard-map
+
 
 Core concept: workspaces
 ------------------------
