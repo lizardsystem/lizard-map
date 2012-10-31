@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.25 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- The description popup is now an 'i' you should click instead of an on-hover
+  dialog. Works better with an ipad.
 
 
 4.24 (2013-02-25)

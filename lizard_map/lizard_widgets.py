@@ -46,7 +46,7 @@ class WorkspaceAcceptable(object):
         else:
             result.append('nonworking-workspace-acceptable')
         if self.description:
-            result.append('has_popover')
+            result.append('with_description')
         return ' '.join(result)
 
     def to_html(self):

@@ -1,12 +1,16 @@
+{% if acceptable.description %}
+  <a class="workspace-acceptable-info has_popover"
+     data-content="{{ acceptable.description }}"
+     data-trigger="click"
+     title="{{ acceptable.name }}"
+     href="#"
+     ><i class="icon-info-sign"></i></a>
+{% endif %}
 <{{ acceptable.html_tag }} class="{{ classes }}"
-   href="#"
-  {% if acceptable.description %}
-    data-content="{{ acceptable.description }}"
-    title="{{ acceptable.name }}"
-  {% endif %}
-    data-adapter-layer-json="{{ acceptable.adapter_layer_json }}"
-    data-adapter-class="{{ acceptable.adapter_name }}"
-    data-name="{{ acceptable.name }}">
+  href="#"
+  data-adapter-layer-json="{{ acceptable.adapter_layer_json }}"
+  data-adapter-class="{{ acceptable.adapter_name }}"
+  data-name="{{ acceptable.name }}">
   {% if acceptable.enabled %}
     <i class="icon-ok workspace-selected-icon"></i>
   {% endif %}
