@@ -1612,7 +1612,7 @@ function flotGraphLoadData($container, response) {
     var $y_label_text_wrapper = $('<div/>')
         .css({
             position: 'absolute',
-            bottom: 25,
+            bottom: 80,
             width: 20
         });
     var $y_label_text = $('<div class="flot-graph-y-label-text" />')
