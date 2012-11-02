@@ -3,10 +3,7 @@
 {% load workspaces %}
 {% load utility %}
 
-{% block javascript %}
-{% endblock javascript %}
-
-{% block sidebar %}
+{% block bottom-extras %}
 <link rel="stylesheet" href="{{ STATIC_URL }}lizard_map/leaflet.css" />
 <!--[if lte IE 8]>
     <link rel="stylesheet" href="{{ STATIC_URL }}lizard_map/leaflet.ie.css" />
@@ -15,7 +12,9 @@
 
 <link rel="stylesheet" href="{{ STATIC_URL }}lizard_map/compare.css" />
 <script src="{{ STATIC_URL }}lizard_map/lizard_compare.js"></script>
+{% endblock bottom-extras %}
 
+{% block sidebar %}
 <h2>Kaarten vergelijken</h2>
 <h3>Kaart A</h3>
 
