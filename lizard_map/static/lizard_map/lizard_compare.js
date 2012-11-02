@@ -25,7 +25,7 @@ $(document).ready(function() {
     var mapbLayers = {};
 
     // Define the two base layers
-    var baseLayerA = L.tileLayer.wms("http://33.33.33.20:9042/service/", {
+    var baseLayerA = L.tileLayer.wms("http://test.deltaportaal.lizardsystem.nl/service/", {
         layers: 'deltaportaal',
         format: 'image/png',
         transparent: true,
@@ -33,7 +33,7 @@ $(document).ready(function() {
         attribution: "KAART A"
     });
 
-    var baseLayerB = L.tileLayer.wms("http://33.33.33.20:9042/service/", {
+    var baseLayerB = L.tileLayer.wms("http://test.deltaportaal.lizardsystem.nl/service/", {
         layers: 'deltaportaal',
         format: 'image/png',
         transparent: true,
