@@ -1493,6 +1493,7 @@ function reloadDynamicGraph($graph, callback, force) {
 
                     var plot = flotGraphLoadData($graph, response);
                     on_drawn();
+                    bindPanZoomEvents($graph);
                 },
                 timeout: 20000,
                 error: on_error
@@ -1674,6 +1675,7 @@ function flotGraphLoadData($container, response) {
 
     // initial plot
     var plot = $.plot($graph, data, defaultOpts);
+    bindPanZoomEvents($graph);
 
     if (!isAppleMobile) {
         function showGraphTooltip(x, y, datapoint) {
@@ -1727,6 +1729,42 @@ function flotGraphLoadData($container, response) {
 
     return plot;
 }
+
+/**
+* Bind several flot graphs together. When navigating through one graph, the other graphs
+* should follow the zoom levels, and extent.
+* Functions come from the controlnext app. http://github.com/lizardsystem/controlnext
+*/
+function panAndZoomOtherGraphs(plot) {
+    var axes = plot.getAxes();
+    var xmin = axes.xaxis.min;
+    var xmax = axes.xaxis.max;
+    $('.flot-graph-canvas').each(function () {
+        var otherPlot = $(this).data('plot');
+        if (plot !== otherPlot) {
+            var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
+            otherXAxisOptions.min = xmin;
+            otherXAxisOptions.max = xmax;
+            otherPlot.setupGrid();
+            otherPlot.draw();
+        }
+    });
+};
+function bindPanZoomEvents($graph) {
+    // fix IE performance
+    if (isIE && ieVersion < 9) {
+        return;
+    }
+
+    $graph.bind('plotzoom', function (event, plot) {
+        panAndZoomOtherGraphs(plot);
+    });
+
+    $graph.bind('plotpan', function (event, plot) {
+        panAndZoomOtherGraphs(plot);
+    });
+};
+
 
 /**
  * Take an associative array, and convert all Moment.js objects to
