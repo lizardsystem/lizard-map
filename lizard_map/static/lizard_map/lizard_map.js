@@ -297,6 +297,7 @@ jQuery.fn.updateWorkspace = function () {
                 // TODO: there refreshes are also used in lizard_map:
                 // replaceItems. See if we can bring it together.
                 updateWorkspaceAcceptableStatus();
+                $(".workspace").workspaceInteraction();
             }
         );
     });
@@ -1495,7 +1496,7 @@ function reloadDynamicGraph($graph, callback, force) {
 
                     var plot = flotGraphLoadData($graph, response);
                     on_drawn();
-                    bindPanZoomEvents($graph);
+                    //bindPanZoomEvents($graph);
                 },
                 timeout: 20000,
                 error: on_error
@@ -1747,8 +1748,10 @@ function panAndZoomOtherGraphs(plot) {
             var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
             otherXAxisOptions.min = xmin;
             otherXAxisOptions.max = xmax;
-            otherPlot.setupGrid();
-            otherPlot.draw();
+            if ($(this).is(':visible')) {
+                otherPlot.setupGrid();
+                otherPlot.draw();
+            }
         }
     });
 };
