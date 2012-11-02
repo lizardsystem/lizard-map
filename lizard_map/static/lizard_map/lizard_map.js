@@ -276,8 +276,10 @@ jQuery.fn.updateWorkspace = function () {
         $holder.load(
             './ #page',
             function () {
-                $(".workspace-items", $workspace).html(
-                    $('.workspace-items', $holder).html());
+                //$(".workspace-items", $workspace).html(
+                //    $('.workspace-items', $holder).html());
+                $("#edit-workspace").parent().html(
+                    $('#edit-workspace', $holder).parent().html());
                 $("#lizard-map-wms").html(
                     $('#lizard-map-wms', $holder).html());
                 $("#rightbar").html(
