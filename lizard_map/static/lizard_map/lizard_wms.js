@@ -194,19 +194,30 @@ function refreshWmsLayers() {
 		// Add cql_filtering
         var layer_filters = $(this).data("workspace-wms-cql_filters");
         var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
-		var cql_filters = ''
+		var cql_filters_arr = [];
 		// Add the filters that are selected and available for this layer.
         for (key in selected_filters){
             if ($.inArray(key, layer_filters) !== -1){
-                cql_filters += key + '=' + selected_filters[key];
+                cql_filters_arr.push(key + '=' + selected_filters[key]);
             }
         }
+
+		// Add possible cql_filters from the layer definition.
+		if (params['cql_filter'] != undefined) {
+			cql_filters_arr.push(params['cql_filters']);
+		}
+
+		var cql_filters = '';
+		if (cql_filters_arr.length > 0) {
+			//Put the filters in geoserver format
+			cql_filters = cql_filters_arr.join(' AND ');
+		}
 
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
 				// There are filters so add them to the request.
-                params['cql_filter'] = cql_filters
+                params['cql_filter'] = cql_filters;
             }
 
             var layer = new OpenLayers.Layer.WMS(name, url, params, options);
