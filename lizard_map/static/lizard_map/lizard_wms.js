@@ -204,7 +204,7 @@ function refreshWmsLayers() {
 
 		// Add possible cql_filters from the layer definition.
 		if (params['cql_filter'] != undefined) {
-			cql_filters_arr.push(params['cql_filters']);
+			cql_filters_arr.push(params['cql_filter']);
 		}
 
 		var cql_filters = '';
