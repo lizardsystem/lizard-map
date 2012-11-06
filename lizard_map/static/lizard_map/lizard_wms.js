@@ -202,6 +202,11 @@ function refreshWmsLayers() {
             }
         }
 
+		// Add possible cql_filters from the layer definition.
+		if (params['cql_filter'] != undefined) {
+			cql_filters += params['cql_filters'];
+		}
+
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
