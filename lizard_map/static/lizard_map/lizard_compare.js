@@ -7,8 +7,8 @@ $(function(){
     $(window).resize(function(){
         $('#map-a').css('height',  ($("#content").height()/2) + 'px');
         $('#map-b').css('height',  ($("#content").height()/2) + 'px');
-        $('#mapawrapper').css('height',  ($("#content").height()/2) - 56 + 'px');
-        $('#mapbwrapper').css('height',  ($("#content").height()/2) - 56 + 'px');
+        $('#mapawrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
+        $('#mapbwrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
     });
 });
 
@@ -18,8 +18,8 @@ $(document).ready(function() {
     $('#map-a').css('height',  ($("#content").height()/2) + 'px');
     $('#map-b').css('height',  ($("#content").height()/2) + 'px');
 
-    $('#mapawrapper').css('height',  ($("#content").height()/2) - 56 + 'px');
-    $('#mapbwrapper').css('height',  ($("#content").height()/2) - 56 + 'px');
+    $('#mapawrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
+    $('#mapbwrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
 
     var mapaLayers = {};
     var mapbLayers = {};
