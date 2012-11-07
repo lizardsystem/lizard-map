@@ -56,6 +56,9 @@ $(document).ready(function() {
     var mapa = new L.Map('map-a');
     var mapb = new L.Map('map-b');
 
+    
+
+
     // Attach Map instances to window for global access (debugging)
     window.mapa = mapa;
     window.mapb = mapb;
@@ -76,6 +79,11 @@ $(document).ready(function() {
     // Set the locations and add the baselayer for both maps
     mapa.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerA);
     mapb.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerB);
+
+    // Set scales to the maps
+    L.control.scale().addTo(mapa);
+    L.control.scale().addTo(mapb);
+
 
     var mapaMove = function(e) {
         // Stuff to do when Map A is being panned/zoomed
