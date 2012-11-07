@@ -3,7 +3,7 @@ if ( ! window.console ) console = { log: function(){} };
 
 
 // Resize map viewports on window resize.
-$(function(){
+$(function() {
     $(window).resize(function(){
         $('#map-a').css('height',  ($("#content").height()/2) + 'px');
         $('#map-b').css('height',  ($("#content").height()/2) + 'px');
@@ -19,6 +19,8 @@ $(document).keyup(function(e) {
 });
 
 $(document).ready(function() {
+    $('#map-b').data('wms-cql-filters', {'year':2050});
+    $('#map-b').data('wms-cql-filters', {'year':2050});
 
     // Resize map viewports on initial page load.
     $('#map-a').css('height',  ($("#content").height()/2) + 'px');
@@ -211,7 +213,6 @@ $(document).ready(function() {
 
 
       $('#mapb-controls #year-2100').click(function() {
-        console.log("A");
         // Set the year to 2100 for map B
         updateMapBYearButtons('2100');
 
@@ -357,6 +358,8 @@ $(document).ready(function() {
             var layer_filters = $(this).data("workspace-wms-cql-filters");
             var selected_filters = $('#map-b').data('wms-cql-filters');
 
+            console.log(selected_filters);
+            
             var cql_filters = '';
 
             // Add the filters that are selected and available for this layer.
