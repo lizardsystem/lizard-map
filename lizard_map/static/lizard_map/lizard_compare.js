@@ -12,6 +12,12 @@ $(function(){
     });
 });
 
+$(document).keyup(function(e) {
+  if (e.keyCode == 27) { // Redirect on escape
+    window.location.replace("/analyseopgave/");
+  }
+});
+
 $(document).ready(function() {
 
     // Resize map viewports on initial page load.
@@ -55,9 +61,6 @@ $(document).ready(function() {
     // Initialize Leaflet Map instances for Map A and Map B
     var mapa = new L.Map('map-a');
     var mapb = new L.Map('map-b');
-
-    
-
 
     // Attach Map instances to window for global access (debugging)
     window.mapa = mapa;
