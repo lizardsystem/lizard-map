@@ -64,7 +64,7 @@
    {% else %} 
     <div class="alert">
       <button type="button" class="close" data-dismiss="alert">×</button>
-      <strong>Geen kaartlagen geselecteerd.</strong><br/> U kunt kaartlagen selecteren in <a style="color:#b4984b" href="{% url deltaportaal.opgaveanalyse %}">Opgave Analyse</a>.
+      <strong>Geen kaartlagen geselecteerd.</strong><br/> U kunt kaartlagen selecteren in <a style="color:#b4984b" href="{% url deltaportaal.analyseopgave %}">Opgave Analyse</a>.
     </div>
    {% endif %} 
 </ul>
@@ -118,7 +118,7 @@
   {% else %}
     <div class="alert">
       <button type="button" class="close" data-dismiss="alert">×</button>
-      <strong>Geen kaartlagen geselecteerd.</strong><br/> U kunt kaartlagen selecteren in <a style="color:#b4984b" href="{% url deltaportaal.opgaveanalyse %}">Opgave Analyse</a>.
+      <strong>Geen kaartlagen geselecteerd.</strong><br/> U kunt kaartlagen selecteren in <a style="color:#b4984b" href="{% url deltaportaal.analyseopgave %}">Opgave Analyse</a>.
     </div>
   {% endif %}
 </ul>
@@ -150,7 +150,21 @@
 {% block rightbar %}{% endblock rightbar %}
 {% block sidebar-actions %}{% endblock sidebar-actions %}
 {% block rightbar-actions %}{% endblock rightbar-actions %}
-{% block content-actions %}{% endblock content-actions %}
 {% block orthogonal-actions %}{% endblock orthogonal-actions %}
-{% block map-javascript %}{% endblock %}
-{% block javascript %}{% endblock %}
+{% block map-javascript %}{% endblock map-javascript %}
+{% block javascript %}{% endblock javascript %}
+{% block title %}Kaartlagen vergelijken{% endblock title %}
+
+
+{% block content-actions %}
+<ul class="nav">                      
+    <li title="Stop vergelijken, terug naar Analyse Opgave">
+      <a href="{% url deltaportaal.analyseopgave %}" class="map-show-compare-button">
+          <i class="icon-th-large"></i>      
+          <span class="action-text">
+            Stop vergelijken
+          </span>
+      </a>
+    </li>
+</ul>
+{% endblock content-actions %}
