@@ -3,6 +3,23 @@
 {% load workspaces %}
 {% load utility %}
 
+{% block title %}Kaartlagen vergelijken{% endblock title %}
+
+
+{% block content-actions %}
+<ul class="nav">                      
+    <li title="Stop vergelijken, terug naar Analyse Opgave">
+      <a href="{% url deltaportaal.analyseopgave %}" class="map-show-compare-button">
+          <i class="icon-th-large"></i>      
+          <span class="action-text">
+            Stop vergelijken
+          </span>
+      </a>
+    </li>
+</ul>
+{% endblock content-actions %}
+
+
 {% block bottom-extras %}
 <link rel="stylesheet" href="{{ STATIC_URL }}lizard_map/leaflet.css" />
 <!--[if lte IE 8]>
@@ -153,18 +170,3 @@
 {% block orthogonal-actions %}{% endblock orthogonal-actions %}
 {% block map-javascript %}{% endblock map-javascript %}
 {% block javascript %}{% endblock javascript %}
-{% block title %}Kaartlagen vergelijken{% endblock title %}
-
-
-{% block content-actions %}
-<ul class="nav">                      
-    <li title="Stop vergelijken, terug naar Analyse Opgave">
-      <a href="{% url deltaportaal.analyseopgave %}" class="map-show-compare-button">
-          <i class="icon-th-large"></i>      
-          <span class="action-text">
-            Stop vergelijken
-          </span>
-      </a>
-    </li>
-</ul>
-{% endblock content-actions %}
