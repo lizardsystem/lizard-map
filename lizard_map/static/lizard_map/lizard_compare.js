@@ -82,7 +82,7 @@ $(document).ready(function() {
 
     // Set scales to the maps
     L.control.scale().addTo(mapa);
-    L.control.scale().addTo(mapa);
+    L.control.scale().addTo(mapb);
 
 
     var mapaMove = function(e) {
