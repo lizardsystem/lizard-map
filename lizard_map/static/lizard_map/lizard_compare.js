@@ -7,8 +7,8 @@ $(function(){
     $(window).resize(function(){
         $('#map-a').css('height',  ($("#content").height()/2) + 'px');
         $('#map-b').css('height',  ($("#content").height()/2) + 'px');
-        $('#mapawrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
-        $('#mapbwrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
+        $('#mapawrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
+        $('#mapbwrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
     });
 });
 
@@ -18,8 +18,8 @@ $(document).ready(function() {
     $('#map-a').css('height',  ($("#content").height()/2) + 'px');
     $('#map-b').css('height',  ($("#content").height()/2) + 'px');
 
-    $('#mapawrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
-    $('#mapbwrapper').css('height',  ($("#content").height()/2) - 72 + 'px');
+    $('#mapawrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
+    $('#mapbwrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
 
     var mapaLayers = {};
     var mapbLayers = {};
@@ -41,23 +41,6 @@ $(document).ready(function() {
         attribution: "KAART B"
     });
     
-    // var baseLayerA = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/wms", {
-    //     layers: 'basiskaart',
-    //     format: 'image/png',
-    //     transparent: true,
-    //     reuseTiles: true,
-    //     attribution: "KAART A"
-    // });
-
-
-    // var baseLayerB = L.tileLayer.wms("http://test-geoserver1.lizard.net/geoserver/wms", {
-    //     layers: 'basiskaart',
-    //     format: 'image/png',
-    //     transparent: true,
-    //     reuseTiles: true,
-    //     attribution: "KAART B"
-    // });
-
     // Read, split and parse lng/lat/zoom from hash
     var h = document.location.hash.replace('#', '').split(',');
 
@@ -72,11 +55,12 @@ $(document).ready(function() {
     // Initialize Leaflet Map instances for Map A and Map B
     var mapa = new L.Map('map-a');
     var mapb = new L.Map('map-b');
-    
+
+    // Attach Map instances to window for global access (debugging)
     window.mapa = mapa;
     window.mapb = mapb;
 
-
+    // Toggle the year controls and set the CQL filter data attributes
     function updateMapAYearButtons(year) {
         $('#mapa-controls #year-2100').toggleClass('active');
         $('#mapa-controls #year-2050').toggleClass('active');
@@ -139,6 +123,7 @@ $(document).ready(function() {
 
             // params = $.parseJSON($(this).data("params"));
             params = $.parseJSON($(this).attr("data-params"));
+            // Important: data() did not work here ^^^, attr() does!
 
             url = $(this).data("url");
 
