@@ -116,14 +116,14 @@ function show_popup(data) {
                         resizeGraph($(ui.panel).find('.flot-graph'));
                     }
                 });
-                $("#popup-subtabs").tabs({
-                    idPrefix: 'popup-subtab',
-                    selected: 0,
-                    show: function(event, ui) {
-                        resizeGraph($(ui.panel).find('.flot-graph'));
-                    }
-                });
             }
+            $("#popup-subtabs").tabs({
+                idPrefix: 'popup-subtab',
+                selected: 0,
+                show: function(event, ui) {
+                    resizeGraph($(ui.panel).find('.flot-graph'));
+                }
+            });
             //dialogOverlay();
             $("#movable-dialog").dialog("open");
             //if (data.html.length === 1) {
