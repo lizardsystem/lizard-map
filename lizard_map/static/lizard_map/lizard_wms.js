@@ -213,6 +213,11 @@ function refreshWmsLayers() {
 			cql_filters = cql_filters_arr.join(' AND ');
 		}
 
+		var layerslength = params['layers'].split(',').length - 1;
+		for (var i = 1; i <= layerslength; i ++) {
+			cql_filters += ';' + cql_filters;
+		}
+
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
