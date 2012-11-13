@@ -1949,9 +1949,9 @@ class LocationListService(JsonView, WorkspaceEditMixin):
                 logger.debug("No location_list() on this ws item's adapter.")
                 continue
             # request the list of locations from the adapter
-            for identifier, location_name in adapter.location_list(name):
+            for identifier, collage_name, location_name in adapter.location_list(name):
                 identifier = adapter_serialize(identifier)
-                locations.append((adapter_class, layer_arguments, identifier, location_name))
+                locations.append((adapter_class, layer_arguments, identifier, collage_name, location_name))
             # we can stop searching the remaining adapters in case MAX_LOCATIONS is already reached
             if len(locations) > MAX_LOCATIONS:
                 break

@@ -2109,8 +2109,8 @@ function setup_location_list () {
                                 .attr('data-adapter-layer-json', item[1])
                                 .attr('data-identifier', item[2])
                                 .attr('data-name', item[3])
-                                .attr('href', item[4])
-                                .html(item[3]);
+                                .attr('href', item[5])
+                                .html(item[4]);
                             var $div = $('<div/>')
                                 .append($link);
                             $results.append($div);
