@@ -47,6 +47,15 @@
         </td>
         <td class="maintd">
           {% firstof workspace_item.name '(noname)' %}
+          {% if user.is_superuser %}
+            {% if workspace_item.adapter.edit_link %}
+              <br />
+              <i class="icon-edit"></i>
+              <a href="{{ workspace_item.adapter.edit_link }}">
+                {% trans "Edit this workspaceitem's source" %}
+              </a>
+            {% endif %}
+          {% endif %}
           {% if workspace_item.has_extent %}
             <br />
             <span class="ss_sprite ss_magnifier sidebarbox-action-icon
