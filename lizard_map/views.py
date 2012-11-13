@@ -350,9 +350,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             if not image_urls:
                 # Don't show a non-existant image.
                 continue
-            result.append(Legend(
-                    name=workspace_item.name,
-                    image_urls=image_urls))
+            result.append(Legend(name=workspace_item.name,
+                                 image_urls=image_urls))
         return result
 
     @property
@@ -745,10 +744,10 @@ def workspace_item_reorder(
         workspace_edit = WorkspaceEdit.get_or_create(
             request.session.session_key, request.user)
     if workspace_items_order is None:
-        workspace_items_order = dict([
-                (workspace_item_id, index * 10) for
-                index, workspace_item_id in enumerate(
-                    request.POST.getlist('workspace-item[]'))])
+        workspace_items_order = dict(
+            [(workspace_item_id, index * 10) for
+             index, workspace_item_id in
+             enumerate(request.POST.getlist('workspace-item[]'))])
 
     for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.index = workspace_items_order.get(
