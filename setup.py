@@ -19,7 +19,6 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui',
     'lizard-help',
-    'matplotlib',
     'pkginfo',
     'django-jsonfield',
     'djangorestframework',
