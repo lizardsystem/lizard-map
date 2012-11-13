@@ -1924,15 +1924,9 @@ class LocationListService(JsonView, WorkspaceEditMixin):
 
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
-        # don't return anything in case name isn't passed, or is an empty string
-        if not name:
-            return []
         # clean weird character from the name
         name = name.strip()
         name = location_name_character_whitelist.sub('', name)
-        # don't return anything in case a very short string is passed
-        if len(name) < 3:
-            return []
         # grab this users workspace
         workspace_edit = self.workspace_edit()
         locations = []

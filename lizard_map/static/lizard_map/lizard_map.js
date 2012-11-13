@@ -2080,6 +2080,11 @@ function setup_location_list () {
             $button.click(search);
             $form.submit(search);
 
+            // show some initial search results
+            if ($results.children().length == 0 && $input.val().length == 0) {
+                setTimeout(search, 500);
+            }
+
             if (e) {
                 e.stopPropagation();
                 e.preventDefault();
