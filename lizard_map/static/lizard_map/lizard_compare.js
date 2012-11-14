@@ -119,9 +119,6 @@ $(document).ready(function() {
     mapb.on('moveend', mapbMove);
 
 
-
-
-
     function reloadALayers(self, key, value) {
         // Remove the layer
         mapa.removeLayer(mapaLayers[self.attr('id')]);
@@ -212,7 +209,7 @@ $(document).ready(function() {
     // MAP A CONTROL HANDLERS
     $('#mapa-controls #scenario-rust').click(function() {
         // Set the scenario to rust for map A
-        updateCQLA('scenario', "'rust'");
+        updateCQLA("scenario", "'rust'");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -223,7 +220,7 @@ $(document).ready(function() {
 
     $('#mapa-controls #scenario-druk').click(function() {
         // Set the scenario to druk for map A
-        updateCQLA('scenario', "'druk'");
+        updateCQLA("scenario", "'druk'");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -234,7 +231,7 @@ $(document).ready(function() {
 
     $('#mapa-controls #scenario-stoom').click(function() {
         // Set the scenario to stoom for map A
-        updateCQLA('scenario', "'stoom'");
+        updateCQLA("scenario", "'stoom'");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -244,7 +241,7 @@ $(document).ready(function() {
 
     $('#mapa-controls #scenario-warm').click(function() {
         // Set the scenario to warm for map A
-        updateCQLA('scenario', "'warm'");
+        updateCQLA("scenario", "'warm'");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -254,7 +251,7 @@ $(document).ready(function() {
 
       $('#mapa-controls #year-2015').click(function() {
         // Set the year to 2015 for map A
-        updateCQLA('year', '2015');
+        updateCQLA("year", "2015");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -266,7 +263,7 @@ $(document).ready(function() {
 
       $('#mapa-controls #year-2100').click(function() {
         // Set the year to 2100 for map A
-        updateCQLA('year', '2100');
+        updateCQLA("year", "2100");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -277,7 +274,7 @@ $(document).ready(function() {
 
       $('#mapa-controls #year-2050').click(function() {
         // Set the year to 2050 for map A
-        updateCQLA('year', '2050');
+        updateCQLA("year", "2050");
 
         // For every checked workspace item
         $(".ws-a-item:checked").each(function(key, value) {
@@ -289,7 +286,7 @@ $(document).ready(function() {
     $('#mapb-controls #scenario-rust').click(function() {
         // Set the scenario to rust for map B
 
-        updateCQLB('scenario', 'rust');
+        updateCQLB("scenario", "'rust'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -301,7 +298,7 @@ $(document).ready(function() {
     $('#mapb-controls #scenario-druk').click(function() {
         // Set the scenario to druk for map B
 
-        updateCQLB('scenario', 'druk');
+        updateCQLB("scenario", "'druk'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -313,7 +310,7 @@ $(document).ready(function() {
     $('#mapb-controls #scenario-stoom').click(function() {
         // Set the scenario to stoom for map B
 
-        updateCQLB('scenario', 'stoom');
+        updateCQLB("scenario", "'stoom'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -325,7 +322,7 @@ $(document).ready(function() {
     $('#mapb-controls #scenario-warm').click(function() {
         // Set the scenario to warm for map B
 
-        updateCQLB('scenario', 'warm');
+        updateCQLB("scenario", "'warm'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -337,7 +334,7 @@ $(document).ready(function() {
       $('#mapb-controls #year-2015').click(function() {
         // Set the year to 2015 for map B
 
-        updateCQLB('year', '2015');
+        updateCQLB("year", "'2015'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -348,7 +345,7 @@ $(document).ready(function() {
 
       $('#mapb-controls #year-2100').click(function() {
         // Set the year to 2100 for map B
-        updateCQLB('year', '2100');
+        updateCQLB("year", "'2100'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
@@ -358,7 +355,7 @@ $(document).ready(function() {
 
       $('#mapb-controls #year-2050').click(function() {
         // Set the year to 2050 for map B
-        updateCQLB('year', '2050');
+        updateCQLB("year", "'2050'");
 
         // For every checked workspace item
         $(".ws-b-item:checked").each(function(key, value) {
