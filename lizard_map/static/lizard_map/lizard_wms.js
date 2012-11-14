@@ -215,7 +215,7 @@ function refreshWmsLayers() {
 
 
 		// Each layer of a combined layer needs a cql_filter.
-		if (cql_filters === '') {
+		if (cql_filters != '') {
 			var layerslength = params['layers'].split(',').length - 1;
 			for (var i = 1; i <= layerslength; i ++) {
 				cql_filters += ';' + cql_filters;
