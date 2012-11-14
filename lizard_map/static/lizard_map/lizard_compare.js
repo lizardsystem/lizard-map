@@ -182,7 +182,7 @@ $(document).ready(function() {
 
     function reloadBLayers(self, key, value) {
         // Remove the layer
-        mapa.removeLayer(mapbLayers[self.attr('id')]);
+        mapb.removeLayer(mapbLayers[self.attr('id')]);
 
         var layer_filters = self.data("workspace-wms-cql-filters");
         var selected_filters = $('#map-b').data('wms-cql-filters');
@@ -233,10 +233,10 @@ $(document).ready(function() {
                 opts['cql_filter'] = cql_filters;
             }
 
-            mapaLayers[self.attr('id')] = L.tileLayer.wms(url, opts);
+            mapbLayers[self.attr('id')] = L.tileLayer.wms(url, opts);
 
             // Add the new layer
-            mapa.addLayer(mapbLayers[self.attr('id')]);
+            mapb.addLayer(mapbLayers[self.attr('id')]);
         }
     }
 
