@@ -34,6 +34,8 @@ $(document).ready(function() {
     var mapaLayers = {};
     var mapbLayers = {};
 
+
+
     // Define the two base layers
     var baseLayerA = L.tileLayer.wms("http://test.deltaportaal.lizardsystem.nl/service/", {
         layers: 'deltaportaal',
@@ -51,6 +53,30 @@ $(document).ready(function() {
         attribution: "KAART B"
     });
     
+    var OSMLayerA = L.tileLayer("http://tile.openstreetmap.nl/tiles/{z}/{x}/{y}.png", {
+        format: 'image/png',
+        transparent: true,
+        attribution: "OpenStreetMap 2012"
+    });
+
+    var OSMLayerB = L.tileLayer("http://tile.openstreetmap.nl/tiles/{z}/{x}/{y}.png", {
+        format: 'image/png',
+        transparent: true,
+        attribution: "OpenStreetMap 2012"
+    });
+
+        // Initialize Leaflet Map instances for Map A and Map B
+    var mapa = new L.Map('map-a',{
+        // layers: [baseLayerA, OSMLayerA]
+    });
+    var mapb = new L.Map('map-b', {
+        // layers: [baseLayerB, OSMLayerB]
+    });
+    // Attach Map instances to window for global access (debugging)
+    window.mapa = mapa;
+    window.mapb = mapb;
+
+
     // Read, split and parse lng/lat/zoom from hash
     var h = document.location.hash.replace('#', '').split(',');
 
@@ -62,13 +88,7 @@ $(document).ready(function() {
         z   = parseFloat(h[2]);
     }
 
-    // Initialize Leaflet Map instances for Map A and Map B
-    var mapa = new L.Map('map-a');
-    var mapb = new L.Map('map-b');
 
-    // Attach Map instances to window for global access (debugging)
-    window.mapa = mapa;
-    window.mapb = mapb;
 
 
     // CQL variable updating per map
@@ -93,6 +113,7 @@ $(document).ready(function() {
     // Set the locations and add the baselayer for both maps
     mapa.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerA);
     mapb.setView(new L.LatLng(lat, lng), z).addLayer(baseLayerB);
+
 
     // Set scales to the maps
     L.control.scale().addTo(mapa);
@@ -139,7 +160,7 @@ $(document).ready(function() {
         // Important: data() did not work here ^^^, attr() does!
 
         // Add possible cql_filters from the layer definition.
-        if (params['cql_filter'] != undefined) {
+        if (params['cql_filter'] !== undefined) {
             cql_filters_arr.push(params['cql_filter']);
         }
 
@@ -149,7 +170,7 @@ $(document).ready(function() {
             cql_filters = cql_filters_arr.join(' AND ');
         }
 
-        if (cql_filters != '') {
+        if (cql_filters !== '') {
             var layerslength = params['layers'].split(',').length - 1;
             for (var i = 1; i <= layerslength; i ++) {
                 cql_filters += ';' + cql_filters;
@@ -200,7 +221,7 @@ $(document).ready(function() {
         // Important: data() did not work here ^^^, attr() does!
 
         // Add possible cql_filters from the layer definition.
-        if (params['cql_filter'] != undefined) {
+        if (params['cql_filter'] !== undefined) {
             cql_filters_arr.push(params['cql_filter']);
         }
 
@@ -210,7 +231,7 @@ $(document).ready(function() {
             cql_filters = cql_filters_arr.join(' AND ');
         }
 
-        if (cql_filters != '') {
+        if (cql_filters !== '') {
             var layerslength = params['layers'].split(',').length - 1;
             for (var i = 1; i <= layerslength; i ++) {
                 cql_filters += ';' + cql_filters;
