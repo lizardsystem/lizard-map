@@ -20,7 +20,9 @@ $(document).ready(function() {
     $('.sidebar-inner').css('overflow-y', 'hidden');
     $('body').append("<div id='kompas' style='position:absolute;top:0px;margin:50px;z-index:1000000;'><img width=50 src='/static_media/deltaportaal/kompasroos.png' /></div>");
     // Zoom to extent using OpenLayers.zoomToExtent()
+    // left=567483.05721044&right=575098.0961523&bottom=6815985.3575256&top=6823495.2955536
     map.zoomToExtent([{{ view.left }},{{ view.bottom }},{{ view.right }},{{ view.top }}], true);
+    // map.zoomToExtent([567483.05721044,6815985.3575256,575098.0961523,6823495.2955536], true);
     // window.resize_graphs();
 });
 </script>

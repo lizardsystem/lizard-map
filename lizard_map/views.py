@@ -468,17 +468,14 @@ class WorkspacePrintableView(AppView):
     @property
     def left(self):
         return self.request.GET.get('left')
-        
 
     @property
     def top(self):
         return self.request.GET.get('top')
 
-
     @property
     def bottom(self):
         return self.request.GET.get('bottom')
-
 
     @property
     def right(self):
