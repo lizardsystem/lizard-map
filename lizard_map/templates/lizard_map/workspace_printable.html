@@ -19,6 +19,8 @@ $(document).ready(function() {
     $('div#content').css('margin-bottom', '-7%');
     $('.sidebar-inner').css('overflow-y', 'hidden');
     $('body').append("<div id='kompas' style='position:absolute;top:0px;margin:50px;z-index:1000000;'><img width=50 src='/static_media/deltaportaal/kompasroos.png' /></div>");
+    // Zoom to extent using OpenLayers.zoomToExtent()
+    map.zoomToExtent([{{ view.left }},{{ view.bottom }},{{ view.right }},{{ view.top }}], true);
     // window.resize_graphs();
 });
 </script>
