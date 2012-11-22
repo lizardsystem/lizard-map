@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.10 (unreleased)
+4.10 (2012-11-22)
 -----------------
 
 - Support mixed flot/matplotlib (IE8) graphs.
