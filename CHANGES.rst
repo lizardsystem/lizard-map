@@ -6,6 +6,29 @@ Changelog of lizard-map
 
 - Support mixed flot/matplotlib (IE8) graphs.
 
+- Fixed some IE8 issues.
+
+- Added some more zoomLevels for WMS background layers.
+
+- Graphs now reload on a date change.
+
+- Removed some obsolete code regarding animation.
+
+- Changed hover popup to one built with jQuery, as the previously used
+  OpenLayers one causes an unnecessary redraw on IE8.
+
+- Moved all graph code to lizard-map, which should be a more suitable place
+  for it.
+
+- Fixed usage of naive datetime objects.
+
+- Added zoom/pan linked graphs.
+
+- Added support for a singleTile WMS background layer.
+
+- Location list now shows some initial results.
+
+- Fixed various small bugs.
 
 4.9 (2012-10-18)
 ----------------
