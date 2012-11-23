@@ -1186,7 +1186,6 @@ $(document).ready(function () {
 	$("#map").height($("#content").height());
 
 
-
     // Touched/new for L3
     setUpWorkspaceAcceptable();
     setUpDialogs();
@@ -1219,6 +1218,12 @@ $(document).ready(function () {
     // Optional popup video link.
     //setupVideoPopup();
     setupTableToggle();
+});
+
+
+$("#sidebar").scroll(function() {
+    // Fixing 'zombie' popovers when the user scrolls with an info icon popover enabled
+    $('.has_popover').each(function(i,v){ $(v).popover("hide"); });
 });
 
 
