@@ -17,7 +17,7 @@ install_requires = [
     'django-nose',
     'django-piston',
     'django-staticfiles',
-    'lizard-ui',
+    'lizard-ui >= 4.0, < 5.0',
     'lizard-help',
     'pkginfo',
     'django-jsonfield',
