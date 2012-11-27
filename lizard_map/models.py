@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models import Max
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils import simplejson as json
@@ -463,6 +464,56 @@ class WorkspaceEdit(
 
         return (self.workspace_items.filter(name=workspace_item_name)
                 .count()) > 0
+
+    def toggle_workspace_item(self, name, adapter_class, adapter_layer_json):
+        """If the given workspace item is present in this workspace
+        edit, remove it. If it's not, add it. Used by the
+        workspace_item_toggle view, moved here because it is also
+        useful for non-view code.
+
+        Returns a boolean indicating whether the item was added."""
+
+        # Find out if it is already present.
+        existing_workspace_items = self.workspace_items.filter(
+            adapter_class=adapter_class,
+            adapter_layer_json=adapter_layer_json)
+        if existing_workspace_items.count() == 0:
+            self.add_workspace_item(
+                name, adapter_class, adapter_layer_json, skip_test=True)
+            return True
+        else:
+            # Delete existing items
+            logger.debug("Deleting existing workspace-item.")
+            existing_workspace_items.delete()
+            return False
+
+    def add_workspace_item(
+        self, name, adapter_class, adapter_layer_json, skip_test=False):
+        """Add a workspace item if it doesn't exist yet in this
+        workspace_edit. If it does, do nothing.
+
+        If skip_test is True, it is assumed that the test was already
+        done and the item isn't present."""
+        if not skip_test:
+            # Find out if it is already present.
+            if self.workspace_items.filter(
+                adapter_class=adapter_class,
+                adapter_layer_json=adapter_layer_json).exists():
+                return
+
+        # Create new
+        logger.debug("Creating new workspace-item.")
+        if self.workspace_items.count() > 0:
+            max_index = self.workspace_items.aggregate(
+                Max('index'))['index__max']
+        else:
+            max_index = 10
+
+        self.workspace_items.create(
+            adapter_class=adapter_class,
+            index=max_index + 10,
+            adapter_layer_json=adapter_layer_json,
+            name=name[:80])
 
 
 class WorkspaceEditItem(WorkspaceItemMixin):

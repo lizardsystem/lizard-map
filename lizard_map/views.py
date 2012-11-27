@@ -11,7 +11,6 @@ import re
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import Max
 from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
@@ -724,32 +723,11 @@ def workspace_item_toggle(
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
     adapter_layer_json = request.POST['adapter_layer_json']
-    # Find out if it is already present.
-    existing_workspace_items = workspace_edit.workspace_items.filter(
-        adapter_class=adapter_class,
-        adapter_layer_json=adapter_layer_json)
-    if existing_workspace_items.count() == 0:
-        # Create new
-        logger.debug("Creating new workspace-item.")
-        if workspace_edit.workspace_items.count() > 0:
-            max_index = workspace_edit.workspace_items.aggregate(
-                Max('index'))['index__max']
-        else:
-            max_index = 10
 
-        workspace_edit.workspace_items.create(
-            adapter_class=adapter_class,
-            index=max_index + 10,
-            adapter_layer_json=adapter_layer_json,
-            name=name[:80])
-        just_added = True
-    else:
-        # Delete existing items
-        logger.debug("Deleting existing workspace-item.")
-        existing_workspace_items.delete()
-        just_added = False
+    added = workspace_edit.toggle_workspace_item(
+        name, adapter_class, adapter_layer_json)
 
-    return HttpResponse(json.dumps(just_added))
+    return HttpResponse(json.dumps(added))
 
 
 # L3
