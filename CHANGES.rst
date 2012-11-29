@@ -4,7 +4,11 @@ Changelog of lizard-map
 4.11 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Slightly refactored the 'workspace_item_toggle' view so that its
+  main functionality is now in the WorkspaceEdit model, so that it can
+  be called from other functions as well.
+  As a result, WorkspaceEdit now has methods 'toggle_workspace_item'
+  and 'add_workspace_item'.
 
 
 4.10 (2012-11-22)
