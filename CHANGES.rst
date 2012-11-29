@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.11 (unreleased)
+4.11 (2012-11-29)
 -----------------
 
 - Slightly refactored the 'workspace_item_toggle' view so that its
