@@ -1,7 +1,13 @@
 Changelog of lizard-map
 =======================
 
-4.13 (unreleased)
+4.14 (unreleased)
+-----------------
+
+- Nothing changed yet.
+
+
+4.13 (2012-12-03)
 -----------------
 
 - Fixing automatic migration step ``0009`` by deleting/adding the
