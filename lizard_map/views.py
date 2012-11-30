@@ -429,6 +429,18 @@ class WorkspaceStorageView(AppView):
             elif self.workspace_slug:
                 self._workspace = WorkspaceStorage.objects.get(
                     secret_slug=self.workspace_slug)
+            if hasattr(self, '_workspace'):
+                # also copy extent to session again
+                if self._workspace.extent_is_set:
+                    try:
+                        self.request.session[MAP_LOCATION] = {
+                            'top': self._workspace.y_max,
+                            'left': self._workspace.x_min,
+                            'right': self._workspace.x_max,
+                            'bottom': self._workspace.y_min
+                        }
+                    except:
+                        logger.exception('Failed to load extent from workspace storage. Skipping...')
         return self._workspace
 
     def get(self, request, *args, **kwargs):
@@ -538,9 +550,12 @@ class WorkspaceSaveView(ActionDialogView):
             #                  'niet bent ingelogd.')},
             #     context_instance=RequestContext(self.request))
             # return HttpResponseForbidden(html)
+        extent = None
+        if MAP_LOCATION in self.request.session and self.request.session[MAP_LOCATION]:
+            extent = self.request.session[MAP_LOCATION]
         logger.debug("Before secret slug.")
         secret_slug = (workspace_edit.
-                       save_to_storage(name=form_data['name'], owner=user))
+                       save_to_storage(name=form_data['name'], owner=user, extent=extent))
         logger.debug("After secret slug. slug=%s" % (secret_slug,))
 
         self.saved_workspace_url = self.request.build_absolute_uri(
@@ -565,6 +580,16 @@ class WorkspaceLoadView(ActionDialogView):
         # TODO: check permissions.
         workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
         workspace_edit.load_from_storage(workspace_storage)
+
+        # also copy extent to session again
+        if workspace_storage.extent_is_set:
+            self.request.session[MAP_LOCATION] = {
+                'top': workspace_storage.y_max,
+                'left': workspace_storage.x_min,
+                'right': workspace_storage.x_max,
+                'bottom': workspace_storage.y_min
+            }
+
         redirect = {
             "redirect": reverse("lizard_ui.icons")
         }

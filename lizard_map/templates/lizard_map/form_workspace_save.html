@@ -4,11 +4,14 @@
 <legend>Workspace opslaan</legend>
 
 {% for field in form %}
-<fieldset class="control-group">
+<fieldset class="control-group {% if field.errors %}error{% endif %}">
     <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
     <div class="controls">
         {{ field }}
-        <p class="help-text">{{ field.help_text }} </p>
+        {% if field.errors %}
+            <span class="help-inline">{{ field.errors|join:'<br />' }}</span>
+        {% endif %}
+        <span class="help-block">{{ field.help_text }}</span>
     </div>
 </fieldset>
 {% endfor %}

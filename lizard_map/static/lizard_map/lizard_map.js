@@ -407,6 +407,9 @@ function setUpWorkspaceLoad() {
 // in use (26-09-2012)
 // when clicked left near workspace empty button
 function workspaceSavePopup(data) {
+    // ensure current extent is stored in the session (on the
+    // server side)
+    mapSaveLocation();
     open_popup();
     set_popup_content(data);
     $('#workspace-save-submit').click(function(event) {
@@ -419,6 +422,13 @@ function workspaceSavePopup(data) {
             function (data) {
                 // send result to popup
                 set_popup_content(data);
+            }
+        )
+        .error(
+            function (data) {
+                // send result to popup
+                // call self, to ensure click handler is attached again
+                workspaceSavePopup(data.responseText);
             }
         );
         return false;

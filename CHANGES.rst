@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Store current extent when saving a workspace, and load it back again
+  when loading a workspace which has an extent set.
 
 
 4.12 (2012-11-27)
