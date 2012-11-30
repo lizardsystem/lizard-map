@@ -11,6 +11,9 @@ Changelog of lizard-map
 - Store current extent when saving a workspace, and load it back again
   when loading a workspace which has an extent set.
 
+- Changed some text and changed location_list to always load initial results
+  on open.
+
 
 4.12 (2012-11-27)
 -----------------

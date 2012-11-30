@@ -1489,7 +1489,7 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
-            $graph.html('Fout bij het laden van de gegevens.');
+            $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
         };
 
         // for flot graphs, grab the JSON data and call Flot
@@ -2093,9 +2093,8 @@ function setup_location_list () {
             $form.submit(search);
 
             // show some initial search results
-            if ($results.children().length == 0 && $input.val().length == 0) {
-                setTimeout(search, 500);
-            }
+            $input.val('');
+            setTimeout(search, 500);
 
             if (e) {
                 e.stopPropagation();
