@@ -24,7 +24,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from djangorestframework.views import View as JsonView
-from djangorestframework.resources import Resource
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import UiView
@@ -108,6 +107,7 @@ class WorkspaceMixin(object):
         animation_slider = None
         if self.workspace.is_animatable:
             animation_slider = AnimationSettings(self.request).info()
+            # ^^^ BUG BUG BUG Undefined name AnimationSettings!
         return animation_slider
 
     def javascript_hover_handler(self):
@@ -246,6 +246,7 @@ class DateRangeMixin(object):
         return self.current_date_range()["dt_end"]
 
     def date_range_form(self):
+        # BUG BUG BUG: undefined name DateRangeForm
         return DateRangeForm(self.current_date_range())
 
 
@@ -1857,7 +1858,6 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
         dt_start = session.get(SESSION_DT_START, None)
         dt_end = session.get(SESSION_DT_END, None)
 
-        today = datetime.datetime.now()
         if not range_type:
             range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
         elif range_type == 'custom' and not (dt_start and dt_end):
