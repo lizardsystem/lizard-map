@@ -4,13 +4,15 @@ Changelog of lizard-map
 4.13 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixing automatic migration step ``0009`` by deleting/adding the
+  ``identifier`` column on ``CollageEditItem`` instead of altering it. The old
+  ``JSONField``'s implementation is incomplete and wreaks the migration.
 
 
 4.12 (2012-11-27)
 -----------------
 
-- Nothing changed yet.
+- Nothing big.
 
 
 4.11 (2012-11-29)

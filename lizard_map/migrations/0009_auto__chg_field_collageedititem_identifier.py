@@ -7,13 +7,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
         # Changing field 'CollageEditItem.identifier'
-        db.alter_column('lizard_map_collageedititem', 'identifier', self.gf('jsonfield.fields.JSONField')())
+        db.delete_column('lizard_map_collageedititem', 'identifier')
+        db.add_column('lizard_map_collageedititem', 'identifier', self.gf('jsonfield.fields.JSONField')())
 
 
     def backwards(self, orm):
-        
+
         # Changing field 'CollageEditItem.identifier'
         db.alter_column('lizard_map_collageedititem', 'identifier', self.gf('lizard_map.fields.JSONField')())
 
