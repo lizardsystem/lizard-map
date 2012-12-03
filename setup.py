@@ -19,6 +19,7 @@ install_requires = [
     'django-staticfiles',
     'lizard-ui >= 4.0, < 5.0',
     'lizard-help',
+    'mock',
     'pkginfo',
     'django-jsonfield',
     'djangorestframework',

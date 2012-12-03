@@ -6,6 +6,7 @@ from django.http import HttpRequest
 from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson as json
+import mock
 
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
@@ -148,12 +149,8 @@ class TestDateRange(TestCase):
     """Test daterange.py"""
 
     def setUp(self):
-
-        class Mock(dict):
-            pass
-
-        self.request = Mock()
-        self.request.session = Mock()
+        self.request = mock.Mock()
+        self.request.session = mock.Mock()
         self.today = datetime.datetime(2011, 4, 21)
         self.almost_one_day = datetime.timedelta(
             hours=23, minutes=59, seconds=59)
@@ -1108,3 +1105,16 @@ class DateRangeRetrieveSet(unittest.TestCase):
 
         self.assertEqual(start, default_start(self.today))
         self.assertEqual(end, default_end(self.today))
+
+
+class AdapterFlotGraphDataViewTest(unittest.TestCase):
+
+    def setUp(self):
+        self.today = datetime.datetime(2011, 8, 31)
+
+        self.request = HttpRequest()
+        self.request.session = {}
+
+    def test_smoke(self):
+        """Just call the adapter and make sure it doesn't barf."""
+        view = lizard_map.views.AdapterFlotGraphDataView()
