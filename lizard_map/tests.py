@@ -1107,7 +1107,7 @@ class DateRangeRetrieveSet(unittest.TestCase):
         self.assertEqual(end, default_end(self.today))
 
 
-class AdapterFlotGraphDataViewTest(unittest.TestCase):
+class ViewStateServiceTest(unittest.TestCase):
 
     def setUp(self):
         self.today = datetime.datetime(2011, 8, 31)
@@ -1117,4 +1117,22 @@ class AdapterFlotGraphDataViewTest(unittest.TestCase):
 
     def test_smoke(self):
         """Just call the adapter and make sure it doesn't barf."""
-        view = lizard_map.views.AdapterFlotGraphDataView()
+        view = lizard_map.views.ViewStateService()
+        request = HttpRequest()
+        request.session = mock.Mock()
+        self.assertEqual(type(view.get(request)), dict)
+
+    def test_rest_setup(self):
+        """Test whether djangorestframework is properly set up.
+
+        We do this by testing if the dict from the above test is returned as a
+        proper json dict. This test is really only needed for *one* of the
+        djangorestframework-using views. (We use this one because it is the
+        easiest to test).
+        """
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response._headers['content-type'][1],
+                         'application/json')
