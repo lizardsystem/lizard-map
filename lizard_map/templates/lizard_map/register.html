@@ -1,0 +1,101 @@
+<html>
+<head>
+<link rel="stylesheet"
+  href="{{ STATIC_URL }}bootstrap/less/bootstrap.css"
+  type="text/css"
+  media="screen, projection" />
+<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background: #fff url("{{ STATIC_URL }}deltaportaal/teaser.jpg") left bottom fixed no-repeat;
+			-moz-background-size: cover;
+			background-size: cover;
+			color: #000;
+		}
+		@media only all and (max-width: 1024px) and (max-height: 768px) { /* Important: 1024x768px has the same ratio as 1280x960px */
+			body {	
+				-moz-background-size: 1024px 768px;
+				background-size: 1024px 768px;
+			}
+		}
+		#container {
+			margin: 20px auto;
+			width: 600px;
+			padding: 25px;
+			/* background: transparent url(img/white50.png); */
+			background: rgba(255, 255, 255, 0.9) none;
+			-moz-border-radius: 12px;
+			-webkit-border-radius: 12px;
+			border-radius: 12px;
+		}
+		h1 {
+			margin: 0;
+		}
+		p {
+			margin: 10px 0 0;
+		}
+		a {
+			color: #aaa;
+		}
+</style>
+</head>
+<body>
+	<div id="container">
+
+<form class="form-horizontal" id="registerHere" method="post" action="" novalidate="novalidate">
+	  <fieldset>
+	    <legend>Deltaportaal Registratie</legend>
+	    <div class="control-group">
+	      <label class="control-label" for="input01">Naam</label>
+	      <div class="controls">
+	        <input type="text" class="input-xlarge" id="user_name" name="user_name" rel="popover" data-content="Enter your first and last name." data-original-title="Full Name">
+	        
+	      </div>
+	</div>
+	
+	 <div class="control-group">
+		<label class="control-label" for="input01">E-mail adres</label>
+	      <div class="controls">
+	        <input type="text" class="input-xlarge" id="user_email" name="user_email" rel="popover" data-content="What’s your email address?" data-original-title="Email">
+	        
+	       
+	      </div>
+	</div>
+	
+	<div class="control-group">
+		<label class="control-label" for="input01">Password</label>
+	      <div class="controls">
+	        <input type="password" class="input-xlarge" id="pwd" name="pwd" rel="popover" data-content="6 characters or more! Be tricky" data-original-title="Password">
+	       
+	      </div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="input01">Password (ter controle)</label>
+	      <div class="controls">
+	        <input type="password" class="input-xlarge" id="cpwd" name="cpwd" rel="popover" data-content="Re-enter your password for confirmation." data-original-title="Re-Password">
+	       
+	      </div>
+	</div>
+	
+		
+	
+	<div class="control-group">
+		<label class="control-label" for="input01"></label>
+	      <div class="controls">
+	       <button type="submit" class="btn btn-success" rel="tooltip" title="first tooltip">Vraag account aan</button>
+	       
+	      </div>
+	
+	</div>
+	
+	
+	   
+	  </fieldset>
+	</form>
+
+	</div>
+
+
+</body>
+</html>
