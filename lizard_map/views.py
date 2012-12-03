@@ -458,6 +458,9 @@ class WorkspacePrintableView(AppView):
     template_name = 'lizard_map/workspace_printable.html'
     show_secondary_sidebar_title = False  # Don't show the 'layers' button.
 
+    #XXX: Hack for deltaportaal
+    modal_for_pdf_view = True
+
     # @property
     def workspace(self):
         """Return a workspace"""
