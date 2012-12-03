@@ -5,10 +5,14 @@ except ImportError:
 import csv
 import datetime
 import logging
-import urllib2
 import re
+import urllib2
+from dateutil import parser as date_parser
 
+from PIL import Image
+from django import forms
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
@@ -24,12 +28,11 @@ from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
 from djangorestframework.views import View as JsonView
+from lizard_map.adapter import adapter_serialize
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
-from lizard_ui.views import UiView
 from lizard_ui.views import IconView
-from lizard_map.adapter import adapter_serialize
-from PIL import Image
+from lizard_ui.views import UiView
 import iso8601
 import mapnik
 
@@ -41,16 +44,19 @@ from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
+from lizard_map.daterange import SESSION_DT_END
+from lizard_map.daterange import SESSION_DT_RANGETYPE
+from lizard_map.daterange import SESSION_DT_START
 from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
-from lizard_map.daterange import SESSION_DT_RANGETYPE, SESSION_DT_START, SESSION_DT_END
-from lizard_map.forms import CollageForm
 from lizard_map.forms import CollageAddForm
+from lizard_map.forms import CollageForm
 from lizard_map.forms import CollageItemEditorForm
 from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
 from lizard_map.forms import WorkspaceLoadForm
 from lizard_map.forms import WorkspaceSaveForm
+from lizard_map.lizard_widgets import Legend
 from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
@@ -60,14 +66,16 @@ from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
-from lizard_map.lizard_widgets import Legend
 from lizard_ui.views import ViewContextMixin
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
-
+MAX_LOCATIONS = getattr(settings, 'MAX_LOCATIONS', 50)
+# no way to know how the database driver escapes things, so apply
+# a whitelist to strings, before passing them in the raw SQL query
+LOCATION_NAME_CHARACTER_WHITELIST = re.compile(r'''[\W^ ^\,^\-^\.]''')
 
 DEFAULT_START_EXTENT = '-14675, 6668977, 1254790, 6964942'
 DEFAULT_PROJECTION = 'EPSG:900913'
@@ -357,14 +365,16 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                     found_suitable_legend = True
             if not found_suitable_legend:
                 if not hasattr(workspace_item.adapter, 'legend_image_urls'):
-                    logger.debug("No legend_image_urls() on this ws item's adapter.")
+                    logger.debug(
+                        "No legend_image_urls() on this ws item's adapter.")
                 else:
                     img_urls = workspace_item.adapter.legend_image_urls()
                     if img_urls:
                         result.append(
                             Legend(
                                 name=workspace_item.name,
-                                subitems=[{'img_url': img_url} for img_url in img_urls]
+                                subitems=[{'img_url': img_url}
+                                          for img_url in img_urls]
                             )
                         )
                         found_suitable_legend = True
@@ -1241,7 +1251,7 @@ class CollageDetailView(CollageMixin, DateRangeMixin, UiView):
             set_date_range = Action(
                 name='',
                 description=_('Verander het datumbereik van de metingen.'),
-                url='javascript:void(null)', #reverse('lizard_map_date_range'),
+                url='javascript:void(null)',
                 icon='icon-calendar',
                 klass='popup-date-range reload-after-action')
             actions.insert(0, set_date_range)
@@ -1790,6 +1800,7 @@ MapIconView = HomepageView  # BBB
 # new RESTful Lizard API
 #
 
+
 class AdapterFlotGraphDataView(AdapterMixin, JsonView):
     """
     Return result of adapter.flot_graph_data, using given parameters.
@@ -1819,9 +1830,6 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
             identifier_list, start_date, end_date,
             layout_extra=layout_extra)
 
-from django import forms
-from dateutil import parser as date_parser
-from django.core.exceptions import ValidationError
 
 class JsonDateTimeField(forms.DateTimeField):
     '''
@@ -1837,10 +1845,18 @@ class JsonDateTimeField(forms.DateTimeField):
                 raise parent_exception
         return value
 
+
 class ViewStateForm(forms.Form):
-    range_type = forms.CharField(required=False, help_text='custom, day, week, year, et cetera')
-    dt_start = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
-    dt_end = JsonDateTimeField(required=False, help_text='ISO8601 datetime string')
+    range_type = forms.CharField(
+        required=False,
+        help_text='custom, day, week, year, et cetera')
+    dt_start = JsonDateTimeField(
+        required=False,
+        help_text='ISO8601 datetime string')
+    dt_end = JsonDateTimeField(
+        required=False,
+        help_text='ISO8601 datetime string')
+
 
 class ViewStateService(JsonView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
@@ -1888,23 +1904,19 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
             workspace_edit.save()
 
 
-MAX_LOCATIONS = getattr(settings, 'MAX_LOCATIONS', 50)
-# no way to know how the database driver escapes things, so apply
-# a whitelist to strings, before passing them in the raw SQL query
-location_name_character_whitelist = re.compile(r'''[\W^ ^\,^\-^\.]''')
-
 class LocationListService(JsonView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
     @never_cache
     def dispatch(self, request, *args, **kwargs):
-        return super(LocationListService, self).dispatch(request, *args, **kwargs)
+        return super(LocationListService, self).dispatch(
+            request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
         # clean weird character from the name
         name = name.strip()
-        name = location_name_character_whitelist.sub('', name)
+        name = LOCATION_NAME_CHARACTER_WHITELIST.sub('', name)
         # grab this users workspace
         workspace_edit = self.workspace_edit()
         locations = []
@@ -1916,15 +1928,23 @@ class LocationListService(JsonView, WorkspaceEditMixin):
             adapter = workspace_item.adapter
             adapter_class = adapter.adapter_class
             layer_arguments = json.dumps(adapter.layer_arguments)
-            # skip items whose workspace adapter don't support location searching
+            # Skip items whose workspace adapter don't support location
+            # searching.
             if not hasattr(adapter, 'location_list'):
                 logger.debug("No location_list() on this ws item's adapter.")
                 continue
             # request the list of locations from the adapter
-            for identifier, collage_name, location_name in adapter.location_list(name):
+            for (identifier,
+                 collage_name,
+                 location_name) in adapter.location_list(name):
                 identifier = adapter_serialize(identifier)
-                locations.append((adapter_class, layer_arguments, identifier, collage_name, location_name))
-            # we can stop searching the remaining adapters in case MAX_LOCATIONS is already reached
+                locations.append((adapter_class,
+                                  layer_arguments,
+                                  identifier,
+                                  collage_name,
+                                  location_name))
+            # We can stop searching the remaining adapters in case
+            # MAX_LOCATIONS is already reached.
             if len(locations) > MAX_LOCATIONS:
                 break
         # ensure we don't return more than MAX_LOCATIONS values
