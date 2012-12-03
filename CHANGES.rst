@@ -1,16 +1,27 @@
 Changelog of lizard-map
 =======================
 
-4.13 (unreleased)
+4.14 (unreleased)
 -----------------
 
 - Nothing changed yet.
+
+
+4.13 (2012-12-03)
+-----------------
+
+- Fixing automatic migration step ``0009`` by deleting/adding the
+  ``identifier`` column on ``CollageEditItem`` instead of altering it. The old
+  ``JSONField``'s implementation is incomplete and wreaks the migration.
+
+- Store current extent when saving a workspace, and load it back again
+  when loading a workspace which has an extent set.
 
 
 4.12 (2012-11-27)
 -----------------
 
-- Nothing changed yet.
+- Nothing big.
 
 
 4.11 (2012-11-29)

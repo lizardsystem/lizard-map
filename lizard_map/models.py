@@ -425,7 +425,7 @@ class WorkspaceEdit(
     def __unicode__(self):
         return 'Workspace Edit of user %s' % self.user
 
-    def save_to_storage(self, name, owner):
+    def save_to_storage(self, name, owner, extent=None):
         """Save this model and workspace_items to Storage.
         """
         workspace_storage, _ = WorkspaceStorage.objects.get_or_create(
@@ -433,6 +433,17 @@ class WorkspaceEdit(
 
         # Delete all existing workspace item storages.
         workspace_storage.workspace_items.all().delete()
+
+        # Add extent to storage, only when specified
+        if extent:
+            try:
+                workspace_storage.x_min = extent['left']
+                workspace_storage.x_max = extent['right']
+                workspace_storage.y_min = extent['bottom']
+                workspace_storage.y_max = extent['top']
+                workspace_storage.extent_is_set = True
+            except:
+                logger.exception('Failed to store extent in workspace storage. Skipping...')
 
         # Init secret slug
         workspace_storage.init_secret_slug()
@@ -538,6 +549,7 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True)
     secret_slug = models.CharField(max_length=16, null=True)
+    extent_is_set = models.BooleanField(default=False)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)

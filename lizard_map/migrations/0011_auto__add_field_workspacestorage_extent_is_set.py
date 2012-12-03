@@ -1,21 +1,22 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
 
+
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Changing field 'CollageEditItem.identifier'
-        db.delete_column('lizard_map_collageedititem', 'identifier')
-        db.add_column('lizard_map_collageedititem', 'identifier', self.gf('jsonfield.fields.JSONField')())
+        # Adding field 'WorkspaceStorage.extent_is_set'
+        db.add_column('lizard_map_workspacestorage', 'extent_is_set',
+                      self.gf('django.db.models.fields.BooleanField')(default=False),
+                      keep_default=False)
 
 
     def backwards(self, orm):
-
-        # Changing field 'CollageEditItem.identifier'
-        db.alter_column('lizard_map_collageedititem', 'identifier', self.gf('lizard_map.fields.JSONField')())
+        # Deleting field 'WorkspaceStorage.extent_is_set'
+        db.delete_column('lizard_map_workspacestorage', 'extent_is_set')
 
 
     models = {
@@ -34,7 +35,7 @@ class Migration(SchemaMigration):
         },
         'auth.user': {
             'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 6, 28, 10, 38, 17, 939480)'}),
+            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
@@ -42,7 +43,7 @@ class Migration(SchemaMigration):
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime(2012, 6, 28, 10, 38, 17, 939358)'}),
+            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
@@ -63,6 +64,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'index': ('django.db.models.fields.IntegerField', [], {'default': '100'}),
             'is_base_layer': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
+            'is_single_tile': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'layer_names': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'layer_type': ('django.db.models.fields.IntegerField', [], {}),
             'layer_url': ('django.db.models.fields.CharField', [], {'default': "'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'", 'max_length': '200', 'null': 'True', 'blank': 'True'}),
@@ -76,14 +78,14 @@ class Migration(SchemaMigration):
         },
         'lizard_map.collageedititem': {
             'Meta': {'ordering': "('name',)", 'object_name': 'CollageEditItem'},
-            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
+            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'adapter_layer_json': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'aggregation_period': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'boundary_value': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'collage': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'collage_items'", 'to': "orm['lizard_map.CollageEdit']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'identifier': ('jsonfield.fields.JSONField', [], {}),
+            'identifier': ('jsonfield.fields.JSONField', [], {'default': '{}'}),
             'index': ('django.db.models.fields.IntegerField', [], {'default': '100', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
             'percentile_value': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
@@ -136,7 +138,7 @@ class Migration(SchemaMigration):
         },
         'lizard_map.workspaceedititem': {
             'Meta': {'ordering': "('index', 'visible', 'name')", 'object_name': 'WorkspaceEditItem'},
-            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
+            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'adapter_layer_json': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -154,6 +156,7 @@ class Migration(SchemaMigration):
             'dt': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'dt_end': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'dt_start': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'extent_is_set': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '40'}),
             'owner': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
@@ -168,7 +171,7 @@ class Migration(SchemaMigration):
         },
         'lizard_map.workspacestorageitem': {
             'Meta': {'ordering': "('index', 'visible', 'name')", 'object_name': 'WorkspaceStorageItem'},
-            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'db_index': 'True'}),
+            'adapter_class': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
             'adapter_layer_json': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
