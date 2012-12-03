@@ -1,9 +1,14 @@
-"""Animation scrollbar handling."""
-import datetime
+"""Animation scrollbar handling.
 
-from django.http import Http404
-from django.http import HttpResponse
-from django.utils import simplejson as json
+Used for instance in NHI. Commented out as it isn't used in demo.lizard.net,
+but it might have to be resurrected for NHI later on.
+
+"""
+# import datetime
+
+# from django.http import Http404
+# from django.http import HttpResponse
+# from django.utils import simplejson as json
 
 #from lizard_map.daterange import current_start_end_dates
 #from lizard_map.daterange import DUTCH_DATE_FORMAT
