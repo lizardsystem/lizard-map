@@ -27,13 +27,14 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from rest_framework.views import APIView
-from rest_framework.response import Response as RestResponse
 from lizard_map.adapter import adapter_serialize
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import IconView
 from lizard_ui.views import UiView
+from lizard_ui.views import ViewContextMixin
+from rest_framework.response import Response as RestResponse
+from rest_framework.views import APIView
 import iso8601
 import mapnik
 
@@ -66,7 +67,6 @@ from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
-from lizard_ui.views import ViewContextMixin
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
