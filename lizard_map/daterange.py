@@ -7,8 +7,8 @@ from django.conf import settings
 
 import pytz
 
-# NOTE: this module is obsolete as date ranges are entirely handled in javascript
-# and should be passed as request parameter
+# NOTE: this module is obsolete as date ranges are entirely handled in
+# javascript and should be passed as request parameter
 
 
 logger = logging.getLogger(__name__)
