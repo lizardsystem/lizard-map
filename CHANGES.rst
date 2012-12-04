@@ -4,7 +4,10 @@ Changelog of lizard-map
 4.14 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed animationsettings for now. They're used in a tiny number of older
+  projects and probably have to be re-instated later on. But the daterange
+  implementation used by animationsettings has changed anyway. Perhaps
+  implement it in the projects that need it?
 
 
 4.13 (2012-12-03)

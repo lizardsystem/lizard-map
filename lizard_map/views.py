@@ -109,16 +109,6 @@ class WorkspaceMixin(object):
         workspace-edit or other workspace."""
         pass
 
-    def animation_slider(self):
-        """Add animation slider? Default: none. Calculate each time,
-        because the datetime settings could be changed in the
-        meanwhile."""
-        animation_slider = None
-        if self.workspace.is_animatable:
-            animation_slider = AnimationSettings(self.request).info()
-            # ^^^ BUG BUG BUG Undefined name AnimationSettings!
-        return animation_slider
-
     def javascript_hover_handler(self):
         if not hasattr(self, '_javascript_hover_handler'):
             self._javascript_hover_handler = Setting.get(
