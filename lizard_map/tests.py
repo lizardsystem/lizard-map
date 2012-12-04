@@ -482,7 +482,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_week(self):
         start_date = datetime.datetime(1979, 5, 25)  # It's a friday.
         end_date = datetime.datetime(1979, 7, 15)  # It's a sunday.
-        periods = dateperiods.dateperiods.calc_aggregation_periods(
+        periods = dateperiods.calc_aggregation_periods(
             start_date, end_date, dateperiods.WEEK)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 28))
@@ -492,7 +492,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_day(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1979, 7, 15)
-        periods = dateperiods.dateperiods.calc_aggregation_periods(
+        periods = dateperiods.calc_aggregation_periods(
             start_date, end_date, dateperiods.DAY)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 26))
