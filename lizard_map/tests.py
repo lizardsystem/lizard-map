@@ -17,8 +17,6 @@ from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Legend
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
-#from lizard_map.models import WorkspaceCollage
-#from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.operations import AnchestorRegistration
 from lizard_map.operations import CycleError
 from lizard_map.operations import named_list
@@ -27,11 +25,9 @@ from lizard_map.operations import unique_list
 from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
-#from lizard_map.workspace import WorkspaceManager
 from lizard_map.templatetags import workspaces
 import lizard_map.admin
 import lizard_map.coordinates
-import lizard_map.daterange
 import lizard_map.layers
 import lizard_map.models
 import lizard_map.urls
