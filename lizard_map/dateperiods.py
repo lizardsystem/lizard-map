@@ -42,7 +42,7 @@ def next_all(dt):
 
 def next_year(dt):
     """
-    Returns 2-tuple of next year: start/end date
+    Return 2-tuple of next year: start/end date
     """
     dttuple = dt.timetuple()
     year = dttuple[0] + 1
@@ -52,7 +52,7 @@ def next_year(dt):
 
 def next_quarter(dt):
     """
-    Returns 2-tuple of next quarter: start/end date
+    Return 2-tuple of next quarter: start/end date
     """
     dttuple = dt.timetuple()
     year = dttuple[0]
@@ -75,7 +75,7 @@ def next_quarter(dt):
 
 def next_month(dt):
     """
-    Returns 2-tuple of next month: start/end date
+    Return 2-tuple of next month: start/end date
     """
     dttuple = dt.timetuple()
     year = dttuple[0]
@@ -98,7 +98,7 @@ def next_month(dt):
 
 def next_week(dt):
     """
-    Returns 2-tuple of next week: start/end date. Week starts on monday.
+    Return 2-tuple of next week: start/end date. Week starts on monday.
     """
     day = datetime.datetime(*dt.timetuple()[:3], tzinfo=pytz.UTC)
     days_to_next_week = 7 - day.weekday()
@@ -108,7 +108,7 @@ def next_week(dt):
 
 def next_day(dt):
     """
-    Returns 2-tuple of next week: start/end date
+    Return 2-tuple of next week: start/end date
     """
     day = datetime.datetime(*dt.timetuple()[:3], tzinfo=pytz.UTC)
     day += datetime.timedelta(days=1)
@@ -116,7 +116,7 @@ def next_day(dt):
 
 
 def calc_aggregation_periods(start_date, end_date, aggregation_period):
-    """Returns list of 2-tuples with startdate/enddates.
+    """Return list of 2-tuples with startdate/enddates.
     """
     periods = []
     next_period_functions = {
@@ -139,7 +139,7 @@ def calc_aggregation_periods(start_date, end_date, aggregation_period):
 
 
 def fancy_period(start_date, end_date, aggregation_period):
-    """Returns fancy string of (start_date, end_date), format is
+    """Return fancy string of (start_date, end_date), format is
     determined by aggregation_period.
     """
 
