@@ -119,6 +119,11 @@ def next_day(dt):
 def calc_aggregation_periods(start_date, end_date, aggregation_period):
     """
     Return list of 2-tuples with startdate/enddates.
+
+    TODO: explain what it does. A 'list of tuples' doesn't say a thing about
+    what the list really is. I surmise some sort of list of weeks (first and
+    last partial) or someting like that?
+
     """
     periods = []
     next_period_functions = {
