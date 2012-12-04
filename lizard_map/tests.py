@@ -138,97 +138,97 @@ class ViewsTest(TestCase):
         self.assertIsNone(gtc)
 
 
-class TestDateRange(TestCase):
-    """Test daterange.py"""
+# class TestDateRange(TestCase):
+#     """Test daterange.py"""
 
-    def setUp(self):
-        self.request = mock.Mock()
-        self.request.session = mock.Mock()
-        self.today = datetime.datetime(2011, 4, 21)
-        self.almost_one_day = datetime.timedelta(
-            hours=23, minutes=59, seconds=59)
+#     def setUp(self):
+#         self.request = mock.Mock()
+#         self.request.session = mock.Mock()
+#         self.today = datetime.datetime(2011, 4, 21)
+#         self.almost_one_day = datetime.timedelta(
+#             hours=23, minutes=59, seconds=59)
 
-    def _test_set_date_range(self, request):
+#     def _test_set_date_range(self, request):
 
-        #set_date_range(self.request, now=self.today)
-        data = {'period': request.POST.get('period', None),
-                'dt_start': request.POST.get('dt_start', None),
-                'dt_end': request.POST.get('dt_end', None)}
-        form = lizard_map.forms.DateRangeForm(data)  # Fill in daterange
-        form.is_valid()  # it must succeed
+#         #set_date_range(self.request, now=self.today)
+#         data = {'period': request.POST.get('period', None),
+#                 'dt_start': request.POST.get('dt_start', None),
+#                 'dt_end': request.POST.get('dt_end', None)}
+#         form = lizard_map.forms.DateRangeForm(data)  # Fill in daterange
+#         form.is_valid()  # it must succeed
 
-        view = lizard_map.views.DateRangeView()
-        view.request = request  # Manually put request in view
-        view.form_valid_action(form)  # Actually setting date range.
+#         view = lizard_map.views.DateRangeView()
+#         view.request = request  # Manually put request in view
+#         view.form_valid_action(form)  # Actually setting date range.
 
-        # Get current period, dt_start, dt_end
-        period = current_period(self.request)
-        dt_start, dt_end = current_start_end_dates(
-            self.request, today=self.today)
+#         # Get current period, dt_start, dt_end
+#         period = current_period(self.request)
+#         dt_start, dt_end = current_start_end_dates(
+#             self.request, today=self.today)
 
-        return period, dt_start, dt_end
+#         return period, dt_start, dt_end
 
-    def test_current_start_end_dates(self):
-        dt_start, dt_end = current_start_end_dates(
-            self.request, today=self.today)
-        dt_start_expected = self.today + PERIOD_DAYS[PERIOD_DAY][0]
-        dt_end_expected = self.today + PERIOD_DAYS[PERIOD_DAY][1]
+#     def test_current_start_end_dates(self):
+#         dt_start, dt_end = current_start_end_dates(
+#             self.request, today=self.today)
+#         dt_start_expected = self.today + PERIOD_DAYS[PERIOD_DAY][0]
+#         dt_end_expected = self.today + PERIOD_DAYS[PERIOD_DAY][1]
 
-        self.assertEquals(dt_start, dt_start_expected)
-        self.assertEquals(dt_end, dt_end_expected)
+#         self.assertEquals(dt_start, dt_start_expected)
+#         self.assertEquals(dt_end, dt_end_expected)
 
-    def test_current_period(self):
-        """Test default period."""
-        period = current_period(self.request)
-        self.assertEquals(period, PERIOD_DAY)
+#     def test_current_period(self):
+#         """Test default period."""
+#         period = current_period(self.request)
+#         self.assertEquals(period, PERIOD_DAY)
 
-    def test_set_date_range(self):
-        """Set date range to period_day, then retrieve it back"""
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_DAY)}
-        self.request.META = {}
+#     def test_set_date_range(self):
+#         """Set date range to period_day, then retrieve it back"""
+#         # Fake Post
+#         self.request.method = 'POST'
+#         self.request.POST = {
+#             'period': str(PERIOD_DAY)}
+#         self.request.META = {}
 
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
+#         period, dt_start, dt_end = self._test_set_date_range(self.request)
 
-        self.assertEquals(period, PERIOD_DAY)
-        self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
-        self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
+#         self.assertEquals(period, PERIOD_DAY)
+#         self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
+#         self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
 
-    def test_set_date_range2(self):
-        """Set custom date range, then retrieve it back"""
-        # Fake Post
-        self.request.method = 'POST'
-        dt_start_expected = datetime.datetime(2011, 5, 25)
-        dt_end_expected = datetime.datetime(2011, 5, 25, 23, 59, 59)
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': dt_start_expected,
-            'dt_end': dt_end_expected}
-        self.request.META = {}
+#     def test_set_date_range2(self):
+#         """Set custom date range, then retrieve it back"""
+#         # Fake Post
+#         self.request.method = 'POST'
+#         dt_start_expected = datetime.datetime(2011, 5, 25)
+#         dt_end_expected = datetime.datetime(2011, 5, 25, 23, 59, 59)
+#         self.request.POST = {
+#             'period': str(PERIOD_OTHER),
+#             'dt_start': dt_start_expected,
+#             'dt_end': dt_end_expected}
+#         self.request.META = {}
 
-    #     period, dt_start, dt_end = self._test_set_date_range(self.request)
-    #     self.assertEquals(period, PERIOD_OTHER)
-    #     self.assertEquals(dt_start, dt_start_expected)
-    #     self.assertEquals(dt_end, dt_end_expected)
-    def test_set_date_range3(self):
-        """Set start date after end date: result must have dt_start<dt_end"""
-        timedelta_start = datetime.timedelta(days=20)
-        timedelta_end = datetime.timedelta(days=-15)
+#     #     period, dt_start, dt_end = self._test_set_date_range(self.request)
+#     #     self.assertEquals(period, PERIOD_OTHER)
+#     #     self.assertEquals(dt_start, dt_start_expected)
+#     #     self.assertEquals(dt_end, dt_end_expected)
+#     def test_set_date_range3(self):
+#         """Set start date after end date: result must have dt_start<dt_end"""
+#         timedelta_start = datetime.timedelta(days=20)
+#         timedelta_end = datetime.timedelta(days=-15)
 
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': self.today + timedelta_start,
-            'dt_end': self.today + timedelta_end}
-        self.request.META = {}
+#         # Fake Post
+#         self.request.method = 'POST'
+#         self.request.POST = {
+#             'period': str(PERIOD_OTHER),
+#             'dt_start': self.today + timedelta_start,
+#             'dt_end': self.today + timedelta_end}
+#         self.request.META = {}
 
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
+#         period, dt_start, dt_end = self._test_set_date_range(self.request)
 
-        self.assertEquals(period, PERIOD_OTHER)
-        self.assertTrue(dt_start < dt_end)
+#         self.assertEquals(period, PERIOD_OTHER)
+#         self.assertTrue(dt_start < dt_end)
 
 
 class UtilityTest(TestCase):
