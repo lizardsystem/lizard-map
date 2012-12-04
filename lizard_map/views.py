@@ -48,7 +48,6 @@ from lizard_map.dateperiods import MONTH
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import SESSION_DT_RANGETYPE
 from lizard_map.daterange import SESSION_DT_START
-from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.forms import CollageAddForm
 from lizard_map.forms import CollageForm
@@ -228,27 +227,6 @@ class CollageMixin(object):
         return self._collage_edit
 
 
-class DateRangeMixin(object):
-    """Date range stuff
-    """
-    def current_date_range(self):
-        date_range = current_start_end_dates(
-            self.request, for_form=True)
-        date_range.update(
-            {'period': current_period(self.request)})
-        return date_range
-
-    def date_start_period(self):
-        return self.current_date_range()["dt_start"]
-
-    def date_end_period(self):
-        return self.current_date_range()["dt_end"]
-
-    def date_range_form(self):
-        # BUG BUG BUG: undefined name DateRangeForm
-        return DateRangeForm(self.current_date_range())
-
-
 class CrumbsMixin(object):
     def find_app_description(self, url):
         """An App doesn't generally know what it is called on the
@@ -319,8 +297,7 @@ class CrumbsMixin(object):
 
 
 class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
-              DateRangeMixin, MapMixin,
-              UiView):
+              MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
     @property
@@ -1252,7 +1229,7 @@ def search_coordinates(request,
             return popup_json([], request=request)
 
 
-class CollageDetailView(CollageMixin, DateRangeMixin, UiView):
+class CollageDetailView(CollageMixin, UiView):
     """
     Shows "my collage" as big page.
     """
