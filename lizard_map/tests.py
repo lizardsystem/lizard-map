@@ -457,56 +457,65 @@ class DatePeriodsTest(TestCase):
         self.assertEqual(periods[0][1], self.end_date)
 
     def test_calc_aggregation_periods_year(self):
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
         periods = dateperiods.calc_aggregation_periods(
-            self.start_date, self.end_date, dateperiods.YEAR)
+            self.start_date, end_date, dateperiods.YEAR)
         self.assertEqual(periods[0][0], self.start_date)
         self.assertEqual(periods[0][1],
                          datetime.datetime(1980, 1, 1, tzinfo=pytz.UTC))
         self.assertEqual(periods[1][0],
                          datetime.datetime(1980, 1, 1, tzinfo=pytz.UTC))
-        self.assertEqual(periods[1][1], self.end_date)
+        self.assertEqual(periods[1][1], end_date)
 
     def test_calc_aggregation_periods_quarter(self):
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
         periods = dateperiods.calc_aggregation_periods(
-            self.start_date, self.end_date, dateperiods.QUARTER)
+            self.start_date, end_date, dateperiods.QUARTER)
         self.assertEqual(periods[0][0], self.start_date)
         self.assertEqual(periods[0][1],
                          datetime.datetime(1979, 7, 1, tzinfo=pytz.UTC))
         self.assertEqual(periods[-1][0],
                          datetime.datetime(1980, 4, 1, tzinfo=pytz.UTC))
-        self.assertEqual(periods[-1][1], self.end_date)
+        self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_month(self):
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
+        first_day_of_new_month_after_startdate = datetime.datetime(
+            1979, 6, 1, tzinfo=pytz.UTC)
+        first_day_of_end_month = datetime.datetime(
+            1980, 4, 1, tzinfo=pytz.UTC)
         periods = dateperiods.calc_aggregation_periods(
-            self.start_date, self.end_date, dateperiods.MONTH)
+            self.start_date, end_date, dateperiods.MONTH)
         self.assertEqual(periods[0][0], self.start_date)
         self.assertEqual(periods[0][1],
-                         datetime.datetime(1979, 6, 1, tzinfo=pytz.UTC))
+                         first_day_of_new_month_after_startdate)
         self.assertEqual(periods[-1][0],
-                         datetime.datetime(1980, 4, 1, tzinfo=pytz.UTC))
-        self.assertEqual(periods[-1][1], self.end_date)
+                         first_day_of_end_month)
+        self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_week(self):
+        monday_after_startdate = datetime.datetime(1979, 5, 28,
+                                                   tzinfo=pytz.UTC)
+        monday_before_enddate = datetime.datetime(1979, 7, 9,
+                                                  tzinfo=pytz.UTC)
         periods = dateperiods.calc_aggregation_periods(
             self.start_date, self.end_date, dateperiods.WEEK)
         self.assertEqual(periods[0][0], self.start_date)
         self.assertEqual(periods[0][1],
-                         datetime.datetime(1979, 5, 28, tzinfo=pytz.UTC))
+                         monday_after_startdate)
         self.assertEqual(periods[-1][0],
-                         datetime.datetime(1979, 7, 9, tzinfo=pytz.UTC))
+                         monday_before_enddate)
         self.assertEqual(periods[-1][1], self.end_date)
 
     def test_calc_aggregation_periods_day(self):
-        start_date = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
-        end_date = datetime.datetime(1979, 7, 15, tzinfo=pytz.UTC)
         periods = dateperiods.calc_aggregation_periods(
-            start_date, end_date, dateperiods.DAY)
-        self.assertEqual(periods[0][0], start_date)
+            self.start_date, self.end_date, dateperiods.DAY)
+        self.assertEqual(periods[0][0], self.start_date)
         self.assertEqual(periods[0][1],
                          datetime.datetime(1979, 5, 26, tzinfo=pytz.UTC))
         self.assertEqual(periods[-1][0],
                          datetime.datetime(1979, 7, 14, tzinfo=pytz.UTC))
-        self.assertEqual(periods[-1][1], end_date)
+        self.assertEqual(periods[-1][1], self.end_date)
 
     def test_fancy_period(self):
         start_date = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
