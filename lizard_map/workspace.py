@@ -45,7 +45,8 @@ class WorkspaceItemAdapter(object):
     layer_arguments = {}
     is_animatable = False
     allow_custom_legend = False
-    support_flot_graph = False # set this once flot graphs are supported by the adapter
+    support_flot_graph = False
+    # ^^^ Set this once flot graphs are supported by the adapter.
 
     def __init__(self, workspace_item, layer_arguments=None,
                  adapter_class=None):
@@ -539,5 +540,6 @@ class WorkspaceItemAdapter(object):
     def collage_detail_show_edit_block(self, identifier, *args, **kwargs):
         return True
 
-    def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
+    def collage_detail_show_statistics_block(self, identifier,
+                                             *args, **kwargs):
         return True
