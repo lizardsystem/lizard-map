@@ -25,14 +25,7 @@ from lizard_map.daterange import default_end
 # from lizard_map.daterange import compute_and_store_start_end
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.daterange import current_period
-from lizard_map.dateperiods import ALL
-from lizard_map.dateperiods import YEAR
-from lizard_map.dateperiods import QUARTER
-from lizard_map.dateperiods import MONTH
-from lizard_map.dateperiods import WEEK
-from lizard_map.dateperiods import DAY
-from lizard_map.dateperiods import calc_aggregation_periods
-from lizard_map.dateperiods import fancy_period
+from lizard_map import dateperiods
 from lizard_map.fields import Color
 from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Legend
@@ -647,14 +640,14 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_all(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, ALL)
+        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.ALL)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], end_date)
 
     def test_calc_aggregation_periods_year(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, YEAR)
+        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.YEAR)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1980, 1, 1))
         self.assertEqual(periods[1][0], datetime.datetime(1980, 1, 1))
@@ -663,7 +656,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_quarter(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, QUARTER)
+        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.QUARTER)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 7, 1))
         self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
@@ -672,7 +665,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_month(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, MONTH)
+        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.MONTH)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 6, 1))
         self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
@@ -681,7 +674,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_week(self):
         start_date = datetime.datetime(1979, 5, 25)  # It's a friday.
         end_date = datetime.datetime(1979, 7, 15)  # It's a sunday.
-        periods = calc_aggregation_periods(start_date, end_date, WEEK)
+        periods = dateperiods.dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.WEEK)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 28))
         self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 9))
@@ -690,7 +683,7 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_day(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1979, 7, 15)
-        periods = calc_aggregation_periods(start_date, end_date, DAY)
+        periods = dateperiods.dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.DAY)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 26))
         self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 14))
@@ -699,12 +692,12 @@ class DatePeriodsTest(TestCase):
     def test_fancy_period(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1979, 7, 15)
-        self.assertTrue(fancy_period(start_date, end_date, ALL))
-        self.assertTrue(fancy_period(start_date, end_date, YEAR))
-        self.assertTrue(fancy_period(start_date, end_date, QUARTER))
-        self.assertTrue(fancy_period(start_date, end_date, MONTH))
-        self.assertTrue(fancy_period(start_date, end_date, WEEK))
-        self.assertTrue(fancy_period(start_date, end_date, DAY))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.ALL))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.YEAR))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.QUARTER))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.MONTH))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.WEEK))
+        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.DAY))
 
 
 class TestTemplateTags(TestCase):
@@ -984,11 +977,11 @@ class DateRangeStore(unittest.TestCase):
         session = {}
 
         date_range = {'period': PERIOD_DAY}
-        compute_and_store_start_end(session, date_range)
+        dateperiods.compute_and_store_start_end(session, date_range)
         self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
 
         date_range = {'period': PERIOD_OTHER}
-        compute_and_store_start_end(session, date_range)
+        dateperiods.compute_and_store_start_end(session, date_range)
         self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
 
     def test_b(self):
@@ -998,7 +991,7 @@ class DateRangeStore(unittest.TestCase):
                    SESSION_DT_END: datetime.datetime(2011, 8, 30)}
 
         date_range = {'period': PERIOD_DAY}
-        compute_and_store_start_end(session, date_range)
+        dateperiods.compute_and_store_start_end(session, date_range)
 
         self.assertEqual(datetime.datetime(2011, 8, 1),
                          session[SESSION_DT_START])
@@ -1017,7 +1010,7 @@ class DateRangeStore(unittest.TestCase):
                       'dt_start': datetime.datetime(2011, 8, 1),
                       'dt_end': datetime.datetime(2011, 8, 30)}
 
-        compute_and_store_start_end(session, date_range)
+        dateperiods.compute_and_store_start_end(session, date_range)
 
         self.assertEqual(datetime.datetime(2011, 8, 1),
                          session[SESSION_DT_START])
@@ -1034,7 +1027,7 @@ class DateRangeStore(unittest.TestCase):
 
         date_range = {'period': PERIOD_OTHER}
         now = datetime.datetime(2011, 8, 30)
-        compute_and_store_start_end(session, date_range, now=now)
+        dateperiods.compute_and_store_start_end(session, date_range, now=now)
 
         self.assertEqual(default_start(now), session[SESSION_DT_START])
         self.assertEqual(default_end(now), session[SESSION_DT_END])
@@ -1052,7 +1045,7 @@ class DateRangeStore(unittest.TestCase):
                       'dt_start': datetime.datetime(2011, 8, 30),
                       'dt_end': datetime.datetime(2011, 8, 1)}
 
-        compute_and_store_start_end(session, date_range)
+        dateperiods.compute_and_store_start_end(session, date_range)
 
         self.assertEqual(datetime.datetime(2011, 8, 30),
                          session[SESSION_DT_START])
