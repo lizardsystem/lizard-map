@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.14 (unreleased)
+4.14 (2012-12-04)
 -----------------
 
 - Changed some text and changed location_list to always load initial results
