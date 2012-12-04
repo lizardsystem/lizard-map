@@ -1812,6 +1812,7 @@ class AdapterFlotGraphDataView(AdapterMixin, APIView):
 
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
+    @never_cache
     def get(self, request, *args, **kwargs):
         """
         Note: named url arguments become kwargs.
@@ -1861,11 +1862,7 @@ class ViewStateService(APIView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
 
-    # @never_cache
-    # def dispatch(self, request, *args, **kwargs):
-    #     return super(ViewStateService, self).dispatch(request,
-    #                                                   *args, **kwargs)
-
+    @never_cache
     def get(self, request, *args, **kwargs):
         session = request.session
 
@@ -1908,11 +1905,7 @@ class ViewStateService(APIView, WorkspaceEditMixin):
 class LocationListService(APIView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     return super(LocationListService, self).dispatch(
-    #         request, *args, **kwargs)
-
-    # @never_cache
+    @never_cache
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
         # clean weird character from the name
