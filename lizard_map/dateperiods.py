@@ -36,7 +36,8 @@ def next_all(dt):
     """
     Return period that is in the future for sure
     """
-    return datetime.datetime(2100, 1, 1, tzinfo=pytz.UTC), datetime.datetime(2200, 1, 1, tzinfo=pytz.UTC)
+    return (datetime.datetime(2100, 1, 1, tzinfo=pytz.UTC),
+            datetime.datetime(2200, 1, 1, tzinfo=pytz.UTC))
 
 
 def next_year(dt):
@@ -45,7 +46,8 @@ def next_year(dt):
     """
     dttuple = dt.timetuple()
     year = dttuple[0] + 1
-    return datetime.datetime(year, 1, 1, tzinfo=pytz.UTC), datetime.datetime(year + 1, 1, 1, tzinfo=pytz.UTC)
+    return (datetime.datetime(year, 1, 1, tzinfo=pytz.UTC),
+            datetime.datetime(year + 1, 1, 1, tzinfo=pytz.UTC))
 
 
 def next_quarter(dt):
@@ -65,7 +67,10 @@ def next_quarter(dt):
         next_quarter_year += 1
     return (
         datetime.datetime(year, month + 1, 1, tzinfo=pytz.UTC),
-        datetime.datetime(next_quarter_year, next_quarter_month + 1, 1, tzinfo=pytz.UTC))
+        datetime.datetime(next_quarter_year,
+                          next_quarter_month + 1,
+                          1,
+                          tzinfo=pytz.UTC))
 
 
 def next_month(dt):
@@ -85,7 +90,10 @@ def next_month(dt):
         next_month_year += 1
     return (
         datetime.datetime(year, month + 1, 1, tzinfo=pytz.UTC),
-        datetime.datetime(next_month_year, next_month_month + 1, 1, tzinfo=pytz.UTC))
+        datetime.datetime(next_month_year,
+                          next_month_month + 1,
+                          1,
+                          tzinfo=pytz.UTC))
 
 
 def next_week(dt):
