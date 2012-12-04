@@ -7,6 +7,7 @@ from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson as json
 import mock
+import rest_framework
 
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
@@ -1120,7 +1121,8 @@ class ViewStateServiceTest(unittest.TestCase):
         view = lizard_map.views.ViewStateService()
         request = HttpRequest()
         request.session = mock.Mock()
-        self.assertEqual(type(view.get(request)), dict)
+        self.assertEqual(type(view.get(request)),
+                         rest_framework.response.Response)
 
     def test_rest_setup(self):
         """Test whether djangorestframework is properly set up.

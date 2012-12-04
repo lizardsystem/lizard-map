@@ -25,7 +25,7 @@ INSTALLED_APPS = [
     'south',
     'django_nose',
     'debug_toolbar',
-    'djangorestframework',
+    'rest_framework',
     'django_extensions',
     'django.contrib.gis',
     'django.contrib.admin',

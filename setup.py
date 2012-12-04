@@ -22,7 +22,7 @@ install_requires = [
     'mock',
     'pkginfo',
     'django-jsonfield',
-    'djangorestframework',
+    'djangorestframework >= 2.0',
     'south',
     'iso8601',
     'pytz',

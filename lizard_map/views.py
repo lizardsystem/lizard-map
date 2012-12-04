@@ -27,7 +27,8 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from djangorestframework.views import View as JsonView
+from rest_framework.views import APIView
+from rest_framework.response import Response as RestResponse
 from lizard_map.adapter import adapter_serialize
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
@@ -1826,7 +1827,7 @@ MapIconView = HomepageView  # BBB
 #
 
 
-class AdapterFlotGraphDataView(AdapterMixin, JsonView):
+class AdapterFlotGraphDataView(AdapterMixin, APIView):
     """
     Return result of adapter.flot_graph_data, using given parameters.
 
@@ -1851,9 +1852,11 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
         # Add animation slider position, info from session data.
         layout_extra = self.layout_extra_from_request()
 
-        return current_adapter.flot_graph_data(
+        result = current_adapter.flot_graph_data(
             identifier_list, start_date, end_date,
             layout_extra=layout_extra)
+        return RestResponse(result)
+
 
 
 class JsonDateTimeField(forms.DateTimeField):
@@ -1883,13 +1886,13 @@ class ViewStateForm(forms.Form):
         help_text='ISO8601 datetime string')
 
 
-class ViewStateService(JsonView, WorkspaceEditMixin):
+class ViewStateService(APIView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
 
-    @never_cache
-    def dispatch(self, request, *args, **kwargs):
-        return super(ViewStateService, self).dispatch(request, *args, **kwargs)
+    # @never_cache
+    # def dispatch(self, request, *args, **kwargs):
+    #     return super(ViewStateService, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         session = request.session
@@ -1904,17 +1907,18 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
         elif range_type == 'custom' and not (dt_start and dt_end):
             range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
 
-        return {
+        return RestResponse({
             'range_type': range_type,
             'dt_start': dt_start,
             'dt_end': dt_end
-        }
+            })
 
     def put(self, request, *args, **kwargs):
         session = request.session
 
         # self.CONTENT contains the validated values
         # it will raise an error 400 exception upon first access
+        # TODO adjust to restframework 2.x
         range_type = self.CONTENT['range_type']
         dt_start = self.CONTENT['dt_start']
         dt_end = self.CONTENT['dt_end']
@@ -1929,14 +1933,14 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
             workspace_edit.save()
 
 
-class LocationListService(JsonView, WorkspaceEditMixin):
+class LocationListService(APIView, WorkspaceEditMixin):
     _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
-    @never_cache
-    def dispatch(self, request, *args, **kwargs):
-        return super(LocationListService, self).dispatch(
-            request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     return super(LocationListService, self).dispatch(
+    #         request, *args, **kwargs)
 
+    # @never_cache
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
         # clean weird character from the name
@@ -1976,4 +1980,4 @@ class LocationListService(JsonView, WorkspaceEditMixin):
         locations = locations[:MAX_LOCATIONS]
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
-        return locations
+        return RestResponse(locations)
