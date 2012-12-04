@@ -9,6 +9,11 @@ Changelog of lizard-map
   implementation used by animationsettings has changed anyway. Perhaps
   implement it in the projects that need it?
 
+- We're depending on the 2.x version of Django REST framework now. This means
+  updating other projects that use Django REST framework. For a starting
+  point, see
+  http://reinout.vanrees.org/weblog/2012/12/04/django-rest-framework-2.html.
+
 
 4.13 (2012-12-03)
 -----------------
