@@ -14,6 +14,9 @@ Changelog of lizard-map
   point, see
   http://reinout.vanrees.org/weblog/2012/12/04/django-rest-framework-2.html.
 
+- Removed all daterange tests as none of them work. ``daterange.py`` itself
+  has not been removed as it is used in quite a lot of views.
+
 
 4.13 (2012-12-03)
 -----------------
