@@ -1,6 +1,7 @@
 import datetime
-import pytz
+
 from django.utils.translation import ugettext as _
+import pytz
 
 ALL = 1
 YEAR = 2
