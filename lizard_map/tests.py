@@ -230,51 +230,6 @@ class TestDateRange(TestCase):
         self.assertEquals(period, PERIOD_OTHER)
         self.assertTrue(dt_start < dt_end)
 
-    # # TODO: Check met Pieter
-    # def do_deltatime(
-    #     self, period_expected,
-    #     timedelta_start_expected, timedelta_end_expected):
-    #     """Easy testing deltatime_range."""
-
-    #     daterange = {'dt_start': self.today + timedelta_start_expected,
-    #                  'dt_end': self.today + timedelta_end_expected,
-    #                  'period': period_expected}
-    #     period, timedelta_start, timedelta_end = deltatime_range(
-    #         daterange, now=self.today)
-
-    #     # Test on day accuracy, because "almost_one_day" is added to end.
-    #     self.assertEquals(period, period_expected)
-    #     self.assertEquals(timedelta_start.days,
-    #                 timedelta_start_expected.days)
-    #     self.assertEquals(timedelta_end.days, timedelta_end_expected.days)
-
-    # def test_deltatime_range(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-1000)
-    #     timedelta_end_expected = datetime.timedelta(20)
-    #     period_expected = PERIOD_OTHER
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
-    # def test_deltatime_range2(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-1)
-    #     timedelta_end_expected = datetime.timedelta(0)
-    #     period_expected = PERIOD_DAY
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
-    # def test_deltatime_range3(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-365)
-    #     timedelta_end_expected = datetime.timedelta(0)
-    #     period_expected = PERIOD_YEAR
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
 
 class UtilityTest(TestCase):
     """
