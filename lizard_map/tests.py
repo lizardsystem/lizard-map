@@ -11,19 +11,6 @@ import rest_framework
 
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.daterange import default_start
-from lizard_map.daterange import default_end
-# TODO: Reinout had to comment these ones out because they don't exist anymore.
-# You *do* get 19 failing tests this way.
-# from lizard_map.daterange import PERIOD_DAY
-# from lizard_map.daterange import PERIOD_OTHER
-# from lizard_map.daterange import PERIOD_DAYS
-# from lizard_map.daterange import SESSION_DT_PERIOD
-# from lizard_map.daterange import SESSION_DT_END
-# from lizard_map.daterange import SESSION_DT_START
-# from lizard_map.daterange import compute_and_store_start_end
-from lizard_map.daterange import current_start_end_dates
-from lizard_map.daterange import current_period
 from lizard_map import dateperiods
 from lizard_map.fields import Color
 from lizard_map.mapnik_helper import database_settings
@@ -789,137 +776,137 @@ class SymbolManagerTest(TestCase):
         self.assertTrue(len(icon_names_list) > 5)
 
 
-class DateRangeStore(unittest.TestCase):
-    """Implements the tests for function compute_and_store_start_end."""
+# class DateRangeStore(unittest.TestCase):
+#     """Implements the tests for function compute_and_store_start_end."""
 
-    def test_a(self):
-        """Test the period attribute is stored."""
+#     def test_a(self):
+#         """Test the period attribute is stored."""
 
-        session = {}
+#         session = {}
 
-        date_range = {'period': PERIOD_DAY}
-        dateperiods.compute_and_store_start_end(session, date_range)
-        self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
+#         date_range = {'period': PERIOD_DAY}
+#         dateperiods.compute_and_store_start_end(session, date_range)
+#         self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
 
-        date_range = {'period': PERIOD_OTHER}
-        dateperiods.compute_and_store_start_end(session, date_range)
-        self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
+#         date_range = {'period': PERIOD_OTHER}
+#         dateperiods.compute_and_store_start_end(session, date_range)
+#         self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
 
-    def test_b(self):
-        """Test only the computed values are stored."""
+#     def test_b(self):
+#         """Test only the computed values are stored."""
 
-        session = {SESSION_DT_START: datetime.datetime(2011, 8, 1),
-                   SESSION_DT_END: datetime.datetime(2011, 8, 30)}
+#         session = {SESSION_DT_START: datetime.datetime(2011, 8, 1),
+#                    SESSION_DT_END: datetime.datetime(2011, 8, 30)}
 
-        date_range = {'period': PERIOD_DAY}
-        dateperiods.compute_and_store_start_end(session, date_range)
+#         date_range = {'period': PERIOD_DAY}
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1),
-                         session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 1),
+#                          session[SESSION_DT_START])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_END])
 
-    def test_c(self):
-        """Test the start and end datetime are stored for PERIOD_OTHER.
+#     def test_c(self):
+#         """Test the start and end datetime are stored for PERIOD_OTHER.
 
-        The required information is stored in the form.
+#         The required information is stored in the form.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER,
-                      'dt_start': datetime.datetime(2011, 8, 1),
-                      'dt_end': datetime.datetime(2011, 8, 30)}
+#         date_range = {'period': PERIOD_OTHER,
+#                       'dt_start': datetime.datetime(2011, 8, 1),
+#                       'dt_end': datetime.datetime(2011, 8, 30)}
 
-        dateperiods.compute_and_store_start_end(session, date_range)
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1),
-                         session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 1),
+#                          session[SESSION_DT_START])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_END])
 
-    def test_d(self):
-        """Test the function stores the correct defaults for PERIOD_OTHER.
+#     def test_d(self):
+#         """Test the function stores the correct defaults for PERIOD_OTHER.
 
-        The required information is not stored in the form.
+#         The required information is not stored in the form.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER}
-        now = datetime.datetime(2011, 8, 30)
-        dateperiods.compute_and_store_start_end(session, date_range, now=now)
+#         date_range = {'period': PERIOD_OTHER}
+#         now = datetime.datetime(2011, 8, 30)
+#         dateperiods.compute_and_store_start_end(session, date_range, now=now)
 
-        self.assertEqual(default_start(now), session[SESSION_DT_START])
-        self.assertEqual(default_end(now), session[SESSION_DT_END])
+#         self.assertEqual(default_start(now), session[SESSION_DT_START])
+#         self.assertEqual(default_end(now), session[SESSION_DT_END])
 
-    def test_e(self):
-        """Test the start stored for PERIOD_OTHER is never after the end.
+#     def test_e(self):
+#         """Test the start stored for PERIOD_OTHER is never after the end.
 
-        The required information is stored in the form but the start is after
-        the end.
+#         The required information is stored in the form but the start is after
+#         the end.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER,
-                      'dt_start': datetime.datetime(2011, 8, 30),
-                      'dt_end': datetime.datetime(2011, 8, 1)}
+#         date_range = {'period': PERIOD_OTHER,
+#                       'dt_start': datetime.datetime(2011, 8, 30),
+#                       'dt_end': datetime.datetime(2011, 8, 1)}
 
-        dateperiods.compute_and_store_start_end(session, date_range)
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_START])
-        self.assertTrue(session[SESSION_DT_START] < session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_START])
+#         self.assertTrue(session[SESSION_DT_START] < session[SESSION_DT_END])
 
 
-class DateRangeRetrieveSet(unittest.TestCase):
-    """Implements the tests for function current_start_end_dates."""
+# class DateRangeRetrieveSet(unittest.TestCase):
+#     """Implements the tests for function current_start_end_dates."""
 
-    def setUp(self):
-        self.today = datetime.datetime(2011, 8, 31)
+#     def setUp(self):
+#         self.today = datetime.datetime(2011, 8, 31)
 
-        self.request = HttpRequest()
-        self.request.session = {}
+#         self.request = HttpRequest()
+#         self.request.session = {}
 
-    def test_a(self):
-        """Test the function the correct values for PERIOD_DAY.
+#     def test_a(self):
+#         """Test the function the correct values for PERIOD_DAY.
 
-        No session information is stored.
+#         No session information is stored.
 
-        """
-        retrieve_period = lambda request: PERIOD_DAY
-        start, end = current_start_end_dates(self.request, today=self.today,\
-             retrieve_period_function=retrieve_period)
+#         """
+#         retrieve_period = lambda request: PERIOD_DAY
+#         start, end = current_start_end_dates(self.request, today=self.today,\
+#              retrieve_period_function=retrieve_period)
 
-        self.assertEqual(start, datetime.timedelta(-1) + self.today)
-        self.assertEqual(end, datetime.timedelta(0) + self.today)
+#         self.assertEqual(start, datetime.timedelta(-1) + self.today)
+#         self.assertEqual(end, datetime.timedelta(0) + self.today)
 
-    def test_b(self):
-        """Test the function returns the correct values for PERIOD_DAY.
+#     def test_b(self):
+#         """Test the function returns the correct values for PERIOD_DAY.
 
-        The sessions specifies the required information.
+#         The sessions specifies the required information.
 
-        """
-        self.request.session = {SESSION_DT_PERIOD: PERIOD_DAY}
+#         """
+#         self.request.session = {SESSION_DT_PERIOD: PERIOD_DAY}
 
-        start, end = current_start_end_dates(self.request, today=self.today)
+#         start, end = current_start_end_dates(self.request, today=self.today)
 
-        self.assertEqual(start, datetime.timedelta(-1) + self.today)
-        self.assertEqual(end, datetime.timedelta(0) + self.today)
+#         self.assertEqual(start, datetime.timedelta(-1) + self.today)
+#         self.assertEqual(end, datetime.timedelta(0) + self.today)
 
-    def test_c(self):
-        """Test the function returns the defaults for period PERIOD_OTHER.
+#     def test_c(self):
+#         """Test the function returns the defaults for period PERIOD_OTHER.
 
-        No session information is stored.
+#         No session information is stored.
 
-        """
-        retrieve_period = lambda request: PERIOD_OTHER
-        start, end = current_start_end_dates(self.request, today=self.today,\
-             retrieve_period_function=retrieve_period)
+#         """
+#         retrieve_period = lambda request: PERIOD_OTHER
+#         start, end = current_start_end_dates(self.request, today=self.today,\
+#              retrieve_period_function=retrieve_period)
 
-        self.assertEqual(start, default_start(self.today))
-        self.assertEqual(end, default_end(self.today))
+#         self.assertEqual(start, default_start(self.today))
+#         self.assertEqual(end, default_end(self.today))
 
 
 class ViewStateServiceTest(unittest.TestCase):
