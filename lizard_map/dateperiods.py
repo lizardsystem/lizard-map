@@ -34,7 +34,7 @@ MONTHS = {
 
 def next_all(dt):
     """
-    Return period that is in the future for sure
+    Return period that is in the future for sure.
     """
     return (datetime.datetime(2100, 1, 1, tzinfo=pytz.UTC),
             datetime.datetime(2200, 1, 1, tzinfo=pytz.UTC))
@@ -42,7 +42,7 @@ def next_all(dt):
 
 def next_year(dt):
     """
-    Return 2-tuple of next year: start/end date
+    Return 2-tuple of next year: start/end date.
     """
     dttuple = dt.timetuple()
     year = dttuple[0] + 1
@@ -52,7 +52,7 @@ def next_year(dt):
 
 def next_quarter(dt):
     """
-    Return 2-tuple of next quarter: start/end date
+    Return 2-tuple of next quarter: start/end date.
     """
     dttuple = dt.timetuple()
     year = dttuple[0]
@@ -75,7 +75,7 @@ def next_quarter(dt):
 
 def next_month(dt):
     """
-    Return 2-tuple of next month: start/end date
+    Return 2-tuple of next month: start/end date.
     """
     dttuple = dt.timetuple()
     year = dttuple[0]
@@ -108,7 +108,7 @@ def next_week(dt):
 
 def next_day(dt):
     """
-    Return 2-tuple of next week: start/end date
+    Return 2-tuple of next week: start/end date.
     """
     day = datetime.datetime(*dt.timetuple()[:3], tzinfo=pytz.UTC)
     day += datetime.timedelta(days=1)
@@ -116,7 +116,8 @@ def next_day(dt):
 
 
 def calc_aggregation_periods(start_date, end_date, aggregation_period):
-    """Return list of 2-tuples with startdate/enddates.
+    """
+    Return list of 2-tuples with startdate/enddates.
     """
     periods = []
     next_period_functions = {
@@ -139,8 +140,9 @@ def calc_aggregation_periods(start_date, end_date, aggregation_period):
 
 
 def fancy_period(start_date, end_date, aggregation_period):
-    """Return fancy string of (start_date, end_date), format is
-    determined by aggregation_period.
+    """Return fancy string of (start_date, end_date).
+
+    The format is determined by aggregation_period.
     """
 
     period_formats = {
