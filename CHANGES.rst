@@ -17,6 +17,9 @@ Changelog of lizard-map
 - Removed all daterange tests as none of them work. ``daterange.py`` itself
   has not been removed as it is used in quite a lot of views.
 
+- Added configchecker test (``bin/django check_config``) whether ``USE_TZ =
+  True`` is set in your setttings file.
+
 
 4.13 (2012-12-03)
 -----------------

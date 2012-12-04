@@ -16,3 +16,6 @@ def checker():  # Pragma: nocover
             "from TEMPLATE_CONTEXT_PROCESSORS. Sometimes this makes "
             "the TEMPLATE_CONTEXT_PROCESSORS default. In that case you can "
             "remove TEMPLATE_CONTEXT_PROCESSORS as well.")
+    if not settings.USE_TZ == True:
+        logger.warn("Set USE_TZ to True in your settings. "
+                    "We need timezone aware datetimes.")
