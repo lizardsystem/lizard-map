@@ -1602,6 +1602,10 @@ def statistics_csv(request):
     we must pass the object in a different way.
 
     TODO: make prettier
+
+    TODO: this depends on the deprecated daterange.py. Erik-Jan knows most
+    about that.
+
     """
     start_date, end_date = current_start_end_dates(request)
     collage = CollageEdit.get_or_create(
@@ -1810,8 +1814,6 @@ class AdapterFlotGraphDataView(AdapterMixin, APIView):
     - layout_extra (optional)
     """
 
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
-
     @never_cache
     def get(self, request, *args, **kwargs):
         """
@@ -1859,7 +1861,6 @@ class ViewStateForm(forms.Form):
 
 
 class ViewStateService(APIView, WorkspaceEditMixin):
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
     form = ViewStateForm
 
     @never_cache
@@ -1903,7 +1904,6 @@ class ViewStateService(APIView, WorkspaceEditMixin):
 
 
 class LocationListService(APIView, WorkspaceEditMixin):
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
 
     @never_cache
     def get(self, request, *args, **kwargs):
