@@ -168,5 +168,6 @@ def detect_prj(prj):
         return WGS84
     return RD
 
+
 def translate_coords(lons, lats, az, dist):
     return geodesic.fwd(lons, lats, az, dist)
