@@ -70,7 +70,6 @@ LOGGING = setup_logging(BUILDOUT_DIR)
 
 
 #SOUTH_TESTS_MIGRATE = False
-# ^^^ South tests are enabled because of possible error with json field conversions.
 
 try:
     # Import local settings that aren't stored in svn.
