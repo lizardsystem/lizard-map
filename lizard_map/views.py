@@ -1833,6 +1833,7 @@ class AdapterFlotGraphDataView(AdapterMixin, APIView):
         return RestResponse(result)
 
 
+# TODO: move this one over to a new fields.py.
 class JsonDateTimeField(forms.DateTimeField):
     '''
     Supports field value as ISO 8601 string.
@@ -1848,6 +1849,7 @@ class JsonDateTimeField(forms.DateTimeField):
         return value
 
 
+# TODO: move this one over to forms.py.
 class ViewStateForm(forms.Form):
     range_type = forms.CharField(
         required=False,
@@ -1886,12 +1888,12 @@ class ViewStateService(APIView, WorkspaceEditMixin):
     def put(self, request, *args, **kwargs):
         session = request.session
 
-        # self.CONTENT contains the validated values
+        # request.DATA contains the validated values
         # it will raise an error 400 exception upon first access
         # TODO adjust to restframework 2.x
-        range_type = self.CONTENT['range_type']
-        dt_start = self.CONTENT['dt_start']
-        dt_end = self.CONTENT['dt_end']
+        range_type = request.DATA['range_type']
+        dt_start = request.DATA['dt_start']
+        dt_end = request.DATA['dt_end']
         session[SESSION_DT_RANGETYPE] = range_type
         session[SESSION_DT_START] = dt_start
         session[SESSION_DT_END] = dt_end
@@ -1901,6 +1903,7 @@ class ViewStateService(APIView, WorkspaceEditMixin):
             workspace_edit.dt_start = dt_start
             workspace_edit.dt_end = dt_end
             workspace_edit.save()
+        return RestResponse()
 
 
 class LocationListService(APIView, WorkspaceEditMixin):

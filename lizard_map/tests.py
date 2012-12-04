@@ -1,6 +1,7 @@
 import datetime
 import unittest
 
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import TestCase
@@ -938,8 +939,6 @@ class SymbolManagerTest(TestCase):
 class ViewStateServiceTest(unittest.TestCase):
 
     def setUp(self):
-        self.today = datetime.datetime(2011, 8, 31)
-
         self.request = HttpRequest()
         self.request.session = {}
 
@@ -965,3 +964,28 @@ class ViewStateServiceTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response._headers['content-type'][1],
                          'application/json')
+
+    def test_put_validation(self):
+        """The input should be validated."""
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        data = {'range_type': 'invalid',
+                'dt_start': 1,
+                'dt_end': 2}
+        self.assertRaises(ValidationError, client.put, url, data=data)
+
+    def test_put_setup(self):
+        """Test whether djangorestframework is properly set up.
+
+        This tests the .put() functionality, whether request.DATA can properly
+        be used.
+        """
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        date1 = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
+        date2 = datetime.datetime(1979, 7, 15, tzinfo=pytz.UTC)
+        data = {'range_type': '2_day',
+                'dt_start': str(date1),
+                'dt_end': str(date2)}
+        response = client.put(url, data=data)
+        self.assertEqual(response.status_code, 200)

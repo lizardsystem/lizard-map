@@ -67,7 +67,7 @@ STATIC_URL = '/static_media/'
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 
 LOGGING = setup_logging(BUILDOUT_DIR)
-
+USE_TZ = True
 
 #SOUTH_TESTS_MIGRATE = False
 
