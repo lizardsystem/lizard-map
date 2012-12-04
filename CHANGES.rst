@@ -4,7 +4,21 @@ Changelog of lizard-map
 4.15 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed animationsettings for now. They're used in a tiny number of older
+  projects and probably have to be re-instated later on. But the daterange
+  implementation used by animationsettings has changed anyway. Perhaps
+  implement it in the projects that need it?
+
+- We're depending on the 2.x version of Django REST framework now. This means
+  updating other projects that use Django REST framework. For a starting
+  point, see
+  http://reinout.vanrees.org/weblog/2012/12/04/django-rest-framework-2.html.
+
+- Removed all daterange tests as none of them work. ``daterange.py`` itself
+  has not been removed as it is used in quite a lot of views.
+
+- Added configchecker test (``bin/django check_config``) whether ``USE_TZ =
+  True`` is set in your setttings file.
 
 
 4.14 (2012-12-04)

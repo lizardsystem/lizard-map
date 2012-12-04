@@ -12,19 +12,20 @@ long_description = '\n\n'.join([
 install_requires = [
     'Django',
     'Pillow',
-    'python-dateutil',
     'django-extensions',
+    'django-jsonfield',
     'django-nose',
     'django-piston',
     'django-staticfiles',
-    'lizard-ui >= 4.0, < 5.0',
-    'lizard-help',
-    'pkginfo',
-    'django-jsonfield',
-    'djangorestframework',
-    'south',
+    'djangorestframework >= 2.0',
     'iso8601',
+    'lizard-help',
+    'lizard-ui >= 4.0, < 5.0',
+    'mock',
+    'pkginfo',
+    'python-dateutil',
     'pytz',
+    'south',
     # 'pyproj', Including that as a dependency
     # doesn't work right at the moment.
     # mapnik: sorry, there's no real package for that.  We do need it however.

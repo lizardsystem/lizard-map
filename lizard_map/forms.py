@@ -1,8 +1,4 @@
-import datetime
 from django import forms
-from django.conf import settings
-
-from django.forms.widgets import RadioSelect
 
 from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin

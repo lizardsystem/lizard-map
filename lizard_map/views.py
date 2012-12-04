@@ -27,12 +27,14 @@ from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from djangorestframework.views import View as JsonView
 from lizard_map.adapter import adapter_serialize
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import IconView
 from lizard_ui.views import UiView
+from lizard_ui.views import ViewContextMixin
+from rest_framework.response import Response as RestResponse
+from rest_framework.views import APIView
 import iso8601
 import mapnik
 
@@ -47,7 +49,6 @@ from lizard_map.dateperiods import MONTH
 from lizard_map.daterange import SESSION_DT_END
 from lizard_map.daterange import SESSION_DT_RANGETYPE
 from lizard_map.daterange import SESSION_DT_START
-from lizard_map.daterange import current_period
 from lizard_map.daterange import current_start_end_dates
 from lizard_map.forms import CollageAddForm
 from lizard_map.forms import CollageForm
@@ -66,7 +67,6 @@ from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
-from lizard_ui.views import ViewContextMixin
 
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
@@ -107,16 +107,6 @@ class WorkspaceMixin(object):
         """Implement a function that returns a workspace-storage,
         workspace-edit or other workspace."""
         pass
-
-    def animation_slider(self):
-        """Add animation slider? Default: none. Calculate each time,
-        because the datetime settings could be changed in the
-        meanwhile."""
-        animation_slider = None
-        if self.workspace.is_animatable:
-            animation_slider = AnimationSettings(self.request).info()
-            # ^^^ BUG BUG BUG Undefined name AnimationSettings!
-        return animation_slider
 
     def javascript_hover_handler(self):
         if not hasattr(self, '_javascript_hover_handler'):
@@ -237,27 +227,6 @@ class CollageMixin(object):
         return self._collage_edit
 
 
-class DateRangeMixin(object):
-    """Date range stuff
-    """
-    def current_date_range(self):
-        date_range = current_start_end_dates(
-            self.request, for_form=True)
-        date_range.update(
-            {'period': current_period(self.request)})
-        return date_range
-
-    def date_start_period(self):
-        return self.current_date_range()["dt_start"]
-
-    def date_end_period(self):
-        return self.current_date_range()["dt_end"]
-
-    def date_range_form(self):
-        # BUG BUG BUG: undefined name DateRangeForm
-        return DateRangeForm(self.current_date_range())
-
-
 class CrumbsMixin(object):
     def find_app_description(self, url):
         """An App doesn't generally know what it is called on the
@@ -328,8 +297,7 @@ class CrumbsMixin(object):
 
 
 class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
-              DateRangeMixin, MapMixin,
-              UiView):
+              MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
     @property
@@ -450,7 +418,9 @@ class WorkspaceStorageView(AppView):
                             'bottom': self._workspace.y_min
                         }
                     except:
-                        logger.exception('Failed to load extent from workspace storage. Skipping...')
+                        logger.exception(
+                            'Failed to load extent from workspace '
+                            'storage. Skipping...')
         return self._workspace
 
     def get(self, request, *args, **kwargs):
@@ -561,11 +531,14 @@ class WorkspaceSaveView(ActionDialogView):
             #     context_instance=RequestContext(self.request))
             # return HttpResponseForbidden(html)
         extent = None
-        if MAP_LOCATION in self.request.session and self.request.session[MAP_LOCATION]:
+        if (MAP_LOCATION in self.request.session
+            and self.request.session[MAP_LOCATION]):
             extent = self.request.session[MAP_LOCATION]
         logger.debug("Before secret slug.")
         secret_slug = (workspace_edit.
-                       save_to_storage(name=form_data['name'], owner=user, extent=extent))
+                       save_to_storage(name=form_data['name'],
+                                       owner=user,
+                                       extent=extent))
         logger.debug("After secret slug. slug=%s" % (secret_slug,))
 
         self.saved_workspace_url = self.request.build_absolute_uri(
@@ -1261,7 +1234,7 @@ def search_coordinates(request,
             return popup_json([], request=request)
 
 
-class CollageDetailView(CollageMixin, DateRangeMixin, UiView):
+class CollageDetailView(CollageMixin, UiView):
     """
     Shows "my collage" as big page.
     """
@@ -1629,6 +1602,10 @@ def statistics_csv(request):
     we must pass the object in a different way.
 
     TODO: make prettier
+
+    TODO: this depends on the deprecated daterange.py. Erik-Jan knows most
+    about that.
+
     """
     start_date, end_date = current_start_end_dates(request)
     collage = CollageEdit.get_or_create(
@@ -1826,7 +1803,7 @@ MapIconView = HomepageView  # BBB
 #
 
 
-class AdapterFlotGraphDataView(AdapterMixin, JsonView):
+class AdapterFlotGraphDataView(AdapterMixin, APIView):
     """
     Return result of adapter.flot_graph_data, using given parameters.
 
@@ -1837,8 +1814,7 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
     - layout_extra (optional)
     """
 
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
-
+    @never_cache
     def get(self, request, *args, **kwargs):
         """
         Note: named url arguments become kwargs.
@@ -1851,11 +1827,13 @@ class AdapterFlotGraphDataView(AdapterMixin, JsonView):
         # Add animation slider position, info from session data.
         layout_extra = self.layout_extra_from_request()
 
-        return current_adapter.flot_graph_data(
+        result = current_adapter.flot_graph_data(
             identifier_list, start_date, end_date,
             layout_extra=layout_extra)
+        return RestResponse(result)
 
 
+# TODO: move this one over to a new fields.py.
 class JsonDateTimeField(forms.DateTimeField):
     '''
     Supports field value as ISO 8601 string.
@@ -1871,6 +1849,7 @@ class JsonDateTimeField(forms.DateTimeField):
         return value
 
 
+# TODO: move this one over to forms.py.
 class ViewStateForm(forms.Form):
     range_type = forms.CharField(
         required=False,
@@ -1883,14 +1862,10 @@ class ViewStateForm(forms.Form):
         help_text='ISO8601 datetime string')
 
 
-class ViewStateService(JsonView, WorkspaceEditMixin):
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
+class ViewStateService(APIView, WorkspaceEditMixin):
     form = ViewStateForm
 
     @never_cache
-    def dispatch(self, request, *args, **kwargs):
-        return super(ViewStateService, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         session = request.session
 
@@ -1904,20 +1879,21 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
         elif range_type == 'custom' and not (dt_start and dt_end):
             range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
 
-        return {
+        return RestResponse({
             'range_type': range_type,
             'dt_start': dt_start,
             'dt_end': dt_end
-        }
+            })
 
     def put(self, request, *args, **kwargs):
         session = request.session
 
-        # self.CONTENT contains the validated values
+        # request.DATA contains the validated values
         # it will raise an error 400 exception upon first access
-        range_type = self.CONTENT['range_type']
-        dt_start = self.CONTENT['dt_start']
-        dt_end = self.CONTENT['dt_end']
+        # TODO adjust to restframework 2.x
+        range_type = request.DATA['range_type']
+        dt_start = request.DATA['dt_start']
+        dt_end = request.DATA['dt_end']
         session[SESSION_DT_RANGETYPE] = range_type
         session[SESSION_DT_START] = dt_start
         session[SESSION_DT_END] = dt_end
@@ -1927,16 +1903,12 @@ class ViewStateService(JsonView, WorkspaceEditMixin):
             workspace_edit.dt_start = dt_start
             workspace_edit.dt_end = dt_end
             workspace_edit.save()
+        return RestResponse()
 
 
-class LocationListService(JsonView, WorkspaceEditMixin):
-    _IGNORE_IE_ACCEPT_HEADER = False  # Keep this, if you want IE to work
+class LocationListService(APIView, WorkspaceEditMixin):
 
     @never_cache
-    def dispatch(self, request, *args, **kwargs):
-        return super(LocationListService, self).dispatch(
-            request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
         # clean weird character from the name
@@ -1976,4 +1948,4 @@ class LocationListService(JsonView, WorkspaceEditMixin):
         locations = locations[:MAX_LOCATIONS]
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
-        return locations
+        return RestResponse(locations)

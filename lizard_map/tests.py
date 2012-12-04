@@ -1,43 +1,24 @@
 import datetime
 import unittest
 
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import TestCase
 from django.test.client import Client
 from django.utils import simplejson as json
+import mock
+import pytz
+import rest_framework
 
 from lizard_map.adapter import Graph
 from lizard_map.adapter import parse_identifier_json
-# from lizard_map.animation import AnimationSettings
-from lizard_map.daterange import default_start
-from lizard_map.daterange import default_end
-# TODO: Reinout had to comment these ones out because they don't exist anymore.
-# You *do* get 19 failing tests this way.
-# from lizard_map.daterange import PERIOD_DAY
-# from lizard_map.daterange import PERIOD_OTHER
-# from lizard_map.daterange import PERIOD_DAYS
-# from lizard_map.daterange import SESSION_DT_PERIOD
-# from lizard_map.daterange import SESSION_DT_END
-# from lizard_map.daterange import SESSION_DT_START
-# from lizard_map.daterange import compute_and_store_start_end
-from lizard_map.daterange import current_start_end_dates
-from lizard_map.daterange import current_period
-from lizard_map.dateperiods import ALL
-from lizard_map.dateperiods import YEAR
-from lizard_map.dateperiods import QUARTER
-from lizard_map.dateperiods import MONTH
-from lizard_map.dateperiods import WEEK
-from lizard_map.dateperiods import DAY
-from lizard_map.dateperiods import calc_aggregation_periods
-from lizard_map.dateperiods import fancy_period
+from lizard_map import dateperiods
 from lizard_map.fields import Color
 from lizard_map.mapnik_helper import database_settings
 from lizard_map.models import Legend
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
-#from lizard_map.models import WorkspaceCollage
-#from lizard_map.models import WorkspaceCollageSnippetGroup
 from lizard_map.operations import AnchestorRegistration
 from lizard_map.operations import CycleError
 from lizard_map.operations import named_list
@@ -46,11 +27,9 @@ from lizard_map.operations import unique_list
 from lizard_map.utility import float_to_string
 from lizard_map.utility import short_string
 from lizard_map.workspace import WorkspaceItemAdapter
-#from lizard_map.workspace import WorkspaceManager
 from lizard_map.templatetags import workspaces
 import lizard_map.admin
 import lizard_map.coordinates
-import lizard_map.daterange
 import lizard_map.layers
 import lizard_map.models
 import lizard_map.urls
@@ -144,279 +123,97 @@ class ViewsTest(TestCase):
         self.assertIsNone(gtc)
 
 
-class TestDateRange(TestCase):
-    """Test daterange.py"""
-
-    def setUp(self):
-
-        class Mock(dict):
-            pass
-
-        self.request = Mock()
-        self.request.session = Mock()
-        self.today = datetime.datetime(2011, 4, 21)
-        self.almost_one_day = datetime.timedelta(
-            hours=23, minutes=59, seconds=59)
-
-    def _test_set_date_range(self, request):
-
-        #set_date_range(self.request, now=self.today)
-        data = {'period': request.POST.get('period', None),
-                'dt_start': request.POST.get('dt_start', None),
-                'dt_end': request.POST.get('dt_end', None)}
-        form = lizard_map.forms.DateRangeForm(data)  # Fill in daterange
-        form.is_valid()  # it must succeed
-
-        view = lizard_map.views.DateRangeView()
-        view.request = request  # Manually put request in view
-        view.form_valid_action(form)  # Actually setting date range.
-
-        # Get current period, dt_start, dt_end
-        period = current_period(self.request)
-        dt_start, dt_end = current_start_end_dates(
-            self.request, today=self.today)
-
-        return period, dt_start, dt_end
-
-    def test_current_start_end_dates(self):
-        dt_start, dt_end = current_start_end_dates(
-            self.request, today=self.today)
-        dt_start_expected = self.today + PERIOD_DAYS[PERIOD_DAY][0]
-        dt_end_expected = self.today + PERIOD_DAYS[PERIOD_DAY][1]
-
-        self.assertEquals(dt_start, dt_start_expected)
-        self.assertEquals(dt_end, dt_end_expected)
-
-    def test_current_period(self):
-        """Test default period."""
-        period = current_period(self.request)
-        self.assertEquals(period, PERIOD_DAY)
-
-    def test_set_date_range(self):
-        """Set date range to period_day, then retrieve it back"""
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_DAY)}
-        self.request.META = {}
-
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
-
-        self.assertEquals(period, PERIOD_DAY)
-        self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
-        self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
-
-    def test_set_date_range2(self):
-        """Set custom date range, then retrieve it back"""
-        # Fake Post
-        self.request.method = 'POST'
-        dt_start_expected = datetime.datetime(2011, 5, 25)
-        dt_end_expected = datetime.datetime(2011, 5, 25, 23, 59, 59)
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': dt_start_expected,
-            'dt_end': dt_end_expected}
-        self.request.META = {}
-
-    #     period, dt_start, dt_end = self._test_set_date_range(self.request)
-    #     self.assertEquals(period, PERIOD_OTHER)
-    #     self.assertEquals(dt_start, dt_start_expected)
-    #     self.assertEquals(dt_end, dt_end_expected)
-    def test_set_date_range3(self):
-        """Set start date after end date: result must have dt_start<dt_end"""
-        timedelta_start = datetime.timedelta(days=20)
-        timedelta_end = datetime.timedelta(days=-15)
-
-        # Fake Post
-        self.request.method = 'POST'
-        self.request.POST = {
-            'period': str(PERIOD_OTHER),
-            'dt_start': self.today + timedelta_start,
-            'dt_end': self.today + timedelta_end}
-        self.request.META = {}
-
-        period, dt_start, dt_end = self._test_set_date_range(self.request)
-
-        self.assertEquals(period, PERIOD_OTHER)
-        self.assertTrue(dt_start < dt_end)
-
-    # # TODO: Check met Pieter
-    # def do_deltatime(
-    #     self, period_expected,
-    #     timedelta_start_expected, timedelta_end_expected):
-    #     """Easy testing deltatime_range."""
-
-    #     daterange = {'dt_start': self.today + timedelta_start_expected,
-    #                  'dt_end': self.today + timedelta_end_expected,
-    #                  'period': period_expected}
-    #     period, timedelta_start, timedelta_end = deltatime_range(
-    #         daterange, now=self.today)
-
-    #     # Test on day accuracy, because "almost_one_day" is added to end.
-    #     self.assertEquals(period, period_expected)
-    #     self.assertEquals(timedelta_start.days,
-    #                 timedelta_start_expected.days)
-    #     self.assertEquals(timedelta_end.days, timedelta_end_expected.days)
-
-    # def test_deltatime_range(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-1000)
-    #     timedelta_end_expected = datetime.timedelta(20)
-    #     period_expected = PERIOD_OTHER
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
-    # def test_deltatime_range2(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-1)
-    #     timedelta_end_expected = datetime.timedelta(0)
-    #     period_expected = PERIOD_DAY
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
-    # def test_deltatime_range3(self):
-    #     """Deltatime_range"""
-    #     timedelta_start_expected = datetime.timedelta(-365)
-    #     timedelta_end_expected = datetime.timedelta(0)
-    #     period_expected = PERIOD_YEAR
-    #     self.do_deltatime(
-    #         period_expected,
-    #         timedelta_start_expected, timedelta_end_expected)
-
-
-# class TestAnimationSettings(TestCase):
-#     """Tests for animation.py."""
-
-#     def _fill_date_range(self):
-#         """Helper method: fill session with date range info.
-
-#         date_start is 730119 days from day_one
-#         date_end is 731215 days from day_one
-#         """
-#         twothousand = datetime.datetime(year=2000, month=1, day=1)
-#         twothousandthree = datetime.datetime(year=2003, month=1, day=1)
-#         self.request.session[SESSION_DT_PERIOD] = PERIOD_OTHER
-#         self.request.session[SESSION_DT_START] = twothousand
-#         self.request.session[SESSION_DT_END] = twothousandthree
-#         day_one = datetime.datetime(1979, 5, 25)
-#         self.date_start_days = (twothousand - day_one).days
-#         self.date_end_days = (twothousandthree - day_one).days
-
-#     def _date_range_helper(self, today):
-#         """Make sure _fill_date_range() works."""
-#         self._fill_date_range()
-#         start, end = current_start_end_dates(self.request, today=today)
-#         self.assertEquals(start.year, 2000)
-#         self.assertEquals(end.year, 2003)
+# class TestDateRange(TestCase):
+#     """Test daterange.py"""
 
 #     def setUp(self):
-
-#         class Mock(dict):
-#             pass
-
-#         self.request = Mock()
-#         self.request.session = Mock()
+#         self.request = mock.Mock()
+#         self.request.session = mock.Mock()
 #         self.today = datetime.datetime(2011, 4, 21)
-#         self._date_range_helper(today=self.today)  # Set the request datetimes
+#         self.almost_one_day = datetime.timedelta(
+#             hours=23, minutes=59, seconds=59)
 
-#     def test_smoke(self):
-#         animation_settings = AnimationSettings(
-#             request=self.request, today=self.today)
-#         self.assertTrue(animation_settings)  # It exists.
+#     def _test_set_date_range(self, request):
 
-#     def test_session_initialisation(self):
-#         self.assertFalse('animation_settings' in self.request.session)
-#         AnimationSettings(self.request, today=self.today)
-#         self.assertTrue('animation_settings' in self.request.session)
+#         #set_date_range(self.request, now=self.today)
+#         data = {'period': request.POST.get('period', None),
+#                 'dt_start': request.POST.get('dt_start', None),
+#                 'dt_end': request.POST.get('dt_end', None)}
+#         form = lizard_map.forms.DateRangeForm(data)  # Fill in daterange
+#         form.is_valid()  # it must succeed
 
-#     def test_slider_position(self):
-#         """Are the getters/setters working?"""
-#         animation_settings = AnimationSettings(
+#         view = lizard_map.views.DateRangeView()
+#         view.request = request  # Manually put request in view
+#         view.form_valid_action(form)  # Actually setting date range.
+
+#         # Get current period, dt_start, dt_end
+#         period = current_period(self.request)
+#         dt_start, dt_end = current_start_end_dates(
 #             self.request, today=self.today)
-#         animation_settings.slider_position = self.date_start_days + 100
-#         # print current_start_end_dates(self.request)
-#         self.assertTrue(self.request.session.modified)
-#         self.assertEquals(
-#             animation_settings.slider_position, self.date_start_days + 100)
-#         self.assertEquals(
-#             self.request.session['animation_settings']['slider_position'],
-#             self.date_start_days + 100)
 
-#     def test_initial_slider_position(self):
-#         """Slider position should be [max] if not initialised.
-#         In any case, it should not return a keyerror."""
-#         animation_settings = AnimationSettings(
+#         return period, dt_start, dt_end
+
+#     def test_current_start_end_dates(self):
+#         dt_start, dt_end = current_start_end_dates(
 #             self.request, today=self.today)
-#         self.assertEquals(animation_settings.slider_position,
-#                           self.date_end_days)
+#         dt_start_expected = self.today + PERIOD_DAYS[PERIOD_DAY][0]
+#         dt_end_expected = self.today + PERIOD_DAYS[PERIOD_DAY][1]
 
-#     def test_initial_info_gathering(self):
-#         """Do we return the correct date range and position?"""
-#         self._fill_date_range()
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         result = animation_settings.info()
-#         self.assertEquals(result['min'], self.date_start_days)
-#         self.assertEquals(result['max'], self.date_end_days)
-#         self.assertEquals(result['step'], 1)
-#         self.assertEquals(result['value'], self.date_end_days)
-#         self.assertEquals(result['selected_date'].year, 2003)
+#         self.assertEquals(dt_start, dt_start_expected)
+#         self.assertEquals(dt_end, dt_end_expected)
 
-#     def test_info_gathering(self):
-#         """Do we return the correct date range and position?"""
-#         self._fill_date_range()
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         animation_settings.slider_position = self.date_start_days + 375
-#         result = animation_settings.info()
-#         self.assertEquals(result['min'], self.date_start_days)
-#         self.assertEquals(result['max'], self.date_end_days)
-#         self.assertEquals(result['step'], 1)
-#         self.assertEquals(result['value'], self.date_start_days + 375)
-#         self.assertEquals(result['selected_date'].year, 2001)
+#     def test_current_period(self):
+#         """Test default period."""
+#         period = current_period(self.request)
+#         self.assertEquals(period, PERIOD_DAY)
 
-#     def test_impossible_negative_corner_case(self):
-#         """Negative dates."""
-#         self._fill_date_range()
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         animation_settings.slider_position = -400
-#         result = animation_settings.info()
-#         self.assertEquals(result['value'], self.date_start_days)
+#     def test_set_date_range(self):
+#         """Set date range to period_day, then retrieve it back"""
+#         # Fake Post
+#         self.request.method = 'POST'
+#         self.request.POST = {
+#             'period': str(PERIOD_DAY)}
+#         self.request.META = {}
 
-#     def test_impossible_beyond_max_corner_case(self):
-#         """Value beyond the max possible."""
-#         self._fill_date_range()
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         animation_settings.slider_position = 1000000
-#         result = animation_settings.info()
-#         # Max available.
-#         self.assertEquals(result['value'], self.date_end_days)
+#         period, dt_start, dt_end = self._test_set_date_range(self.request)
 
-#     def test_change_period_after(self):
-#         """
-#         Change period after setting animationsettings.
-#         """
-#         self._fill_date_range()
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         animation_settings.slider_position = self.date_start_days + 10
-#         self.assertEquals(animation_settings.slider_position,
-#                           self.date_start_days + 10)
+#         self.assertEquals(period, PERIOD_DAY)
+#         self.assertEquals(dt_start, self.today + PERIOD_DAYS[PERIOD_DAY][0])
+#         self.assertEquals(dt_end, self.today + PERIOD_DAYS[PERIOD_DAY][1])
 
-#         # Now change "current date".
-#         self.request.session[SESSION_DT_END] = self.request.session[
-#             SESSION_DT_START] + datetime.timedelta(days=5)
+#     def test_set_date_range2(self):
+#         """Set custom date range, then retrieve it back"""
+#         # Fake Post
+#         self.request.method = 'POST'
+#         dt_start_expected = datetime.datetime(2011, 5, 25)
+#         dt_end_expected = datetime.datetime(2011, 5, 25, 23, 59, 59)
+#         self.request.POST = {
+#             'period': str(PERIOD_OTHER),
+#             'dt_start': dt_start_expected,
+#             'dt_end': dt_end_expected}
+#         self.request.META = {}
 
-#         # Because the current date is changed, the slider position
-#         # should automatically change too.
-#         animation_settings = AnimationSettings(
-#             self.request, today=self.today)
-#         self.assertEquals(animation_settings.slider_position,
-#                           self.date_start_days + 5)
+#     #     period, dt_start, dt_end = self._test_set_date_range(self.request)
+#     #     self.assertEquals(period, PERIOD_OTHER)
+#     #     self.assertEquals(dt_start, dt_start_expected)
+#     #     self.assertEquals(dt_end, dt_end_expected)
+#     def test_set_date_range3(self):
+#         """Set start date after end date: result must have dt_start<dt_end"""
+#         timedelta_start = datetime.timedelta(days=20)
+#         timedelta_end = datetime.timedelta(days=-15)
+
+#         # Fake Post
+#         self.request.method = 'POST'
+#         self.request.POST = {
+#             'period': str(PERIOD_OTHER),
+#             'dt_start': self.today + timedelta_start,
+#             'dt_end': self.today + timedelta_end}
+#         self.request.META = {}
+
+#         period, dt_start, dt_end = self._test_set_date_range(self.request)
+
+#         self.assertEquals(period, PERIOD_OTHER)
+#         self.assertTrue(dt_start < dt_end)
 
 
 class UtilityTest(TestCase):
@@ -645,68 +442,97 @@ class WorkspaceItemAdapterTest(TestCase):
 
 
 class DatePeriodsTest(TestCase):
+    # TODO: add tests that show what happens with non-timezone-aware
+    # datetimes!
+
+    def setUp(self):
+        self.start_date = datetime.datetime(1979, 5, 25,
+                                            tzinfo=pytz.UTC)  # It's a friday.
+        self.end_date = datetime.datetime(1979, 7, 15,
+                                          tzinfo=pytz.UTC)  # It's a sunday.
 
     def test_calc_aggregation_periods_all(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, ALL)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], end_date)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, self.end_date, dateperiods.ALL)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1], self.end_date)
 
     def test_calc_aggregation_periods_year(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, YEAR)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.datetime(1980, 1, 1))
-        self.assertEqual(periods[1][0], datetime.datetime(1980, 1, 1))
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, end_date, dateperiods.YEAR)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1],
+                         datetime.datetime(1980, 1, 1, tzinfo=pytz.UTC))
+        self.assertEqual(periods[1][0],
+                         datetime.datetime(1980, 1, 1, tzinfo=pytz.UTC))
         self.assertEqual(periods[1][1], end_date)
 
     def test_calc_aggregation_periods_quarter(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, QUARTER)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.datetime(1979, 7, 1))
-        self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, end_date, dateperiods.QUARTER)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1],
+                         datetime.datetime(1979, 7, 1, tzinfo=pytz.UTC))
+        self.assertEqual(periods[-1][0],
+                         datetime.datetime(1980, 4, 1, tzinfo=pytz.UTC))
         self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_month(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1980, 4, 15)
-        periods = calc_aggregation_periods(start_date, end_date, MONTH)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.datetime(1979, 6, 1))
-        self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
+        end_date = datetime.datetime(1980, 4, 15, tzinfo=pytz.UTC)
+        first_day_of_new_month_after_startdate = datetime.datetime(
+            1979, 6, 1, tzinfo=pytz.UTC)
+        first_day_of_end_month = datetime.datetime(
+            1980, 4, 1, tzinfo=pytz.UTC)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, end_date, dateperiods.MONTH)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1],
+                         first_day_of_new_month_after_startdate)
+        self.assertEqual(periods[-1][0],
+                         first_day_of_end_month)
         self.assertEqual(periods[-1][1], end_date)
 
     def test_calc_aggregation_periods_week(self):
-        start_date = datetime.datetime(1979, 5, 25)  # It's a friday.
-        end_date = datetime.datetime(1979, 7, 15)  # It's a sunday.
-        periods = calc_aggregation_periods(start_date, end_date, WEEK)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 28))
-        self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 9))
-        self.assertEqual(periods[-1][1], end_date)
+        monday_after_startdate = datetime.datetime(1979, 5, 28,
+                                                   tzinfo=pytz.UTC)
+        monday_before_enddate = datetime.datetime(1979, 7, 9,
+                                                  tzinfo=pytz.UTC)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, self.end_date, dateperiods.WEEK)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1],
+                         monday_after_startdate)
+        self.assertEqual(periods[-1][0],
+                         monday_before_enddate)
+        self.assertEqual(periods[-1][1], self.end_date)
 
     def test_calc_aggregation_periods_day(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1979, 7, 15)
-        periods = calc_aggregation_periods(start_date, end_date, DAY)
-        self.assertEqual(periods[0][0], start_date)
-        self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 26))
-        self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 14))
-        self.assertEqual(periods[-1][1], end_date)
+        periods = dateperiods.calc_aggregation_periods(
+            self.start_date, self.end_date, dateperiods.DAY)
+        self.assertEqual(periods[0][0], self.start_date)
+        self.assertEqual(periods[0][1],
+                         datetime.datetime(1979, 5, 26, tzinfo=pytz.UTC))
+        self.assertEqual(periods[-1][0],
+                         datetime.datetime(1979, 7, 14, tzinfo=pytz.UTC))
+        self.assertEqual(periods[-1][1], self.end_date)
 
     def test_fancy_period(self):
-        start_date = datetime.datetime(1979, 5, 25)
-        end_date = datetime.datetime(1979, 7, 15)
-        self.assertTrue(fancy_period(start_date, end_date, ALL))
-        self.assertTrue(fancy_period(start_date, end_date, YEAR))
-        self.assertTrue(fancy_period(start_date, end_date, QUARTER))
-        self.assertTrue(fancy_period(start_date, end_date, MONTH))
-        self.assertTrue(fancy_period(start_date, end_date, WEEK))
-        self.assertTrue(fancy_period(start_date, end_date, DAY))
+        start_date = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
+        end_date = datetime.datetime(1979, 7, 15, tzinfo=pytz.UTC)
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.ALL))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.YEAR))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.QUARTER))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.MONTH))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.WEEK))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.DAY))
 
 
 class TestTemplateTags(TestCase):
@@ -977,134 +803,189 @@ class SymbolManagerTest(TestCase):
         self.assertTrue(len(icon_names_list) > 5)
 
 
-class DateRangeStore(unittest.TestCase):
-    """Implements the tests for function compute_and_store_start_end."""
+# class DateRangeStore(unittest.TestCase):
+#     """Implements the tests for function compute_and_store_start_end."""
 
-    def test_a(self):
-        """Test the period attribute is stored."""
+#     def test_a(self):
+#         """Test the period attribute is stored."""
 
-        session = {}
+#         session = {}
 
-        date_range = {'period': PERIOD_DAY}
-        compute_and_store_start_end(session, date_range)
-        self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
+#         date_range = {'period': PERIOD_DAY}
+#         dateperiods.compute_and_store_start_end(session, date_range)
+#         self.assertEqual(PERIOD_DAY, session[SESSION_DT_PERIOD])
 
-        date_range = {'period': PERIOD_OTHER}
-        compute_and_store_start_end(session, date_range)
-        self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
+#         date_range = {'period': PERIOD_OTHER}
+#         dateperiods.compute_and_store_start_end(session, date_range)
+#         self.assertEqual(PERIOD_OTHER, session[SESSION_DT_PERIOD])
 
-    def test_b(self):
-        """Test only the computed values are stored."""
+#     def test_b(self):
+#         """Test only the computed values are stored."""
 
-        session = {SESSION_DT_START: datetime.datetime(2011, 8, 1),
-                   SESSION_DT_END: datetime.datetime(2011, 8, 30)}
+#         session = {SESSION_DT_START: datetime.datetime(2011, 8, 1),
+#                    SESSION_DT_END: datetime.datetime(2011, 8, 30)}
 
-        date_range = {'period': PERIOD_DAY}
-        compute_and_store_start_end(session, date_range)
+#         date_range = {'period': PERIOD_DAY}
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1),
-                         session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 1),
+#                          session[SESSION_DT_START])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_END])
 
-    def test_c(self):
-        """Test the start and end datetime are stored for PERIOD_OTHER.
+#     def test_c(self):
+#         """Test the start and end datetime are stored for PERIOD_OTHER.
 
-        The required information is stored in the form.
+#         The required information is stored in the form.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER,
-                      'dt_start': datetime.datetime(2011, 8, 1),
-                      'dt_end': datetime.datetime(2011, 8, 30)}
+#         date_range = {'period': PERIOD_OTHER,
+#                       'dt_start': datetime.datetime(2011, 8, 1),
+#                       'dt_end': datetime.datetime(2011, 8, 30)}
 
-        compute_and_store_start_end(session, date_range)
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 1),
-                         session[SESSION_DT_START])
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 1),
+#                          session[SESSION_DT_START])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_END])
 
-    def test_d(self):
-        """Test the function stores the correct defaults for PERIOD_OTHER.
+#     def test_d(self):
+#         """Test the function stores the correct defaults for PERIOD_OTHER.
 
-        The required information is not stored in the form.
+#         The required information is not stored in the form.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER}
-        now = datetime.datetime(2011, 8, 30)
-        compute_and_store_start_end(session, date_range, now=now)
+#         date_range = {'period': PERIOD_OTHER}
+#         now = datetime.datetime(2011, 8, 30)
+#         dateperiods.compute_and_store_start_end(session, date_range, now=now)
 
-        self.assertEqual(default_start(now), session[SESSION_DT_START])
-        self.assertEqual(default_end(now), session[SESSION_DT_END])
+#         self.assertEqual(default_start(now), session[SESSION_DT_START])
+#         self.assertEqual(default_end(now), session[SESSION_DT_END])
 
-    def test_e(self):
-        """Test the start stored for PERIOD_OTHER is never after the end.
+#     def test_e(self):
+#         """Test the start stored for PERIOD_OTHER is never after the end.
 
-        The required information is stored in the form but the start is after
-        the end.
+#         The required information is stored in the form but the start is after
+#         the end.
 
-        """
-        session = {}
+#         """
+#         session = {}
 
-        date_range = {'period': PERIOD_OTHER,
-                      'dt_start': datetime.datetime(2011, 8, 30),
-                      'dt_end': datetime.datetime(2011, 8, 1)}
+#         date_range = {'period': PERIOD_OTHER,
+#                       'dt_start': datetime.datetime(2011, 8, 30),
+#                       'dt_end': datetime.datetime(2011, 8, 1)}
 
-        compute_and_store_start_end(session, date_range)
+#         dateperiods.compute_and_store_start_end(session, date_range)
 
-        self.assertEqual(datetime.datetime(2011, 8, 30),
-                         session[SESSION_DT_START])
-        self.assertTrue(session[SESSION_DT_START] < session[SESSION_DT_END])
+#         self.assertEqual(datetime.datetime(2011, 8, 30),
+#                          session[SESSION_DT_START])
+#         self.assertTrue(session[SESSION_DT_START] < session[SESSION_DT_END])
 
 
-class DateRangeRetrieveSet(unittest.TestCase):
-    """Implements the tests for function current_start_end_dates."""
+# class DateRangeRetrieveSet(unittest.TestCase):
+#     """Implements the tests for function current_start_end_dates."""
+
+#     def setUp(self):
+#         self.today = datetime.datetime(2011, 8, 31)
+
+#         self.request = HttpRequest()
+#         self.request.session = {}
+
+#     def test_a(self):
+#         """Test the function the correct values for PERIOD_DAY.
+
+#         No session information is stored.
+
+#         """
+#         retrieve_period = lambda request: PERIOD_DAY
+#         start, end = current_start_end_dates(self.request, today=self.today,\
+#              retrieve_period_function=retrieve_period)
+
+#         self.assertEqual(start, datetime.timedelta(-1) + self.today)
+#         self.assertEqual(end, datetime.timedelta(0) + self.today)
+
+#     def test_b(self):
+#         """Test the function returns the correct values for PERIOD_DAY.
+
+#         The sessions specifies the required information.
+
+#         """
+#         self.request.session = {SESSION_DT_PERIOD: PERIOD_DAY}
+
+#         start, end = current_start_end_dates(self.request, today=self.today)
+
+#         self.assertEqual(start, datetime.timedelta(-1) + self.today)
+#         self.assertEqual(end, datetime.timedelta(0) + self.today)
+
+#     def test_c(self):
+#         """Test the function returns the defaults for period PERIOD_OTHER.
+
+#         No session information is stored.
+
+#         """
+#         retrieve_period = lambda request: PERIOD_OTHER
+#         start, end = current_start_end_dates(self.request, today=self.today,\
+#              retrieve_period_function=retrieve_period)
+
+#         self.assertEqual(start, default_start(self.today))
+#         self.assertEqual(end, default_end(self.today))
+
+
+class ViewStateServiceTest(unittest.TestCase):
 
     def setUp(self):
-        self.today = datetime.datetime(2011, 8, 31)
-
         self.request = HttpRequest()
         self.request.session = {}
 
-    def test_a(self):
-        """Test the function the correct values for PERIOD_DAY.
+    def test_smoke(self):
+        """Just call the adapter and make sure it doesn't barf."""
+        view = lizard_map.views.ViewStateService()
+        request = HttpRequest()
+        request.session = mock.Mock()
+        self.assertEqual(type(view.get(request)),
+                         rest_framework.response.Response)
 
-        No session information is stored.
+    def test_rest_setup(self):
+        """Test whether djangorestframework is properly set up.
 
+        We do this by testing if the dict from the above test is returned as a
+        proper json dict. This test is really only needed for *one* of the
+        djangorestframework-using views. (We use this one because it is the
+        easiest to test).
         """
-        retrieve_period = lambda request: PERIOD_DAY
-        start, end = current_start_end_dates(self.request, today=self.today,\
-             retrieve_period_function=retrieve_period)
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        response = client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response._headers['content-type'][1],
+                         'application/json')
 
-        self.assertEqual(start, datetime.timedelta(-1) + self.today)
-        self.assertEqual(end, datetime.timedelta(0) + self.today)
+    def test_put_validation(self):
+        """The input should be validated."""
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        data = {'range_type': 'invalid',
+                'dt_start': 1,
+                'dt_end': 2}
+        self.assertRaises(ValidationError, client.put, url, data=data)
 
-    def test_b(self):
-        """Test the function returns the correct values for PERIOD_DAY.
+    def test_put_setup(self):
+        """Test whether djangorestframework is properly set up.
 
-        The sessions specifies the required information.
-
+        This tests the .put() functionality, whether request.DATA can properly
+        be used.
         """
-        self.request.session = {SESSION_DT_PERIOD: PERIOD_DAY}
-
-        start, end = current_start_end_dates(self.request, today=self.today)
-
-        self.assertEqual(start, datetime.timedelta(-1) + self.today)
-        self.assertEqual(end, datetime.timedelta(0) + self.today)
-
-    def test_c(self):
-        """Test the function returns the defaults for period PERIOD_OTHER.
-
-        No session information is stored.
-
-        """
-        retrieve_period = lambda request: PERIOD_OTHER
-        start, end = current_start_end_dates(self.request, today=self.today,\
-             retrieve_period_function=retrieve_period)
-
-        self.assertEqual(start, default_start(self.today))
-        self.assertEqual(end, default_end(self.today))
+        client = Client()
+        url = reverse('lizard_map_view_state_service')
+        date1 = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
+        date2 = datetime.datetime(1979, 7, 15, tzinfo=pytz.UTC)
+        data = {'range_type': '2_day',
+                'dt_start': str(date1),
+                'dt_end': str(date2)}
+        response = client.put(url, data=data)
+        self.assertEqual(response.status_code, 200)

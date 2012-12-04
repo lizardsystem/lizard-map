@@ -369,9 +369,14 @@ class WorkspaceModelMixin(object):
                 # item is served by our local simulated WMS server
                 # using mapnik etc.
                 params = json.dumps({
-                    #'params': '{"height": "256", "width": "256", "layers": "lizard:generated_layer", "styles": "", "format": "image/png", "tiled": "true", "transparent": "true"}',
-                    'layers': 'lizard:generated_layer_%s'.format(workspace_item.id),
-                })
+                        # 'params': '{"height": "256",
+                        # "width": "256", "layers": "lizard:generated_layer",
+                        # "styles": "", "format":
+                        # "image/png", "tiled": "true",
+                        # "transparent": "true"}',
+                        'layers': 'lizard:generated_layer_%s'.format(
+                            workspace_item.id),
+                        })
                 options = json.dumps({
                     'transitionEffect': 'resize',
                     'displayInLayerSwitcher': False,
@@ -385,7 +390,9 @@ class WorkspaceModelMixin(object):
                         'workspace_item_id': workspace_item.id
                     })
                 else:
-                    url = reverse('lizard_map_workspace_edit_wms', kwargs={'workspace_item_id': workspace_item.id})
+                    url = reverse(
+                        'lizard_map_workspace_edit_wms',
+                        kwargs={'workspace_item_id': workspace_item.id})
                 return {
                     'wms_id': workspace_item.id,
                     'name': workspace_item.name,
@@ -443,7 +450,8 @@ class WorkspaceEdit(
                 workspace_storage.y_max = extent['top']
                 workspace_storage.extent_is_set = True
             except:
-                logger.exception('Failed to store extent in workspace storage. Skipping...')
+                logger.exception(
+                    'Failed to store extent in workspace. Skipping...')
 
         # Init secret slug
         workspace_storage.init_secret_slug()

@@ -14,28 +14,28 @@ urlpatterns = patterns(
     (r'^api/', include('lizard_map.api.urls')),
 
     # Actions/services on/from my workspace and my collage
-    url(r'^myworkspace/workspace_items/reorder/$',  # L3
+    url(r'^myworkspace/workspace_items/reorder/$',
         'lizard_map.views.workspace_item_reorder',
         name="lizard_map_workspace_item_reorder"),
-    url(r'^myworkspace/workspace_items/toggle/$',  # L3
+    url(r'^myworkspace/workspace_items/toggle/$',
         'lizard_map.views.workspace_item_toggle',
         name="lizard_map_workspace_item_toggle"),
-    url(r'^myworkspace/workspace_items/delete/$',  # L3
+    url(r'^myworkspace/workspace_items/delete/$',
         'lizard_map.views.workspace_item_delete',
         name="lizard_map_workspace_item_delete"),
-    url(r'^myworkspace/workspace_items/edit/$',  # L3
+    url(r'^myworkspace/workspace_items/edit/$',
         'lizard_map.views.workspace_edit_item',
         name="lizard_map_workspace_edit_item"),
-    url(r'^myworkspace/wms/(?P<workspace_item_id>\d+)/$',  # L3
+    url(r'^myworkspace/wms/(?P<workspace_item_id>\d+)/$',
         'lizard_map.views.wms',
         name="lizard_map_workspace_edit_wms"),
-    url(r'^myworkspace/empty/$',  # L3
+    url(r'^myworkspace/empty/$',
         lizard_map.views.WorkspaceEmptyView.as_view(),
         name="lizard_map_workspace_empty"),
-    url(r'^myworkspace/save/$',  # L3
+    url(r'^myworkspace/save/$',
         lizard_map.views.WorkspaceSaveView.as_view(),
         name="lizard_map_workspace_save"),
-    url(r'^myworkspace/load/$',  # L3
+    url(r'^myworkspace/load/$',
         lizard_map.views.WorkspaceLoadView.as_view(),
         name="lizard_map_workspace_load"),
 
@@ -49,28 +49,28 @@ urlpatterns = patterns(
         'lizard_map.views.saved_workspace_item_extent',
         name="lizard_map_workspace_storage_item_extent"),
 
-    url(r'^mycollage/$',  # L3
+    url(r'^mycollage/$',
         lizard_map.views.CollageDetailView.as_view(),
         name="lizard_map_collage_edit_detail"),
-    url(r'^mycollage/add_item_coordinates/$',  # L3 add collage item
+    url(r'^mycollage/add_item_coordinates/$',
         lizard_map.views.CollageView.as_view(),
         name="lizard_map_collage"),
-    url(r'^mycollage/add_item/$',  # L3 add collage item
+    url(r'^mycollage/add_item/$',
         lizard_map.views.CollageAddView.as_view(),
         name="lizard_map_collage_add"),
-    url(r'^mycollage/empty/$',  # L3 empty collage
+    url(r'^mycollage/empty/$',
         lizard_map.views.CollageEmptyView.as_view(),
         name="lizard_map_collage_empty"),
-    url(r'^mycollage/edit_item/$',  # L3 delete or update
+    url(r'^mycollage/edit_item/$',
         lizard_map.views.CollageItemEditView.as_view(),
         name="lizard_map_collage_item_edit"),
-    url(r'^mycollage/item/(?P<collage_item_id>\d+)/edit/$',  # L3 Properties
+    url(r'^mycollage/item/(?P<collage_item_id>\d+)/edit/$',
         lizard_map.views.CollageItemEditorView.as_view(),
         name="lizard_map_collage_item_editor"),
-    url(r'^mycollage/popup/$',  # L3 popup, works like the old one
+    url(r'^mycollage/popup/$',
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_popup"),
-    url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',  # L3 popup
+    url(r'^mycollage/item/(?P<collage_item_id>\d+)/popup/$',
         'lizard_map.views.collage_popup',
         name="lizard_map_collage_item_popup"),
     url(r'^mycollage/statistics/$',
@@ -83,11 +83,11 @@ urlpatterns = patterns(
     # Search stuff for my workspace.
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',
-        name="lizard_map.search_coordinates"),  # L3
+        name="lizard_map.search_coordinates"),
     url(r'^search_name/',
         'lizard_map.views.search_coordinates',
         {'_format': 'name'},
-        name="lizard_map.search_name"),  # L3
+        name="lizard_map.search_name"),
 
     # Workspace storage
     url(r'^workspace/$',
@@ -96,29 +96,29 @@ urlpatterns = patterns(
     url(r'^workspace/(?P<workspace_id>\d+)/$',
         lizard_map.views.WorkspaceStorageView.as_view(),
         name="lizard_map_workspace_storage"),
-    url(r'^workspace/(?P<workspace_storage_id>\d+)/(?P<workspace_item_id>\d+)/wms/$',  # L3
+    url(r'^workspace/(?P<workspace_storage_id>\d+)/(?P<workspace_item_id>\d+)/wms/$',
         'lizard_map.views.wms',
         name="lizard_map_workspace_storage_wms"),
     url(r'^workspace/(?P<workspace_storage_id>\d+)/search_coordinates/',
         'lizard_map.views.search_coordinates',
-        name="lizard_map.search_coordinates"),  # L3
+        name="lizard_map.search_coordinates"),
     url(r'^workspace/(?P<workspace_storage_id>\d+)/search_name/',
         'lizard_map.views.search_coordinates',
         {'_format': 'name'},
-        name="lizard_map.search_name"),  # L3
+        name="lizard_map.search_name"),
     # Get to the workspace page by means of a slug
     url(r'^workspace/(?P<workspace_storage_slug>\w+)/$',
         lizard_map.views.WorkspaceStorageView.as_view(),
         name="lizard_map_workspace_slug_storage"),
 
     # Adapter
-    url(r'^adapter/(?P<adapter_class>.*)/image/$',  # L3
+    url(r'^adapter/(?P<adapter_class>.*)/image/$',
         lizard_map.views.AdapterImageView.as_view(),
         name="lizard_map_adapter_image"),
-    url(r'^adapter/(?P<adapter_class>.*)/flot_graph_data/$',  # L3
+    url(r'^adapter/(?P<adapter_class>.*)/flot_graph_data/$',
         lizard_map.views.AdapterFlotGraphDataView.as_view(),
         name="lizard_map_adapter_flot_graph_data"),
-    url(r'^adapter/(?P<adapter_class>.*)/values/(?P<output_type>.*)/$',  # L3
+    url(r'^adapter/(?P<adapter_class>.*)/values/(?P<output_type>.*)/$',
         lizard_map.views.AdapterValuesView.as_view(),
         name="lizard_map_adapter_values"),
 
@@ -178,7 +178,7 @@ if settings.DEBUG:  # Pragma: no cover
         #  {'template': 'lizard_map/example_wms.html'}),
 
         # Homepage
-        url(r'^$',  # L3
+        url(r'^$',
             lizard_map.views.HomepageView.as_view(),
             name="lizard_map_homepage"),
     )
