@@ -448,14 +448,16 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_all(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.ALL)
+        periods = dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.ALL)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], end_date)
 
     def test_calc_aggregation_periods_year(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.YEAR)
+        periods = dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.YEAR)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1980, 1, 1))
         self.assertEqual(periods[1][0], datetime.datetime(1980, 1, 1))
@@ -464,7 +466,8 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_quarter(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.QUARTER)
+        periods = dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.QUARTER)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 7, 1))
         self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
@@ -473,7 +476,8 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_month(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1980, 4, 15)
-        periods = dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.MONTH)
+        periods = dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.MONTH)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 6, 1))
         self.assertEqual(periods[-1][0], datetime.datetime(1980, 4, 1))
@@ -482,7 +486,8 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_week(self):
         start_date = datetime.datetime(1979, 5, 25)  # It's a friday.
         end_date = datetime.datetime(1979, 7, 15)  # It's a sunday.
-        periods = dateperiods.dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.WEEK)
+        periods = dateperiods.dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.WEEK)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 28))
         self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 9))
@@ -491,7 +496,8 @@ class DatePeriodsTest(TestCase):
     def test_calc_aggregation_periods_day(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1979, 7, 15)
-        periods = dateperiods.dateperiods.calc_aggregation_periods(start_date, end_date, dateperiods.DAY)
+        periods = dateperiods.dateperiods.calc_aggregation_periods(
+            start_date, end_date, dateperiods.DAY)
         self.assertEqual(periods[0][0], start_date)
         self.assertEqual(periods[0][1], datetime.datetime(1979, 5, 26))
         self.assertEqual(periods[-1][0], datetime.datetime(1979, 7, 14))
@@ -500,12 +506,18 @@ class DatePeriodsTest(TestCase):
     def test_fancy_period(self):
         start_date = datetime.datetime(1979, 5, 25)
         end_date = datetime.datetime(1979, 7, 15)
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.ALL))
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.YEAR))
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.QUARTER))
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.MONTH))
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.WEEK))
-        self.assertTrue(dateperiods.fancy_period(start_date, end_date, dateperiods.DAY))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.ALL))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.YEAR))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.QUARTER))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.MONTH))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.WEEK))
+        self.assertTrue(dateperiods.fancy_period(
+                start_date, end_date, dateperiods.DAY))
 
 
 class TestTemplateTags(TestCase):
