@@ -851,6 +851,76 @@ class FlotGraph(object):
         raise NotImplementedError(
             'Not implemented for a FlotGraph, perhaps you meant to use Graph?')
 
+    def add_percentiles(self, label, percentiles, opacities):
+        """Add a number of percentile plots, that fill between them at various
+        opacities. Arguments:
+
+        - The label of the line whose color these percentiles will use
+        - Percentiles: a dictionary with percentiles as keys and data
+          lists as values. The number of keys should always be even,
+          e.g. 10, 35, 65 and 90.
+        - Opacities: an iterable with opacities. The first of these
+          will be used for the innermost color, the last for the
+          outermost. The number of colors is half the number of
+          percentiles.
+
+          E.g. if the keys of percentiles are 10, 35, 65 and 90,
+          opacities could be (0.6, 0.4). Then the ranges 10-35 and
+          65-90 would have opacity 0.4, and 35-65 would have opacity
+          0.6.
+        """
+        n = len(percentiles)
+        if n == 0 or n % 2 != 0:
+            raise ValueError(
+                "The number of percentiles must be even and positive,"
+                " but it was {0}.".format(n))
+
+        if len(opacities) != n / 2:
+            raise ValueError(
+                "The number of opacities must be half "
+                "the number of percentiles.")
+
+        for data in self.axes.flot_data:
+            if data.get('label', None) == label:
+                color = data['color']
+                break
+        else:
+            raise ValueError("Data with label '{0}' not found.".format(label))
+
+        # Below the lowest percentile there is no opacity, after that
+        # the opacity should be the lowest (= last) in the list of
+        # opacities, and so on. After the middle, opacities are reversed
+        # but the middle opacity is not repeated.
+        fill_below_opacity = (
+            (False,) + tuple(reversed(opacities)) + tuple(opacities[1:]))
+
+        # This keeps track of the id_string of the previous line
+        # plotted.
+        previous = None
+
+        # Go through the percentiles in order of their percentage,
+        # lowest first
+        for i, (key, data) in enumerate(sorted(percentiles.items())):
+            opacity = fill_below_opacity[i]
+            id_string = "{0}-percentile-{1}".format(label, key)
+
+            # Change UTC datetimes into JS timestamps here
+            data = [[mk_js_timestamp(ts), value] for ts, value in data]
+
+            self.axes.flot_data.append({
+                    "id": id_string,
+                    "data": data,
+                    "lines": {
+                        "show": True,
+                        "lineWidth": 0,
+                        "fill": opacity},
+                    "points": {
+                        "show": False},
+                    "color": color,
+                    "fillBetween": previous
+                    })
+            previous = id_string
+
     def render(self):
         # determine y axis label
         # In matplotlib, both the graph and the individual axes can have their
@@ -862,6 +932,7 @@ class FlotGraph(object):
             ylabel = self.axes.ylabel
         else:
             ylabel = self.ylabel
+
         return {
             'data': self.axes.flot_data,
             'x_label': self.xlabel,

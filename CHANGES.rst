@@ -20,6 +20,10 @@ Changelog of lizard-map
 - Added configchecker test (``bin/django check_config``) whether ``USE_TZ =
   True`` is set in your setttings file.
 
+- Added an "add_percentiles" function to FlotGraph, that allows
+  plotting filled-in "percentile areas" around graphs. Will be
+  implemented for Matplotlib too, but that's not done yet.
+
 
 4.14 (2012-12-04)
 -----------------
