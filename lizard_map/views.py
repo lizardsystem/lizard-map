@@ -1863,8 +1863,6 @@ class ViewStateForm(forms.Form):
 
 
 class ViewStateService(APIView, WorkspaceEditMixin):
-    form = ViewStateForm
-
     @never_cache
     def get(self, request, *args, **kwargs):
         session = request.session
@@ -1891,18 +1889,22 @@ class ViewStateService(APIView, WorkspaceEditMixin):
         # request.DATA contains the validated values
         # it will raise an error 400 exception upon first access
         # TODO adjust to restframework 2.x
-        range_type = request.DATA['range_type']
-        dt_start = request.DATA['dt_start']
-        dt_end = request.DATA['dt_end']
-        session[SESSION_DT_RANGETYPE] = range_type
-        session[SESSION_DT_START] = dt_start
-        session[SESSION_DT_END] = dt_end
-        # also store in database: why in two places?
-        if dt_start and dt_end:
-            workspace_edit = self.workspace_edit()
-            workspace_edit.dt_start = dt_start
-            workspace_edit.dt_end = dt_end
-            workspace_edit.save()
+
+        # manually create the form for now
+        form = ViewStateForm(request.DATA)
+        if form.is_valid():
+            range_type = form.cleaned_data['range_type']
+            dt_start = form.cleaned_data['dt_start']
+            dt_end = form.cleaned_data['dt_end']
+            session[SESSION_DT_RANGETYPE] = range_type
+            session[SESSION_DT_START] = dt_start
+            session[SESSION_DT_END] = dt_end
+            # also store in database: why in two places?
+            if dt_start and dt_end:
+                workspace_edit = self.workspace_edit()
+                workspace_edit.dt_start = dt_start
+                workspace_edit.dt_end = dt_end
+                workspace_edit.save()
         return RestResponse()
 
 

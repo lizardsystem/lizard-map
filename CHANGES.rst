@@ -24,6 +24,9 @@ Changelog of lizard-map
   plotting filled-in "percentile areas" around graphs. Will be
   implemented for Matplotlib too, but that's not done yet.
 
+- Added a workaround in ViewStateService, because Forms seem no longer
+  supported by rest_framework.
+
 
 4.14 (2012-12-04)
 -----------------
