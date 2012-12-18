@@ -5,7 +5,7 @@ div.map-a-row{
     padding-bottom: 1px;
 }
 #sidebar {
-    overflow: auto;
+    overflow-x: hidden;
 }
 #mapawrapper {
     margin: 0;
