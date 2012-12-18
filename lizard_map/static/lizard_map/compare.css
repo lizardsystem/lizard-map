@@ -31,6 +31,7 @@ ul.workspaces li:not(:last-child) {
     padding: 0;
     display: block;
     width: 250px;
+    overflow-x: hidden;
 }
 
 #rightbar .sidebar-inner {
