@@ -403,6 +403,7 @@ class CompareView(AppView, WorkspaceMixin):
     """
     template_name = 'lizard_map/compare.html'
 
+
     @property
     def workspace_items(self):
         return self.workspace().workspace_items.filter(

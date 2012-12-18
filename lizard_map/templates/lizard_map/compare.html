@@ -60,7 +60,6 @@
 </table>
 </div>
 
-
 <div style="margin:10px 0px 5px 0px;">
 <ul class="workspaces">
   {% if view.wms_layers %}
@@ -163,8 +162,21 @@
 </ul>
 {% endblock breadcrumbs %}
 
+
+{% block rightbar %}
+<div id="legends">
+<h3>&nbsp;Legenda's</h3>
+
+{% for legend in view.legends %}
+  {% for url in legend.image_urls %}
+  <img src="{{ url }}">
+  {% endfor %}
+{% endfor %}
+    
+</div>
+{% endblock rightbar %}
+
 {% block secondary-sidebar %}{% endblock secondary-sidebar %}
-{% block rightbar %}{% endblock rightbar %}
 {% block sidebar-actions %}{% endblock sidebar-actions %}
 {% block rightbar-actions %}{% endblock rightbar-actions %}
 {% block orthogonal-actions %}{% endblock orthogonal-actions %}

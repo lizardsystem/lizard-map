@@ -5,10 +5,18 @@ if ( ! window.console ) console = { log: function(){} };
 // Resize map viewports on window resize.
 $(function() {
     $(window).resize(function(){
+
+        $('#map-a').css('width', ($('#content').width() - 250) + 'px');
+        $('#map-b').css('width', ($('#content').width() - 250) + 'px');
+        
+
         $('#map-a').css('height',  ($("#content").height()/2) + 'px');
         $('#map-b').css('height',  ($("#content").height()/2) + 'px');
+
         $('#mapawrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
         $('#mapbwrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
+
+        
     });
 });
 
@@ -27,9 +35,14 @@ $(document).ready(function() {
     $('#map-a').css('height',  ($("#content").height()/2) + 'px');
     $('#map-b').css('height',  ($("#content").height()/2) + 'px');
 
+
+    $('#map-a').css('width',  $('#map-a').width()-250 + 'px');
+    $('#map-b').css('width',  $('#map-b').width()-250 + 'px');
+ 
     // Resize menu wrappers to half screen size
     $('#mapawrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
     $('#mapbwrapper').css('height',  ($("#content").height()/2) - 74 + 'px');
+
 
     var mapaLayers = {};
     var mapbLayers = {};
