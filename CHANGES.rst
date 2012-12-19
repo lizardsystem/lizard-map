@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.16 (unreleased)
+4.16 (2012-12-19)
 -----------------
 
 - Fixed urls.py, so it won't recusively include other lizard-* URLs when
