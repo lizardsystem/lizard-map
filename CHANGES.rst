@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.16 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fixed urls.py, so it won't recusively include other lizard-* URLs when
+  running as part of a site.
 
 
 4.15 (2012-12-20)

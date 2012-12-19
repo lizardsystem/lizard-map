@@ -71,6 +71,8 @@ USE_TZ = True
 
 #SOUTH_TESTS_MIGRATE = False
 
+LIZARD_MAP_STANDALONE = True
+
 try:
     # Import local settings that aren't stored in svn.
     from lizard_map.local_testsettings import *

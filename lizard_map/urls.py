@@ -6,11 +6,9 @@ from django.contrib import admin
 from lizard_ui.urls import debugmode_urlpatterns
 
 import lizard_map.views
-admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    (r'^ui/', include('lizard_ui.urls')),
     (r'^api/', include('lizard_map.api.urls')),
 
     # Actions/services on/from my workspace and my collage
@@ -157,6 +155,8 @@ urlpatterns = patterns(
     #     'lizard_map.views.export_snippet_group_statistics_csv',
     #     name="lizard_map.export_snippet_group_statistics_csv"),
 
+    # Override these here from lizard-ui, so the application screen
+    # shows the map as well.
     url(r'^screen/(?P<slug>.*)/$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
@@ -165,11 +165,12 @@ urlpatterns = patterns(
         name='lizard_ui.icons'),
     )
 
-urlpatterns += debugmode_urlpatterns()
 
-if settings.DEBUG:  # Pragma: no cover
+if getattr(settings, 'LIZARD_MAP_STANDALONE', False):
+    admin.autodiscover()
     urlpatterns += patterns(
         '',
+        (r'^ui/', include('lizard_ui.urls')),
         (r'^admin/', include(admin.site.urls)),
         # Demo map stuff.
         # (r'^$', 'django.views.generic.simple.direct_to_template',
@@ -182,3 +183,4 @@ if settings.DEBUG:  # Pragma: no cover
             lizard_map.views.HomepageView.as_view(),
             name="lizard_map_homepage"),
     )
+    urlpatterns += debugmode_urlpatterns()
