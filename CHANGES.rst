@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.15 (unreleased)
+4.15 (2012-12-20)
 -----------------
 
 - Removed animationsettings for now. They're used in a tiny number of older
