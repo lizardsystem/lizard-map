@@ -2,17 +2,24 @@
 Helper classes and functions for adapters
 """
 from __future__ import division
+import calendar
 import datetime
-import time
 import locale
 import math
 import numpy
 import pkg_resources
+import pytz
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
+
+from django.conf import settings
 from django.http import HttpResponse
 from django.utils import simplejson as json
+
+from lizard_map.matplotlib_settings import FONT_SIZE
+from lizard_map.matplotlib_settings import SCREEN_DPI
+
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.dates import AutoDateFormatter
 from matplotlib.dates import AutoDateLocator
@@ -24,8 +31,6 @@ from matplotlib.dates import rrulewrapper
 from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
 from matplotlib.ticker import ScalarFormatter
-from lizard_map.matplotlib_settings import FONT_SIZE
-from lizard_map.matplotlib_settings import SCREEN_DPI
 
 import logging
 logger = logging.getLogger(__name__)
@@ -678,10 +683,47 @@ class Graph(object):
 
 def mk_js_timestamp(datetime_utc):
     '''
-    Convert to a JavaScript compatible timestamp.
+    Convert a Python UTC datetime to a JavaScript compatible timestamp.
     Warning: truncates milliseconds.
+
+    The timestamp for JS is ready to show to the user, JS should do no
+    more timezone manipulation on it. Use methods like moment.utc() to
+    ensure this, even though the timestamp does not directly represent
+    UTC, but the site's timezone.
+
+    The reason for that is that otherwise JS will try to convert the
+    time to the user's current timezone, so that the time shown for an
+    event suddenly depends on whether it is currently summer time or
+    winter time. An event that shows in a graph as 11:00 on 10 january
+    should not be shown as 12:00 when the same graph of the same data
+    is shown during the summer.
+
+    It follows that we need some magic to achieve this.
     '''
-    return float(time.mktime(datetime_utc.timetuple()) * 1000)
+    # If the datetime given is naive, convert it to a UTC datetime
+    if datetime_utc.utcoffset() is None:
+        datetime_utc = pytz.UTC.localize(datetime_utc)
+
+    # Use the Django settings to find the local timezone. If the timezone
+    # is in a 'smart' format like "Europe/Amsterdam", it contains information
+    # about daylight savings time.
+    local_timezone = pytz.timezone(settings.TIME_ZONE)
+
+    # Translate the datetime to that timezone
+    datetime_local = datetime_utc.astimezone(local_timezone)
+
+    # This is the offset to UTC that the local timezone had at time of
+    # this datetime
+    offset = datetime_local.tzinfo.utcoffset(datetime_local)
+
+    # We add that to the UTC datetime
+    datetime_local_sortof = datetime_utc + offset
+
+    # And get the number of seconds since the epoch from that
+    seconds = calendar.timegm(datetime_local_sortof.timetuple())
+
+    # Javascript wants a float of milliseconds
+    return float(seconds * 1000)
 
 
 class FlotGraphAxes(object):

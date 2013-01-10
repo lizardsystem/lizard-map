@@ -4,8 +4,18 @@ Changelog of lizard-map
 4.17 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Fix timezone handling for Flot graphs.
 
+  The leading principle is that Javascript should do no timezone
+  manipulation on time data from the past, because that would mean
+  that the timezone of events recorded in the past depends on things
+  like the _current_ summer / winter time setting. A graph of the same
+  data should show the same information regardless of when it is
+  viewed.
+
+  In Lizard we internally work with UTC datetimes as much as possible,
+  and convert these times to the site's timezone (usually
+  Europe/Amsterdam) right before handing them to Javascript.
 
 4.16 (2012-12-19)
 -----------------

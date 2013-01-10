@@ -1806,7 +1806,7 @@ var to_date_strings = function (assoc_array, inplace) {
     });
     return assoc_array;
 };
- 
+
 /**
  * Take an associative array, and convert all string items whose key contain 'date', or
  * starting with 'dt', to a Moment.js date object.
