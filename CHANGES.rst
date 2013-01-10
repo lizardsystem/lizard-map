@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.17 (unreleased)
+4.17 (2013-01-10)
 -----------------
 
 - Fix timezone handling for Flot graphs.
