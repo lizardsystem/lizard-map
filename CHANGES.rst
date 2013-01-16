@@ -4,8 +4,8 @@ Changelog of lizard-map
 4.18 (unreleased)
 -----------------
 
-- Nothing changed yet.
-
+- Adjust FlotGraphAxes to enable threshold lines. 
+- PEP8 fixes.
 
 4.17 (2013-01-10)
 -----------------
