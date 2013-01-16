@@ -118,7 +118,7 @@ def adapter_entrypoint(adapter_class, layer_arguments, workspace_item=None):
     """
     # TODO: this happens more often than needed! Cache it.
     for entrypoint in pkg_resources.iter_entry_points(
-        group=ADAPTER_ENTRY_POINT):
+            group=ADAPTER_ENTRY_POINT):
         if entrypoint.name == adapter_class:
             try:
                 adapter = entrypoint.load()
@@ -302,7 +302,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                 middle_of_day = self.middle_of_day(tick)
                 if ((abs(tick - middle_of_day) < self.step / 2) or
                     (middle_of_day < self.min and tick == self.min) or
-                    (middle_of_day > self.max and tick == self.max)):
+                        (middle_of_day > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -323,7 +323,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                 middle_of_month = self.middle_of_month(tick)
                 if ((abs(tick - middle_of_month) < self.step / 2) or
                     (middle_of_month < self.min and tick == self.min) or
-                    (middle_of_month > self.max and tick == self.max)):
+                        (middle_of_month > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -344,7 +344,7 @@ class MultilineAutoDateFormatter(AutoDateFormatter):
                 first_of_year = self.first_of_year(tick)
                 if ((0 <= tick - first_of_year < self.step) or
                     (first_of_year < self.min and tick == self.min) or
-                    (first_of_year > self.max and tick == self.max)):
+                        (first_of_year > self.max and tick == self.max)):
                     return True
                 else:
                     return False
@@ -650,7 +650,7 @@ class Graph(object):
 
         if self.ax2 is not None:
             self.ax2.set_position((axes_left, axes_bottom,
-                                axes_width, axes_height))
+                                   axes_width, axes_height))
 
         # Set date range
         # Somehow, the range cannot be set in __init__
@@ -729,12 +729,15 @@ def mk_js_timestamp(datetime_utc):
 class FlotGraphAxes(object):
     legend_ = None
 
-    def __init__(self):
+    def __init__(self, x_min=None, x_max=None):
         self.flot_data = []
         # ^^^ list of dicts in the format {'label': x, 'data':[(x, y), (x, y)]}
         self.y_min = None
         self.y_max = None
         self.ylabel = None
+        # bit hackish, x_min and x_max are needed to implement axhline() method
+        self.x_min = x_min
+        self.x_max = x_max
 
     def set_ylabel(self, ylabel):
         self.ylabel = ylabel
@@ -748,7 +751,13 @@ class FlotGraphAxes(object):
         label=None
     ):
         '''no-op for FlotGraph'''
-        pass
+        self.flot_data.append({
+            'label': label,
+            'color': color,
+            'lines': {'show': True},
+            'points': {'show': False},
+            'data': [[self.x_min, ybase],
+                     [self.x_max, ybase]]})
 
     def _update_y_limits(self, yvalues):
         # determine y_min, y_max for this dataset
@@ -837,7 +846,9 @@ class FlotGraph(object):
         self.restrict_to_month = restrict_to_month
         self.tz = tz
 
-        self.axes = FlotGraphAxes()
+        x_min = mk_js_timestamp(self.start_date)
+        x_max = mk_js_timestamp(self.end_date)
+        self.axes = FlotGraphAxes(x_min, x_max)
         self.responseobject = None  # Unused
         self.xlabel = None
         self.ylabel = None
@@ -950,17 +961,17 @@ class FlotGraph(object):
             data = [[mk_js_timestamp(ts), value] for ts, value in data]
 
             self.axes.flot_data.append({
-                    "id": id_string,
-                    "data": data,
-                    "lines": {
-                        "show": True,
-                        "lineWidth": 0,
-                        "fill": opacity},
-                    "points": {
-                        "show": False},
-                    "color": color,
-                    "fillBetween": previous
-                    })
+                "id": id_string,
+                "data": data,
+                "lines": {
+                    "show": True,
+                    "lineWidth": 0,
+                    "fill": opacity},
+                "points": {
+                    "show": False},
+                "color": color,
+                "fillBetween": previous
+            })
             previous = id_string
 
     def render(self):
