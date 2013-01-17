@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.18 (unreleased)
+4.18 (2013-01-17)
 -----------------
 
 - Adjust FlotGraphAxes to enable threshold lines. 
