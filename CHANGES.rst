@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.19 (unreleased)
+4.19 (2013-01-21)
 -----------------
 
 - Add RequestContext instance when rendering a template in html_default 
