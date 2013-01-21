@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.19 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Add RequestContext instance when rendering a template in html_default 
+  method. This way request-related tags and context variables can be
+  used when rendering the template.
 
 
 4.18 (2013-01-17)

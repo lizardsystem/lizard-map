@@ -4,6 +4,7 @@ import json
 import logging
 
 from django.conf import settings
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 
@@ -438,9 +439,13 @@ class WorkspaceItemAdapter(object):
         if extra_render_kwargs is not None:
             render_kwargs.update(extra_render_kwargs)
 
+        # request context is needed for accessing request related tags and
+        # context variables when rendering the template
         return render_to_string(
             template,
-            render_kwargs)
+            render_kwargs,
+            context_instance=RequestContext(layout_options['request'])
+        )
 
     def legend(self, updates=None):
         """
