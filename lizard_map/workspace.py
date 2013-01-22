@@ -440,11 +440,18 @@ class WorkspaceItemAdapter(object):
             render_kwargs.update(extra_render_kwargs)
 
         # request context is needed for accessing request related tags and
-        # context variables when rendering the template
+        # context variables when rendering the template. Get request instance
+        # from layout_options, otherwise set context_instance to None.
+        context_instance = None
+        if layout_options:
+            request = layout_options.get('request')
+            if request:
+                context_instance = RequestContext(request)
+
         return render_to_string(
             template,
             render_kwargs,
-            context_instance=RequestContext(layout_options['request'])
+            context_instance=context_instance
         )
 
     def legend(self, updates=None):
