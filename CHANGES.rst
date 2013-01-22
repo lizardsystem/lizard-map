@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.20 (unreleased)
+4.20 (2013-01-22)
 -----------------
 
 - Fix context instance instantiation in html_default method. 
