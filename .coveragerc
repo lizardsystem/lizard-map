@@ -1,5 +1,5 @@
-[run]
-include = lizard_map/
-
 [report]
+omit =
+    */migrations/*
+
 ignore_errors = true

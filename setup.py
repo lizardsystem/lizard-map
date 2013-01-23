@@ -21,7 +21,6 @@ install_requires = [
     'iso8601',
     'lizard-help',
     'lizard-ui >= 4.0, < 5.0',
-    'mock',
     'pkginfo',
     'python-dateutil',
     'pytz',
@@ -32,6 +31,8 @@ install_requires = [
     ],
 
 tests_require = [
+    'mock',
+    'coverage',
     ]
 
 setup(name='lizard-map',
