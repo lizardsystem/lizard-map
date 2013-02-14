@@ -1,129 +1,131 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Translators:
+#   <admin@example.com>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-14 10:10+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2013-02-14 10:42+0000\n"
+"Last-Translator: admin <admin@example.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: dateperiods.py:14
 msgid "Quarter 1"
-msgstr ""
+msgstr "Eerste kwartaal"
 
 #: dateperiods.py:15
 msgid "Quarter 2"
-msgstr ""
+msgstr "Tweede kwartaal"
 
 #: dateperiods.py:16
 msgid "Quarter 3"
-msgstr ""
+msgstr "Derde kwartaal"
 
 #: dateperiods.py:17
 msgid "Quarter 4"
-msgstr ""
+msgstr "Vierde kwartaal"
 
 #: dateperiods.py:21
 msgid "January"
-msgstr ""
+msgstr "Januari"
 
 #: dateperiods.py:22
 msgid "February"
-msgstr ""
+msgstr "Februari"
 
 #: dateperiods.py:23
 msgid "March"
-msgstr ""
+msgstr "Maart"
 
 #: dateperiods.py:24
 msgid "April"
-msgstr ""
+msgstr "April"
 
 #: dateperiods.py:25
 msgid "May"
-msgstr ""
+msgstr "Mei"
 
 #: dateperiods.py:26
 msgid "June"
-msgstr ""
+msgstr "Juni"
 
 #: dateperiods.py:27
 msgid "July"
-msgstr ""
+msgstr "Juli"
 
 #: dateperiods.py:28
 msgid "August"
-msgstr ""
+msgstr "Augustus"
 
 #: dateperiods.py:29
 msgid "September"
-msgstr ""
+msgstr "September"
 
 #: dateperiods.py:30
 msgid "October"
-msgstr ""
+msgstr "Oktober"
 
 #: dateperiods.py:31
 msgid "November"
-msgstr ""
+msgstr "November"
 
 #: dateperiods.py:32
 msgid "December"
-msgstr ""
+msgstr "December"
 
 #: dateperiods.py:155
 msgid "Whole period"
-msgstr ""
+msgstr "Hele periode"
 
 #: fields.py:101
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
-msgstr ""
+msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
 #: models.py:609
 msgid "all"
-msgstr ""
+msgstr "alles"
 
 #: models.py:610
 msgid "year"
-msgstr ""
+msgstr "jaar"
 
 #: models.py:611
 msgid "quarter"
-msgstr ""
+msgstr "kwartaal"
 
 #: models.py:612
 msgid "month"
-msgstr ""
+msgstr "maand"
 
 #: models.py:613
 msgid "week"
-msgstr ""
+msgstr "week"
 
 #: models.py:614
 msgid "day"
-msgstr ""
+msgstr "dag"
 
 #: views.py:288 views.py:1263
 msgid "Back to homepage"
-msgstr ""
+msgstr "Naar de beginpagina"
 
 #: views.py:305
 msgid "Layers"
-msgstr ""
+msgstr "Kaartlagen"
 
 #: views.py:311 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:17
 msgid "Legend"
-msgstr ""
+msgstr "Legenda"
 
 #: views.py:357
 msgid "Multi-select"
@@ -131,11 +133,11 @@ msgstr ""
 
 #: views.py:358
 msgid "Select multiple items"
-msgstr ""
+msgstr "Selecteer meerdere items"
 
 #: views.py:366 views.py:1251
 msgid "Change the date range of the measurements"
-msgstr ""
+msgstr "Verander het datumbereik van de metingen"
 
 #: views.py:373
 msgid "Default zoom"
@@ -143,7 +145,7 @@ msgstr ""
 
 #: views.py:374
 msgid "Zoom to default location"
-msgstr ""
+msgstr "Zoom naar de standaard beginlocatie"
 
 #: views.py:1241 views.py:1266
 msgid "Collage"
@@ -155,95 +157,95 @@ msgstr ""
 
 #: workspace.py:22
 msgid "blue"
-msgstr ""
+msgstr "blauw"
 
 #: workspace.py:23
 msgid "darkred"
-msgstr ""
+msgstr "donkerrood"
 
 #: workspace.py:24
 msgid "green"
-msgstr ""
+msgstr "groen"
 
 #: workspace.py:25
 msgid "black"
-msgstr ""
+msgstr "zwart"
 
 #: workspace.py:26
 msgid "cyan"
-msgstr ""
+msgstr "cyaan"
 
 #: workspace.py:27
 msgid "yellow"
-msgstr ""
+msgstr "geel"
 
 #: workspace.py:28
 msgid "lightblue"
-msgstr ""
+msgstr "lichtblauw"
 
 #: workspace.py:29
 msgid "grey"
-msgstr ""
+msgstr "grijs"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
-msgstr ""
+msgstr "Voorbeelden"
 
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
-msgstr ""
+msgstr "Voorbeeld met vormbestand"
 
 #: templates/lizard_map/tag_collage_edit.html:8
 msgid "This is your current selection."
-msgstr ""
+msgstr "Dit is uw huidige selectie."
 
 #: templates/lizard_map/tag_collage_edit.html:9
 msgid "Selection"
-msgstr ""
+msgstr "Selectie"
 
 #: templates/lizard_map/tag_collage_edit.html:46
 #: templates/lizard_map/tag_workspace_edit.html:61
 msgid "Delete item"
-msgstr ""
+msgstr "Verwijder item"
 
 #: templates/lizard_map/tag_collage_edit.html:54
 msgid "Select items on the map."
-msgstr ""
+msgstr "Selecteer items op de kaart."
 
 #: templates/lizard_map/tag_collage_edit.html:62
 msgid "Empty your collage"
-msgstr ""
+msgstr "Selectie leegmaken"
 
 #: templates/lizard_map/tag_collage_edit.html:71
 msgid "Selection popup"
-msgstr ""
+msgstr "Selectie pop-up"
 
 #: templates/lizard_map/tag_collage_edit.html:81
 #: templates/lizard_map/tag_collage_edit.html:87
 msgid "Selection page"
-msgstr ""
+msgstr "Naar selectiepagina"
 
 #: templates/lizard_map/tag_workspace_edit.html:16
 #: templates/lizard_map/workspace_storage_detail.html:15
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
-msgstr ""
+msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 
 #: templates/lizard_map/tag_workspace_edit.html:55
 #: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
-msgstr ""
+msgstr "Zoom zodat alles hiervan in beeld is"
 
 #: templates/lizard_map/tag_workspace_edit.html:79
 msgid "Empty your workspace"
-msgstr ""
+msgstr "Workspace leegmaken"
 
 #: templates/lizard_map/tag_workspace_edit.html:89
 msgid "Save your workspace"
-msgstr ""
+msgstr "Workspace opslaan"
 
 #: templates/lizard_map/workspace_storage_detail.html:61
 #: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
-msgstr ""
+msgstr "Deze workspace bewerken"
