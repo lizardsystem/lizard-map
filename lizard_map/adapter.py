@@ -141,8 +141,8 @@ def _make_percentile_label(label, percentiles):
     Assumes percentiles has an even number of elements.
     """
 
-    met = _("with")
-    percentiel = _("percentile")
+    _with = _("with")
+    percentile = _("percentile")
 
     if not percentiles:
         return label
@@ -152,11 +152,11 @@ def _make_percentile_label(label, percentiles):
         percentile_strings.append(u"{0:2.0f}% - {1:2.0f}% {2}".format(
                 100 * percentiles[i],
                 100 * percentiles[-(i + 1)],
-                percentiel))
+                percentile))
 
-    return u"{label} ({met} {percentielen})".format(
-        label=label, met=met,
-        percentielen=u", ".join(percentile_strings))
+    return u"{label} ({_with} {percentiles})".format(
+        label=label, _with=_with,
+        percentiles=u", ".join(percentile_strings))
 
 
 class LessTicksAutoDateLocator(AutoDateLocator):
