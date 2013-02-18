@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-09 01:47+0200\n"
+"POT-Creation-Date: 2013-02-18 04:22-0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,71 +16,79 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: dateperiods.py:12
+#: adapter.py:144
+msgid "with"
+msgstr "met"
+
+#: adapter.py:145
+msgid "percentile"
+msgstr "percentiel"
+
+#: dateperiods.py:14
 msgid "Quarter 1"
 msgstr "Eerste kwartaal"
 
-#: dateperiods.py:13
+#: dateperiods.py:15
 msgid "Quarter 2"
 msgstr "Tweede kwartaal"
 
-#: dateperiods.py:14
+#: dateperiods.py:16
 msgid "Quarter 3"
 msgstr "Derde kwartaal"
 
-#: dateperiods.py:15
+#: dateperiods.py:17
 msgid "Quarter 4"
 msgstr "Vierde kwartaal"
 
-#: dateperiods.py:19
+#: dateperiods.py:21
 msgid "January"
 msgstr "Januari"
 
-#: dateperiods.py:20
+#: dateperiods.py:22
 msgid "February"
 msgstr "Februari"
 
-#: dateperiods.py:21
+#: dateperiods.py:23
 msgid "March"
 msgstr "Maart"
 
-#: dateperiods.py:22
+#: dateperiods.py:24
 msgid "April"
 msgstr "April"
 
-#: dateperiods.py:23
+#: dateperiods.py:25
 msgid "May"
 msgstr "Mei"
 
-#: dateperiods.py:24
+#: dateperiods.py:26
 msgid "June"
 msgstr "Juni"
 
-#: dateperiods.py:25
+#: dateperiods.py:27
 msgid "July"
 msgstr "Juli"
 
-#: dateperiods.py:26
+#: dateperiods.py:28
 msgid "August"
 msgstr "Augustus"
 
-#: dateperiods.py:27
+#: dateperiods.py:29
 msgid "September"
 msgstr "September"
 
-#: dateperiods.py:28
+#: dateperiods.py:30
 msgid "October"
 msgstr "Oktober"
 
-#: dateperiods.py:29
+#: dateperiods.py:31
 msgid "November"
 msgstr "November"
 
-#: dateperiods.py:30
+#: dateperiods.py:32
 msgid "December"
 msgstr "December"
 
-#: dateperiods.py:138
+#: dateperiods.py:155
 msgid "Whole period"
 msgstr "Hele periode"
 
@@ -88,112 +96,104 @@ msgstr "Hele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: models.py:530
+#: models.py:609
 msgid "all"
 msgstr "alles"
 
-#: models.py:531
+#: models.py:610
 msgid "year"
 msgstr "jaar"
 
-#: models.py:532
+#: models.py:611
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:533
+#: models.py:612
 msgid "month"
 msgstr "maand"
 
-#: models.py:534
+#: models.py:613
 msgid "week"
 msgstr "week"
 
-#: models.py:535
+#: models.py:614
 msgid "day"
 msgstr "dag"
 
-#: views.py:313 views.py:1292
+#: views.py:288 views.py:1263
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:331
+#: views.py:305
 msgid "Layers"
 msgstr "Kaartlagen"
 
-#: views.py:337 templates/lizard_map/legend_item.html:6
+#: views.py:311 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:17
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:366
+#: views.py:357
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:367
+#: views.py:358
 msgid "Select multiple items"
 msgstr "Selecteer meerdere items"
 
-#: views.py:375
+#: views.py:366
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
-#: views.py:382
-msgid "Locations"
-msgstr "Locaties"
-
-#: views.py:383
-msgid "Search for locations"
-msgstr "Zoek naar locaties"
-
-#: views.py:390
+#: views.py:373
 msgid "Default zoom"
 msgstr "Beginlocatie"
 
-#: views.py:391
+#: views.py:374
 msgid "Zoom to default location"
 msgstr "Zoom naar de standaard beginlocatie"
 
-#: views.py:1270 views.py:1295
+#: views.py:1241 views.py:1266
 msgid "Collage"
 msgstr ""
 
-#: views.py:1280
+#: views.py:1251
 msgid "Verander het datumbereik van de metingen."
 msgstr ""
 
-#: views.py:1290
+#: views.py:1261
 msgid "Home"
 msgstr ""
 
-#: workspace.py:21
+#: workspace.py:22
 msgid "blue"
 msgstr "blauw"
 
-#: workspace.py:22
+#: workspace.py:23
 msgid "darkred"
 msgstr ""
 
-#: workspace.py:23
+#: workspace.py:24
 msgid "green"
 msgstr ""
 
-#: workspace.py:24
+#: workspace.py:25
 msgid "black"
 msgstr "zwart"
 
-#: workspace.py:25
+#: workspace.py:26
 msgid "cyan"
 msgstr "cyaan"
 
-#: workspace.py:26
+#: workspace.py:27
 msgid "yellow"
 msgstr "geel"
 
-#: workspace.py:27
+#: workspace.py:28
 msgid "lightblue"
 msgstr "lichtblauw"
 
-#: workspace.py:28
+#: workspace.py:29
 msgid "grey"
 msgstr "grijs"
 
@@ -230,7 +230,8 @@ msgstr "Selectie leegmaken"
 msgid "Selection popup"
 msgstr "Selectie pop-up"
 
-#: templates/lizard_map/tag_collage_edit.html:79
+#: templates/lizard_map/tag_collage_edit.html:81
+#: templates/lizard_map/tag_collage_edit.html:87
 msgid "Selection page"
 msgstr "Naar selectiepagina"
 
@@ -258,3 +259,9 @@ msgstr "Workspace opslaan"
 #: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
 msgstr "Deze workspace bewerken"
+
+#~ msgid "Locations"
+#~ msgstr "Locaties"
+
+#~ msgid "Search for locations"
+#~ msgstr "Zoek naar locaties"
