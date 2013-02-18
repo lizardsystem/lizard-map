@@ -16,6 +16,7 @@ from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils import simplejson as json
+from django.utils.translation import ugettext as _
 
 from lizard_map.matplotlib_settings import FONT_SIZE
 from lizard_map.matplotlib_settings import SCREEN_DPI
@@ -133,6 +134,30 @@ def adapter_entrypoint(adapter_class, layer_arguments, workspace_item=None):
 
 
 # Graph stuff
+
+def _make_percentile_label(label, percentiles):
+    """Return a string like "label (met 10% - 90%, 20% - 80% percentielen)"
+
+    Assumes percentiles has an even number of elements.
+    """
+
+    met = _("with")
+    percentiel = _("percentile")
+
+    if not percentiles:
+        return label
+
+    percentile_strings = []
+    for i in range(len(percentiles) // 2):
+        percentile_strings.append(u"{0:2.0f}% - {1:2.0f}% {2}".format(
+                100 * percentiles[i],
+                100 * percentiles[-(i + 1)],
+                percentiel))
+
+    return u"{label} ({met} {percentielen})".format(
+        label=label, met=met,
+        percentielen=u", ".join(percentile_strings))
+
 
 class LessTicksAutoDateLocator(AutoDateLocator):
     """Similar to matplotlib.date.AutoDateLocator, but with less ticks."""
@@ -934,7 +959,13 @@ class FlotGraph(object):
                 "the number of percentiles.")
 
         for data in self.axes.flot_data:
-            if data.get('label', None) == label:
+            if data.get('label') == label:
+                # This is the plot line we are adding the percentiles
+                # to. We need to know its color so that the percentile
+                # bars can have the same color, and this is also where
+                # we can adjust the plot's label.
+                data['label'] = _make_percentile_label(
+                    data.get('label'), sorted(percentiles.keys()))
                 color = data['color']
                 break
         else:
