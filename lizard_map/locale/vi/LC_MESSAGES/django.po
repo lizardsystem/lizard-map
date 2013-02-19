@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-02-19 12:08+0100\n"
-"PO-Revision-Date: 2013-02-19 11:13+0000\n"
+"PO-Revision-Date: 2013-02-19 13:44+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -28,7 +28,7 @@ msgstr ""
 
 #: dateperiods.py:14
 msgid "Quarter 1"
-msgstr "<TODO>"
+msgstr ""
 
 #: dateperiods.py:15
 msgid "Quarter 2"
@@ -44,51 +44,51 @@ msgstr ""
 
 #: dateperiods.py:21
 msgid "January"
-msgstr ""
+msgstr "Tháng Một"
 
 #: dateperiods.py:22
 msgid "February"
-msgstr ""
+msgstr "Tháng Hai"
 
 #: dateperiods.py:23
 msgid "March"
-msgstr ""
+msgstr "Tháng Ba"
 
 #: dateperiods.py:24
 msgid "April"
-msgstr ""
+msgstr "Tháng Tư"
 
 #: dateperiods.py:25
 msgid "May"
-msgstr ""
+msgstr "Tháng Năm"
 
 #: dateperiods.py:26
 msgid "June"
-msgstr ""
+msgstr "Tháng Sáu"
 
 #: dateperiods.py:27
 msgid "July"
-msgstr ""
+msgstr "Tháng Bảy"
 
 #: dateperiods.py:28
 msgid "August"
-msgstr ""
+msgstr "Tháng Tám"
 
 #: dateperiods.py:29
 msgid "September"
-msgstr ""
+msgstr "Tháng Chín"
 
 #: dateperiods.py:30
 msgid "October"
-msgstr ""
+msgstr "Tháng Mười"
 
 #: dateperiods.py:31
 msgid "November"
-msgstr ""
+msgstr "Tháng Mười Một"
 
 #: dateperiods.py:32
 msgid "December"
-msgstr ""
+msgstr "Tháng Mười Hai"
 
 #: dateperiods.py:155
 msgid "Whole period"
