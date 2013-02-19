@@ -6,6 +6,8 @@ Changelog of lizard-map
 
 - Add vietnamese translations for month names via google translate.
 
+- Remove zc.buildout >= 2.0.1 from setup.py since it is not a dependency.
+
 
 4.21 (2013-02-19)
 -----------------
