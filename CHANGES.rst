@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.21 (unreleased)
+4.21 (2013-02-19)
 -----------------
 
 - Manage translation strings with Transifex. Update en (source) and nl 
