@@ -29,7 +29,7 @@ install_requires = [
     # doesn't work right at the moment.
     # mapnik: sorry, there's no real package for that.  We do need it however.
     'translations',
-    'zc.buildout >= 2.0',
+    'zc.buildout >= 2.0.1',
     ],
 
 tests_require = [
