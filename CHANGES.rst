@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.22 (unreleased)
+4.22 (2013-02-19)
 -----------------
 
 - Add vietnamese translations for month names via google translate.
