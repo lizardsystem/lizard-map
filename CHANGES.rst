@@ -4,19 +4,23 @@ Changelog of lizard-map
 4.21 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Manage translation strings with Transifex. Update en (source) and nl translations. Use nens/translations package for this.
+
+- Add vietnamese django.po file from Transifex.
+
+- Upgrade to zc.buildout 2.0.1.
 
 
 4.20 (2013-01-22)
 -----------------
 
-- Fix context instance instantiation in html_default method. 
+- Fix context instance instantiation in html_default method.
 
 
 4.19 (2013-01-21)
 -----------------
 
-- Add RequestContext instance when rendering a template in html_default 
+- Add RequestContext instance when rendering a template in html_default
   method. This way request-related tags and context variables can be
   used when rendering the template.
 
@@ -24,7 +28,7 @@ Changelog of lizard-map
 4.18 (2013-01-17)
 -----------------
 
-- Adjust FlotGraphAxes to enable threshold lines. 
+- Adjust FlotGraphAxes to enable threshold lines.
 - PEP8 fixes.
 
 4.17 (2013-01-10)
