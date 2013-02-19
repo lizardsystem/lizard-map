@@ -194,21 +194,20 @@ views.py::
 Adding something to the workspace
 ---------------------------------
 
-A template snippet to add an item to the workspace::
+Make a WorkspaceAcceptable object, then pass it on to the template. In the
+template, use the to_html function of the WorkspaceAcceptable object.
 
-    <li class="workspace-acceptable file {% if_in_workspace_edit view.workspace_edit parameter.workspace_name 'selected' %}"
-      data-name="{{ parameter.workspace_name }}"
-        data-adapter-class="{{ view.adapter_class }}"
-        data-adapter-layer-json='{"slug":"{{ view.jdbc_source_slug }}","filter":"{{ parameter.filter_id }}","parameter":"{{ parameter.id }}"}'
-        data-filter-id="{{ parameter.filter_id }}">
-      {{ parameter.name }} ({{ parameter.filter_name }})
-    </li>
 
-The above bit of HTML is taken from lizard-fewsjdbc. It is a <li>
-element that, when clicked, adds the current combination of fewsjdbc
-source, filter and parameter to the Lizard workspace.
+    from lizard_map.lizard_widgets import WorkspaceAcceptable
 
-Notes:
+    workspace_acceptable = WorkspaceAcceptable(
+                    name='workspace-acceptable',
+                    adapter_layer_json='"json"',
+                    adapter_name='adapter',
+                    description='description')
+
+
+Some notes on the generated html::
 
 * The css class "workspace-acceptable" is what makes the <li>
   clickable. The function setUpWorkspaceAcceptable in lizard_map.js
@@ -228,6 +227,7 @@ Notes:
   Unfortunately this happens more often than it should.
 * The content of the <li> is simply the description of this item as it
   should look in the sidebar.
+
 
 Adapters
 ========

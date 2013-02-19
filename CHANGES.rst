@@ -4,15 +4,16 @@ Changelog of lizard-map
 4.23 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Add vietnamese translations for month names via google translate.
+
+- Remove zc.buildout >= 2.0.1 from setup.py since it is not a dependency.
 
 
 4.22 (2013-02-19)
 -----------------
 
-- Add vietnamese translations for month names via google translate.
-
-- Remove zc.buildout >= 2.0.1 from setup.py since it is not a dependency.
+- Added animation support for wms urls that have 'time' in them. Includes
+  backbone 0.9.10, underscore 1.4.4.
 
 
 4.21 (2013-02-19)

@@ -209,6 +209,17 @@ class WorkspaceItemMixin(models.Model):
             return None
         return current_adapter
 
+    @property
+    def is_animatable(self):
+        """Dirty way to check if the wms is "animated" """
+        has_substring = False
+        try:
+            self.adapter_layer_json.index('time')
+            has_substring = True
+        except:
+            pass
+        return has_substring
+
     def __unicode__(self):
         return self.name
 
@@ -364,6 +375,7 @@ class WorkspaceModelMixin(object):
                     'params': adapter_layer.get('params', '{}'),
                     'options': adapter_layer.get('options', '{}'),
                     'index': workspace_item.index,
+                    'is_animatable': 'true' if workspace_item.is_animatable else 'false',
                 }
             else:
                 # item is served by our local simulated WMS server
@@ -410,7 +422,7 @@ class WorkspaceModelMixin(object):
         """Determine if any visible workspace_item is animatable."""
         for workspace_item in self.workspace_items.filter(visible=True):
             try:
-                if workspace_item.adapter.is_animatable:
+                if workspace_item.is_animatable:
                     return True
             except AttributeError:
                 # workspace_item/adapter is invalid.
