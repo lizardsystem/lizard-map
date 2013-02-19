@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.21 (unreleased)
 -----------------
 
-- Manage translation strings with Transifex. Update en (source) and nl translations. Use nens/translations package for this.
+- Manage translation strings with Transifex. Update en (source) and nl 
+  translations. Use nens/translations package for this.
 
 - Add vietnamese django.po file from Transifex.
 
