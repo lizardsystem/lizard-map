@@ -1248,7 +1248,7 @@ class CollageDetailView(CollageMixin, UiView):
         if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
             set_date_range = Action(
                 name='',
-                description=_('Verander het datumbereik van de metingen.'),
+                description=_('Change the date range of the measurements'),
                 url='javascript:void(null)',
                 icon='icon-calendar',
                 klass='popup-date-range reload-after-action')
