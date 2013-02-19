@@ -7,7 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2013-02-14 10:10+0100\n"
+=======
+"POT-Creation-Date: 2013-02-18 04:22-0600\n"
+>>>>>>> master
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +20,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+<<<<<<< HEAD
+=======
+#: adapter.py:144
+msgid "with"
+msgstr ""
+
+#: adapter.py:145
+msgid "percentile"
+msgstr ""
+
+>>>>>>> master
 #: dateperiods.py:14
 msgid "Quarter 1"
 msgstr ""
@@ -133,7 +148,11 @@ msgstr ""
 msgid "Select multiple items"
 msgstr ""
 
+<<<<<<< HEAD
 #: views.py:366 views.py:1251
+=======
+#: views.py:366
+>>>>>>> master
 msgid "Change the date range of the measurements"
 msgstr ""
 
@@ -149,6 +168,13 @@ msgstr ""
 msgid "Collage"
 msgstr ""
 
+<<<<<<< HEAD
+=======
+#: views.py:1251
+msgid "Verander het datumbereik van de metingen."
+msgstr ""
+
+>>>>>>> master
 #: views.py:1261
 msgid "Home"
 msgstr ""
