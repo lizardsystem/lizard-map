@@ -1,5 +1,4 @@
-[report]
+[run]
 omit =
     */migrations/*
-
-ignore_errors = true
+    *settings.py
