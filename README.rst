@@ -24,6 +24,11 @@ It provides:
 .. image:: https://secure.travis-ci.org/lizardsystem/lizard-map.png?branch=master
    :target: http://travis-ci.org/#!/lizardsystem/lizard-map
 
+Translation status:
+
+.. image:: https://translations.lizard.net/projects/p/lizardsystem/resource/lizard-map/chart/image_png
+   :target: https://translations.lizard.net/projects/p/lizardsystem/resource/lizard-map/
+
 
 Core concept: workspaces
 ------------------------
