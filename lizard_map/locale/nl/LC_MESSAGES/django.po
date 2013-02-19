@@ -8,15 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2013-02-14 10:10+0100\n"
-"PO-Revision-Date: 2013-02-14 10:42+0000\n"
+"POT-Creation-Date: 2013-02-19 12:08+0100\n"
+"PO-Revision-Date: 2013-02-19 11:13+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
-=======
-"POT-Creation-Date: 2013-02-18 04:22-0600\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
->>>>>>> master
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -24,8 +18,6 @@ msgstr ""
 "Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-<<<<<<< HEAD
-=======
 #: adapter.py:144
 msgid "with"
 msgstr "met"
@@ -34,7 +26,6 @@ msgstr "met"
 msgid "percentile"
 msgstr "percentiel"
 
->>>>>>> master
 #: dateperiods.py:14
 msgid "Quarter 1"
 msgstr "Eerste kwartaal"
@@ -146,23 +137,19 @@ msgstr "Legenda"
 
 #: views.py:357
 msgid "Multi-select"
-msgstr ""
+msgstr "Multi-select"
 
 #: views.py:358
 msgid "Select multiple items"
 msgstr "Selecteer meerdere items"
 
-<<<<<<< HEAD
 #: views.py:366 views.py:1251
-=======
-#: views.py:366
->>>>>>> master
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
 #: views.py:373
 msgid "Default zoom"
-msgstr ""
+msgstr "Beginlocatie"
 
 #: views.py:374
 msgid "Zoom to default location"
@@ -170,18 +157,11 @@ msgstr "Zoom naar de standaard beginlocatie"
 
 #: views.py:1241 views.py:1266
 msgid "Collage"
-msgstr ""
+msgstr "Collage"
 
-<<<<<<< HEAD
-=======
-#: views.py:1251
-msgid "Verander het datumbereik van de metingen."
-msgstr ""
-
->>>>>>> master
 #: views.py:1261
 msgid "Home"
-msgstr ""
+msgstr "Thuispagina"
 
 #: workspace.py:22
 msgid "blue"
@@ -277,9 +257,3 @@ msgstr "Workspace opslaan"
 #: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
 msgstr "Deze workspace bewerken"
-
-#~ msgid "Locations"
-#~ msgstr "Locaties"
-
-#~ msgid "Search for locations"
-#~ msgstr "Zoek naar locaties"
