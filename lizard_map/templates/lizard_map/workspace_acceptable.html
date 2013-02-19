@@ -10,5 +10,8 @@
   {% if acceptable.enabled %}
     <i class="icon-ok workspace-selected-icon"></i>
   {% endif %}
+  {% if acceptable.is_animatable %}
+    <i class="icon-film"></i>
+  {% endif %}
   {{ acceptable.name }}
 </{{ acceptable.html_tag }}>

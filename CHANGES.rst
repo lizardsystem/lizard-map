@@ -6,6 +6,9 @@ Changelog of lizard-map
 
 - Add vietnamese translations for month names via google translate.
 
+- Added animation support for wms urls that have 'time' in them. Includes
+  backbone 0.9.10, underscore 1.4.4.
+
 
 4.21 (2013-02-19)
 -----------------

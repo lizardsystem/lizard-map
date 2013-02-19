@@ -1,6 +1,18 @@
 {% extends "lizard_map/lizardgis.html" %}
 {% load i18n map workspaces %}
 
+
+{% block javascript %}
+{{ block.super }}
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/animations.js"></script>
+{% endblock %}
+
+
 {% block map-javascript %}
   {% if view.has_google %}
     <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key={{ view.map_variables.googlemaps_api_key }}"></script>
@@ -9,6 +21,7 @@
 
 
 {% block secondary-sidebar %}
+  {% animation_control_panel view.workspace_edit %}
   {% workspace_edit view.workspace_edit %}
   {% collage_edit view.collage_edit %}
 {% endblock secondary-sidebar %}
@@ -64,7 +77,8 @@
              {# json uses "" #}
              data-workspace-wms-params='{{ wms_layer.params }}'
              data-workspace-wms-options='{{ wms_layer.options }}'
-             data-workspace-wms-index='{{ wms_layer.index }}'>
+             data-workspace-wms-index='{{ wms_layer.index }}'
+             data-workspace-wms-animatable='{{ wms_layer.is_animatable }}'>
          </div>
        {% endautoescape %}
      {% endfor %}

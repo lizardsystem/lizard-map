@@ -1095,8 +1095,10 @@ function refreshWmsLayers() {
     ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
-        var name, url, params, options, id, index;
+        var name, url, params, options, id, index, animatable;
         // WMS id, different than workspace ids.
+        animatable = $(this).attr("data-workspace-wms-animatable");
+        if (animatable === 'true') { return; }
         id = $(this).attr("data-workspace-wms-id");
         ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
@@ -1134,6 +1136,10 @@ function refreshWmsLayers() {
             delete wms_layers[key];
         }
     });
+    // Set up animation control panel. No worries, it cleans itself up when
+    // running multiple times.
+    init_animation();
+    init_control_panel();
 }
 
 
