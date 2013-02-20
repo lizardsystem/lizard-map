@@ -1979,8 +1979,10 @@ function read_view_state_from_server(on_success) {
                 else {
                     // use a relative date range from the datepicker
                     var range = $('.popup-date-range').data('daterangepicker').getRange(data.range_type);
-                    new_state.dt_start = range[0];
-                    new_state.dt_end = range[1];
+                    if (range) {
+                        new_state.dt_start = range[0];
+                        new_state.dt_end = range[1];
+                    }
                 }
             }
 
@@ -2040,7 +2042,6 @@ function setup_daterangepicker() {
     if ($('.popup-date-range').exists()) {
         var picker = $('.popup-date-range').daterangepicker({
             opens: 'left',
-            maxDate: moment.utc(),
             format: 'DD-MM-YYYY',
             locale: {
                 applyLabel:'Bevestigen',
@@ -2051,11 +2052,36 @@ function setup_daterangepicker() {
                 firstDay:0
             },
             ranges: {
-                'Afgelopen dag':     [moment.utc().subtract('days',   1), moment.utc(), 'day'],
-                'Afgelopen 2 dagen': [moment.utc().subtract('days',   2), moment.utc(), '2_day'],
-                'Afgelopen week':    [moment.utc().subtract('weeks',  1), moment.utc(), 'week'],
-                'Afgelopen maand':   [moment.utc().subtract('months', 1), moment.utc(), 'month'],
-                'Afgelopen jaar':    [moment.utc().subtract('years',  1), moment.utc(), 'year']
+                'Vandaag': [
+                    moment.utc().startOf('day'),
+                    moment.utc().add('days', 1).startOf('day'),
+                    'today'
+                ],
+                'Gisteren': [
+                    moment.utc().subtract('days', 1).startOf('day'),
+                    moment.utc().startOf('day'),
+                    'yesterday'
+                ],
+                'Afgelopen 2 dagen': [
+                    moment.utc().subtract('days', 2),
+                    moment.utc(),
+                    '2_day'
+                ],
+                'Afgelopen week': [
+                    moment.utc().subtract('weeks', 1),
+                    moment.utc(),
+                    'week'
+                ],
+                'Afgelopen maand': [
+                    moment.utc().subtract('months', 1),
+                    moment.utc(),
+                    'month'
+                ],
+                'Afgelopen jaar': [
+                    moment.utc().subtract('years', 1),
+                    moment.utc(),
+                    'year'
+                ]
             }
         },
         function (range_type, dt_start, dt_end) {

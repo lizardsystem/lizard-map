@@ -570,6 +570,8 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     owner = models.ForeignKey(User, null=True, blank=True)
     secret_slug = models.CharField(max_length=16, null=True)
     extent_is_set = models.BooleanField(default=False)
+    sidebar_is_collapsed = models.BooleanField(default=False)
+    rightbar_is_collapsed = models.BooleanField(default=True)
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)

@@ -440,6 +440,13 @@ class WorkspaceStorageView(AppView):
                   Action(name=self.workspace.name)]
         return result
 
+    @property
+    def sidebar_is_collapsed(self):
+        return self.workspace.sidebar_is_collapsed
+
+    @property
+    def rightbar_is_collapsed(self):
+        return self.workspace.rightbar_is_collapsed
 
 class ActionDialogView(ViewContextMixin, FormView):
     """
