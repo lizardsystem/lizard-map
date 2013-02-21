@@ -78,13 +78,7 @@
              data-workspace-wms-params='{{ wms_layer.params }}'
              data-workspace-wms-options='{{ wms_layer.options }}'
              data-workspace-wms-index='{{ wms_layer.index }}'
-             data-workspace-wms-animatable='{{ wms_layer.is_animatable }}'
-             {% if wms_layer.cql_filter %}
-               data-workspace-wms-cql-filter="{{ wms_layer.cql_filter }}"
-               {# Note: yes, double quotes. cql hangs on double quotes #}
-               {# in the query. #}
-             {% endif %}
-             >
+             data-workspace-wms-animatable='{{ wms_layer.is_animatable }}'>
          </div>
        {% endautoescape %}
      {% endfor %}
