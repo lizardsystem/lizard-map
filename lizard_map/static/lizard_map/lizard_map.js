@@ -1115,6 +1115,16 @@ function refreshWmsLayers() {
             delete options['reproject'];
         }
         index = parseInt($(this).attr("data-workspace-wms-index"));
+
+        // Add a cql filter to the params list.
+        // Ideally, it should already be part of the params list!
+        // Problem is quotes: cql wants single quotes.
+        var cql_filter = $(this).data("workspace-wms-cql-filter");
+        if (cql_filter != undefined) {
+          params['cql_filter'] = cql_filter;
+        }
+
+
         if (wms_layers[id] === undefined) {
             // Create it.
             var layer = new OpenLayers.Layer.WMS(name, url, params, options);
