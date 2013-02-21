@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.26 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed hour / day clamping (rounding) in the daterangepicker. Values for
+  dt_start and dt_end are now simply a relative period based on the current
+  time.
 
 
 4.25 (2013-02-26)
