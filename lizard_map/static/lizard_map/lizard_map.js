@@ -2052,15 +2052,10 @@ function setup_daterangepicker() {
                 firstDay:0
             },
             ranges: {
-                'Vandaag': [
-                    moment.utc().startOf('day'),
-                    moment.utc().add('days', 1).startOf('day'),
+                'Afgelopen dag': [
+                    moment.utc().subtract('days', 1),
+                    moment.utc(),
                     'today'
-                ],
-                'Gisteren': [
-                    moment.utc().subtract('days', 1).startOf('day'),
-                    moment.utc().startOf('day'),
-                    'yesterday'
                 ],
                 'Afgelopen 2 dagen': [
                     moment.utc().subtract('days', 2),
