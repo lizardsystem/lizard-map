@@ -4,9 +4,7 @@ Changelog of lizard-map
 4.26 (unreleased)
 -----------------
 
-- Removed hour / day clamping (rounding) in the daterangepicker. Values for
-  dt_start and dt_end are now simply a relative period based on the current
-  time.
+- Nothing changed yet.
 
 
 4.25 (2013-02-26)
@@ -15,6 +13,10 @@ Changelog of lizard-map
 - The change described in 4.24 didn't really work well, because the
   session object wasn't created yet when the default workspace was
   copied. This is fixed.
+
+- Removed hour / day clamping (rounding) in the daterangepicker. Values for
+  dt_start and dt_end are now simply a relative period based on the current
+  time.
 
 
 4.24 (2013-02-25)
