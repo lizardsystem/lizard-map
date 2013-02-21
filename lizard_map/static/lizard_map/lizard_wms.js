@@ -46,7 +46,7 @@ function addMultipleSelection(x, y, map, e) {
     workspace_id = $(".workspace").attr("data-workspace-id");
     workspace_type = $(".workspace").attr("data-workspace-type");
     if (workspace_type === undefined) {
-	workspace_type = "workspace_edit"; // Default
+    workspace_type = "workspace_edit"; // Default
     }
 
     if (url !== undefined) {
@@ -191,41 +191,41 @@ function refreshWmsLayers() {
         options = $(this).data("workspace-wms-options");
         index = parseInt($(this).attr("data-workspace-wms-index"));
 
-		// Add cql_filtering
+        // Add cql_filtering
         var layer_filters = $(this).data("workspace-wms-cql_filters");
         var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
-		var cql_filters_arr = [];
-		// Add the filters that are selected and available for this layer.
+        var cql_filters_arr = [];
+        // Add the filters that are selected and available for this layer.
         for (key in selected_filters){
             if ($.inArray(key, layer_filters) !== -1){
                 cql_filters_arr.push(key + '=' + selected_filters[key]);
             }
         }
 
-		// Add possible cql_filters from the layer definition.
-		if (params['cql_filter'] != undefined) {
-			cql_filters_arr.push(params['cql_filter']);
-		}
+        // Add possible cql_filters from the layer definition.
+        if (params['cql_filter'] != undefined) {
+            cql_filters_arr.push(params['cql_filter']);
+        }
 
-		var cql_filters = '';
-		if (cql_filters_arr.length > 0) {
-			//Put the filters in geoserver format
-			cql_filters = cql_filters_arr.join(' AND ');
-		}
+        var cql_filters = '';
+        if (cql_filters_arr.length > 0) {
+            //Put the filters in geoserver format
+            cql_filters = cql_filters_arr.join(' AND ');
+        }
 
 
-		// Each layer of a combined layer needs a cql_filter.
-		if (cql_filters != '') {
-			var layerslength = params['layers'].split(',').length - 1;
-			for (var i = 1; i <= layerslength; i ++) {
-				cql_filters += ';' + cql_filters;
-			}
-		}
+        // Each layer of a combined layer needs a cql_filter.
+        if (cql_filters != '') {
+            var layerslength = params['layers'].split(',').length - 1;
+            for (var i = 1; i <= layerslength; i ++) {
+                cql_filters += ';' + cql_filters;
+            }
+        }
 
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
-				// There are filters so add them to the request.
+                // There are filters so add them to the request.
                 params['cql_filter'] = cql_filters;
             }
 
@@ -235,12 +235,12 @@ function refreshWmsLayers() {
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
         }
         else {
-			var layer = wms_layers[id];
-			if (cql_filters.length > 0){
-				// Update the layer if a cql_filter is used
-				// with the new cql_filter params.
-				layer.mergeNewParams({'cql_filter': cql_filters});
-			}
+            var layer = wms_layers[id];
+            if (cql_filters.length > 0){
+                // Update the layer if a cql_filter is used
+                // with the new cql_filter params.
+                layer.mergeNewParams({'cql_filter': cql_filters});
+            }
             // set the correct Zindex
             layer.setZIndex(1000 - index);
         }
@@ -518,10 +518,10 @@ function getMapUrl() {
         if (!map.layers[i].calculateInRange()) {
             continue;
         }
-	if (!map.layers[i].params) {
-	    /* Why does this happen? I don't know, but this appears necessary. */
-	    continue;
-	}
+    if (!map.layers[i].params) {
+        /* Why does this happen? I don't know, but this appears necessary. */
+        continue;
+    }
 
         activelayers[activelayers.length] = map.layers[i].params.LAYERS;
     }
@@ -545,7 +545,7 @@ function setDownloadImageLink() {
         var url;
         url = $(this).attr("href");
 
-	url += getMapUrl();
+        url += getMapUrl();
         // Because the result is an image, a popup will occur.
         window.location = url;
         return false;
