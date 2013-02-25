@@ -4,7 +4,18 @@ Changelog of lizard-map
 4.24 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- It is now possible to use some stored workspace as a "default
+  workspace" for users who get a newly created workspace.
+
+  If the Setting 'default_workspace_anonymous_user' exists and is the
+  secret slug of some existing stored workspace, then the items in it
+  will be copied to any anonymous user's workspace when it is first
+  created.
+
+  The same holds for 'default_workspace_user' and logged in users,
+  although it is probably less useful for them since their workspace
+  is only initially created once, after that they keep using their
+  existing one.
 
 
 4.23 (2013-02-19)
@@ -25,7 +36,7 @@ Changelog of lizard-map
 4.21 (2013-02-19)
 -----------------
 
-- Manage translation strings with Transifex. Update en (source) and nl 
+- Manage translation strings with Transifex. Update en (source) and nl
   translations. Use nens/translations package for this.
 
 - Add vietnamese django.po file from Transifex.

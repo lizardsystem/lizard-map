@@ -299,9 +299,8 @@ class UserSessionMixin(models.Model):
         max_length=40, unique=True, blank=True, null=True)
 
     @classmethod
-    def get_or_create(cls, session_key, user):
-        """Get your user session object, or create a new one.
-        """
+    def get_using_session(cls, session_key, user):
+        """Get your user session object, or return None."""
         result = None
         if user.is_authenticated():
             # Try to fetch
@@ -320,16 +319,35 @@ class UserSessionMixin(models.Model):
                     # Should never happen.
                     user_session_object.session_key = None
                     user_session_object.save()
-                    result = cls(session_key=session_key, user=user)
-                    result.save()
+
+                    return None
                 else:
                     result = user_session_object
             except cls.DoesNotExist:
-                # Create new.
-                result = cls(session_key=session_key)
-                if user.is_authenticated():
-                    result.user = user
-                result.save()
+                return None
+        return result
+
+    @classmethod
+    def create_using_session(cls, session_key, user):
+        """Create a NEW user session object.
+
+        Only call if the session does not exist yet (usually if
+        get_session returned None)!"""
+
+        result = cls(session_key=session_key)
+        if user.is_authenticated():
+            result.user = user
+        result.save()
+
+        return result
+
+    @classmethod
+    def get_or_create(cls, session_key, user):
+        """Get your user session object, or create a new one.
+        """
+        result = cls.get_using_session(session_key, user)
+        if result is None:
+            result = cls.create_using_session(session_key, user)
         return result
 
     class Meta:
@@ -443,6 +461,48 @@ class WorkspaceEdit(
 
     def __unicode__(self):
         return 'Workspace Edit of user %s' % self.user
+
+    @classmethod
+    def get_or_create(cls, session_key, user):
+        """Get or create a workspace edit, optionally using a default.
+
+        If user already has a workspace edit, return it. If he hasn't,
+        use settings 'default_workspace_anonymous_user' or
+        'default_workspace_user', depending on the user's
+        is_authorized, to retrieve a stored workspace, copying its
+        items to a newly created WorkspaceEdit. If a stored workspace
+        isn't found this way, return a new empty workspace edit."""
+
+        workspace_edit = cls.get_using_session(session_key, user)
+        if workspace_edit is not None:
+            # Already exists
+            return workspace_edit
+
+        # Doesn't exist yet -- create it, then optionally copy
+        # defaults
+        workspace_edit = cls.create_using_session(
+            session_key=session_key, user=user)
+
+        if user.is_authenticated():
+            stored_workspace_slug = Setting.get(
+                'default_workspace_user')
+        else:
+            stored_workspace_slug = Setting.get(
+                'default_workspace_anonymous_user')
+
+        if stored_workspace_slug:
+            try:
+                workspace_storage = WorkspaceStorage.objects.get(
+                    secret_slug=stored_workspace_slug)
+
+                # Found a workspace storage, copy its items
+                workspace_edit.load_from_storage(workspace_storage)
+            except (WorkspaceStorage.DoesNotExist,
+                    WorkspaceStorage.MultipleObjectsReturned) as e:
+                logger.warn("Failed to load WorkspaceStorage {0} for user: {1}"
+                            .format(stored_workspace_slug, e))
+
+        return workspace_edit
 
     def save_to_storage(self, name, owner, extent=None):
         """Save this model and workspace_items to Storage.

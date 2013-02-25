@@ -12,6 +12,7 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
+from lizard_map.models import Setting
 from lizard_map.testmodelapp.models import Extent
 from lizard_map.testmodelapp.models import Period
 from lizard_map.testmodelapp.models import UserSession
@@ -483,6 +484,30 @@ class WorkspaceEditTest(TestCase):
         workspace = WorkspaceStorage(name='workspace-storage', owner=user)
         workspace.save()
         workspace.__unicode__()
+
+    def test_loads_stored_workspace(self):
+        """WorkspaceEdit's get_or_create should copy an existing
+        stored workspace when creating a new one if the relevant
+        setting exists."""
+        user = AnonymousUser()
+        Setting.objects.create(
+            key="default_workspace_anonymous_user",
+            value="some_secret_slug")
+
+        workspace_storage = WorkspaceStorage(
+            name='storage', secret_slug="some_secret_slug")
+        workspace_storage.save()
+        workspace_storage_item = WorkspaceStorageItem(
+            workspace=workspace_storage)
+        workspace_storage_item.save()
+
+        session_key = "whee"
+        workspace_edit = WorkspaceEdit.get_or_create(session_key, user)
+
+        # Should contain 1 item, copied from the workspace storage
+        self.assertEquals(
+            len(workspace_edit.workspace_items.all()),
+            1)
 
     # def test_workspace_extent_temp(self):
     #     """
