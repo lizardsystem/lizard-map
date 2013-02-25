@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.24 (unreleased)
+4.24 (2013-02-25)
 -----------------
 
 - It is now possible to use some stored workspace as a "default
