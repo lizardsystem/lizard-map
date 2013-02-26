@@ -329,15 +329,27 @@ class UserSessionMixin(models.Model):
 
     @classmethod
     def create_using_session(cls, session_key, user):
-        """Create a NEW user session object.
+        """Create a new user session object.
 
-        Only call if the session does not exist yet (usually if
-        get_session returned None)!"""
+        Although this will usually be called only if it doesn't exist
+        yet, concurrency means that that's never certain. If it
+        happens to already exist, we just return the existing
+        object.
 
-        result = cls(session_key=session_key)
+        XXX: There is a race condition here still; if two threads /
+        requests both call this, it is possible that two objects are
+        created for the same user / session_key. The fix is to make
+        session_key and user unique_together and catch the resulting
+        exception. However, for now the current implementation is
+        better than it was already, and as sessions are always created
+        when the page is first seen, it is likely that there will only
+        be one request at that time."""
+
         if user.is_authenticated():
-            result.user = user
-        result.save()
+            result, created = cls.objects.get_or_create(user=user)
+        else:
+            result, created = cls.objects.get_or_create(
+                session_key=session_key)
 
         return result
 
@@ -393,7 +405,8 @@ class WorkspaceModelMixin(object):
                     'params': adapter_layer.get('params', '{}'),
                     'options': adapter_layer.get('options', '{}'),
                     'index': workspace_item.index,
-                    'is_animatable': 'true' if workspace_item.is_animatable else 'false',
+                    'is_animatable':
+                        'true' if workspace_item.is_animatable else 'false',
                 }
             else:
                 # item is served by our local simulated WMS server

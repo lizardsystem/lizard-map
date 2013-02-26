@@ -84,6 +84,28 @@ DEFAULT_PROJECTION = 'EPSG:900913'
 logger = logging.getLogger(__name__)
 
 
+def get_session_key(request):
+    """Create the session, if necessary, then return the session_key."""
+    if not request.session.session_key:
+        request.session.create()
+
+    return request.session.session_key
+
+
+def get_workspace_edit_by_request(request):
+    """Return workspace edit connected to this request."""
+    return WorkspaceEdit.get_or_create(
+        session_key=get_session_key(request),
+        user=request.user)
+
+
+def get_collage_edit_by_request(request):
+    """Return collage edit connected to this request."""
+    return CollageEdit.get_or_create(
+        session_key=get_session_key(request),
+        user=request.user)
+
+
 class GoogleTrackingMixin(object):
     """
     Google tracking code.
@@ -142,8 +164,8 @@ class WorkspaceEditMixin(WorkspaceMixin):
     def workspace_edit(self):
         """Return your workspace"""
         if not hasattr(self, '_workspace_edit'):
-            self._workspace_edit = WorkspaceEdit.get_or_create(
-                self.request.session.session_key, user=self.request.user)
+            self._workspace_edit = get_workspace_edit_by_request(self.request)
+
         return self._workspace_edit
 
     @property
@@ -166,18 +188,12 @@ class MapMixin(object):
         return s
 
     def start_extent(self):
-        # Hack: we need to have a session right away for toggling ws items.
-        self.request.session[
-            'make_sure_session_is_initialized'] = 'hurray'
-        # End of the hack.
-        map_location = Setting.extent(
-            'start_extent',
-            DEFAULT_START_EXTENT)
-        if MAP_LOCATION in self.request.session:
-            map_location = self.request.session[MAP_LOCATION]
-            logger.debug('Fetched map coordinates from session: '
-                         '%s' % (map_location))
-        return map_location
+        return self.request.session.get(
+            MAP_LOCATION,
+            Setting.extent(
+                'start_extent',
+                DEFAULT_START_EXTENT)  # Default
+            )
 
     def projection(self):
         return Setting.get('projection', DEFAULT_PROJECTION)
@@ -219,11 +235,10 @@ class MapMixin(object):
 
 
 class CollageMixin(object):
-
     def collage_edit(self):
         if not hasattr(self, '_collage_edit'):
-            self._collage_edit = CollageEdit.get_or_create(
-                self.request.session.session_key, user=self.request.user)
+            self._collage_edit = get_collage_edit_by_request(self.request)
+
         return self._collage_edit
 
 
@@ -521,9 +536,9 @@ class WorkspaceSaveView(ActionDialogView):
         """
         logger.debug("Saving stuff...")
         form_data = form.cleaned_data
-        # Should be get, else there is nothing to save...
-        workspace_edit = WorkspaceEdit.get_or_create(
-           self.request.session.session_key, self.request.user)
+
+        workspace_edit = get_workspace_edit_by_request(self.request)
+
         # TODO: quota, warning on duplicate names.
 
         # For the initial release of Lizard 3, turn required authorization
@@ -565,8 +580,8 @@ class WorkspaceLoadView(ActionDialogView):
         logger.debug("Loading stuff...")
         form_data = form.cleaned_data
 
-        workspace_edit = WorkspaceEdit.get_or_create(
-           self.request.session.session_key, self.request.user)
+        workspace_edit = get_workspace_edit_by_request(self.request)
+
         # TODO: check permissions.
         workspace_storage = WorkspaceStorage.objects.get(pk=form_data['id'])
         workspace_edit.load_from_storage(workspace_storage)
@@ -702,8 +717,8 @@ def workspace_item_reorder(
     reorders workspace_item[] in new order.
     """
     if workspace_edit is None:
-        workspace_edit = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
+        workspace_edit = get_workspace_edit_by_request(request)
+
     if workspace_items_order is None:
         workspace_items_order = dict([
                 (workspace_item_id, index * 10) for
@@ -734,8 +749,8 @@ def workspace_item_toggle(
 
     # For testing, workspace_edit can be given.
     if workspace_edit is None:
-        workspace_edit = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
+        workspace_edit = get_workspace_edit_by_request(request)
+
     name = request.POST['name']
     adapter_class = request.POST['adapter_class']
     adapter_layer_json = request.POST['adapter_layer_json']
@@ -755,8 +770,8 @@ def workspace_edit_item(
     workspace_edit is added for testing
     """
     if workspace_edit is None:
-        workspace_edit = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
+        workspace_edit = get_workspace_edit_by_request(request)
+
     if workspace_item_id is None:
         workspace_item_id = request.POST['workspace_item_id']
     workspace_item = workspace_edit.workspace_items.get(
@@ -784,8 +799,8 @@ def workspace_item_delete(request, workspace_edit=None, object_id=None):
     if object_id is None:
         object_id = request.POST['object_id']
     if workspace_edit is None:
-        workspace_edit = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
+        workspace_edit = get_workspace_edit_by_request(request)
+
     workspace_items = workspace_edit.workspace_items.filter(pk=object_id)
     deleted = True if workspace_items.count() > 0 else False
     workspace_items.delete()
@@ -999,8 +1014,7 @@ def collage_popup(request,
                   template='lizard_map/collage.html'):
     """Render page with collage item(s) in popup format
     """
-    collage = CollageEdit.get_or_create(
-        request.session.session_key, request.user)
+    collage = get_collage_edit_by_request(request)
     popup_id = 'popup-collage'
 
     collage_items = collage.collage_items.filter(visible=True)
@@ -1078,8 +1092,7 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
         workspace = get_object_or_404(
             WorkspaceStorage, secret_slug=workspace_storage_slug)
     else:
-        workspace = WorkspaceEdit.get_or_create(
-            request.session.session_key, request.user)
+        workspace = get_workspace_edit_by_request(request)
 
     # WMS standard parameters
     width = int(request.GET.get('WIDTH'))
@@ -1332,8 +1345,7 @@ class CollageView(CollageMixin, ActionDialogView):
         else:
             workspace = WorkspaceEdit.objects.get(pk=workspace_id)
 
-        collage = CollageEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
+        collage = get_collage_edit_by_request(self.request)
 
         found = search(workspace, google_x, google_y, radius)
 
@@ -1372,8 +1384,7 @@ class CollageAddView(CollageMixin, ActionDialogView):
 
     def form_valid_action(self, form):
         data = form.cleaned_data
-        collage = CollageEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
+        collage = get_collage_edit_by_request(self.request)
 
         # Parse_identifier_json is unnecessary, but it provides an
         # extra check.
@@ -1405,8 +1416,7 @@ class CollageEmptyView(CollageView):
         """Delete all collage items from collage_edit.
         """
         logger.debug('Deleting all collage items from collage_edit')
-        collage_edit = CollageEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
+        collage_edit = get_collage_edit_by_request(self.request)
         collage_edit.collage_items.all().delete()
 
 
@@ -1416,8 +1426,7 @@ class CollageItemEditView(CollageView):
 
     def form_valid_action(self, form):
         form_data = form.cleaned_data
-        collage_edit = CollageEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
+        collage_edit = get_collage_edit_by_request(self.request)
         collage_item = collage_edit.collage_items.get(
             pk=form_data['object_id'])
         if form_data['action'] == 'update':
@@ -1441,8 +1450,7 @@ class WorkspaceEmptyView(WorkspaceEditMixin, ActionDialogView):
     def form_valid_action(self, form):
         """
         """
-        workspace_edit = WorkspaceEdit.get_or_create(
-            self.request.session.session_key, self.request.user)
+        workspace_edit = get_workspace_edit_by_request(self.request)
         workspace_edit.workspace_items.all().delete()
 
 """
@@ -1529,8 +1537,7 @@ def create_mapnik_image(request, data):
     mapnik_map.background = mapnik.Color(data['color'])
     #m.background = mapnik.Color(data['color')]
 
-    workspace = WorkspaceEdit.get_or_create(
-        request.session.session_key, user=request.user)
+    workspace = get_workspace_edit_by_request(request)
 
     workspace_items = workspace.workspace_items.filter(
         visible=True).reverse()
@@ -1615,8 +1622,7 @@ def statistics_csv(request):
 
     """
     start_date, end_date = current_start_end_dates(request)
-    collage = CollageEdit.get_or_create(
-        request.session.session_key, request.user)
+    collage = get_collage_edit_by_request(request)
     collage_items = collage.collage_items.filter(visible=True)
     statistics = []
     for collage_item in collage_items:
