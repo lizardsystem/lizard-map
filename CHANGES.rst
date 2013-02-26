@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.25 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- The change described in 4.24 didn't really work well, because the
+  session object wasn't created yet when the default workspace was
+  copied. This is fixed.
 
 
 4.24 (2013-02-25)
