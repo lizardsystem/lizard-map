@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.25.5 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Haastige spoed...
 
 
 4.25.4 (2013-02-27)

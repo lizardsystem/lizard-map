@@ -126,7 +126,7 @@ var ControlPanelView = Backbone.View.extend({
     this.current_timestep = 0;
     this.$el.find("#slider").slider({
       min: 0,
-      max: 143,
+      max: 719,
       slide: this.slide(this),
       value: this.current_timestep,
     });
