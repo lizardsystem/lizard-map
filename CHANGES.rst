@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.25.3 (unreleased)
+4.25.3 (2013-02-27)
 -------------------
 
 - Changed animation speed from 500ms to 1000ms per frame.
