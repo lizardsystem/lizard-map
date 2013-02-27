@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-4.26 (unreleased)
------------------
+4.25.2 (2013-02-27)
+-------------------
 
 - Moved animations.js import again.
 
