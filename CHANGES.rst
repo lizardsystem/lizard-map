@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-4.26 (unreleased)
------------------
+4.25.4 (2013-02-27)
+-------------------
 
 - Default number of frames in animation set to 720.
 
