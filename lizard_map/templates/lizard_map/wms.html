@@ -3,13 +3,13 @@
 
 
 {% block javascript %}
-{{ block.super }}
   <script type="text/javascript"
           src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
   <script type="text/javascript"
           src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
   <script type="text/javascript"
           src="{{ STATIC_URL }}lizard_map/animations.js"></script>
+{{ block.super }}
 {% endblock %}
 
 
