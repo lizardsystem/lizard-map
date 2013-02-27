@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.26 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Moved animations.js import again.
 
 
 4.25.1 (2013-02-27)
