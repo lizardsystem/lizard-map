@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.25.6 (unreleased)
+4.25.6 (2013-03-13)
 -------------------
 
 - Fixed IE7 error caused by extraneous comma in animations.js.
