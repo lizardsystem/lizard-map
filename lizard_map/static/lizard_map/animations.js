@@ -55,7 +55,7 @@ var AnimatedLayer = Backbone.Model.extend({
       this.current_timestep = timestep;
       //console.log('timestep is now ', this.current_timestep);
       var to_delete_from_map = {};
-      for (ts in this.current_in_map) {to_delete_from_map[ts] = ts};  // start with all layers
+      for (ts in this.current_in_map) {to_delete_from_map[ts] = ts;}  // start with all layers
       // console.log('initial to delete ', to_delete_from_map);
       for (var ts=timestep; ts<this.max_timesteps && ts<timestep+5; ts++) {
         //console.log('we want timestep ', ts);
@@ -93,7 +93,7 @@ var AnimatedLayer = Backbone.Model.extend({
     // make sure to remove all objects that are in memory/OL
     for (ts in this.current_in_map) {
       map.removeLayer(this.layers[ts]);
-    };
+    }
     this.current_in_map = {};
     this.current_visible = null;
   }
@@ -118,7 +118,7 @@ var ControlPanelView = Backbone.View.extend({
       me.current_timestep = ui.value;
       me.updateTime();  // updates the DOM
       me.updateLayers(me.current_timestep);
-    }
+    };
     return sliderFun;
   },
   initialize: function(){
@@ -176,7 +176,7 @@ var ControlPanelView = Backbone.View.extend({
         return;  // Animation has stopped
       }
       setTimeout(me.animation_loop(me), 1000); // Setting next step. animation speed in ms
-    }
+    };
     return fun;
   },
   updateLayers: function(timestep) {
