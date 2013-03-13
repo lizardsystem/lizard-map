@@ -9,7 +9,7 @@ STATUS_PLAY = 1;
 // For each .workspace-wms-layer that is an animation,
 // there is an AnimatedLayer object.
 max_timesteps = 0;
-wms_ani_layers = {};  
+wms_ani_layers = {};
 
 
 /*
@@ -37,12 +37,12 @@ var AnimatedLayer = Backbone.Model.extend({
 
     var layers = [];
     for (var i=0; i < this.max_timesteps; i++) {
-      this.params.time = i;           
+      this.params.time = i;
       layers[i] = new OpenLayers.Layer.WMS(this.name, this.url, this.params, this.options);
     }
     this.layers = layers;
   },
-  initialize: function() {  
+  initialize: function() {
   },
   updateMap: function() {
     // update visible layer
@@ -105,11 +105,11 @@ var ControlPanelView = Backbone.View.extend({
 .btn-start-stop -> start/stop animation
 .btn-reset -> reset animation (time=0)
 */
-  updateTime: function() {                       
+  updateTime: function() {
       this.$el.find("#time").text(this.current_timestep);
   },
   slide: function(me) {
-    // wrapper around the real function, but this function has 'me'.  
+    // wrapper around the real function, but this function has 'me'.
     //var me = obj;
     sliderFun = function (event, ui){
       //console.log(this);
@@ -122,13 +122,13 @@ var ControlPanelView = Backbone.View.extend({
     return sliderFun;
   },
   initialize: function(){
-    this.status = STATUS_STOP;                  
+    this.status = STATUS_STOP;
     this.current_timestep = 0;
     this.$el.find("#slider").slider({
       min: 0,
       max: 719,
       slide: this.slide(this),
-      value: this.current_timestep,
+      value: this.current_timestep
     });
   },
   events: {
@@ -161,7 +161,7 @@ var ControlPanelView = Backbone.View.extend({
   },
   animation_loop: function (me) {
     // Because we use callbacks, it is important to use 'me'.
-    fun = function() {    
+    fun = function() {
       if (me.status == STATUS_PLAY) {
         // increase animation with one step
         me.current_timestep += 1;
@@ -169,7 +169,7 @@ var ControlPanelView = Backbone.View.extend({
         me.updateTime();
         // set slider position
         me.$el.find("#slider").slider("value", me.current_timestep);
-        
+
         // most important part: interact with OpenLayers.
         me.updateLayers(me.current_timestep);
       } else {
@@ -196,7 +196,7 @@ var ControlPanelView = Backbone.View.extend({
 function init_animation() {
   // Update wms_ani_layers
   // Assume for now that all .workspace-wms-layers are animations
-  var to_delete_ani_layers = {};      
+  var to_delete_ani_layers = {};
   max_timesteps = 0;
 
   for (key in wms_ani_layers) {
@@ -229,7 +229,7 @@ function init_animation() {
         // https://gist.github.com/barrabinfc/426829
         // $.getJSON(url + anim_info_params, function(data) {
         //   console.log(data);
-        // });        
+        // });
     /*
     http://localhost:5000/wms?request=getinfo&dataset=/home/user/git/nens/threedi-server/threedi_server/../var/data/subgrid_map.nc&srs=epsg:3857 */
 
@@ -237,15 +237,15 @@ function init_animation() {
         if (wms_ani_layers[id] === undefined) {
           console.log('Initializing ani layer', id);
           wms_ani_layers[id] = new AnimatedLayer({
-            name: name, 
-            url: url, 
-            params: params, 
+            name: name,
+            url: url,
+            params: params,
             options: options
             });
           wms_ani_layers[id].setTimestep(0);
           // this layer is not marked for deletion.
-        }           
-        delete to_delete_ani_layers[id];  
+        }
+        delete to_delete_ani_layers[id];
   });
 
   for (key in to_delete_ani_layers) {
