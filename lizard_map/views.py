@@ -463,6 +463,7 @@ class WorkspaceStorageView(AppView):
     def rightbar_is_collapsed(self):
         return self.workspace.rightbar_is_collapsed
 
+
 class ActionDialogView(ViewContextMixin, FormView):
     """
     Generic Action Dialog View.
