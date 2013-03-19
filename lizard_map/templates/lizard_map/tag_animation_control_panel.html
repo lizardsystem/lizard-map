@@ -1,9 +1,9 @@
-{% if workspace.is_animatable %}
+{#{% if workspace.is_animatable %}#}
 <div class="sidebarbox">
   <h2>Control panel</h2>
   <div id="controlpanel" class="well">
     <div id="control-status">
-      <label>Tijdstap: <span id="time">0</span></label>
+      <label>Tijd: <span id="time">-</span></label>
       <div id="slider"></div><br />
     </div>
     <div id="control-buttons">
@@ -11,11 +11,11 @@
         <i class="icon-play"></i>
         <span id="html-start-stop">Start</span>
       </a>
-      <a class="btn btn-reset" href="#">
+      <!--a class="btn btn-reset" href="#">
         <i class="icon-retweet"></i>
         Reset
-      </a>
+      </a-->
     </div>
   </div>
 </div>
-{% endif %}
+{#{% endif %}#}
