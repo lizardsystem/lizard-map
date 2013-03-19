@@ -12,6 +12,15 @@ max_timesteps = 0;
 wms_ani_layers = {};
 
 
+function formatNumberLength(num, length) {
+    var r = "" + num;
+    while (r.length < length) {
+        r = "0" + r;
+    }
+    return r;
+}
+
+
 /*
 Animated layer: keep track of an animated wms.
 
@@ -30,17 +39,51 @@ var AnimatedLayer = Backbone.Model.extend({
     this.url = options.url;
     this.name = options.name;
     this.options = options.options;
-    this.max_timesteps = 720;
+    this.max_timesteps = 288;
     this.current_timestep = 0;  // to be altered from outside
     this.current_in_map = {};  // indices if layers that are in OL.map
     this.current_visible = null;
+    this.readyForNext = null;
 
-    var layers = [];
+    this.layers = [];
+    var me = this;
     for (var i=0; i < this.max_timesteps; i++) {
       this.params.time = i;
-      layers[i] = new OpenLayers.Layer.WMS(this.name, this.url, this.params, this.options);
+      this.layers[i] = new OpenLayers.Layer.WMS(
+        this.name + ' (' + i + ')', 
+        this.url, this.params, this.options);
+
+      // make new layer appear after completed loading.
+      this.layers[i].events.register("loadend", this.layers[i], function() {
+          console.log('layer started loading: ', this.params.TIME);
+      });
+      this.layers[i].events.register("loadend", this.layers[i], function() {
+              console.log('layer finished loading: ', this.params.TIME);
+              this.setOpacity(1);
+              // make the old layer disappear
+              for (var ts in me.current_in_map) {
+                  //console.log('ts', ts, this.params.TIME);
+                  if (parseInt(ts) !== parseInt(me.current_timestep)) {
+                      //console.log('removing from map... ts ', ts);
+                      //console.log('me.layers[ts] ', me.layers[ts]);
+                      //map.removeLayer(me.layers[ts]); 
+                      // strangely enough, the id sometimes change -> then we'll remove by name
+                      var remove_layers = map.getLayersByName(me.layers[ts].name);
+                      for (var c=0; c<remove_layers.length; c++) {
+                        map.removeLayer(remove_layers[c]);
+                      }
+                      delete me.current_in_map[ts];
+                  }
+              }
+              var nextTimestep = me.readyForNext;
+              me.readyForNext = null;
+              if ((nextTimestep !== null) && (parseInt(nextTimestep) !== parseInt(this.params.TIME))) {
+                  // console.log('nextTimestep: ', nextTimestep);
+                  me.setTimestep(nextTimestep);
+              } 
+          });
+
     }
-    this.layers = layers;
   },
   initialize: function() {
   },
@@ -50,44 +93,50 @@ var AnimatedLayer = Backbone.Model.extend({
     console.log('updating map');
   },
   setTimestep: function(timestep) {
+      // 5 seconds timeout
+      if ((this.readyForNext !== null) && (Date.now() < this.startedLoading + 5000)) {
+          // console.log('not ready for next timestep... still busy ', timestep);
+          // is the first next thing
+          // Can be overwritten, which is ok.
+          this.readyForNext = timestep;  
+          return;
+      }
+
       if (timestep < 0) { timestep = 0; }
       if (timestep >= this.max_timesteps) { timestep = this.max_timesteps-1; }
       this.current_timestep = timestep;
       //console.log('timestep is now ', this.current_timestep);
-      var to_delete_from_map = {};
-      for (ts in this.current_in_map) {to_delete_from_map[ts] = ts;}  // start with all layers
+      //var to_delete_from_map = {};
+      //for (ts in this.current_in_map) {to_delete_from_map[ts] = ts;}  // start with all layers
       // console.log('initial to delete ', to_delete_from_map);
-      for (var ts=timestep; ts<this.max_timesteps && ts<timestep+5; ts++) {
+      for (var ts=timestep; ts<this.max_timesteps && ts<timestep+1; ts++) {
         //console.log('we want timestep ', ts);
-        if (this.current_in_map[ts] !== undefined) {
-          //console.log('already in current map', ts);
-          // is already in current_in_map
-          delete to_delete_from_map[ts];
-        } else {
+        if (this.current_in_map[ts] === undefined) {
           // new
-          //console.log('adding to current ', ts);
-          this.current_in_map[ts] = ts;
-          // actually add to openlayers
+          //console.log('adding to map ', ts);
           map.addLayer(this.layers[ts]);
+          this.current_in_map[ts] = ts;
+          this.readyForNext = ts;
+          this.startedLoading = Date.now();
         }
      }
-     // now delete all layers from to_delete_from_map
-     for (var ts in to_delete_from_map) {
-       //console.log('removing from map... ts ', ts);
-       map.removeLayer(this.layers[ts]);
-       delete this.current_in_map[ts];
-     }
-     // change current_visible
-     if (this.current_visible !== this.current_timestep) {
-         var old_visible = this.current_visible;
-         //first make new layer visible
-         this.current_visible = this.current_timestep;
-         //console.log('current_visible', this.current_visible);
-         this.layers[this.current_visible].setOpacity(1);  // TODO: make opacity configurable
-         if (old_visible !== null) {
-             this.layers[old_visible].setOpacity(0);
-         }
-     }
+     // // now delete all layers from to_delete_from_map
+     // for (var ts in to_delete_from_map) {
+     //   //console.log('removing from map... ts ', ts);
+     //   map.removeLayer(this.layers[ts]);
+     //   delete this.current_in_map[ts];
+     // }
+     // // change current_visible
+     // if (this.current_visible !== this.current_timestep) {
+     //     var old_visible = this.current_visible;
+     //     //first make new layer visible
+     //     this.current_visible = this.current_timestep;
+     //     //console.log('current_visible', this.current_visible);
+     //     this.layers[this.current_visible].setOpacity(1);  // TODO: make opacity configurable
+     //     if (old_visible !== null) {
+     //         this.layers[old_visible].setOpacity(0);
+     //     }
+     // }
   },
   shutdown: function() {
     // make sure to remove all objects that are in memory/OL
@@ -106,7 +155,9 @@ var ControlPanelView = Backbone.View.extend({
 .btn-reset -> reset animation (time=0)
 */
   updateTime: function() {
-      this.$el.find("#time").text(this.current_timestep);
+      //this.$el.find("#time").text(this.current_timestep);
+      var time_string = Math.floor((this.current_timestep * 10) / 60) + ' uur, ' + formatNumberLength((this.current_timestep * 10) % 60, 2) + ' minuten';
+      this.$el.find("#time").text(time_string);
   },
   slide: function(me) {
     // wrapper around the real function, but this function has 'me'.
@@ -126,10 +177,11 @@ var ControlPanelView = Backbone.View.extend({
     this.current_timestep = 0;
     this.$el.find("#slider").slider({
       min: 0,
-      max: 719,
+      max: 287,
       slide: this.slide(this),
       value: this.current_timestep
     });
+    this.updateTime();
   },
   events: {
     "click .btn-start-stop": "doStartStop",
@@ -163,6 +215,7 @@ var ControlPanelView = Backbone.View.extend({
     // Because we use callbacks, it is important to use 'me'.
     fun = function() {
       if (me.status == STATUS_PLAY) {
+        //console.log('ready for next: ' + this.readyForNext);
         // increase animation with one step
         me.current_timestep += 1;
         console.log('current_timestep: ' + me.current_timestep);
@@ -257,6 +310,9 @@ function init_animation() {
 
 
 function init_control_panel() {
+    $('#controlpanel').off('click', '.btn-start-stop');
+    $('#controlpanel').off('click', '.btn-reset');
+
   // Bind the control panel to the view.
   control_panel_view = new ControlPanelView({el: $('#controlpanel')});
   //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
