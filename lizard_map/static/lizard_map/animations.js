@@ -315,6 +315,7 @@ function init_control_panel() {
     //$('#controlpanel').off('click', '.btn-start-stop');
     //#('#controlpanel').off('click', '.btn-reset');
 
+
   // Bind the control panel to the view.
     control_panel_view = new ControlPanelView({el: $('#controlpanel')});
     //console.log('control panel view ', control_panel_view);
