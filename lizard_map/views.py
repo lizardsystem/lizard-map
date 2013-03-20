@@ -879,6 +879,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
+    display_group_names = {}
     display_group_order = []
     for display_object in found:
         if 'grouping_hint' in display_object:
@@ -901,8 +902,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     for key, display_group in display_groups.items():
         # There MUST be at least one item in the group
         workspace_item = display_group[0]['workspace_item']
-
         add_snippet = True
+        display_group_names[key] = workspace_item.name
 
         try:
             identifiers = [display_object['identifier']
@@ -937,6 +938,11 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     else:
         popup_max_tabs = int(popup_max_tabs)
     result_html = [html[key] for key in display_group_order][:popup_max_tabs]
+    tab_titles = [display_group_names.get(key)
+                  for key in display_group_order][:popup_max_tabs]
+    # Fallback provided below.
+    tab_titles = [title or _("Tab %(number)s") % {'number': i + 1}
+                  for i, title in enumerate(tab_titles)]
 
     if popup_id is None:
         popup_id = 'popup-id'
@@ -944,6 +950,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               # 'x': x_found,
               # 'y': y_found,
               'html': result_html,
+              'tab_titles': tab_titles,
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))
