@@ -1,6 +1,6 @@
 {# Workspace (storage) view: shows workspace on the left, map on the right #}
 {% extends "lizard_map/wms.html" %}
-{% load i18n %}
+{% load i18n map %}
 
 {% block sidebar %}
 
@@ -67,4 +67,5 @@
     </li>
   </ul>
 </div>
+  {% animation_control_panel view.workspace_edit %}
 {% endblock sidebar %}
