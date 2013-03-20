@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.26 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Tabs in the popup now, by default, get the name of the first workspace item
+  whose result is shown. This is waaaaay nicer than "tab 1, tab 2, tab 3".
 
 
 4.25.6 (2013-03-13)
