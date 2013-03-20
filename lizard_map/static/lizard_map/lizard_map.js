@@ -1140,7 +1140,7 @@ function refreshWmsLayers() {
     // Set up animation control panel. No worries, it cleans itself up when
     // running multiple times.
     init_animation();
-    init_control_panel();
+    //init_control_panel();
 }
 
 

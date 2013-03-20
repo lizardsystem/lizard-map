@@ -236,9 +236,11 @@ var ControlPanelView = Backbone.View.extend({
     // Update AnimationLayer objects so openlayers gets updated
     // This part is global and not bound to the control.
     $(".workspace-wms-layer").each(function () {
-        var id = $(this).attr("data-workspace-wms-id");
-        //console.log('current timestep in updateLayers', timestep);
-        wms_ani_layers[id].setTimestep(timestep);
+        if ($(this).attr("data-workspace-wms-animatable") === 'true') {
+            var id = $(this).attr("data-workspace-wms-id");
+            //console.log('current timestep in updateLayers', timestep);
+            wms_ani_layers[id].setTimestep(timestep);
+        }
     });
   }
 });
@@ -310,15 +312,16 @@ function init_animation() {
 
 
 function init_control_panel() {
-    $('#controlpanel').off('click', '.btn-start-stop');
-    $('#controlpanel').off('click', '.btn-reset');
+    //$('#controlpanel').off('click', '.btn-start-stop');
+    //#('#controlpanel').off('click', '.btn-reset');
 
   // Bind the control panel to the view.
-  control_panel_view = new ControlPanelView({el: $('#controlpanel')});
+    control_panel_view = new ControlPanelView({el: $('#controlpanel')});
+    //console.log('control panel view ', control_panel_view);
   //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
 }
 
-// $(document).ready(function() {
-//   init_animation();
-//   init_control_panel();
-// });
+$(document).ready(function() {
+   //init_animation();
+   init_control_panel();
+});
