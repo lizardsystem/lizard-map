@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-19 12:08+0100\n"
-"PO-Revision-Date: 2013-02-19 11:13+0000\n"
+"POT-Creation-Date: 2013-03-20 11:40+0000\n"
+"PO-Revision-Date: 2013-03-20 11:42+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -98,68 +98,73 @@ msgstr "Hele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: models.py:609
+#: models.py:696
 msgid "all"
 msgstr "alles"
 
-#: models.py:610
+#: models.py:697
 msgid "year"
 msgstr "jaar"
 
-#: models.py:611
+#: models.py:698
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:612
+#: models.py:699
 msgid "month"
 msgstr "maand"
 
-#: models.py:613
+#: models.py:700
 msgid "week"
 msgstr "week"
 
-#: models.py:614
+#: models.py:701
 msgid "day"
 msgstr "dag"
 
-#: views.py:288 views.py:1263
+#: views.py:303 views.py:1287
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:305
+#: views.py:320
 msgid "Layers"
 msgstr "Kaartlagen"
 
-#: views.py:311 templates/lizard_map/legend_item.html:6
-#: templates/lizard_map/wms.html:17
+#: views.py:326 templates/lizard_map/legend_item.html:6
+#: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:357
+#: views.py:372
 msgid "Multi-select"
 msgstr "Multi-select"
 
-#: views.py:358
+#: views.py:373
 msgid "Select multiple items"
 msgstr "Selecteer meerdere items"
 
-#: views.py:366 views.py:1251
+#: views.py:381 views.py:1275
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
-#: views.py:373
+#: views.py:388
 msgid "Default zoom"
 msgstr "Beginlocatie"
 
-#: views.py:374
+#: views.py:389
 msgid "Zoom to default location"
 msgstr "Zoom naar de standaard beginlocatie"
 
-#: views.py:1241 views.py:1266
+#: views.py:940
+#, python-format
+msgid "Tab %(number)s"
+msgstr "Tabblad %(number)s"
+
+#: views.py:1265 views.py:1290
 msgid "Collage"
 msgstr "Collage"
 
-#: views.py:1261
+#: views.py:1285
 msgid "Home"
 msgstr "Thuispagina"
 

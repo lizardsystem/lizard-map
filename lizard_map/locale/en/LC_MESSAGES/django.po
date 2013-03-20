@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-19 12:08+0100\n"
+"POT-Creation-Date: 2013-03-20 11:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,68 +97,73 @@ msgstr ""
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: models.py:609
+#: models.py:696
 msgid "all"
 msgstr ""
 
-#: models.py:610
+#: models.py:697
 msgid "year"
 msgstr ""
 
-#: models.py:611
+#: models.py:698
 msgid "quarter"
 msgstr ""
 
-#: models.py:612
+#: models.py:699
 msgid "month"
 msgstr ""
 
-#: models.py:613
+#: models.py:700
 msgid "week"
 msgstr ""
 
-#: models.py:614
+#: models.py:701
 msgid "day"
 msgstr ""
 
-#: views.py:288 views.py:1263
+#: views.py:303 views.py:1287
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:305
+#: views.py:320
 msgid "Layers"
 msgstr ""
 
-#: views.py:311 templates/lizard_map/legend_item.html:6
-#: templates/lizard_map/wms.html:17
+#: views.py:326 templates/lizard_map/legend_item.html:6
+#: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr ""
 
-#: views.py:357
+#: views.py:372
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:358
+#: views.py:373
 msgid "Select multiple items"
 msgstr ""
 
-#: views.py:366 views.py:1251
+#: views.py:381 views.py:1275
 msgid "Change the date range of the measurements"
 msgstr ""
 
-#: views.py:373
+#: views.py:388
 msgid "Default zoom"
 msgstr ""
 
-#: views.py:374
+#: views.py:389
 msgid "Zoom to default location"
 msgstr ""
 
-#: views.py:1241 views.py:1266
+#: views.py:940
+#, python-format
+msgid "Tab %(number)s"
+msgstr ""
+
+#: views.py:1265 views.py:1290
 msgid "Collage"
 msgstr ""
 
-#: views.py:1261
+#: views.py:1285
 msgid "Home"
 msgstr ""
 

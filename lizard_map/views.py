@@ -937,6 +937,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     else:
         popup_max_tabs = int(popup_max_tabs)
     result_html = [html[key] for key in display_group_order][:popup_max_tabs]
+    tab_titles = [_("Tab %(number)s") % {'number': i + 1}
+                  for i in range(len(result_html))]
 
     if popup_id is None:
         popup_id = 'popup-id'
@@ -944,6 +946,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               # 'x': x_found,
               # 'y': y_found,
               'html': result_html,
+              'tab_titles': tab_titles,
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))

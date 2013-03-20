@@ -87,8 +87,9 @@ function set_popup_content(data) {
                 // Build up html with tabs.
                 html = '<div id="popup-tabs"><ul>';
                 for (i = 0; i < data.html.length; i += 1) {
-                    html += '<li><a href="#popup-tab-' + (i + 1) + '">Tabblad ';
-                    html += (i + 1) + '</a></li>';
+                    html += '<li><a href="#popup-tab-' + (i + 1) + '">';
+                    html += data.tab_titles[i];
+                    html += '</a></li>';
                 }
                 html += '</ul>';
                 for (i = 0; i < data.html.length; i += 1) {
