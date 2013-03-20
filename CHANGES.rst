@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.26 (unreleased)
+4.26 (2013-03-20)
 -----------------
 
 - Tabs in the popup now, by default, get the name of the first workspace item
