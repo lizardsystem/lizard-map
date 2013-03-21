@@ -33,8 +33,8 @@ function setup_movable_dialog() {
     var options = {
         autoOpen: false,
         title: '',
-        width: 650,
-        height: 480,
+        width: 450,
+        height: 280,
         zIndex: 10000,
         close: function (event, ui) {
             // clear contents on close
@@ -49,9 +49,9 @@ function setup_movable_dialog() {
         // resizing neither
         options.resizable = false;
         // make width 90% of the entire window
-        options.width = $(window).width() * 0.9;
+        options.width = $(window).width() * 0.5;
         // make height 80% of the entire window
-        options.height = $(window).height() * 0.8;
+        options.height = $(window).height() * 0.4;
     }
 
     $('#movable-dialog').dialog(options);
@@ -1047,6 +1047,7 @@ function refreshBackgroundLayers() {
                     layer_name, url,
                     {'layers': layer_names,
                      'format': 'image/png',
+                     'tiled': true,
                      'transparent': !is_base_layer},
                     {'isBaseLayer': is_base_layer,
                      'visibility': is_base_layer,
