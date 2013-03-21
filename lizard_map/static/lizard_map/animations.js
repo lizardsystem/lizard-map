@@ -324,4 +324,7 @@ function init_control_panel() {
 $(document).ready(function() {
    //init_animation();
    init_control_panel();
+  // special for the demo march 2013
+  $("a.popup-date-range").parent().css("display", "none");
+  $("a.map-multiple-selection").parent().css("display", "none");
 });
