@@ -44,6 +44,7 @@ var AnimatedLayer = Backbone.Model.extend({
     this.current_in_map = {};  // indices if layers that are in OL.map
     this.current_visible = null;
     this.readyForNext = null;
+    this.most_recent_loading = null;
 
     this.layers = [];
     var me = this;
@@ -54,16 +55,24 @@ var AnimatedLayer = Backbone.Model.extend({
         this.url, this.params, this.options);
 
       // make new layer appear after completed loading.
-      this.layers[i].events.register("loadend", this.layers[i], function() {
+      this.layers[i].events.register("loadstart", this.layers[i], function() {
+          // also triggered when zooming, etc.
           console.log('layer started loading: ', this.params.TIME);
+          me.most_recent_loading = this.params.TIME;
       });
       this.layers[i].events.register("loadend", this.layers[i], function() {
               console.log('layer finished loading: ', this.params.TIME);
+              if (this.params.TIME !== parseInt(me.most_recent_loading)) {
+                  console.log('this != most recent loading -> do nothing');
+                  return;
+              }             
               this.setOpacity(1);
+
               // make the old layer disappear
               for (var ts in me.current_in_map) {
                   //console.log('ts', ts, this.params.TIME);
-                  if (parseInt(ts) !== parseInt(me.current_timestep)) {
+                  //if (parseInt(ts) !== parseInt(me.current_timestep)) {
+                  if (parseInt(ts) !== parseInt(me.most_recent_loading)) {
                       //console.log('removing from map... ts ', ts);
                       //console.log('me.layers[ts] ', me.layers[ts]);
                       //map.removeLayer(me.layers[ts]); 
@@ -228,7 +237,7 @@ var ControlPanelView = Backbone.View.extend({
       } else {
         return;  // Animation has stopped
       }
-      setTimeout(me.animation_loop(me), 500); // Setting next step. animation speed in ms
+      setTimeout(me.animation_loop(me), 300); // Setting next step. animation speed in ms
     };
     return fun;
   },
