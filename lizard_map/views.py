@@ -992,9 +992,10 @@ def popup_collage_json(collage_items, popup_id, request=None):
     """
 
     html = []
+    tab_titles = []
     big_popup = True
 
-    grouped_collage_items, _ = group_collage_items(collage_items)
+    grouped_collage_items, ignored = group_collage_items(collage_items)
     for collage_items in grouped_collage_items.values():
         collage_item = collage_items[0]  # Each group always has items.
         identifiers = [collage_item.identifier for
@@ -1003,10 +1004,20 @@ def popup_collage_json(collage_items, popup_id, request=None):
         html.append(
             collage_item.html(identifiers=identifiers, is_collage=True,
                               request=request))
+        # The following is just a stub, until we can
+        # properly determine the name for grouped collage items.
+        tab_titles.append(None)
+
+    # Apply fallback on numbers for missing tab_titles. The stub above
+    # causes _all_ titles to be converted to numbers, until
+    # we have a better solution.
+    tab_titles = [title or _("Tab %(number)s") % {'number': i + 1}
+                  for i, title in enumerate(tab_titles)]
 
     result = {'id': popup_id,
               'html': html,
               'big': big_popup,
+              'tab_titles': tab_titles,
               }
     return HttpResponse(json.dumps(result))
 
