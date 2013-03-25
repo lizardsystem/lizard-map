@@ -228,7 +228,7 @@ var ControlPanelView = Backbone.View.extend({
       } else {
         return;  // Animation has stopped
       }
-      setTimeout(me.animation_loop(me), 1000); // Setting next step. animation speed in ms
+      setTimeout(me.animation_loop(me), 500); // Setting next step. animation speed in ms
     };
     return fun;
   },
