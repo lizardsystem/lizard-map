@@ -328,14 +328,6 @@ function init_control_panel() {
   // Bind the control panel to the view.
   control_panel_view = new ControlPanelView({el: $('#controlpanel')});
   //console.log('control panel view ', control_panel_view);
-=======
-    //$('#controlpanel').off('click', '.btn-start-stop');
-    //#('#controlpanel').off('click', '.btn-reset');
-
-  // Bind the control panel to the view.
-    control_panel_view = new ControlPanelView({el: $('#controlpanel')});
-    //console.log('control panel view ', control_panel_view);
->>>>>>> 0b0f3c0f2b9f60d2676d324ac0985ba9e9ad32c0
   //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
 }
 
