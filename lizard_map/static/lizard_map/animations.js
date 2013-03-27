@@ -321,7 +321,6 @@ function init_animation() {
 
 
 function init_control_panel() {
-<<<<<<< HEAD
   //$('#controlpanel').off('click', '.btn-start-stop');
   //#('#controlpanel').off('click', '.btn-reset');
   
