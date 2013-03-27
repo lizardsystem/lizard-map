@@ -325,14 +325,14 @@ function init_control_panel() {
   //#('#controlpanel').off('click', '.btn-reset');
   
   // Bind the control panel to the view.
-  control_panel_view = new ControlPanelView({el: $('#controlpanel')});
+  control_panel_view = new ControlPanelView({el: $('.controlpanel')});
   //console.log('control panel view ', control_panel_view);
   //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
 }
 
 $(document).ready(function() {
   //init_animation();
-  init_control_panel();
+  //init_control_panel();
 
   // special for the demo march 2013
   //$("a.popup-date-range").parent().css("display", "none");
