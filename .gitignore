@@ -32,5 +32,3 @@ nosetests.xml
 src/
 
 htmlcov/
-
-.DS_Store
