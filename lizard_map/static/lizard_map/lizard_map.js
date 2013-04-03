@@ -61,7 +61,7 @@ function setup_movable_dialog() {
 // main (single) popup
 function open_popup(show_spinner) {
     $("#movable-dialog-content").empty();
-    if (show_spinner == undefined || show_spinner) {
+    if (show_spinner === undefined || show_spinner) {
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
         $("#movable-dialog-content").append($loading);
     }
@@ -569,12 +569,12 @@ function actionPostClick(event, preAction, postAction, parameters) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
-    if (url == undefined) {
+    if (url === undefined) {
         // find in parents
         url = $(event.target).parents('a').attr("href");
     }
     target_id = $(event.target).attr("data-target-id");
-    if (target_id == undefined) {
+    if (target_id === undefined) {
         // find in parents
         target_id = $(event.target).parents('a').attr("data-target-id");
     }
@@ -701,7 +701,7 @@ function collagePopup(event) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
-    if (url == undefined) {
+    if (url === undefined) {
         // find in parents
         url = $(event.target).parents('.collage-popup').attr("href");
     }
@@ -1129,7 +1129,7 @@ function refreshWmsLayers() {
         }
 
         // Add possible cql_filters from the layer definition.
-        if (params['cql_filter'] != undefined) {
+        if (params['.cql_filter'] !== undefined) {
             cql_filters_arr.push(params['cql_filter']);
         }
 
@@ -1141,7 +1141,7 @@ function refreshWmsLayers() {
 
 
         // Each layer of a combined layer needs a cql_filter.
-        if (cql_filters != '') {
+        if (cql_filters !== '') {
             var layerslength = params['layers'].split(',').length - 1;
             for (var i = 1; i <= layerslength; i ++) {
                 cql_filters += ';' + cql_filters;
@@ -1815,7 +1815,8 @@ function panAndZoomOtherGraphs(plot) {
             }
         }
     });
-};
+}
+
 function bindPanZoomEvents($graph) {
     // fix IE performance
     if (isIE && ieVersion < 9) {
@@ -1829,7 +1830,7 @@ function bindPanZoomEvents($graph) {
     $graph.bind('plotpan', function (event, plot) {
         panAndZoomOtherGraphs(plot);
     });
-};
+}
 
 
 /**
@@ -1849,7 +1850,7 @@ var to_date_strings = function (assoc_array, inplace) {
                 assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
             }
             else if (v instanceof Object) {
-                to_date_strings(v, true)
+                to_date_strings(v, true);
             }
         }
     });
@@ -1871,16 +1872,13 @@ var to_date_objects = function (assoc_array, inplace) {
     $.each(assoc_array, function(k, v) {
         if (k && v) {
             if (typeof v == 'string' && (
-                 k.substring(0, 2) == 'dt'
-                 || k.indexOf('date') != -1
-                 || k == 'start'
-                 || k == 'end'
+                 k.substring(0, 2) == 'dt' || k.indexOf('date') != -1 || k == 'start' || k == 'end'
             )) {
                 // convert to Moment.js date object
                 assoc_array[k] = moment.utc(v);
             }
             else if (v instanceof Object) {
-                to_date_objects(v, true)
+                to_date_objects(v, true);
             }
         }
     });
@@ -2002,7 +2000,7 @@ function read_view_state_from_hash() {
             return true;
         }
         catch (error) {
-            console.error('Could not deserialize view state from hash')
+            console.error('Could not deserialize view state from hash');
           // TODO console.log???
         }
     }
@@ -2193,7 +2191,7 @@ function setup_location_list () {
                 url: '/map/location_list_service/?' + params, // TODO
                 success: function (data) {
                     $results.empty();
-                    if (data.length == 0) {
+                    if (data.length === 0) {
                         $results.html('Niets gevonden.');
                     }
                     else {
