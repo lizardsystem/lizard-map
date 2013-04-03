@@ -47,36 +47,21 @@
         </td>
         <td class="maintd">
           {% firstof workspace_item.name '(noname)' %}
-          {% if user.is_superuser %}
-            {% if workspace_item.adapter.edit_link %}
-              <br />
-              <i class="icon-edit"></i>
-              <a href="{{ workspace_item.adapter.edit_link }}">
-                {% trans "Edit this workspaceitem's source" %}
-              </a>
-            {% endif %}
-          {% endif %}
-          {% if workspace_item.has_extent %}
-            <br />
-            <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                         workspace-item-pan-to">
-              {% trans 'Zoom to extent' %}
-            </span>
-          {% endif %}
-          <br />
+        </td>
+        <td class="lasttd">
+        {% if workspace_item.has_extent %}
+          <span class="ss_sprite ss_magnifier sidebarbox-action-icon
+                       workspace-item-pan-to"
+                title="{% trans 'Zoom to extent' %}"></span>
+        {% else %}
+          <span class="no-image-spacer"></span>
+        {% endif %}
           <span class="ss_sprite ss_delete sidebarbox-action-icon
-                       workspace-item-delete">
-            {% trans 'Delete item' %}
-          </span>
-          {% if workspace_item.adapter.metadata %}
-            <dl>
-              {% for key, value in workspace_item.adapter.metadata %}
-                <dt>{{ key }}</dt>
-                <dd>{{ value|urlizetrunc:35 }}</dd>
-              {% endfor %}
-            </dl>
-          {% endif %}
-
+                       workspace-item-delete"
+                title="{% trans 'Delete item' %}"></span>
+        {% comment TODO needs some refactoring %}
+        {% legend workspace_item.name workspace_item.adapter session %}
+        {% endcomment %}
         </td>
       </tr>
     {% empty %}
