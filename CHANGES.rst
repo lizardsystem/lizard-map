@@ -7,6 +7,17 @@ Changelog of lizard-map
 - Fixed tab_titles being undefined when a popup of collage items is
   opened.
 
+- Merged functionality from the deltaportaal lizard-map branch:
+
+  - Showing metadata at the bottom of the regular description popup. The popup
+    is now an 'i' you should click instead of an on-hover dialog. Works better
+    with an ipad. Note that there's now a ``lizard_map.css`` again.
+
+  - CQL filtering is possible on featureinfo items on wms layers.
+
+  - Popups opened from the sidebar now disappear when the sidebar scrolls. No
+    more zombie popups.
+
 
 4.26 (2013-03-20)
 -----------------

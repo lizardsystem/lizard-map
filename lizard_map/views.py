@@ -393,12 +393,10 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, zoom_to_default)
         return actions
 
-
 MapView = AppView  # BBB
 
 
-class WorkspaceStorageListView(
-    UiView, GoogleTrackingMixin):
+class WorkspaceStorageListView(UiView, GoogleTrackingMixin):
     """Show list of storage workspaces."""
 
     template_name = 'lizard_map/workspace_storage_list.html'
@@ -721,10 +719,10 @@ def workspace_item_reorder(
         workspace_edit = get_workspace_edit_by_request(request)
 
     if workspace_items_order is None:
-        workspace_items_order = dict([
-                (workspace_item_id, index * 10) for
-                index, workspace_item_id in enumerate(
-                    request.POST.getlist('workspace-item[]'))])
+        workspace_items_order = dict(
+            [(workspace_item_id, index * 10) for
+             index, workspace_item_id in
+             enumerate(request.POST.getlist('workspace-item[]'))])
 
     for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.index = workspace_items_order.get(
@@ -736,9 +734,7 @@ def workspace_item_reorder(
 
 # L3
 @never_cache
-def workspace_item_toggle(
-    request,
-    workspace_edit=None):
+def workspace_item_toggle(request, workspace_edit=None):
 
     """Toggle workspace item in workspace.
 
@@ -764,8 +760,8 @@ def workspace_item_toggle(
 
 # L3
 @never_cache
-def workspace_edit_item(
-    request, workspace_edit=None, workspace_item_id=None, visible=None):
+def workspace_edit_item(request, workspace_edit=None, workspace_item_id=None,
+                        visible=None):
     """Sets (in)visibility of a workspace_item
 
     workspace_edit is added for testing

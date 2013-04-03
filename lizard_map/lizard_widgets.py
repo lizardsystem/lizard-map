@@ -46,7 +46,7 @@ class WorkspaceAcceptable(object):
         else:
             result.append('nonworking-workspace-acceptable')
         if self.description:
-            result.append('has_popover')
+            result.append('with_description')
         return ' '.join(result)
 
     def to_html(self):
@@ -59,8 +59,7 @@ class WorkspaceAcceptable(object):
         """Return tag name. 'a' when enabled, 'div' when not."""
         if self.enabled:
             return 'a'
-        else:
-            return 'div'
+        return 'div'
 
     def is_animatable(self):
         """Dirty way to check if the wms is "animated" """
