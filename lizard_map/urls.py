@@ -160,6 +160,7 @@ urlpatterns = patterns(
     url(r'^screen/(?P<slug>.*)/$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
+
     url(r'^$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),

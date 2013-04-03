@@ -1116,9 +1116,45 @@ function refreshWmsLayers() {
             delete options['reproject'];
         }
         index = parseInt($(this).attr("data-workspace-wms-index"));
+
+        // Add cql_filtering
+        var layer_filters = $(this).data("workspace-wms-cql_filters");
+        var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
+        var cql_filters_arr = [];
+        // Add the filters that are selected and available for this layer.
+        for (key in selected_filters){
+            if ($.inArray(key, layer_filters) !== -1){
+                cql_filters_arr.push(key + '=' + selected_filters[key]);
+            }
+        }
+
+        // Add possible cql_filters from the layer definition.
+        if (params['cql_filter'] != undefined) {
+            cql_filters_arr.push(params['cql_filter']);
+        }
+
+        var cql_filters = '';
+        if (cql_filters_arr.length > 0) {
+            //Put the filters in geoserver format
+            cql_filters = cql_filters_arr.join(' AND ');
+        }
+
+
+        // Each layer of a combined layer needs a cql_filter.
+        if (cql_filters != '') {
+            var layerslength = params['layers'].split(',').length - 1;
+            for (var i = 1; i <= layerslength; i ++) {
+                cql_filters += ';' + cql_filters;
+            }
+        }
+
         if (wms_layers[id] === undefined) {
-            // Create it.
             var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            // Create it.
+            if (cql_filters.length > 0){
+                // There are filters so add them to the request.
+                params['cql_filter'] = cql_filters;
+            }
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
@@ -1126,6 +1162,12 @@ function refreshWmsLayers() {
         else {
             // Update it.
             var layer = wms_layers[id];
+            if (cql_filters.length > 0){
+                // Update the layer if a cql_filter is used
+                // with the new cql_filter params.
+                layer.mergeNewParams({'cql_filter': cql_filters});
+            }
+            // set the correct Zindex
             layer.setZIndex(1000 - index);
         }
     });
@@ -1394,7 +1436,7 @@ function setUpMultipleSelection() {
 /* REST api with jQuery */
 function makeHtml(data) {
     var items = [];
-    console.log(typeof data);
+    // console.log(typeof data);
     if (typeof data === "string") {
         return data;
     }
@@ -1402,7 +1444,7 @@ function makeHtml(data) {
         return data;
     }
     $.each(data, function (key, val) {
-        console.log(key, val);
+        // console.log(key, val);
         if (val === null) {
             items.push('<li><span>' + key + '</span></li>');
         } else if ((typeof val === "string") && (val.indexOf('http://') === 0)) {
@@ -1961,6 +2003,7 @@ function read_view_state_from_hash() {
         }
         catch (error) {
             console.error('Could not deserialize view state from hash')
+          // TODO console.log???
         }
     }
     return false;
@@ -2001,6 +2044,7 @@ function save_view_state_to_server() {
         data: view_state,
         success: function (data) {
             console.log('put success: ', data);
+          // TODO console.log???
         }
     }, true);
 }
@@ -2094,6 +2138,13 @@ function setup_daterangepicker() {
     }
 }
 
+function setUpSidebarPopupDisappearing () {
+  $("#sidebar").scroll(function() {
+    // Fixing 'zombie' popovers when the user scrolls with an info icon popover enabled
+    $('.has_popover').each(function(i,v){ $(v).popover("hide"); });
+  });
+}
+
 function setup_location_list () {
     var $element = $('.popup-location-list');
     if ($element.exists()) {
@@ -2174,6 +2225,8 @@ function setup_location_list () {
     }
 }
 
+
+
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
@@ -2188,6 +2241,7 @@ $(document).ready(function () {
     setUpWorkspaceLoad();
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
+    setUpSidebarPopupDisappearing();
     $(".workspace").workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();
