@@ -8,10 +8,6 @@ Changelog of lizard-map
   is now an 'i' you should click instead of an on-hover dialog. Works better
   with an ipad.
 
-- Added display of metadata in the 'layers' sidebar. For this, the 'delete'
-  and 'extent' action is shown in full on separate lines (just like the
-  metadata info) instead of as just an icon next to the workspace item text.
-
 - CQL_filtering is possible on featureinfo items on wms layers.
 
 - Content actions can now be turned off via settings.
