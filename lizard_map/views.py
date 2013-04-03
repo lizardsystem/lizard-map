@@ -1950,8 +1950,4 @@ class HomepageView(AppView, IconView):
     template_name = 'lizard_map/icons.html'
 
 
-class RegisterView(AppView, IconView):
-    template_name = 'lizard_map/register.html'
-
-
 MapIconView = HomepageView  # BBB

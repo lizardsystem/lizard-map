@@ -3,7 +3,6 @@ from django.conf.urls.defaults import include
 from django.conf.urls.defaults import patterns
 from django.conf.urls.defaults import url
 from django.contrib import admin
-from django.contrib.auth.decorators import login_required
 from lizard_ui.urls import debugmode_urlpatterns
 
 import lizard_map.views
@@ -165,13 +164,6 @@ urlpatterns = patterns(
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
 
-    url(r'^register/$',
-        lizard_map.views.RegisterView.as_view(),
-        name='lizard_ui.register'),
-
-    # url(r'^$',
-    #     login_required(lizard_map.views.MapIconView.as_view(), login_url="/map/register/"),
-    #     name='lizard_ui.icons'),
     url(r'^$',
         lizard_map.views.MapIconView.as_view(),
         name='lizard_ui.icons'),
