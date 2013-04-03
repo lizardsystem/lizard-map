@@ -395,21 +395,6 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
 MapView = AppView  # BBB
 
 
-class CompareView(AppView, WorkspaceMixin):
-    """View for visually comparing items in the workspace.
-
-    Experimental at the moment!
-
-    """
-    template_name = 'lizard_map/compare.html'
-
-
-    @property
-    def workspace_items(self):
-        return self.workspace().workspace_items.filter(
-            visible=True).reverse()
-
-
 class WorkspaceStorageListView(UiView, GoogleTrackingMixin):
     """Show list of storage workspaces."""
 
