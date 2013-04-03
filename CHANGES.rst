@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.27 (unreleased)
+4.27 (2013-04-03)
 -----------------
 
 - Fixed tab_titles being undefined when a popup of collage items is
