@@ -297,7 +297,7 @@ class CrumbsMixin(object):
         then add their own crumbs."""
         pass
 
-        initial = [{'urrl': '/',
+        initial = [{'url': '/',
                     'description': 'Home',
                     'title': _('Back to homepage')}]
 
