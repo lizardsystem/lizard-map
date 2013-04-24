@@ -4,7 +4,8 @@ Changelog of lizard-map
 4.25.6 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Added a completely transparant icon, ghost.png, for layers that
+  shouldn't be shown but for which the popup should still work.
 
 
 4.25.5 (2013-02-27)
