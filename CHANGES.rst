@@ -1,11 +1,42 @@
 Changelog of lizard-map
 =======================
 
-4.25.6 (unreleased)
--------------------
+4.28 (unreleased)
+-----------------
 
 - Added a completely transparant icon, ghost.png, for layers that
   shouldn't be shown but for which the popup should still work.
+
+
+4.27 (2013-04-03)
+-----------------
+
+- Fixed tab_titles being undefined when a popup of collage items is
+  opened.
+
+- Merged functionality from the deltaportaal lizard-map branch:
+
+  - Showing metadata at the bottom of the regular description popup. The popup
+    is now an 'i' you should click instead of an on-hover dialog. Works better
+    with an ipad. Note that there's now a ``lizard_map.css`` again.
+
+  - CQL filtering is possible on featureinfo items on wms layers.
+
+  - Popups opened from the sidebar now disappear when the sidebar scrolls. No
+    more zombie popups.
+
+
+4.26 (2013-03-20)
+-----------------
+
+- Tabs in the popup now, by default, get the name of the first workspace item
+  whose result is shown. This is waaaaay nicer than "tab 1, tab 2, tab 3".
+
+
+4.25.6 (2013-03-13)
+-------------------
+
+- Fixed IE7 error caused by extraneous comma in animations.js.
 
 
 4.25.5 (2013-02-27)

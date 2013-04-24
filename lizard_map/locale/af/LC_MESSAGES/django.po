@@ -3,8 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-#   <admin@example.com>, 2013.
-# Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
+# Fritz van Deventer <fritz.vandeventer@nelen-schuurmans.nl>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
@@ -12,13 +11,13 @@ msgstr ""
 "POT-Creation-Date: 2013-03-20 11:40+0000\n"
 "PO-Revision-Date: 2013-03-20 11:41+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
-"Language-Team: Vietnamese (http://translations.lizard.net/projects/p/"
-"lizardsystem/team/vi/)\n"
+"Language-Team: Afrikaans (http://translations.lizard.net/projects/p/"
+"lizardsystem/team/af/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: vi\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Language: af\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: adapter.py:144
 msgid "with"
@@ -30,71 +29,71 @@ msgstr ""
 
 #: dateperiods.py:14
 msgid "Quarter 1"
-msgstr ""
+msgstr "1e kwartaal"
 
 #: dateperiods.py:15
 msgid "Quarter 2"
-msgstr ""
+msgstr "2e kwartaal"
 
 #: dateperiods.py:16
 msgid "Quarter 3"
-msgstr ""
+msgstr "3e kwartaal"
 
 #: dateperiods.py:17
 msgid "Quarter 4"
-msgstr ""
+msgstr "4e kwartaal"
 
 #: dateperiods.py:21
 msgid "January"
-msgstr "Tháng Một"
+msgstr "Januarie"
 
 #: dateperiods.py:22
 msgid "February"
-msgstr "Tháng Hai"
+msgstr "Februarie"
 
 #: dateperiods.py:23
 msgid "March"
-msgstr "Tháng Ba"
+msgstr "Maart"
 
 #: dateperiods.py:24
 msgid "April"
-msgstr "Tháng Tư"
+msgstr "April"
 
 #: dateperiods.py:25
 msgid "May"
-msgstr "Tháng Năm"
+msgstr "Mei"
 
 #: dateperiods.py:26
 msgid "June"
-msgstr "Tháng Sáu"
+msgstr "Junie"
 
 #: dateperiods.py:27
 msgid "July"
-msgstr "Tháng Bảy"
+msgstr "Julie"
 
 #: dateperiods.py:28
 msgid "August"
-msgstr "Tháng Tám"
+msgstr "Augustus"
 
 #: dateperiods.py:29
 msgid "September"
-msgstr "Tháng Chín"
+msgstr "September"
 
 #: dateperiods.py:30
 msgid "October"
-msgstr "Tháng Mười"
+msgstr "Oktober"
 
 #: dateperiods.py:31
 msgid "November"
-msgstr "Tháng Mười Một"
+msgstr "November"
 
 #: dateperiods.py:32
 msgid "December"
-msgstr "Tháng Mười Hai"
+msgstr "Desember"
 
 #: dateperiods.py:155
 msgid "Whole period"
-msgstr ""
+msgstr "Gehele periode"
 
 #: fields.py:101
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
@@ -102,40 +101,40 @@ msgstr ""
 
 #: models.py:696
 msgid "all"
-msgstr ""
+msgstr "alle"
 
 #: models.py:697
 msgid "year"
-msgstr ""
+msgstr "jaar"
 
 #: models.py:698
 msgid "quarter"
-msgstr ""
+msgstr "kwartaal"
 
 #: models.py:699
 msgid "month"
-msgstr ""
+msgstr "maand"
 
 #: models.py:700
 msgid "week"
-msgstr ""
+msgstr "week"
 
 #: models.py:701
 msgid "day"
-msgstr ""
+msgstr "dag"
 
 #: views.py:303 views.py:1287
 msgid "Back to homepage"
-msgstr ""
+msgstr "Terug naar die huisbladsy toe"
 
 #: views.py:320
 msgid "Layers"
-msgstr "Lớp sơn"
+msgstr "Lage"
 
 #: views.py:326 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:19
 msgid "Legend"
-msgstr "Thánh truyện"
+msgstr "Legenda"
 
 #: views.py:372
 msgid "Multi-select"
@@ -143,7 +142,7 @@ msgstr ""
 
 #: views.py:373
 msgid "Select multiple items"
-msgstr ""
+msgstr "Selekteer meerdere items"
 
 #: views.py:381 views.py:1275
 msgid "Change the date range of the measurements"

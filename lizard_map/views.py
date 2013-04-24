@@ -227,11 +227,11 @@ class MapMixin(object):
             return self.backgrounds
         logger.warn("No background maps are active. Taking default.")
         return [BackgroundMap(
-                    name='Default map',
-                    default=True,
-                    active=True,
-                    layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                    layer_url=DEFAULT_OSM_LAYER_URL), ]
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=BackgroundMap.LAYER_TYPE_OSM,
+                layer_url=DEFAULT_OSM_LAYER_URL), ]
 
 
 class CollageMixin(object):
@@ -297,10 +297,9 @@ class CrumbsMixin(object):
         then add their own crumbs."""
         pass
 
-        initial = [{
-                'url': '/',
-                'description': 'Home',
-                'title': _('Back to homepage')}]
+        initial = [{'url': '/',
+                    'description': 'Home',
+                    'title': _('Back to homepage')}]
 
         toapp, self.url_to_app, self.url_after_app = (
             self.find_app_description(self.request.path))
@@ -315,11 +314,14 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
               MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
+    show_secondary_sidebar_icon = 'icon-list'
+    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELET', True)
+    map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
+    map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
+
     @property
     def show_secondary_sidebar_title(self):
         return _('Layers')
-
-    show_secondary_sidebar_icon = 'icon-list'
 
     @property
     def show_rightbar_title(self):
@@ -367,7 +369,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def content_actions(self):
         """Add default-location-zoom."""
         actions = super(AppView, self).content_actions
-        if getattr(settings, 'MAP_SHOW_MULTISELECT', True):
+        if self.map_show_multiselect:
             activate_multiselect = Action(
                 name=_('Multi-select'),
                 description=_('Select multiple items'),
@@ -375,7 +377,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-star-empty',
                 klass='map-multiple-selection')
             actions.insert(0, activate_multiselect)
-        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
+        if self.map_show_daterange:
             set_date_range = Action(
                 name='',
                 description=_('Change the date range of the measurements'),
@@ -383,7 +385,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-calendar',
                 klass='popup-date-range')
             actions.insert(0, set_date_range)
-        if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
+        if self.map_show_default_zoom:
             zoom_to_default = Action(
                 name=_('Default zoom'),
                 description=_('Zoom to default location'),
@@ -393,12 +395,10 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, zoom_to_default)
         return actions
 
-
 MapView = AppView  # BBB
 
 
-class WorkspaceStorageListView(
-    UiView, GoogleTrackingMixin):
+class WorkspaceStorageListView(UiView, GoogleTrackingMixin):
     """Show list of storage workspaces."""
 
     template_name = 'lizard_map/workspace_storage_list.html'
@@ -462,6 +462,7 @@ class WorkspaceStorageView(AppView):
     @property
     def rightbar_is_collapsed(self):
         return self.workspace.rightbar_is_collapsed
+
 
 class ActionDialogView(ViewContextMixin, FormView):
     """
@@ -720,10 +721,10 @@ def workspace_item_reorder(
         workspace_edit = get_workspace_edit_by_request(request)
 
     if workspace_items_order is None:
-        workspace_items_order = dict([
-                (workspace_item_id, index * 10) for
-                index, workspace_item_id in enumerate(
-                    request.POST.getlist('workspace-item[]'))])
+        workspace_items_order = dict(
+            [(workspace_item_id, index * 10) for
+             index, workspace_item_id in
+             enumerate(request.POST.getlist('workspace-item[]'))])
 
     for workspace_item in workspace_edit.workspace_items.all():
         workspace_item.index = workspace_items_order.get(
@@ -735,9 +736,7 @@ def workspace_item_reorder(
 
 # L3
 @never_cache
-def workspace_item_toggle(
-    request,
-    workspace_edit=None):
+def workspace_item_toggle(request, workspace_edit=None):
 
     """Toggle workspace item in workspace.
 
@@ -763,8 +762,8 @@ def workspace_item_toggle(
 
 # L3
 @never_cache
-def workspace_edit_item(
-    request, workspace_edit=None, workspace_item_id=None, visible=None):
+def workspace_edit_item(request, workspace_edit=None, workspace_item_id=None,
+                        visible=None):
     """Sets (in)visibility of a workspace_item
 
     workspace_edit is added for testing
@@ -878,6 +877,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
+    display_group_names = {}
     display_group_order = []
     for display_object in found:
         if 'grouping_hint' in display_object:
@@ -900,8 +900,8 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     for key, display_group in display_groups.items():
         # There MUST be at least one item in the group
         workspace_item = display_group[0]['workspace_item']
-
         add_snippet = True
+        display_group_names[key] = workspace_item.name
 
         try:
             identifiers = [display_object['identifier']
@@ -936,6 +936,11 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     else:
         popup_max_tabs = int(popup_max_tabs)
     result_html = [html[key] for key in display_group_order][:popup_max_tabs]
+    tab_titles = [display_group_names.get(key)
+                  for key in display_group_order][:popup_max_tabs]
+    # Fallback provided below.
+    tab_titles = [title or _("Tab %(number)s") % {'number': i + 1}
+                  for i, title in enumerate(tab_titles)]
 
     if popup_id is None:
         popup_id = 'popup-id'
@@ -943,6 +948,7 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
               # 'x': x_found,
               # 'y': y_found,
               'html': result_html,
+              'tab_titles': tab_titles,
               'big': big_popup,
               }
     return HttpResponse(json.dumps(result))
@@ -984,9 +990,10 @@ def popup_collage_json(collage_items, popup_id, request=None):
     """
 
     html = []
+    tab_titles = []
     big_popup = True
 
-    grouped_collage_items, _ = group_collage_items(collage_items)
+    grouped_collage_items, ignored = group_collage_items(collage_items)
     for collage_items in grouped_collage_items.values():
         collage_item = collage_items[0]  # Each group always has items.
         identifiers = [collage_item.identifier for
@@ -995,10 +1002,20 @@ def popup_collage_json(collage_items, popup_id, request=None):
         html.append(
             collage_item.html(identifiers=identifiers, is_collage=True,
                               request=request))
+        # The following is just a stub, until we can
+        # properly determine the name for grouped collage items.
+        tab_titles.append(None)
+
+    # Apply fallback on numbers for missing tab_titles. The stub above
+    # causes _all_ titles to be converted to numbers, until
+    # we have a better solution.
+    tab_titles = [title or _("Tab %(number)s") % {'number': i + 1}
+                  for i, title in enumerate(tab_titles)]
 
     result = {'id': popup_id,
               'html': html,
               'big': big_popup,
+              'tab_titles': tab_titles,
               }
     return HttpResponse(json.dumps(result))
 

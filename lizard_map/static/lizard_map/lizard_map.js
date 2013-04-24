@@ -61,7 +61,7 @@ function setup_movable_dialog() {
 // main (single) popup
 function open_popup(show_spinner) {
     $("#movable-dialog-content").empty();
-    if (show_spinner == undefined || show_spinner) {
+    if (show_spinner === undefined || show_spinner) {
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
         $("#movable-dialog-content").append($loading);
     }
@@ -87,8 +87,9 @@ function set_popup_content(data) {
                 // Build up html with tabs.
                 html = '<div id="popup-tabs"><ul>';
                 for (i = 0; i < data.html.length; i += 1) {
-                    html += '<li><a href="#popup-tab-' + (i + 1) + '">Tabblad ';
-                    html += (i + 1) + '</a></li>';
+                    html += '<li><a href="#popup-tab-' + (i + 1) + '">';
+                    html += data.tab_titles[i];
+                    html += '</a></li>';
                 }
                 html += '</ul>';
                 for (i = 0; i < data.html.length; i += 1) {
@@ -568,12 +569,12 @@ function actionPostClick(event, preAction, postAction, parameters) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
-    if (url == undefined) {
+    if (url === undefined) {
         // find in parents
         url = $(event.target).parents('a').attr("href");
     }
     target_id = $(event.target).attr("data-target-id");
-    if (target_id == undefined) {
+    if (target_id === undefined) {
         // find in parents
         target_id = $(event.target).parents('a').attr("data-target-id");
     }
@@ -700,7 +701,7 @@ function collagePopup(event) {
     event.preventDefault();
 
     url = $(event.target).attr("href");
-    if (url == undefined) {
+    if (url === undefined) {
         // find in parents
         url = $(event.target).parents('.collage-popup').attr("href");
     }
@@ -1115,9 +1116,45 @@ function refreshWmsLayers() {
             delete options['reproject'];
         }
         index = parseInt($(this).attr("data-workspace-wms-index"));
+
+        // Add cql_filtering
+        var layer_filters = $(this).data("workspace-wms-cql_filters");
+        var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
+        var cql_filters_arr = [];
+        // Add the filters that are selected and available for this layer.
+        for (key in selected_filters){
+            if ($.inArray(key, layer_filters) !== -1){
+                cql_filters_arr.push(key + '=' + selected_filters[key]);
+            }
+        }
+
+        // Add possible cql_filters from the layer definition.
+        if (params['.cql_filter'] !== undefined) {
+            cql_filters_arr.push(params['cql_filter']);
+        }
+
+        var cql_filters = '';
+        if (cql_filters_arr.length > 0) {
+            //Put the filters in geoserver format
+            cql_filters = cql_filters_arr.join(' AND ');
+        }
+
+
+        // Each layer of a combined layer needs a cql_filter.
+        if (cql_filters !== '') {
+            var layerslength = params['layers'].split(',').length - 1;
+            for (var i = 1; i <= layerslength; i ++) {
+                cql_filters += ';' + cql_filters;
+            }
+        }
+
         if (wms_layers[id] === undefined) {
-            // Create it.
             var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            // Create it.
+            if (cql_filters.length > 0){
+                // There are filters so add them to the request.
+                params['cql_filter'] = cql_filters;
+            }
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
@@ -1125,6 +1162,12 @@ function refreshWmsLayers() {
         else {
             // Update it.
             var layer = wms_layers[id];
+            if (cql_filters.length > 0){
+                // Update the layer if a cql_filter is used
+                // with the new cql_filter params.
+                layer.mergeNewParams({'cql_filter': cql_filters});
+            }
+            // set the correct Zindex
             layer.setZIndex(1000 - index);
         }
     });
@@ -1393,7 +1436,7 @@ function setUpMultipleSelection() {
 /* REST api with jQuery */
 function makeHtml(data) {
     var items = [];
-    console.log(typeof data);
+    // console.log(typeof data);
     if (typeof data === "string") {
         return data;
     }
@@ -1401,7 +1444,7 @@ function makeHtml(data) {
         return data;
     }
     $.each(data, function (key, val) {
-        console.log(key, val);
+        // console.log(key, val);
         if (val === null) {
             items.push('<li><span>' + key + '</span></li>');
         } else if ((typeof val === "string") && (val.indexOf('http://') === 0)) {
@@ -1772,7 +1815,8 @@ function panAndZoomOtherGraphs(plot) {
             }
         }
     });
-};
+}
+
 function bindPanZoomEvents($graph) {
     // fix IE performance
     if (isIE && ieVersion < 9) {
@@ -1786,7 +1830,7 @@ function bindPanZoomEvents($graph) {
     $graph.bind('plotpan', function (event, plot) {
         panAndZoomOtherGraphs(plot);
     });
-};
+}
 
 
 /**
@@ -1806,7 +1850,7 @@ var to_date_strings = function (assoc_array, inplace) {
                 assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
             }
             else if (v instanceof Object) {
-                to_date_strings(v, true)
+                to_date_strings(v, true);
             }
         }
     });
@@ -1828,16 +1872,13 @@ var to_date_objects = function (assoc_array, inplace) {
     $.each(assoc_array, function(k, v) {
         if (k && v) {
             if (typeof v == 'string' && (
-                 k.substring(0, 2) == 'dt'
-                 || k.indexOf('date') != -1
-                 || k == 'start'
-                 || k == 'end'
+                 k.substring(0, 2) == 'dt' || k.indexOf('date') != -1 || k == 'start' || k == 'end'
             )) {
                 // convert to Moment.js date object
                 assoc_array[k] = moment.utc(v);
             }
             else if (v instanceof Object) {
-                to_date_objects(v, true)
+                to_date_objects(v, true);
             }
         }
     });
@@ -1959,7 +2000,8 @@ function read_view_state_from_hash() {
             return true;
         }
         catch (error) {
-            console.error('Could not deserialize view state from hash')
+            console.error('Could not deserialize view state from hash');
+          // TODO console.log???
         }
     }
     return false;
@@ -2000,6 +2042,7 @@ function save_view_state_to_server() {
         data: view_state,
         success: function (data) {
             console.log('put success: ', data);
+          // TODO console.log???
         }
     }, true);
 }
@@ -2093,6 +2136,13 @@ function setup_daterangepicker() {
     }
 }
 
+function setUpSidebarPopupDisappearing () {
+  $("#sidebar").scroll(function() {
+    // Fixing 'zombie' popovers when the user scrolls with an info icon popover enabled
+    $('.has_popover').each(function(i,v){ $(v).popover("hide"); });
+  });
+}
+
 function setup_location_list () {
     var $element = $('.popup-location-list');
     if ($element.exists()) {
@@ -2141,7 +2191,7 @@ function setup_location_list () {
                 url: '/map/location_list_service/?' + params, // TODO
                 success: function (data) {
                     $results.empty();
-                    if (data.length == 0) {
+                    if (data.length === 0) {
                         $results.html('Niets gevonden.');
                     }
                     else {
@@ -2173,6 +2223,8 @@ function setup_location_list () {
     }
 }
 
+
+
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
@@ -2187,6 +2239,7 @@ $(document).ready(function () {
     setUpWorkspaceLoad();
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
+    setUpSidebarPopupDisappearing();
     $(".workspace").workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();
