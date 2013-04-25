@@ -398,7 +398,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, zoom_to_default)
         if self.map_show_base_layers_menu:
             show_layers = Action(
-                name=_('Base layers'),
+                name=_('Achtergrond kaarten'),
                 element_id='base-layers',
                 description=_('Show base layers'),
                 url="#",
@@ -407,7 +407,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, show_layers)
         if self.map_show_layers_menu:
             show_layers = Action(
-                name=_('Map layers'),
+                name=_('Kaart lagen'),
                 element_id='layers',
                 description=_('Show map layers'),
                 url="#",
