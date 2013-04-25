@@ -1241,6 +1241,7 @@ function spawnCustomMovingBox(width, height, x, y) {
 
 function setUpMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
+	    layerSwitcherControl,
         map_click_control, zoom_panel, map_hover_control,
         javascript_click_handler_name, javascript_hover_handler_name,
         $lizard_map_wms, projection, display_projection, start_extent,
@@ -1316,7 +1317,9 @@ function setUpMap() {
     refreshLayers();
 
     // Set up controls, zoom and center.
-    map.addControl(new OpenLayers.Control.LayerSwitcher({'ascending': true}));
+	LayerSwitcherControl = new OpenLayers.Control.NensLayerSwitcher();
+
+    map.addControl(LayerSwitcherControl);
     // Click handling.
     javascript_click_handler_name = $lizard_map_wms.attr("data-javascript-click-handler");
     if (javascript_click_handler_name) {
@@ -1395,9 +1398,11 @@ function setUpMap() {
         });
     }
 
-    zoom_panel = new OpenLayers.Control.Panel();
-    zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
-    map.addControl(zoom_panel);
+	if (!isAppleMobile) {
+		zoom_panel = new OpenLayers.Control.Panel();
+		zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
+		map.addControl(zoom_panel);
+	}
     map.addControl(new OpenLayers.Control.Navigation());
 
     // Zoom to startpoint. Important to parse numbers, else a bug in

@@ -45,6 +45,7 @@ class WorkspaceEditAdmin(admin.ModelAdmin):
 
 
 class WorkspaceStorageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'secret_slug')
     inlines = [
         WorkspaceStorageItemInline,
         ]
