@@ -549,17 +549,6 @@ function setUpWorkspaceAcceptable() {
 
     // Set initial status.
     updateWorkspaceAcceptableStatus();
-
-    // We want to refresh workspace-acceptables after clicking an
-    // accordion tab. Not accidently a click is also triggered after
-    // loading next pane.
-    try {
-        $("#accordion").data("tabs").onClick(function (event) {
-            // updateWorkspaceAcceptableStatus();
-        });
-    } catch (e) {
-        // Nothing. There is no accordion.
-    }
 }
 
 /* Generic POST click handling: do preAction, post, if success do
