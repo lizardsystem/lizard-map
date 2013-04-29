@@ -390,28 +390,28 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, set_date_range)
         if self.map_show_default_zoom:
             zoom_to_default = Action(
-                name=_('Default zoom'),
+                name='',
                 description=_('Zoom to default location'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
-                klass='map-load-default-location')
+                klass='map-load-default-location has_popover')
             actions.insert(0, zoom_to_default)
         if self.map_show_base_layers_menu:
             show_layers = Action(
-                name=_('Achtergrond kaarten'),
+                name='',
                 element_id='base-layers',
                 description=_('Show base layers'),
                 url="#",
-                icon='icon-align-justify',
+                icon='icon-globe',
                 klass='dropdown-toggle')
             actions.insert(0, show_layers)
         if self.map_show_layers_menu:
             show_layers = Action(
-                name=_('Kaart lagen'),
+                name='',
                 element_id='layers',
                 description=_('Show map layers'),
                 url="#",
-                icon='icon-align-justify',
+                icon='icon-map-marker',
                 klass='dropdown-toggle')
             actions.insert(0, show_layers)
         return actions
