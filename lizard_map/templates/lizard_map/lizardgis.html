@@ -11,12 +11,19 @@
 
 {% block javascript %}
   {{ block.super }}
+
+<!-- underscore is used for backbone and NensLayerSwitcher -->
 <script type="text/javascript"
         src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
+<!-- Backbone is used for animations.js -->
 <script type="text/javascript"
         src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/animations.js"></script>
+<script type="text/javascript"
+		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js">
+</script>
+
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
 {% endblock javascript %}
