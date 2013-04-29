@@ -394,7 +394,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 description=_('Zoom to default location'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
-                klass='map-load-default-location has_popover')
+                klass='map-load-default-location')
             actions.insert(0, zoom_to_default)
         if self.map_show_base_layers_menu:
             show_layers = Action(
