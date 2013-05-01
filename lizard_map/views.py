@@ -318,6 +318,9 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELET', True)
     map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
     map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
+    map_show_base_layers_menu = getattr(settings,
+                                        'MAP_SHOW_BASE_LAYERS_MENU', True)
+    map_show_layers_menu = getattr(settings, 'MAP_SHOW_LAYERS_MENU', True)
 
     @property
     def show_secondary_sidebar_title(self):
@@ -387,13 +390,32 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, set_date_range)
         if self.map_show_default_zoom:
             zoom_to_default = Action(
-                name=_('Default zoom'),
+                name='',
                 description=_('Zoom to default location'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
                 klass='map-load-default-location')
             actions.insert(0, zoom_to_default)
+        if self.map_show_base_layers_menu:
+            show_layers = Action(
+                name='',
+                element_id='base-layers',
+                description=_('Show base layers'),
+                url="#",
+                icon='icon-globe',
+                klass='dropdown-toggle')
+            actions.insert(0, show_layers)
+        if self.map_show_layers_menu:
+            show_layers = Action(
+                name='',
+                element_id='layers',
+                description=_('Show map layers'),
+                url="#",
+                icon='icon-map-marker',
+                klass='dropdown-toggle')
+            actions.insert(0, show_layers)
         return actions
+
 
 MapView = AppView  # BBB
 

@@ -230,8 +230,6 @@ function init_animation() {
         // $.getJSON(url + anim_info_params, function(data) {
         //   console.log(data);
         // });
-    /*
-    http://localhost:5000/wms?request=getinfo&dataset=/home/user/git/nens/threedi-server/threedi_server/../var/data/subgrid_map.nc&srs=epsg:3857 */
 
         index = parseInt($(this).attr("data-workspace-wms-index"));
         if (wms_ani_layers[id] === undefined) {
@@ -259,10 +257,4 @@ function init_animation() {
 function init_control_panel() {
   // Bind the control panel to the view.
   control_panel_view = new ControlPanelView({el: $('#controlpanel')});
-  //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
 }
-
-// $(document).ready(function() {
-//   init_animation();
-//   init_control_panel();
-// });
