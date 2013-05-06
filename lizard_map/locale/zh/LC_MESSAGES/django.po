@@ -1,0 +1,269 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Zhanguo Bai <zhanguo.bai@wur.nl>, 2013.
+msgid ""
+msgstr ""
+"Project-Id-Version: lizardsystem\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-06 16:11+0200\n"
+"PO-Revision-Date: 2013-05-06 14:12+0000\n"
+"Last-Translator: Roland van Laar <roland.vanlaar@nelen-schuurmans.nl>\n"
+"Language-Team: Chinese (http://translations.lizard.net/projects/p/"
+"lizardsystem/team/zh/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+
+#: adapter.py:144
+msgid "with"
+msgstr ""
+
+#: adapter.py:145
+msgid "percentile"
+msgstr ""
+
+#: dateperiods.py:14
+msgid "Quarter 1"
+msgstr "第一季度"
+
+#: dateperiods.py:15
+msgid "Quarter 2"
+msgstr "第二季度"
+
+#: dateperiods.py:16
+msgid "Quarter 3"
+msgstr "第三季度"
+
+#: dateperiods.py:17
+msgid "Quarter 4"
+msgstr "第四季度"
+
+#: dateperiods.py:21
+msgid "January"
+msgstr "一月"
+
+#: dateperiods.py:22
+msgid "February"
+msgstr "二月"
+
+#: dateperiods.py:23
+msgid "March"
+msgstr "三月"
+
+#: dateperiods.py:24
+msgid "April"
+msgstr "四月"
+
+#: dateperiods.py:25
+msgid "May"
+msgstr "五月"
+
+#: dateperiods.py:26
+msgid "June"
+msgstr "六月"
+
+#: dateperiods.py:27
+msgid "July"
+msgstr "七月"
+
+#: dateperiods.py:28
+msgid "August"
+msgstr "八月"
+
+#: dateperiods.py:29
+msgid "September"
+msgstr "九月"
+
+#: dateperiods.py:30
+msgid "October"
+msgstr "十月"
+
+#: dateperiods.py:31
+msgid "November"
+msgstr "十一月"
+
+#: dateperiods.py:32
+msgid "December"
+msgstr "十二月"
+
+#: dateperiods.py:155
+msgid "Whole period"
+msgstr "整个期间"
+
+#: fields.py:101
+msgid "Enter a valid color code rrggbbaa, where aa is optional."
+msgstr ""
+
+#: models.py:696
+msgid "all"
+msgstr "全部"
+
+#: models.py:697
+msgid "year"
+msgstr "年"
+
+#: models.py:698
+msgid "quarter"
+msgstr "季度"
+
+#: models.py:699
+msgid "month"
+msgstr "月"
+
+#: models.py:700
+msgid "week"
+msgstr "周"
+
+#: models.py:701
+msgid "day"
+msgstr "日"
+
+#: views.py:302 views.py:1322
+msgid "Back to homepage"
+msgstr "返回主页"
+
+#: views.py:327
+msgid "Layers"
+msgstr "图层"
+
+#: views.py:331 templates/lizard_map/legend_item.html:6
+#: templates/lizard_map/wms.html:19
+msgid "Legend"
+msgstr "图例"
+
+#: views.py:377
+msgid "Multi-select"
+msgstr "多项选择"
+
+#: views.py:378
+msgid "Select multiple items"
+msgstr "选择多项"
+
+#: views.py:386 views.py:1310
+msgid "Change the date range of the measurements"
+msgstr ""
+
+#: views.py:394
+msgid "Zoom to default location"
+msgstr ""
+
+#: views.py:403
+msgid "Show base layers"
+msgstr ""
+
+#: views.py:412
+msgid "Show map layers"
+msgstr ""
+
+#: views.py:964 views.py:1034
+#, python-format
+msgid "Tab %(number)s"
+msgstr ""
+
+#: views.py:1300 views.py:1325
+msgid "Collage"
+msgstr ""
+
+#: views.py:1320
+msgid "Home"
+msgstr "主页"
+
+#: workspace.py:20
+msgid "blue"
+msgstr "蓝色"
+
+#: workspace.py:21
+msgid "darkred"
+msgstr "深红色"
+
+#: workspace.py:22
+msgid "green"
+msgstr "绿色"
+
+#: workspace.py:23
+msgid "black"
+msgstr "黑色"
+
+#: workspace.py:24
+msgid "cyan"
+msgstr "青色"
+
+#: workspace.py:25
+msgid "yellow"
+msgstr "黄色"
+
+#: workspace.py:26
+msgid "lightblue"
+msgstr "浅蓝色"
+
+#: workspace.py:27
+msgid "grey"
+msgstr "灰色"
+
+#: templates/lizard_map/example_openlayers.html:19
+msgid "Examples"
+msgstr "事例"
+
+#: templates/lizard_map/example_openlayers.html:21
+msgid "Example with shapefile"
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:8
+msgid "This is your current selection."
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:9
+msgid "Selection"
+msgstr "选择"
+
+#: templates/lizard_map/tag_collage_edit.html:46
+#: templates/lizard_map/tag_workspace_edit.html:61
+msgid "Delete item"
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:54
+msgid "Select items on the map."
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:62
+msgid "Empty your collage"
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:71
+msgid "Selection popup"
+msgstr ""
+
+#: templates/lizard_map/tag_collage_edit.html:81
+#: templates/lizard_map/tag_collage_edit.html:87
+msgid "Selection page"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:16
+#: templates/lizard_map/workspace_storage_detail.html:15
+msgid ""
+"This is your workspace. Hover your mouse over the containing items to see "
+"options."
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:55
+#: templates/lizard_map/workspace_storage_detail.html:45
+msgid "Zoom to extent"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:79
+msgid "Empty your workspace"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:89
+msgid "Save your workspace"
+msgstr ""
+
+#: templates/lizard_map/workspace_storage_detail.html:61
+#: templates/lizard_map/workspace_storage_detail.html:65
+msgid "Edit this workspace"
+msgstr ""
