@@ -3,8 +3,7 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-#   <admin@example.com>, 2013.
-# Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
+# Zhanguo Bai <zhanguo.bai@wur.nl>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
@@ -12,12 +11,12 @@ msgstr ""
 "POT-Creation-Date: 2013-05-06 16:11+0200\n"
 "PO-Revision-Date: 2013-05-06 14:12+0000\n"
 "Last-Translator: Roland van Laar <roland.vanlaar@nelen-schuurmans.nl>\n"
-"Language-Team: Vietnamese (http://translations.lizard.net/projects/p/"
-"lizardsystem/team/vi/)\n"
+"Language-Team: Chinese (http://translations.lizard.net/projects/p/"
+"lizardsystem/team/zh/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: vi\n"
+"Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
 #: adapter.py:144
@@ -30,71 +29,71 @@ msgstr ""
 
 #: dateperiods.py:14
 msgid "Quarter 1"
-msgstr ""
+msgstr "第一季度"
 
 #: dateperiods.py:15
 msgid "Quarter 2"
-msgstr ""
+msgstr "第二季度"
 
 #: dateperiods.py:16
 msgid "Quarter 3"
-msgstr ""
+msgstr "第三季度"
 
 #: dateperiods.py:17
 msgid "Quarter 4"
-msgstr ""
+msgstr "第四季度"
 
 #: dateperiods.py:21
 msgid "January"
-msgstr "Tháng Một"
+msgstr "一月"
 
 #: dateperiods.py:22
 msgid "February"
-msgstr "Tháng Hai"
+msgstr "二月"
 
 #: dateperiods.py:23
 msgid "March"
-msgstr "Tháng Ba"
+msgstr "三月"
 
 #: dateperiods.py:24
 msgid "April"
-msgstr "Tháng Tư"
+msgstr "四月"
 
 #: dateperiods.py:25
 msgid "May"
-msgstr "Tháng Năm"
+msgstr "五月"
 
 #: dateperiods.py:26
 msgid "June"
-msgstr "Tháng Sáu"
+msgstr "六月"
 
 #: dateperiods.py:27
 msgid "July"
-msgstr "Tháng Bảy"
+msgstr "七月"
 
 #: dateperiods.py:28
 msgid "August"
-msgstr "Tháng Tám"
+msgstr "八月"
 
 #: dateperiods.py:29
 msgid "September"
-msgstr "Tháng Chín"
+msgstr "九月"
 
 #: dateperiods.py:30
 msgid "October"
-msgstr "Tháng Mười"
+msgstr "十月"
 
 #: dateperiods.py:31
 msgid "November"
-msgstr "Tháng Mười Một"
+msgstr "十一月"
 
 #: dateperiods.py:32
 msgid "December"
-msgstr "Tháng Mười Hai"
+msgstr "十二月"
 
 #: dateperiods.py:155
 msgid "Whole period"
-msgstr ""
+msgstr "整个期间"
 
 #: fields.py:101
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
@@ -102,48 +101,48 @@ msgstr ""
 
 #: models.py:696
 msgid "all"
-msgstr ""
+msgstr "全部"
 
 #: models.py:697
 msgid "year"
-msgstr ""
+msgstr "年"
 
 #: models.py:698
 msgid "quarter"
-msgstr ""
+msgstr "季度"
 
 #: models.py:699
 msgid "month"
-msgstr ""
+msgstr "月"
 
 #: models.py:700
 msgid "week"
-msgstr ""
+msgstr "周"
 
 #: models.py:701
 msgid "day"
-msgstr ""
+msgstr "日"
 
 #: views.py:302 views.py:1322
 msgid "Back to homepage"
-msgstr ""
+msgstr "返回主页"
 
 #: views.py:327
 msgid "Layers"
-msgstr "Lớp sơn"
+msgstr "图层"
 
 #: views.py:331 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:19
 msgid "Legend"
-msgstr "Thánh truyện"
+msgstr "图例"
 
 #: views.py:377
 msgid "Multi-select"
-msgstr ""
+msgstr "多项选择"
 
 #: views.py:378
 msgid "Select multiple items"
-msgstr ""
+msgstr "选择多项"
 
 #: views.py:386 views.py:1310
 msgid "Change the date range of the measurements"
@@ -172,43 +171,43 @@ msgstr ""
 
 #: views.py:1320
 msgid "Home"
-msgstr ""
+msgstr "主页"
 
 #: workspace.py:20
 msgid "blue"
-msgstr ""
+msgstr "蓝色"
 
 #: workspace.py:21
 msgid "darkred"
-msgstr ""
+msgstr "深红色"
 
 #: workspace.py:22
 msgid "green"
-msgstr ""
+msgstr "绿色"
 
 #: workspace.py:23
 msgid "black"
-msgstr ""
+msgstr "黑色"
 
 #: workspace.py:24
 msgid "cyan"
-msgstr ""
+msgstr "青色"
 
 #: workspace.py:25
 msgid "yellow"
-msgstr ""
+msgstr "黄色"
 
 #: workspace.py:26
 msgid "lightblue"
-msgstr ""
+msgstr "浅蓝色"
 
 #: workspace.py:27
 msgid "grey"
-msgstr ""
+msgstr "灰色"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
-msgstr ""
+msgstr "事例"
 
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
@@ -220,7 +219,7 @@ msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:9
 msgid "Selection"
-msgstr ""
+msgstr "选择"
 
 #: templates/lizard_map/tag_collage_edit.html:46
 #: templates/lizard_map/tag_workspace_edit.html:61

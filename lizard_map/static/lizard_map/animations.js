@@ -51,7 +51,7 @@ var AnimatedLayer = Backbone.Model.extend({
     for (var i=0; i < this.max_timesteps; i++) {
       this.params.time = i;
       this.layers[i] = new OpenLayers.Layer.WMS(
-        this.name + ' (' + i + ')', 
+        this.name + ' (' + i + ')',
         this.url, this.params, this.options);
 
       // make new layer appear after completed loading.
@@ -65,7 +65,7 @@ var AnimatedLayer = Backbone.Model.extend({
               if (this.params.TIME !== parseInt(me.most_recent_loading)) {
                   console.log('this != most recent loading -> do nothing');
                   return;
-              }             
+              }
               this.setOpacity(1);
 
               // make the old layer disappear
@@ -75,7 +75,7 @@ var AnimatedLayer = Backbone.Model.extend({
                   if (parseInt(ts) !== parseInt(me.most_recent_loading)) {
                       //console.log('removing from map... ts ', ts);
                       //console.log('me.layers[ts] ', me.layers[ts]);
-                      //map.removeLayer(me.layers[ts]); 
+                      //map.removeLayer(me.layers[ts]);
                       // strangely enough, the id sometimes change -> then we'll remove by name
                       var remove_layers = map.getLayersByName(me.layers[ts].name);
                       for (var c=0; c<remove_layers.length; c++) {
@@ -89,7 +89,7 @@ var AnimatedLayer = Backbone.Model.extend({
               if ((nextTimestep !== null) && (parseInt(nextTimestep) !== parseInt(this.params.TIME))) {
                   // console.log('nextTimestep: ', nextTimestep);
                   me.setTimestep(nextTimestep);
-              } 
+              }
           });
 
     }
@@ -107,7 +107,7 @@ var AnimatedLayer = Backbone.Model.extend({
           // console.log('not ready for next timestep... still busy ', timestep);
           // is the first next thing
           // Can be overwritten, which is ok.
-          this.readyForNext = timestep;  
+          this.readyForNext = timestep;
           return;
       }
 
@@ -294,8 +294,6 @@ function init_animation() {
         // $.getJSON(url + anim_info_params, function(data) {
         //   console.log(data);
         // });
-    /*
-    http://localhost:5000/wms?request=getinfo&dataset=/home/user/git/nens/threedi-server/threedi_server/../var/data/subgrid_map.nc&srs=epsg:3857 */
 
         index = parseInt($(this).attr("data-workspace-wms-index"));
         if (wms_ani_layers[id] === undefined) {
@@ -323,18 +321,7 @@ function init_animation() {
 function init_control_panel() {
   //$('#controlpanel').off('click', '.btn-start-stop');
   //#('#controlpanel').off('click', '.btn-reset');
-  
+
   // Bind the control panel to the view.
-  control_panel_view = new ControlPanelView({el: $('.controlpanel')});
-  //console.log('control panel view ', control_panel_view);
-  //control_panel_view = new ControlPanelView({el: $('#controlpanel2')});
+  control_panel_view = new ControlPanelView({el: $('#controlpanel')});
 }
-
-$(document).ready(function() {
-  //init_animation();
-  //init_control_panel();
-
-  // special for the demo march 2013
-  //$("a.popup-date-range").parent().css("display", "none");
-  //$("a.map-multiple-selection").parent().css("display", "none");
-});

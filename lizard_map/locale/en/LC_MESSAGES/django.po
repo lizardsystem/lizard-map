@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-20 11:40+0000\n"
+"POT-Creation-Date: 2013-05-06 16:11+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,81 +121,85 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: views.py:303 views.py:1287
+#: views.py:302 views.py:1322
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:320
+#: views.py:327
 msgid "Layers"
 msgstr ""
 
-#: views.py:326 templates/lizard_map/legend_item.html:6
+#: views.py:331 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr ""
 
-#: views.py:372
+#: views.py:377
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:373
+#: views.py:378
 msgid "Select multiple items"
 msgstr ""
 
-#: views.py:381 views.py:1275
+#: views.py:386 views.py:1310
 msgid "Change the date range of the measurements"
 msgstr ""
 
-#: views.py:388
-msgid "Default zoom"
-msgstr ""
-
-#: views.py:389
+#: views.py:394
 msgid "Zoom to default location"
 msgstr ""
 
-#: views.py:940
+#: views.py:403
+msgid "Show base layers"
+msgstr ""
+
+#: views.py:412
+msgid "Show map layers"
+msgstr ""
+
+#: views.py:964 views.py:1034
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1265 views.py:1290
+#: views.py:1300 views.py:1325
 msgid "Collage"
 msgstr ""
 
-#: views.py:1285
+#: views.py:1320
 msgid "Home"
 msgstr ""
 
-#: workspace.py:22
+#: workspace.py:20
 msgid "blue"
 msgstr ""
 
-#: workspace.py:23
+#: workspace.py:21
 msgid "darkred"
 msgstr ""
 
-#: workspace.py:24
+#: workspace.py:22
 msgid "green"
 msgstr ""
 
-#: workspace.py:25
+#: workspace.py:23
 msgid "black"
 msgstr ""
 
-#: workspace.py:26
+#: workspace.py:24
 msgid "cyan"
 msgstr ""
 
-#: workspace.py:27
+#: workspace.py:25
 msgid "yellow"
 msgstr ""
 
-#: workspace.py:28
+#: workspace.py:26
 msgid "lightblue"
 msgstr ""
 
-#: workspace.py:29
+#: workspace.py:27
 msgid "grey"
 msgstr ""
 

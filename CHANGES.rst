@@ -1,10 +1,25 @@
 Changelog of lizard-map
 =======================
 
-4.28 (unreleased)
+4.29 (unreleased)
 -----------------
 
 - Nothing changed yet.
+
+
+4.28 (2013-05-06)
+-----------------
+
+- Added a completely transparant icon, ghost.png, for layers that
+  shouldn't be shown but for which the popup should still work.
+
+- Some changes to be iPad friendly were made.
+  
+  - The small layerswitcher is moved to the upper bar for easier use.
+ 
+  - The left hand zoom in and out buttons are not shown on iPad.
+  
+  - 'Zoom to start location' is now just an icon. 
 
 
 4.27 (2013-04-03)

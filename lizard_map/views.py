@@ -227,11 +227,11 @@ class MapMixin(object):
             return self.backgrounds
         logger.warn("No background maps are active. Taking default.")
         return [BackgroundMap(
-                    name='Default map',
-                    default=True,
-                    active=True,
-                    layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                    layer_url=DEFAULT_OSM_LAYER_URL), ]
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=BackgroundMap.LAYER_TYPE_OSM,
+                layer_url=DEFAULT_OSM_LAYER_URL), ]
 
 
 class CollageMixin(object):
@@ -297,10 +297,9 @@ class CrumbsMixin(object):
         then add their own crumbs."""
         pass
 
-        initial = [{
-                'url': '/',
-                'description': 'Home',
-                'title': _('Back to homepage')}]
+        initial = [{'url': '/',
+                    'description': 'Home',
+                    'title': _('Back to homepage')}]
 
         toapp, self.url_to_app, self.url_after_app = (
             self.find_app_description(self.request.path))
@@ -315,11 +314,17 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
               MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
+    show_secondary_sidebar_icon = 'icon-list'
+    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELET', True)
+    map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
+    map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
+    map_show_base_layers_menu = getattr(settings,
+                                        'MAP_SHOW_BASE_LAYERS_MENU', True)
+    map_show_layers_menu = getattr(settings, 'MAP_SHOW_LAYERS_MENU', True)
+
     @property
     def show_secondary_sidebar_title(self):
         return _('Layers')
-
-    show_secondary_sidebar_icon = 'icon-list'
 
     @property
     def show_rightbar_title(self):
@@ -367,7 +372,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def content_actions(self):
         """Add default-location-zoom."""
         actions = super(AppView, self).content_actions
-        if getattr(settings, 'MAP_SHOW_MULTISELECT', True):
+        if self.map_show_multiselect:
             activate_multiselect = Action(
                 name=_('Multi-select'),
                 description=_('Select multiple items'),
@@ -375,7 +380,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-star-empty',
                 klass='map-multiple-selection')
             actions.insert(0, activate_multiselect)
-        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
+        if self.map_show_daterange:
             set_date_range = Action(
                 name='',
                 description=_('Change the date range of the measurements'),
@@ -383,15 +388,34 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-calendar',
                 klass='popup-date-range')
             actions.insert(0, set_date_range)
-        if getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True):
+        if self.map_show_default_zoom:
             zoom_to_default = Action(
-                name=_('Default zoom'),
+                name='',
                 description=_('Zoom to default location'),
                 url=reverse('lizard_map.map_location_load_default'),
                 icon='icon-screenshot',
                 klass='map-load-default-location')
             actions.insert(0, zoom_to_default)
+        if self.map_show_base_layers_menu:
+            show_layers = Action(
+                name='',
+                element_id='base-layers',
+                description=_('Show base layers'),
+                url="#",
+                icon='icon-globe',
+                klass='dropdown-toggle')
+            actions.insert(0, show_layers)
+        if self.map_show_layers_menu:
+            show_layers = Action(
+                name='',
+                element_id='layers',
+                description=_('Show map layers'),
+                url="#",
+                icon='icon-map-marker',
+                klass='dropdown-toggle')
+            actions.insert(0, show_layers)
         return actions
+
 
 MapView = AppView  # BBB
 
