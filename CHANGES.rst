@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.28 (unreleased)
+4.28 (2013-05-06)
 -----------------
 
 - Added a completely transparant icon, ghost.png, for layers that
