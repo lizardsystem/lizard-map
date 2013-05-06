@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-20 11:40+0000\n"
-"PO-Revision-Date: 2013-03-20 11:42+0000\n"
-"Last-Translator: admin <admin@example.com>\n"
+"POT-Creation-Date: 2013-05-06 16:11+0200\n"
+"PO-Revision-Date: 2013-05-06 14:12+0000\n"
+"Last-Translator: Roland van Laar <roland.vanlaar@nelen-schuurmans.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -122,81 +122,85 @@ msgstr "week"
 msgid "day"
 msgstr "dag"
 
-#: views.py:303 views.py:1287
+#: views.py:302 views.py:1322
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:320
+#: views.py:327
 msgid "Layers"
 msgstr "Kaartlagen"
 
-#: views.py:326 templates/lizard_map/legend_item.html:6
+#: views.py:331 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:372
+#: views.py:377
 msgid "Multi-select"
 msgstr "Multi-select"
 
-#: views.py:373
+#: views.py:378
 msgid "Select multiple items"
 msgstr "Selecteer meerdere items"
 
-#: views.py:381 views.py:1275
+#: views.py:386 views.py:1310
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
-#: views.py:388
-msgid "Default zoom"
-msgstr "Beginlocatie"
-
-#: views.py:389
+#: views.py:394
 msgid "Zoom to default location"
 msgstr "Zoom naar de standaard beginlocatie"
 
-#: views.py:940
+#: views.py:403
+msgid "Show base layers"
+msgstr ""
+
+#: views.py:412
+msgid "Show map layers"
+msgstr ""
+
+#: views.py:964 views.py:1034
 #, python-format
 msgid "Tab %(number)s"
 msgstr "Tabblad %(number)s"
 
-#: views.py:1265 views.py:1290
+#: views.py:1300 views.py:1325
 msgid "Collage"
 msgstr "Collage"
 
-#: views.py:1285
+#: views.py:1320
 msgid "Home"
 msgstr "Thuispagina"
 
-#: workspace.py:22
+#: workspace.py:20
 msgid "blue"
 msgstr "blauw"
 
-#: workspace.py:23
+#: workspace.py:21
 msgid "darkred"
 msgstr "donkerrood"
 
-#: workspace.py:24
+#: workspace.py:22
 msgid "green"
 msgstr "groen"
 
-#: workspace.py:25
+#: workspace.py:23
 msgid "black"
 msgstr "zwart"
 
-#: workspace.py:26
+#: workspace.py:24
 msgid "cyan"
 msgstr "cyaan"
 
-#: workspace.py:27
+#: workspace.py:25
 msgid "yellow"
 msgstr "geel"
 
-#: workspace.py:28
+#: workspace.py:26
 msgid "lightblue"
 msgstr "lichtblauw"
 
-#: workspace.py:29
+#: workspace.py:27
 msgid "grey"
 msgstr "grijs"
 
