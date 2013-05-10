@@ -416,6 +416,10 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             actions.insert(0, show_layers)
         return actions
 
+    @property
+    def view_state(self):
+        return get_view_state(self.request)
+
 
 MapView = AppView  # BBB
 
@@ -1914,39 +1918,44 @@ class ViewStateForm(forms.Form):
         help_text='ISO8601 datetime string')
 
 
+def get_view_state(request):
+    session = request.session
+
+    # try getting values from session
+    range_type = session.get(SESSION_DT_RANGETYPE)
+    dt_start = session.get(SESSION_DT_START)
+    dt_end = session.get(SESSION_DT_END)
+
+    # when not in session, use the default from Django settings
+    if not range_type:
+        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
+    # when something invalid is in the session, also get it from Django settings
+    elif range_type == 'custom' and not (dt_start and dt_end):
+        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
+
+    # allow a site to completely bypass the daterange mechanism
+    override_range_type = getattr(settings, 'OVERRIDE_RANGE_TYPE', None)
+    if override_range_type is not None:
+        override_start_days = getattr(settings, 'OVERRIDE_START_DAYS', None)
+        override_end_days = getattr(settings, 'OVERRIDE_END_DAYS', None)
+        if override_range_type == 'custom' and override_start_days and override_end_days:
+            now = datetime.datetime.now()
+            dt_start = now + datetime.timedelta(days=int(override_start_days))
+            dt_end = now + datetime.timedelta(days=int(override_end_days))
+        range_type = override_range_type
+
+    return {
+        'range_type': range_type,
+        'dt_start': dt_start,
+        'dt_end': dt_end
+    }
+
+
 class ViewStateService(APIView, WorkspaceEditMixin):
     @never_cache
     def get(self, request, *args, **kwargs):
-        session = request.session
-
-        # try getting values from session
-        range_type = session.get(SESSION_DT_RANGETYPE)
-        dt_start = session.get(SESSION_DT_START)
-        dt_end = session.get(SESSION_DT_END)
-
-        # when not in session, use the default from Django settings
-        if not range_type:
-            range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
-        # when something invalid is in the session, also get it from Django settings
-        elif range_type == 'custom' and not (dt_start and dt_end):
-            range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
-
-        # allow a site to completely bypass the daterange mechanism
-        override_range_type = getattr(settings, 'OVERRIDE_RANGE_TYPE', None)
-        if override_range_type is not None:
-            override_start_days = getattr(settings, 'OVERRIDE_START_DAYS', None)
-            override_end_days = getattr(settings, 'OVERRIDE_END_DAYS', None)
-            if override_range_type == 'custom' and override_start_days and override_end_days:
-                now = datetime.datetime.now()
-                dt_start = now + datetime.timedelta(days=override_start_days)
-                dt_end = now + datetime.timedelta(days=override_end_days)
-            range_type = override_range_type
-
-        return RestResponse({
-            'range_type': range_type,
-            'dt_start': dt_start,
-            'dt_end': dt_end
-            })
+        view_state = get_view_state(request)
+        return RestResponse(view_state)
 
     def put(self, request, *args, **kwargs):
         session = request.session

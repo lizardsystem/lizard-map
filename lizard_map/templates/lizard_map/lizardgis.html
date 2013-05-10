@@ -12,20 +12,32 @@
 {% block javascript %}
   {{ block.super }}
 
-<!-- underscore is used for backbone and NensLayerSwitcher -->
-<script type="text/javascript"
-        src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
-<!-- Backbone is used for animations.js -->
-<script type="text/javascript"
-        src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/animations.js"></script>
-<script type="text/javascript"
-		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js">
-</script>
-
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
+  <!-- underscore is used for backbone and NensLayerSwitcher -->
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
+  <!-- Backbone is used for animations.js -->
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/animations.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
+  <script type="text/javascript">
+    var _view_state = {
+        range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
+        dt_start: moment.utc().subtract('days', 2), // Moment.js date object
+        dt_end: moment.utc()                        // Moment.js date object
+    };
+    {% with view.view_state as view_state %}
+        {% if view_state %}
+            _view_state.range_type = "{{ view.view_state.range_type }}";
+            _view_state.dt_start = moment.utc("{{ view.view_state.dt_start|date:"c" }}");
+            _view_state.dt_end = moment.utc("{{ view.view_state.dt_end|date:"c" }}");
+        {% endif %}
+    {% endwith %}
+  </script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
 {% endblock javascript %}
 
 {% block content %}
