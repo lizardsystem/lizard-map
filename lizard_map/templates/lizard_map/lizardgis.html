@@ -27,6 +27,8 @@
 {% endblock javascript %}
 
 {% block map-javascript %}
+  {{ block.super }}
+
   <script type="text/javascript">
     var _view_state = {
         range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
