@@ -22,6 +22,11 @@
           src="{{ STATIC_URL }}lizard_map/animations.js"></script>
   <script type="text/javascript"
           src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
+{% endblock javascript %}
+
+{% block map-javascript %}
   <script type="text/javascript">
     var _view_state = {
         range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
@@ -36,9 +41,7 @@
         {% endif %}
     {% endwith %}
   </script>
-  <script type="text/javascript"
-          src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
-{% endblock javascript %}
+{% endblock map-javascript %}
 
 {% block content %}
 <div id="map"></div>
