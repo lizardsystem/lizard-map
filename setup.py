@@ -20,7 +20,7 @@ install_requires = [
     'djangorestframework >= 2.0',
     'iso8601',
     'lizard-help',
-    'lizard-ui >= 4.0, < 5.0',
+    'lizard-ui >= 4.27, < 5.0',
     'pkginfo',
     'python-dateutil',
     'pytz',
