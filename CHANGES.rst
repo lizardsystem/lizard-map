@@ -8,6 +8,8 @@ Changelog of lizard-map
 
 - Removed console.log statements. IE hangs with them.
 
+- Make two untranslated strings translatable.
+
 
 4.28 (2013-05-06)
 -----------------
