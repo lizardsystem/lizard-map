@@ -306,8 +306,7 @@ class CrumbsMixin(object):
 
         if toapp:
             return initial + toapp
-        else:
-            return initial
+        return initial
 
 
 class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
@@ -886,16 +885,12 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     Result format (used by the javascript popup function):
 
     result = {'id': popup_id,
-              'x': x_found,
-              'y': y_found,
               'html': result_html,
               'big': big_popup,
               }
     """
 
     html = {}
-    # x_found = None
-    # y_found = None
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
@@ -913,10 +908,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         if key not in display_group_order:
             display_group_order.append(key)
 
+    big_popup = False
     if len(display_groups) > 1:
         big_popup = True
-    else:
-        big_popup = False
 
     # Now display them.
     for key, display_group in display_groups.items():
@@ -948,8 +942,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
                             'request': request},
             )
 
-        # if 'google_coords' in display_object:
-        #     x_found, y_found = display_object['google_coords']
         html[key] = html_per_workspace_item
 
     popup_max_tabs = Setting.get('popup_max_tabs', None)
@@ -967,8 +959,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     if popup_id is None:
         popup_id = 'popup-id'
     result = {'id': popup_id,
-              # 'x': x_found,
-              # 'y': y_found,
               'html': result_html,
               'tab_titles': tab_titles,
               'big': big_popup,
@@ -1279,18 +1269,14 @@ def search_coordinates(request,
             return HttpResponse(json.dumps(result))
         elif format == 'object':
             result = [{'id':f['identifier'], 'name':f['name']}
-            for f in found]
+                      for f in found]
 
             return HttpResponse(json.dumps(result))
-
-        else:
-            # default: as popup
-            return popup_json(found, request=request)
-    else:
-        if format == 'object':
-            return HttpResponse([])
-        else:
-            return popup_json([], request=request)
+         # default: as popup
+        return popup_json(found, request=request)
+    if format == 'object':
+        return HttpResponse([])
+    return popup_json([], request=request)
 
 
 class CollageDetailView(CollageMixin, UiView):
