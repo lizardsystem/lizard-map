@@ -4,13 +4,14 @@
 #
 # Translators:
 #   <admin@example.com>, 2013.
+# Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-06 16:11+0200\n"
-"PO-Revision-Date: 2013-05-06 14:12+0000\n"
-"Last-Translator: Roland van Laar <roland.vanlaar@nelen-schuurmans.nl>\n"
+"POT-Creation-Date: 2013-05-14 14:30+0200\n"
+"PO-Revision-Date: 2013-05-14 12:37+0000\n"
+"Last-Translator: Sander Smits <sander.smits@nelen-schuurmans.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -126,7 +127,7 @@ msgstr "dag"
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:327
+#: views.py:327 templates/lizard_map/tag_workspace_edit.html:17
 msgid "Layers"
 msgstr "Kaartlagen"
 
@@ -153,11 +154,11 @@ msgstr "Zoom naar de standaard beginlocatie"
 
 #: views.py:403
 msgid "Show base layers"
-msgstr ""
+msgstr "Toon basislagen"
 
 #: views.py:412
 msgid "Show map layers"
-msgstr ""
+msgstr "Toon kaartlagen"
 
 #: views.py:964 views.py:1034
 #, python-format
@@ -253,6 +254,11 @@ msgstr "Dit is uw workspace. Ga met de muis over items voor extra opties."
 #: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
 msgstr "Zoom zodat alles hiervan in beeld is"
+
+#: templates/lizard_map/tag_workspace_edit.html:69
+#: templates/lizard_map/workspace_storage_detail.html:53
+msgid "No map layers selected."
+msgstr "Geen kaartlagen geselecteerd."
 
 #: templates/lizard_map/tag_workspace_edit.html:79
 msgid "Empty your workspace"

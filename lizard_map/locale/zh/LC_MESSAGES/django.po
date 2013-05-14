@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-06 16:11+0200\n"
-"PO-Revision-Date: 2013-05-07 08:09+0000\n"
-"Last-Translator: Zhanguo Bai <zhanguo.bai@wur.nl>\n"
+"POT-Creation-Date: 2013-05-14 14:30+0200\n"
+"PO-Revision-Date: 2013-05-14 12:35+0000\n"
+"Last-Translator: admin <admin@example.com>\n"
 "Language-Team: Chinese (http://translations.lizard.net/projects/p/"
 "lizardsystem/team/zh/)\n"
 "MIME-Version: 1.0\n"
@@ -127,7 +127,7 @@ msgstr "日"
 msgid "Back to homepage"
 msgstr "返回主页"
 
-#: views.py:327
+#: views.py:327 templates/lizard_map/tag_workspace_edit.html:17
 msgid "Layers"
 msgstr "图层"
 
@@ -254,6 +254,11 @@ msgstr "这是你的作业空间，将鼠标悬浮在条款上可以看到选项
 #: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
 msgstr "缩放程度"
+
+#: templates/lizard_map/tag_workspace_edit.html:69
+#: templates/lizard_map/workspace_storage_detail.html:53
+msgid "No map layers selected."
+msgstr ""
 
 #: templates/lizard_map/tag_workspace_edit.html:79
 msgid "Empty your workspace"
