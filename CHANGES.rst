@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Removed console.log statements. IE hangs with them.
 
 
 4.28 (2013-05-06)
