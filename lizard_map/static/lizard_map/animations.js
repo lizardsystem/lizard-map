@@ -47,25 +47,25 @@ var AnimatedLayer = Backbone.Model.extend({
   updateMap: function() {
     // update visible layer
     // add/remove layers
-    console.log('updating map');
+    // console.log('updating map');
   },
   setTimestep: function(timestep) {
       if (timestep < 0) { timestep = 0; }
       if (timestep >= this.max_timesteps) { timestep = this.max_timesteps-1; }
       this.current_timestep = timestep;
-      //console.log('timestep is now ', this.current_timestep);
+      // console.log('timestep is now ', this.current_timestep);
       var to_delete_from_map = {};
       for (ts in this.current_in_map) {to_delete_from_map[ts] = ts;}  // start with all layers
       // console.log('initial to delete ', to_delete_from_map);
       for (var ts=timestep; ts<this.max_timesteps && ts<timestep+5; ts++) {
-        //console.log('we want timestep ', ts);
+        // console.log('we want timestep ', ts);
         if (this.current_in_map[ts] !== undefined) {
-          //console.log('already in current map', ts);
+          // console.log('already in current map', ts);
           // is already in current_in_map
           delete to_delete_from_map[ts];
         } else {
           // new
-          //console.log('adding to current ', ts);
+          // console.log('adding to current ', ts);
           this.current_in_map[ts] = ts;
           // actually add to openlayers
           map.addLayer(this.layers[ts]);
@@ -73,7 +73,7 @@ var AnimatedLayer = Backbone.Model.extend({
      }
      // now delete all layers from to_delete_from_map
      for (var ts in to_delete_from_map) {
-       //console.log('removing from map... ts ', ts);
+       // console.log('removing from map... ts ', ts);
        map.removeLayer(this.layers[ts]);
        delete this.current_in_map[ts];
      }
@@ -82,7 +82,7 @@ var AnimatedLayer = Backbone.Model.extend({
          var old_visible = this.current_visible;
          //first make new layer visible
          this.current_visible = this.current_timestep;
-         //console.log('current_visible', this.current_visible);
+         // console.log('current_visible', this.current_visible);
          this.layers[this.current_visible].setOpacity(1);  // TODO: make opacity configurable
          if (old_visible !== null) {
              this.layers[old_visible].setOpacity(0);
@@ -112,9 +112,9 @@ var ControlPanelView = Backbone.View.extend({
     // wrapper around the real function, but this function has 'me'.
     //var me = obj;
     sliderFun = function (event, ui){
-      //console.log(this);
-      //console.log(me);
-      //console.log(ui.value);
+      // console.log(this);
+      // console.log(me);
+      // console.log(ui.value);
       me.current_timestep = ui.value;
       me.updateTime();  // updates the DOM
       me.updateLayers(me.current_timestep);
@@ -137,14 +137,14 @@ var ControlPanelView = Backbone.View.extend({
     },
   doStartStop: function() {
     if (this.status == STATUS_STOP) {
-      console.log('play');
+      // console.log('play');
       this.status = STATUS_PLAY;
       this.$el.find("a.btn-start-stop i").removeClass("icon-play");
       this.$el.find("a.btn-start-stop i").addClass("icon-pause");
       this.$el.find("#html-start-stop").html("Pause");
       this.animation_loop(this)();  // run it!!
     } else {
-      console.log('stop');
+      // console.log('stop');
       this.$el.find("a.btn-start-stop i").addClass("icon-play");
       this.$el.find("a.btn-start-stop i").removeClass("icon-pause");
       this.$el.find("#html-start-stop").html("Start");
@@ -165,7 +165,7 @@ var ControlPanelView = Backbone.View.extend({
       if (me.status == STATUS_PLAY) {
         // increase animation with one step
         me.current_timestep += 1;
-        console.log('current_timestep: ' + me.current_timestep);
+        // console.log('current_timestep: ' + me.current_timestep);
         me.updateTime();
         // set slider position
         me.$el.find("#slider").slider("value", me.current_timestep);
@@ -233,7 +233,7 @@ function init_animation() {
 
         index = parseInt($(this).attr("data-workspace-wms-index"));
         if (wms_ani_layers[id] === undefined) {
-          console.log('Initializing ani layer', id);
+          // console.log('Initializing ani layer', id);
           wms_ani_layers[id] = new AnimatedLayer({
             name: name,
             url: url,
@@ -247,7 +247,7 @@ function init_animation() {
   });
 
   for (key in to_delete_ani_layers) {
-    console.log('De-initializing wms ani layer ', key);
+    // console.log('De-initializing wms ani layer ', key);
     wms_ani_layers[key].shutdown();
     delete wms_ani_layers[key];
   }

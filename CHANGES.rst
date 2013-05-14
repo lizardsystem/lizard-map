@@ -6,6 +6,8 @@ Changelog of lizard-map
 
 - Update chinese translations.
 
+- Removed console.log statements. IE hangs with them.
+
 
 4.28 (2013-05-06)
 -----------------
