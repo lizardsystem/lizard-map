@@ -101,6 +101,12 @@ var AnimatedLayer = Backbone.Model.extend({
     // add/remove layers
     console.log('updating map');
   },
+  setZIndex: function(zindex) {
+    for (var i in this.layers) {
+      var layer = this.layers[i];
+      layer.setZIndex(zindex);
+    }
+  },
   setTimestep: function(timestep) {
       // 5 seconds timeout
       if ((this.readyForNext !== null) && (Date.now() < this.startedLoading + 5000)) {
