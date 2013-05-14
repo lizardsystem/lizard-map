@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
-- Update chinese translations.
+- Update translations.
 
 - Removed console.log statements. IE hangs with them.
 
