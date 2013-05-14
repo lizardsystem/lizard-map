@@ -10,6 +10,8 @@ Changelog of lizard-map
 
 - Make two untranslated strings translatable.
 
+- Update source language (english) django.po
+
 
 4.28 (2013-05-06)
 -----------------
