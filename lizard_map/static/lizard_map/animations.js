@@ -49,6 +49,12 @@ var AnimatedLayer = Backbone.Model.extend({
     // add/remove layers
     // console.log('updating map');
   },
+  setZIndex: function(zindex) {
+    for (var i in this.layers) {
+      var layer = this.layers[i];
+      layer.setZIndex(zindex);
+    }
+  },
   setTimestep: function(timestep) {
       if (timestep < 0) { timestep = 0; }
       if (timestep >= this.max_timesteps) { timestep = this.max_timesteps-1; }
@@ -220,6 +226,7 @@ function init_animation() {
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
         options.opacity = 0;
+        index = parseInt($(this).attr("data-workspace-wms-index"));
 
         var anim_info_params = '';
         anim_info_params += '?dataset=' + params.dataset;
@@ -242,6 +249,7 @@ function init_animation() {
             });
           wms_ani_layers[id].setTimestep(0);
           // this layer is not marked for deletion.
+          wms_ani_layers[id].setZIndex(1000 - index);
         }
         delete to_delete_ani_layers[id];
   });
