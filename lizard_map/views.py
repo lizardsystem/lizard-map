@@ -295,7 +295,6 @@ class CrumbsMixin(object):
         'url', 'description' and 'title'. Views in Apps should
         override this function, use super() to get this default, and
         then add their own crumbs."""
-        pass
 
         initial = [{'url': '/',
                     'description': 'Home',
@@ -472,9 +471,8 @@ class WorkspaceStorageView(AppView):
     @property
     def breadcrumbs(self):
         """Return homepage + ourselves as breadcrumbs."""
-        result = [self.home_breadcrumb_element,
-                  Action(name=self.workspace.name)]
-        return result
+        return [self.home_breadcrumb_element,
+                Action(name=self.workspace.name)]
 
     @property
     def sidebar_is_collapsed(self):
@@ -1247,7 +1245,8 @@ def search_coordinates(request,
             stored_workspace_id = request.GET.get('stored_workspace_id', None)
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
-    # The actual search!
+    # The first actual search
+    # popup_json() does the second real search
     found = search(workspace, google_x, google_y, radius)
     logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
 
@@ -1257,10 +1256,6 @@ def search_coordinates(request,
         if format == 'name':
             result = {}
             result['name'] = found[0]['name']
-            # x, y = coordinates.google_to_srs(google_x, google_y, srs)
-            # result['x'] = x
-            # result['y'] = y
-
             # For the x/y we use the original x/y value to position
             # the popup to the lower right of the cursor to prevent
             # click propagation problems.
@@ -1693,14 +1688,12 @@ class AdapterMixin(object):
 
     def identifiers(self):
         identifier_json_list = self.request.GET.getlist('identifier')
-        identifier_list = [json.loads(identifier_json) for identifier_json in
-                           identifier_json_list]
-        return identifier_list
+        return [json.loads(identifier_json) for identifier_json in
+                identifier_json_list]
 
     def identifier(self):
         identifier_json = self.request.GET.get('identifier')
-        identifier = parse_identifier_json(identifier_json)
-        return identifier
+        return parse_identifier_json(identifier_json)
 
     def start_end_dates_from_request(self):
         """
@@ -1710,7 +1703,7 @@ class AdapterMixin(object):
         dt_start and dt_end are in iso8601 format
         """
         current_start_date, current_end_date = current_start_end_dates(
-                self.request)
+            self.request)
 
         start_date_str = self.request.GET.get('dt_start', None)
         if start_date_str is None:
@@ -1824,10 +1817,9 @@ class AdapterValuesView(AdapterMixin, UiView):
             for row in self.values:
                 writer.writerow([row['datetime'], row['value'], row['unit']])
             return response
-        else:
-            # Make html table using self.values
-            return super(AdapterValuesView, self).get(
-                request, *args, **kwargs)
+        # Make html table using self.values
+        return super(AdapterValuesView, self).get(
+            request, *args, **kwargs)
 
 
 class HomepageView(AppView, IconView):
