@@ -188,7 +188,7 @@ var ControlPanelView = Backbone.View.extend({
   updateLayers: function(timestep) {
     // Update AnimationLayer objects so openlayers gets updated
     // This part is global and not bound to the control.
-    $(".workspace-wms-layer").each(function () {
+    $(".workspace-wms-layer[data-workspace-wms-animatable='true']").each(function () {
         var id = $(this).attr("data-workspace-wms-id");
         //console.log('current timestep in updateLayers', timestep);
         wms_ani_layers[id].setTimestep(timestep);
