@@ -1900,7 +1900,6 @@ function bindPanZoomEvents($graph) {
     });
 }
 
-
 /**
  * Take an associative array, and convert all Moment.js objects to
  * ISO8601 datetime strings.
@@ -1994,158 +1993,40 @@ var lizard_api_get = function (ajax_opts, convert_datetimes) {
     return $.ajax(opts);
 };
 
-// note: keep keys short in this associative array: they
-// are serialized to the URL hash
-function ViewState () {
-    this.state = {
-        range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
-        dt_start: moment.utc().subtract('days', 2), // Moment.js date object
-        dt_end: moment.utc()                        // Moment.js date object
-    };
-    //this.events
-}
-
-ViewState.prototype.get = function () {
-};
-
-ViewState.prototype.set = function (new_state) {
-};
-
-ViewState.prototype.read_from_hash = function () {
-};
-
-ViewState.prototype.save_to_hash = function () {
-};
-
-ViewState.prototype.read_from_server = function () {
-};
-
-ViewState.prototype.save_to_server = function () {
-};
-
-ViewState.prototype.sync = function () {
-};
-
-var _view_state = {
-    range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
-    dt_start: moment.utc().subtract('days', 2), // Moment.js date object
-    dt_end: moment.utc()                        // Moment.js date object
-};
+/**
+ * Use by lizard-ui!
+ */
 function get_view_state() {
     return _view_state;
 }
+
 function set_view_state(params) {
     $.extend(_view_state, params);
-    // disabled for now
-    //save_view_state_to_hash();
     save_view_state_to_server();
 }
-function save_view_state_to_hash() {
-    var view_state = get_view_state();
-    // serialize view state to a format suitable for the URL hash
-    view_state = to_date_strings(view_state);
-    var hash = {};
-    // only add defined items in the hash
-    if (view_state.dt_start && view_state.dt_end) {
-        hash.dt_start = view_state.dt_start;
-        hash.dt_end = view_state.dt_end;
-    }
-    // change the window hash (serialize with $.param)
-    window.location.hash = $.param(hash);
-}
-function read_view_state_from_hash() {
-    if (window.location.hash.length > 1) {
-        try {
-            var hash = window.location.hash.substring(1);
-            // derialize with $.deparam (jquery plugin)
-            hash = $.deparam(hash);
-            // detect and datetime string and convert them to Moment.js objects
-            hash = to_date_objects(hash);
-            var new_state = {};
-            // only merge valid entries to the view state
-            if (hash.dt_start && hash.dt_end) {
-                new_state.range_type = 'custom';
-                new_state.dt_start = hash.dt_start;
-                new_state.dt_end = hash.dt_end;
-            }
-            // update the global state array
-            $.extend(_view_state, new_state);
-            return true;
-        }
-        catch (error) {
-            console.error('Could not deserialize view state from hash');
-          // TODO console.log???
-        }
-    }
-    return false;
-}
-function read_view_state_from_server(on_success) {
-    lizard_api_get({
-        url: '/map/view_state_service/', // TODO
-        success: function (data) {
-            var new_state = {};
-            // deserialize parameters
-            if (data.range_type) {
-                new_state.range_type = data.range_type;
-                if (data.range_type == 'custom' && data.dt_start && data.dt_end) {
-                    new_state.dt_start = moment.utc(data.dt_start);
-                    new_state.dt_end = moment.utc(data.dt_end);
-                }
-                else {
-                    // use a relative date range from the datepicker
-                    var range = $('.popup-date-range').data('daterangepicker').getRange(data.range_type);
-                    if (range) {
-                        new_state.dt_start = range[0];
-                        new_state.dt_end = range[1];
-                    }
-                }
-            }
 
-            // update the global state array
-            $.extend(_view_state, new_state);
-            if (on_success) on_success(_view_state);
-        }
-    }, true);
-}
 function save_view_state_to_server() {
     // update the session on the server side
-    var view_state = get_view_state();
+    var view_state = _view_state;
     lizard_api_put({
         url: '/map/view_state_service/', // TODO
         data: view_state,
         success: function (data) {
-            console.log('put success: ', data);
-          // TODO console.log???
         }
     }, true);
 }
+
 function setup_view_state() {
+    var view_state = _view_state;
     if ($('.popup-date-range').exists()) {
-        // TODO add a timer for refreshing hash state
-        //window.onhashchange = function (event) { read_view_state_from_hash(); };
-        // read initial state on page load
-        var update_state = function (state) {
-            if (state.dt_start && state.dt_end) {
-                $('.popup-date-range').data('daterangepicker').setRange(state.range_type, state.dt_start, state.dt_end);
-                daterangepicker_label_update();
-                reloadGraphs();
-            }
-        };
-        // disabled for now
-        //var success = read_view_state_from_hash();
-        var success = false;
-        if (success) {
-            update_state(get_view_state());
-        }
-        else {
-            // no view state found in hash
-            // retrieve it from the server instead
-            read_view_state_from_server(update_state);
-        }
+        $('.popup-date-range').data('daterangepicker').setRange(view_state.range_type, view_state.dt_start, view_state.dt_end);
+        daterangepicker_label_update();
     }
+    reloadGraphs();
 }
+
 function daterangepicker_label_update() {
-    var view_state = get_view_state();
+    var view_state = _view_state;
     var html = view_state.dt_start.format('LL') + ' &mdash; ' + view_state.dt_end.format('LL');
     $('.popup-date-range span.action-text').html(html);
     // fix IE9 not being able to determine width
