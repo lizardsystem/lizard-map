@@ -1655,6 +1655,17 @@ function flotGraphLoadData($container, response) {
         $container.html('Geen gegevens beschikbaar.');
         return;
     }
+    // Convert ISO 8601 strings to seconds since ECMAScript epoch
+    for (var i=0; i<data.length; i++) {
+        var line = data[i];
+        for (var j=0; j<line.data.length; j++) {
+            line.data[j][0] = moment(line.data[j][0]).toDate().getTime();
+        }
+    }
+    var t0 = moment().toDate().getTime();
+    var markings = [
+        { color: '#d22', xaxis: { from: t0, to: t0 }, lineWidth: 2 }
+    ];
     var defaultOpts = {
         series: {
             points: { show: true, hoverable: true, radius: 1 },
@@ -1666,9 +1677,10 @@ function flotGraphLoadData($container, response) {
         },
         xaxis: {
             mode: "time",
-            zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR]
+            zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
+            timezone: "browser"
         },
-        grid: { hoverable: true, labelMargin: 15 },
+        grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
         zoom: { interactive: true }
     };
@@ -1760,8 +1772,9 @@ function flotGraphLoadData($container, response) {
 
     if (!isAppleMobile) {
         function showGraphTooltip(x, y, datapoint) {
-            var formatted = moment.utc(datapoint[0]).format('LL h:mm');
-            $('<div id="graphtooltip">' + formatted + ': '+ datapoint[1] + '</div>').css({
+            var dateFormatted = moment(datapoint[0]).format('LL H:mm');
+            var valueFormatted = Math.round(datapoint[1] * 100) / 100;
+            $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
                 'position': 'absolute',
                 'top': y - 25,
                 'left': x + 5,
