@@ -725,30 +725,7 @@ def mk_js_timestamp(datetime_utc):
 
     It follows that we need some magic to achieve this.
     '''
-    # If the datetime given is naive, convert it to a UTC datetime
-    if datetime_utc.utcoffset() is None:
-        datetime_utc = pytz.UTC.localize(datetime_utc)
-
-    # Use the Django settings to find the local timezone. If the timezone
-    # is in a 'smart' format like "Europe/Amsterdam", it contains information
-    # about daylight savings time.
-    local_timezone = pytz.timezone(settings.TIME_ZONE)
-
-    # Translate the datetime to that timezone
-    datetime_local = datetime_utc.astimezone(local_timezone)
-
-    # This is the offset to UTC that the local timezone had at time of
-    # this datetime
-    offset = datetime_local.tzinfo.utcoffset(datetime_local)
-
-    # We add that to the UTC datetime
-    datetime_local_sortof = datetime_utc + offset
-
-    # And get the number of seconds since the epoch from that
-    seconds = calendar.timegm(datetime_local_sortof.timetuple())
-
-    # Javascript wants a float of milliseconds
-    return float(seconds * 1000)
+    return datetime_utc.isoformat()
 
 
 class FlotGraphAxes(object):
