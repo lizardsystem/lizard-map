@@ -39,6 +39,8 @@ function setup_movable_dialog() {
         close: function (event, ui) {
             // clear contents on close
             $('#movable-dialog-content').empty();
+            // remove any added popup markers from map
+            popup_clear_map_markers();
         }
     };
 
@@ -759,6 +761,17 @@ function setUpWorkspaceButtons() {
     });
 }
 
+function popup_add_map_marker(x, y, map) {
+    if (window.popupClickMarkersLayer) {
+        window.popupClickMarkersLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone()));
+    }
+}
+
+function popup_clear_map_markers() {
+    if (window.popupClickMarkersLayer) {
+        window.popupClickMarkersLayer.clearMarkers();
+    }
+}
 
 /* Handle a click */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
@@ -770,6 +783,10 @@ function popup_click_handler(x, y, map) {
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
+        // clear existing markers, add a new marker
+        popup_clear_map_markers();
+        popup_add_map_marker(x, y, map);
+
         open_popup();
         $.getJSON(
             url,
@@ -1302,6 +1319,27 @@ function setUpMap() {
 
     map = new OpenLayers.Map('map', options);
     // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+
+    // add a layer which shows where the user has clicked
+    // expose marker layer via window, might as well since everying is exposed this way
+    window.popupClickMarkersLayer = new OpenLayers.Layer.Markers('Popup markers');
+    var popupClickMarkerSize = new OpenLayers.Size(21, 25);
+    var popupClickMarkerOffset = new OpenLayers.Pixel(-(popupClickMarkerSize.w/2), -popupClickMarkerSize.h);
+    var iconUrl = 'http://www.openlayers.org/dev/img/marker.png';
+    var openLayersUrlBase = $('#openlayers-script').data('openlayers-url');
+    if (openLayersUrlBase) {
+        iconUrl = openLayersUrlBase + 'img/marker.png';
+    }
+    window.popupClickMarkerIcon = new OpenLayers.Icon(iconUrl, popupClickMarkerSize, popupClickMarkerOffset);
+    map.addLayer(popupClickMarkersLayer);
+
+    // add a control displaying the mouse coordinates
+    map.addControl(
+        new OpenLayers.Control.MousePosition({
+            separator: ', ',
+            numDigits: 2
+        })
+    );
 
     refreshLayers();
 
