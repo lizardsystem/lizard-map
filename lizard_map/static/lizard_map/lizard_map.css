@@ -2,4 +2,14 @@
   display: block;
   float: right;
   padding-left: 0.5em;
+  /* padded sidebar item top/bottom padding */
+  padding-top: 4.4px;
+  padding-bottom: 4.4px;
+}
+.workspace-acceptable-info .icon-info-sign {
+  text-decoration: none;
+  color: #333333;
+}
+.workspace-acceptable-info:hover .icon-info-sign {
+  text-decoration: underline;
 }
