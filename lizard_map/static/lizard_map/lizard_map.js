@@ -1323,7 +1323,6 @@ function setUpMap() {
     // add a layer which shows where the user has clicked
     // expose marker layer via window, might as well since everying is exposed this way
     window.popupClickMarkersLayer = new OpenLayers.Layer.Markers('Popup markers');
-    window.popupClickMarkersLayer.setZIndex(1010);
     var popupClickMarkerSize = new OpenLayers.Size(21, 25);
     var popupClickMarkerOffset = new OpenLayers.Pixel(-(popupClickMarkerSize.w/2), -popupClickMarkerSize.h);
     var iconUrl = 'http://www.openlayers.org/dev/img/marker.png';
@@ -1333,6 +1332,8 @@ function setUpMap() {
     }
     window.popupClickMarkerIcon = new OpenLayers.Icon(iconUrl, popupClickMarkerSize, popupClickMarkerOffset);
     map.addLayer(popupClickMarkersLayer);
+    // Note: this needs to happen AFTER adding the layer to the map...
+    window.popupClickMarkersLayer.setZIndex(1010);
 
     // add a control displaying the mouse coordinates
     map.addControl(
