@@ -1881,7 +1881,7 @@ function bindPanZoomEvents($graph) {
 }
 
 function bindFullscreenClick($graph) {
-    $graph.on('dblclick', function (event) {
+    $graph.on('dblclick doubletap', function (event) {
         if ($graph.data('is-fullscreen') === true) {
             // already fullscreen, close it again
             $graph.parent().dialog('close');
