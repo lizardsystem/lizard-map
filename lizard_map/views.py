@@ -315,7 +315,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     """Main map view (using twitter bootstrap)."""
 
     show_secondary_sidebar_icon = 'icon-list'
-    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELET', True)
+    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELECT', True)
     map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
     map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
     map_show_base_layers_menu = getattr(settings,
