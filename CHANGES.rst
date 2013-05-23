@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.29 (unreleased)
+4.29 (2013-05-24)
 -----------------
 
 - UI improvements for 'i' icon. A bit more padding. And an underline if you
