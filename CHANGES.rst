@@ -4,6 +4,9 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- UI improvements for 'i' icon. A bit more padding. And an underline if you
+  hover it.
+
 - Update translations.
 
 - Removed console.log statements. IE hangs with them.
@@ -20,12 +23,12 @@ Changelog of lizard-map
   shouldn't be shown but for which the popup should still work.
 
 - Some changes to be iPad friendly were made.
-  
+
   - The small layerswitcher is moved to the upper bar for easier use.
- 
+
   - The left hand zoom in and out buttons are not shown on iPad.
-  
-  - 'Zoom to start location' is now just an icon. 
+
+  - 'Zoom to start location' is now just an icon.
 
 
 4.27 (2013-04-03)
