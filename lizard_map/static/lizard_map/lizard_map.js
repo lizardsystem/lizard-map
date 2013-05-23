@@ -1784,6 +1784,7 @@ function flotGraphLoadData($container, response) {
     // initial plot
     var plot = $.plot($graph, data, defaultOpts);
     bindPanZoomEvents($graph);
+    bindFullscreenClick($graph);
 
     if (!isAppleMobile) {
         function showGraphTooltip(x, y, datapoint) {
@@ -1874,6 +1875,42 @@ function bindPanZoomEvents($graph) {
 
     $graph.bind('plotpan', function (event, plot) {
         panAndZoomOtherGraphs(plot);
+    });
+}
+
+function bindFullscreenClick($graph) {
+    $graph.on('dblclick', function (event) {
+        if ($graph.data('is-fullscreen') === true) {
+            // already fullscreen, close it again
+            $graph.parent().dialog('close');
+        }
+        else {
+            var $dialog = $('<div id="huge-graph-dialog"></div>');
+            $('body').append($dialog);
+            var $origParent = $graph.parent();
+            var onClose = function (event, ui) {
+                if ($origParent.length > 0) {
+                    $origParent.append($graph);
+                }
+                $graph.data('is-fullscreen', false)
+                $dialog.dialog('destroy');
+                $dialog.remove();
+            };
+            var options = {
+                autoOpen: false,
+                title: '',
+                width: $(window).width() * 0.95,
+                height: $(window).height() * 0.95,
+                zIndex: 10100,
+                draggable: false,
+                resizable: false,
+                close: onClose
+            };
+            $dialog.dialog(options);
+            $dialog.append($graph);
+            $graph.data('is-fullscreen', true);
+            $dialog.dialog('open');
+        }
     });
 }
 
