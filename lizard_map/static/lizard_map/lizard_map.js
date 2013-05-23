@@ -1960,12 +1960,15 @@ function setup_view_state() {
 }
 
 function daterangepicker_label_update() {
-    var view_state = _view_state;
-    var html = view_state.dt_start.format('LL') + ' &mdash; ' + view_state.dt_end.format('LL');
-    $('.popup-date-range span.action-text').html(html);
-    // fix IE9 not being able to determine width
-    if (isIE && ieVersion == 9) {
-        $('.popup-date-range span.action-text').parent().parent().width(300);
+    var start = $('.popup-date-range').data('daterangepicker').startDate;
+    var end = $('.popup-date-range').data('daterangepicker').endDate;
+    if (start && end) {
+        var html = start.format('LL') + ' &mdash; ' + end.format('LL');
+        $('.popup-date-range span.action-text').html(html);
+        // fix IE9 not being able to determine width
+        if (isIE && ieVersion == 9) {
+            $('.popup-date-range span.action-text').parent().parent().width(300);
+        }
     }
 }
 
