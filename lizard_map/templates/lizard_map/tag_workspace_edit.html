@@ -18,79 +18,86 @@
     </span>
   </h2>
 
-  <table id="edit-workspace-table" class="workspace-items ui-sortable wscol-table">
-  <tbody>
-    {% for workspace_item in workspace_edit.workspace_items.all %}
-      <tr id="workspace-item-{{ workspace_item.id }}"
-          class="workspace-item paddme"
-          data-object-id="{{ workspace_item.id }}"
-          data-adapter-class="{{ workspace_item.adapter_class }}"
-          data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
-          data-visible="{{ workspace_item.visible }}">
-        <td class="icontd">
-          {# Symbol, appears left. #}
-          {% if workspace_item.adapter.symbol_url %}
-          <img class="workspace-item-image"
-               src="{{ workspace_item.adapter.symbol_url }}"
-               width="16"
-               height="16" />
-          {% endif %}
-        </td>
-        <td class="icontd">
-          <input id="{{ workspace_item.id }}"
-                 class="workspace-item-checkbox"
-                 type="checkbox"
-                 {% if workspace_item.visible %}
-                   checked="checked"
-                 {% endif %}
-                 data-workspace-id="{{ workspace.id }}" />
-        </td>
-        <td class="maintd">
-          {% firstof workspace_item.name '(noname)' %}
-        </td>
-        <td class="lasttd">
-        {% if workspace_item.has_extent %}
-          <span class="ss_sprite ss_magnifier sidebarbox-action-icon
-                       workspace-item-pan-to"
-                title="{% trans 'Zoom to extent' %}"></span>
-        {% else %}
-          <span class="no-image-spacer"></span>
-        {% endif %}
-          <span class="ss_sprite ss_delete sidebarbox-action-icon
-                       workspace-item-delete"
-                title="{% trans 'Delete item' %}"></span>
-        {% comment TODO needs some refactoring %}
-        {% legend workspace_item.name workspace_item.adapter session %}
-        {% endcomment %}
-        </td>
-      </tr>
-    {% empty %}
-      {# No workspace items #}
-      <tr><td>{% trans 'No map layers selected.' %}</td></tr>
-    {% endfor %}
-  </tbody>
-  </table>
+    <style type="text/css">
+    .workspace-items > .workspace-item[data-visible="False"] {
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+    }
+    .workspace-item-toggle-visiblity {
+        cursor: pointer;
+    }
+    .workspace-item-sortable-placeholder {
+        height: 60px;
+        background-color: #badafe;
+    }
+    </style>
+    <ul class="workspace-items unstyled">
+        {% for workspace_item in workspace_edit.workspace_items.all %}
+        <li id="workspace-item-{{ workspace_item.id }}"
+            class="workspace-item"
+            data-object-id="{{ workspace_item.id }}"
+            data-adapter-class="{{ workspace_item.adapter_class }}"
+            data-adapter-layer-json='{{ workspace_item.adapter_layer_json }}'
+            data-visible="{{ workspace_item.visible }}">
+            <div>
+                {# Symbol, appears left. #}
+                {% if workspace_item.adapter.symbol_url %}
+                <img class="workspace-item-image"
+                     src="{{ workspace_item.adapter.symbol_url }}"
+                     width="16"
+                     height="16"
+                />
+                {% else %}
+                {% endif %}
+                <span class="workspace-item-toggle-visiblity"
+                      title="{% trans 'Click to toggle visibility' %}">
+                    {% firstof workspace_item.name '(noname)' %}
+                </span>
+            </div>
+            <div style="height:28px;">
+                <div class="btn-group pull-right">
+                    {% if workspace_item.has_extent %}
+                    <button class="btn btn-small btn-info workspace-item-pan-to" title="{% trans 'Zoom to extent' %}">
+                        <i class="icon-search"></i>
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-small workspace-item-move-up" title="{% trans 'Move up' %}">
+                        <i class="icon-arrow-up"></i>
+                    </button>
+                    <button class="btn btn-small workspace-item-move-down" title="{% trans 'Move down' %}">
+                        <i class="icon-arrow-down"></i>
+                    </button>
+                    <button class="btn btn-small btn-danger workspace-item-delete" title="{% trans 'Delete item' %}">
+                        <i class="icon-trash icon-white"></i>
+                    </button>
+                </div>
+            </div>
+        </li>
+        {% empty %}
+        {# No workspace items #}
+        <li>
+            {% trans 'No map layers selected.' %}
+        </li>
+        {% endfor %}
+    </ul>
 
-  <ul class="wscol-actions">
-    <li>
-      <a id="workspace-empty"
-         href="{% url lizard_map_workspace_empty %}"
-         class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty"
-         title="{% trans 'Empty your workspace' %}">
-        <i class="icon-trash icon-white"></i>
-      </a>
-    </li>
+    <div class="btn-group">
+        <button id="workspace-empty"
+                href="{% url lizard_map_workspace_empty %}"
+                class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty"
+                title="{% trans 'Empty your workspace' %}">
+           <i class="icon-trash icon-white"></i>
+        </button>
 
-    <li>
-      <button id="workspace-save"
-         href="{% url lizard_map_workspace_save %}"
-         class="btn sidebarbox-action-icon popup-workspace-save"
-         data-size="xs"
-         title="{% trans 'Save your workspace' %}"
-         {% if not workspace_edit.workspace_items.exists %} disabled="disabled" {% endif %}>
-        <i class="ss_sprite ss_database_save"></i>
-      </button>
-    </li>
+        <button id="workspace-save"
+                href="{% url lizard_map_workspace_save %}"
+                class="btn sidebarbox-action-icon popup-workspace-save"
+                data-size="xs"
+                title="{% trans 'Save your workspace' %}"
+                {% if not workspace_edit.workspace_items.exists %} disabled="disabled" {% endif %}>
+            <i class="icon-save"></i>
+        </button>
+    </div>
 
     {% comment %}
     The added value of next link might not be obvious to a user, because workspace-load

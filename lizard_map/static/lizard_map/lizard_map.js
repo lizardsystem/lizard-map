@@ -5,16 +5,16 @@
 // left workspace + collage checkboxes
 jQuery.fn.liveCheckboxes = function () {
     return this.each(function () {
-        var $workspace;
-        $workspace = $(this);
-        $workspace.find(".workspace-item-checkbox").live('click', function () {
-            var url, $list_item;
-            url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
-            $list_item = $(this).closest('li');
-            $list_item.addClass("waiting-lineitem");
+        var $workspace = $(this);
+        $workspace.find(".workspace-item-toggle-visiblity").live('click', function () {
+            var url = $workspace.attr("data-url-lizard-map-workspace-item-edit");
+            var $workspaceItem = $(this).parents('.workspace-item');
+            var isVisible = $workspaceItem.data('visible').toLowerCase() == 'true';
+            var newIsVisible = !isVisible;
+            var id = $workspaceItem.data('object-id');
             $.ajax({
                 url: url,
-                data: { workspace_item_id: this.id, visible: this.checked },
+                data: { workspace_item_id: id, visible: newIsVisible },
                 success: function () {
                     $workspace.updateWorkspace();
                 },
@@ -184,33 +184,41 @@ the <div class="workspace">
 // in use (26-09-2012)
 // draggable workspace items (left)
 jQuery.fn.workspaceInteraction = function () {
-    return this.each(function () {
-        var $workspace, workspace_id, workspaceItems, snippet_list;
-        // Make the items in a workspace sortable.
-        $workspace = $(this);
-        workspaceItems = $workspace.find(".workspace-items");
-        workspaceItems.sortable({
-            update: function (event, ui) {
-                var url, order;
-                // very strange... $workspace becomes the <ul> element
-                // (which is workspaceItems)...  using workspaceItems
-                url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
-                order = workspaceItems.sortable("serialize");
-                $.post(
-                    url,
-                    order,
-                    function () {
-                        workspaceItems.parent().parent().updateWorkspace();
-                    }
-                );
-            },
+    // Make the items in a workspace sortable.
+    this.each(function () {
+        var $workspace = $(this);
+        var $workspaceItems = $workspace.find(".workspace-items");
+        var onUpdate = function (event, ui) {
+            var url = $workspace.attr("data-url-lizard-map-workspace-item-reorder");
+            var order = $workspaceItems.sortable("serialize");
+            $.post(
+                url,
+                order,
+                function () {
+                    $workspace.updateWorkspace();
+                }
+            );
+        };
+        $workspaceItems.sortable({
+            update: onUpdate,
             helper: 'clone',
             connectWith: '.workspace-items',
             cursor: 'move',
             revert: 'true',
-            placeholder: 'ui-sortable-placeholder',
+            placeholder: 'workspace-item-sortable-placeholder',
             items: '.workspace-item'
         });
+        $workspace.find('.workspace-item-move-up').on('click', function (event) {
+            var $workspaceItem = $(this).parents('.workspace-item');
+            $workspaceItem.prev().before($workspaceItem);
+            onUpdate();
+        });
+        $workspace.find('.workspace-item-move-down').on('click', function (event) {
+            var $workspaceItem = $(this).parents('.workspace-item');
+            $workspaceItem.next().after($workspaceItem);
+            onUpdate();
+        });
+
         $workspace.liveCheckboxes();
     });
 };
