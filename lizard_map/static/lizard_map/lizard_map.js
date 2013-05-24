@@ -1792,7 +1792,7 @@ function flotGraphLoadData($container, response) {
     // initial plot
     var plot = $.plot($graph, data, defaultOpts);
     bindPanZoomEvents($graph);
-    bindFullscreenClick($graph);
+    bindFullscreenClick($container);
 
     if (!isAppleMobile) {
         function showGraphTooltip(x, y, datapoint) {
@@ -1888,24 +1888,31 @@ function bindPanZoomEvents($graph) {
     });
 }
 
-function bindFullscreenClick($graph) {
+function bindFullscreenClick($container) {
+    var $graph = $container.find('.flot-graph-row');
     $graph.on('dblclick doubletap', function (event) {
-        if ($graph.data('is-fullscreen') === true) {
+        if ($container.data('is-fullscreen') === true) {
             // already fullscreen, close it again
-            $graph.parent().dialog('close');
+            $container.parent('.huge-graph-dialog').dialog('close');
         }
         else {
-            var $dialog = $('<div id="huge-graph-dialog"></div>');
+            var $dialog = $('<div class="huge-graph-dialog"></div>');
             $('body').append($dialog);
-            var $origParent = $graph.parent();
+
+            var $origParent = $container.parent();
+            var origHeight = $container.css('height');
+            $container.css('height', '100%');
+
             var onClose = function (event, ui) {
                 if ($origParent.length > 0) {
-                    $origParent.append($graph);
+                    $origParent.prepend($container);
+                    $container.css('height', origHeight);
                 }
-                $graph.data('is-fullscreen', false)
+                $container.data('is-fullscreen', false)
                 $dialog.dialog('destroy');
                 $dialog.remove();
             };
+
             var options = {
                 autoOpen: false,
                 title: '',
@@ -1916,9 +1923,10 @@ function bindFullscreenClick($graph) {
                 resizable: false,
                 close: onClose
             };
+
             $dialog.dialog(options);
-            $dialog.append($graph);
-            $graph.data('is-fullscreen', true);
+            $dialog.append($container);
+            $container.data('is-fullscreen', true);
             $dialog.dialog('open');
         }
     });
