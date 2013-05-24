@@ -1888,6 +1888,18 @@ function bindPanZoomEvents($graph) {
     });
 }
 
+if (!$.fn.insertAt) {
+    $.fn.insertAt = function(index, $parent) {
+        return this.each(function() {
+            if (index === 0) {
+                $parent.prepend(this);
+            } else {
+                $parent.children().eq(index - 1).after(this);
+            }
+        });
+    };
+}
+
 function bindFullscreenClick($container) {
     var $graph = $container.find('.flot-graph-row');
     $graph.on('dblclick doubletap', function (event) {
@@ -1901,11 +1913,12 @@ function bindFullscreenClick($container) {
 
             var $origParent = $container.parent();
             var origHeight = $container.css('height');
+            var origIndex = $container.index();
             $container.css('height', '100%');
 
             var onClose = function (event, ui) {
                 if ($origParent.length > 0) {
-                    $origParent.prepend($container);
+                    $container.insertAt(origIndex, $origParent);
                     $container.css('height', origHeight);
                 }
                 $container.data('is-fullscreen', false)
