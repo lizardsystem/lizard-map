@@ -1901,7 +1901,7 @@ if (!$.fn.insertAt) {
 }
 
 function bindFullscreenClick($container) {
-    var $graph = $container.find('.flot-graph-row');
+    var $graph = $container.find('.flot-graph-canvas');
     $graph.on('dblclick doubletap', function (event) {
         if ($container.data('is-fullscreen') === true) {
             // already fullscreen, close it again
