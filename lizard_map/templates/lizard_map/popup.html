@@ -212,18 +212,6 @@ the default template for the html_default method.
           </div>
         </td>
         {% endif %}
-        {% if add_snippet %}
-        <td class="button">
-          <a href=""
-             class="add-snippet ss_chart_line_add ss_sprite"
-             data-workspace-id="{{ snippet.workspace_item.workspace.id }}"
-             data-workspace-item-id="{{ snippet.workspace_item.id }}"
-             data-item-identifier='{{ snippet.identifier|json_escaped }}'
-             data-item-shortname="{{ snippet.shortname }}"
-             data-item-name="{{ snippet.name }}"
-             title="Voeg toe aan collage">&nbsp;</a>
-        </td>
-        {% endif %}
       </tr>
       {% endfor %}
       {% else %}
@@ -244,18 +232,6 @@ the default template for the html_default method.
           <a href="{{ display_object.object.get_absolute_url }}"
              class="ss_chart_curve_edit ss_sprite"
              title="Bewerk lijn">&nbsp;</a>
-        </td>
-        {% endif %}
-        {% if add_snippet %}
-        <td class="button">
-          <a href=""
-             class="add-snippet ss_chart_line_add ss_sprite"
-             data-workspace-id="{{ display_object.workspace_item.workspace.id }}"
-             data-workspace-item-id="{{ display_object.workspace_item.id }}"
-             data-item-identifier='{{ display_object.identifier|json_escaped }}'
-             data-item-shortname="{{ display_object.shortname }}"
-             data-item-name="{{ display_object.name }}"
-             title="Voeg toe aan collage">&nbsp;</a>
         </td>
         {% endif %}
       </tr>

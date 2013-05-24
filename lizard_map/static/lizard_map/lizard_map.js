@@ -1751,10 +1751,11 @@ function flotGraphLoadData($container, response) {
     var $x_label = $('<div class="flot-graph-x-label" />')
         .css({
             position: 'absolute',
-            left: 60, bottom: 30, right: 0,
-            height: 18
+            left: 0, bottom: 30, right: 0,
+            height: 18,
+            'text-align': 'center'
         })
-        .html(response.x_label);
+        .html((response.x_label) ? response.x_label : 'Tijd');
     $container.append($x_label);
 
     // third row
@@ -1766,19 +1767,24 @@ function flotGraphLoadData($container, response) {
         });
     // controls
     // TODO should implement JavaScript gettext / i18n
-    var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
-    $control_row.append($c_reset);
-
-    var $c_plus = $('<button title="Zoom in" class="btn" type="button"><i class="icon-zoom-in"></i></button>');
-    $control_row.append($c_plus);
-
-    var $c_min = $('<button title="Zoom uit" class="btn" type="button"><i class="icon-zoom-out"></i></button>');
-    $control_row.append($c_min);
-
     var $c_bwd = $('<button title="Schuif naar links" class="btn" type="button"><i class="icon-backward"></i></button>');
     $control_row.append($c_bwd);
 
-    var $c_fwd = $('<button title="Schuif naar rechts" class="btn" type="button"><i class="icon-forward"></i></button>');
+    var $center = $('<span style="position: absolute; left: 50%; width:40px; margin-left:-20px;">');
+    $control_row.append($center);
+
+    /*
+    var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
+    $center.append($c_reset);
+
+    var $c_plus = $('<button title="Zoom in" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-in"></i></button>');
+    $center.append($c_plus);
+
+    var $c_min = $('<button title="Zoom uit" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-out"></i></button>');
+    $center.append($c_min);
+    */
+
+    var $c_fwd = $('<button title="Schuif naar rechts" class="btn pull-right" type="button"><i class="icon-forward"></i></button>');
     $control_row.append($c_fwd);
 
     $container.append($control_row);
@@ -1814,6 +1820,7 @@ function flotGraphLoadData($container, response) {
         });
     }
 
+    /*
     $c_reset.click(function () {
         $.each(plot.getXAxes(), function (idx, axis) {
             axis.options.min = null;
@@ -1832,6 +1839,7 @@ function flotGraphLoadData($container, response) {
     $c_min.click(function () {
         plot.zoom({ amount: 0.5 });
     });
+    */
     $c_bwd.click(function () {
         plot.pan({ left: -500 });
     });
