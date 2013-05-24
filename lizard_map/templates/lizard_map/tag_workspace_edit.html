@@ -18,19 +18,6 @@
     </span>
   </h2>
 
-    <style type="text/css">
-    .workspace-items > .workspace-item[data-visible="False"] {
-        opacity: 0.4;
-        filter: alpha(opacity=40);
-    }
-    .workspace-item-toggle-visiblity {
-        cursor: pointer;
-    }
-    .workspace-item-sortable-placeholder {
-        height: 60px;
-        background-color: #badafe;
-    }
-    </style>
     <ul class="workspace-items unstyled">
         {% for workspace_item in workspace_edit.workspace_items.all %}
         <li id="workspace-item-{{ workspace_item.id }}"
@@ -80,15 +67,14 @@
         </li>
         {% endfor %}
     </ul>
-
-    <div class="btn-group">
+    <hr noshade style="border-color: #222; color: #222; background-color: #222;" />
+    <div class="btn-group" style="display: block; width: 78px; margin-left: auto; margin-right: auto;">
         <button id="workspace-empty"
                 href="{% url lizard_map_workspace_empty %}"
                 class="btn btn-danger sidebarbox-action-icon action-post-workspace-empty"
                 title="{% trans 'Empty your workspace' %}">
            <i class="icon-trash icon-white"></i>
         </button>
-
         <button id="workspace-save"
                 href="{% url lizard_map_workspace_save %}"
                 class="btn sidebarbox-action-icon popup-workspace-save"
