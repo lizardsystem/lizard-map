@@ -6,6 +6,7 @@ import csv
 import datetime
 import logging
 import re
+import urllib
 import urllib2
 from dateutil import parser as date_parser
 
@@ -19,6 +20,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.utils import simplejson as json
@@ -433,61 +435,40 @@ class WorkspaceStorageListView(UiView, GoogleTrackingMixin):
         return WorkspaceStorage.objects.all()
 
 
-class WorkspaceStorageView(AppView):
-    """Workspace storage view."""
-    template_name = 'lizard_map/workspace_storage_detail.html'
-    show_secondary_sidebar_title = False  # Don't show the 'layers' button.
-
-    @property
-    def workspace(self):
-        """Return a workspace"""
-        if not hasattr(self, '_workspace'):
-            if self.workspace_id:
-                self._workspace = WorkspaceStorage.objects.get(
-                    pk=self.workspace_id)
-            elif self.workspace_slug:
-                self._workspace = WorkspaceStorage.objects.get(
-                    secret_slug=self.workspace_slug)
-            if hasattr(self, '_workspace'):
-                # also copy extent to session again
-                if self._workspace.extent_is_set:
-                    try:
-                        self.request.session[MAP_LOCATION] = {
-                            'top': self._workspace.y_max,
-                            'left': self._workspace.x_min,
-                            'right': self._workspace.x_max,
-                            'bottom': self._workspace.y_min
-                        }
-                    except:
-                        logger.exception(
-                            'Failed to load extent from workspace '
-                            'storage. Skipping...')
-        return self._workspace
-
+class WorkspaceStorageView(View):
     def get(self, request, *args, **kwargs):
-        self.workspace_id = kwargs.get('workspace_id', None)
-        self.workspace_slug = kwargs.get('workspace_storage_slug', None)
-        return super(WorkspaceStorageView, self).get(
-            request, *args, **kwargs)
+        workspace_storage_id = kwargs.get('workspace_id', None)
+        workspace_storage_slug = kwargs.get('workspace_storage_slug', None)
 
-    @property
-    def page_title(self):
-        return self.workspace.name
+        workspace_edit = get_workspace_edit_by_request(request)
 
-    @property
-    def breadcrumbs(self):
-        """Return homepage + ourselves as breadcrumbs."""
-        result = [self.home_breadcrumb_element,
-                  Action(name=self.workspace.name)]
-        return result
+        if workspace_storage_id is not None:
+            workspace_storage_id = int(workspace_storage_id)
+            workspace_storage = get_object_or_404(
+                WorkspaceStorage, pk=workspace_storage_id)
+        elif workspace_storage_slug is not None:
+            workspace_storage = get_object_or_404(
+                WorkspaceStorage, secret_slug=workspace_storage_slug)
 
-    @property
-    def sidebar_is_collapsed(self):
-        return self.workspace.sidebar_is_collapsed
+        workspace_edit.load_from_storage(workspace_storage)
 
-    @property
-    def rightbar_is_collapsed(self):
-        return self.workspace.rightbar_is_collapsed
+        # also copy extent to session again
+        if workspace_storage.extent_is_set:
+            self.request.session[MAP_LOCATION] = {
+                'top': workspace_storage.y_max,
+                'left': workspace_storage.x_min,
+                'right': workspace_storage.x_max,
+                'bottom': workspace_storage.y_min
+            }
+
+        qs_dict = {
+            'sidebar_is_collapsed': workspace_storage.sidebar_is_collapsed,
+            'rightbar_is_collapsed': workspace_storage.rightbar_is_collapsed,
+            'secondary_sidebar_is_collapsed': False
+        }
+        qs = urllib.urlencode(qs_dict)
+
+        return redirect(reverse('lizard_ui.icons') + '?' + qs)
 
 
 class ActionDialogView(ViewContextMixin, FormView):
@@ -600,7 +581,7 @@ class WorkspaceLoadView(ActionDialogView):
     template_name_success = 'lizard_map/form_workspace_load_success.html'
     form_class = WorkspaceLoadForm  # Define your form
 
-    def form_valid_action(self, form):
+    def get(self, request, args, kwargs):
         """
         Load storage workspace to edit workspace
         """
