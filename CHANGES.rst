@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.30 (unreleased)
+4.30 (2013-05-27)
 -----------------
 
 - Typo in settings corrected: MAP_SHOW_MULTISELECT instead of
