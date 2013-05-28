@@ -495,7 +495,7 @@ function setUpWorkspaceAcceptable() {
         /* New bootstrap-era interaction */
         if (!$(this).hasClass('selected')) {
             var $layer_button, $moving_box, move_down, move_right;
-            $layer_button = $(".secondary-sidebar-button");
+            $layer_button = $("#map");
             $("#page").after('<div id="moving-box">');
             $moving_box = $("#moving-box");
             $moving_box.offset($(this).offset());
@@ -515,7 +515,7 @@ function setUpWorkspaceAcceptable() {
         }
         if ($(this).hasClass('selected')) {
             var $layer_button, $moving_box, move_up, move_left;
-            $layer_button = $(".secondary-sidebar-button");
+            $layer_button = $("#map");
             $("#page").after('<div id="moving-box">');
             $moving_box = $("#moving-box");
             $moving_box.offset($layer_button.offset());
