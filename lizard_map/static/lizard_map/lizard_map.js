@@ -1435,11 +1435,6 @@ function setUpMap() {
         });
     }
 
-	if (!isAppleMobile) {
-		zoom_panel = new OpenLayers.Control.Panel();
-		zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
-		map.addControl(zoom_panel);
-	}
     map.addControl(new OpenLayers.Control.Navigation());
 
     // Zoom to startpoint. Important to parse numbers, else a bug in
