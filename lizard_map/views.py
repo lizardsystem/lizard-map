@@ -371,6 +371,31 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         return result
 
     @property
+    def site_actions(self):
+        """Add the layer switcher icons to the site action bar.
+
+        THis was done for a quick demo for Wytze."""
+
+        actions = super(AppView, self).site_actions
+        show_layers = Action(
+            name='',
+            element_id='base-layers',
+            description=_('Show base layers'),
+            url="#",
+            icon='icon-globe',
+            klass='dropdown-toggle')
+        actions.insert(0, show_layers)
+        show_layers = Action(
+            name='',
+            element_id='layers',
+            description=_('Show map layers'),
+            url="#",
+            icon='icon-map-marker',
+            klass='dropdown-toggle')
+        actions.insert(0, show_layers)
+        return actions
+
+    @property
     def content_actions(self):
         """Add default-location-zoom."""
         actions = super(AppView, self).content_actions
