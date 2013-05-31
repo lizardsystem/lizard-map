@@ -33,9 +33,9 @@ function setup_movable_dialog() {
     var options = {
         autoOpen: false,
         title: '',
-        width: 650,
+        width: 600,
         height: 480,
-        zIndex: 10000,
+        zIndex: 5000,
         close: function (event, ui) {
             // clear contents on close
             $('#movable-dialog-content').empty();
@@ -67,25 +67,30 @@ function open_popup(show_spinner) {
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
         $("#movable-dialog-content").append($loading);
     }
+    $("#movable-dialog").dialog('option', {title: ''});
     $("#movable-dialog").dialog("open");
 }
 
 // in use (26-09-2012)
 // main (single) popup
-function set_popup_content(data) {
+function set_popup_content(data, title) {
     var html, overlay, i;
     if (data !== null) {
         if (data instanceof jQuery) {
             $("#movable-dialog-content").empty().append(data);
         }
         else if (data.html && data.html.length !== 0) {
+            if (title) {
+                $("#movable-dialog").dialog('option', {title: title});
+            }
             // We got at least 1 result back.
             if (data.html.length === 1) {
                 // Just copy the contents directly into the target div.
                 $("#movable-dialog-content").html(data.html[0]);
                 // Have the graphs fetch their data.
                 reloadGraphs();
-            } else {
+            }
+            else {
                 // Build up html with tabs.
                 html = '<div id="popup-tabs"><ul>';
                 for (i = 0; i < data.html.length; i += 1) {
@@ -122,7 +127,6 @@ function set_popup_content(data) {
                 idPrefix: 'popup-subtab',
                 selected: 0
             });
-            $(".add-snippet").snippetInteraction();
         }
         else if (data.indexOf && data.indexOf("div") != -1) {
             // Apparantly data can also contain an entire <html> document
@@ -199,6 +203,7 @@ jQuery.fn.workspaceInteraction = function () {
                 }
             );
         };
+        /*
         $workspaceItems.sortable({
             update: onUpdate,
             helper: 'clone',
@@ -208,6 +213,7 @@ jQuery.fn.workspaceInteraction = function () {
             placeholder: 'workspace-item-sortable-placeholder',
             items: '.workspace-item'
         });
+        */
         $workspace.find('.workspace-item-move-up').on('click', function (event) {
             var $workspaceItem = $(this).parents('.workspace-item');
             $workspaceItem.prev().before($workspaceItem);

@@ -8,7 +8,6 @@ the default template for the html_default method.
 {% load workspaces %}
 {# header #}
 <div>
-  <img src="{{ symbol_url }}" />&nbsp;
   <strong>{{ title|truncatewords:8 }}</strong>
 </div>
 <div style="width: {{ width|default:"100%" }}; height: {{ height|default:"240px" }};"

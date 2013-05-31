@@ -12,11 +12,13 @@
      data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
      data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
      >
+  {% comment %}
   <h2>
     <span title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
       {% trans 'Layers' %}
     </span>
   </h2>
+  {% endcomment %}
 
     <ul class="workspace-items unstyled">
         {% for workspace_item in workspace_edit.workspace_items.all %}
@@ -29,18 +31,21 @@
             <div>
                 {# Symbol, appears left. #}
                 {% if workspace_item.adapter.symbol_url %}
+                {% comment %}
                 <img class="workspace-item-image"
                      src="{{ workspace_item.adapter.symbol_url }}"
                      width="16"
                      height="16"
                 />
+                {% endcomment %}
                 {% else %}
                 {% endif %}
                 <span class="workspace-item-toggle-visiblity"
                       title="{% trans 'Click to toggle visibility' %}">
-                    {% firstof workspace_item.name '(noname)' %}
+                    <i class="icon-check"></i><i class="icon-check-empty"></i> {% firstof workspace_item.name '(noname)' %}
                 </span>
             </div>
+            {% comment %}
             <div style="height:28px;">
                 <div class="btn-group pull-right">
                     {% if workspace_item.has_extent %}
@@ -59,6 +64,7 @@
                     </button>
                 </div>
             </div>
+            {% endcomment %}
         </li>
         {% empty %}
         {# No workspace items #}
@@ -67,7 +73,9 @@
         </li>
         {% endfor %}
     </ul>
+    {% comment %}
     <hr noshade style="border-color: #7FA9AE; color: #7FA9AE; background-color: #7FA9AE;" />
+    {% endcomment %}
     <div class="btn-group" style="display: block; width: 78px; margin-left: auto; margin-right: auto;">
         <button id="workspace-empty"
                 href="{% url lizard_map_workspace_empty %}"

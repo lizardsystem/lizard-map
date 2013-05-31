@@ -489,7 +489,7 @@ class WorkspaceStorageView(View):
         qs_dict = {
             'sidebar_is_collapsed': workspace_storage.sidebar_is_collapsed,
             'rightbar_is_collapsed': workspace_storage.rightbar_is_collapsed,
-            'secondary_sidebar_is_collapsed': False
+            'secondary_sidebar_is_collapsed': True
         }
         qs = urllib.urlencode(qs_dict)
 
