@@ -393,6 +393,13 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-map-marker',
             klass='dropdown-toggle')
         actions.insert(0, show_layers)
+        set_date_range = Action(
+            name='',
+            description=_('Change the date range of the measurements'),
+            url='javascript:void(null)',
+            icon='icon-calendar',
+            klass='popup-date-range')
+        actions.insert(0, set_date_range)
         return actions
 
     @property

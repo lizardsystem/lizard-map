@@ -806,6 +806,7 @@ function popup_click_handler(x, y, map) {
         // the popup opens on the left, and the click location is
         // centered on the right.
         var movableDialogWidth = $('#movable-dialog').dialog('option', 'width');
+        var movableDialogLeft = $('#movable-dialog').dialog('option', 'position')[0];
         var mapWidth = map.getCurrentSize().w;
 
         var point = new OpenLayers.LonLat(x, y);
