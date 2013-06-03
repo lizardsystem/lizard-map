@@ -393,6 +393,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-map-marker',
             klass='dropdown-toggle')
         actions.insert(0, show_layers)
+<<<<<<< HEAD
         activate_elevationprofile = Action(
             name='',
             description=_('Draw a line to select an elevation profile'),
@@ -400,6 +401,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-bar-chart',
             klass='map-elevationprofile')
         actions.insert(0, activate_elevationprofile)
+=======
+        set_date_range = Action(
+            name='',
+            description=_('Change the date range of the measurements'),
+            url='javascript:void(null)',
+            icon='icon-calendar',
+            klass='popup-date-range')
+        actions.insert(0, set_date_range)
+>>>>>>> 6e6fd5951f5e358af64ea214a9a6f5aef0844a41
         return actions
 
     @property
