@@ -52,9 +52,9 @@ function setup_movable_dialog() {
         // resizing neither
         options.resizable = false;
         // make width 90% of the entire window
-        options.width = $(window).width() * 0.9;
+        options.width = $(window).width() * 0.7;
         // make height 80% of the entire window
-        options.height = $(window).height() * 0.8;
+        options.height = $(window).height() * 0.7;
     }
 
     $('#movable-dialog').dialog(options);
