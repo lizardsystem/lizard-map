@@ -211,14 +211,7 @@ class WorkspaceItemMixin(models.Model):
 
     @property
     def is_animatable(self):
-        """Dirty way to check if the wms is "animated" """
-        has_substring = False
-        try:
-            self.adapter_layer_json.index('time')
-            has_substring = True
-        except:
-            pass
-        return has_substring
+        return False
 
     def __unicode__(self):
         return self.name

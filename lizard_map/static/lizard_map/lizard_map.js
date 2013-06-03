@@ -41,7 +41,8 @@ function setup_movable_dialog() {
             $('#movable-dialog-content').empty();
             // remove any added popup markers from map
             popup_clear_map_markers();
-        }
+        },
+        position: { my: 'left center', at: 'left+15% center', of: window }
     };
 
     // make an exception for iPad
@@ -801,6 +802,20 @@ function popup_click_handler(x, y, map) {
         popup_clear_map_markers();
         popup_add_map_marker(x, y, map);
 
+        // Pan to where the user clicked, but apply an offset so
+        // the popup opens on the left, and the click location is
+        // centered on the right.
+        var movableDialogWidth = $('#movable-dialog').dialog('option', 'width');
+        var mapWidth = map.getCurrentSize().w;
+
+        var point = new OpenLayers.LonLat(x, y);
+        var pointPx = map.getPixelFromLonLat(point);
+        var distPx = (mapWidth - movableDialogWidth) / 2 + movableDialogWidth - (mapWidth / 2);
+        pointPx.x -= distPx;
+
+        var newCenter = map.getLonLatFromViewPortPx(pointPx);
+        map.panTo(newCenter);
+
         open_popup();
         $.getJSON(
             url,
@@ -1118,8 +1133,8 @@ function refreshWmsLayers() {
     $(".workspace-wms-layer").each(function () {
         var name, url, params, options, id, index, animatable;
         // WMS id, different than workspace ids.
-        animatable = $(this).attr("data-workspace-wms-animatable");
-        if (animatable === 'true') { return; }
+        //animatable = $(this).attr("data-workspace-wms-animatable");
+        //if (animatable === 'true') { return; }
         id = $(this).attr("data-workspace-wms-id");
         ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
@@ -1169,12 +1184,22 @@ function refreshWmsLayers() {
         }
 
         if (wms_layers[id] === undefined) {
-            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
             // Create it.
             if (cql_filters.length > 0){
                 // There are filters so add them to the request.
                 params['cql_filter'] = cql_filters;
             }
+            // add currently selected date range to url
+            // HACK: viewstate is currently globally accessible
+            var view_state = get_view_state();
+            view_state = to_date_strings(view_state, false, true);
+            if (view_state !== undefined) {
+                if (view_state.dt_start && view_state.dt_end) {
+                    params['time'] = view_state.dt_start + '/' + view_state.dt_end;
+                }
+            }
+
+            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
@@ -1186,6 +1211,16 @@ function refreshWmsLayers() {
                 // Update the layer if a cql_filter is used
                 // with the new cql_filter params.
                 layer.mergeNewParams({'cql_filter': cql_filters});
+            }
+            // add currently selected date range to url
+            // HACK: viewstate is currently globally accessible
+            var view_state = get_view_state();
+            view_state = to_date_strings(view_state, false, true);
+            if (view_state !== undefined) {
+                if (view_state.dt_start && view_state.dt_end) {
+                    var extraParams = {'time': view_state.dt_start + '/' + view_state.dt_end};
+                    layer.mergeNewParams(extraParams);
+                }
             }
             // set the correct Zindex
             layer.setZIndex(1000 - index);
@@ -1201,8 +1236,8 @@ function refreshWmsLayers() {
     });
     // Set up animation control panel. No worries, it cleans itself up when
     // running multiple times.
-    init_animation();
-    init_control_panel();
+    //init_animation();
+    //init_control_panel();
 }
 
 
@@ -1333,10 +1368,15 @@ function setUpMap() {
 
     map = new OpenLayers.Map('map', options);
     // OpenLayers.IMAGE_RELOAD_ATTEMPTS = 3;
+    OpenLayers.Renderer.SVG.prototype.MAX_PIXEL = Number.MAX_VALUE;
 
     // add a layer which shows where the user has clicked
     // expose marker layer via window, might as well since everying is exposed this way
-    window.popupClickMarkersLayer = new OpenLayers.Layer.Markers('Popup markers');
+    window.popupClickMarkersLayer = new OpenLayers.Layer.Markers(
+        'Popup markers',
+        {
+        }
+    );
     var popupClickMarkerSize = new OpenLayers.Size(21, 25);
     var popupClickMarkerOffset = new OpenLayers.Pixel(-(popupClickMarkerSize.w/2), -popupClickMarkerSize.h);
     var iconUrl = 'http://www.openlayers.org/dev/img/marker.png';
@@ -1545,8 +1585,7 @@ function reloadDynamicGraph($graph, callback, force) {
     var url = (graph_type == 'flot') ? flot_graph_data_url : image_graph_url;
 
     // add currently selected date range to url
-    // HACK: viewstate is currently only in lizard_map,
-    // but graphs are here, in lizard_ui, for some reason
+    // HACK: viewstate is currently globally accessible
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
     if (view_state !== undefined) {
@@ -1962,13 +2001,18 @@ function bindFullscreenClick($container) {
  * @param {boolean} [inplace] When evaluated to true, conversion happens in place
  * and the original array is modified.
  */
-var to_date_strings = function (assoc_array, inplace) {
+var to_date_strings = function (assoc_array, inplace, wms_compatible) {
     if (!inplace)
         assoc_array = $.extend({}, assoc_array);
     $.each(assoc_array, function(k, v) {
         if (v) {
             if (moment.isMoment(v)) {
-                assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
+                if (wms_compatible === true) {
+                    assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+                }
+                else {
+                    assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
+                }
             }
             else if (v instanceof Object) {
                 to_date_strings(v, true);
@@ -2137,6 +2181,7 @@ function setup_daterangepicker() {
             }
             else {
                 reloadGraphs(undefined, undefined, true);
+                refreshWmsLayers();
             }
         });
     }
