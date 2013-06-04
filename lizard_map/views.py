@@ -465,6 +465,9 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def view_state(self):
         return get_view_state(self.request)
 
+    @property
+    def workspace_storages(self):
+        return WorkspaceStorage.objects.all()
 
 MapView = AppView  # BBB
 
