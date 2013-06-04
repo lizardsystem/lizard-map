@@ -1151,6 +1151,7 @@ function refreshWmsLayers() {
         if (options.reproject) {
             delete options['reproject'];
         }
+        options.displayInLayerSwitcher = true;
         index = parseInt($(this).attr("data-workspace-wms-index"));
 
         // Add cql_filtering
@@ -1376,6 +1377,7 @@ function setUpMap() {
     window.popupClickMarkersLayer = new OpenLayers.Layer.Markers(
         'Popup markers',
         {
+            displayInLayerSwitcher: false
         }
     );
     var popupClickMarkerSize = new OpenLayers.Size(21, 25);
