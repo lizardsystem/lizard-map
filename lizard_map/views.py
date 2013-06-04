@@ -8,10 +8,13 @@ import logging
 import re
 import urllib
 import urllib2
+from xml.dom.minidom import parseString
+import xml.etree.ElementTree as ET
 from dateutil import parser as date_parser
 
 from PIL import Image
 from django import forms
+from django.core.cache import cache
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -39,6 +42,7 @@ from rest_framework.response import Response as RestResponse
 from rest_framework.views import APIView
 import iso8601
 import mapnik
+import requests
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
@@ -2003,7 +2007,6 @@ class ViewStateService(APIView, WorkspaceEditMixin):
 
 
 class LocationListService(APIView, WorkspaceEditMixin):
-
     @never_cache
     def get(self, request, *args, **kwargs):
         name = request.GET.get('name', None)
@@ -2045,3 +2048,38 @@ class LocationListService(APIView, WorkspaceEditMixin):
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
         return RestResponse(locations)
+
+class GeocoderService(APIView):
+    @never_cache
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('query', None)
+
+        result = None
+
+        if query:
+            query = query.strip().lower()
+            cache_key = 'geocoder:{0}'.format(query)
+            result = cache.get(cache_key)
+            if result is None:
+                post_data = {
+                    'FreeFormAdress': query,
+                    'MaxResponse': 1
+                }
+                request = requests.post('http://www.openrouteservice.org/php/OpenLSLUS_Geocode.php', timeout=5, data=post_data)
+                dom = parseString(request.content) # minidom only support bytes, so use .content instead of .text
+                geocodeResponseList = dom.getElementsByTagNameNS('http://www.opengis.net/xls', 'GeocodeResponseList')[0]
+                geocodedAddress = geocodeResponseList.getElementsByTagNameNS('http://www.opengis.net/xls', 'GeocodedAddress')[0]
+                point = geocodedAddress.getElementsByTagNameNS('http://www.opengis.net/gml', 'Point')[0]
+                pos = point.getElementsByTagNameNS('http://www.opengis.net/gml', 'pos')[0]
+                srs = pos.attributes['srsName'].value
+                geometry = pos.firstChild.nodeValue.strip().split()
+                result = {
+                    'srs': srs,
+                    'x': geometry[0],
+                    'y': geometry[1]
+                }
+                cache.set(cache_key, result)
+
+        return RestResponse({
+            'result': result
+        })

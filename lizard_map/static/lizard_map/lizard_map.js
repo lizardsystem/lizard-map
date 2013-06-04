@@ -2275,13 +2275,30 @@ function setup_location_list () {
     }
 }
 
-
+function setup_location_search () {
+    function requestSuccess (data) {
+        var result = data.result;
+        var foundPosition = new OpenLayers.LonLat(result.x, result.y).transform(
+            new OpenLayers.Projection(result.srs),
+            map.getProjectionObject()
+        );
+        map.setCenter(foundPosition, 14);
+    }
+    function submitForm (event) {
+        event.preventDefault();
+        var address = $('.form-location-search .search-query').val();
+        $.get('/map/geocoder/', { query: address })
+        .done(requestSuccess);
+    }
+    $('.form-location-search').on('submit', submitForm);
+}
 
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
     setup_movable_dialog();
     setup_location_list();
+    setup_location_search();
     setUpWorkspaceAcceptable();
     setUpActions();
     setUpDataFromUrl();
@@ -2292,7 +2309,7 @@ $(document).ready(function () {
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
     setUpSidebarPopupDisappearing();
-    $(".workspace").workspaceInteraction();
+    $('.workspace').workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();
         setUpMultipleSelection();

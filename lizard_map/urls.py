@@ -129,6 +129,10 @@ urlpatterns = patterns(
         lizard_map.views.LocationListService.as_view(),
         name="lizard_map_location_list_service"),
 
+    url(r'^geocoder/$',
+        lizard_map.views.GeocoderService.as_view(),
+        name="lizard_map_geocoder"),
+
     # Load and save map location
     (r'^map_location_save$',
      'lizard_map.views.map_location_save',
