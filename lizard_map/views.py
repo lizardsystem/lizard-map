@@ -465,6 +465,9 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def view_state(self):
         return get_view_state(self.request)
 
+    @property
+    def workspace_storages(self):
+        return WorkspaceStorage.objects.all()
 
 MapView = AppView  # BBB
 
@@ -2068,17 +2071,19 @@ class GeocoderService(APIView):
                 request = requests.post('http://www.openrouteservice.org/php/OpenLSLUS_Geocode.php', timeout=5, data=post_data)
                 dom = parseString(request.content) # minidom only support bytes, so use .content instead of .text
                 geocodeResponseList = dom.getElementsByTagNameNS('http://www.opengis.net/xls', 'GeocodeResponseList')[0]
-                geocodedAddress = geocodeResponseList.getElementsByTagNameNS('http://www.opengis.net/xls', 'GeocodedAddress')[0]
-                point = geocodedAddress.getElementsByTagNameNS('http://www.opengis.net/gml', 'Point')[0]
-                pos = point.getElementsByTagNameNS('http://www.opengis.net/gml', 'pos')[0]
-                srs = pos.attributes['srsName'].value
-                geometry = pos.firstChild.nodeValue.strip().split()
-                result = {
-                    'srs': srs,
-                    'x': geometry[0],
-                    'y': geometry[1]
-                }
-                cache.set(cache_key, result)
+                numberOfGeocodedAddresses = geocodeResponseList.attributes['numberOfGeocodedAddresses'].value
+                if numberOfGeocodedAddresses and int(numberOfGeocodedAddresses) > 0:
+                    geocodedAddress = geocodeResponseList.getElementsByTagNameNS('http://www.opengis.net/xls', 'GeocodedAddress')[0]
+                    point = geocodedAddress.getElementsByTagNameNS('http://www.opengis.net/gml', 'Point')[0]
+                    pos = point.getElementsByTagNameNS('http://www.opengis.net/gml', 'pos')[0]
+                    srs = pos.attributes['srsName'].value
+                    geometry = pos.firstChild.nodeValue.strip().split()
+                    result = {
+                        'srs': srs,
+                        'x': geometry[0],
+                        'y': geometry[1]
+                    }
+                    cache.set(cache_key, result)
 
         return RestResponse({
             'result': result

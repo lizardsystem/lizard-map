@@ -9,10 +9,18 @@
   {% endif %}
 {% endblock map-javascript %}
 
+{% block sidebar2 %}
+  <ul>
+  {% for workspace_storage in view.workspace_storages %}
+      <li><a href="{% url lizard_map_workspace_storage workspace_id=workspace_storage.pk %}">{{ workspace_storage.name }}</a></li>
+  {% endfor %}
+  </ul>
+{% endblock sidebar2 %}
 
 {% block secondary-sidebar %}
-  {% animation_control_panel view.workspace_edit %}
+  {% comment %}
   {% workspace_edit view.workspace_edit %}
+  {% endcomment %}
 {% endblock secondary-sidebar %}
 
 {% block rightbar %}
