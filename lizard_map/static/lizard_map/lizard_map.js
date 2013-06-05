@@ -2293,6 +2293,10 @@ function setup_location_search () {
     $('.form-location-search').on('submit', submitForm);
 }
 
+function setUpAwesomeBox () {
+	$('#box-awesome-tabs').tabs();
+}
+
 $(document).ready(function () {
     setup_daterangepicker();
     setup_view_state();
@@ -2309,9 +2313,12 @@ $(document).ready(function () {
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
     setUpSidebarPopupDisappearing();
+	setUpAwesomeBox();
     $('.workspace').workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();
         setUpMultipleSelection();
     }
+
+
 });
