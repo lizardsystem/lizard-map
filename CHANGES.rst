@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.31 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Made WMS layers daterange-aware.
 
 
 4.30 (2013-05-27)

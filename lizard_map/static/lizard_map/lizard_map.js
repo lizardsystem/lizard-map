@@ -1138,12 +1138,23 @@ function refreshWmsLayers() {
         }
 
         if (wms_layers[id] === undefined) {
-            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
             // Create it.
             if (cql_filters.length > 0){
                 // There are filters so add them to the request.
                 params['cql_filter'] = cql_filters;
             }
+
+            // add currently selected date range to url
+            // HACK: viewstate is currently globally accessible
+            var view_state = get_view_state();
+            view_state = to_date_strings(view_state, false, true);
+            if (view_state !== undefined) {
+                if (view_state.dt_start && view_state.dt_end) {
+                    params['time'] = view_state.dt_start + '/' + view_state.dt_end;
+                }
+            }
+
+            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
@@ -1156,6 +1167,18 @@ function refreshWmsLayers() {
                 // with the new cql_filter params.
                 layer.mergeNewParams({'cql_filter': cql_filters});
             }
+
+            // add currently selected date range to url
+            // HACK: viewstate is currently globally accessible
+            var view_state = get_view_state();
+            view_state = to_date_strings(view_state, false, true);
+            if (view_state !== undefined) {
+                if (view_state.dt_start && view_state.dt_end) {
+                    var extraParams = {'time': view_state.dt_start + '/' + view_state.dt_end};
+                    layer.mergeNewParams(extraParams);
+                }
+            }
+
             // set the correct Zindex
             layer.setZIndex(1000 - index);
         }
@@ -1835,13 +1858,18 @@ function bindPanZoomEvents($graph) {
  * @param {boolean} [inplace] When evaluated to true, conversion happens in place
  * and the original array is modified.
  */
-var to_date_strings = function (assoc_array, inplace) {
+var to_date_strings = function (assoc_array, inplace, wms_compatible) {
     if (!inplace)
         assoc_array = $.extend({}, assoc_array);
     $.each(assoc_array, function(k, v) {
         if (v) {
             if (moment.isMoment(v)) {
-                assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
+                if (wms_compatible === true) {
+                    assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+                }
+                else {
+                    assoc_array[k] = v.format('YYYY-MM-DDTHH:mm:ssZ');
+                }
             }
             else if (v instanceof Object) {
                 to_date_strings(v, true);
@@ -2125,6 +2153,7 @@ function setup_daterangepicker() {
             }
             else {
                 reloadGraphs(undefined, undefined, true);
+                refreshWmsLayers();
             }
         });
     }
