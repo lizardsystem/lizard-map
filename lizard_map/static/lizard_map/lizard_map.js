@@ -62,7 +62,7 @@ function setup_movable_dialog() {
 
 var boxAwesomeTabIndex = 0;
 
-function boxAwesomeAddTab() {
+function boxAwesomeAddTab(marker) {
     var iconClass = 'icon-pushpin';
     var tabId = 'box-awesome-content-popup-' + (boxAwesomeTabIndex++);
 
@@ -82,6 +82,7 @@ function boxAwesomeAddTab() {
 
     var $closeBtn = $('<button type="button" class="close">&times;</button>')
     .on('click', function (event) {
+        popup_remove_map_marker(marker);
         $newLi.remove();
         $tabContent.remove();
         $ul.find('a:last').tab('show');
@@ -887,9 +888,17 @@ function setUpWorkspaceButtons() {
     });
 }
 
-function popup_add_map_marker(x, y, map) {
+function popup_add_map_marker(x, y) {
     if (window.popupClickMarkersLayer) {
-        window.popupClickMarkersLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone()));
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone());
+        window.popupClickMarkersLayer.addMarker(marker);
+        return marker;
+    }
+}
+
+function popup_remove_map_marker(marker) {
+    if (window.popupClickMarkersLayer && marker) {
+        window.popupClickMarkersLayer.removeMarker(marker);
     }
 }
 
@@ -910,8 +919,8 @@ function popup_click_handler(x, y, map) {
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         // clear existing markers, add a new marker
-        popup_clear_map_markers();
-        popup_add_map_marker(x, y, map);
+        //popup_clear_map_markers();
+        var marker = popup_add_map_marker(x, y);
 
         // Pan to where the user clicked, but apply an offset so
         // the popup opens on the left, and the click location is
@@ -929,7 +938,7 @@ function popup_click_handler(x, y, map) {
         var newCenter = map.getLonLatFromViewPortPx(pointPx);
         map.panTo(newCenter);
 
-        var $contentPane = boxAwesomeAddTab();
+        var $contentPane = boxAwesomeAddTab(marker);
         $.getJSON(
             url,
             { x: x, y: y, radius: radius, srs: map.getProjection(),
