@@ -5,6 +5,7 @@ Changelog of lizard-map
 -----------------
 
 - Made WMS layers daterange-aware.
+- Fix cql filters mapping on layer during first load.
 
 
 4.30 (2013-05-27)
