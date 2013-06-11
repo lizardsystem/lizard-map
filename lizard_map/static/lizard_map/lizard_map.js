@@ -60,12 +60,121 @@ function setup_movable_dialog() {
     $('#movable-dialog').dialog(options);
 }
 
+var boxAwesomeTabIndex = 0;
+
+function boxAwesomeAddTab(marker) {
+    var iconClass = 'icon-pushpin';
+    var tabId = 'box-awesome-content-popup-' + (boxAwesomeTabIndex++);
+
+    var $ul = $('#box-awesome-tabs > ul');
+    var $content = $('#box-awesome-tabs > .tab-content');
+
+    var $newLi = $('<li>');
+    var $link = $('<a data-toggle="tab">').attr('href', '#' + tabId);
+    var $icon = $('<i>').addClass(iconClass);
+
+    var $tabContent = $('<div>')
+    .addClass('tab-pane sidebar-inner')
+    .attr('id', tabId);
+
+    var $popupContentPane = $('<div>')
+    .html('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation">');
+
+    var $closeBtn = $('<button type="button" class="close">&times;</button>')
+    .on('click', function (event) {
+        popup_remove_map_marker(marker);
+        $newLi.remove();
+        $tabContent.remove();
+        $ul.find('a:last').tab('show');
+    });
+
+    var $closeBtnRow = $('<div style="height: 20px;">')
+    .append($closeBtn)
+    .appendTo($tabContent);
+
+    var $contentPane = $('<div>')
+    .appendTo($tabContent);
+
+    $link.append($icon);
+    $newLi.append($link);
+
+    $ul.append($newLi);
+    $content.append($tabContent);
+
+    $link.tab('show');
+    return $contentPane;
+}
+
+function boxAwesomeSetContent($contentPane, data) {
+    var html, overlay, i;
+    if (data !== null) {
+        if (data instanceof jQuery) {
+            $contentPane.empty().append(data);
+        }
+        else if (data.html && data.html.length !== 0) {
+            // We got at least 1 result back.
+            if (data.html.length === 1) {
+                // Just copy the contents directly into the target div.
+                $contentPane.html(data.html[0]);
+                // Have the graphs fetch their data.
+                reloadGraphsIn($contentPane);
+            }
+            else {
+                // Build up html with tabs.
+                html = '<div id="popup-tabs"><ul>';
+                for (i = 0; i < data.html.length; i += 1) {
+                    html += '<li><a href="#popup-tab-' + (i + 1) + '">';
+                    html += data.tab_titles[i];
+                    html += '</a></li>';
+                }
+                html += '</ul>';
+                for (i = 0; i < data.html.length; i += 1) {
+                    html += '<div id="popup-tab-' + (i + 1) + '">';
+                    html += data.html[i];
+                    html += '</div>';
+                }
+                html += '</div>';
+
+                // Copy the prepared HTML to the target div.
+                $contentPane.html(html);
+
+                // Call jQuery UI Tabs to actually instantiate some tabs.
+                $contentPane.find("#popup-tabs").tabs({
+                    idPrefix: 'popup-tab',
+                    selected: 0,
+                    show: function (event, ui) {
+                        // Have the graphs fetch their data.
+                        reloadGraphsIn($contentPane);
+                    },
+                    create: function (event, ui) {
+                        // Have the graphs fetch their data.
+                        reloadGraphsIn($contentPane);
+                    }
+                });
+            }
+            $contentPane.find("#popup-subtabs").tabs({
+                idPrefix: 'popup-subtab',
+                selected: 0
+            });
+        }
+        else if (data.indexOf && data.indexOf("div") != -1) {
+            // Apparantly data can also contain an entire <html> document
+            $contentPane.html(data);
+            // Have the graphs fetch their data.
+            reloadGraphsIn($contentPane);
+        }
+        else {
+            $contentPane.html("Er is niets rond deze locatie gevonden.");
+        }
+    }
+}
+
 // in use (26-09-2012)
 // main (single) popup
 function open_popup(show_spinner) {
     $("#movable-dialog-content").empty();
     if (show_spinner === undefined || show_spinner) {
-        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation">');
         $("#movable-dialog-content").append($loading);
     }
     $("#movable-dialog").dialog('option', {title: ''});
@@ -294,6 +403,9 @@ jQuery.fn.updateWorkspace = function () {
         $holder.load(
             './ #page',
             function () {
+                if ($('#edit-workspace', $holder).length == 0) {
+                    debugger;
+                }
                 //$(".workspace-items", $workspace).html(
                 //    $('.workspace-items', $holder).html());
                 $("#edit-workspace").parent().html(
@@ -776,9 +888,17 @@ function setUpWorkspaceButtons() {
     });
 }
 
-function popup_add_map_marker(x, y, map) {
+function popup_add_map_marker(x, y) {
     if (window.popupClickMarkersLayer) {
-        window.popupClickMarkersLayer.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone()));
+        var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone());
+        window.popupClickMarkersLayer.addMarker(marker);
+        return marker;
+    }
+}
+
+function popup_remove_map_marker(marker) {
+    if (window.popupClickMarkersLayer && marker) {
+        window.popupClickMarkersLayer.removeMarker(marker);
     }
 }
 
@@ -799,31 +919,32 @@ function popup_click_handler(x, y, map) {
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         // clear existing markers, add a new marker
-        popup_clear_map_markers();
-        popup_add_map_marker(x, y, map);
+        //popup_clear_map_markers();
+        var marker = popup_add_map_marker(x, y);
 
         // Pan to where the user clicked, but apply an offset so
         // the popup opens on the left, and the click location is
         // centered on the right.
-        var movableDialogWidth = $('#movable-dialog').dialog('option', 'width');
-        var movableDialogLeft = $('#movable-dialog').dialog('option', 'position')[0];
+        var boxAwesomeWidth = $('#box-awesome').width();
+        var boxAwesomeLeft = $('#box-awesome').position().left;
+
         var mapWidth = map.getCurrentSize().w;
 
         var point = new OpenLayers.LonLat(x, y);
         var pointPx = map.getPixelFromLonLat(point);
-        var distPx = (mapWidth - movableDialogWidth) / 2 + movableDialogWidth - (mapWidth / 2);
+        var distPx = (mapWidth - boxAwesomeWidth + boxAwesomeLeft) / 2 + boxAwesomeWidth - (mapWidth / 2);
         pointPx.x -= distPx;
 
         var newCenter = map.getLonLatFromViewPortPx(pointPx);
         map.panTo(newCenter);
 
-        open_popup();
+        var $contentPane = boxAwesomeAddTab(marker);
         $.getJSON(
             url,
             { x: x, y: y, radius: radius, srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
-                set_popup_content(data);
+                boxAwesomeSetContent($contentPane, data);
                 $("#map").css("cursor", "default");
             }
         );
@@ -1561,6 +1682,12 @@ function reloadGraphs(max_image_width, callback, force) {
     // New Flot graphs
     $('.dynamic-graph').each(function () {
         reloadDynamicGraph($(this), callback, force);
+    });
+}
+
+function reloadGraphsIn($el) {
+    $el.find('.dynamic-graph').each(function () {
+        reloadDynamicGraph($(this));
     });
 }
 
