@@ -2416,12 +2416,14 @@ function setup_location_search () {
 
 		// Put the items in the results box.
 		var div_results = $('#box-awesome-results');
-		div_results.empty();
+		var div_content = $('#box-awesome-results div');
+
+		div_content.empty();
 
         if (items.length != 0) {
             $('<ul/>', {
                html: items.join('')
-            }).appendTo(div_results);
+            }).appendTo(div_content);
         } else {
             $('<p>', { html: "Niets gevonden..." }).appendTo('#results');
         }
@@ -2451,6 +2453,14 @@ function chooseAddr(lat1, lat2, lng1, lng2) {
 	map.zoomToExtent(bounds);
 }
 
+function setUpCloseSearch () {
+	$('#box-awesome-results button').on('click', function (event) {
+		$('#box-awesome-results div').empty();
+		$('#box-awesome-results').hide();
+	});
+}
+
+
 
 $(document).ready(function () {
     setup_daterangepicker();
@@ -2468,6 +2478,7 @@ $(document).ready(function () {
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
     setUpSidebarPopupDisappearing();
+	setUpCloseSearch();
     $('.workspace').workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();

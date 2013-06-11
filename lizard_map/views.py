@@ -507,14 +507,7 @@ class WorkspaceStorageView(View):
                 'bottom': workspace_storage.y_min
             }
 
-        qs_dict = {
-            'sidebar_is_collapsed': workspace_storage.sidebar_is_collapsed,
-            'rightbar_is_collapsed': workspace_storage.rightbar_is_collapsed,
-            'secondary_sidebar_is_collapsed': True
-        }
-        qs = urllib.urlencode(qs_dict)
-
-        return redirect(reverse('lizard_ui.icons') + '?' + qs)
+        return redirect(reverse('homepage'))
 
 
 class ActionDialogView(ViewContextMixin, FormView):
