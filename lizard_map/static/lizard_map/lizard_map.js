@@ -40,7 +40,7 @@ function setup_movable_dialog() {
             // clear contents on close
             $('#movable-dialog-content').empty();
             // remove any added popup markers from map
-            popup_clear_map_markers();
+            clearMapMarkers();
         },
         position: { my: 'left center', at: 'left+15% center', of: window }
     };
@@ -77,22 +77,25 @@ function boxAwesomeAddTab(marker) {
     .addClass('tab-pane sidebar-inner')
     .attr('id', tabId);
 
-    var $popupContentPane = $('<div>')
-    .html('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation">');
-
     var $closeBtn = $('<button type="button" class="close">&times;</button>')
     .on('click', function (event) {
-        popup_remove_map_marker(marker);
+        removeMapMarker(marker);
         $newLi.remove();
         $tabContent.remove();
-        $ul.find('a:last').tab('show');
+        $ul.find('a:last').trigger('click');
+    });
+    $link.on('click', function (event) {
+        resetColorAllMarkers();
+        adjustedPanTo(marker.lonlat.lon, marker.lonlat.lat);
+        marker.icon.setUrl(window.iconUrlRed);
     });
 
-    var $closeBtnRow = $('<div style="height: 20px;">')
+    var $closeBtnPane = $('<div style="height: 20px;">')
     .append($closeBtn)
     .appendTo($tabContent);
 
-    var $contentPane = $('<div>')
+    var $popupContentPane = $('<div>')
+    .html('<div class="popup-loading-animation"></div>')
     .appendTo($tabContent);
 
     $link.append($icon);
@@ -102,7 +105,7 @@ function boxAwesomeAddTab(marker) {
     $content.append($tabContent);
 
     $link.tab('show');
-    return $contentPane;
+    return $popupContentPane;
 }
 
 function boxAwesomeSetContent($contentPane, data) {
@@ -888,7 +891,13 @@ function setUpWorkspaceButtons() {
     });
 }
 
-function popup_add_map_marker(x, y) {
+function resetColorAllMarkers() {
+    $.each(window.popupClickMarkersLayer.markers, function (idx) {
+        this.setUrl(window.iconUrl);
+    });
+}
+
+function addMapMarker(x, y) {
     if (window.popupClickMarkersLayer) {
         var marker = new OpenLayers.Marker(new OpenLayers.LonLat(x, y), window.popupClickMarkerIcon.clone());
         window.popupClickMarkersLayer.addMarker(marker);
@@ -896,13 +905,13 @@ function popup_add_map_marker(x, y) {
     }
 }
 
-function popup_remove_map_marker(marker) {
+function removeMapMarker(marker) {
     if (window.popupClickMarkersLayer && marker) {
         window.popupClickMarkersLayer.removeMarker(marker);
     }
 }
 
-function popup_clear_map_markers() {
+function clearMapMarkers() {
     if (window.popupClickMarkersLayer) {
         window.popupClickMarkersLayer.clearMarkers();
     }
@@ -919,24 +928,14 @@ function popup_click_handler(x, y, map) {
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         // clear existing markers, add a new marker
-        //popup_clear_map_markers();
-        var marker = popup_add_map_marker(x, y);
+        //clearMapMarkers();
+        resetColorAllMarkers();
+        var marker = addMapMarker(x, y);
 
         // Pan to where the user clicked, but apply an offset so
         // the popup opens on the left, and the click location is
         // centered on the right.
-        var boxAwesomeWidth = $('#box-awesome').width();
-        var boxAwesomeLeft = $('#box-awesome').position().left;
-
-        var mapWidth = map.getCurrentSize().w;
-
-        var point = new OpenLayers.LonLat(x, y);
-        var pointPx = map.getPixelFromLonLat(point);
-        var distPx = (mapWidth - boxAwesomeWidth + boxAwesomeLeft) / 2 + boxAwesomeWidth - (mapWidth / 2);
-        pointPx.x -= distPx;
-
-        var newCenter = map.getLonLatFromViewPortPx(pointPx);
-        map.panTo(newCenter);
+        adjustedPanTo(x, y);
 
         var $contentPane = boxAwesomeAddTab(marker);
         $.getJSON(
@@ -951,6 +950,20 @@ function popup_click_handler(x, y, map) {
     }
 }
 
+function adjustedPanTo(x, y) {
+    var boxAwesomeWidth = $('#box-awesome').width();
+    var boxAwesomeLeft = $('#box-awesome').position().left;
+
+    var mapWidth = map.getCurrentSize().w;
+
+    var point = new OpenLayers.LonLat(x, y);
+    var pointPx = map.getPixelFromLonLat(point);
+    var distPx = (mapWidth - boxAwesomeWidth + boxAwesomeLeft) / 2 + boxAwesomeWidth - (mapWidth / 2);
+    pointPx.x -= distPx;
+
+    var newCenter = map.getLonLatFromViewPortPx(pointPx);
+    map.panTo(newCenter);
+}
 
 /* Handle a hover */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
@@ -1316,7 +1329,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (view_state !== undefined) {
+            if (/time|tijd/i.test(name) && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     params['time'] = view_state.dt_start + '/' + view_state.dt_end;
                 }
@@ -1339,7 +1352,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (view_state !== undefined) {
+            if (/time|tijd/i.test(name) && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     var extraParams = {'time': view_state.dt_start + '/' + view_state.dt_end};
                     layer.mergeNewParams(extraParams);
@@ -1503,12 +1516,14 @@ function setUpMap() {
     );
     var popupClickMarkerSize = new OpenLayers.Size(21, 25);
     var popupClickMarkerOffset = new OpenLayers.Pixel(-(popupClickMarkerSize.w/2), -popupClickMarkerSize.h);
-    var iconUrl = 'http://www.openlayers.org/dev/img/marker.png';
+    window.iconUrl = 'http://www.openlayers.org/dev/img/marker-green.png';
+    window.iconUrlRed = 'http://www.openlayers.org/dev/img/marker.png';
     var openLayersUrlBase = $('#openlayers-script').data('openlayers-url');
     if (openLayersUrlBase) {
-        iconUrl = openLayersUrlBase + 'img/marker.png';
+        window.iconUrl = openLayersUrlBase + 'img/marker-green.png';
+        window.iconUrlRed = openLayersUrlBase + 'img/marker.png';
     }
-    window.popupClickMarkerIcon = new OpenLayers.Icon(iconUrl, popupClickMarkerSize, popupClickMarkerOffset);
+    window.popupClickMarkerIcon = new OpenLayers.Icon(window.iconUrlRed, popupClickMarkerSize, popupClickMarkerOffset);
     map.addLayer(popupClickMarkersLayer);
     // Note: this needs to happen AFTER adding the layer to the map...
     window.popupClickMarkersLayer.setZIndex(1010);
@@ -2419,6 +2434,15 @@ function setup_location_search () {
 		var div_content = $('#box-awesome-results div');
 
 		div_content.empty();
+
+        var $closeBtn = $('<button type="button" class="close">&times;</button>')
+        .on('click', function (event) {
+            div_results.empty();
+            div_results.hide();
+        });
+        var $closeBtnPane = $('<div style="height: 20px;">')
+        .append($closeBtn)
+        .appendTo(div_results);
 
         if (items.length != 0) {
             $('<ul/>', {
