@@ -1148,7 +1148,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (view_state !== undefined) {
+            if (/time|tijd/i.test(name) && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     params['time'] = view_state.dt_start + '/' + view_state.dt_end;
                 }
@@ -1172,7 +1172,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (view_state !== undefined) {
+            if (/time|tijd/i.test(name) && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     var extraParams = {'time': view_state.dt_start + '/' + view_state.dt_end};
                     layer.mergeNewParams(extraParams);
