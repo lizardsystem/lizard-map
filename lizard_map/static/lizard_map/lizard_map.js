@@ -2278,22 +2278,52 @@ function setup_location_list () {
 }
 
 function setup_location_search () {
-    function requestSuccess (data) {
-        var result = data.result;
-        var foundPosition = new OpenLayers.LonLat(result.x, result.y).transform(
-            new OpenLayers.Projection(result.srs),
-            map.getProjectionObject()
-        );
-        map.setCenter(foundPosition, 14);
-    }
+	function requestSuccess (data) {
+        var items = [];
+        $.each(data, function(key, val) {
+            bb = val.boundingbox;
+            items.push("<li><a href='#' onclick='chooseAddr(" +
+					   bb +
+					   ");return false;'>" + val.display_name + '</a></li>');
+        });
+
+		// Put the items in the results box.
+		var div_results = $('#box-awesome-results');
+		div_results.empty();
+
+        if (items.length != 0) {
+            $('<ul/>', {
+               html: items.join('')
+            }).appendTo(div_results);
+        } else {
+            $('<p>', { html: "Niets gevonden..." }).appendTo('#results');
+        }
+		div_results.show();
+	}
+
     function submitForm (event) {
-        event.preventDefault();
-        var address = $('.form-location-search .search-query').val();
-        $.get('/map/geocoder/', { query: address })
-        .done(requestSuccess);
-    }
-    $('.form-location-search').on('submit', submitForm);
+		event.preventDefault();
+		var inp = $('#box-awesome-search input').val();
+
+		$.getJSON('//nominatim.openstreetmap.org/search',
+				  {format: 'json',
+				   limit: 5,
+				   q: inp})
+			.done(requestSuccess);
+	}
+    $('#box-awesome-search-form').on('submit', submitForm);
 }
+
+/* Move the map to the given address. */
+function chooseAddr(lat1, lat2, lng1, lng2) {
+	var bounds = new OpenLayers.Bounds();
+	bounds.extend(new OpenLayers.LonLat(lng1, lat1));
+	bounds.extend(new OpenLayers.LonLat(lng2,  lat2));
+
+	bounds.transform('EPSG:4326', map.getProjection());
+	map.zoomToExtent(bounds);
+}
+
 
 $(document).ready(function () {
     setup_daterangepicker();
