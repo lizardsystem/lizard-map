@@ -2435,21 +2435,12 @@ function setup_location_search () {
 
 		div_content.empty();
 
-        var $closeBtn = $('<button type="button" class="close">&times;</button>')
-        .on('click', function (event) {
-            div_results.empty();
-            div_results.hide();
-        });
-        var $closeBtnPane = $('<div style="height: 20px;">')
-        .append($closeBtn)
-        .appendTo(div_results);
-
         if (items.length != 0) {
             $('<ul/>', {
                html: items.join('')
             }).appendTo(div_content);
         } else {
-            $('<p>', { html: "Niets gevonden..." }).appendTo('#results');
+            $('<p/>', { html: "Er is niets gevonden." }).appendTo(div_content);
         }
 		div_results.show();
 	}
