@@ -397,13 +397,6 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-map-marker',
             klass='dropdown-toggle')
         actions.insert(0, show_layers)
-        activate_elevationprofile = Action(
-            name='',
-            description=_('Draw a line to select an elevation profile'),
-            url="javascript:void(null)",
-            icon='icon-bar-chart',
-            klass='map-elevationprofile')
-        actions.insert(0, activate_elevationprofile)
         set_date_range = Action(
             name='',
             description=_('Change the date range of the measurements'),

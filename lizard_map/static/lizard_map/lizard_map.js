@@ -2094,6 +2094,7 @@ if (!$.fn.insertAt) {
 }
 
 function bindFullscreenClick($container) {
+
     var $graph = $container.find('.flot-graph-canvas');
     $graph.on('dblclick doubletap', function (event) {
         if ($container.data('is-fullscreen') === true) {
@@ -2475,6 +2476,9 @@ function setUpCloseSearch () {
 	});
 }
 
+function setUpElevationProfileForMap() {
+	bindFullscreenClick($('#elevation-profile-content'));
+}
 
 
 $(document).ready(function () {
@@ -2494,7 +2498,8 @@ $(document).ready(function () {
     setUpCollageTablePopup();
     setUpSidebarPopupDisappearing();
 	setUpCloseSearch();
-    $('.workspace').workspaceInteraction();
+    setUpElevationProfileForMap();
+	$('.workspace').workspaceInteraction();
     if ($('#map').exists()) {
         setUpMap();
         setUpMultipleSelection();
