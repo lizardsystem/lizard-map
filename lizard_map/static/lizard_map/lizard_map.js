@@ -1888,7 +1888,7 @@ function flotGraphLoadData($container, response) {
         xaxis: {
             mode: "time",
             zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
-            timezone: "browser"
+            timezone: 'utc'
         },
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
@@ -1989,7 +1989,7 @@ function flotGraphLoadData($container, response) {
 
     if (!isAppleMobile) {
         function showGraphTooltip(x, y, datapoint) {
-            var dateFormatted = moment(datapoint[0]).format('LL H:mm');
+            var dateFormatted = moment.utc(datapoint[0]).format('LL H:mm');
             var valueFormatted = Math.round(datapoint[1] * 100) / 100;
             $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
                 'position': 'absolute',
