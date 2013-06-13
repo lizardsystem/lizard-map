@@ -2054,7 +2054,7 @@ function panAndZoomOtherGraphs(plot) {
     var xmax = axes.xaxis.max;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
-        if (plot !== otherPlot) {
+        if (otherPlot && plot !== otherPlot) {
             var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
             otherXAxisOptions.min = xmin;
             otherXAxisOptions.max = xmax;
