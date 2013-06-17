@@ -69,11 +69,16 @@ function boxAwesomeAddTab(marker) {
     var $ul = $('#box-awesome-tabs > ul');
     var $content = $('#box-awesome-tabs > .tab-content');
 
-    var $newLi = $('<li>');
+    // close other tabs
+    $ul.find('.popup-li').remove();
+    $content.find('.popup-div').remove();
+    // /close other tabs
+
+    var $newLi = $('<li class="popup-li">');
     var $link = $('<a data-toggle="tab">').attr('href', '#' + tabId);
     var $icon = $('<i>').addClass(iconClass);
 
-    var $tabContent = $('<div>')
+    var $tabContent = $('<div class="popup-div">')
     .addClass('tab-pane sidebar-inner')
     .attr('id', tabId);
 
@@ -84,11 +89,12 @@ function boxAwesomeAddTab(marker) {
         $tabContent.remove();
         $ul.find('a:last').trigger('click');
     });
-    $link.on('click', function (event) {
-        resetColorAllMarkers();
-        adjustedPanTo(marker.lonlat.lon, marker.lonlat.lat);
-        marker.icon.setUrl(window.iconUrlRed);
-    });
+    // disabled multiple tab support
+    // $link.on('click', function (event) {
+        // resetColorAllMarkers();
+        // adjustedPanTo(marker.lonlat.lon, marker.lonlat.lat);
+        // marker.icon.setUrl(window.iconUrlRed);
+    // });
 
     var $closeBtnPane = $('<div style="height: 20px;">')
     .append($closeBtn)
@@ -928,8 +934,8 @@ function popup_click_handler(x, y, map) {
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
         // clear existing markers, add a new marker
-        //clearMapMarkers();
-        resetColorAllMarkers();
+        clearMapMarkers();
+        //resetColorAllMarkers();
         var marker = addMapMarker(x, y);
 
         // Pan to where the user clicked, but apply an offset so
