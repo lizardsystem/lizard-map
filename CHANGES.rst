@@ -14,6 +14,8 @@ Changelog of lizard-map
 
 - Update source language (english) django.po
 
+- Add Box awesome.
+
 
 4.28 (2013-05-06)
 -----------------
