@@ -82,13 +82,13 @@ function boxAwesomeAddTab(marker) {
     .addClass('tab-pane sidebar-inner')
     .attr('id', tabId);
 
-    var $closeBtn = $('<button type="button" class="close">&times;</button>')
-    .on('click', function (event) {
-        removeMapMarker(marker);
-        $newLi.remove();
-        $tabContent.remove();
-        $ul.find('a:last').trigger('click');
-    });
+    // var $closeBtn = $('<button type="button" class="close">&times;</button>')
+    // .on('click', function (event) {
+        // removeMapMarker(marker);
+        // $newLi.remove();
+        // $tabContent.remove();
+        // $ul.find('a:last').trigger('click');
+    // });
     // disabled multiple tab support
     // $link.on('click', function (event) {
         // resetColorAllMarkers();
@@ -96,9 +96,9 @@ function boxAwesomeAddTab(marker) {
         // marker.icon.setUrl(window.iconUrlRed);
     // });
 
-    var $closeBtnPane = $('<div style="height: 20px;">')
-    .append($closeBtn)
-    .appendTo($tabContent);
+    // var $closeBtnPane = $('<div style="height: 20px;">')
+    // .append($closeBtn)
+    // .appendTo($tabContent);
 
     var $popupContentPane = $('<div>')
     .html('<div class="popup-loading-animation"></div>')
