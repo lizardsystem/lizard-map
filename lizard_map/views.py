@@ -394,7 +394,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             element_id='layers',
             description=_('Show map layers'),
             url="#",
-            icon='icon-map-marker',
+            icon='icon-list',
             klass='dropdown-toggle')
         actions.insert(0, show_layers)
         set_date_range = Action(
