@@ -1399,7 +1399,8 @@ function ZoomSlider(options) {
             // initialize our internal div
             OpenLayers.Control.prototype.draw.apply(this, arguments);
             px = this.position.clone();
-
+			px = new OpenLayers.Pixel(405, 43);
+			console.log(px);
             // place the controls
             this.buttons = [];
 
@@ -1624,6 +1625,11 @@ function setUpMap() {
                 hide_map_tooltip();
             }
         });
+    }
+    if (!isAppleMobile) {
+        zoom_panel = new OpenLayers.Control.Panel();
+        zoom_panel.addControls([ new ZoomSlider({ zoomStopHeight: 3 }) ]);
+        map.addControl(zoom_panel);
     }
 
     map.addControl(new OpenLayers.Control.Navigation());
