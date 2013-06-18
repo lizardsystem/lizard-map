@@ -1400,7 +1400,6 @@ function ZoomSlider(options) {
             OpenLayers.Control.prototype.draw.apply(this, arguments);
             px = this.position.clone();
 			px = new OpenLayers.Pixel(405, 43);
-			console.log(px);
             // place the controls
             this.buttons = [];
 
@@ -2434,6 +2433,43 @@ function setup_location_list () {
 
 function setup_location_search () {
 	function requestSuccess (data) {
+
+		// Define Tab
+		var iconClass = 'icon-search';
+		var tabId = 'box-awesome-content-search';
+		var tabClass = 'box-awesome-tab-search';
+
+		var $ul = $('#box-awesome-tabs > ul');
+		var $content = $('#box-awesome-tabs > .tab-content');
+
+
+		var $newLi = $('<li>').addClass(tabClass);
+		var $link = $('<a data-toggle="tab">').attr('href', '#' + tabId);
+		var $icon = $('<i>').addClass(iconClass);
+
+
+		var $tabContent = $('<div>')
+			.addClass('tab-pane sidebar-inner')
+			.attr('id', tabId);
+
+		// Remove old tab
+
+		$ul.find('.' + tabClass).remove();
+		$content.find('#' + tabId).remove();
+
+		// Fill tab
+
+		var $closeBtn = $('<button type="button" class="close">&times;</button>')
+			.on('click', function (event) {
+				$newLi.remove();
+				$tabContent.remove();
+				$ul.find('a:last').trigger('click');
+			});
+
+		var $closeBtnPane = $('<div style="height: 20px;">')
+			.append($closeBtn)
+			.appendTo($tabContent);
+
         var items = [];
         $.each(data, function(key, val) {
             bb = val.boundingbox;
@@ -2442,20 +2478,25 @@ function setup_location_search () {
 					   ");return false;'>" + val.display_name + '</a></li>');
         });
 
-		// Put the items in the results box.
-		var div_results = $('#box-awesome-results');
-		var div_content = $('#box-awesome-results div');
-
-		div_content.empty();
-
+		var $contentPane = $('<div>')
         if (items.length != 0) {
             $('<ul/>', {
                html: items.join('')
-            }).appendTo(div_content);
+            }).appendTo($contentPane);
         } else {
-            $('<p/>', { html: "Er is niets gevonden." }).appendTo(div_content);
+            $('<p/>', { html: "Er is niets gevonden." }).appendTo($contentPane);
         }
-		div_results.show();
+
+
+		$contentPane.appendTo($tabContent);
+
+		$link.append($icon);
+		$newLi.append($link);
+
+		$ul.append($newLi);
+		$content.append($tabContent);
+
+		$link.tab('show');
 	}
 
     function submitForm (event) {
