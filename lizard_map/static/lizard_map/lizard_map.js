@@ -1883,7 +1883,12 @@ function flotGraphLoadData($container, response) {
             line.data[j][0] = moment(line.data[j][0]).toDate().getTime();
         }
     }
-    var t0 = moment().toDate().getTime();
+    var t0 = moment();
+    // HACK FOR LIZARD DEMO: SHOW "CURRENT" TIME
+    // So, not actually UTC.
+    t0.subtract('minute', moment().zone());
+    t0 = t0.toDate().getTime();
+    // /HACK
     var markings = [
         { color: '#d22', xaxis: { from: t0, to: t0 }, lineWidth: 2 }
     ];
