@@ -1189,7 +1189,7 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
 
     #Zoom and create image
     logger.debug("Zooming to box...")
-    mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
+    mapnik_map.zoom_to_box(mapnik.Box2d(*bbox))
     # mapnik_map.zoom_to_box(layer.envelope())
     # just have mapnik render the png, as it should be faster
     # unfortunately mapnik doesn't support rendering to a stream (yet?)
@@ -1610,7 +1610,7 @@ def create_mapnik_image(request, data):
 
     #Zoom and create image
     logger.debug("Zooming to box...")
-    mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
+    mapnik_map.zoom_to_box(mapnik.Box2d(*data['bbox']))
     img = mapnik.Image(data['width'], data['height'])
     logger.debug("Rendering map...")
     mapnik.render(mapnik_map, img)
