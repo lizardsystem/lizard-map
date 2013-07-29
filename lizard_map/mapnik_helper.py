@@ -125,9 +125,8 @@ def point_rule(icon, mask, color, mapnik_filter=None):
     output_filename_abs = os.path.join(
         settings.MEDIA_ROOT, 'generated_icons', output_filename)
 
-    # Use filename in mapnik pointsymbolizer
-    point_looks = mapnik.PointSymbolizer(
-        str(output_filename_abs), 'png', 16, 16)
+    point_looks = mapnik.PointSymbolizer()
+    point_looks.filename = str(output_filename_abs)
     point_looks.allow_overlap = True
     layout_rule = mapnik.Rule()
     layout_rule.symbols.append(point_looks)
