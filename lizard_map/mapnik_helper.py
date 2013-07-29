@@ -136,7 +136,7 @@ def point_rule(icon, mask, color, mapnik_filter=None):
     return layout_rule
 
 
-def add_datasource_point(datasource, x, y, name, info):
+def add_datasource_point(datasource, x, y, name, info, _id=0):
     """
     Use this function to compensate for Mapnik bug #402 where some
     points are lost.
@@ -146,4 +146,10 @@ def add_datasource_point(datasource, x, y, name, info):
     e = 0.000001
     around = [(0, 0), (e, 0), (-e, 0), (0, e), (0, -e)]
     for offset_x, offset_y in around:
-        datasource.add_point(x + offset_x, y + offset_y, name, info)
+        context = mapnik.Context()
+        context.push(name)
+        feature = mapnik.Feature(context, _id)
+        feature[name] = info
+        feature.add_geometries_from_wkt('POINT(%s %s)' % (x + offset_x,
+                                                          y + offset_y))
+        datasource.add_feature(feature)
