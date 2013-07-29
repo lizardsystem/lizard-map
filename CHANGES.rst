@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Migrated to mapnik 2.2.0.
+
 - Added action for elevationprofile
 
 - Update translations.
