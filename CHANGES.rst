@@ -4,6 +4,9 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Add `private` flag to WorkspaceStorage model. If a WorkspaceStorage
+  instance is labelled private, it is not shown to anonymous users.
+
 - Migrated to mapnik 2.2.0.
 
 - Added action for elevationprofile

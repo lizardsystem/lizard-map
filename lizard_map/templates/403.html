@@ -1,1 +1,41 @@
-Fout 403: {{ message }}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+	  {% trans "Page forbidden for anonymous users (403)." %}
+    </title>
+    <!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta charset="utf-8" />
+    <link rel="icon" href="/static_media/lizard_ui/favicon.ico" type="images/x-icon" />
+    <link rel="SHORTCUT ICON" href="/static_media/lizard_ui/favicon.ico" />
+    <link rel="stylesheet"
+          href="/static_media/bootstrap/bootstrap/css/bootstrap.css"
+          type="text/css" />
+
+  </head>
+  <body>
+    <div id="page">
+      <header>
+        <div id="logo-row" class="navbar">
+          <div id="logo">
+
+            <a href="/" title='Terug naar hoofdpagina.'><img src="/static_media/lizard_ui/logo.png" alt="Lizard" /></a>
+
+          </div>
+		</div>
+	  </header>
+	</div>
+	<div class="text-center" style="margin-top:60px;">
+	  <h1>{% trans "403 Page forbidden for anonymous users." %}</h1>
+	  <p> {% trans "Our apologies for the inconvenience." %}</p>
+	  <p> {% trans "If there should be a page please contact us." %}</p>
+	  <p> {% trans "Email: " %}
+		<a href="mailto:servicedesk@nelen-schuurmans.nl">servicedesk@nelen-schuurmans.nl</a>
+	  </p>
+	</div>
+  </body>
+</html>
+

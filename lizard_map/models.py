@@ -639,6 +639,11 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     sidebar_is_collapsed = models.BooleanField(default=False)
     rightbar_is_collapsed = models.BooleanField(default=True)
 
+    # private: if True, show only to logged-in users
+    private = models.BooleanField(
+        default=False, help_text=_("When checked, this workspace is only "
+                                   "available for logged-in users."))
+
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
 

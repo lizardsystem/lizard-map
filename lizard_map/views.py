@@ -20,11 +20,12 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
-from django.http import HttpResponseBadRequest, HttpResponseNotFound
+from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
+                         HttpResponseForbidden)
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.shortcuts import redirect
-from django.template import RequestContext
+from django.template import RequestContext, loader
 from django.template.loader import render_to_string
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
@@ -460,7 +461,13 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
 
     @property
     def workspace_storages(self):
-        return WorkspaceStorage.objects.all()
+        # show all items to logged-in users
+        if self.request.user.is_authenticated():
+            return WorkspaceStorage.objects.all()
+
+        # only show non-private items to not-logged-in users
+        return WorkspaceStorage.objects.filter(private=False)
+
 
 MapView = AppView  # BBB
 
@@ -488,6 +495,16 @@ class WorkspaceStorageView(View):
         elif workspace_storage_slug is not None:
             workspace_storage = get_object_or_404(
                 WorkspaceStorage, secret_slug=workspace_storage_slug)
+
+        # do not show private workspace storage views to not-logged-in
+        # users
+        if (not request.user.is_authenticated() and
+                workspace_storage.private is True):
+            t = loader.get_template('403.html')
+            c = RequestContext(request, {
+                'message': _("This object is private. Forbidden for anonymous "
+                             "users.")})
+            return HttpResponseForbidden(t.render(c))
 
         workspace_edit.load_from_storage(workspace_storage)
 
