@@ -2538,6 +2538,15 @@ function setUpElevationProfileForMap() {
 	bindFullscreenClick($('#elevation-profile-content'));
 }
 
+function setUpAppTab(){
+	// Select application tab when the request is not on '/'.
+	// Normally the user is in an app when the a non '/' path is used.
+	console.log('apptab');
+    if (window.location.pathname !== '/'){
+		$('#box-awesome-app-tab').tab('show');
+	}
+}
+
 
 $(document).ready(function () {
     setup_daterangepicker();
@@ -2558,6 +2567,7 @@ $(document).ready(function () {
 	setUpCloseSearch();
     setUpElevationProfileForMap();
 	$('.workspace').workspaceInteraction();
+	setUpAppTab();
     if ($('#map').exists()) {
         setUpMap();
         setUpMultipleSelection();
