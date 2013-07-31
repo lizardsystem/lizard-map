@@ -2544,6 +2544,14 @@ function setUpAppTab(){
 	console.log('apptab');
     if (window.location.pathname !== '/'){
 		$('#box-awesome-app-tab').tab('show');
+
+		// Have a back button.
+		var $button = $(
+			'<button type="button" class="icon-chevron-left close"></button>');
+		$('#apps-back-button').html($button);
+		$button.on('click', function(event) {
+			window.history.back();
+		});
 	}
 }
 
