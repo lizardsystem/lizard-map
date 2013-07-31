@@ -2562,6 +2562,7 @@ $(document).ready(function () {
     setup_movable_dialog();
     setup_location_list();
     setup_location_search();
+	setUpAppTab();
     setUpWorkspaceAcceptable();
     setUpActions();
     setUpDataFromUrl();
@@ -2575,7 +2576,7 @@ $(document).ready(function () {
 	setUpCloseSearch();
     setUpElevationProfileForMap();
 	$('.workspace').workspaceInteraction();
-	setUpAppTab();
+
     if ($('#map').exists()) {
         setUpMap();
         setUpMultipleSelection();
