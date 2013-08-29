@@ -394,14 +394,14 @@ class WorkspaceModelMixin(object):
         or whether decoding the json already happens somewhere else."""
 
         def to_template_data(workspace_item):
+            adapter_layer = json.loads(workspace_item.adapter_layer_json)
+            custom_handler_data = json.dumps(adapter_layer.get('custom_handler_data', {}))
+            needs_custom_handler = adapter_layer.get('needs_custom_handler', False)
             if workspace_item.adapter_class == ADAPTER_CLASS_WMS:
                 # item is located on an external WMS server
-                # EJVOS: why this is stored as a JSON string is beyond me...
-                adapter_layer = json.loads(workspace_item.adapter_layer_json)
                 cql_filters_unicode = adapter_layer.get('cql_filters', [])
                 cql_filters = json.dumps(
                     [i.encode('utf-8') for i in cql_filters_unicode])
-
                 return {
                     'wms_id': workspace_item.id,
                     'name': workspace_item.name,
@@ -411,6 +411,8 @@ class WorkspaceModelMixin(object):
                     'index': workspace_item.index,
                     'is_animatable':
                         'true' if workspace_item.is_animatable else 'false',
+                    'needs_custom_handler': needs_custom_handler,
+                    'custom_handler_data': custom_handler_data,
                     'cql_filters': cql_filters,
                 }
             else:
@@ -443,6 +445,8 @@ class WorkspaceModelMixin(object):
                     'params': params,
                     'options': options,
                     'index': workspace_item.index,
+                    'needs_custom_handler': needs_custom_handler,
+                    'custom_handler_data': custom_handler_data,
                 }
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()

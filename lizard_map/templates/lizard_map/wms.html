@@ -68,7 +68,9 @@
              data-workspace-wms-options='{{ wms_layer.options }}'
              data-workspace-wms-index='{{ wms_layer.index }}'
              data-workspace-wms-cql_filters='{{ wms_layer.cql_filters }}'
-             data-workspace-wms-animatable='{{ wms_layer.is_animatable }}'>
+             data-workspace-wms-animatable='{{ wms_layer.is_animatable }}'
+             data-workspace-wms-needs-custom-handler='{{ wms_layer.needs_custom_handler|yesno:"true,false" }}'
+             data-workspace-wms-custom-handler-data='{{ wms_layer.custom_handler_data }}'>
          </div>
        {% endautoescape %}
      {% endfor %}

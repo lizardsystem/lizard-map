@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.32 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Add support for custom handlers for adding layers to the map.
 
 
 4.31 (2013-06-11)

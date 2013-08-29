@@ -1085,10 +1085,11 @@ function refreshWmsLayers() {
     ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
-        var name, url, params, options, id, index, animatable;
+        var name, url, params, options, id, index, animatable, needs_custom_handler;
         // WMS id, different than workspace ids.
         animatable = $(this).attr("data-workspace-wms-animatable");
-        if (animatable === 'true') { return; }
+        needs_custom_handler = $(this).attr("data-workspace-wms-needs-custom-handler");
+        if (animatable === 'true' || needs_custom_handler === 'true') { return; }
         id = $(this).attr("data-workspace-wms-id");
         ids_found.push(id);
         name = $(this).attr("data-workspace-wms-name");
@@ -2258,8 +2259,6 @@ function setup_location_list () {
         $element.on('click', show);
     }
 }
-
-
 
 $(document).ready(function () {
     setup_daterangepicker();
