@@ -21,6 +21,8 @@ Changelog of lizard-map
 
 - Add Box awesome.
 
+- Reintroduced workspace save icon (admin only).
+
 
 4.28 (2013-05-06)
 -----------------
