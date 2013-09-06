@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-14 14:30+0200\n"
+"POT-Creation-Date: 2013-09-06 11:04+0200\n"
 "PO-Revision-Date: 2013-05-14 12:35+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
 "Language-Team: Afrikaans (http://translations.lizard.net/projects/p/"
 "lizardsystem/team/af/)\n"
+"Language: af\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: adapter.py:144
@@ -99,77 +99,77 @@ msgstr "Gehele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: models.py:696
+#: models.py:700
 msgid "all"
 msgstr "alle"
 
-#: models.py:697
+#: models.py:701
 msgid "year"
 msgstr "jaar"
 
-#: models.py:698
+#: models.py:702
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:699
+#: models.py:703
 msgid "month"
 msgstr "maand"
 
-#: models.py:700
+#: models.py:704
 msgid "week"
 msgstr "week"
 
-#: models.py:701
+#: models.py:705
 msgid "day"
 msgstr "dag"
 
-#: views.py:302 views.py:1322
+#: views.py:301 views.py:1303
 msgid "Back to homepage"
 msgstr "Terug naar die huisbladsy toe"
 
-#: views.py:327 templates/lizard_map/tag_workspace_edit.html:17
+#: views.py:325 templates/lizard_map/tag_workspace_edit.html:17
 msgid "Layers"
 msgstr "Lage"
 
-#: views.py:331 templates/lizard_map/legend_item.html:6
+#: views.py:329 templates/lizard_map/legend_item.html:6
 #: templates/lizard_map/wms.html:19
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:377
+#: views.py:375
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:378
+#: views.py:376
 msgid "Select multiple items"
 msgstr "Selekteer meerdere items"
 
-#: views.py:386 views.py:1310
+#: views.py:384 views.py:1291
 msgid "Change the date range of the measurements"
 msgstr ""
 
-#: views.py:394
+#: views.py:392
 msgid "Zoom to default location"
 msgstr ""
 
-#: views.py:403
+#: views.py:401
 msgid "Show base layers"
 msgstr ""
 
-#: views.py:412
+#: views.py:410
 msgid "Show map layers"
 msgstr ""
 
-#: views.py:964 views.py:1034
+#: views.py:954 views.py:1022
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1300 views.py:1325
+#: views.py:1281 views.py:1306
 msgid "Collage"
 msgstr ""
 
-#: views.py:1320
+#: views.py:1301
 msgid "Home"
 msgstr ""
 
@@ -211,6 +211,48 @@ msgstr ""
 
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:31
+msgid "Confirm"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:32
+msgid "Cancel"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:33
+msgid "Custom range"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:35
+msgid "sun mon tue wed thu fri sat"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:37
+msgid ""
+"January February March April May June July August September October November "
+"December"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:41
+msgid "Past day"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:46
+msgid "Past 2 days"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:51
+msgid "Past week"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:56
+msgid "Past month"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:61
+msgid "Past year"
 msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:8

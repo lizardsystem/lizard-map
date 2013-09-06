@@ -2119,57 +2119,69 @@ function daterangepicker_label_update() {
 
 function setup_daterangepicker() {
     if ($('.popup-date-range').exists()) {
-        var picker = $('.popup-date-range').daterangepicker({
-            opens: 'left',
-            format: 'DD-MM-YYYY',
-            locale: {
-                applyLabel:'Bevestigen',
-                cancelLabel:'Annuleren',
-                customRangeLabel:'Handmatige invoer',
-                daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
-                monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
-                firstDay:0
-            },
-            ranges: {
-                'Afgelopen dag': [
-                    moment.utc().subtract('days', 1),
-                    moment.utc(),
-                    'today'
-                ],
-                'Afgelopen 2 dagen': [
-                    moment.utc().subtract('days', 2),
-                    moment.utc(),
-                    '2_day'
-                ],
-                'Afgelopen week': [
-                    moment.utc().subtract('weeks', 1),
-                    moment.utc(),
-                    'week'
-                ],
-                'Afgelopen maand': [
-                    moment.utc().subtract('months', 1),
-                    moment.utc(),
-                    'month'
-                ],
-                'Afgelopen jaar': [
-                    moment.utc().subtract('years', 1),
-                    moment.utc(),
-                    'year'
-                ]
+        var daterangepicker_options = {
+            opens: 'left'
+        };
+        if (lizard_map && lizard_map.daterangepicker_options) {
+            // Use the options as configured by the Django template.
+            $.extend(daterangepicker_options, lizard_map.daterangepicker_options);
+        }
+        else {
+            // Backwards compatibility: use some default options.
+            $.extend(daterangepicker_options, {
+                format: 'DD-MM-YYYY',
+                locale: {
+                    applyLabel:'Bevestigen',
+                    cancelLabel:'Annuleren',
+                    customRangeLabel:'Handmatige invoer',
+                    daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
+                    monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+                    firstDay:0
+                },
+                ranges: {
+                    'Afgelopen dag': [
+                        moment.utc().subtract('days', 1),
+                        moment.utc(),
+                        'today'
+                    ],
+                    'Afgelopen 2 dagen': [
+                        moment.utc().subtract('days', 2),
+                        moment.utc(),
+                        '2_day'
+                    ],
+                    'Afgelopen week': [
+                        moment.utc().subtract('weeks', 1),
+                        moment.utc(),
+                        'week'
+                    ],
+                    'Afgelopen maand': [
+                        moment.utc().subtract('months', 1),
+                        moment.utc(),
+                        'month'
+                    ],
+                    'Afgelopen jaar': [
+                        moment.utc().subtract('years', 1),
+                        moment.utc(),
+                        'year'
+                    ]
+                }
+            });
+        }
+        var picker = $('.popup-date-range').daterangepicker(
+            daterangepicker_options,
+            function (range_type, dt_start, dt_end) {
+                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
+                daterangepicker_label_update();
+                // hack to support reloading after changing the date (collage page)
+                if ($('.popup-date-range').hasClass('reload-after-action')) {
+                    setTimeout(window.location.reload, 1337);
+                }
+                else {
+                    reloadGraphs(undefined, undefined, true);
+                    refreshWmsLayers();
+                }
             }
-        },
-        function (range_type, dt_start, dt_end) {
-            set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-            daterangepicker_label_update();
-            // hack to support reloading after changing the date (collage page)
-            if ($('.popup-date-range').hasClass('reload-after-action')) {
-                setTimeout(window.location.reload, 1337);
-            }
-            else {
-                reloadGraphs(undefined, undefined, true);
-                refreshWmsLayers();
-            }
-        });
+        );
     }
 }
 

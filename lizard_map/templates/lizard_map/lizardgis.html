@@ -1,4 +1,5 @@
 {% extends "lizard_ui/lizardbase.html" %}
+{% load i18n %}
 {% load workspaces %}
 
 {% block css %}
@@ -21,9 +22,50 @@
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/animations.js"></script>
 <script type="text/javascript"
-		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js">
+		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
+<script type="text/javascript">
+    var lizard_map = {};
+    lizard_map.daterangepicker_options = {
+        format: 'DD-MM-YYYY',
+        locale: {
+            applyLabel: '{% trans "Confirm" %}',
+            cancelLabel: '{% trans "Cancel" %}',
+            customRangeLabel: '{% trans "Custom range" %}',
+            daysOfWeek: '{% trans "sun mon tue wed thu fri sat" %}'.split(' '),
+            monthNames: '{% trans "January February March April May June July August September October November December" %}'.split(' '),
+            firstDay: 0
+        },
+        ranges: {
+{% block date-ranges %}
+            '{% trans "Past day" %}': [
+                moment.utc().subtract('days', 1),
+                moment.utc(),
+                'today'
+            ],
+            '{% trans "Past 2 days" %}': [
+                moment.utc().subtract('days', 2),
+                moment.utc(),
+                '2_day'
+            ],
+            '{% trans "Past week" %}': [
+                moment.utc().subtract('weeks', 1),
+                moment.utc(),
+                'week'
+            ],
+            '{% trans "Past month" %}': [
+                moment.utc().subtract('months', 1),
+                moment.utc(),
+                'month'
+            ],
+            '{% trans "Past year" %}': [
+                moment.utc().subtract('years', 1),
+                moment.utc(),
+                'year'
+            ]
+{% endblock date-ranges %}
+        }
+    };
 </script>
-
 <script type="text/javascript"
         src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
 {% endblock javascript %}
