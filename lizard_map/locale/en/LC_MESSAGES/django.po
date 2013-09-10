@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-06 11:04+0200\n"
+"POT-Creation-Date: 2013-09-10 11:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,15 +210,19 @@ msgstr ""
 msgid "Example with shapefile"
 msgstr ""
 
-#: templates/lizard_map/lizardgis.html:31
-msgid "Confirm"
+#: templates/lizard_map/lizardgis.html:28
+msgid "No items found near this location."
 msgstr ""
 
 #: templates/lizard_map/lizardgis.html:32
-msgid "Cancel"
+msgid "Confirm"
 msgstr ""
 
 #: templates/lizard_map/lizardgis.html:33
+msgid "Cancel"
+msgstr ""
+
+#: templates/lizard_map/lizardgis.html:34
 msgid "Custom range"
 msgstr ""
 
@@ -226,7 +230,7 @@ msgstr ""
 msgid "sun mon tue wed thu fri sat"
 msgstr ""
 
-#: templates/lizard_map/lizardgis.html:37
+#: templates/lizard_map/lizardgis.html:36
 msgid ""
 "January February March April May June July August September October November "
 "December"

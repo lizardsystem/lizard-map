@@ -25,6 +25,7 @@
 		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
 <script type="text/javascript">
     var lizard_map = {};
+    lizard_map.nothingFoundMessage = '{% trans "No items found near this location." %}';
     lizard_map.daterangepicker_options = {
         format: 'DD-MM-YYYY',
         locale: {

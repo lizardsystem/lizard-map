@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-06 11:04+0200\n"
+"POT-Creation-Date: 2013-09-10 11:55+0200\n"
 "PO-Revision-Date: 2013-05-14 12:37+0000\n"
 "Last-Translator: Sander Smits <sander.smits@nelen-schuurmans.nl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,15 +213,19 @@ msgstr "Voorbeelden"
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
 
-#: templates/lizard_map/lizardgis.html:31
+#: templates/lizard_map/lizardgis.html:28
+msgid "No items found near this location."
+msgstr "Er is niets rond deze locatie gevonden."
+
+#: templates/lizard_map/lizardgis.html:32
 msgid "Confirm"
 msgstr "Bevestigen"
 
-#: templates/lizard_map/lizardgis.html:32
+#: templates/lizard_map/lizardgis.html:33
 msgid "Cancel"
 msgstr "Annuleren"
 
-#: templates/lizard_map/lizardgis.html:33
+#: templates/lizard_map/lizardgis.html:34
 msgid "Custom range"
 msgstr "Handmatige invoer"
 
@@ -229,11 +233,13 @@ msgstr "Handmatige invoer"
 msgid "sun mon tue wed thu fri sat"
 msgstr "zo ma di wo do vr za"
 
-#: templates/lizard_map/lizardgis.html:37
+#: templates/lizard_map/lizardgis.html:36
 msgid ""
 "January February March April May June July August September October November "
 "December"
-msgstr "januari februari maart april mei juni juli augustus september oktober november december"
+msgstr ""
+"januari februari maart april mei juni juli augustus september oktober "
+"november december"
 
 #: templates/lizard_map/lizardgis.html:41
 msgid "Past day"

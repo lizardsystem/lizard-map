@@ -129,7 +129,15 @@ function set_popup_content(data) {
             reloadGraphs();
         }
         else {
-            $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
+            var nothingFoundMessage = '';
+            if (lizard_map && lizard_map.nothingFoundMessage) {
+                nothingFoundMessage = lizard_map.nothingFoundMessage;
+            }
+            else {
+                // Backwards compatibility
+                nothingFoundMessage = "Er is niets rond deze locatie gevonden.";
+            }
+            $("#movable-dialog-content").html(nothingFoundMessage);
         }
     }
 }
