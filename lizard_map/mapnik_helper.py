@@ -149,7 +149,7 @@ def add_datasource_point(datasource, x, y, name, info):
     for offset_x, offset_y in around:
         datasource.add_point(x + offset_x, y + offset_y, name, info)
 
-def add_datasource_point_mapnik2(datasource, x, y, name, info, id=0, context=None):
+def add_datasource_point_mapnik2(datasource, x, y, name, info, _id=0, context=None):
     if context is None:
         context = mapnik.Context()
     context.push(name)
