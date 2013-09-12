@@ -155,5 +155,5 @@ def add_datasource_point_mapnik2(datasource, x, y, name, info, id=0, context=Non
     context.push(name)
     feature = mapnik.Feature(context, _id)
     feature[name] = info
-    feature.add_geometries_from_wkt('POINT(%s %s)' % (x, y)
+    feature.add_geometries_from_wkt('POINT(%s %s)' % (x, y))
     datasource.add_feature(feature)
