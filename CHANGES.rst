@@ -6,6 +6,7 @@ Changelog of lizard-map
 
 - Add support for custom handlers for adding layers to the map.
 
+- Add support for correct getFeatureInfo for lizard wms.
 
 4.31 (2013-06-11)
 -----------------
