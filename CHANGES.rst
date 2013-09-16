@@ -21,6 +21,8 @@ Changelog of lizard-map
 
 - Add Box awesome.
 
+- Add support for correct getFeatureInfo for lizard wms.
+
 - Reintroduced workspace save icon (admin only).
 
 
