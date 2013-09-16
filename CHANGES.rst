@@ -21,6 +21,8 @@ Changelog of lizard-map
 
 - Add Box awesome.
 
+- Add support for correct getFeatureInfo for lizard wms.
+
 
 4.28 (2013-05-06)
 -----------------
