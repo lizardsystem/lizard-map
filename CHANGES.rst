@@ -25,6 +25,8 @@ Changelog of lizard-map
 
 - Reintroduced workspace save icon (admin only).
 
+- Remove animatable.
+
 
 4.28 (2013-05-06)
 -----------------

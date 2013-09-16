@@ -180,6 +180,8 @@ class WorkspaceItemMixin(models.Model):
     visible = models.BooleanField(default=True)
     clickable = models.BooleanField(default=True)
 
+    is_animatable = False
+
     class Meta:
         abstract = True
         ordering = ('index', 'visible', 'name', )
@@ -208,10 +210,6 @@ class WorkspaceItemMixin(models.Model):
                 self.delete()
             return None
         return current_adapter
-
-    @property
-    def is_animatable(self):
-        return False
 
     def __unicode__(self):
         return self.name
@@ -363,6 +361,8 @@ class WorkspaceModelMixin(object):
     """Specifics for workspace models.
     """
 
+    is_animatable = False
+
     def check_workspace_item_adapters(self):
         """Call workspace items' adapters to weed out the faulty ones.
 
@@ -407,8 +407,7 @@ class WorkspaceModelMixin(object):
                     'params': adapter_layer.get('params', '{}'),
                     'options': adapter_layer.get('options', '{}'),
                     'index': workspace_item.index,
-                    'is_animatable':
-                        'true' if workspace_item.is_animatable else 'false',
+                    'is_animatable': 'false',
                     'cql_filters': cql_filters,
                     'info': info,
                 }
@@ -447,18 +446,6 @@ class WorkspaceModelMixin(object):
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()
                 if workspace_item.visible]
-
-    @property
-    def is_animatable(self):
-        """Determine if any visible workspace_item is animatable."""
-        for workspace_item in self.workspace_items.filter(visible=True):
-            try:
-                if workspace_item.is_animatable:
-                    return True
-            except AttributeError:
-                # workspace_item/adapter is invalid.
-                pass
-        return False
 
 
 class WorkspaceEdit(
