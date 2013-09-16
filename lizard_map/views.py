@@ -404,6 +404,14 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-calendar',
             klass='popup-date-range')
         actions.insert(0, set_date_range)
+        if self.request.user.is_superuser:
+            save_workspace = Action(
+                name='',
+                description='Save the workspace (admin only)',
+                url=reverse('lizard_map_workspace_save'),
+                icon='icon-download-alt',
+                klass='popup-workspace-save')
+            actions.insert(0, save_workspace)
         return actions
 
     @property

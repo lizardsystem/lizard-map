@@ -23,6 +23,8 @@ Changelog of lizard-map
 
 - Add support for correct getFeatureInfo for lizard wms.
 
+- Reintroduced workspace save icon (admin only).
+
 
 4.28 (2013-05-06)
 -----------------

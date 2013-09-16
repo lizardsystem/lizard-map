@@ -1301,7 +1301,7 @@ function refreshWmsLayers() {
     ids_found = [];
     $lizard_map_wms = $("#lizard-map-wms");
     $(".workspace-wms-layer").each(function () {
-        var name, url, params, options, id, index, animatable;
+        var name, url, params, options, info, id, index, animatable;
         // WMS id, different than workspace ids.
         //animatable = $(this).attr("data-workspace-wms-animatable");
         //if (animatable === 'true') { return; }
@@ -1315,6 +1315,10 @@ function refreshWmsLayers() {
         params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
+        info = $(this).attr("data-workspace-wms-info");
+        if (info) {
+            info = $.parseJSON(info);
+        }
         // HACK: force reproject = false for layers which still have this defined (in the database no less)
         // reprojection is deprecated
         if (options.reproject) {
@@ -1364,7 +1368,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (/time|tijd/i.test(name) && view_state !== undefined) {
+            if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     params['time'] = view_state.dt_start + '/' + view_state.dt_end;
                 }
@@ -1387,7 +1391,7 @@ function refreshWmsLayers() {
             // HACK: viewstate is currently globally accessible
             var view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
-            if (/time|tijd/i.test(name) && view_state !== undefined) {
+            if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
                     var extraParams = {'time': view_state.dt_start + '/' + view_state.dt_end};
                     layer.mergeNewParams(extraParams);

@@ -387,10 +387,15 @@ class WorkspaceModelMixin(object):
         or whether decoding the json already happens somewhere else."""
 
         def to_template_data(workspace_item):
+            # EJVOS: why this is stored as a JSON string is beyond me...
+            adapter_layer = json.loads(workspace_item.adapter_layer_json)
+            timepositions = adapter_layer.get('timepositions', '')
+            info = json.dumps({
+                'timepositions': timepositions
+            })
+
             if workspace_item.adapter_class == ADAPTER_CLASS_WMS:
                 # item is located on an external WMS server
-                # EJVOS: why this is stored as a JSON string is beyond me...
-                adapter_layer = json.loads(workspace_item.adapter_layer_json)
                 cql_filters_unicode = adapter_layer.get('cql_filters', [])
                 cql_filters = json.dumps(
                     [i.encode('utf-8') for i in cql_filters_unicode])
@@ -405,6 +410,7 @@ class WorkspaceModelMixin(object):
                     'is_animatable':
                         'true' if workspace_item.is_animatable else 'false',
                     'cql_filters': cql_filters,
+                    'info': info,
                 }
             else:
                 # item is served by our local simulated WMS server
@@ -436,6 +442,7 @@ class WorkspaceModelMixin(object):
                     'params': params,
                     'options': options,
                     'index': workspace_item.index,
+                    'info': info,
                 }
         return [to_template_data(workspace_item)
                 for workspace_item in self.workspace_items.all()
