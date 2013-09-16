@@ -62,14 +62,9 @@ class WorkspaceAcceptable(object):
         return 'div'
 
     def is_animatable(self):
-        """Dirty way to check if the wms is "animated" """
-        has_substring = False
-        try:
-            self.adapter_layer_json.index('time')
-            has_substring = True
-        except:
-            pass
-        return has_substring
+        """Obsolete method which previously indicated whether a layer
+        was animatable"""
+        return False
 
 
 class Legend(object):
