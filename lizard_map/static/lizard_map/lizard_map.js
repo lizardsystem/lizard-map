@@ -925,34 +925,50 @@ function clearMapMarkers() {
 
 /* Handle a click */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
-function popup_click_handler(x, y, map) {
+function popup_click_handler(lon, lat, map, x_pixel, y_pixel) {
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
-    radius = Math.abs(extent.top - extent.bottom) / 30;  // Experimental, seems to work good
     $("#map").css("cursor", "progress");
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
-        // clear existing markers, add a new marker
+		// clear existing markers, add a new marker
         clearMapMarkers();
         //resetColorAllMarkers();
-        var marker = addMapMarker(x, y);
+        var marker = addMapMarker(lon, lat);
 
         // Pan to where the user clicked, but apply an offset so
         // the popup opens on the left, and the click location is
         // centered on the right.
-        adjustedPanTo(x, y);
-
+        adjustedPanTo(lon, lat);
         var $contentPane = boxAwesomeAddTab(marker);
+
+		// Get the current active CQL filters
+		var cql_filters = JSON.stringify(
+			$('#lizard-map-wms').data('wms-cql_filters'));
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius, srs: map.getProjection(),
-              user_workspace_id: user_workspace_id},
+            { x: lon, y: lat,
+			  extent_left: extent.left,
+			  extent_bottom: extent.bottom,
+			  extent_right: extent.right,
+			  extent_top: extent.top,
+			  height: map.size.h,
+			  width: map.size.w,
+			  x_pixel: x_pixel,
+			  y_pixel: y_pixel,
+			  cql_filters: cql_filters,
+			  srs: map.getProjection(),
+              user_workspace_id: user_workspace_id
+			  },
+
             function (data) {
                 boxAwesomeSetContent($contentPane, data);
                 $("#map").css("cursor", "default");
             }
         );
+
+
     }
 }
 
@@ -973,17 +989,30 @@ function adjustedPanTo(x, y) {
 
 /* Handle a hover */
 /* Assumes there is 1 "main" workspace. Adds workspace_id to request. Only required when viewing workspaces of others */
-function popup_hover_handler(x, y, map) {
+function popup_hover_handler(lon, lat, map, x_pixel, y_pixel) {
     /* Show name of one item when hovering above a map */
     var extent, radius, url, user_workspace_id;
     extent = map.getExtent();
-    radius = Math.abs(extent.top - extent.bottom) / 30;  // experimental, seems to work good
+
     url = $(".workspace").attr("data-url-lizard-map-search-name");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
+	var cql_filters = JSON.stringify(
+		$('#lizard-map-wms').data('wms-cql_filters'));
+
     if (url !== undefined) {
         $.getJSON(
             url,
-            { x: x, y: y, radius: radius, srs: map.getProjection(),
+            { x: lon, y: lat,
+			  extent_left: extent.left,
+			  extent_bottom: extent.bottom,
+			  extent_right: extent.right,
+			  extent_top: extent.top,
+			  height: map.size.h,
+			  width: map.size.w,
+			  x_pixel: x_pixel,
+			  y_pixel: y_pixel,
+			  cql_filters: cql_filters,
+			  srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
                 show_map_tooltip(data, map);
@@ -1586,7 +1615,7 @@ function setUpMap() {
                     addMultipleSelection(lonlat.lon, lonlat.lat, map, e);
                 } else {
                     eval(javascript_click_handler_name)(
-                        lonlat.lon, lonlat.lat, map);
+                        lonlat.lon, lonlat.lat, map, e.xy.x, e.xy.y);
                 }
             }
         });
@@ -1621,7 +1650,7 @@ function setUpMap() {
                 var lonlat;
                 lonlat = map.getLonLatFromViewPortPx(e.xy);
                 eval(javascript_hover_handler_name)(
-                    lonlat.lon, lonlat.lat, map);
+                    lonlat.lon, lonlat.lat, map, e.xy.x, e.xy.y);
             },
 
             onMove: function (evt) {

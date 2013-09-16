@@ -5,11 +5,10 @@ except ImportError:
 import csv
 import datetime
 import logging
+import math
 import re
-import urllib
 import urllib2
 from xml.dom.minidom import parseString
-import xml.etree.ElementTree as ET
 from dateutil import parser as date_parser
 
 from PIL import Image
@@ -936,8 +935,6 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
     """
 
     html = {}
-    # x_found = None
-    # y_found = None
 
     # Regroup found list of objects into workspace_items.
     display_groups = {}
@@ -955,10 +952,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         if key not in display_group_order:
             display_group_order.append(key)
 
+    big_popup = False
     if len(display_groups) > 1:
         big_popup = True
-    else:
-        big_popup = False
 
     # Now display them.
     for key, display_group in display_groups.items():
@@ -1224,7 +1220,7 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
     return response
 
 
-def search(workspace, google_x, google_y, radius):
+def search(workspace, google_x, google_y, radius, request=None):
     """Search workspace for given coordinates.
 
     Return a list of found results in "adapter.search" dictionary
@@ -1235,9 +1231,13 @@ def search(workspace, google_x, google_y, radius):
     for workspace_item in workspace.workspace_items.filter(
         visible=True):
 
+        requestarg = {}
+        if getattr(workspace_item.adapter, 'search_with_request', False):
+            requestarg = {'request': request}
+
         try:
             search_results = workspace_item.adapter.search(
-                google_x, google_y, radius=radius)
+                google_x, google_y, radius=radius, **requestarg)
             found += search_results
         except:
             logger.exception(
@@ -1270,8 +1270,10 @@ def search_coordinates(request,
     y = float(request.GET.get('y'))
     format = request.GET.get('format', _format)
 
+    top = float(request.GET.get('extent_top'))
+    bottom = float(request.GET.get('extent_bottom'))
     # TODO: convert radius to correct scale (works now for google + rd)
-    radius = float(request.GET.get('radius'))
+    radius = math.fabs(top - bottom) / 30
     radius_search = radius
 
     if 'HTTP_USER_AGENT' in request.META:
@@ -1299,7 +1301,7 @@ def search_coordinates(request,
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
     # The actual search!
-    found = search(workspace, google_x, google_y, radius)
+    found = search(workspace, google_x, google_y, radius, request=request)
     logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
 
     if found:
@@ -1308,9 +1310,6 @@ def search_coordinates(request,
         if format == 'name':
             result = {}
             result['name'] = found[0]['name']
-            # x, y = coordinates.google_to_srs(google_x, google_y, srs)
-            # result['x'] = x
-            # result['y'] = y
 
             # For the x/y we use the original x/y value to position
             # the popup to the lower right of the cursor to prevent
@@ -1318,20 +1317,16 @@ def search_coordinates(request,
             result['x'] = x + (radius / 10)
             result['y'] = y - (radius / 10)
             return HttpResponse(json.dumps(result))
-        elif format == 'object':
-            result = [{'id':f['identifier'], 'name':f['name']}
-            for f in found]
-
+        if format == 'object':
+            result = [{'id': f['identifier'], 'name': f['name']}
+                      for f in found]
             return HttpResponse(json.dumps(result))
 
-        else:
-            # default: as popup
-            return popup_json(found, request=request)
-    else:
-        if format == 'object':
+        # default: as popup
+        return popup_json(found, request=request)
+    if format == 'object':
             return HttpResponse([])
-        else:
-            return popup_json([], request=request)
+    return popup_json([], request=request)
 
 
 class CollageDetailView(CollageMixin, UiView):
@@ -1427,7 +1422,7 @@ class CollageView(CollageMixin, ActionDialogView):
 
         collage = get_collage_edit_by_request(self.request)
 
-        found = search(workspace, google_x, google_y, radius)
+        found = search(workspace, google_x, google_y, radius, self.request)
 
         for found_item in found:
             # Add all found items to collage.
@@ -2061,6 +2056,7 @@ class LocationListService(APIView, WorkspaceEditMixin):
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
         return RestResponse(locations)
+
 
 class GeocoderService(APIView):
     @never_cache
