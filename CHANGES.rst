@@ -8,6 +8,9 @@ Changelog of lizard-map
 
 - Add support for correct getFeatureInfo for lizard wms.
 
+- Animatible layer support is disabled. It wasn't used anymore in Lizard
+  and the code was in the way.
+
 4.31 (2013-06-11)
 -----------------
 
