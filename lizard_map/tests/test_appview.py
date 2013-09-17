@@ -1,7 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django.test.utils import override_settings
 from django.utils import simplejson as json
 from lizard_map.models import WorkspaceEdit
 import lizard_map.admin
@@ -35,14 +34,16 @@ class ViewsTest(TestCase):
 
     def test_search_coordinates(self):
         url = reverse('lizard_map.search_coordinates')
-        url += ('?x=430987.5469813&y=6817896.448126&radius=100&'
+        url += ('?x=430987.5469813&y=6817896.448126&extent_top=10&'
+                'extent_bottom=40&'
                 'user_workspace_id=%d' % self.workspace.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     def test_search_name(self):
         url = reverse('lizard_map.search_name')
-        url += ('?x=430987.5469813&y=6817896.448126&radius=100&'
+        url += ('?x=430987.5469813&y=6817896.448126&extent_top=10&'
+                'extent_bottom=50&'
                 'user_workspace_id=%d' % self.workspace.id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
