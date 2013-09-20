@@ -81,9 +81,14 @@
     };
     {% with view.view_state as view_state %}
         {% if view_state %}
-            _view_state.range_type = "{{ view.view_state.range_type }}";
-            _view_state.dt_start = moment.utc("{{ view.view_state.dt_start|date:"c" }}");
-            _view_state.dt_end = moment.utc("{{ view.view_state.dt_end|date:"c" }}");
+            _view_state.range_type = "{{ view_state.range_type }}";
+            {% if view_state.range_type == 'custom' %}
+                _view_state.dt_start = moment.utc("{{ view_state.dt_start|date:"c" }}");
+                _view_state.dt_end = moment.utc("{{ view_state.dt_end|date:"c" }}");
+            {% else %}
+                _view_state.dt_start = null;
+                _view_state.dt_end = null;
+            {% endif %}
         {% endif %}
     {% endwith %}
 </script>

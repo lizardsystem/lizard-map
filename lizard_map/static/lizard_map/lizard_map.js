@@ -2019,7 +2019,10 @@ function save_view_state_to_server() {
 function setup_view_state() {
     var view_state = _view_state;
     if ($('.popup-date-range').exists()) {
-        $('.popup-date-range').data('daterangepicker').setRange(view_state.range_type, view_state.dt_start, view_state.dt_end);
+        var picker = $('.popup-date-range').data('daterangepicker');
+        picker.setRange(view_state.range_type, view_state.dt_start, view_state.dt_end);
+        view_state.dt_start = picker.startDate;
+        view_state.dt_end = picker.endDate;
         daterangepicker_label_update();
     }
     reloadGraphs();
