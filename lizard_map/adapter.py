@@ -783,7 +783,8 @@ class FlotGraphAxes(object):
     ):
         # convert xvalues to timestamps for flot.js
         xvalues = [mk_js_timestamp(x) for x in xvalues]
-        self._update_y_limits(yvalues)
+        if yvalues:
+            self._update_y_limits(yvalues)
         self.flot_data.append({
             'label': label,
             'data': zip(xvalues, yvalues),
