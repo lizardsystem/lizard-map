@@ -11,7 +11,7 @@
     {% for value in view.values %}
     <tr>
       <td>{{ value.datetime }}</td>
-      <td>{{ value.value|floatformat }}</td>
+      <td>{{ value.value|floatformat:2 }}</td>
       <td>{{ value.unit }}</td>
     </tr>
     {% empty %}

@@ -4,7 +4,7 @@ Changelog of lizard-map
 4.33 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- Add argument to round a floating-point number to 2 decimal.
 
 
 4.32 (2013-09-17)
