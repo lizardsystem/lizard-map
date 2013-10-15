@@ -1960,10 +1960,10 @@ def get_view_state(request):
 
     # when not in session, use the default from Django settings
     if not range_type:
-        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
+        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
     # when something invalid is in the session, also get it from Django settings
     elif range_type == 'custom' and not (dt_start and dt_end):
-        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', '2_day')
+        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
 
     # allow a site to completely bypass the daterange mechanism
     override_range_type = getattr(settings, 'OVERRIDE_RANGE_TYPE', None)
