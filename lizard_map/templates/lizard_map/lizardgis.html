@@ -30,15 +30,15 @@
   {{ block.super }}
 <script type="text/javascript">
     var _view_state = {
-        range_type: '2_day',                        // string 'year', 'custom', '2_day' etc.
-        dt_start: moment.utc().subtract('days', 2), // Moment.js date object
-        dt_end: moment.utc()                        // Moment.js date object
+        range_type: 'week_plus_one',                 // string 'year', 'custom', '2_day' etc.
+        dt_start: moment.utc().subtract('weeks', 1), // Moment.js date object
+        dt_end: moment.utc().add('days', 1)          // Moment.js date object
     };
     {% with view.view_state as view_state %}
         {% if view_state %}
             _view_state.range_type = "{{ view.view_state.range_type }}";
-            _view_state.dt_start = moment.utc("{{ view.view_state.dt_start|date:"c" }}");
-            _view_state.dt_end = moment.utc("{{ view.view_state.dt_end|date:"c" }}");
+            _view_state.dt_start = moment.utc("{{ view_state.dt_start|date:"c" }}");
+            _view_state.dt_end = moment.utc("{{ view_state.dt_end|date:"c" }}");
         {% endif %}
     {% endwith %}
 </script>

@@ -2305,25 +2305,14 @@ function save_view_state_to_server() {
 }
 
 function setup_view_state() {
-    var view_state = _view_state;
     if ($('.popup-date-range').exists()) {
-        $('.popup-date-range').data('daterangepicker').setRange(view_state.range_type, view_state.dt_start, view_state.dt_end);
-        daterangepicker_label_update();
+        var picker = $('.popup-date-range').data('daterangepicker');
+        picker.setRange(_view_state.range_type, _view_state.dt_start, _view_state.dt_end);
+        _view_state.range_type = picker.rangeType;
+        _view_state.dt_start = moment(picker.startDate);
+        _view_state.dt_end = moment(picker.endDate);
     }
     reloadGraphs();
-}
-
-function daterangepicker_label_update() {
-    var start = $('.popup-date-range').data('daterangepicker').startDate;
-    var end = $('.popup-date-range').data('daterangepicker').endDate;
-    if (start && end) {
-        var html = start.format('LL') + ' &mdash; ' + end.format('LL');
-        $('.popup-date-range span.action-text').html(html);
-        // fix IE9 not being able to determine width
-        if (isIE && ieVersion == 9) {
-            $('.popup-date-range span.action-text').parent().parent().width(300);
-        }
-    }
 }
 
 function setup_daterangepicker() {
@@ -2355,6 +2344,11 @@ function setup_daterangepicker() {
                     moment.utc(),
                     'week'
                 ],
+                'Afgelopen week + 1': [
+                    moment.utc().subtract('weeks', 1),
+                    moment.utc().add('days', 1),
+                    'week_plus_one'
+                ],
                 'Afgelopen maand': [
                     moment.utc().subtract('months', 1),
                     moment.utc(),
@@ -2369,7 +2363,6 @@ function setup_daterangepicker() {
         },
         function (range_type, dt_start, dt_end) {
             set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-            daterangepicker_label_update();
             // hack to support reloading after changing the date (collage page)
             if ($('.popup-date-range').hasClass('reload-after-action')) {
                 setTimeout(window.location.reload, 1337);
@@ -2516,7 +2509,7 @@ function setup_location_search () {
 					   ");return false;'>" + val.display_name + '</a></li>');
         });
 
-		var $contentPane = $('<div>')
+		var $contentPane = $('<div>');
         if (items.length != 0) {
             $('<ul/>', {
                html: items.join('')

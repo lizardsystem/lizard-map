@@ -634,6 +634,10 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     extent_is_set = models.BooleanField(default=False)
     sidebar_is_collapsed = models.BooleanField(default=False)
     rightbar_is_collapsed = models.BooleanField(default=True)
+    index = models.IntegerField(default=100)
+
+    class Meta:
+        ordering = ('index', )
 
     # private: if True, show only to logged-in users
     private = models.BooleanField(
