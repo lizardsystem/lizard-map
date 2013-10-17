@@ -28,6 +28,8 @@ from lizard_map.exceptions import WorkspaceItemError
 from lizard_map.mapnik_helper import point_rule
 # Temporary, because fewsjdbc api handler imports this.
 from lizard_map.adapter import ADAPTER_ENTRY_POINT
+from lizard_map.utility import get_host
+
 
 ADAPTER_ENTRY_POINT  # Pyflakes...
 lizard_map.configchecker  # Pyflakes...
@@ -1107,7 +1109,10 @@ class Setting(models.Model):
     display_projection 'EPSG:4326'
     googlemaps_api_key
     """
-    CACHE_KEY = 'lizard-map.Setting'
+
+    @classmethod
+    def CACHE_KEY(cls):
+        return 'lizard-map.Setting::%s' % (get_host(), )
 
     key = models.CharField(max_length=40, unique=True)
     value = models.CharField(max_length=200)
@@ -1125,12 +1130,12 @@ class Setting(models.Model):
         """
 
         # Caching.
-        settings = cache.get(cls.CACHE_KEY)  # Dict
+        settings = cache.get(cls.CACHE_KEY())  # Dict
         if settings is None:
             settings = {}
             for setting in cls.objects.all():
                 settings[setting.key] = setting.value
-            cache.set(cls.CACHE_KEY, settings)
+            cache.set(cls.CACHE_KEY(), settings)
 
         # Fallback for default.
         if key not in settings:
@@ -1173,8 +1178,8 @@ def setting_post_save_delete(sender, **kwargs):
     Invalidates cache after saving or deleting a setting.
     """
     logger.debug('Changed setting. Invalidating cache for %s...' %
-                 sender.CACHE_KEY)
-    cache.delete(sender.CACHE_KEY)
+                 sender.CACHE_KEY())
+    cache.delete(sender.CACHE_KEY())
 
 
 post_save.connect(setting_post_save_delete, sender=Setting)

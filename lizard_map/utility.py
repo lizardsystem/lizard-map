@@ -1,4 +1,5 @@
 """Small utility functions"""
+from tls import request
 
 
 def short_string(value, length):
@@ -43,3 +44,14 @@ def analyze_http_user_agent(http_user_agent):
         device = 'iPad'
 
     return {'device': device}
+
+
+def get_host():
+    """Get the current host.
+
+    Needed in the multitancy Lizard 5 site for cache keys.
+    """
+    host = ''
+    if hasattr(request, 'get_host'):
+        host = request.get_host()
+    return host

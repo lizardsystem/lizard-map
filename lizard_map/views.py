@@ -1243,6 +1243,7 @@ def search(workspace, google_x, google_y, radius, request=None):
             logger.exception(
                 "Crashed while calling search on %s" %
                 workspace_item)
+
     return found
 
 
