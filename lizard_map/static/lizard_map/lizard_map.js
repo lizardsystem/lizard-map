@@ -1204,7 +1204,8 @@ function refreshBackgroundLayers() {
     selected_base_layer_name = $lizard_map_wms.attr("data-selected-base-layer");
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,
-        is_default, layer_names, identifier, is_base_layer, is_single_tile;
+        is_default, layer_names, identifier, is_base_layer, is_single_tile,
+		zoomlevel;
         layer_type = $(this).attr("data-layer-type");
         layer_name = $(this).attr("data-layer-name");
         is_default = $(this).attr("data-default");
@@ -1222,21 +1223,25 @@ function refreshBackgroundLayers() {
             {
                 // default=1, physical=2, hybrid=3, satellite=4
                 if (data_google_type === "2") {
-                    google_type = G_PHYSICAL_MAP;
+                    google_type = google.maps.MapTypeId.TERRAIN;
                 }
                 else if (data_google_type === "3") {
-                    google_type = G_HYBRID_MAP;
+                    google_type = google.maps.MapTypeId.HYBRID;
+					zoomlevel = 20;
                 }
                 else if (data_google_type === "4") {
-                    google_type = G_SATELLITE_MAP;
+                    google_type = google.maps.MapTypeId.SATELLITE;
+					zoomlevel = 22;
+
                 } else {
-                    google_type = G_NORMAL_MAP;
+                    google_type = '';
                 }
                 base_layer = new OpenLayers.Layer.Google(
                     layer_name,
                     {type: google_type,
                      transitionEffect: 'resize',
-                     sphericalMercator: true});
+                     sphericalMercator: true,
+                     numZoomLevels: zoomlevel});
             }
             else if (layer_type === "OSM")
             {

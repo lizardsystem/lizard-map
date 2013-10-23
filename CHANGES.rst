@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Move to Lizard 5.
+
 - Add `private` flag to WorkspaceStorage model. If a WorkspaceStorage
   instance is labelled private, it is not shown to anonymous users.
 
