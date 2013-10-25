@@ -6,6 +6,8 @@ Changelog of lizard-map
 
 - Add argument to round a floating-point number to 2 decimal.
 
+- Use Google Maps API v3 instead of v2.
+
 
 4.32 (2013-09-17)
 -----------------
@@ -16,6 +18,7 @@ Changelog of lizard-map
 
 - Animatible layer support is disabled. It wasn't used anymore in Lizard
   and the code was in the way.
+
 
 4.31 (2013-06-11)
 -----------------
