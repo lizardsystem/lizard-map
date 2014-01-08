@@ -2,18 +2,16 @@
 Helper classes and functions for adapters
 """
 from __future__ import division
-import calendar
 import datetime
 import locale
 import math
 import numpy
 import pkg_resources
-import pytz
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 
-from django.conf import settings
+
 from django.http import HttpResponse
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
