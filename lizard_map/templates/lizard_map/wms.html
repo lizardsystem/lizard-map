@@ -35,6 +35,7 @@
   {# All contents of lizard-map-wms must have class lizard-map-wms-item #}
   <div id="lizard-map-wms"
        style="display: none;"
+	   data-bootstrap-tour="{{ view.bootstrap_tour }}"
        data-javascript-click-handler="{{ view.javascript_click_handler }}"
        {% if view.javascript_hover_handler %}
          {% ifnotequal view.javascript_hover_handler 'None' %}

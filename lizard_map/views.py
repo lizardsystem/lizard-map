@@ -404,6 +404,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-calendar',
             klass='popup-date-range')
         actions.insert(0, set_date_range)
+        if Setting.get('bootstrap_tour', False):
+            show_tour = Action(
+                name='',
+                element_id='bootstrap-tour',
+                description=_('Show tour'),
+                url="#",
+                icon='icon-info-sign',
+                klass='')
+            actions.insert(0, show_tour)
         if self.request.user.is_superuser:
             save_workspace = Action(
                 name='',
@@ -412,6 +421,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-download-alt',
                 klass='popup-workspace-save')
             actions.insert(0, save_workspace)
+
         return actions
 
     @property
@@ -475,6 +485,10 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         # only show non-private items to not-logged-in users
         return WorkspaceStorage.objects.filter(private=False)
 
+    @property
+    def bootstrap_tour(self):
+        # Return false (for javascript), or the language used
+        return Setting.get('bootstrap_tour', 'false')
 
 MapView = AppView  # BBB
 

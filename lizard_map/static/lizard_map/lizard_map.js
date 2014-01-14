@@ -2586,6 +2586,68 @@ function setUpAppTab(){
 	}
 }
 
+function setUpBootstrapTour(){
+	var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
+	if (tour_type === 'nl') {
+		tour = setUpTourDutch();
+	}
+	if (tour_type != false) {
+		$('#action-bootstrap-tour').click(function (){
+			tour.start(true);
+		});
+	}
+}
+
+function setUpTourDutch(){
+	var tour = new Tour({
+		template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
+ 	});
+
+	tour.addSteps([
+		{
+			element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
+			title: "Zoeken op locatie", // string - title of the popover
+			content: "Vul hier de zoekterm in en klik op het vergrootglas." // string - content of the popover
+		},
+		{
+			element: "#box-awesome-content-themes",
+			title: "Themakaarten",
+			content: "Dit zijn kaarten, voor u gesorteerd op thema."
+		},
+		{
+			element: "#box-awesome-tabs ul.nav li:nth-child(2)",
+			title: "Legenda",
+			content: "Hier vind u de legenda."
+		},
+		{
+			element: "#box-awesome-tabs ul.nav li:nth-child(3)",
+			title: "Hoogteprofile",
+			content: "Hier vind u het hoogteprofiel.",
+
+		},
+		{
+			element: "action-base-layers",
+			title: "Achtergrond kaarten",
+			content: "Selecteer hier een andere achtergrond kaart",
+		},
+		{
+			element: "#action-base-layers",
+			title: "Achtergrond kaarten",
+			content: "Selecteer hier een andere achtergrond kaart",
+			placement: "left"
+		},
+		{
+			element: "#action-layers",
+			title: "kaarten",
+			content: "Selecteer hier een specifieke kaart van de themakaart.",
+			placement: "left"
+		},
+	]);
+	tour.init();
+	tour.start();
+	return tour;
+}
+
 
 $(document).ready(function () {
     setup_daterangepicker();
@@ -2606,6 +2668,7 @@ $(document).ready(function () {
     setUpSidebarPopupDisappearing();
 	setUpCloseSearch();
     setUpElevationProfileForMap();
+	setUpBootstrapTour();
 	$('.workspace').workspaceInteraction();
 
     if ($('#map').exists()) {
