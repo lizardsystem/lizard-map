@@ -74,6 +74,7 @@ from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
 from lizard_map.utility import analyze_http_user_agent
 
+
 CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
@@ -397,6 +398,18 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-list',
             klass='dropdown-toggle')
         actions.insert(0, show_layers)
+        # Deferred import, else it is circular.
+        from lizard_wms.models import WMSFilter
+        if WMSFilter.objects.filter(display=True).count() > 0:
+            show_filter_dropdown = Action(
+                name='',
+                element_id='wms-filter',
+                description=_('Filter WMS'),
+                url="#",
+                icon="icon-filter",
+                klass='dropdown-toggle')
+            actions.insert(0, show_filter_dropdown)
+
         set_date_range = Action(
             name='',
             description=_('Change the date range of the measurements'),
@@ -421,7 +434,6 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-download-alt',
                 klass='popup-workspace-save')
             actions.insert(0, save_workspace)
-
         return actions
 
     @property
@@ -489,6 +501,19 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
         return Setting.get('bootstrap_tour', 'false')
+
+    @property
+    def wms_filter(self):
+        """Return JSON with the filter."""
+        # deferred import because of circular import
+        from lizard_wms.models import WMSFilter
+
+        cql_filters = [{"name": f.name,
+                        "default": f.default,
+                        "cql_filter": f.cql_filter}
+                       for f in WMSFilter.objects.filter(display=True)]
+        return json.dumps(cql_filters)
+
 
 MapView = AppView  # BBB
 

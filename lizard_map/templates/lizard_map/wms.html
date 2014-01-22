@@ -60,6 +60,8 @@
        data-load-location-url="{% url lizard_map.map_location_load_default %}"
        {# Selected base layer #}
        data-selected-base-layer="{{ view.base_layer_name }}"
+       {# json uses "" #}
+	   data-wms-filter='{{ view.wms_filter }}'
        >
     {# Make a layer for every background map #}
     {% for background_map in view.background_maps %}
