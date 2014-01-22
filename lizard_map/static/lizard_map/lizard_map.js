@@ -1334,14 +1334,24 @@ function refreshWmsLayers() {
 
         // Add cql_filtering
         var layer_filters = $(this).data("workspace-wms-cql_filters");
-        var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
         var cql_filters_arr = [];
-        // Add the filters that are selected and available for this layer.
-        for (key in selected_filters){
-            if ($.inArray(key, layer_filters) !== -1){
-                cql_filters_arr.push(key + '=' + selected_filters[key]);
-            }
-        }
+
+        var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
+		var operator = 'AND'; // Use AND as the default operator.
+
+		if (typeof(selected_filters) != "undefined") {
+			var keys = selected_filters["keys"];
+			var values = selected_filters["values"];
+			var operator = selected_filters["operator"];
+
+			// Add the filters that are selected and available for this layer.
+			for (var i=0; i<keys.length; i++) {
+				if ($.inArray(keys[i], layer_filters) !== -1){
+					cql_filters_arr.push(keys[i] + '=' + values[i]);
+				}
+			}
+
+		}
 
         // Add possible cql_filters from the layer definition.
         if (params['.cql_filter'] !== undefined) {
@@ -1351,7 +1361,8 @@ function refreshWmsLayers() {
         var cql_filters = '';
         if (cql_filters_arr.length > 0) {
             //Put the filters in geoserver format
-            cql_filters = cql_filters_arr.join(' AND ');
+            cql_filters = cql_filters_arr.join(
+				' ' + operator + ' ');
         }
 
 
@@ -2572,7 +2583,8 @@ function setUpElevationProfileForMap() {
 function setUpAppTab(){
 	// Select application tab when the request is not on '/'.
 	// Normally the user is in an app when the a non '/' path is used.
-	console.log('apptab');
+
+	// console.log('apptab');
     if (window.location.pathname !== '/'){
 		$('#box-awesome-app-tab').tab('show');
 
@@ -2664,7 +2676,86 @@ function setUpTourDutch(){
 }
 
 
+function setUpWMSFilter(){
+	var $element = $('#action-wms-filter');
+
+	if ($element == []){
+		// Return when the element is empty.
+		return;
+	}
+
+	var dropdownTemplate = _.template('' +
+		  '<li role="presentation">' +
+               '<a href="#" ' +
+		          'class="wms-filter" '+
+				  'id="<%= id %>" >' +
+                  '<% if (checked){ %> <i class="icon-">&#xf00c;</i> <% }%> ' +
+   			      '<%= name %> ' +
+               '</a>' +
+          '</li>');
+
+
+	$element.find('.dropdown-toggle').attr('data-toggle', 'dropdown');
+	$element.addClass('dropdown');
+
+	// Build the dropdown scaffold
+	var filterUl = $('<ul>').attr('id', 'action-wms-filter-ul'
+						   ).attr('class', 'dropdown-menu'
+						   ).attr('role', 'menu');
+
+	$element.append(filterUl);
+	$filterElement = $('#action-wms-filter-ul');
+
+	var filterItems = $('#lizard-map-wms').data('wms-filter');
+	for(var i=0; i<filterItems.length; i++){
+		var filterItem = filterItems[i];
+		var checked;
+		if (filterItem['default'] == true) {
+			checked = true;
+		// Add the cql_filter for the default filter
+			$('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
+		} else {
+			checked = false;
+		}
+		var id = 'wms-filter-id-' + i;
+		var template = 	dropdownTemplate(
+			{'name': filterItem['name'],
+			 'checked': checked,
+			 'id': id
+			});
+
+		$filterElement.append(template);
+		// Set the cql data on the newly created element.
+		$('#' + id).data('cql-filter', filterItem.cql_filter);
+
+
+	}
+
+	$filterElement.find('.wms-filter').click(function(e){
+		// Remove old checks
+		$(e.target).parents('li').find('.wms-filter i').remove();
+
+		// Get the cql filter
+	 	var cql_filter = $(e.target).data('cql-filter');
+		// Handle a click on the check mark as well.
+		if (typeof(cql_filter) === "undefined"){
+			cql_filter = $(e.currentTarget).data('cql-filter')
+			$(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
+		} else {
+			// Add the new check
+			$(e.target).prepend('<i class="icon-">&#xf00c;</i>');
+		}
+		// Set the new filter
+		$('#lizard-map-wms').data('wms-cql_filters', cql_filter);
+		refreshWmsLayers();
+		e.stopPropagation();
+	});
+
+
+}
+
 $(document).ready(function () {
+	setUpWMSFilter(); // Before WMS is initialized. This filters wms layers
     setup_daterangepicker();
     setup_view_state();
     setup_movable_dialog();

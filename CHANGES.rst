@@ -29,6 +29,7 @@ Changelog of lizard-map
 
 - Remove animatable.
 
+- Add WMS filter on the page.
 
 4.28 (2013-05-06)
 -----------------
