@@ -400,6 +400,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         set_date_range = Action(
             name='',
             description=_('Change the date range of the measurements'),
+            element_id='calendar',
             url='javascript:void(null)',
             icon='icon-calendar',
             klass='popup-date-range')

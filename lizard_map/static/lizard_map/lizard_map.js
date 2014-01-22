@@ -2593,7 +2593,7 @@ function setUpBootstrapTour(){
 	}
 	if (tour_type != false) {
 		$('#action-bootstrap-tour').click(function (){
-			tour.start(true);
+			tour.restart();
 		});
 	}
 }
@@ -2615,33 +2615,48 @@ function setUpTourDutch(){
 			content: "Dit zijn kaarten, voor u gesorteerd op thema."
 		},
 		{
+			element: "#box-awesome-content-themes",
+			title: "De kaart",
+			content: "Klik op items op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien zijn."
+		},
+		{
 			element: "#box-awesome-tabs ul.nav li:nth-child(2)",
 			title: "Legenda",
-			content: "Hier vind u de legenda."
+			content: "Hier vind u de legenda.",
+			placement: "bottom"
 		},
 		{
 			element: "#box-awesome-tabs ul.nav li:nth-child(3)",
 			title: "Hoogteprofile",
 			content: "Hier vind u het hoogteprofiel.",
+			placement: "bottom"
 
 		},
 		{
 			element: "action-base-layers",
 			title: "Achtergrond kaarten",
-			content: "Selecteer hier een andere achtergrond kaart",
-		},
-		{
-			element: "#action-base-layers",
-			title: "Achtergrond kaarten",
-			content: "Selecteer hier een andere achtergrond kaart",
-			placement: "left"
+			content: "Selecteer hier een andere achtergrond kaart.",
+			placement: "bottom"
 		},
 		{
 			element: "#action-layers",
 			title: "kaarten",
 			content: "Selecteer hier een specifieke kaart van de themakaart.",
-			placement: "left"
+			placement: "bottom"
 		},
+		{
+			element: "#action-calendar",
+			title: "Kalender",
+			content: "Datum selectie voor datum afhankelijke kaarten.",
+			placement: "bottom"
+		},
+		{
+			element: "#action-bootstrap-tour",
+			title: "Rondleiding",
+			content: "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor het einde van de rondleiding.",
+			placement: "bottom"
+		},
+
 	]);
 	tour.init();
 	tour.start();
