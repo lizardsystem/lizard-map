@@ -8,6 +8,8 @@ Changelog of lizard-map
 
 - Use Google Maps API v3 instead of v2.
 
+- Add get_host function to utility.py.
+
 
 4.32 (2013-09-17)
 -----------------
