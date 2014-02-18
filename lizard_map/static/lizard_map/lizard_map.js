@@ -79,21 +79,21 @@ function boxAwesomeAddTab(marker) {
     var $icon = $('<i>').addClass(iconClass);
 
     var $tabContent = $('<div class="popup-div">')
-    .addClass('tab-pane sidebar-inner')
-    .attr('id', tabId);
+          .addClass('tab-pane sidebar-inner')
+          .attr('id', tabId);
 
     // var $closeBtn = $('<button type="button" class="close">&times;</button>')
     // .on('click', function (event) {
-        // removeMapMarker(marker);
-        // $newLi.remove();
-        // $tabContent.remove();
-        // $ul.find('a:last').trigger('click');
+    // removeMapMarker(marker);
+    // $newLi.remove();
+    // $tabContent.remove();
+    // $ul.find('a:last').trigger('click');
     // });
     // disabled multiple tab support
     // $link.on('click', function (event) {
-        // resetColorAllMarkers();
-        // adjustedPanTo(marker.lonlat.lon, marker.lonlat.lat);
-        // marker.icon.setUrl(window.iconUrlRed);
+    // resetColorAllMarkers();
+    // adjustedPanTo(marker.lonlat.lon, marker.lonlat.lat);
+    // marker.icon.setUrl(window.iconUrlRed);
     // });
 
     // var $closeBtnPane = $('<div style="height: 20px;">')
@@ -101,8 +101,8 @@ function boxAwesomeAddTab(marker) {
     // .appendTo($tabContent);
 
     var $popupContentPane = $('<div>')
-    .html('<div class="popup-loading-animation"></div>')
-    .appendTo($tabContent);
+          .html('<div class="popup-loading-animation"></div>')
+          .appendTo($tabContent);
 
     $link.append($icon);
     $newLi.append($link);
@@ -264,23 +264,23 @@ function set_popup_content(data, title) {
 var $map_tooltip;
 function init_map_tooltip(map) {
     $map_tooltip = $('<div id="maptooltip"/>')
-        .css({
-            'position': 'absolute',
-            'top': 0,
-            'left': 0,
-            'padding': '0.4em 0.6em',
-            'border-radius': '0.5em',
-            'border': '1px solid #111',
-            'background-color': '#fff',
-            'z-index': 2000,
-            'display': 'none'
-        })
-        .appendTo("#map");
+          .css({
+              'position': 'absolute',
+              'top': 0,
+              'left': 0,
+              'padding': '0.4em 0.6em',
+              'border-radius': '0.5em',
+              'border': '1px solid #111',
+              'background-color': '#fff',
+              'z-index': 2000,
+              'display': 'none'
+          })
+          .appendTo("#map");
 }
 function show_map_tooltip(data, map) {
     if (data.name !== "" && data.name !== undefined) {
         var content = '&nbsp;&nbsp;&nbsp;&nbsp;' + data.name +
-            '&nbsp;&nbsp;&nbsp;&nbsp;';
+              '&nbsp;&nbsp;&nbsp;&nbsp;';
         var lonlat = new OpenLayers.LonLat(data.x, data.y);
         var pixel = map.baseLayer.getViewPortPxFromLonLat(lonlat);
         $map_tooltip.css({
@@ -299,9 +299,9 @@ function hide_map_tooltip() {
 
 /* Make workspaces sortable and droppable
 
-Needed: data attribute .data-url-lizard-map-workspace-item-reorder on
-the <div class="workspace">
-<ul> at depth 2
+   Needed: data attribute .data-url-lizard-map-workspace-item-reorder on
+   the <div class="workspace">
+   <ul> at depth 2
 */
 
 // in use (26-09-2012)
@@ -323,15 +323,15 @@ jQuery.fn.workspaceInteraction = function () {
             );
         };
         /*
-        $workspaceItems.sortable({
-            update: onUpdate,
-            helper: 'clone',
-            connectWith: '.workspace-items',
-            cursor: 'move',
-            revert: 'true',
-            placeholder: 'workspace-item-sortable-placeholder',
-            items: '.workspace-item'
-        });
+          $workspaceItems.sortable({
+          update: onUpdate,
+          helper: 'clone',
+          connectWith: '.workspace-items',
+          cursor: 'move',
+          revert: 'true',
+          placeholder: 'workspace-item-sortable-placeholder',
+          items: '.workspace-item'
+          });
         */
         $workspace.find('.workspace-item-move-up').on('click', function (event) {
             var $workspaceItem = $(this).parents('.workspace-item');
@@ -349,7 +349,7 @@ jQuery.fn.workspaceInteraction = function () {
 };
 
 /* Refresh workspace-acceptables. They should light up if the item is
-in given workspace. */
+   in given workspace. */
 
 // in use (26-09-2012)
 // highlight item in left map tree on select
@@ -443,8 +443,8 @@ jQuery.fn.updateWorkspace = function () {
 };
 
 /* React on click "add snippet"
-requires
-.data-url-lizard-map-snippet-add
+   requires
+   .data-url-lizard-map-snippet-add
 */
 
 // in use (26-09-2012)
@@ -453,9 +453,9 @@ jQuery.fn.snippetInteraction = function () {
     return this.each(function () {
         $(this).click(function (event) {
             var workspace_id, url, workspace_item_id,
-                workspace_item_location_identifier,
-                workspace_item_location_shortname,
-                workspace_item_location_name;
+            workspace_item_location_identifier,
+            workspace_item_location_shortname,
+            workspace_item_location_name;
             event.preventDefault();
             workspace_id = $(this).attr("data-workspace-id");
             url = $("#workspace-" + workspace_id).attr("data-url-lizard-map-snippet-add");  // should work, but workspace id is wrong
@@ -557,19 +557,19 @@ function workspaceSavePopup(data) {
         $.post(
             $form.attr("action"), $form.serialize()
         )
-        .success(
-            function (data) {
-                // send result to popup
-                set_popup_content(data);
-            }
-        )
-        .error(
-            function (data) {
-                // send result to popup
-                // call self, to ensure click handler is attached again
-                workspaceSavePopup(data.responseText);
-            }
-        );
+              .success(
+                  function (data) {
+                      // send result to popup
+                      set_popup_content(data);
+                  }
+              )
+              .error(
+                  function (data) {
+                      // send result to popup
+                      // call self, to ensure click handler is attached again
+                      workspaceSavePopup(data.responseText);
+                  }
+              );
         return false;
     });
 }
@@ -636,9 +636,9 @@ function setUpWorkspaceAcceptable() {
                 top: '+=' + move_down,
                 width: $layer_button.width(),
                 height: $layer_button.height()
-                }, 1000, function() {
-                    $moving_box.remove();
-                });
+            }, 1000, function() {
+                $moving_box.remove();
+            });
             /* xxx */
         }
         if ($(this).hasClass('selected')) {
@@ -656,9 +656,9 @@ function setUpWorkspaceAcceptable() {
                 top: '-=' + move_up,
                 width: 0,
                 height: 0
-                }, 1000, function() {
-                    $moving_box.remove();
-                });
+            }, 1000, function() {
+                $moving_box.remove();
+            });
             /* xxx */
         }
         /* End of new bootstrap-era interaction */
@@ -690,7 +690,7 @@ function setUpWorkspaceAcceptable() {
 }
 
 /* Generic POST click handling: do preAction, post, if success do
-postAction. */
+   postAction. */
 function actionPostClick(event, preAction, postAction, parameters) {
     var url, target, target_id;
     event.preventDefault();
@@ -717,22 +717,22 @@ function actionPostClick(event, preAction, postAction, parameters) {
         parameters = {};
     }
     $.post(url, parameters)
-        .success(function (data) {
-            var div, html;
-            if (target !== undefined) {
-                div = $("<div/>").html(data).find(".dialog-box").find(target_id);
-                target.html(div.html());
-            }
-            if (postAction !== undefined) {
-                postAction();
-            }
-            if ($(event.target).hasClass("reload-after-action")) {
-                window.location.reload();
-            }
-        })
-        .error(function (data) {
-            target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
-        });
+          .success(function (data) {
+              var div, html;
+              if (target !== undefined) {
+                  div = $("<div/>").html(data).find(".dialog-box").find(target_id);
+                  target.html(div.html());
+              }
+              if (postAction !== undefined) {
+                  postAction();
+              }
+              if ($(event.target).hasClass("reload-after-action")) {
+                  window.location.reload();
+              }
+          })
+          .error(function (data) {
+              target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
+          });
     return false;
 }
 
@@ -789,7 +789,7 @@ function actionPostEditCollageItem(event) {
 function actionPostCollageAdd(event) {
     var $target, adapter_class, name, adapter_layer_json, identifier;
     /* New bootstrap-era interaction */
-   {
+    {
         var $layer_button, $moving_box, move_down, move_right;
         $layer_button = $(".secondary-sidebar-button");
         $("#page").after('<div id="moving-box">');
@@ -804,9 +804,9 @@ function actionPostCollageAdd(event) {
             top: '+=' + move_down,
             width: $layer_button.width(),
             height: $layer_button.height()
-            }, 1000, function() {
-                $moving_box.remove();
-            });
+        }, 1000, function() {
+            $moving_box.remove();
+        });
     }
     $target = $(event.target);
     name = $target.attr("data-name");
@@ -822,7 +822,7 @@ function actionPostCollageAdd(event) {
 }
 
 /* Collage popup: still old-fashioned. Same for single collage-item or
-whole collage. */
+   whole collage. */
 function collagePopup(event) {
     var url;
     event.preventDefault();
@@ -841,7 +841,7 @@ function collagePopup(event) {
 }
 
 /* Actions post or get an url, then replaces tag data-target-id in
-current page. */
+   current page. */
 function setUpActions() {
     $(".action-post").live("click", actionPostClick);
     // Empty workspace AND empty collage.
@@ -861,7 +861,7 @@ function setUpActions() {
 
 
 /*
-Erase the contents of the popup when the user closes the popup
+  Erase the contents of the popup when the user closes the popup
 */
 function eraseDialogContentsOnClose() {
     $("#dialog").live("onClose", function () {
@@ -871,10 +871,10 @@ function eraseDialogContentsOnClose() {
 
 
 /* Make the following workspace buttons work:
-- Trashcan next to "My Workspace" (workspace-empty-trigger)
-- (-) next to workspace-items (workspace-item-delete)
+   - Trashcan next to "My Workspace" (workspace-empty-trigger)
+   - (-) next to workspace-items (workspace-item-delete)
 
-L3
+   L3
 */
 function setUpWorkspaceButtons() {
     // Delete workspace item
@@ -932,7 +932,7 @@ function popup_click_handler(lon, lat, map, x_pixel, y_pixel) {
     url = $(".workspace").attr("data-url-lizard-map-search-coordinates");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
     if (url !== undefined) {
-		// clear existing markers, add a new marker
+	// clear existing markers, add a new marker
         clearMapMarkers();
         //resetColorAllMarkers();
         var marker = addMapMarker(lon, lat);
@@ -943,24 +943,24 @@ function popup_click_handler(lon, lat, map, x_pixel, y_pixel) {
         adjustedPanTo(lon, lat);
         var $contentPane = boxAwesomeAddTab(marker);
 
-		// Get the current active CQL filters
-		var cql_filters = JSON.stringify(
-			$('#lizard-map-wms').data('wms-cql_filters'));
+	// Get the current active CQL filters
+	var cql_filters = JSON.stringify(
+	    $('#lizard-map-wms').data('wms-cql_filters'));
         $.getJSON(
             url,
             { x: lon, y: lat,
-			  extent_left: extent.left,
-			  extent_bottom: extent.bottom,
-			  extent_right: extent.right,
-			  extent_top: extent.top,
-			  height: map.size.h,
-			  width: map.size.w,
-			  x_pixel: x_pixel,
-			  y_pixel: y_pixel,
-			  cql_filters: cql_filters,
-			  srs: map.getProjection(),
+	      extent_left: extent.left,
+	      extent_bottom: extent.bottom,
+	      extent_right: extent.right,
+	      extent_top: extent.top,
+	      height: map.size.h,
+	      width: map.size.w,
+	      x_pixel: x_pixel,
+	      y_pixel: y_pixel,
+	      cql_filters: cql_filters,
+	      srs: map.getProjection(),
               user_workspace_id: user_workspace_id
-			  },
+	    },
 
             function (data) {
                 boxAwesomeSetContent($contentPane, data);
@@ -996,23 +996,23 @@ function popup_hover_handler(lon, lat, map, x_pixel, y_pixel) {
 
     url = $(".workspace").attr("data-url-lizard-map-search-name");
     user_workspace_id = $(".workspace").attr("data-workspace-id");
-	var cql_filters = JSON.stringify(
-		$('#lizard-map-wms').data('wms-cql_filters'));
+    var cql_filters = JSON.stringify(
+	$('#lizard-map-wms').data('wms-cql_filters'));
 
     if (url !== undefined) {
         $.getJSON(
             url,
             { x: lon, y: lat,
-			  extent_left: extent.left,
-			  extent_bottom: extent.bottom,
-			  extent_right: extent.right,
-			  extent_top: extent.top,
-			  height: map.size.h,
-			  width: map.size.w,
-			  x_pixel: x_pixel,
-			  y_pixel: y_pixel,
-			  cql_filters: cql_filters,
-			  srs: map.getProjection(),
+	      extent_left: extent.left,
+	      extent_bottom: extent.bottom,
+	      extent_right: extent.right,
+	      extent_top: extent.top,
+	      height: map.size.h,
+	      width: map.size.w,
+	      x_pixel: x_pixel,
+	      y_pixel: y_pixel,
+	      cql_filters: cql_filters,
+	      srs: map.getProjection(),
               user_workspace_id: user_workspace_id},
             function (data) {
                 show_map_tooltip(data, map);
@@ -1023,7 +1023,7 @@ function popup_hover_handler(lon, lat, map, x_pixel, y_pixel) {
 
 
 /* Pans to workspace item. Only works if extent function is
-implemented for that particilar workspace item. */
+   implemented for that particilar workspace item. */
 function setUpWorkspaceItemPanToLayer() {
     $(".workspace-item-pan-to").live("click", function () {
         var url, workspace_item_id;
@@ -1053,7 +1053,7 @@ function setUpWorkspaceItemPanToLayer() {
 
 
 /*
-Sends current extent and name of visible base layer.
+  Sends current extent and name of visible base layer.
 */
 function mapSaveLocation() {
     var url, extent, visible_base_layer_name, i;
@@ -1205,7 +1205,7 @@ function refreshBackgroundLayers() {
     $lizard_map_wms.find(".background-layer").each(function () {
         var google_type, data_google_type, layer_name, layer_type, url,
         is_default, layer_names, identifier, is_base_layer, is_single_tile,
-		zoomlevel;
+	zoomlevel;
         layer_type = $(this).attr("data-layer-type");
         layer_name = $(this).attr("data-layer-name");
         is_default = $(this).attr("data-default");
@@ -1227,11 +1227,11 @@ function refreshBackgroundLayers() {
                 }
                 else if (data_google_type === "3") {
                     google_type = google.maps.MapTypeId.HYBRID;
-					zoomlevel = 20;
+		    zoomlevel = 20;
                 }
                 else if (data_google_type === "4") {
                     google_type = google.maps.MapTypeId.SATELLITE;
-					zoomlevel = 22;
+		    zoomlevel = 22;
 
                 } else {
                     google_type = '';
@@ -1265,10 +1265,10 @@ function refreshBackgroundLayers() {
                      'singleTile': is_single_tile,
                      'units': "m",
                      'maxExtent': new OpenLayers.Bounds(
-                         -128 * 156543.03390625,
-                         -128 * 156543.03390625,
-                       128 * 156543.03390625,
-                       128 * 156543.03390625
+                               -128 * 156543.03390625,
+                               -128 * 156543.03390625,
+                         128 * 156543.03390625,
+                         128 * 156543.03390625
                      ),
                      'transitionEffect': 'resize',
                      'buffer': 1}
@@ -1337,21 +1337,21 @@ function refreshWmsLayers() {
         var cql_filters_arr = [];
 
         var selected_filters = $('#lizard-map-wms').data('wms-cql_filters');
-		var operator = 'AND'; // Use AND as the default operator.
+	var operator = 'AND'; // Use AND as the default operator.
 
-		if (typeof(selected_filters) != "undefined") {
-			var keys = selected_filters["keys"];
-			var values = selected_filters["values"];
-			var operator = selected_filters["operator"];
+	if (typeof(selected_filters) != "undefined") {
+	    var keys = selected_filters["keys"];
+	    var values = selected_filters["values"];
+	    var operator = selected_filters["operator"];
 
-			// Add the filters that are selected and available for this layer.
-			for (var i=0; i<keys.length; i++) {
-				if ($.inArray(keys[i], layer_filters) !== -1){
-					cql_filters_arr.push(keys[i] + '=' + values[i]);
-				}
-			}
-
+	    // Add the filters that are selected and available for this layer.
+	    for (var i=0; i<keys.length; i++) {
+		if ($.inArray(keys[i], layer_filters) !== -1){
+		    cql_filters_arr.push(keys[i] + '=' + values[i]);
 		}
+	    }
+
+	}
 
         // Add possible cql_filters from the layer definition.
         if (params['.cql_filter'] !== undefined) {
@@ -1362,7 +1362,7 @@ function refreshWmsLayers() {
         if (cql_filters_arr.length > 0) {
             //Put the filters in geoserver format
             cql_filters = cql_filters_arr.join(
-				' ' + operator + ' ');
+		' ' + operator + ' ');
         }
 
 
@@ -1433,7 +1433,7 @@ function refreshWmsLayers() {
 
 
 /* Adds all layers (base + workspaces) to map. Refreshes all
-workspaces. Layers from other sources are assumed to be 'static' */
+   workspaces. Layers from other sources are assumed to be 'static' */
 function refreshLayers() {
     refreshBackgroundLayers();
     refreshWmsLayers();
@@ -1448,7 +1448,7 @@ function ZoomSlider(options) {
             // initialize our internal div
             OpenLayers.Control.prototype.draw.apply(this, arguments);
             px = this.position.clone();
-			px = new OpenLayers.Pixel(405, 43);
+	    px = new OpenLayers.Pixel(405, 43);
             // place the controls
             this.buttons = [];
 
@@ -1480,20 +1480,20 @@ function spawnCustomMovingBox(width, height, x, y) {
         top: '+=' + move_down,
         width: $layer_button.width(),
         height: $layer_button.height()
-        }, 1000, function() {
-            $moving_box.remove();
-        });
+    }, 1000, function() {
+        $moving_box.remove();
+    });
 }
 
 function setUpMap() {
     var options, base_layer, MapClickControl, MapHoverControl,
-	    layerSwitcherControl,
-        map_click_control, zoom_panel, map_hover_control,
-        javascript_click_handler_name, javascript_hover_handler_name,
-        $lizard_map_wms, projection, display_projection, start_extent,
-        start_extent_left, start_extent_top, start_extent_right,
-        start_extent_bottom, max_extent, max_extent_left, max_extent_top,
-        max_extent_right, max_extent_bottom;
+    layerSwitcherControl,
+    map_click_control, zoom_panel, map_hover_control,
+    javascript_click_handler_name, javascript_hover_handler_name,
+    $lizard_map_wms, projection, display_projection, start_extent,
+    start_extent_left, start_extent_top, start_extent_right,
+    start_extent_bottom, max_extent, max_extent_left, max_extent_top,
+    max_extent_right, max_extent_bottom;
 
     window.setUpMapDimensions();
 
@@ -1594,7 +1594,7 @@ function setUpMap() {
     refreshLayers();
 
     // Set up controls, zoom and center.
-	LayerSwitcherControl = new OpenLayers.Control.NensLayerSwitcher();
+    LayerSwitcherControl = new OpenLayers.Control.NensLayerSwitcher();
 
     map.addControl(LayerSwitcherControl);
     // Click handling.
@@ -1734,7 +1734,7 @@ function makeHtml(data) {
         } else {
             items.push('<li><span>' + key + '</span>' + makeHtml(val) + '</li>');
         }
-     });
+    });
     return $('<ul/>', {html: items.join('')}).html();
 }
 
@@ -1883,10 +1883,10 @@ function reloadDynamicGraph($graph, callback, force) {
             };
 
             var $img = $('<img/>')
-                .one('load', on_load_once) // ensure this is only called once
-                .load(update_size)
-                .error(on_error)
-                .attr('src', get_url_with_size());
+                  .one('load', on_load_once) // ensure this is only called once
+                  .load(update_size)
+                  .error(on_error)
+                  .attr('src', get_url_with_size());
 
             var update_src = function () {
                 $img.attr('src', get_url_with_size());
@@ -1971,58 +1971,58 @@ function flotGraphLoadData($container, response) {
     $container.css('position', 'relative');
     // first row
     var $graph_row = $('<div class="flot-graph-row" />')
-        .css({
-            position: 'absolute',
-            left: 0, top: 0, bottom: 48, right: 0
-        });
+          .css({
+              position: 'absolute',
+              left: 0, top: 0, bottom: 48, right: 0
+          });
     var $y_label_text_wrapper = $('<div/>')
-        .css({
-            position: 'absolute',
-            bottom: 80,
-            width: 20
-        });
+          .css({
+              position: 'absolute',
+              bottom: 80,
+              width: 20
+          });
     var $y_label_text = $('<div class="flot-graph-y-label-text" />')
-        .css({
-            'white-space': 'nowrap',
-            'background-color': '#fff'
-        })
-        .transform({rotate: '-90deg'})
-        .html(response.y_label);
+          .css({
+              'white-space': 'nowrap',
+              'background-color': '#fff'
+          })
+          .transform({rotate: '-90deg'})
+          .html(response.y_label);
     $y_label_text_wrapper.append($y_label_text);
     var $y_label = $('<span class="flot-graph-y-label" />')
-        .css({
-            position: 'absolute',
-            left: 0, top: 0, bottom: 0, width: 20
-        });
+          .css({
+              position: 'absolute',
+              left: 0, top: 0, bottom: 0, width: 20
+          });
     $y_label.append($y_label_text_wrapper);
     $graph_row.append($y_label);
     var $graph = $('<span class="flot-graph-canvas" />')
-        .css({
-            position: 'absolute',
-            left: 20, top: 0, bottom: 0, right: 0
-        });
+          .css({
+              position: 'absolute',
+              left: 20, top: 0, bottom: 0, right: 0
+          });
     $graph_row.append($graph);
     $container.append($graph_row);
 
     // second row
     // just a spacer for now, have jquery.flot.axislabels.js draw the actual label
     var $x_label = $('<div class="flot-graph-x-label" />')
-        .css({
-            position: 'absolute',
-            left: 0, bottom: 30, right: 0,
-            height: 18,
-            'text-align': 'center'
-        })
-        .html((response.x_label) ? response.x_label : 'Tijd');
+          .css({
+              position: 'absolute',
+              left: 0, bottom: 30, right: 0,
+              height: 18,
+              'text-align': 'center'
+          })
+          .html((response.x_label) ? response.x_label : 'Tijd');
     $container.append($x_label);
 
     // third row
     var $control_row = $('<div class="flot-graph-control-row" />')
-        .css({
-            position: 'absolute',
-            left: 0, bottom: 0, right: 0,
-            height: 30
-        });
+          .css({
+              position: 'absolute',
+              left: 0, bottom: 0, right: 0,
+              height: 30
+          });
     // controls
     // TODO should implement JavaScript gettext / i18n
     var $c_bwd = $('<button title="Schuif naar links" class="btn" type="button"><i class="icon-backward"></i></button>');
@@ -2032,14 +2032,14 @@ function flotGraphLoadData($container, response) {
     $control_row.append($center);
 
     /*
-    var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
-    $center.append($c_reset);
+      var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
+      $center.append($c_reset);
 
-    var $c_plus = $('<button title="Zoom in" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-in"></i></button>');
-    $center.append($c_plus);
+      var $c_plus = $('<button title="Zoom in" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-in"></i></button>');
+      $center.append($c_plus);
 
-    var $c_min = $('<button title="Zoom uit" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-out"></i></button>');
-    $center.append($c_min);
+      var $c_min = $('<button title="Zoom uit" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-out"></i></button>');
+      $center.append($c_min);
     */
 
     var $c_fwd = $('<button title="Schuif naar rechts" class="btn pull-right" type="button"><i class="icon-forward"></i></button>');
@@ -2079,24 +2079,24 @@ function flotGraphLoadData($container, response) {
     }
 
     /*
-    $c_reset.click(function () {
-        $.each(plot.getXAxes(), function (idx, axis) {
-            axis.options.min = null;
-            axis.options.max = null;
-        });
-        $.each(plot.getYAxes(), function (idx, axis) {
-            axis.options.min = null;
-            axis.options.max = null;
-        });
-        plot.setupGrid();
-        plot.draw();
-    });
-    $c_plus.click(function () {
-        plot.zoom({ amount: 2 });
-    });
-    $c_min.click(function () {
-        plot.zoom({ amount: 0.5 });
-    });
+      $c_reset.click(function () {
+      $.each(plot.getXAxes(), function (idx, axis) {
+      axis.options.min = null;
+      axis.options.max = null;
+      });
+      $.each(plot.getYAxes(), function (idx, axis) {
+      axis.options.min = null;
+      axis.options.max = null;
+      });
+      plot.setupGrid();
+      plot.draw();
+      });
+      $c_plus.click(function () {
+      plot.zoom({ amount: 2 });
+      });
+      $c_min.click(function () {
+      plot.zoom({ amount: 0.5 });
+      });
     */
     $c_bwd.click(function () {
         plot.pan({ left: -500 });
@@ -2109,10 +2109,10 @@ function flotGraphLoadData($container, response) {
 }
 
 /**
-* Bind several flot graphs together. When navigating through one graph, the other graphs
-* should follow the zoom levels, and extent.
-* Functions come from the controlnext app. http://github.com/lizardsystem/controlnext
-*/
+ * Bind several flot graphs together. When navigating through one graph, the other graphs
+ * should follow the zoom levels, and extent.
+ * Functions come from the controlnext app. http://github.com/lizardsystem/controlnext
+ */
 function panAndZoomOtherGraphs(plot) {
     var axes = plot.getAxes();
     var xmin = axes.xaxis.min;
@@ -2248,7 +2248,7 @@ var to_date_objects = function (assoc_array, inplace) {
     $.each(assoc_array, function(k, v) {
         if (k && v) {
             if (typeof v == 'string' && (
-                 k.substring(0, 2) == 'dt' || k.indexOf('date') != -1 || k == 'start' || k == 'end'
+                k.substring(0, 2) == 'dt' || k.indexOf('date') != -1 || k == 'start' || k == 'end'
             )) {
                 // convert to Moment.js date object
                 assoc_array[k] = moment.utc(v);
@@ -2377,39 +2377,39 @@ function setup_daterangepicker() {
                 ]
             }
         },
-        function (range_type, dt_start, dt_end) {
-            set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-            // hack to support reloading after changing the date (collage page)
-            if ($('.popup-date-range').hasClass('reload-after-action')) {
-                setTimeout(window.location.reload, 1337);
-            }
-            else {
-                reloadGraphs(undefined, undefined, true);
-                refreshWmsLayers();
-            }
-        });
+                                                            function (range_type, dt_start, dt_end) {
+                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
+                                                                // hack to support reloading after changing the date (collage page)
+                                                                if ($('.popup-date-range').hasClass('reload-after-action')) {
+                                                                    setTimeout(window.location.reload, 1337);
+                                                                }
+                                                                else {
+                                                                    reloadGraphs(undefined, undefined, true);
+                                                                    refreshWmsLayers();
+                                                                }
+                                                            });
     }
 }
 
 function setUpSidebarPopupDisappearing () {
-  $("#sidebar").scroll(function() {
-    // Fixing 'zombie' popovers when the user scrolls with an info icon popover enabled
-    $('.has_popover').each(function(i,v){ $(v).popover("hide"); });
-  });
+    $("#sidebar").scroll(function() {
+        // Fixing 'zombie' popovers when the user scrolls with an info icon popover enabled
+        $('.has_popover').each(function(i,v){ $(v).popover("hide"); });
+    });
 }
 
 function setup_location_list () {
     var $element = $('.popup-location-list');
     if ($element.exists()) {
         var template = '' +
-        '<div class="location-list">' +
-            '<form class="form-search">' +
-                '<legend>Zoek naar locaties</legend>' +
-                '<input type="text" class="search-query" placeholder="Type ten minste drie karakters..." style="width:300px"/>' +
-                '<button type="submit" class="btn" style="margin-left:10px">Zoek</button>' +
-            '</form>' +
-            '<div class="results" />' +
-        '</div>';
+              '<div class="location-list">' +
+              '<form class="form-search">' +
+              '<legend>Zoek naar locaties</legend>' +
+              '<input type="text" class="search-query" placeholder="Type ten minste drie karakters..." style="width:300px"/>' +
+              '<button type="submit" class="btn" style="margin-left:10px">Zoek</button>' +
+              '</form>' +
+              '<div class="results" />' +
+              '</div>';
         var $container = $(template);
         var $form = $container.find('.form-search');
         var $input = $container.find('input');
@@ -2453,14 +2453,14 @@ function setup_location_list () {
                         $.each(data, function () {
                             var item = this;
                             var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
-                                .attr('data-adapter-class', item[0])
-                                .attr('data-adapter-layer-json', item[1])
-                                .attr('data-identifier', item[2])
-                                .attr('data-name', item[3])
-                                .attr('href', item[5])
-                                .html(item[4]);
+                                  .attr('data-adapter-class', item[0])
+                                  .attr('data-adapter-layer-json', item[1])
+                                  .attr('data-identifier', item[2])
+                                  .attr('data-name', item[3])
+                                  .attr('href', item[5])
+                                  .html(item[4]);
                             var $div = $('<div/>')
-                                .append($link);
+                                  .append($link);
                             $results.append($div);
                         });
                     }
@@ -2479,72 +2479,72 @@ function setup_location_list () {
 }
 
 function setup_location_search () {
-	function requestSuccess (data) {
+    function requestSuccess (data) {
 
-		// Define Tab
-		var iconClass = 'icon-search';
-		var tabId = 'box-awesome-content-search';
-		var tabClass = 'box-awesome-tab-search';
+	// Define Tab
+	var iconClass = 'icon-search';
+	var tabId = 'box-awesome-content-search';
+	var tabClass = 'box-awesome-tab-search';
 
-		var $ul = $('#box-awesome-tabs > ul');
-		var $content = $('#box-awesome-tabs > .tab-content');
-
-
-		var $newLi = $('<li>').addClass(tabClass);
-		var $link = $('<a data-toggle="tab">').attr('href', '#' + tabId);
-		var $icon = $('<i>').addClass(iconClass);
+	var $ul = $('#box-awesome-tabs > ul');
+	var $content = $('#box-awesome-tabs > .tab-content');
 
 
-		var $tabContent = $('<div>')
-			.addClass('tab-pane sidebar-inner')
-			.attr('id', tabId);
+	var $newLi = $('<li>').addClass(tabClass);
+	var $link = $('<a data-toggle="tab">').attr('href', '#' + tabId);
+	var $icon = $('<i>').addClass(iconClass);
 
-		// Remove old tab
 
-		$ul.find('.' + tabClass).remove();
-		$content.find('#' + tabId).remove();
+	var $tabContent = $('<div>')
+	      .addClass('tab-pane sidebar-inner')
+	      .attr('id', tabId);
 
-		// Fill tab
+	// Remove old tab
 
-		var $closeBtn = $('<button type="button" class="close">&times;</button>')
-			.on('click', function (event) {
-				$newLi.remove();
-				$tabContent.remove();
-				$ul.find('a:last').trigger('click');
-			});
+	$ul.find('.' + tabClass).remove();
+	$content.find('#' + tabId).remove();
 
-		var $closeBtnPane = $('<div style="height: 20px;">')
-			.append($closeBtn)
-			.appendTo($tabContent);
+	// Fill tab
+
+	var $closeBtn = $('<button type="button" class="close">&times;</button>')
+	      .on('click', function (event) {
+		  $newLi.remove();
+		  $tabContent.remove();
+		  $ul.find('a:last').trigger('click');
+	      });
+
+	var $closeBtnPane = $('<div style="height: 20px;">')
+	      .append($closeBtn)
+	      .appendTo($tabContent);
 
         var items = [];
         $.each(data, function(key, val) {
             bb = val.boundingbox;
             items.push("<li><a href='#' onclick='chooseAddr(" +
-					   bb +
-					   ");return false;'>" + val.display_name + '</a></li>');
+		       bb +
+		       ");return false;'>" + val.display_name + '</a></li>');
         });
 
-		var $contentPane = $('<div>');
+	var $contentPane = $('<div>');
         if (items.length != 0) {
             $('<ul/>', {
-               html: items.join('')
+                html: items.join('')
             }).appendTo($contentPane);
         } else {
             $('<p/>', { html: "Er is niets gevonden." }).appendTo($contentPane);
         }
 
 
-		$contentPane.appendTo($tabContent);
+	$contentPane.appendTo($tabContent);
 
-		$link.append($icon);
-		$newLi.append($link);
+	$link.append($icon);
+	$newLi.append($link);
 
-		$ul.append($newLi);
-		$content.append($tabContent);
+	$ul.append($newLi);
+	$content.append($tabContent);
 
-		$link.tab('show');
-	}
+	$link.tab('show');
+    }
 
     function submitForm (event) {
 	event.preventDefault();
@@ -2572,207 +2572,207 @@ function setup_location_search () {
 
 /* Move the map to the given address. */
 function chooseAddr(lat1, lat2, lng1, lng2) {
-	var bounds = new OpenLayers.Bounds();
-	bounds.extend(new OpenLayers.LonLat(lng1, lat1));
-	bounds.extend(new OpenLayers.LonLat(lng2,  lat2));
+    var bounds = new OpenLayers.Bounds();
+    bounds.extend(new OpenLayers.LonLat(lng1, lat1));
+    bounds.extend(new OpenLayers.LonLat(lng2,  lat2));
 
-	bounds.transform('EPSG:4326', map.getProjection());
-	map.zoomToExtent(bounds);
+    bounds.transform('EPSG:4326', map.getProjection());
+    map.zoomToExtent(bounds);
 }
 
 function setUpCloseSearch () {
-	$('#box-awesome-results button').on('click', function (event) {
-		$('#box-awesome-results div').empty();
-		$('#box-awesome-results').hide();
-	});
+    $('#box-awesome-results button').on('click', function (event) {
+	$('#box-awesome-results div').empty();
+	$('#box-awesome-results').hide();
+    });
 }
 
 function setUpElevationProfileForMap() {
-	bindFullscreenClick($('#elevation-profile-content'));
+    bindFullscreenClick($('#elevation-profile-content'));
 }
 
 function setUpAppTab(){
-	// Select application tab when the request is not on '/'.
-	// Normally the user is in an app when the a non '/' path is used.
+    // Select application tab when the request is not on '/'.
+    // Normally the user is in an app when the a non '/' path is used.
 
-	// console.log('apptab');
+    // console.log('apptab');
     if (window.location.pathname !== '/'){
-		$('#box-awesome-app-tab').tab('show');
+	$('#box-awesome-app-tab').tab('show');
 
-		// Have a back button.
-		var $button = $(
-			'<button type="button" class="icon-chevron-left close"></button>');
-		$('#apps-back-button').html($button);
-		$button.on('click', function(event) {
-			window.history.back();
-		});
-	}
+	// Have a back button.
+	var $button = $(
+	    '<button type="button" class="icon-chevron-left close"></button>');
+	$('#apps-back-button').html($button);
+	$button.on('click', function(event) {
+	    window.history.back();
+	});
+    }
 }
 
 function setUpBootstrapTour(){
-	var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
-	if (tour_type === 'nl') {
-		tour = setUpTourDutch();
-	}
-	if (tour_type != false) {
-		$('#action-bootstrap-tour').click(function (){
-			tour.restart();
-		});
-	}
+    var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
+    if (tour_type === 'nl') {
+	tour = setUpTourDutch();
+    }
+    if (tour_type != false) {
+	$('#action-bootstrap-tour').click(function (){
+	    tour.restart();
+	});
+    }
 }
 
 function setUpTourDutch(){
-	var tour = new Tour({
-		template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
- 	});
+    var tour = new Tour({
+	template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
+    });
 
-	tour.addSteps([
-		{
-			element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
-			title: "Zoeken op locatie", // string - title of the popover
-			content: "Vul hier de zoekterm in en klik op het vergrootglas." // string - content of the popover
-		},
-		{
-			element: "#box-awesome-content-themes",
-			title: "Themakaarten",
-			content: "Dit zijn kaarten, voor u gesorteerd op thema."
-		},
-		{
-			element: "#box-awesome-content-themes",
-			title: "De kaart",
-			content: "Klik op items op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien zijn."
-		},
-		{
-			element: "#box-awesome-tabs ul.nav li:nth-child(2)",
-			title: "Legenda",
-			content: "Hier vind u de legenda.",
-			placement: "bottom"
-		},
-		{
-			element: "#box-awesome-tabs ul.nav li:nth-child(3)",
-			title: "Hoogteprofile",
-			content: "Hier vind u het hoogteprofiel.",
-			placement: "bottom"
+    tour.addSteps([
+	{
+	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
+	    title: "Zoeken op locatie", // string - title of the popover
+	    content: "Vul hier de zoekterm in en klik op het vergrootglas." // string - content of the popover
+	},
+	{
+	    element: "#box-awesome-content-themes",
+	    title: "Themakaarten",
+	    content: "Dit zijn kaarten, voor u gesorteerd op thema."
+	},
+	{
+	    element: "#box-awesome-content-themes",
+	    title: "De kaart",
+	    content: "Klik op items op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien zijn."
+	},
+	{
+	    element: "#box-awesome-tabs ul.nav li:nth-child(2)",
+	    title: "Legenda",
+	    content: "Hier vind u de legenda.",
+	    placement: "bottom"
+	},
+	{
+	    element: "#box-awesome-tabs ul.nav li:nth-child(3)",
+	    title: "Hoogteprofile",
+	    content: "Hier vind u het hoogteprofiel.",
+	    placement: "bottom"
 
-		},
-		{
-			element: "action-base-layers",
-			title: "Achtergrond kaarten",
-			content: "Selecteer hier een andere achtergrond kaart.",
-			placement: "bottom"
-		},
-		{
-			element: "#action-layers",
-			title: "kaarten",
-			content: "Selecteer hier een specifieke kaart van de themakaart.",
-			placement: "bottom"
-		},
-		{
-			element: "#action-calendar",
-			title: "Kalender",
-			content: "Datum selectie voor datum afhankelijke kaarten.",
-			placement: "bottom"
-		},
-		{
-			element: "#action-bootstrap-tour",
-			title: "Rondleiding",
-			content: "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor het einde van de rondleiding.",
-			placement: "bottom"
-		},
+	},
+	{
+	    element: "action-base-layers",
+	    title: "Achtergrond kaarten",
+	    content: "Selecteer hier een andere achtergrond kaart.",
+	    placement: "bottom"
+	},
+	{
+	    element: "#action-layers",
+	    title: "kaarten",
+	    content: "Selecteer hier een specifieke kaart van de themakaart.",
+	    placement: "bottom"
+	},
+	{
+	    element: "#action-calendar",
+	    title: "Kalender",
+	    content: "Datum selectie voor datum afhankelijke kaarten.",
+	    placement: "bottom"
+	},
+	{
+	    element: "#action-bootstrap-tour",
+	    title: "Rondleiding",
+	    content: "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor het einde van de rondleiding.",
+	    placement: "bottom"
+	},
 
-	]);
-	tour.init();
-	tour.start();
-	return tour;
+    ]);
+    tour.init();
+    tour.start();
+    return tour;
 }
 
 
 function setUpWMSFilter(){
-	var $element = $('#action-wms-filter');
+    var $element = $('#action-wms-filter');
 
-	if ($element == []){
-		// Return when the element is empty.
-		return;
+    if ($element == []){
+	// Return when the element is empty.
+	return;
+    }
+
+    var dropdownTemplate = _.template('' +
+		                      '<li role="presentation">' +
+                                      '<a href="#" ' +
+		                      'class="wms-filter" '+
+				      'id="<%= id %>" >' +
+                                      '<% if (checked){ %> <i class="icon-">&#xf00c;</i> <% }%> ' +
+   			              '<%= name %> ' +
+                                      '</a>' +
+                                      '</li>');
+
+
+    $element.find('.dropdown-toggle').attr('data-toggle', 'dropdown');
+    $element.addClass('dropdown');
+
+    // Build the dropdown scaffold
+    var filterUl = $('<ul>').attr('id', 'action-wms-filter-ul'
+				 ).attr('class', 'dropdown-menu'
+				       ).attr('role', 'menu');
+
+    $element.append(filterUl);
+    $filterElement = $('#action-wms-filter-ul');
+
+    var filterItems = $('#lizard-map-wms').data('wms-filter');
+    for(var i=0; i<filterItems.length; i++){
+	var filterItem = filterItems[i];
+	var checked;
+	if (filterItem['default'] == true) {
+	    checked = true;
+	    // Add the cql_filter for the default filter
+	    $('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
+	} else {
+	    checked = false;
 	}
+	var id = 'wms-filter-id-' + i;
+	var template = 	dropdownTemplate(
+	    {'name': filterItem['name'],
+	     'checked': checked,
+	     'id': id
+	    });
 
-	var dropdownTemplate = _.template('' +
-		  '<li role="presentation">' +
-               '<a href="#" ' +
-		          'class="wms-filter" '+
-				  'id="<%= id %>" >' +
-                  '<% if (checked){ %> <i class="icon-">&#xf00c;</i> <% }%> ' +
-   			      '<%= name %> ' +
-               '</a>' +
-          '</li>');
-
-
-	$element.find('.dropdown-toggle').attr('data-toggle', 'dropdown');
-	$element.addClass('dropdown');
-
-	// Build the dropdown scaffold
-	var filterUl = $('<ul>').attr('id', 'action-wms-filter-ul'
-						   ).attr('class', 'dropdown-menu'
-						   ).attr('role', 'menu');
-
-	$element.append(filterUl);
-	$filterElement = $('#action-wms-filter-ul');
-
-	var filterItems = $('#lizard-map-wms').data('wms-filter');
-	for(var i=0; i<filterItems.length; i++){
-		var filterItem = filterItems[i];
-		var checked;
-		if (filterItem['default'] == true) {
-			checked = true;
-		// Add the cql_filter for the default filter
-			$('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
-		} else {
-			checked = false;
-		}
-		var id = 'wms-filter-id-' + i;
-		var template = 	dropdownTemplate(
-			{'name': filterItem['name'],
-			 'checked': checked,
-			 'id': id
-			});
-
-		$filterElement.append(template);
-		// Set the cql data on the newly created element.
-		$('#' + id).data('cql-filter', filterItem.cql_filter);
+	$filterElement.append(template);
+	// Set the cql data on the newly created element.
+	$('#' + id).data('cql-filter', filterItem.cql_filter);
 
 
+    }
+
+    $filterElement.find('.wms-filter').click(function(e){
+	// Remove old checks
+	$(e.target).parents('li').find('.wms-filter i').remove();
+
+	// Get the cql filter
+	var cql_filter = $(e.target).data('cql-filter');
+	// Handle a click on the check mark as well.
+	if (typeof(cql_filter) === "undefined"){
+	    cql_filter = $(e.currentTarget).data('cql-filter')
+	    $(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
+	} else {
+	    // Add the new check
+	    $(e.target).prepend('<i class="icon-">&#xf00c;</i>');
 	}
-
-	$filterElement.find('.wms-filter').click(function(e){
-		// Remove old checks
-		$(e.target).parents('li').find('.wms-filter i').remove();
-
-		// Get the cql filter
-	 	var cql_filter = $(e.target).data('cql-filter');
-		// Handle a click on the check mark as well.
-		if (typeof(cql_filter) === "undefined"){
-			cql_filter = $(e.currentTarget).data('cql-filter')
-			$(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
-		} else {
-			// Add the new check
-			$(e.target).prepend('<i class="icon-">&#xf00c;</i>');
-		}
-		// Set the new filter
-		$('#lizard-map-wms').data('wms-cql_filters', cql_filter);
-		refreshWmsLayers();
-		e.stopPropagation();
-	});
+	// Set the new filter
+	$('#lizard-map-wms').data('wms-cql_filters', cql_filter);
+	refreshWmsLayers();
+	e.stopPropagation();
+    });
 
 
 }
 
 $(document).ready(function () {
-	setUpWMSFilter(); // Before WMS is initialized. This filters wms layers
+    setUpWMSFilter(); // Before WMS is initialized. This filters wms layers
     setup_daterangepicker();
     setup_view_state();
     setup_movable_dialog();
     setup_location_list();
     setup_location_search();
-	setUpAppTab();
+    setUpAppTab();
     setUpWorkspaceAcceptable();
     setUpActions();
     setUpDataFromUrl();
@@ -2783,10 +2783,10 @@ $(document).ready(function () {
     setUpWorkspaceSavePopup();
     setUpCollageTablePopup();
     setUpSidebarPopupDisappearing();
-	setUpCloseSearch();
+    setUpCloseSearch();
     setUpElevationProfileForMap();
-	setUpBootstrapTour();
-	$('.workspace').workspaceInteraction();
+    setUpBootstrapTour();
+    $('.workspace').workspaceInteraction();
 
     if ($('#map').exists()) {
         setUpMap();
