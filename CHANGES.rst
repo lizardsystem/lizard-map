@@ -31,6 +31,9 @@ Changelog of lizard-map
 
 - Add WMS filter on the page.
 
+- Fix bug where IE9 couldn't use the search bar; we should use JSONP
+  for cross-site requests.
+
 4.28 (2013-05-06)
 -----------------
 

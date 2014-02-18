@@ -2547,15 +2547,26 @@ function setup_location_search () {
 	}
 
     function submitForm (event) {
-		event.preventDefault();
-		var inp = $('#box-awesome-search input').val();
+	event.preventDefault();
+	var inp = $('#box-awesome-search input').val();
 
-		$.getJSON('//nominatim.openstreetmap.org/search',
-				  {format: 'json',
-				   limit: 5,
-				   q: inp})
-			.done(requestSuccess);
-	}
+	// This is a cross-site request, IE9's handling of those
+	// is slightly different than other browsers', and JQuery
+	// doesn't support IE9's version. Therefore we need to
+	// make it an explicit JSONP request. Nominatim supports
+	// JSONP through the 'json_callback' GET parameter.
+	$.ajax(
+	    'http://nominatim.openstreetmap.org/search', {
+		data: {
+		    q: inp,
+		    format: "json",
+                    limit: 5
+		},
+		dataType: 'jsonp',
+		jsonp: 'json_callback',
+		success: requestSuccess});
+    }
+
     $('#box-awesome-search-form').on('submit', submitForm);
 }
 
