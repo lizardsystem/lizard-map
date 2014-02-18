@@ -31,6 +31,9 @@ Changelog of lizard-map
 
 - Add WMS filter on the page.
 
+- Fix bug where IE9 couldn't use the search bar; we should use JSONP
+  for cross-site requests.
+
 4.28 (2013-05-06)
 -----------------
 
@@ -38,12 +41,12 @@ Changelog of lizard-map
   shouldn't be shown but for which the popup should still work.
 
 - Some changes to be iPad friendly were made.
-  
+
   - The small layerswitcher is moved to the upper bar for easier use.
- 
+
   - The left hand zoom in and out buttons are not shown on iPad.
-  
-  - 'Zoom to start location' is now just an icon. 
+
+  - 'Zoom to start location' is now just an icon.
 
 
 4.27 (2013-04-03)
