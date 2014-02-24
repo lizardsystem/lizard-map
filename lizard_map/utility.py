@@ -9,15 +9,15 @@ def short_string(value, length):
     TODO: wordwrap
     """
 
-    if value == value[:length]:
-        return value
-    else:
-        length_pre = min(int(length * 0.75), length - 3)
-        length_post = max(length - length_pre - 3, 0)
-        result = value[:length_pre] + '...'
-        if length_post > 0:
-            result += value[-length_post:]
-        return result
+    if len(value) <= length:
+        return value  # Already short enough
+        
+    length_pre = min(int(length * 0.75), length - 3)
+    length_post = max(length - length_pre - 3, 0)
+    result = value[:length_pre] + '...'
+    if length_post > 0:
+        result += value[-length_post:]
+    return result
 
 
 def float_to_string(value):
