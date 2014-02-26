@@ -418,6 +418,14 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-calendar',
             klass='popup-date-range')
         actions.insert(0, set_date_range)
+        if getattr(settings, 'MAP_SHOW_COLLAGE', False):
+            collage_icon = Action(
+                name='',
+                element_id='collage-link',
+                description=_('Go to your collage'),
+                url=reverse('lizard_map_collage_edit_detail'),
+                icon='icon-picture')
+            actions.insert(0, collage_icon)
         if Setting.get('bootstrap_tour', False):
             show_tour = Action(
                 name='',
