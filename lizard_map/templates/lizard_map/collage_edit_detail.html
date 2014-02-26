@@ -1,8 +1,17 @@
 {% extends "lizard_map/lizardgis.html" %}
 {% load i18n workspaces %}
 
-{% block sidebar %}
+{% block head-extras %}
+<style>
+  #box-awesome {
+      /* hardcoded in realbase.html, so we're rude and kick it out again. */
+      display: none;
+  }
+</style>
+{% endblock head-extras %}
 
+
+{% block sidebar %}
 {# TODO slugs #}
 {% collage_edit view.collage_edit 'True' 'True' %}
 
