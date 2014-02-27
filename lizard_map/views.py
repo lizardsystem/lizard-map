@@ -1378,7 +1378,7 @@ def search_coordinates(request,
     return popup_json([], request=request)
 
 
-class CollageDetailView(AppView):
+class CollageDetailView(CollageMixin, UiView):
     """
     Shows "my collage" as big page.
     """
