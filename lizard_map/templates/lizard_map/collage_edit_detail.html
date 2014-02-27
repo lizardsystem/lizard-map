@@ -7,57 +7,55 @@
 
 
 {% block sidebar %}
-{# TODO slugs #}
-{% collage_edit view.collage_edit 'True' 'True' %}
+  {# TODO slugs #}
+  {% collage_edit view.collage_edit 'True' 'True' %}
 
 {% endblock %}
 
 {% block content %}
-<div id="textual">
-  <div id="collage">
-    {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
-    <h3>{{ collage_items.0.data_description }}</h3>
-    {% collage_items_html collage_items 'True' view.request %}
-    {% if collage_items.0.collage_detail_show_edit_block %}
-    <h3>Gegevens</h3>
-    <table class="table table-bordered">
-      <thead><tr>
-        <th>Naam</th>
-        <th>Toon tabel</th>
-        <th>Exporteer csv</th>
-      </tr></thead>
-      <tbody>
-        {% for collage_item in collage_items %}
-        <tr>
-          <td>{{ collage_item.name }}</td>
-          <td><a href="{% adapter_url collage_item 'html' %}"
-                 class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
-          <td><a href="{% adapter_url collage_item 'csv' %}"
-                 class="ss_sprite ss_table_save">Exporteer csv</a></td>
-        </tr>
-        {% endfor %}
+  <div id="textual">
+    <div id="collage">
+      {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
+        <h3>{{ collage_items.0.data_description }}</h3>
+        {% collage_items_html collage_items 'True' view.request %}
+        {% if collage_items.0.collage_detail_show_edit_block %}
+          <h3>Gegevens</h3>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Naam</th>
+                <th>Toon tabel</th>
+                <th>Exporteer csv</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for collage_item in collage_items %}
+                <tr>
+                  <td>{{ collage_item.name }}</td>
+                  <td><a href="{% adapter_url collage_item 'html' %}"
+                         class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
+                  <td><a href="{% adapter_url collage_item 'csv' %}"
+                         class="ss_sprite ss_table_save">Exporteer csv</a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% endif %}
 
-      </tbody>
-    </table>
-    {% endif %}
+        {% if collage_items.0.collage_detail_show_statistics_block %}
+          {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
+          <h3>Statistieken</h3>
+          <div class="data-from-url"
+               data-url="{% collage_item_statistics_url collage_items %}"></div>
+        {% endif %}
+      {% endfor %}
 
-
-    {% if collage_items.0.collage_detail_show_statistics_block %}
-    {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
-    <h3>Statistieken</h3>
-    <div class="data-from-url"
-         data-url="{% collage_item_statistics_url collage_items %}"></div>
-    {% endif %}
-
-    {% endfor %}
-
-    <p>
-      {# calculate stats for your collage-edits collage items #}
-      <a href="{% url lizard_map_statistics_csv %}"
-         class="ss_table_save ss_sprite noprint"
-         title="Exporteer alle statistieken in csv">Exporteer alle statistieken</a>
-    </p>
+      <p>
+        {# calculate stats for your collage-edits collage items #}
+        <a href="{% url lizard_map_statistics_csv %}"
+           class="ss_table_save ss_sprite noprint"
+           title="Exporteer alle statistieken in csv">Exporteer alle statistieken</a>
+      </p>
+    </div>
   </div>
-</div>
-
 {% endblock %}
