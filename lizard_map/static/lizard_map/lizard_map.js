@@ -787,23 +787,24 @@ function actionPostEditCollageItem(event) {
 
 /* click on collage-add item */
 function actionPostCollageAdd(event) {
+    event.preventDefault();
     var $target, adapter_class, name, adapter_layer_json, identifier;
     /* New bootstrap-era interaction */
     {
-        var $layer_button, $moving_box, move_down, move_right;
-        $layer_button = $(".secondary-sidebar-button");
+        var $collage_button, $moving_box, move_down, move_right;
+        $collage_button = $("#action-collage-link");
         $("#page").after('<div id="moving-box">');
         $moving_box = $("#moving-box");
         $moving_box.offset($(this).offset());
         $moving_box.width($(this).width());
         $moving_box.height($(this).height());
-        move_down = $layer_button.offset().top - $(this).offset().top;
-        move_right = $layer_button.offset().left - $(this).offset().left;
+        move_down = $collage_button.offset().top - $(this).offset().top;
+        move_right = $collage_button.offset().left - $(this).offset().left;
         $moving_box.animate({
             left: '+=' + move_right,
             top: '+=' + move_down,
-            width: $layer_button.width(),
-            height: $layer_button.height()
+            width: $collage_button.width(),
+            height: $collage_button.height()
         }, 1000, function() {
             $moving_box.remove();
         });
