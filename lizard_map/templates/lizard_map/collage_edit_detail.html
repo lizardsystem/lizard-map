@@ -1,14 +1,9 @@
-{% extends "lizard_map/lizardgis.html" %}
+{% extends "lizard_ui/lizardbase.html" %}
 {% load i18n workspaces %}
 
-{% block head-extras %}
-<style>
-  #box-awesome {
-      /* hardcoded in realbase.html, so we're rude and kick it out again. */
-      display: none;
-  }
-</style>
-{% endblock head-extras %}
+{% block awesome %}
+  {# No lizard5 awesome box #}
+{% endblock awesome %}
 
 
 {% block sidebar %}
