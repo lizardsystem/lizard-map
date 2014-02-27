@@ -42,20 +42,10 @@
           </table>
         {% endif %}
 
-        {% if collage_items.0.collage_detail_show_statistics_block %}
-          {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
-          <h3>Statistieken</h3>
-          <div class="data-from-url"
-               data-url="{% collage_item_statistics_url collage_items %}"></div>
-        {% endif %}
       {% endfor %}
 
-      <p>
-        {# calculate stats for your collage-edits collage items #}
-        <a href="{% url lizard_map_statistics_csv %}"
-           class="ss_table_save ss_sprite noprint"
-           title="Exporteer alle statistieken in csv">Exporteer alle statistieken</a>
-      </p>
+      <!-- Statistics have been removed in lizard5 -->
+
     </div>
   </div>
 {% endblock %}
