@@ -15,34 +15,40 @@
 {% block content %}
   <div id="textual">
     <div id="collage">
-      {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
-        <h3>{{ collage_items.0.data_description }}</h3>
-        {% collage_items_html collage_items 'True' view.request %}
-        {% if collage_items.0.collage_detail_show_edit_block %}
-          <h3>Gegevens</h3>
-          <table class="table table-bordered">
-            <thead>
-              <tr>
-                <th>Naam</th>
-                <th>Toon tabel</th>
-                <th>Exporteer csv</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for collage_item in collage_items %}
-                <tr>
-                  <td>{{ collage_item.name }}</td>
-                  <td><a href="{% adapter_url collage_item 'html' %}"
-                         class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
-                  <td><a href="{% adapter_url collage_item 'csv' %}"
-                         class="ss_sprite ss_table_save">Exporteer csv</a></td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% endif %}
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Naam</th>
+            <th>Toon<br>tabel</th>
+            <th>Exporteer<br>csv</th>
+            <th>Grafiek</th>
+          </tr>
+        </thead>
 
-      {% endfor %}
+        <tbody>
+          {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
+            {% for collage_item in collage_items %}
+              <tr>
+                <td>
+                  {{ collage_item.name }}
+                </td>
+                <td><a href="{% adapter_url collage_item 'html' %}"
+                       class="ss_sprite ss_table collage-table-popup">&nbsp;</a></td>
+                <td><a href="{% adapter_url collage_item 'csv' %}"
+                       class="ss_sprite ss_table_save">&nbsp;</a></td>
+
+                {% if forloop.first %}
+                  <td rowspan="{{ collage_items|length }}"
+                      style="width: 70%">
+                    {% collage_items_html collage_items 'True' view.request %}
+                  </td>
+                {% endif %}
+
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
 
       <!-- Statistics have been removed in lizard5 -->
 
