@@ -1387,16 +1387,16 @@ class CollageDetailView(CollageMixin, UiView):
     hide_statistics = False
 
     @property
-    def content_actions(self):
-        actions = super(CollageDetailView, self).content_actions
-        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
-            set_date_range = Action(
-                name='',
-                description=_('Change the date range of the measurements'),
-                url='javascript:void(null)',
-                icon='icon-calendar',
-                klass='popup-date-range reload-after-action')
-            actions.insert(0, set_date_range)
+    def site_actions(self):
+        actions = super(CollageDetailView, self).site_actions
+        set_date_range = Action(
+            name='',
+            description=_('Change the date range of the measurements'),
+            element_id='calendar',
+            url='javascript:void(null)',
+            icon='icon-calendar',
+            klass='popup-date-range')
+        actions.insert(0, set_date_range)
         return actions
 
     def breadcrumbs(self):
