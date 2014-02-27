@@ -15,30 +15,52 @@
 {% block content %}
   <div id="textual">
     <div id="collage">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Naam</th>
-            <th>Toon<br>tabel</th>
-            <th>Exporteer<br>csv</th>
-            <th>Grafiek</th>
-          </tr>
-        </thead>
-
+      <table class="table"
+             id="edit-collage-table">
         <tbody>
-          {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
-            {% for collage_item in collage_items %}
-              <tr>
+          {% for grouping_hint, collage_items, all_collage_items in view.grouped_collage_items %}
+            {% for collage_item in all_collage_items %}
+              <tr id="collage-items-{{ collage_item.id }}"
+                  class="collage-item"
+                  data-object-id="{{ collage_item.id }}">
                 <td>
-                  {{ collage_item.name }}
+                  <input id="{{ collage_item.id }}"
+                         autocomplete="off"
+                         class="collage-item-checkbox reload-after-action"
+                         type="checkbox"
+                         {% if collage_item.visible %}
+                           checked="checked"
+                         {% endif %}
+                         href="{% url lizard_map_collage_item_edit %}"
+                         data-target-id="#edit-collage"/>
                 </td>
-                <td><a href="{% adapter_url collage_item 'html' %}"
-                       class="ss_sprite ss_table collage-table-popup">&nbsp;</a></td>
-                <td><a href="{% adapter_url collage_item 'csv' %}"
-                       class="ss_sprite ss_table_save">&nbsp;</a></td>
+                <td>
+                  <img class="collage-item-image"
+                       src="{{ collage_item.adapter.symbol_url }}"
+                       width="16"
+                       height="16" />
+                  {{ collage_item.name }}
+                  <br>
+                  <a href="{% adapter_url collage_item 'html' %}"
+                       class="ss_sprite ss_table collage-table-popup">
+                    Toon tabel
+                  </a>
+                  <br>
+                  <a href="{% adapter_url collage_item 'csv' %}"
+                     class="ss_sprite ss_table_save">
+                    Exporteer csv
+                  </a>
+                  <br>
+                  <a class="ss_sprite ss_delete sidebarbox-action-icon collage-item-delete reload-after-action"
+                     title="{% trans 'Delete item' %}"
+                     href="{% url lizard_map_collage_item_edit %}"
+                     data-target-id="#edit-collage">
+                    Verwijder item
+                  </a>
+                </td>
 
                 {% if forloop.first %}
-                  <td rowspan="{{ collage_items|length }}"
+                  <td rowspan="{{ all_collage_items|length }}"
                       style="width: 70%">
                     {% collage_items_html collage_items 'True' view.request %}
                   </td>

@@ -1418,8 +1418,15 @@ class CollageDetailView(CollageMixin, UiView):
         "identifiers": a list of identifiers """
         collage_items, _ = group_collage_items(
             self.collage_edit().collage_items.filter(visible=True))
+        all_collage_items, _ = group_collage_items(
+            self.collage_edit().collage_items.all())
 
-        return collage_items
+        result = []
+        for grouping_hint in collage_items:
+            result.append([grouping_hint,
+                           collage_items[grouping_hint],
+                           all_collage_items[grouping_hint]])
+        return result
 
     def get(self, request, *args, **kwargs):
         self.hide_statistics = request.GET.get('hide_statistics', False)
