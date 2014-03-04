@@ -34,6 +34,8 @@ Changelog of lizard-map
 - Fix bug where IE9 couldn't use the search bar; we should use JSONP
   for cross-site requests.
 
+- Fix text, layout en positions of info tour wizard.
+
 4.28 (2013-05-06)
 -----------------
 
