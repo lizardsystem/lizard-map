@@ -4,7 +4,7 @@ Mapnik helper functions
 import logging
 import os
 
-import mapnik
+import mapnik2
 from django.conf import settings
 
 from lizard_map.symbol_manager import SymbolManager
@@ -33,7 +33,7 @@ def database_settings(name="default", user_settings=None):
             if database_settings['ENGINE'] in (
                 'postgresql_psycopg2',
                 'django.contrib.gis.db.backends.postgis'):
-                datasource = mapnik.PostGIS
+                datasource = mapnik2.PostGIS
                 options = {
                     'host': database_settings["HOST"],
                     'user': database_settings["USER"],
@@ -52,11 +52,11 @@ def database_settings(name="default", user_settings=None):
     elif getattr(user_settings, "DATABASE_ENGINE", None):
         # Pre django 1.2 style single database configuration.
         if user_settings.DATABASE_ENGINE == 'sqlite3':
-            datasource = mapnik.SQLite
+            datasource = mapnik2.SQLite
             options = {'file': user_settings.DATABASE_NAME}
         elif user_settings.DATABASE_ENGINE in (
             'postgresql_psycopg2', 'django.contrib.gis.db.backends.postgis'):
-            datasource = mapnik.PostGIS
+            datasource = mapnik2.PostGIS
             options = {'host': user_settings.DATABASE_HOST,
                        'user': user_settings.DATABASE_USER,
                        'password': user_settings.DATABASE_PASSWORD,
@@ -77,7 +77,7 @@ def create_layer_from_query(query, projection, geometry_field=None, srid=None,
                             user_settings=None):
     """Return layer for the given table_view and projection."""
 
-    layer = mapnik.Layer('Geometry from DB', projection)
+    layer = mapnik2.Layer('Geometry from DB', projection)
     layer.srs = projection
     if user_settings is None:
         user_settings = settings
@@ -126,13 +126,13 @@ def point_rule(icon, mask, color, mapnik_filter=None):
         settings.MEDIA_ROOT, 'generated_icons', output_filename)
 
     # Use filename in mapnik pointsymbolizer
-    point_looks = mapnik.PointSymbolizer(
+    point_looks = mapnik2.PointSymbolizer(
         str(output_filename_abs), 'png', 16, 16)
     point_looks.allow_overlap = True
-    layout_rule = mapnik.Rule()
+    layout_rule = mapnik2.Rule()
     layout_rule.symbols.append(point_looks)
     if mapnik_filter:
-        layout_rule.filter = mapnik.Filter(mapnik_filter)
+        layout_rule.filter = mapnik2.Filter(mapnik_filter)
 
     return layout_rule
 
@@ -152,9 +152,9 @@ def add_datasource_point(datasource, x, y, name, info):
 
 def add_datasource_point_mapnik2(datasource, x, y, name, info, _id=0, context=None):
     if context is None:
-        context = mapnik.Context()
+        context = mapnik2.Context()
     context.push(name)
-    feature = mapnik.Feature(context, _id)
+    feature = mapnik2.Feature(context, _id)
     feature[name] = info
     feature.add_geometries_from_wkt('POINT(%s %s)' % (x, y))
     datasource.add_feature(feature)

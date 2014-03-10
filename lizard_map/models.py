@@ -14,7 +14,7 @@ from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 import jsonfield
 import lizard_map.configchecker
-import mapnik
+import mapnik2
 import pkg_resources
 
 from lizard_map import dateperiods
@@ -934,20 +934,20 @@ class Legend(models.Model):
             """
             Makes mapnik rule for looks. For lines and polygons.
             """
-            rule = mapnik.Rule()
+            rule = mapnik2.Rule()
             if mapnik_filter is not None:
-                rule.filter = mapnik.Filter(mapnik_filter)
-            mapnik_color = mapnik.Color(color.r, color.g, color.b)
+                rule.filter = mapnik2.Filter(mapnik_filter)
+            mapnik_color = mapnik2.Color(color.r, color.g, color.b)
 
-            symb_line = mapnik.LineSymbolizer(mapnik_color, 3)
+            symb_line = mapnik2.LineSymbolizer(mapnik_color, 3)
             rule.symbols.append(symb_line)
 
-            symb_poly = mapnik.PolygonSymbolizer(mapnik_color)
+            symb_poly = mapnik2.PolygonSymbolizer(mapnik_color)
             symb_poly.fill_opacity = 0.5
             rule.symbols.append(symb_poly)
             return rule
 
-        mapnik_style = mapnik.Style()
+        mapnik_style = mapnik2.Style()
         if value_field is None:
             value_field = "value"
 
@@ -1004,7 +1004,7 @@ class LegendPoint(Legend):
     def mapnik_style(self, value_field=None):
         """Return a Mapnik style from Legend object. """
 
-        mapnik_style = mapnik.Style()
+        mapnik_style = mapnik2.Style()
         if value_field is None:
             value_field = "value"
 

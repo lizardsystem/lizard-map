@@ -8,7 +8,6 @@ import logging
 import math
 import re
 import urllib2
-from xml.dom.minidom import parseString
 
 from dateutil import parser as date_parser
 
@@ -39,7 +38,7 @@ from lizard_ui.views import ViewContextMixin
 from rest_framework.response import Response as RestResponse
 from rest_framework.views import APIView
 import iso8601
-import mapnik
+import mapnik2
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
@@ -1139,11 +1138,11 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
     # TODO: check that they're not none
 
     # Map settings
-    mapnik_map = mapnik.Map(width, height)
+    mapnik_map = mapnik2.Map(width, height)
     # Setup mapnik srs.
     mapnik_map.srs = coordinates.srs_to_mapnik_projection[srs]
-    mapnik_map.background = mapnik.Color('transparent')
-    #m.background = mapnik.Color('blue')
+    mapnik_map.background = mapnik2.Color('transparent')
+    #m.background = mapnik2.Color('blue')
 
     workspace_items = workspace.workspace_items.filter(
         visible=True, id=workspace_item_id).reverse()
@@ -1167,13 +1166,13 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
 
     #Zoom and create image
     logger.debug("Zooming to box...")
-    mapnik_map.zoom_to_box(mapnik.Envelope(*bbox))
+    mapnik_map.zoom_to_box(mapnik2.Envelope(*bbox))
     # mapnik_map.zoom_to_box(layer.envelope())
     # just have mapnik render the png, as it should be faster
     # unfortunately mapnik doesn't support rendering to a stream (yet?)
-    img = mapnik.Image(width, height)
+    img = mapnik2.Image(width, height)
     logger.debug("Rendering map...")
-    mapnik.render(mapnik_map, img)
+    mapnik2.render(mapnik_map, img)
     response = HttpResponse(img.tostring('png'), content_type='image/png')
     return response
 
@@ -1564,12 +1563,12 @@ def create_mapnik_image(request, data):
     """TODO: remove copy-pasting.
     """
     # Map settings
-    mapnik_map = mapnik.Map(data['width'], data['height'])
+    mapnik_map = mapnik2.Map(data['width'], data['height'])
     layers = data['layers']
     # Setup mapnik srs.
     mapnik_map.srs = coordinates.srs_to_mapnik_projection[data['srs']]
-    mapnik_map.background = mapnik.Color(data['color'])
-    #m.background = mapnik.Color(data['color')]
+    mapnik_map.background = mapnik2.Color(data['color'])
+    #m.background = mapnik2.Color(data['color')]
 
     workspace = get_workspace_edit_by_request(request)
 
@@ -1588,10 +1587,10 @@ def create_mapnik_image(request, data):
 
     #Zoom and create image
     logger.debug("Zooming to box...")
-    mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
-    img = mapnik.Image(data['width'], data['height'])
+    mapnik_map.zoom_to_box(mapnik2.Envelope(*data['bbox']))
+    img = mapnik2.Image(data['width'], data['height'])
     logger.debug("Rendering map...")
-    mapnik.render(mapnik_map, img)
+    mapnik2.render(mapnik_map, img)
 
     return img
 
