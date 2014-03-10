@@ -34,6 +34,12 @@ Changelog of lizard-map
 - Fix bug where IE9 couldn't use the search bar; we should use JSONP
   for cross-site requests.
 
+- Re-added collage screen (called "Dashboard" now), mostly by re-enabling old
+  functionality. Bigger change is the layout of the actual main collage page:
+  the labels and so are now next to the graphs as there's no separate sidebar
+  anymore.
+
+
 4.28 (2013-05-06)
 -----------------
 

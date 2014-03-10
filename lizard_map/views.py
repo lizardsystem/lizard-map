@@ -418,6 +418,14 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-calendar',
             klass='popup-date-range')
         actions.insert(0, set_date_range)
+        if getattr(settings, 'MAP_SHOW_COLLAGE', False):
+            collage_icon = Action(
+                name='',
+                element_id='collage-link',
+                description=_('Go to your collage'),
+                url=reverse('lizard_map_collage_edit_detail'),
+                icon='icon-picture')
+            actions.insert(0, collage_icon)
         if Setting.get('bootstrap_tour', False):
             show_tour = Action(
                 name='',
@@ -1379,16 +1387,16 @@ class CollageDetailView(CollageMixin, UiView):
     hide_statistics = False
 
     @property
-    def content_actions(self):
-        actions = super(CollageDetailView, self).content_actions
-        if getattr(settings, 'MAP_SHOW_DATE_RANGE', True):
-            set_date_range = Action(
-                name='',
-                description=_('Change the date range of the measurements'),
-                url='javascript:void(null)',
-                icon='icon-calendar',
-                klass='popup-date-range reload-after-action')
-            actions.insert(0, set_date_range)
+    def site_actions(self):
+        actions = super(CollageDetailView, self).site_actions
+        set_date_range = Action(
+            name='',
+            description=_('Change the date range of the measurements'),
+            element_id='calendar',
+            url='javascript:void(null)',
+            icon='icon-calendar',
+            klass='popup-date-range')
+        actions.insert(0, set_date_range)
         return actions
 
     def breadcrumbs(self):
@@ -1410,8 +1418,15 @@ class CollageDetailView(CollageMixin, UiView):
         "identifiers": a list of identifiers """
         collage_items, _ = group_collage_items(
             self.collage_edit().collage_items.filter(visible=True))
+        all_collage_items, _ = group_collage_items(
+            self.collage_edit().collage_items.all())
 
-        return collage_items
+        result = []
+        for grouping_hint in collage_items:
+            result.append([grouping_hint,
+                           collage_items[grouping_hint],
+                           all_collage_items[grouping_hint]])
+        return result
 
     def get(self, request, *args, **kwargs):
         self.hide_statistics = request.GET.get('hide_statistics', False)

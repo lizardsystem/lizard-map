@@ -1,59 +1,86 @@
 {% extends "lizard_map/lizardgis.html" %}
 {% load i18n workspaces %}
 
-{% block sidebar %}
-
-{# TODO slugs #}
-{% collage_edit view.collage_edit 'True' 'True' %}
-
-{% endblock %}
+{% block awesome %}
+  {# No lizard5 awesome box #}
+{% endblock awesome %}
 
 {% block content %}
-<div id="textual">
-  <div id="collage">
-    {% for grouping_hint, collage_items in view.grouped_collage_items.items %}
-    <h3>{{ collage_items.0.data_description }}</h3>
-    {% collage_items_html collage_items 'True' view.request %}
-    {% if collage_items.0.collage_detail_show_edit_block %}
-    <h3>Gegevens</h3>
-    <table class="table table-bordered">
-      <thead><tr>
-        <th>Naam</th>
-        <th>Toon tabel</th>
-        <th>Exporteer csv</th>
-      </tr></thead>
-      <tbody>
-        {% for collage_item in collage_items %}
-        <tr>
-          <td>{{ collage_item.name }}</td>
-          <td><a href="{% adapter_url collage_item 'html' %}"
-                 class="ss_sprite ss_table collage-table-popup">Toon tabel</a></td>
-          <td><a href="{% adapter_url collage_item 'csv' %}"
-                 class="ss_sprite ss_table_save">Exporteer csv</a></td>
-        </tr>
-        {% endfor %}
+  <div id="textual">
+    <div id="collage">
+      <table class="table"
+             id="edit-collage-table">
+        <tbody>
+          {% for grouping_hint, collage_items, all_collage_items in view.grouped_collage_items %}
+            {% for collage_item in all_collage_items %}
+              <tr id="collage-items-{{ collage_item.id }}"
+                  class="collage-item"
+                  data-object-id="{{ collage_item.id }}">
+                <td>
+                  <input id="{{ collage_item.id }}"
+                         autocomplete="off"
+                         class="collage-item-checkbox reload-after-action"
+                         type="checkbox"
+                         {% if collage_item.visible %}
+                           checked="checked"
+                         {% endif %}
+                         href="{% url lizard_map_collage_item_edit %}"
+                         data-target-id="#edit-collage"/>
+                </td>
+                <td>
+                  <img class="collage-item-image"
+                       src="{{ collage_item.adapter.symbol_url }}"
+                       width="16"
+                       height="16" />
+                  {{ collage_item.name }}
+                  <br>
+                  <a href="{% adapter_url collage_item 'html' %}"
+                       class="ss_sprite ss_table collage-table-popup">
+                    Toon tabel
+                  </a>
+                  &nbsp;&nbsp;&nbsp;
+                  <a href="{% adapter_url collage_item 'csv' %}"
+                     class="ss_sprite ss_table_save">
+                    Exporteer csv
+                  </a>
+                  <br>
+                  <a class="ss_sprite ss_delete sidebarbox-action-icon collage-item-delete reload-after-action"
+                     title="{% trans 'Delete item' %}"
+                     href="{% url lizard_map_collage_item_edit %}"
+                     data-target-id="#edit-collage">
+                    Verwijder item
+                  </a>
+                </td>
 
-      </tbody>
-    </table>
-    {% endif %}
+                {% if forloop.first %}
+                  <td rowspan="{{ all_collage_items|length }}"
+                      style="width: 70%">
+                    {% collage_items_html collage_items 'True' view.request %}
+                  </td>
+                {% endif %}
 
+              </tr>
+            {% endfor %}
+          {% empty %}
+            {# No collage items #}
+            <tr><td>{% trans 'Select items on the map.' %}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
-    {% if collage_items.0.collage_detail_show_statistics_block %}
-    {# Statistics. TODO: change links to javascript. Reloading is unnecessary#}
-    <h3>Statistieken</h3>
-    <div class="data-from-url"
-         data-url="{% collage_item_statistics_url collage_items %}"></div>
-    {% endif %}
+      <!-- Statistics have been removed in lizard5 -->
 
-    {% endfor %}
+      <div>
+        <a id="collage-empty"
+           href="{% url lizard_map_collage_empty %}"
+           title="{% trans 'Empty your collage' %}"
+           class="title btn btn-danger sidebarbox-action-icon action-post reload-after-action"
+           data-target-id="#edit-collage">
+          <i class="icon-trash icon-white"></i>
+          Maak hele dashboard leeg
+        </a>
+      </div>
 
-    <p>
-      {# calculate stats for your collage-edits collage items #}
-      <a href="{% url lizard_map_statistics_csv %}"
-         class="ss_table_save ss_sprite noprint"
-         title="Exporteer alle statistieken in csv">Exporteer alle statistieken</a>
-    </p>
+    </div>
   </div>
-</div>
-
 {% endblock %}

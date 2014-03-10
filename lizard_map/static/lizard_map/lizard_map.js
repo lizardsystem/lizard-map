@@ -787,23 +787,24 @@ function actionPostEditCollageItem(event) {
 
 /* click on collage-add item */
 function actionPostCollageAdd(event) {
+    event.preventDefault();
     var $target, adapter_class, name, adapter_layer_json, identifier;
     /* New bootstrap-era interaction */
     {
-        var $layer_button, $moving_box, move_down, move_right;
-        $layer_button = $(".secondary-sidebar-button");
+        var $collage_button, $moving_box, move_down, move_right;
+        $collage_button = $("#action-collage-link");
         $("#page").after('<div id="moving-box">');
         $moving_box = $("#moving-box");
         $moving_box.offset($(this).offset());
         $moving_box.width($(this).width());
         $moving_box.height($(this).height());
-        move_down = $layer_button.offset().top - $(this).offset().top;
-        move_right = $layer_button.offset().left - $(this).offset().left;
+        move_down = $collage_button.offset().top - $(this).offset().top;
+        move_right = $collage_button.offset().left - $(this).offset().left;
         $moving_box.animate({
             left: '+=' + move_right,
             top: '+=' + move_down,
-            width: $layer_button.width(),
-            height: $layer_button.height()
+            width: $collage_button.width(),
+            height: $collage_button.height()
         }, 1000, function() {
             $moving_box.remove();
         });
@@ -2718,28 +2719,29 @@ function setUpWMSFilter(){
     $filterElement = $('#action-wms-filter-ul');
 
     var filterItems = $('#lizard-map-wms').data('wms-filter');
-    for(var i=0; i<filterItems.length; i++){
-	var filterItem = filterItems[i];
-	var checked;
-	if (filterItem['default'] == true) {
-	    checked = true;
-	    // Add the cql_filter for the default filter
-	    $('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
-	} else {
-	    checked = false;
-	}
-	var id = 'wms-filter-id-' + i;
-	var template = 	dropdownTemplate(
-	    {'name': filterItem['name'],
-	     'checked': checked,
-	     'id': id
-	    });
+    if (filterItems) {
+        for(var i=0; i<filterItems.length; i++){
+            var filterItem = filterItems[i];
+            var checked;
+            if (filterItem['default'] == true) {
+                checked = true;
+                // Add the cql_filter for the default filter
+                $('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
+            } else {
+                checked = false;
+            }
+            var id = 'wms-filter-id-' + i;
+            var template = 	dropdownTemplate(
+                {'name': filterItem['name'],
+                 'checked': checked,
+                 'id': id
+                });
 
-	$filterElement.append(template);
-	// Set the cql data on the newly created element.
-	$('#' + id).data('cql-filter', filterItem.cql_filter);
+            $filterElement.append(template);
+            // Set the cql data on the newly created element.
+            $('#' + id).data('cql-filter', filterItem.cql_filter);
 
-
+        }
     }
 
     $filterElement.find('.wms-filter').click(function(e){
