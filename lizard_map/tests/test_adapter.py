@@ -1,35 +1,40 @@
 import datetime
 
+import pytz
+
 from django.test import TestCase
 from django.test.utils import override_settings
 
 from lizard_map import adapter
 
 
+def utc_datetime(*args, **kwargs):
+    kwargs["tzinfo"] = pytz.timezone('UTC')
+    return datetime.datetime(*args, **kwargs)
+
+
 @override_settings(TIME_ZONE="Europe/Amsterdam")
 class TestMkJsTimeStamp(TestCase):
     def test_epoch_datetime_returns_3600(self):
-        dt = datetime.datetime(
+        dt = utc_datetime(
             year=1970,
             month=1,
             day=1,
             hour=0,
             minute=0)
+        print dt
 
         # This is the start of the epoch. This time of the year,
         # Europe/Amsterdam is 1 hour ahead of UTC, so the function
-        # should return 3600000.0 ms (1 hour).
+        # should return "1970-01-01T01:00+00:00"
         self.assertEquals(
             adapter.mk_js_timestamp(dt),
-            3600000.0)
+            "1970-01-01T01:00:00+00:00")
 
     def test_june_1_returns_correctly(self):
-        # June 1 of 1970 is 31+28+31+30+31 days later,
-        # or 151 * 3600 * 24 = 13046400 seconds later.
-
         # This turns out to be a trick question -- in 1970 we didn't
         # have summertime yet!
-        dt = datetime.datetime(
+        dt = utc_datetime(
             year=1970,
             month=6,
             day=1,
@@ -38,11 +43,10 @@ class TestMkJsTimeStamp(TestCase):
 
         self.assertEquals(
             adapter.mk_js_timestamp(dt),
-            13046400 * 1000.0 + 3600000.0)
+            "1970-06-01T01:00:00+00:00")
 
     def test_2013_jan_1_correct(self):
-        # Apparently jan 1, 2013 is 1356998400 seconds since the epoch.
-        dt = datetime.datetime(
+        dt = utc_datetime(
             year=2013,
             month=1,
             day=1,
@@ -50,13 +54,11 @@ class TestMkJsTimeStamp(TestCase):
             minute=0)
         self.assertEquals(
             adapter.mk_js_timestamp(dt),
-            (1356998400 + 3600) * 1000.0)
+            "2013-01-01T01:00:00+00:00")
 
     def test_2013_jun_1_correct(self):
-        # Apparently jan 1, 2013 is 1356998400 seconds since the epoch.
-        # jun 1 is 13046400 seconds later (see above),
-        # and summer 2013 IS summertime (+2 hours).
-        dt = datetime.datetime(
+        # summer 2013 IS summertime (+2 hours).
+        dt = utc_datetime(
             year=2013,
             month=6,
             day=1,
@@ -64,7 +66,7 @@ class TestMkJsTimeStamp(TestCase):
             minute=0)
         self.assertEquals(
             adapter.mk_js_timestamp(dt),
-            (1356998400 + 13046400 + 7200) * 1000.0)
+            "2013-06-01T02:00:00+00:00")
 
 
 class TestMakePercentileLabel(TestCase):

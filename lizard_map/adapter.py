@@ -7,11 +7,12 @@ import locale
 import math
 import numpy
 import pkg_resources
+import pytz
 
 from dateutil.relativedelta import relativedelta
 from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 
-
+from django.conf import settings
 from django.http import HttpResponse
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
@@ -546,11 +547,6 @@ class Graph(object):
             else:
                 axes_to_change = self.ax2
 
-#        available_width = self.width - LEFT_LABEL_WIDTH - LEGEND_WIDTH
-#        approximate_characters = int(available_width / (FONT_SIZE / 2))
-#        max_number_of_ticks = approximate_characters // 20
-#        if max_number_of_ticks < 2:
-#            max_number_of_ticks = 2
         if not self.restrict_to_month:
             major_locator = LessTicksAutoDateLocator()
             axes_to_change.xaxis.set_major_locator(major_locator)
@@ -704,26 +700,39 @@ class Graph(object):
         return self.http_png()
 
 
-def mk_js_timestamp(datetime_utc):
+def mk_js_timestamp(datetime_utc, timezone=pytz.timezone(settings.TIME_ZONE)):
     '''
-    Convert a Python UTC datetime to a JavaScript compatible timestamp.
-    Warning: truncates milliseconds.
+    JavaScript can't handle timezones. It just can't. If you let
+    JavaScript do anything related to timezones, your timestamp of a
+    measurement in February will look different depending on whether
+    you look at it in winter or summer.
 
-    The timestamp for JS is ready to show to the user, JS should do no
-    more timezone manipulation on it. Use methods like moment.utc() to
-    ensure this, even though the timestamp does not directly represent
-    UTC, but the site's timezone.
+    Here, we have hopefully been given a nice Python timezone-aware
+    UTC timestamp. We convert it to the site's configured time zone
+    for display.
 
-    The reason for that is that otherwise JS will try to convert the
-    time to the user's current timezone, so that the time shown for an
-    event suddenly depends on whether it is currently summer time or
-    winter time. An event that shows in a graph as 11:00 on 10 january
-    should not be shown as 12:00 when the same graph of the same data
-    is shown during the summer.
+    If sloppy naive datetimes are still generated somewhere in the
+    outskirts of our system, obviously in code written by now-departed
+    colleagues, then we hope the timestamp is already in the right
+    timezone and don't change it.
 
-    It follows that we need some magic to achieve this.
+    THEN, we chop off all timezone information and replace it by a
+    hard "+00:00" to fool JavaScript. JavaScript should show all times
+    as-is and the best way to get it to do that is to tell it that all
+    datetimes are and should stay UTC, even if the adults know better.
     '''
-    return datetime_utc.isoformat()
+
+    try:
+        # Right way
+        iso = datetime_utc.astimezone(timezone).isoformat()
+    except ValueError:
+        # Wrong way for compatibility
+        iso = datetime_utc.isoformat()
+
+    # Fool JavaScript
+    iso = iso[:-6] + "+00:00"
+
+    return iso
 
 
 class FlotGraphAxes(object):
