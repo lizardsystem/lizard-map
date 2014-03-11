@@ -7,13 +7,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'BackgroundMap.is_base_layer'
         db.add_column('lizard_map_backgroundmap', 'is_base_layer', self.gf('django.db.models.fields.BooleanField')(default=True), keep_default=False)
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'BackgroundMap.is_base_layer'
         db.delete_column('lizard_map_backgroundmap', 'is_base_layer')
 
@@ -83,7 +83,7 @@ class Migration(SchemaMigration):
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'collage': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'collage_items'", 'to': "orm['lizard_map.CollageEdit']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'identifier': ('lizard_map.fields.JSONField', [], {'default': "''"}),
+            'identifier': ('lizard_map.fields.JSONField', [], {'default': '{}'}),
             'index': ('django.db.models.fields.IntegerField', [], {'default': '100', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
             'percentile_value': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),

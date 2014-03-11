@@ -7,13 +7,13 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        
+
         # Adding field 'WorkspaceStorage.secret_slug'
         db.add_column('lizard_map_workspacestorage', 'secret_slug', self.gf('django.db.models.fields.CharField')(max_length=16, null=True), keep_default=False)
 
 
     def backwards(self, orm):
-        
+
         # Deleting field 'WorkspaceStorage.secret_slug'
         db.delete_column('lizard_map_workspacestorage', 'secret_slug')
 
@@ -83,7 +83,7 @@ class Migration(SchemaMigration):
             'clickable': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'collage': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'collage_items'", 'to': "orm['lizard_map.CollageEdit']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'identifier': ('lizard_map.fields.JSONField', [], {'default': "''"}),
+            'identifier': ('lizard_map.fields.JSONField', [], {'default': '{}'}),
             'index': ('django.db.models.fields.IntegerField', [], {'default': '100', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '80', 'blank': 'True'}),
             'percentile_value': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
