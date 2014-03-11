@@ -69,6 +69,8 @@ ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
 LOGGING = setup_logging(BUILDOUT_DIR)
 USE_TZ = True
 
+TIME_ZONE = "Europe/Amsterdam"
+
 #SOUTH_TESTS_MIGRATE = False
 
 LIZARD_MAP_STANDALONE = True

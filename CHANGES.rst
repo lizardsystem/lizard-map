@@ -39,6 +39,8 @@ Changelog of lizard-map
   the labels and so are now next to the graphs as there's no separate sidebar
   anymore.
 
+- Fix timezones once more.
+
 
 4.28 (2013-05-06)
 -----------------
