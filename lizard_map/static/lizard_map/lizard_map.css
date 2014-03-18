@@ -2,3 +2,39 @@
   display: block;
   float: right;
 }
+
+.popover-title-info {
+  font-weight: bold;
+  font-style: italic;
+}
+
+.popover.bottom .arrow-info {
+  top: -10px !important;
+}
+
+.popover.right .arrow-info{
+  left: -10px !important;
+}
+
+.popover.top .arrow-info {
+  bottom: -10px !important;
+}
+
+.popover.left .arrow-info{
+  right: -10px !important;
+}
+
+.popover[class*=tour-] {
+  z-index: 1999;
+}
+
+#box-awesome {
+position: fixed;
+	z-index: 1998;
+	top: 50px;
+	left: 11px;
+}
+
+#logo-row {
+  z-index: 1998 !important;
+}

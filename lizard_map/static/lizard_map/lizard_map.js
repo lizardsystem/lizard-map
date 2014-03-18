@@ -2624,14 +2624,20 @@ function setUpBootstrapTour(){
 
 function setUpTourDutch(){
     var tour = new Tour({
-	template: "<div class='popover tour'><div class='arrow'></div><h3 class='popover-title'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
+	template: "<div class='popover tour'><div class='arrow arrow-info'></div><h3 class='popover-title popover-title-info'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
     });
 
     tour.addSteps([
 	{
+	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
+	    title: "Welkom op Lizard", // string - title of the popover
+	    content: "Dit informatie portaal werkt op actuele browsers versies IE9 of hoger, Firefox en Chrome." // string - content of the popover
+	},
+	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
 	    title: "Zoeken op locatie", // string - title of the popover
-	    content: "Vul hier de zoekterm in en klik op het vergrootglas." // string - content of the popover
+	    content: "Vul hier de zoekterm in en klik op het vergrootglas.", // string - content of the popover
+	    placement: "bottom"
 	},
 	{
 	    element: "#box-awesome-content-themes",
@@ -2641,7 +2647,7 @@ function setUpTourDutch(){
 	{
 	    element: "#box-awesome-content-themes",
 	    title: "De kaart",
-	    content: "Klik op items op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien zijn."
+	    content: "Klik op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien."
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(2)",
@@ -2651,27 +2657,34 @@ function setUpTourDutch(){
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(3)",
-	    title: "Hoogteprofile",
+	    title: "Hoogteprofiel",
 	    content: "Hier vind u het hoogteprofiel.",
 	    placement: "bottom"
 
 	},
 	{
-	    element: "action-base-layers",
+	    element: "#box-awesome-tabs ul.nav li:nth-child(4)",
+	    title: "Apps",
+	    content: "Hier vind u specifieke apps.",
+	    placement: "bottom"
+
+	},
+	{
+	    element: "#action-base-layers",
 	    title: "Achtergrond kaarten",
 	    content: "Selecteer hier een andere achtergrond kaart.",
 	    placement: "bottom"
 	},
 	{
 	    element: "#action-layers",
-	    title: "kaarten",
-	    content: "Selecteer hier een specifieke kaart van de themakaart.",
+	    title: "Kaarten",
+	    content: "Selecteer hier een specifieke kaart van de themakaart om ze (on)zichtbaar te maken.",
 	    placement: "bottom"
 	},
 	{
 	    element: "#action-calendar",
 	    title: "Kalender",
-	    content: "Datum selectie voor datum afhankelijke kaarten.",
+	    content: "Wijzig hier de datum selectie voor datum afhankelijke informatie.",
 	    placement: "bottom"
 	},
 	{

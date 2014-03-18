@@ -41,6 +41,8 @@ Changelog of lizard-map
 
 - Fix timezones once more.
 
+- Fix text, layout and z-iondex positions of info tour wizard.
+
 
 4.28 (2013-05-06)
 -----------------
