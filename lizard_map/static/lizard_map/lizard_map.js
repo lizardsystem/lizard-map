@@ -2631,7 +2631,7 @@ function setUpTourDutch(){
 	{
 	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
 	    title: "Welkom op Lizard", // string - title of the popover
-	    content: "Dit informatie portaal werkt op actuele browsers versies IE9 of hoger, Firefox en Chrome." // string - content of the popover
+	    content: "Dit informatie portaal werkt op actuele browsers: IE9 of hoger, Firefox en Chrome." // string - content of the popover
 	},
 	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
