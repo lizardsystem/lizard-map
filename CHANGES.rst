@@ -43,6 +43,12 @@ Changelog of lizard-map
 
 - Fix text, layout and z-iondex positions of info tour wizard.
 
+- Hiding rainapp's period summary on the collage screen.
+
+- Opening dashboard/collage in new tab.
+
+- UI updates for the dashboard page.
+
 
 4.28 (2013-05-06)
 -----------------
