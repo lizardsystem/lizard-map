@@ -379,7 +379,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def site_actions(self):
         """Add the layer switcher icons to the site action bar.
 
-        THis was done for a quick demo for Wytze."""
+        This was done for a quick demo for Wytze."""
 
         actions = super(AppView, self).site_actions
         show_layers = Action(
@@ -1383,7 +1383,7 @@ class CollageDetailView(CollageMixin, UiView):
     """
     Shows "my collage" as big page.
     """
-    title = _('Collage')
+    title = _('Dashboard')
     template_name = 'lizard_map/collage_edit_detail.html'
     hide_statistics = False
 
