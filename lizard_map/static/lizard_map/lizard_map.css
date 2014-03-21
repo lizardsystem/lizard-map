@@ -38,3 +38,15 @@ position: fixed;
 #logo-row {
   z-index: 1998 !important;
 }
+
+#edit-collage-table .ss_sprite {
+  padding-bottom: 3px;
+}
+
+#edit-collage-table .flot-graph-control-row {
+  display: none;
+}
+
+#edit-collage-table .rainapp-period-summary {
+  display: none;
+}

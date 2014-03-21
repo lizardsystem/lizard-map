@@ -424,7 +424,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 element_id='collage-link',
                 description=_('Go to your collage'),
                 url=reverse('lizard_map_collage_edit_detail'),
-                icon='icon-picture')
+                icon='icon-dashboard',
+                target='_blank')
             actions.insert(0, collage_icon)
         if Setting.get('bootstrap_tour', False):
             show_tour = Action(

@@ -16,7 +16,7 @@
               <tr id="collage-items-{{ collage_item.id }}"
                   class="collage-item"
                   data-object-id="{{ collage_item.id }}">
-                <td>
+                <td style="width: 20px;">
                   <input id="{{ collage_item.id }}"
                          autocomplete="off"
                          class="collage-item-checkbox reload-after-action"
@@ -27,34 +27,29 @@
                          href="{% url lizard_map_collage_item_edit %}"
                          data-target-id="#edit-collage"/>
                 </td>
-                <td>
-                  <img class="collage-item-image"
-                       src="{{ collage_item.adapter.symbol_url }}"
-                       width="16"
-                       height="16" />
-                  {{ collage_item.name }}
-                  <br>
-                  <a href="{% adapter_url collage_item 'html' %}"
+                <td style="width: 300px;">
+                  <div style="padding-top: 4px;">
+                    {{ collage_item.name }}
+                  </div>
+                  <div>
+                    <a class="ss_sprite ss_delete sidebarbox-action-icon collage-item-delete reload-after-action"
+                       title="{% trans 'Delete item' %}"
+                       href="{% url lizard_map_collage_item_edit %}"
+                       data-target-id="#edit-collage">
+                    </a>
+                    &nbsp;
+                    <a href="{% adapter_url collage_item 'html' %}"
                        class="ss_sprite ss_table collage-table-popup">
-                    Toon tabel
-                  </a>
-                  &nbsp;&nbsp;&nbsp;
-                  <a href="{% adapter_url collage_item 'csv' %}"
-                     class="ss_sprite ss_table_save">
-                    Exporteer csv
-                  </a>
-                  <br>
-                  <a class="ss_sprite ss_delete sidebarbox-action-icon collage-item-delete reload-after-action"
-                     title="{% trans 'Delete item' %}"
-                     href="{% url lizard_map_collage_item_edit %}"
-                     data-target-id="#edit-collage">
-                    Verwijder item
-                  </a>
+                    </a>
+                    &nbsp;
+                    <a href="{% adapter_url collage_item 'csv' %}"
+                       class="ss_sprite ss_table_save">
+                    </a>
+                  </div>
                 </td>
 
                 {% if forloop.first %}
-                  <td rowspan="{{ all_collage_items|length }}"
-                      style="width: 70%">
+                  <td rowspan="{{ all_collage_items|length }}">
                     {% collage_items_html collage_items 'True' view.request %}
                   </td>
                 {% endif %}
