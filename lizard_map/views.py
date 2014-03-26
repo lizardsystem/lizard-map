@@ -223,11 +223,9 @@ class MapMixin(object):
         return self._backgrounds
 
     def has_google(self):
-        # For the client side to determine is there is a google map.
-        if self.backgrounds.filter(
-            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
-            return True
-        return False
+        """For the client side, to determine is there is a google map."""
+        return self.backgrounds.filter(
+            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).exists()
 
     def background_maps(self):
         """Return current background maps, or the default if there are none."""
