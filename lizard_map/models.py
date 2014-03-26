@@ -1076,6 +1076,11 @@ class BackgroundMap(models.Model):
         (GOOGLE_TYPE_SATELLITE, 'google satellite'),
         )
 
+    # The default map URL used as background map, must be
+    # BackgroundMap.LAYER_TYPE_OSM.
+    DEFAULT_OSM_LAYER_URL = (
+        'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
+
     name = models.CharField(max_length=20)
     index = models.IntegerField(default=100)
     default = models.BooleanField(default=False)
@@ -1102,6 +1107,17 @@ class BackgroundMap(models.Model):
 
     def __unicode__(self):
         return '%s' % self.name
+
+    @classmethod
+    def default_maps(cls):
+        """Return the default background maps, currently only OSM."""
+        return [
+            cls(
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=cls.LAYER_TYPE_OSM,
+                layer_url=cls.DEFAULT_OSM_LAYER_URL)]
 
 
 class Setting(models.Model):

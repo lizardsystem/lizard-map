@@ -49,6 +49,9 @@ Changelog of lizard-map
 
 - UI updates for the dashboard page.
 
+- Remove coordinates.DEFAULT_MAP_SETTINGS (unused since 2011), move default
+  map code from views.py and coordinates.py into models.BackgroundMap.
+
 
 4.28 (2013-05-06)
 -----------------
