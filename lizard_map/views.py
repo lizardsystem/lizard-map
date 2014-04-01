@@ -48,7 +48,6 @@ from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
