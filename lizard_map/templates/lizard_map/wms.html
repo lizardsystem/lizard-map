@@ -11,15 +11,15 @@
 
 {% block sidebar2 %}
   <ul>
-  {% for workspace_storage in view.workspace_storages %}
+    {% for workspace_storage in view.workspace_storages %}
       <li><a href="{% url lizard_map_workspace_storage workspace_id=workspace_storage.pk %}">{{ workspace_storage.name }}</a></li>
-  {% endfor %}
+    {% endfor %}
   </ul>
 {% endblock sidebar2 %}
 
 {% block secondary-sidebar %}
   <div style="display: none;">
-  {% workspace_edit view.workspace_edit %}
+    {% workspace_edit view.workspace_edit %}
   </div>
 {% endblock secondary-sidebar %}
 
