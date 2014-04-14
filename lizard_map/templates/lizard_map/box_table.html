@@ -4,22 +4,26 @@
   <div>{{ view.start_date }} - {{ view.end_date }}</div>
   <table class="table table-bordered">
     <thead>
-      <th>Datum + tijdstip</th>
-      <th>Waarde</th>
-      <th>Eenheid</th>
+      <tr>
+        <th>Datum + tijdstip</th>
+        <th>Waarde</th>
+        <th>Eenheid</th>
+      </tr>
     </thead>
-    {% for value in view.values %}
-    <tr>
-      <td>{{ value.datetime }}</td>
-      <td>{{ value.value|floatformat }}</td>
-      <td>{{ value.unit }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="3">
-        Geen waardes.
-      </td>
-    </tr>
-    {% endfor %}
+    <tbody>
+      {% for value in view.values %}
+        <tr>
+          <td>{{ value.datetime }}</td>
+          <td>{{ value.value|floatformat }}</td>
+          <td>{{ value.unit }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="3">
+            Geen waardes.
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
