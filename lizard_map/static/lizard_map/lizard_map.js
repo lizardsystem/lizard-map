@@ -1,6 +1,9 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 
+var flot_x_global_min, flot_x_global_max, flot_reload_timeout;
+
+
 // in use (26-09-2012)
 // left workspace + collage checkboxes
 jQuery.fn.liveCheckboxes = function () {
@@ -1790,11 +1793,20 @@ function reloadDynamicGraph($graph, callback, force) {
     }
     var url = (graph_type == 'flot') ? flot_graph_data_url : image_graph_url;
 
-    // add currently selected date range to url
+    // add currently selected date range to url as a default.
     // HACK: viewstate is currently globally accessible
+    // But first look if we've set our flot zoom parameters.
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
-    if (view_state !== undefined) {
+    if (flot_x_global_max) {
+        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        url += '&' + $.param({
+            dt_start: dt_start,
+            dt_end: dt_end
+        });
+    }
+    else if (view_state !== undefined) {
         if (view_state.dt_start && view_state.dt_end) {
             url += '&' + $.param({
                 dt_start: view_state.dt_start,
@@ -1806,7 +1818,12 @@ function reloadDynamicGraph($graph, callback, force) {
     if (url) {
         // add a spinner
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="graph-loading-animation" />');
-        $graph.empty().append($loading);
+        if (flot_x_global_min) {
+            // Flot dynamic reloading; don't empty the graph totally.
+            $graph.append($loading);
+        } else {
+            $graph.empty().append($loading);
+        }
         $graph.attr('data-graph-loading', 'true');
 
         // remove spinner when loading has finished (either with or without an error)
@@ -2118,6 +2135,8 @@ function panAndZoomOtherGraphs(plot) {
     var axes = plot.getAxes();
     var xmin = axes.xaxis.min;
     var xmax = axes.xaxis.max;
+    flot_x_global_min = xmin;
+    flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
         if (otherPlot && plot !== otherPlot) {
@@ -2130,6 +2149,15 @@ function panAndZoomOtherGraphs(plot) {
             }
         }
     });
+    // Reload data if needed, followed by another draw.
+    force_reload_graphs = function() {
+        reloadGraphs(undefined, undefined, true);
+    };
+    if (flot_reload_timeout) {
+        // clear old timeout first
+        clearTimeout(flot_reload_timeout);
+    }
+    flot_reload_timeout = setTimeout(force_reload_graphs, 1000);
 }
 
 function bindPanZoomEvents($graph) {
@@ -2307,6 +2335,8 @@ function get_view_state() {
 
 function set_view_state(params) {
     $.extend(_view_state, params);
+    flot_x_global_min = undefined;
+    flot_x_global_max = undefined;
     save_view_state_to_server();
 }
 
