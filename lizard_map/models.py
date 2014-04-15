@@ -24,6 +24,7 @@ from lizard_map.adapter import adapter_class_names
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import adapter_serialize
+from lizard_map.conf import settings
 from lizard_map.exceptions import WorkspaceItemError
 from lizard_map.mapnik_helper import point_rule
 # Temporary, because fewsjdbc api handler imports this.
@@ -1154,15 +1155,15 @@ class Setting(models.Model):
         """
 
         # Caching.
-        settings = cache.get(cls.CACHE_KEY())  # Dict
-        if settings is None:
-            settings = {}
+        allsettings = cache.get(cls.CACHE_KEY())  # Dict
+        if allsettings is None:
+            allsettings = {}
             for setting in cls.objects.all():
-                settings[setting.key] = setting.value
-            cache.set(cls.CACHE_KEY(), settings)
+                allsettings[setting.key] = setting.value
+            cache.set(cls.CACHE_KEY(), allsettings)
 
         # Handle default, should be the usual case in Lizard5
-        if key not in settings:
+        if key not in allsettings:
             if default is not None:
                 # Only warn if None is not a fine value: otherwise we'd warn
                 # about a setting that doesn't *need* to be set.
@@ -1171,11 +1172,11 @@ class Setting(models.Model):
                     % (key, default))
 
             return getattr(
-                settings, 'LIZARD_MAP_DEFAULT_{}_SETTING',
-                key.upper())
+                settings, 'LIZARD_MAP_DEFAULT_{}_SETTING'.format(
+                    key.upper()))
 
         # Return desired result.
-        return settings[key]
+        return allsettings[key]
 
     @classmethod
     def get_dict(cls, key, default=None):
@@ -1185,10 +1186,11 @@ class Setting(models.Model):
         return {key: cls.get(key, default)}
 
     @classmethod
-    def extent(cls, key, fallback):
+    def extent(cls, key, fallback=None):
         """ Setting in "xx0,yy0,xx1,yy1" format.
 
-        TODO: test"""
+        Fallback is *deprecrated* and ignored.
+        """
         extent_names = ['left', 'bottom', 'right', 'top']
         extent_list = cls.get(
             key, fallback).split(',')
