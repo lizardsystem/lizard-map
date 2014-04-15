@@ -24,6 +24,7 @@ from lizard_map.adapter import adapter_class_names
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import adapter_serialize
+from lizard_map.conf import settings
 from lizard_map.exceptions import WorkspaceItemError
 from lizard_map.mapnik_helper import point_rule
 # Temporary, because fewsjdbc api handler imports this.
@@ -1076,6 +1077,11 @@ class BackgroundMap(models.Model):
         (GOOGLE_TYPE_SATELLITE, 'google satellite'),
         )
 
+    # The default map URL used as background map, must be
+    # BackgroundMap.LAYER_TYPE_OSM.
+    DEFAULT_OSM_LAYER_URL = (
+        'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png')
+
     name = models.CharField(max_length=20)
     index = models.IntegerField(default=100)
     default = models.BooleanField(default=False)
@@ -1103,6 +1109,17 @@ class BackgroundMap(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
+    @classmethod
+    def default_maps(cls):
+        """Return the default background maps, currently only OSM."""
+        return [
+            cls(
+                name='Default map',
+                default=True,
+                active=True,
+                layer_type=cls.LAYER_TYPE_OSM,
+                layer_url=cls.DEFAULT_OSM_LAYER_URL)]
+
 
 class Setting(models.Model):
     """
@@ -1129,29 +1146,37 @@ class Setting(models.Model):
         """
         Return value from given key.
 
-        If the key does not exist, return None. Caches the whole
+        If the key does not exist, return the default. Caches the whole
         Setting table.
+
+        Using the `default` argument is *deprecated*. Defaults for
+        several Settings are defined in conf.py, and could be
+        overridden in settings.py.
         """
 
         # Caching.
-        settings = cache.get(cls.CACHE_KEY())  # Dict
-        if settings is None:
-            settings = {}
+        allsettings = cache.get(cls.CACHE_KEY())  # Dict
+        if allsettings is None:
+            allsettings = {}
             for setting in cls.objects.all():
-                settings[setting.key] = setting.value
-            cache.set(cls.CACHE_KEY(), settings)
+                allsettings[setting.key] = setting.value
+            cache.set(cls.CACHE_KEY(), allsettings)
 
-        # Fallback for default.
-        if key not in settings:
+        # Handle default, should be the usual case in Lizard5
+        if key not in allsettings:
             if default is not None:
                 # Only warn if None is not a fine value: otherwise we'd warn
                 # about a setting that doesn't *need* to be set.
-                logger.warn('Setting "%s" does not exist, taking default '
-                            'value "%s"' % (key, default))
-            return default
+                logger.warn(
+                    'Setting "%s" got a default "%s", this is deprecated.'
+                    % (key, default))
+
+            return getattr(
+                settings, 'LIZARD_MAP_DEFAULT_{}_SETTING'.format(
+                    key.upper()))
 
         # Return desired result.
-        return settings[key]
+        return allsettings[key]
 
     @classmethod
     def get_dict(cls, key, default=None):
@@ -1161,10 +1186,11 @@ class Setting(models.Model):
         return {key: cls.get(key, default)}
 
     @classmethod
-    def extent(cls, key, fallback):
+    def extent(cls, key, fallback=None):
         """ Setting in "xx0,yy0,xx1,yy1" format.
 
-        TODO: test"""
+        Fallback is *deprecrated* and ignored.
+        """
         extent_names = ['left', 'bottom', 'right', 'top']
         extent_list = cls.get(
             key, fallback).split(',')
