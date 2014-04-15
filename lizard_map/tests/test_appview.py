@@ -81,22 +81,35 @@ class ViewsTest(TestCase):
         self.assertIsNone(gtc)
 
     def test_buttons_on(self):
+        """This basically tests the settings?"""
+        # Refresh AppView, it uses class variables
+        reload(lizard_map.views)
         view = lizard_map.views.AppView()
-        self.assertTrue(view.map_show_multiselect)
+        self.assertFalse(view.map_show_multiselect)
         self.assertTrue(view.map_show_daterange)
         self.assertTrue(view.map_show_default_zoom)
-        self.assertEquals(view.content_actions, 3)
+        self.assertTrue(view.map_show_base_layers_menu)
+        self.assertTrue(view.map_show_layers_menu)
+        self.assertEquals(len(view.content_actions),
+                          False + True + True + True + True)
 
     def test_buttons_off_view(self):
         view = lizard_map.views.AppView()
         view.map_show_multiselect = False
         view.map_show_daterange = False
         view.map_show_default_zoom = False
-        self.assertEquals(view.content_actions, 0)
+        view.map_show_base_layers_menu = False
+        view.map_show_layers_menu = False
+        self.assertEquals(view.content_actions, [])
 
-    @override_settings(MAP_SHOW_MULTISELECT=False,
-                       MAP_SHOW_DATERANGE=False,
-                       MAP_SHOW_DEFAULT_ZOOM=False)
+    @override_settings(LIZARD_MAP_SHOW_MULTISELECT=False,
+                       LIZARD_MAP_SHOW_DATERANGE=False,
+                       LIZARD_MAP_SHOW_DEFAULT_ZOOM=False,
+                       LIZARD_MAP_SHOW_BASE_LAYERS_MENU=False,
+                       LIZARD_MAP_SHOW_LAYERS_MENU=False)
     def test_buttons_off_settings(self):
+        # Refresh AppView, it uses class variables
+        reload(lizard_map.views)
+
         view = lizard_map.views.AppView()
-        self.assertEquals(view.content_actions, 0)
+        self.assertEquals(view.content_actions, [])
