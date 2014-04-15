@@ -2610,12 +2610,11 @@ function setUpAppTab(){
     }
 }
 
-function setUpBootstrapTour(){
+function setUpBootstrapTour() {
     var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
+
     if (tour_type === 'nl') {
-	tour = setUpTourDutch();
-    }
-    if (tour_type != false) {
+	var tour = setUpTourDutch();
 	$('#action-bootstrap-tour').click(function (){
 	    tour.restart();
 	});

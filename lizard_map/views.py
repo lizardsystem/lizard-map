@@ -484,7 +484,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     @property
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
-        return Setting.get('bootstrap_tour', 'false')
+        return Setting.get('bootstrap_tour')
 
     @property
     def wms_filter(self):
