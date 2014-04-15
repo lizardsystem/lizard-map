@@ -14,7 +14,6 @@ from dateutil import parser as date_parser
 from PIL import Image
 from django import forms
 from django.core.cache import cache
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -48,7 +47,7 @@ from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
+from lizard_map.conf import settings
 from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
@@ -79,14 +78,10 @@ CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
-MAX_LOCATIONS = getattr(settings, 'MAX_LOCATIONS', 50)
+
 # no way to know how the database driver escapes things, so apply
 # a whitelist to strings, before passing them in the raw SQL query
 LOCATION_NAME_CHARACTER_WHITELIST = re.compile(r'''[\W^ ^\,^\-^\.]''')
-
-DEFAULT_START_EXTENT = '-14675, 6668977, 1254790, 6964942'
-DEFAULT_PROJECTION = 'EPSG:900913'
-
 
 logger = logging.getLogger(__name__)
 
@@ -118,10 +113,7 @@ class GoogleTrackingMixin(object):
     Google tracking code.
     """
     def google_tracking_code(self):
-        try:
-            return settings.GOOGLE_TRACKING_CODE
-        except AttributeError:
-            return None
+        return settings.LIZARD_MAP_GOOGLE_TRACKING_CODE
 
 
 class WorkspaceMixin(object):
@@ -138,10 +130,7 @@ class WorkspaceMixin(object):
         pass
 
     def javascript_hover_handler(self):
-        if not hasattr(self, '_javascript_hover_handler'):
-            self._javascript_hover_handler = Setting.get(
-                'javascript_hover_handler', None)
-        return self._javascript_hover_handler
+        return Setting.get('javascript_hover_handler')
 
     def extra_wms_layers(self):
         """Overwrite to add custom WMS layers to your view.
@@ -189,27 +178,22 @@ class MapMixin(object):
     #     return ""
 
     def max_extent(self):
-        s = Setting.extent(
-            'max_extent',
-            '-20037508.34, -20037508.34, 20037508.34, 20037508.34')
-        return s
+        return Setting.extent('max_extent')
 
     def start_extent(self):
         return self.request.session.get(
             MAP_LOCATION,
-            Setting.extent(
-                'start_extent',
-                DEFAULT_START_EXTENT)  # Default
-            )
+            Setting.extent('start_extent'))
 
+    # XXXX
     def projection(self):
-        return Setting.get('projection', DEFAULT_PROJECTION)
+        return Setting.get('projection')
 
     def display_projection(self):
-        return Setting.get('projection', 'EPSG:4326')
+        return Setting.get('projection')
 
     def googlemaps_api_key(self):
-        return Setting.get('projection', '')  # Must be defined
+        return Setting.get('projection')
 
     def base_layer_name(self):
         if MAP_BASE_LAYER in self.request.session:
@@ -223,22 +207,13 @@ class MapMixin(object):
         return self._backgrounds
 
     def has_google(self):
-        # For the client side to determine is there is a google map.
-        if self.backgrounds.filter(
-            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
-            return True
-        return False
+        """For the client side, to determine if there is a google map."""
+        return self.backgrounds.filter(
+            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).exists()
 
     def background_maps(self):
-        if self.backgrounds:
-            return self.backgrounds
-        logger.warn("No background maps are active. Taking default.")
-        return [BackgroundMap(
-                name='Default map',
-                default=True,
-                active=True,
-                layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                layer_url=DEFAULT_OSM_LAYER_URL), ]
+        """Return current background maps, or the default if there are none."""
+        return self.backgrounds or BackgroundMap.default_maps()
 
 
 class CollageMixin(object):
@@ -322,12 +297,11 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     """Main map view (using twitter bootstrap)."""
 
     show_secondary_sidebar_icon = 'icon-list'
-    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELECT', True)
-    map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
-    map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
-    map_show_base_layers_menu = getattr(settings,
-                                        'MAP_SHOW_BASE_LAYERS_MENU', True)
-    map_show_layers_menu = getattr(settings, 'MAP_SHOW_LAYERS_MENU', True)
+    map_show_multiselect = settings.LIZARD_MAP_SHOW_MULTISELECT
+    map_show_daterange = settings.LIZARD_MAP_SHOW_DATERANGE
+    map_show_default_zoom = settings.LIZARD_MAP_SHOW_DEFAULT_ZOOM
+    map_show_base_layers_menu = settings.LIZARD_MAP_SHOW_BASE_LAYERS_MENU
+    map_show_layers_menu = settings.LIZARD_MAP_SHOW_LAYERS_MENU
 
     @property
     def show_secondary_sidebar_title(self):
@@ -418,7 +392,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             icon='icon-calendar',
             klass='popup-date-range')
         actions.insert(0, set_date_range)
-        if getattr(settings, 'MAP_SHOW_COLLAGE', False):
+        if settings.LIZARD_MAP_SHOW_COLLAGE:
             collage_icon = Action(
                 name='',
                 element_id='collage-link',
@@ -427,7 +401,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 icon='icon-dashboard',
                 target='_blank')
             actions.insert(0, collage_icon)
-        if Setting.get('bootstrap_tour', False):
+        if Setting.get('bootstrap_tour'):
             show_tour = Action(
                 name='',
                 element_id='bootstrap-tour',
@@ -510,7 +484,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     @property
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
-        return Setting.get('bootstrap_tour', 'false')
+        return Setting.get('bootstrap_tour')
 
     @property
     def wms_filter(self):
@@ -1039,7 +1013,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         #     x_found, y_found = display_object['google_coords']
         html[key] = html_per_workspace_item
 
-    popup_max_tabs = Setting.get('popup_max_tabs', None)
+    # XXX Popup max tabs can be set in both Setting and settings.py?
+    # Is it ever used?
+    popup_max_tabs = Setting.get('popup_max_tabs')
     if popup_max_tabs is None:
         popup_max_tabs = getattr(settings, 'POPUP_MAX_TABS', 3)
     else:
@@ -1618,9 +1594,7 @@ def map_location_load_default(request):
     """
     Return start_extent
     """
-    extent = Setting.extent(
-        'start_extent',
-        DEFAULT_START_EXTENT)
+    extent = Setting.extent('start_extent')
 
     map_location = {'extent': extent}
 
@@ -2106,10 +2080,10 @@ class LocationListService(APIView, WorkspaceEditMixin):
                                   location_name))
             # We can stop searching the remaining adapters in case
             # MAX_LOCATIONS is already reached.
-            if len(locations) > MAX_LOCATIONS:
+            if len(locations) > settings.LIZARD_MAP_MAX_LOCATIONS:
                 break
         # ensure we don't return more than MAX_LOCATIONS values
-        locations = locations[:MAX_LOCATIONS]
+        locations = locations[:settings.LIZARD_MAP_MAX_LOCATIONS]
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
         return RestResponse(locations)
