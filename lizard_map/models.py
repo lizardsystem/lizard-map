@@ -1149,9 +1149,11 @@ class Setting(models.Model):
         If the key does not exist, return the default. Caches the whole
         Setting table.
 
-        Using the `default` argument is *deprecated*. Defaults for
-        several Settings are defined in conf.py, and could be
-        overridden in settings.py.
+        Using the `default` argument is *deprecated* and it isn't
+        used. Defaults for several Settings are defined in conf.py,
+        and could be overridden in settings.py.
+
+        If there is no default for a setting, this returns None.
         """
 
         # Caching.
@@ -1173,7 +1175,7 @@ class Setting(models.Model):
 
             return getattr(
                 settings, 'LIZARD_MAP_DEFAULT_{}_SETTING'.format(
-                    key.upper()))
+                    key.upper()), None)
 
         # Return desired result.
         return allsettings[key]
