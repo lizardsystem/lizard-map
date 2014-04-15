@@ -52,6 +52,19 @@ Changelog of lizard-map
 - Remove coordinates.DEFAULT_MAP_SETTINGS (unused since 2011), move default
   map code from views.py and coordinates.py into models.BackgroundMap.
 
+- Move settings and their defaults to conf.py (using django-appconf).
+
+- The Setting model's .get() and .extent() functions now don't take a
+  default anymore, rather if a Setting isn't found they get their
+  defaults from normal Django settings -- a setting called "mysetting"
+  uses the LIZARD_MAP_DEFAULT_MYSETTING_SETTING setting. Setting
+  setting setting.
+
+- Several defaults were updated to what lizard5-site sets in its
+  base.py, so the settings can be removed there. No other settings
+  were actually set in lizard5-site, so how configurable do these
+  things need to be?
+
 
 4.28 (2013-05-06)
 -----------------

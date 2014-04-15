@@ -66,7 +66,7 @@ def transform_point(x, y, from_proj=None, to_proj=None):
     is used.  It makes no sense to give neither."""
 
     if to_proj is None:
-        to_srs = Setting.get('projection', 'EPSG:900913')
+        to_srs = Setting.get('projection')
         to_srid = string_to_srid[srs_to_string[to_srs]]
         to_proj = Proj(srs_to_mapnik_projection[to_srs])
     elif to_proj not in string_to_srs:
@@ -76,7 +76,7 @@ def transform_point(x, y, from_proj=None, to_proj=None):
         to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
 
     if from_proj is None:
-        from_proj = Setting.get('projection', 'EPSG:900913')
+        from_proj = Setting.get('projection')
         from_proj = Proj(srs_to_mapnik_projection[from_proj])
     elif from_proj not in string_to_srs:
         raise ValueError("Value '%s' of from_proj invalid." % from_proj)

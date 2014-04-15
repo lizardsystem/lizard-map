@@ -1145,8 +1145,12 @@ class Setting(models.Model):
         """
         Return value from given key.
 
-        If the key does not exist, return None. Caches the whole
+        If the key does not exist, return the default. Caches the whole
         Setting table.
+
+        Using the `default` argument is *deprecated*. Defaults for
+        several Settings are defined in conf.py, and could be
+        overridden in settings.py.
         """
 
         # Caching.
@@ -1157,14 +1161,18 @@ class Setting(models.Model):
                 settings[setting.key] = setting.value
             cache.set(cls.CACHE_KEY(), settings)
 
-        # Fallback for default.
+        # Handle default, should be the usual case in Lizard5
         if key not in settings:
             if default is not None:
                 # Only warn if None is not a fine value: otherwise we'd warn
                 # about a setting that doesn't *need* to be set.
-                logger.warn('Setting "%s" does not exist, taking default '
-                            'value "%s"' % (key, default))
-            return default
+                logger.warn(
+                    'Setting "%s" got a default "%s", this is deprecated.'
+                    % (key, default))
+
+            return getattr(
+                settings, 'LIZARD_MAP_DEFAULT_{}_SETTING',
+                key.upper())
 
         # Return desired result.
         return settings[key]
