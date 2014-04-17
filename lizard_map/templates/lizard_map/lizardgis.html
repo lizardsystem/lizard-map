@@ -12,38 +12,38 @@
 {% block javascript %}
   {{ block.super }}
 
-<!-- underscore is used for backbone and NensLayerSwitcher -->
-<script type="text/javascript"
-        src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
-<!-- Backbone is used for animations.js -->
-<script type="text/javascript"
-        src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/animations.js"></script>
-<script type="text/javascript"
-		src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
-<script type="text/javascript"
-        src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
+  <!-- underscore is used for backbone and NensLayerSwitcher -->
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/underscore-min.js"></script>
+  <!-- Backbone is used for animations.js -->
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}backbone/backbone-min.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/animations.js"></script>
+  <script type="text/javascript"
+                  src="{{ STATIC_URL }}lizard_ui/OpenLayers.Control.NensLayerSwitcher.js"></script>
+  <script type="text/javascript"
+          src="{{ STATIC_URL }}lizard_map/lizard_map.js"></script>
 {% endblock javascript %}
 
 {% block map-javascript %}
   {{ block.super }}
-<script type="text/javascript">
-    var _view_state = {
-        range_type: 'week_plus_one',                 // string 'year', 'custom', '2_day' etc.
-        dt_start: moment.utc().subtract('weeks', 1), // Moment.js date object
-        dt_end: moment.utc().add('days', 1)          // Moment.js date object
-    };
-    {% with view.view_state as view_state %}
-        {% if view_state %}
-            _view_state.range_type = "{{ view.view_state.range_type }}";
-            _view_state.dt_start = moment.utc("{{ view_state.dt_start|date:"c" }}");
-            _view_state.dt_end = moment.utc("{{ view_state.dt_end|date:"c" }}");
-        {% endif %}
-    {% endwith %}
-</script>
+  <script type="text/javascript">
+      var _view_state = {
+          range_type: 'week_plus_one',                 // string 'year', 'custom', '2_day' etc.
+          dt_start: moment.utc().subtract('weeks', 1), // Moment.js date object
+          dt_end: moment.utc().add('days', 1)          // Moment.js date object
+      };
+      {% with view.view_state as view_state %}
+          {% if view_state %}
+              _view_state.range_type = "{{ view.view_state.range_type }}";
+              _view_state.dt_start = moment.utc("{{ view_state.dt_start|date:"c" }}");
+              _view_state.dt_end = moment.utc("{{ view_state.dt_end|date:"c" }}");
+          {% endif %}
+      {% endwith %}
+  </script>
 {% endblock map-javascript %}
 
 {% block content %}
-<div id="map"></div>
+  <div id="map"></div>
 {% endblock content %}
