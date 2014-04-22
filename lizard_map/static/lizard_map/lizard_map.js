@@ -415,9 +415,10 @@ jQuery.fn.updateWorkspace = function () {
         $holder.load(
             './ #page',
             function () {
-                if ($('#edit-workspace', $holder).length == 0) {
-                    debugger;
-                }
+                //if ($('#edit-workspace', $holder).length === 0) {
+                //    debugger;
+                //}
+
                 //$(".workspace-items", $workspace).html(
                 //    $('.workspace-items', $holder).html());
                 $("#edit-workspace").parent().html(
@@ -539,8 +540,8 @@ function setUpWorkspaceLoad() {
             },
             function(data) {
                 result = $.parseJSON(data);
-                if (result['redirect'])
-                    window.location.href = result['redirect'];
+                if (result.redirect)
+                    window.location.href = result.redirect;
             }
         );
     });
@@ -639,26 +640,6 @@ function setUpWorkspaceAcceptable() {
                 top: '+=' + move_down,
                 width: $layer_button.width(),
                 height: $layer_button.height()
-            }, 1000, function() {
-                $moving_box.remove();
-            });
-            /* xxx */
-        }
-        if ($(this).hasClass('selected')) {
-            var $layer_button, $moving_box, move_up, move_left;
-            $layer_button = $("#map");
-            $("#page").after('<div id="moving-box">');
-            $moving_box = $("#moving-box");
-            $moving_box.offset($layer_button.offset());
-            $moving_box.width($layer_button.width());
-            $moving_box.height($layer_button.height());
-            move_up = $layer_button.offset().top - $(this).offset().top;
-            move_left = $layer_button.offset().left - $(this).offset().left;
-            $moving_box.animate({
-                left: '-=' + move_left,
-                top: '-=' + move_up,
-                width: 0,
-                height: 0
             }, 1000, function() {
                 $moving_box.remove();
             });
@@ -1321,7 +1302,7 @@ function refreshWmsLayers() {
         params = $(this).attr("data-workspace-wms-params");
         params = $.parseJSON(params);
         // Fix for partial images on tiles
-        params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
+        params.tilesorigin = [map.maxExtent.left, map.maxExtent.bottom];
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
         info = $(this).attr("data-workspace-wms-info");
@@ -1331,7 +1312,7 @@ function refreshWmsLayers() {
         // HACK: force reproject = false for layers which still have this defined (in the database no less)
         // reprojection is deprecated
         if (options.reproject) {
-            delete options['reproject'];
+            delete options.reproject;
         }
         options.displayInLayerSwitcher = true;
         index = parseInt($(this).attr("data-workspace-wms-index"));
@@ -1344,9 +1325,9 @@ function refreshWmsLayers() {
 	var operator = 'AND'; // Use AND as the default operator.
 
 	if (typeof(selected_filters) != "undefined") {
-	    var keys = selected_filters["keys"];
-	    var values = selected_filters["values"];
-	    var operator = selected_filters["operator"];
+	    var keys = selected_filters.keys;
+	    var values = selected_filters.values;
+	    operator = selected_filters.operator;
 
 	    // Add the filters that are selected and available for this layer.
 	    for (var i=0; i<keys.length; i++) {
@@ -1359,7 +1340,7 @@ function refreshWmsLayers() {
 
         // Add possible cql_filters from the layer definition.
         if (params['.cql_filter'] !== undefined) {
-            cql_filters_arr.push(params['cql_filter']);
+            cql_filters_arr.push(params.cql_filter);
         }
 
         var cql_filters = '';
@@ -1372,36 +1353,37 @@ function refreshWmsLayers() {
 
         // Each layer of a combined layer needs a cql_filter.
         if (cql_filters !== '') {
-            var layerslength = params['layers'].split(',').length - 1;
+            var layerslength = params.layers.split(',').length - 1;
             for (var i = 1; i <= layerslength; i ++) {
                 cql_filters += ';' + cql_filters;
             }
         }
+        var view_state, layer;
 
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
                 // There are filters so add them to the request.
-                params['cql_filter'] = cql_filters;
+                params.cql_filter = cql_filters;
             }
             // add currently selected date range to url
             // HACK: viewstate is currently globally accessible
-            var view_state = get_view_state();
+            view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
             if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
-                    params['time'] = view_state.dt_start + '/' + view_state.dt_end;
+                    params.time = view_state.dt_start + '/' + view_state.dt_end;
                 }
             }
 
-            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            layer = new OpenLayers.Layer.WMS(name, url, params, options);
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
         }
         else {
             // Update it.
-            var layer = wms_layers[id];
+            layer = wms_layers[id];
             if (cql_filters.length > 0){
                 // Update the layer if a cql_filter is used
                 // with the new cql_filter params.
@@ -1409,7 +1391,7 @@ function refreshWmsLayers() {
             }
             // add currently selected date range to url
             // HACK: viewstate is currently globally accessible
-            var view_state = get_view_state();
+            view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
             if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
@@ -2082,21 +2064,22 @@ function flotGraphLoadData($container, response) {
     bindPanZoomEvents($graph);
     bindFullscreenClick($container);
 
+    function showGraphTooltip(x, y, datapoint) {
+        var dateFormatted = moment.utc(datapoint[0]).format('LL H:mm');
+        var valueFormatted = Math.round(datapoint[1] * 100) / 100;
+        $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
+            'position': 'absolute',
+            'top': y - 25,
+            'left': x + 5,
+            'padding': '0.4em 0.6em',
+            'border-radius': '0.5em',
+            'border': '1px solid #111',
+            'background-color': '#fff',
+            'z-index': 11000
+        }).appendTo("body");
+    }
+
     if (!isAppleMobile) {
-        function showGraphTooltip(x, y, datapoint) {
-            var dateFormatted = moment.utc(datapoint[0]).format('LL H:mm');
-            var valueFormatted = Math.round(datapoint[1] * 100) / 100;
-            $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
-                'position': 'absolute',
-                'top': y - 25,
-                'left': x + 5,
-                'padding': '0.4em 0.6em',
-                'border-radius': '0.5em',
-                'border': '1px solid #111',
-                'background-color': '#fff',
-                'z-index': 11000
-            }).appendTo("body");
-        }
 
         $graph.bind("plothover", function (event, pos, item) {
             if (item) {
@@ -2440,6 +2423,66 @@ function setUpSidebarPopupDisappearing () {
 
 function setup_location_list () {
     var $element = $('.popup-location-list');
+
+    function show (e) {
+        open_popup(false);
+        set_popup_content($container);
+
+        $input.focus();
+        $button.click(search);
+        $form.submit(search);
+
+        // show some initial search results
+        $input.val('');
+        setTimeout(search, 500);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+    function search (e) {
+        var params = $.param({
+            name: $input.val()
+        });
+        $results.empty();
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+        $results.append($loading);
+        lizard_api_get({
+            url: '/map/location_list_service/?' + params, // TODO
+            success: function (data) {
+                $results.empty();
+                if (data.length === 0) {
+                    $results.html('Niets gevonden.');
+                }
+                else {
+                    $.each(data, function () {
+                        var item = this;
+                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
+                              .attr('data-adapter-class', item[0])
+                              .attr('data-adapter-layer-json', item[1])
+                              .attr('data-identifier', item[2])
+                              .attr('data-name', item[3])
+                              .attr('href', item[5])
+                              .html(item[4]);
+                        var $div = $('<div/>')
+                              .append($link);
+                        $results.append($div);
+                    });
+                }
+            }
+        }, false);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+
     if ($element.exists()) {
         var template = '' +
               '<div class="location-list">' +
@@ -2455,64 +2498,6 @@ function setup_location_list () {
         var $input = $container.find('input');
         var $button = $container.find('button');
         var $results = $container.find('.results');
-
-        function show (e) {
-            open_popup(false);
-            set_popup_content($container);
-
-            $input.focus();
-            $button.click(search);
-            $form.submit(search);
-
-            // show some initial search results
-            $input.val('');
-            setTimeout(search, 500);
-
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            return false;
-        }
-
-        function search (e) {
-            var params = $.param({
-                name: $input.val()
-            });
-            $results.empty();
-            var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
-            $results.append($loading);
-            lizard_api_get({
-                url: '/map/location_list_service/?' + params, // TODO
-                success: function (data) {
-                    $results.empty();
-                    if (data.length === 0) {
-                        $results.html('Niets gevonden.');
-                    }
-                    else {
-                        $.each(data, function () {
-                            var item = this;
-                            var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
-                                  .attr('data-adapter-class', item[0])
-                                  .attr('data-adapter-layer-json', item[1])
-                                  .attr('data-identifier', item[2])
-                                  .attr('data-name', item[3])
-                                  .attr('href', item[5])
-                                  .html(item[4]);
-                            var $div = $('<div/>')
-                                  .append($link);
-                            $results.append($div);
-                        });
-                    }
-                }
-            }, false);
-
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            return false;
-        }
 
         $element.on('click', show);
     }
@@ -2566,7 +2551,7 @@ function setup_location_search () {
         });
 
 	var $contentPane = $('<div>');
-        if (items.length != 0) {
+        if (items.length !== 0) {
             $('<ul/>', {
                 html: items.join('')
             }).appendTo($contentPane);
@@ -2774,7 +2759,7 @@ function setUpWMSFilter(){
         for(var i=0; i<filterItems.length; i++){
             var filterItem = filterItems[i];
             var checked;
-            if (filterItem['default'] == true) {
+            if (filterItem['default'] === true) {
                 checked = true;
                 // Add the cql_filter for the default filter
                 $('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
@@ -2783,7 +2768,7 @@ function setUpWMSFilter(){
             }
             var id = 'wms-filter-id-' + i;
             var template = 	dropdownTemplate(
-                {'name': filterItem['name'],
+                {'name': filterItem.name,
                  'checked': checked,
                  'id': id
                 });
