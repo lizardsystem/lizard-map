@@ -2216,7 +2216,7 @@ function bindFullscreenClick($container) {
                     $container.insertAt(origIndex, $origParent);
                     $container.css('height', origHeight);
                 }
-                $container.data('is-fullscreen', false)
+                $container.data('is-fullscreen', false);
                 $dialog.dialog('destroy');
                 $dialog.remove();
             };
@@ -2801,7 +2801,7 @@ function setUpWMSFilter(){
 	var cql_filter = $(e.target).data('cql-filter');
 	// Handle a click on the check mark as well.
 	if (typeof(cql_filter) === "undefined"){
-	    cql_filter = $(e.currentTarget).data('cql-filter')
+	    cql_filter = $(e.currentTarget).data('cql-filter');
 	    $(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
 	} else {
 	    // Add the new check
