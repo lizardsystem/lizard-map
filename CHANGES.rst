@@ -65,6 +65,12 @@ Changelog of lizard-map
   were actually set in lizard5-site, so how configurable do these
   things need to be?
 
+- Added reloading of graphs upon flot pan/zoom. The
+  according-to-the-manual-zoom start/end date is passed in the normal way to
+  the backend: no changes necesseary. This is expensive, though, so the
+  backend *must* add an extra ``.dynamic-graph-zoomable`` class in addition to
+  the current ``.dynamic-graph`` class.
+
 
 4.28 (2013-05-06)
 -----------------
