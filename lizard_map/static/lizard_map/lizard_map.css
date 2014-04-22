@@ -50,3 +50,8 @@ position: fixed;
 #edit-collage-table .hide-in-collage {
   display: none;
 }
+
+.dynamic-graph-zoomable .graph-loading-animation {
+  z-index: 2000;
+  position: relative;
+}

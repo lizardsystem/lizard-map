@@ -1,6 +1,9 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 
+var flot_x_global_min, flot_x_global_max, flot_reload_timeout;
+
+
 // in use (26-09-2012)
 // left workspace + collage checkboxes
 jQuery.fn.liveCheckboxes = function () {
@@ -1761,6 +1764,13 @@ function reloadGraphs(max_image_width, callback, force) {
     });
 }
 
+function reloadZoomableGraphs(max_image_width, callback) {
+    $('.dynamic-graph-zoomable').each(function () {
+        reloadDynamicGraph($(this), callback, true);
+    });
+}
+
+
 function reloadGraphsIn($el) {
     $el.find('.dynamic-graph').each(function () {
         reloadDynamicGraph($(this));
@@ -1790,11 +1800,20 @@ function reloadDynamicGraph($graph, callback, force) {
     }
     var url = (graph_type == 'flot') ? flot_graph_data_url : image_graph_url;
 
-    // add currently selected date range to url
+    // add currently selected date range to url as a default.
     // HACK: viewstate is currently globally accessible
+    // But first look if we've set our flot zoom parameters.
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
-    if (view_state !== undefined) {
+    if (flot_x_global_max) {
+        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        url += '&' + $.param({
+            dt_start: dt_start,
+            dt_end: dt_end
+        });
+    }
+    else if (view_state !== undefined) {
         if (view_state.dt_start && view_state.dt_end) {
             url += '&' + $.param({
                 dt_start: view_state.dt_start,
@@ -1806,7 +1825,12 @@ function reloadDynamicGraph($graph, callback, force) {
     if (url) {
         // add a spinner
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="graph-loading-animation" />');
-        $graph.empty().append($loading);
+        if (flot_x_global_min) {
+            // Flot dynamic reloading; don't empty the graph totally.
+            $graph.append($loading);
+        } else {
+            $graph.empty().append($loading);
+        }
         $graph.attr('data-graph-loading', 'true');
 
         // remove spinner when loading has finished (either with or without an error)
@@ -1826,7 +1850,10 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
-            $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+            if (!flot_x_global_min) {
+                // Not flot dynamic reloading; so it is ok to show graph-disabling error.
+                $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+            }
         };
 
         // for flot graphs, grab the JSON data and call Flot
@@ -1923,7 +1950,9 @@ var MS_YEAR = 365 * MS_DAY;
 function flotGraphLoadData($container, response) {
     var data = response.data;
     if (data.length === 0) {
-        $container.html('Geen gegevens beschikbaar.');
+        if (!flot_x_global_min) {
+            $container.html('Geen gegevens beschikbaar.');
+        }
         return;
     }
     // Convert ISO 8601 strings to seconds since ECMAScript epoch
@@ -2118,6 +2147,8 @@ function panAndZoomOtherGraphs(plot) {
     var axes = plot.getAxes();
     var xmin = axes.xaxis.min;
     var xmax = axes.xaxis.max;
+    flot_x_global_min = xmin;
+    flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
         if (otherPlot && plot !== otherPlot) {
@@ -2130,6 +2161,12 @@ function panAndZoomOtherGraphs(plot) {
             }
         }
     });
+    // Reload data if needed, followed by another draw.
+    if (flot_reload_timeout) {
+        // clear old timeout first
+        clearTimeout(flot_reload_timeout);
+    }
+    flot_reload_timeout = setTimeout(reloadZoomableGraphs, 1000);
 }
 
 function bindPanZoomEvents($graph) {
@@ -2181,7 +2218,7 @@ function bindFullscreenClick($container) {
                     $container.insertAt(origIndex, $origParent);
                     $container.css('height', origHeight);
                 }
-                $container.data('is-fullscreen', false)
+                $container.data('is-fullscreen', false);
                 $dialog.dialog('destroy');
                 $dialog.remove();
             };
@@ -2307,6 +2344,8 @@ function get_view_state() {
 
 function set_view_state(params) {
     $.extend(_view_state, params);
+    flot_x_global_min = undefined;
+    flot_x_global_max = undefined;
     save_view_state_to_server();
 }
 
@@ -2764,7 +2803,7 @@ function setUpWMSFilter(){
 	var cql_filter = $(e.target).data('cql-filter');
 	// Handle a click on the check mark as well.
 	if (typeof(cql_filter) === "undefined"){
-	    cql_filter = $(e.currentTarget).data('cql-filter')
+	    cql_filter = $(e.currentTarget).data('cql-filter');
 	    $(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
 	} else {
 	    // Add the new check
