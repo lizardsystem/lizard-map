@@ -1757,12 +1757,19 @@ function apiRequest(target) {
  * @param {number} max_image_width maximum width to resize each graph to
  * @param {function} callback function to call when a graph has been reloaded
  */
-function reloadGraphs(max_image_width, callback, force) {
+function reloadGraphs(max_image_width, callback) {
     // New Flot graphs
     $('.dynamic-graph').each(function () {
-        reloadDynamicGraph($(this), callback, force);
+        reloadDynamicGraph($(this), callback);
     });
 }
+
+function reloadZoomableGraphs(max_image_width, callback) {
+    $('.dynamic-graph-zoomable').each(function () {
+        reloadDynamicGraph($(this), callback, true);
+    });
+}
+
 
 function reloadGraphsIn($el) {
     $el.find('.dynamic-graph').each(function () {
@@ -2150,14 +2157,11 @@ function panAndZoomOtherGraphs(plot) {
         }
     });
     // Reload data if needed, followed by another draw.
-    force_reload_graphs = function() {
-        reloadGraphs(undefined, undefined, true);
-    };
     if (flot_reload_timeout) {
         // clear old timeout first
         clearTimeout(flot_reload_timeout);
     }
-    flot_reload_timeout = setTimeout(force_reload_graphs, 1000);
+    flot_reload_timeout = setTimeout(reloadZoomableGraphs, 1000);
 }
 
 function bindPanZoomEvents($graph) {
