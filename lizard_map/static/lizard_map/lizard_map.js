@@ -1850,7 +1850,10 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
-            $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+            if (!flot_x_global_min) {
+                // Not flot dynamic reloading; so it is ok to show graph-disabling error.
+                $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+            }
         };
 
         // for flot graphs, grab the JSON data and call Flot
