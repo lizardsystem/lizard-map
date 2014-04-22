@@ -1950,7 +1950,9 @@ var MS_YEAR = 365 * MS_DAY;
 function flotGraphLoadData($container, response) {
     var data = response.data;
     if (data.length === 0) {
-        $container.html('Geen gegevens beschikbaar.');
+        if (!flot_x_global_min) {
+            $container.html('Geen gegevens beschikbaar.');
+        }
         return;
     }
     // Convert ISO 8601 strings to seconds since ECMAScript epoch
