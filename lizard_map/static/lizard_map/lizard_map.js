@@ -1757,10 +1757,10 @@ function apiRequest(target) {
  * @param {number} max_image_width maximum width to resize each graph to
  * @param {function} callback function to call when a graph has been reloaded
  */
-function reloadGraphs(max_image_width, callback) {
+function reloadGraphs(max_image_width, callback, force) {
     // New Flot graphs
     $('.dynamic-graph').each(function () {
-        reloadDynamicGraph($(this), callback);
+        reloadDynamicGraph($(this), callback, force);
     });
 }
 
