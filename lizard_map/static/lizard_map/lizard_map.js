@@ -2130,18 +2130,27 @@ function panAndZoomOtherGraphs(plot) {
     var axes = plot.getAxes();
     var xmin = axes.xaxis.min;
     var xmax = axes.xaxis.max;
+    var view_state = get_view_state();
+    view_state = to_date_strings(view_state);
+    dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    if (dt_start < view_state.dt_start) {
+        xmin = moment(view_state.dt_start);
+    }
+    if (dt_end > view_state.dt_end) {
+        xmax = moment(view_state.dt_end);
+    }
+
     flot_x_global_min = xmin;
     flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
-        if (otherPlot && plot !== otherPlot) {
-            var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
-            otherXAxisOptions.min = xmin;
-            otherXAxisOptions.max = xmax;
-            if ($(this).is(':visible')) {
-                otherPlot.setupGrid();
-                otherPlot.draw();
-            }
+        var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
+        otherXAxisOptions.min = xmin;
+        otherXAxisOptions.max = xmax;
+        if ($(this).is(':visible')) {
+            otherPlot.setupGrid();
+            otherPlot.draw();
         }
     });
     // Reload data if needed, followed by another draw.
