@@ -1966,7 +1966,9 @@ function flotGraphLoadData($container, response) {
         xaxis: {
             mode: "time",
             zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
-            timezone: 'utc'
+            timezone: 'utc',
+            min: moment(response.x_min).toDate().getTime(),
+            max: moment(response.x_max).toDate().getTime()
         },
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
@@ -2136,7 +2138,6 @@ function panAndZoomOtherGraphs(plot) {
     var offset = $('.popup-date-range').attr('data-offset');
     dt_start = moment.utc(xmin).format('YYYY-MM-DDTHH:mm:ss') + offset;
     dt_end = moment.utc(xmax).format('YYYY-MM-DDTHH:mm:ss') + offset;
-    console.log("Zoom/pan. Data range from ", dt_start, " to ", dt_end);
     if (dt_start < view_state.dt_start) {
         xmin = moment(view_state.dt_start);
     }
