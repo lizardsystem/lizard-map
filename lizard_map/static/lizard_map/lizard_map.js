@@ -1787,9 +1787,10 @@ function reloadDynamicGraph($graph, callback, force) {
     // But first look if we've set our flot zoom parameters.
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
+    var offset = $('.popup-date-range').attr('data-offset');
     if (flot_x_global_max) {
-        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + offset;
+        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + offset;
         url += '&' + $.param({
             dt_start: dt_start,
             dt_end: dt_end
@@ -2132,8 +2133,10 @@ function panAndZoomOtherGraphs(plot) {
     var xmax = axes.xaxis.max;
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
-    dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-    dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    var offset = $('.popup-date-range').attr('data-offset');
+    dt_start = moment.utc(xmin).format('YYYY-MM-DDTHH:mm:ss') + offset;
+    dt_end = moment.utc(xmax).format('YYYY-MM-DDTHH:mm:ss') + offset;
+    console.log("Zoom/pan. Data range from ", dt_start, " to ", dt_end);
     if (dt_start < view_state.dt_start) {
         xmin = moment(view_state.dt_start);
     }
