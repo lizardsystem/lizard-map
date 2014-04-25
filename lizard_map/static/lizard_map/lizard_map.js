@@ -2148,12 +2148,14 @@ function panAndZoomOtherGraphs(plot) {
     flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
-        var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
-        otherXAxisOptions.min = xmin;
-        otherXAxisOptions.max = xmax;
-        if ($(this).is(':visible')) {
-            otherPlot.setupGrid();
-            otherPlot.draw();
+        if (otherPlot && plot !== otherPlot) {
+            var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
+            otherXAxisOptions.min = xmin;
+            otherXAxisOptions.max = xmax;
+            if ($(this).is(':visible')) {
+                otherPlot.setupGrid();
+                otherPlot.draw();
+            }
         }
     });
     // Reload data if needed, followed by another draw.
