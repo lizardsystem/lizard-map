@@ -1787,9 +1787,10 @@ function reloadDynamicGraph($graph, callback, force) {
     // But first look if we've set our flot zoom parameters.
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
+    var offset = $('.popup-date-range').attr('data-offset');
     if (flot_x_global_max) {
-        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + offset;
+        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + offset;
         url += '&' + $.param({
             dt_start: dt_start,
             dt_end: dt_end
@@ -1965,7 +1966,9 @@ function flotGraphLoadData($container, response) {
         xaxis: {
             mode: "time",
             zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
-            timezone: 'utc'
+            timezone: 'utc',
+            min: moment(response.x_min).toDate().getTime(),
+            max: moment(response.x_max).toDate().getTime()
         },
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
@@ -2132,8 +2135,9 @@ function panAndZoomOtherGraphs(plot) {
     var xmax = axes.xaxis.max;
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
-    dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
-    dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + 'Z';
+    var offset = $('.popup-date-range').attr('data-offset');
+    dt_start = moment.utc(xmin).format('YYYY-MM-DDTHH:mm:ss') + offset;
+    dt_end = moment.utc(xmax).format('YYYY-MM-DDTHH:mm:ss') + offset;
     if (dt_start < view_state.dt_start) {
         xmin = moment(view_state.dt_start);
     }
@@ -2145,12 +2149,14 @@ function panAndZoomOtherGraphs(plot) {
     flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
-        var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
-        otherXAxisOptions.min = xmin;
-        otherXAxisOptions.max = xmax;
-        if ($(this).is(':visible')) {
-            otherPlot.setupGrid();
-            otherPlot.draw();
+        if (otherPlot && plot !== otherPlot) {
+            var otherXAxisOptions = otherPlot.getAxes().xaxis.options;
+            otherXAxisOptions.min = xmin;
+            otherXAxisOptions.max = xmax;
+            if ($(this).is(':visible')) {
+                otherPlot.setupGrid();
+                otherPlot.draw();
+            }
         }
     });
     // Reload data if needed, followed by another draw.

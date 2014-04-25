@@ -42,6 +42,7 @@ from rest_framework.views import APIView
 import iso8601
 import mapnik
 import requests
+import pytz
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
@@ -390,7 +391,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             element_id='calendar',
             url='javascript:void(null)',
             icon='icon-calendar',
-            klass='popup-date-range')
+            klass='popup-date-range',
+            data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
         if settings.LIZARD_MAP_SHOW_COLLAGE:
             collage_icon = Action(
@@ -438,7 +440,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 description=_('Change the date range of the measurements'),
                 url='javascript:void(null)',
                 icon='icon-calendar',
-                klass='popup-date-range')
+                klass='popup-date-range',
+                data_attributes={'offset': self.timezone_offset_string})
             actions.insert(0, set_date_range)
         if self.map_show_default_zoom:
             zoom_to_default = Action(
@@ -473,6 +476,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         return get_view_state(self.request)
 
     @property
+    def timezone_offset_string(self):
+        """Return timezone offset for use in javascript.
+
+        Flot graphs are the local time masqueraded as UTC. This offset string
+        helps javascript to do the same backwards. Needed for flot pan/zoom.
+        """
+        return datetime.datetime.now(pytz.timezone('Europe/Amsterdam')).strftime('%z')
+
+    @property
     def workspace_storages(self):
         # show all items to logged-in users
         if self.request.user.is_authenticated():
@@ -488,6 +500,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
 
     @property
     def wms_filter(self):
+
         """Return JSON with the filter."""
         # deferred import because of circular import
         from lizard_wms.models import WMSFilter
@@ -1372,9 +1385,20 @@ class CollageDetailView(CollageMixin, UiView):
             element_id='calendar',
             url='javascript:void(null)',
             icon='icon-calendar',
-            klass='popup-date-range')
+            klass='popup-date-range',
+            data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
         return actions
+
+    @property
+    def timezone_offset_string(self):
+        """Return timezone offset for use in javascript.
+
+        Flot graphs are the local time masqueraded as UTC. This offset string
+        helps javascript to do the same backwards. Needed for flot pan/zoom.
+        """
+        # Duplication from AppView...
+        return datetime.datetime.now(pytz.timezone('Europe/Amsterdam')).strftime('%z')
 
     def breadcrumbs(self):
         initial = [
