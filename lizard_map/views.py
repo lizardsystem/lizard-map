@@ -1377,6 +1377,10 @@ class CollageDetailView(CollageMixin, UiView):
     hide_statistics = False
 
     @property
+    def view_state(self):
+        return get_view_state(self.request)
+
+    @property
     def site_actions(self):
         actions = super(CollageDetailView, self).site_actions
         set_date_range = Action(
