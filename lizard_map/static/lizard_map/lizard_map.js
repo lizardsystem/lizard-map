@@ -1934,7 +1934,7 @@ function flotGraphLoadData($container, response) {
     var data = response.data;
     if (data.length === 0) {
         if (!flot_x_global_min) {
-            $container.html('Geen gegevens beschikbaar.');
+            $container.html('Geen gegevens beschikbaar in deze periode.');
         }
         return;
     }
