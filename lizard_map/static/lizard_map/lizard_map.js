@@ -1746,6 +1746,14 @@ function reloadGraphs(max_image_width, callback, force) {
     });
 }
 
+function reloadFaultyGraphs() {
+    $('.dynamic-graph').each(function () {
+        if ($(this).data('fault_when_loading')) {
+            reloadDynamicGraph($(this), undefined, true);
+        }
+    });
+}
+
 function reloadZoomableGraphs(max_image_width, callback) {
     $('.dynamic-graph-zoomable').each(function () {
         reloadDynamicGraph($(this), callback, true);
@@ -1833,9 +1841,10 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
+            $graph.data('fault_when_loading', true);
             if (!flot_x_global_min) {
                 // Not flot dynamic reloading; so it is ok to show graph-disabling error.
-                $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. Probeer over 20 seconden de <a href="javascript:reloadFaultyGraphs()">grafieken opnieuw te laden</a>.');
             }
         };
 
@@ -1857,7 +1866,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     on_drawn();
                     //bindPanZoomEvents($graph);
                 },
-                timeout: 20000,
+                timeout: 25000,
                 error: on_error
             });
         }
@@ -1934,7 +1943,7 @@ function flotGraphLoadData($container, response) {
     var data = response.data;
     if (data.length === 0) {
         if (!flot_x_global_min) {
-            $container.html('Geen gegevens beschikbaar.');
+            $container.html('Geen gegevens beschikbaar in deze periode.');
         }
         return;
     }
@@ -2341,20 +2350,21 @@ function get_view_state() {
     return _view_state;
 }
 
-function set_view_state(params) {
+function set_view_state(params, callback) {
     $.extend(_view_state, params);
     flot_x_global_min = undefined;
     flot_x_global_max = undefined;
-    save_view_state_to_server();
+    save_view_state_to_server(callback);
 }
 
-function save_view_state_to_server() {
+function save_view_state_to_server(callback) {
     // update the session on the server side
     var view_state = _view_state;
     lizard_api_put({
-        url: '/map/view_state_service/', // TODO
+        url: '/map/view_state_service/', // TODO: url from data attribute.
         data: view_state,
         success: function (data) {
+            callback();
         }
     }, true);
 }
@@ -2417,15 +2427,17 @@ function setup_daterangepicker() {
             }
         },
                                                             function (range_type, dt_start, dt_end) {
-                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-                                                                // hack to support reloading after changing the date (collage page)
-                                                                if ($('.popup-date-range').hasClass('reload-after-action')) {
-                                                                    setTimeout(window.location.reload, 1337);
-                                                                }
-                                                                else {
-                                                                    reloadGraphs(undefined, undefined, true);
-                                                                    refreshWmsLayers();
-                                                                }
+                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end},
+                                                                               function () {
+                                                                                   // hack to support reloading after changing the date (collage page)
+                                                                                   if ($('.popup-date-range').hasClass('reload-after-action')) {
+                                                                                       setTimeout(window.location.reload, 1337);
+                                                                                   }
+                                                                                   else {
+                                                                                       reloadGraphs(undefined, undefined, true);
+                                                                                       refreshWmsLayers();
+                                                                                   }
+                                                                               });
                                                             });
     }
 }

@@ -71,6 +71,10 @@ Changelog of lizard-map
   backend *must* add an extra ``.dynamic-graph-zoomable`` class in addition to
   the current ``.dynamic-graph`` class.
 
+- Made the interaction with graphs that fail to load nicer.
+
+- View state persists also on the dashboard page now.
+
 
 4.28 (2013-05-06)
 -----------------
