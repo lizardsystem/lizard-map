@@ -1965,7 +1965,7 @@ function flotGraphLoadData($container, response) {
         },
         xaxis: {
             mode: "time",
-            zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
+            zoomRange: [15 * MS_MINUTE, 400 * MS_YEAR],
             timezone: 'utc',
             min: moment(response.x_min).toDate().getTime(),
             max: moment(response.x_max).toDate().getTime()
