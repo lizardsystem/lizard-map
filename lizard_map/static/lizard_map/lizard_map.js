@@ -2341,20 +2341,21 @@ function get_view_state() {
     return _view_state;
 }
 
-function set_view_state(params) {
+function set_view_state(params, callback) {
     $.extend(_view_state, params);
     flot_x_global_min = undefined;
     flot_x_global_max = undefined;
-    save_view_state_to_server();
+    save_view_state_to_server(callback);
 }
 
-function save_view_state_to_server() {
+function save_view_state_to_server(callback) {
     // update the session on the server side
     var view_state = _view_state;
     lizard_api_put({
         url: '/map/view_state_service/', // TODO: url from data attribute.
         data: view_state,
         success: function (data) {
+            callback();
         }
     }, true);
 }
@@ -2417,15 +2418,17 @@ function setup_daterangepicker() {
             }
         },
                                                             function (range_type, dt_start, dt_end) {
-                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-                                                                // hack to support reloading after changing the date (collage page)
-                                                                if ($('.popup-date-range').hasClass('reload-after-action')) {
-                                                                    setTimeout(window.location.reload, 1337);
-                                                                }
-                                                                else {
-                                                                    reloadGraphs(undefined, undefined, true);
-                                                                    refreshWmsLayers();
-                                                                }
+                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end},
+                                                                               function () {
+                                                                                   // hack to support reloading after changing the date (collage page)
+                                                                                   if ($('.popup-date-range').hasClass('reload-after-action')) {
+                                                                                       setTimeout(window.location.reload, 1337);
+                                                                                   }
+                                                                                   else {
+                                                                                       reloadGraphs(undefined, undefined, true);
+                                                                                       refreshWmsLayers();
+                                                                                   }
+                                                                               });
                                                             });
     }
 }
