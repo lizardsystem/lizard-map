@@ -1954,6 +1954,7 @@ function flotGraphLoadData($container, response) {
     var markings = [
         { color: '#d22', xaxis: { from: t0, to: t0 }, lineWidth: 2 }
     ];
+    var view_state = get_view_state();
     var defaultOpts = {
         series: {
             points: { show: true, hoverable: true, radius: 1 },
@@ -1965,7 +1966,7 @@ function flotGraphLoadData($container, response) {
         },
         xaxis: {
             mode: "time",
-            zoomRange: [15 * MS_MINUTE, 400 * MS_YEAR],
+            zoomRange: [15 * MS_MINUTE, view_state.dt_end - view_state.dt_start],
             timezone: 'utc',
             min: moment(response.x_min).toDate().getTime(),
             max: moment(response.x_max).toDate().getTime()
