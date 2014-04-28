@@ -2352,7 +2352,7 @@ function save_view_state_to_server() {
     // update the session on the server side
     var view_state = _view_state;
     lizard_api_put({
-        url: '/map/view_state_service/', // TODO
+        url: '/map/view_state_service/', // TODO: url from data attribute.
         data: view_state,
         success: function (data) {
         }
