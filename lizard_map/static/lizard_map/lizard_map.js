@@ -1835,7 +1835,16 @@ function reloadDynamicGraph($graph, callback, force) {
             on_loaded();
             if (!flot_x_global_min) {
                 // Not flot dynamic reloading; so it is ok to show graph-disabling error.
-                $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. We proberen het automatisch over 15 seconden nog een keer.');
+                var timeout = null;
+                var retry_graph = function () {
+                    reloadDynamicGraph($graph, callback, force)
+                };
+                if (timeout) {
+                    // clear old timeout first
+                    clearTimeout(timeout);
+                }
+                timeout = setTimeout(retry_graph, 15000);
             }
         };
 
