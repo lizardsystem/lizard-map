@@ -1746,6 +1746,14 @@ function reloadGraphs(max_image_width, callback, force) {
     });
 }
 
+function reloadFaultyGraphs() {
+    $('.dynamic-graph').each(function () {
+        if ($(this).data('fault_when_loading')) {
+            reloadDynamicGraph($(this), undefined, true);
+        }
+    });
+}
+
 function reloadZoomableGraphs(max_image_width, callback) {
     $('.dynamic-graph-zoomable').each(function () {
         reloadDynamicGraph($(this), callback, true);
@@ -1833,20 +1841,10 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
+            $graph.data('fault_when_loading', true);
             if (!flot_x_global_min) {
-                var retry_duration = $graph.data('retry_duration') || 15;
                 // Not flot dynamic reloading; so it is ok to show graph-disabling error.
-                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. We proberen het automatisch over ' + retry_duration + ' seconden nog een keer.');
-                var timeout = null;
-                var retry_graph = function () {
-                    reloadDynamicGraph($graph, callback, force)
-                };
-                if (timeout) {
-                    // clear old timeout first
-                    clearTimeout(timeout);
-                }
-                timeout = setTimeout(retry_graph, retry_duration * 1000);
-                $graph.data('retry_duration', retry_duration * 2);
+                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. Probeer over 20 seconden de <a href="javascript:reloadFaultyGraphs()">grafieken opnieuw te laden</a>.');
             }
         };
 
