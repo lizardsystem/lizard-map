@@ -1866,7 +1866,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     on_drawn();
                     //bindPanZoomEvents($graph);
                 },
-                timeout: 20000,
+                timeout: 25000,
                 error: on_error
             });
         }
