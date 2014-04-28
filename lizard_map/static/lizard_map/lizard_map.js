@@ -1845,7 +1845,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     // clear old timeout first
                     clearTimeout(timeout);
                 }
-                timeout = setTimeout(retry_graph, 20000);
+                timeout = setTimeout(retry_graph, retry_duration * 1000);
                 $graph.data('retry_duration', retry_duration * 2);
             }
         };
