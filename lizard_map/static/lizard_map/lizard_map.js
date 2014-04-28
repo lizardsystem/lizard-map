@@ -1834,8 +1834,9 @@ function reloadDynamicGraph($graph, callback, force) {
         var on_error = function () {
             on_loaded();
             if (!flot_x_global_min) {
+                var retry_duration = $graph.data('retry_duration') || 15;
                 // Not flot dynamic reloading; so it is ok to show graph-disabling error.
-                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. We proberen het automatisch over 20 seconden nog een keer.');
+                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. We proberen het automatisch over ' + retry_duration + ' seconden nog een keer.');
                 var timeout = null;
                 var retry_graph = function () {
                     reloadDynamicGraph($graph, callback, force)
@@ -1845,6 +1846,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     clearTimeout(timeout);
                 }
                 timeout = setTimeout(retry_graph, 20000);
+                $graph.data('retry_duration', retry_duration * 2);
             }
         };
 
