@@ -1001,8 +1001,8 @@ class FlotGraph(object):
         else:
             ylabel = self.ylabel
 
-        logger.debug("Start date we want: %s", self.start_date)
-        logger.debug("Start date for js : %s", mk_js_timestamp(self.start_date))
+        logger.info("Start date we want: %s", self.start_date)
+        logger.info("Start date for js : %s", mk_js_timestamp(self.start_date))
 
         return {
             'data': self.axes.flot_data,
