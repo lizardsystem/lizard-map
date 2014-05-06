@@ -2035,6 +2035,24 @@ def get_view_state(request):
             dt_end = now + datetime.timedelta(days=int(override_end_days))
         range_type = override_range_type
 
+    if dt_start is None:
+        # Curses! Re-do what lizard_map.js also does. [Reinout]
+        now = datetime.datetime.now(pytz.utc)
+        dt_end = now
+        if range_type == 'today':
+            dt_start = now - datetime.timedelta(days=1)
+        elif range_type == '2_day':
+            dt_start = now - datetime.timedelta(days=2)
+        elif range_type == 'week':
+            dt_start = now - datetime.timedelta(days=7)
+        elif range_type == 'week_plus_one':
+            dt_start = now - datetime.timedelta(days=7)
+            dt_end = now + datetime.timedelta(days=1)
+        elif range_type == 'month':
+            dt_start = now - datetime.timedelta(days=31)
+        elif range_type == 'year':
+            dt_start = now - datetime.timedelta(days=365)
+
     return {
         'range_type': range_type,
         'dt_start': dt_start,
