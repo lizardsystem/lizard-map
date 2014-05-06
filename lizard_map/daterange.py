@@ -39,7 +39,7 @@ def current_period(request):
     TODO: mix together with current_start_end_dates (but is has a lot
     of impact)
     """
-    default_period = getattr(settings, 'DEFAULT_PERIOD', 'week_plus_one')
+    default_period = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
 
     if request is None:
         return default_period
