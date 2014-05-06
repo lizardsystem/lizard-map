@@ -75,6 +75,8 @@ Changelog of lizard-map
 
 - View state persists also on the dashboard page now.
 
+- Added 'please log in' hint when there are no visible workspace storages.
+
 
 4.28 (2013-05-06)
 -----------------
