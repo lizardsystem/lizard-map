@@ -55,3 +55,7 @@ position: fixed;
   z-index: 2000;
   position: relative;
 }
+
+.wms-full-width-image {
+  width: 100%;
+}
