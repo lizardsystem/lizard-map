@@ -2011,21 +2011,18 @@ class ViewStateForm(forms.Form):
 
 def get_view_state(request):
     session = request.session
-    debug = {}
     # try getting values from session
     range_type = session.get(SESSION_DT_RANGETYPE)
-    debug['1 from session'] = range_type
     dt_start = session.get(SESSION_DT_START)
     dt_end = session.get(SESSION_DT_END)
 
     # when not in session, use the default from Django settings
     if not range_type:
         range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
-        debug['2 default, from settings'] = range_type
+
     # when something invalid is in the session, also get it from Django settings
     elif range_type == 'custom' and not (dt_start and dt_end):
         range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
-        debug['3 default, after custom without start/end'] = range_type
 
     # allow a site to completely bypass the daterange mechanism
     override_range_type = getattr(settings, 'OVERRIDE_RANGE_TYPE', None)
@@ -2037,7 +2034,6 @@ def get_view_state(request):
             dt_start = now + datetime.timedelta(days=int(override_start_days))
             dt_end = now + datetime.timedelta(days=int(override_end_days))
         range_type = override_range_type
-        debug['4 After a hard override'] = range_type
 
     if dt_start is None:
         # Curses! Re-do what lizard_map.js also does. [Reinout]
@@ -2057,13 +2053,10 @@ def get_view_state(request):
         elif range_type == 'year':
             dt_start = now - datetime.timedelta(days=365)
 
-    debug['5 at the end'] = range_type
-    debug = '\n'.join(["%s, %r" % (k, debug[k]) for k in sorted(debug.keys())])
     return {
         'range_type': range_type,
         'dt_start': dt_start,
         'dt_end': dt_end,
-        'debug': debug,
     }
 
 
