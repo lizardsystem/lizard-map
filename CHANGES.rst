@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Set workspace on default as private.
+
 - Fix grammatical mistakes in info-tour.
 
 - Move to Lizard 5.

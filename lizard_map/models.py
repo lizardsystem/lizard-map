@@ -642,7 +642,7 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
 
     # private: if True, show only to logged-in users
     private = models.BooleanField(
-        default=False, help_text=_("When checked, this workspace is only "
+        default=True, help_text=_("When checked, this workspace is only "
                                    "available for logged-in users."))
 
     def __unicode__(self):
