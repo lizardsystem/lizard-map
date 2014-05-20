@@ -38,3 +38,24 @@ position: fixed;
 #logo-row {
   z-index: 1998 !important;
 }
+
+#edit-collage-table .ss_sprite {
+  padding-bottom: 2px;
+}
+
+#edit-collage-table .flot-graph-control-row {
+  display: none;
+}
+
+#edit-collage-table .hide-in-collage {
+  display: none;
+}
+
+.dynamic-graph-zoomable .graph-loading-animation {
+  z-index: 2000;
+  position: relative;
+}
+
+.wms-full-width-image {
+  width: 350px;
+}

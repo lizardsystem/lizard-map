@@ -1,6 +1,9 @@
 // jslint configuration; btw: don't put a space before 'jslint' below.
 /*jslint browser: true */
 
+var flot_x_global_min, flot_x_global_max, flot_reload_timeout;
+
+
 // in use (26-09-2012)
 // left workspace + collage checkboxes
 jQuery.fn.liveCheckboxes = function () {
@@ -412,9 +415,10 @@ jQuery.fn.updateWorkspace = function () {
         $holder.load(
             './ #page',
             function () {
-                if ($('#edit-workspace', $holder).length == 0) {
-                    debugger;
-                }
+                //if ($('#edit-workspace', $holder).length === 0) {
+                //    debugger;
+                //}
+
                 //$(".workspace-items", $workspace).html(
                 //    $('.workspace-items', $holder).html());
                 $("#edit-workspace").parent().html(
@@ -536,8 +540,8 @@ function setUpWorkspaceLoad() {
             },
             function(data) {
                 result = $.parseJSON(data);
-                if (result['redirect'])
-                    window.location.href = result['redirect'];
+                if (result.redirect)
+                    window.location.href = result.redirect;
             }
         );
     });
@@ -636,26 +640,6 @@ function setUpWorkspaceAcceptable() {
                 top: '+=' + move_down,
                 width: $layer_button.width(),
                 height: $layer_button.height()
-            }, 1000, function() {
-                $moving_box.remove();
-            });
-            /* xxx */
-        }
-        if ($(this).hasClass('selected')) {
-            var $layer_button, $moving_box, move_up, move_left;
-            $layer_button = $("#map");
-            $("#page").after('<div id="moving-box">');
-            $moving_box = $("#moving-box");
-            $moving_box.offset($layer_button.offset());
-            $moving_box.width($layer_button.width());
-            $moving_box.height($layer_button.height());
-            move_up = $layer_button.offset().top - $(this).offset().top;
-            move_left = $layer_button.offset().left - $(this).offset().left;
-            $moving_box.animate({
-                left: '-=' + move_left,
-                top: '-=' + move_up,
-                width: 0,
-                height: 0
             }, 1000, function() {
                 $moving_box.remove();
             });
@@ -1318,7 +1302,7 @@ function refreshWmsLayers() {
         params = $(this).attr("data-workspace-wms-params");
         params = $.parseJSON(params);
         // Fix for partial images on tiles
-        params['tilesorigin'] = [map.maxExtent.left, map.maxExtent.bottom];
+        params.tilesorigin = [map.maxExtent.left, map.maxExtent.bottom];
         options = $(this).attr("data-workspace-wms-options");
         options = $.parseJSON(options);
         info = $(this).attr("data-workspace-wms-info");
@@ -1328,7 +1312,7 @@ function refreshWmsLayers() {
         // HACK: force reproject = false for layers which still have this defined (in the database no less)
         // reprojection is deprecated
         if (options.reproject) {
-            delete options['reproject'];
+            delete options.reproject;
         }
         options.displayInLayerSwitcher = true;
         index = parseInt($(this).attr("data-workspace-wms-index"));
@@ -1341,9 +1325,9 @@ function refreshWmsLayers() {
 	var operator = 'AND'; // Use AND as the default operator.
 
 	if (typeof(selected_filters) != "undefined") {
-	    var keys = selected_filters["keys"];
-	    var values = selected_filters["values"];
-	    var operator = selected_filters["operator"];
+	    var keys = selected_filters.keys;
+	    var values = selected_filters.values;
+	    operator = selected_filters.operator;
 
 	    // Add the filters that are selected and available for this layer.
 	    for (var i=0; i<keys.length; i++) {
@@ -1356,7 +1340,7 @@ function refreshWmsLayers() {
 
         // Add possible cql_filters from the layer definition.
         if (params['.cql_filter'] !== undefined) {
-            cql_filters_arr.push(params['cql_filter']);
+            cql_filters_arr.push(params.cql_filter);
         }
 
         var cql_filters = '';
@@ -1369,36 +1353,37 @@ function refreshWmsLayers() {
 
         // Each layer of a combined layer needs a cql_filter.
         if (cql_filters !== '') {
-            var layerslength = params['layers'].split(',').length - 1;
+            var layerslength = params.layers.split(',').length - 1;
             for (var i = 1; i <= layerslength; i ++) {
                 cql_filters += ';' + cql_filters;
             }
         }
+        var view_state, layer;
 
         if (wms_layers[id] === undefined) {
             // Create it.
             if (cql_filters.length > 0){
                 // There are filters so add them to the request.
-                params['cql_filter'] = cql_filters;
+                params.cql_filter = cql_filters;
             }
             // add currently selected date range to url
             // HACK: viewstate is currently globally accessible
-            var view_state = get_view_state();
+            view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
             if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
-                    params['time'] = view_state.dt_start + '/' + view_state.dt_end;
+                    params.time = view_state.dt_start + '/' + view_state.dt_end;
                 }
             }
 
-            var layer = new OpenLayers.Layer.WMS(name, url, params, options);
+            layer = new OpenLayers.Layer.WMS(name, url, params, options);
             wms_layers[id] = layer;
             map.addLayer(layer);
             layer.setZIndex(1000 - index); // looks like passing this via options won't work properly
         }
         else {
             // Update it.
-            var layer = wms_layers[id];
+            layer = wms_layers[id];
             if (cql_filters.length > 0){
                 // Update the layer if a cql_filter is used
                 // with the new cql_filter params.
@@ -1406,7 +1391,7 @@ function refreshWmsLayers() {
             }
             // add currently selected date range to url
             // HACK: viewstate is currently globally accessible
-            var view_state = get_view_state();
+            view_state = get_view_state();
             view_state = to_date_strings(view_state, false, true);
             if (info && info.timepositions && view_state !== undefined) {
                 if (view_state.dt_start && view_state.dt_end) {
@@ -1761,6 +1746,21 @@ function reloadGraphs(max_image_width, callback, force) {
     });
 }
 
+function reloadFaultyGraphs() {
+    $('.dynamic-graph').each(function () {
+        if ($(this).data('fault_when_loading')) {
+            reloadDynamicGraph($(this), undefined, true);
+        }
+    });
+}
+
+function reloadZoomableGraphs(max_image_width, callback) {
+    $('.dynamic-graph-zoomable').each(function () {
+        reloadDynamicGraph($(this), callback, true);
+    });
+}
+
+
 function reloadGraphsIn($el) {
     $el.find('.dynamic-graph').each(function () {
         reloadDynamicGraph($(this));
@@ -1790,11 +1790,21 @@ function reloadDynamicGraph($graph, callback, force) {
     }
     var url = (graph_type == 'flot') ? flot_graph_data_url : image_graph_url;
 
-    // add currently selected date range to url
+    // add currently selected date range to url as a default.
     // HACK: viewstate is currently globally accessible
+    // But first look if we've set our flot zoom parameters.
     var view_state = get_view_state();
     view_state = to_date_strings(view_state);
-    if (view_state !== undefined) {
+    var offset = $('.popup-date-range').attr('data-offset');
+    if (flot_x_global_max) {
+        dt_start = moment.utc(flot_x_global_min).format('YYYY-MM-DDTHH:mm:ss') + offset;
+        dt_end = moment.utc(flot_x_global_max).format('YYYY-MM-DDTHH:mm:ss') + offset;
+        url += '&' + $.param({
+            dt_start: dt_start,
+            dt_end: dt_end
+        });
+    }
+    else if (view_state !== undefined) {
         if (view_state.dt_start && view_state.dt_end) {
             url += '&' + $.param({
                 dt_start: view_state.dt_start,
@@ -1806,7 +1816,12 @@ function reloadDynamicGraph($graph, callback, force) {
     if (url) {
         // add a spinner
         var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="graph-loading-animation" />');
-        $graph.empty().append($loading);
+        if (flot_x_global_min) {
+            // Flot dynamic reloading; don't empty the graph totally.
+            $graph.append($loading);
+        } else {
+            $graph.empty().append($loading);
+        }
         $graph.attr('data-graph-loading', 'true');
 
         // remove spinner when loading has finished (either with or without an error)
@@ -1826,7 +1841,11 @@ function reloadDynamicGraph($graph, callback, force) {
         // show a message when loading has failed
         var on_error = function () {
             on_loaded();
-            $graph.html('Fout bij het laden van de gegevens. Te veel data. Pas uw tijdsperiode aan of exporteer de tijdreeks.');
+            $graph.data('fault_when_loading', true);
+            if (!flot_x_global_min) {
+                // Not flot dynamic reloading; so it is ok to show graph-disabling error.
+                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. Probeer over 20 seconden de <a href="javascript:reloadFaultyGraphs()">grafieken opnieuw te laden</a>.');
+            }
         };
 
         // for flot graphs, grab the JSON data and call Flot
@@ -1847,7 +1866,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     on_drawn();
                     //bindPanZoomEvents($graph);
                 },
-                timeout: 20000,
+                timeout: 25000,
                 error: on_error
             });
         }
@@ -1923,7 +1942,9 @@ var MS_YEAR = 365 * MS_DAY;
 function flotGraphLoadData($container, response) {
     var data = response.data;
     if (data.length === 0) {
-        $container.html('Geen gegevens beschikbaar.');
+        if (!flot_x_global_min) {
+            $container.html('Geen gegevens beschikbaar in deze periode.');
+        }
         return;
     }
     // Convert ISO 8601 strings to seconds since ECMAScript epoch
@@ -1942,6 +1963,7 @@ function flotGraphLoadData($container, response) {
     var markings = [
         { color: '#d22', xaxis: { from: t0, to: t0 }, lineWidth: 2 }
     ];
+    var view_state = get_view_state();
     var defaultOpts = {
         series: {
             points: { show: true, hoverable: true, radius: 1 },
@@ -1953,8 +1975,10 @@ function flotGraphLoadData($container, response) {
         },
         xaxis: {
             mode: "time",
-            zoomRange: [1 * MS_MINUTE, 400 * MS_YEAR],
-            timezone: 'utc'
+            zoomRange: [15 * MS_MINUTE, view_state.dt_end - view_state.dt_start],
+            timezone: 'utc',
+            min: moment(response.x_min).toDate().getTime(),
+            max: moment(response.x_max).toDate().getTime()
         },
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
@@ -2053,21 +2077,22 @@ function flotGraphLoadData($container, response) {
     bindPanZoomEvents($graph);
     bindFullscreenClick($container);
 
+    function showGraphTooltip(x, y, datapoint) {
+        var dateFormatted = moment.utc(datapoint[0]).format('LL H:mm');
+        var valueFormatted = Math.round(datapoint[1] * 100) / 100;
+        $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
+            'position': 'absolute',
+            'top': y - 25,
+            'left': x + 5,
+            'padding': '0.4em 0.6em',
+            'border-radius': '0.5em',
+            'border': '1px solid #111',
+            'background-color': '#fff',
+            'z-index': 11000
+        }).appendTo("body");
+    }
+
     if (!isAppleMobile) {
-        function showGraphTooltip(x, y, datapoint) {
-            var dateFormatted = moment.utc(datapoint[0]).format('LL H:mm');
-            var valueFormatted = Math.round(datapoint[1] * 100) / 100;
-            $('<div id="graphtooltip">' + dateFormatted + '&nbsp;&nbsp;'+ valueFormatted + '</div>').css({
-                'position': 'absolute',
-                'top': y - 25,
-                'left': x + 5,
-                'padding': '0.4em 0.6em',
-                'border-radius': '0.5em',
-                'border': '1px solid #111',
-                'background-color': '#fff',
-                'z-index': 11000
-            }).appendTo("body");
-        }
 
         $graph.bind("plothover", function (event, pos, item) {
             if (item) {
@@ -2118,6 +2143,20 @@ function panAndZoomOtherGraphs(plot) {
     var axes = plot.getAxes();
     var xmin = axes.xaxis.min;
     var xmax = axes.xaxis.max;
+    var view_state = get_view_state();
+    view_state = to_date_strings(view_state);
+    var offset = $('.popup-date-range').attr('data-offset');
+    dt_start = moment.utc(xmin).format('YYYY-MM-DDTHH:mm:ss') + offset;
+    dt_end = moment.utc(xmax).format('YYYY-MM-DDTHH:mm:ss') + offset;
+    if (dt_start < view_state.dt_start) {
+        xmin = moment(view_state.dt_start);
+    }
+    if (dt_end > view_state.dt_end) {
+        xmax = moment(view_state.dt_end);
+    }
+
+    flot_x_global_min = xmin;
+    flot_x_global_max = xmax;
     $('.flot-graph-canvas').each(function () {
         var otherPlot = $(this).data('plot');
         if (otherPlot && plot !== otherPlot) {
@@ -2130,6 +2169,12 @@ function panAndZoomOtherGraphs(plot) {
             }
         }
     });
+    // Reload data if needed, followed by another draw.
+    if (flot_reload_timeout) {
+        // clear old timeout first
+        clearTimeout(flot_reload_timeout);
+    }
+    flot_reload_timeout = setTimeout(reloadZoomableGraphs, 1000);
 }
 
 function bindPanZoomEvents($graph) {
@@ -2181,7 +2226,7 @@ function bindFullscreenClick($container) {
                     $container.insertAt(origIndex, $origParent);
                     $container.css('height', origHeight);
                 }
-                $container.data('is-fullscreen', false)
+                $container.data('is-fullscreen', false);
                 $dialog.dialog('destroy');
                 $dialog.remove();
             };
@@ -2305,18 +2350,21 @@ function get_view_state() {
     return _view_state;
 }
 
-function set_view_state(params) {
+function set_view_state(params, callback) {
     $.extend(_view_state, params);
-    save_view_state_to_server();
+    flot_x_global_min = undefined;
+    flot_x_global_max = undefined;
+    save_view_state_to_server(callback);
 }
 
-function save_view_state_to_server() {
+function save_view_state_to_server(callback) {
     // update the session on the server side
     var view_state = _view_state;
     lizard_api_put({
-        url: '/map/view_state_service/', // TODO
+        url: '/map/view_state_service/', // TODO: url from data attribute.
         data: view_state,
         success: function (data) {
+            callback();
         }
     }, true);
 }
@@ -2379,15 +2427,17 @@ function setup_daterangepicker() {
             }
         },
                                                             function (range_type, dt_start, dt_end) {
-                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end});
-                                                                // hack to support reloading after changing the date (collage page)
-                                                                if ($('.popup-date-range').hasClass('reload-after-action')) {
-                                                                    setTimeout(window.location.reload, 1337);
-                                                                }
-                                                                else {
-                                                                    reloadGraphs(undefined, undefined, true);
-                                                                    refreshWmsLayers();
-                                                                }
+                                                                set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end},
+                                                                               function () {
+                                                                                   // hack to support reloading after changing the date (collage page)
+                                                                                   if ($('.popup-date-range').hasClass('reload-after-action')) {
+                                                                                       setTimeout(window.location.reload, 1337);
+                                                                                   }
+                                                                                   else {
+                                                                                       reloadGraphs(undefined, undefined, true);
+                                                                                       refreshWmsLayers();
+                                                                                   }
+                                                                               });
                                                             });
     }
 }
@@ -2401,6 +2451,66 @@ function setUpSidebarPopupDisappearing () {
 
 function setup_location_list () {
     var $element = $('.popup-location-list');
+
+    function show (e) {
+        open_popup(false);
+        set_popup_content($container);
+
+        $input.focus();
+        $button.click(search);
+        $form.submit(search);
+
+        // show some initial search results
+        $input.val('');
+        setTimeout(search, 500);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+    function search (e) {
+        var params = $.param({
+            name: $input.val()
+        });
+        $results.empty();
+        var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
+        $results.append($loading);
+        lizard_api_get({
+            url: '/map/location_list_service/?' + params, // TODO
+            success: function (data) {
+                $results.empty();
+                if (data.length === 0) {
+                    $results.html('Niets gevonden.');
+                }
+                else {
+                    $.each(data, function () {
+                        var item = this;
+                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
+                              .attr('data-adapter-class', item[0])
+                              .attr('data-adapter-layer-json', item[1])
+                              .attr('data-identifier', item[2])
+                              .attr('data-name', item[3])
+                              .attr('href', item[5])
+                              .html(item[4]);
+                        var $div = $('<div/>')
+                              .append($link);
+                        $results.append($div);
+                    });
+                }
+            }
+        }, false);
+
+        if (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+        return false;
+    }
+
+
     if ($element.exists()) {
         var template = '' +
               '<div class="location-list">' +
@@ -2416,64 +2526,6 @@ function setup_location_list () {
         var $input = $container.find('input');
         var $button = $container.find('button');
         var $results = $container.find('.results');
-
-        function show (e) {
-            open_popup(false);
-            set_popup_content($container);
-
-            $input.focus();
-            $button.click(search);
-            $form.submit(search);
-
-            // show some initial search results
-            $input.val('');
-            setTimeout(search, 500);
-
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            return false;
-        }
-
-        function search (e) {
-            var params = $.param({
-                name: $input.val()
-            });
-            $results.empty();
-            var $loading = $('<img src="/static_media/lizard_ui/ajax-loader.gif" class="popup-loading-animation" />');
-            $results.append($loading);
-            lizard_api_get({
-                url: '/map/location_list_service/?' + params, // TODO
-                success: function (data) {
-                    $results.empty();
-                    if (data.length === 0) {
-                        $results.html('Niets gevonden.');
-                    }
-                    else {
-                        $.each(data, function () {
-                            var item = this;
-                            var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
-                                  .attr('data-adapter-class', item[0])
-                                  .attr('data-adapter-layer-json', item[1])
-                                  .attr('data-identifier', item[2])
-                                  .attr('data-name', item[3])
-                                  .attr('href', item[5])
-                                  .html(item[4]);
-                            var $div = $('<div/>')
-                                  .append($link);
-                            $results.append($div);
-                        });
-                    }
-                }
-            }, false);
-
-            if (e) {
-                e.stopPropagation();
-                e.preventDefault();
-            }
-            return false;
-        }
 
         $element.on('click', show);
     }
@@ -2527,7 +2579,7 @@ function setup_location_search () {
         });
 
 	var $contentPane = $('<div>');
-        if (items.length != 0) {
+        if (items.length !== 0) {
             $('<ul/>', {
                 html: items.join('')
             }).appendTo($contentPane);
@@ -2610,12 +2662,11 @@ function setUpAppTab(){
     }
 }
 
-function setUpBootstrapTour(){
+function setUpBootstrapTour() {
     var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
+
     if (tour_type === 'nl') {
-	tour = setUpTourDutch();
-    }
-    if (tour_type != false) {
+	var tour = setUpTourDutch();
 	$('#action-bootstrap-tour').click(function (){
 	    tour.restart();
 	});
@@ -2736,7 +2787,7 @@ function setUpWMSFilter(){
         for(var i=0; i<filterItems.length; i++){
             var filterItem = filterItems[i];
             var checked;
-            if (filterItem['default'] == true) {
+            if (filterItem['default'] === true) {
                 checked = true;
                 // Add the cql_filter for the default filter
                 $('#lizard-map-wms').data('wms-cql_filters', filterItem.cql_filter);
@@ -2745,7 +2796,7 @@ function setUpWMSFilter(){
             }
             var id = 'wms-filter-id-' + i;
             var template = 	dropdownTemplate(
-                {'name': filterItem['name'],
+                {'name': filterItem.name,
                  'checked': checked,
                  'id': id
                 });
@@ -2765,7 +2816,7 @@ function setUpWMSFilter(){
 	var cql_filter = $(e.target).data('cql-filter');
 	// Handle a click on the check mark as well.
 	if (typeof(cql_filter) === "undefined"){
-	    cql_filter = $(e.currentTarget).data('cql-filter')
+	    cql_filter = $(e.currentTarget).data('cql-filter');
 	    $(e.currentTarget).prepend('<i class="icon-">&#xf00c;</i>');
 	} else {
 	    // Add the new check

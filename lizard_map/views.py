@@ -14,7 +14,6 @@ from dateutil import parser as date_parser
 from PIL import Image
 from django import forms
 from django.core.cache import cache
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -43,12 +42,13 @@ from rest_framework.views import APIView
 import iso8601
 import mapnik
 import requests
+import pytz
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
 from lizard_map.adapter import parse_identifier_json
-from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
+from lizard_map.conf import settings
 from lizard_map.coordinates import transform_point
 from lizard_map.dateperiods import ALL
 from lizard_map.dateperiods import MONTH
@@ -79,14 +79,10 @@ CUSTOM_LEGENDS = 'custom_legends'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 TIME_BETWEEN_VIDEO_POPUP = datetime.timedelta(days=1)
-MAX_LOCATIONS = getattr(settings, 'MAX_LOCATIONS', 50)
+
 # no way to know how the database driver escapes things, so apply
 # a whitelist to strings, before passing them in the raw SQL query
 LOCATION_NAME_CHARACTER_WHITELIST = re.compile(r'''[\W^ ^\,^\-^\.]''')
-
-DEFAULT_START_EXTENT = '-14675, 6668977, 1254790, 6964942'
-DEFAULT_PROJECTION = 'EPSG:900913'
-
 
 logger = logging.getLogger(__name__)
 
@@ -118,10 +114,7 @@ class GoogleTrackingMixin(object):
     Google tracking code.
     """
     def google_tracking_code(self):
-        try:
-            return settings.GOOGLE_TRACKING_CODE
-        except AttributeError:
-            return None
+        return settings.LIZARD_MAP_GOOGLE_TRACKING_CODE
 
 
 class WorkspaceMixin(object):
@@ -138,10 +131,7 @@ class WorkspaceMixin(object):
         pass
 
     def javascript_hover_handler(self):
-        if not hasattr(self, '_javascript_hover_handler'):
-            self._javascript_hover_handler = Setting.get(
-                'javascript_hover_handler', None)
-        return self._javascript_hover_handler
+        return Setting.get('javascript_hover_handler')
 
     def extra_wms_layers(self):
         """Overwrite to add custom WMS layers to your view.
@@ -189,27 +179,22 @@ class MapMixin(object):
     #     return ""
 
     def max_extent(self):
-        s = Setting.extent(
-            'max_extent',
-            '-20037508.34, -20037508.34, 20037508.34, 20037508.34')
-        return s
+        return Setting.extent('max_extent')
 
     def start_extent(self):
         return self.request.session.get(
             MAP_LOCATION,
-            Setting.extent(
-                'start_extent',
-                DEFAULT_START_EXTENT)  # Default
-            )
+            Setting.extent('start_extent'))
 
+    # XXXX
     def projection(self):
-        return Setting.get('projection', DEFAULT_PROJECTION)
+        return Setting.get('projection')
 
     def display_projection(self):
-        return Setting.get('projection', 'EPSG:4326')
+        return Setting.get('projection')
 
     def googlemaps_api_key(self):
-        return Setting.get('projection', '')  # Must be defined
+        return Setting.get('projection')
 
     def base_layer_name(self):
         if MAP_BASE_LAYER in self.request.session:
@@ -223,22 +208,13 @@ class MapMixin(object):
         return self._backgrounds
 
     def has_google(self):
-        # For the client side to determine is there is a google map.
-        if self.backgrounds.filter(
-            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).count() > 0:
-            return True
-        return False
+        """For the client side, to determine if there is a google map."""
+        return self.backgrounds.filter(
+            layer_type=BackgroundMap.LAYER_TYPE_GOOGLE).exists()
 
     def background_maps(self):
-        if self.backgrounds:
-            return self.backgrounds
-        logger.warn("No background maps are active. Taking default.")
-        return [BackgroundMap(
-                name='Default map',
-                default=True,
-                active=True,
-                layer_type=BackgroundMap.LAYER_TYPE_OSM,
-                layer_url=DEFAULT_OSM_LAYER_URL), ]
+        """Return current background maps, or the default if there are none."""
+        return self.backgrounds or BackgroundMap.default_maps()
 
 
 class CollageMixin(object):
@@ -322,12 +298,11 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     """Main map view (using twitter bootstrap)."""
 
     show_secondary_sidebar_icon = 'icon-list'
-    map_show_multiselect = getattr(settings, 'MAP_SHOW_MULTISELECT', True)
-    map_show_daterange = getattr(settings, 'MAP_SHOW_DATERANGE', True)
-    map_show_default_zoom = getattr(settings, 'MAP_SHOW_DEFAULT_ZOOM', True)
-    map_show_base_layers_menu = getattr(settings,
-                                        'MAP_SHOW_BASE_LAYERS_MENU', True)
-    map_show_layers_menu = getattr(settings, 'MAP_SHOW_LAYERS_MENU', True)
+    map_show_multiselect = settings.LIZARD_MAP_SHOW_MULTISELECT
+    map_show_daterange = settings.LIZARD_MAP_SHOW_DATERANGE
+    map_show_default_zoom = settings.LIZARD_MAP_SHOW_DEFAULT_ZOOM
+    map_show_base_layers_menu = settings.LIZARD_MAP_SHOW_BASE_LAYERS_MENU
+    map_show_layers_menu = settings.LIZARD_MAP_SHOW_LAYERS_MENU
 
     @property
     def show_secondary_sidebar_title(self):
@@ -379,7 +354,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     def site_actions(self):
         """Add the layer switcher icons to the site action bar.
 
-        THis was done for a quick demo for Wytze."""
+        This was done for a quick demo for Wytze."""
 
         actions = super(AppView, self).site_actions
         show_layers = Action(
@@ -416,17 +391,19 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
             element_id='calendar',
             url='javascript:void(null)',
             icon='icon-calendar',
-            klass='popup-date-range')
+            klass='popup-date-range',
+            data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
-        if getattr(settings, 'MAP_SHOW_COLLAGE', False):
+        if settings.LIZARD_MAP_SHOW_COLLAGE:
             collage_icon = Action(
                 name='',
                 element_id='collage-link',
                 description=_('Go to your collage'),
                 url=reverse('lizard_map_collage_edit_detail'),
-                icon='icon-picture')
+                icon='icon-dashboard',
+                target='_blank')
             actions.insert(0, collage_icon)
-        if Setting.get('bootstrap_tour', False):
+        if Setting.get('bootstrap_tour'):
             show_tour = Action(
                 name='',
                 element_id='bootstrap-tour',
@@ -463,7 +440,8 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 description=_('Change the date range of the measurements'),
                 url='javascript:void(null)',
                 icon='icon-calendar',
-                klass='popup-date-range')
+                klass='popup-date-range',
+                data_attributes={'offset': self.timezone_offset_string})
             actions.insert(0, set_date_range)
         if self.map_show_default_zoom:
             zoom_to_default = Action(
@@ -498,6 +476,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         return get_view_state(self.request)
 
     @property
+    def timezone_offset_string(self):
+        """Return timezone offset for use in javascript.
+
+        Flot graphs are the local time masqueraded as UTC. This offset string
+        helps javascript to do the same backwards. Needed for flot pan/zoom.
+        """
+        return datetime.datetime.now(pytz.timezone('Europe/Amsterdam')).strftime('%z')
+
+    @property
     def workspace_storages(self):
         # show all items to logged-in users
         if self.request.user.is_authenticated():
@@ -509,10 +496,11 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
     @property
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
-        return Setting.get('bootstrap_tour', 'false')
+        return Setting.get('bootstrap_tour')
 
     @property
     def wms_filter(self):
+
         """Return JSON with the filter."""
         # deferred import because of circular import
         from lizard_wms.models import WMSFilter
@@ -1038,7 +1026,9 @@ def popup_json(found, popup_id=None, hide_add_snippet=False, request=None):
         #     x_found, y_found = display_object['google_coords']
         html[key] = html_per_workspace_item
 
-    popup_max_tabs = Setting.get('popup_max_tabs', None)
+    # XXX Popup max tabs can be set in both Setting and settings.py?
+    # Is it ever used?
+    popup_max_tabs = Setting.get('popup_max_tabs')
     if popup_max_tabs is None:
         popup_max_tabs = getattr(settings, 'POPUP_MAX_TABS', 3)
     else:
@@ -1382,9 +1372,13 @@ class CollageDetailView(CollageMixin, UiView):
     """
     Shows "my collage" as big page.
     """
-    title = _('Collage')
+    title = _('Dashboard')
     template_name = 'lizard_map/collage_edit_detail.html'
     hide_statistics = False
+
+    @property
+    def view_state(self):
+        return get_view_state(self.request)
 
     @property
     def site_actions(self):
@@ -1395,9 +1389,20 @@ class CollageDetailView(CollageMixin, UiView):
             element_id='calendar',
             url='javascript:void(null)',
             icon='icon-calendar',
-            klass='popup-date-range')
+            klass='popup-date-range',
+            data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
         return actions
+
+    @property
+    def timezone_offset_string(self):
+        """Return timezone offset for use in javascript.
+
+        Flot graphs are the local time masqueraded as UTC. This offset string
+        helps javascript to do the same backwards. Needed for flot pan/zoom.
+        """
+        # Duplication from AppView...
+        return datetime.datetime.now(pytz.timezone('Europe/Amsterdam')).strftime('%z')
 
     def breadcrumbs(self):
         initial = [
@@ -1617,9 +1622,7 @@ def map_location_load_default(request):
     """
     Return start_extent
     """
-    extent = Setting.extent(
-        'start_extent',
-        DEFAULT_START_EXTENT)
+    extent = Setting.extent('start_extent')
 
     map_location = {'extent': extent}
 
@@ -2008,7 +2011,6 @@ class ViewStateForm(forms.Form):
 
 def get_view_state(request):
     session = request.session
-
     # try getting values from session
     range_type = session.get(SESSION_DT_RANGETYPE)
     dt_start = session.get(SESSION_DT_START)
@@ -2017,6 +2019,7 @@ def get_view_state(request):
     # when not in session, use the default from Django settings
     if not range_type:
         range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
+
     # when something invalid is in the session, also get it from Django settings
     elif range_type == 'custom' and not (dt_start and dt_end):
         range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
@@ -2032,10 +2035,28 @@ def get_view_state(request):
             dt_end = now + datetime.timedelta(days=int(override_end_days))
         range_type = override_range_type
 
+    if dt_start is None:
+        # Curses! Re-do what lizard_map.js also does. [Reinout]
+        now = datetime.datetime.now(pytz.utc)
+        dt_end = now
+        if range_type == 'today':
+            dt_start = now - datetime.timedelta(days=1)
+        elif range_type == '2_day':
+            dt_start = now - datetime.timedelta(days=2)
+        elif range_type == 'week':
+            dt_start = now - datetime.timedelta(days=7)
+        elif range_type == 'week_plus_one':
+            dt_start = now - datetime.timedelta(days=7)
+            dt_end = now + datetime.timedelta(days=1)
+        elif range_type == 'month':
+            dt_start = now - datetime.timedelta(days=31)
+        elif range_type == 'year':
+            dt_start = now - datetime.timedelta(days=365)
+
     return {
         'range_type': range_type,
         'dt_start': dt_start,
-        'dt_end': dt_end
+        'dt_end': dt_end,
     }
 
 
@@ -2105,10 +2126,10 @@ class LocationListService(APIView, WorkspaceEditMixin):
                                   location_name))
             # We can stop searching the remaining adapters in case
             # MAX_LOCATIONS is already reached.
-            if len(locations) > MAX_LOCATIONS:
+            if len(locations) > settings.LIZARD_MAP_MAX_LOCATIONS:
                 break
         # ensure we don't return more than MAX_LOCATIONS values
-        locations = locations[:MAX_LOCATIONS]
+        locations = locations[:settings.LIZARD_MAP_MAX_LOCATIONS]
         add_href = reverse('lizard_map_collage_add')
         locations = [loc + (add_href,) for loc in locations]
         return RestResponse(locations)

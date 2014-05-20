@@ -5,7 +5,6 @@ from pyproj import transform
 
 from django.contrib.gis.geos import Point
 
-from lizard_map.models import BackgroundMap
 from lizard_map.models import Setting
 
 
@@ -23,23 +22,6 @@ GOOGLE = ('+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 '
           '+lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m '
           '+nadgrids=@null +no_defs +over')
 WGS84 = ('+proj=latlong +datum=WGS84')
-
-# Default map settings. Take this when no MAP_SETTINGS in django settings.
-DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
-DEFAULT_MAP_SETTINGS = {
-    'start_extent': '-14675, 6668977, 1254790, 6964942',
-    'max_extent': '-20037508.34, -20037508.34, 20037508.34, 20037508.34',
-    'projection': 'EPSG:900913',
-    'display_projection': 'EPSG:4326',
-    'googlemaps_api_key': '',  # Must be defined.
-    'background_maps': [BackgroundMap(
-            name='Default map',
-            default=True,
-            active=True,
-            layer_type=BackgroundMap.LAYER_TYPE_OSM,
-            layer_url=DEFAULT_OSM_LAYER_URL)],  # OSM
-    }
-
 
 rd_projection = Proj(RD)
 google_projection = Proj(GOOGLE)
@@ -84,7 +66,7 @@ def transform_point(x, y, from_proj=None, to_proj=None):
     is used.  It makes no sense to give neither."""
 
     if to_proj is None:
-        to_srs = Setting.get('projection', 'EPSG:900913')
+        to_srs = Setting.get('projection')
         to_srid = string_to_srid[srs_to_string[to_srs]]
         to_proj = Proj(srs_to_mapnik_projection[to_srs])
     elif to_proj not in string_to_srs:
@@ -94,7 +76,7 @@ def transform_point(x, y, from_proj=None, to_proj=None):
         to_proj = Proj(srs_to_mapnik_projection[string_to_srs[to_proj]])
 
     if from_proj is None:
-        from_proj = Setting.get('projection', 'EPSG:900913')
+        from_proj = Setting.get('projection')
         from_proj = Proj(srs_to_mapnik_projection[from_proj])
     elif from_proj not in string_to_srs:
         raise ValueError("Value '%s' of from_proj invalid." % from_proj)

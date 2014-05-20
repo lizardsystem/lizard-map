@@ -43,6 +43,40 @@ Changelog of lizard-map
 
 - Fix text, layout and z-iondex positions of info tour wizard.
 
+- Hiding rainapp's period summary on the collage screen.
+
+- Opening dashboard/collage in new tab.
+
+- UI updates for the dashboard page.
+
+- Remove coordinates.DEFAULT_MAP_SETTINGS (unused since 2011), move default
+  map code from views.py and coordinates.py into models.BackgroundMap.
+
+- Move settings and their defaults to conf.py (using django-appconf).
+
+- The Setting model's .get() and .extent() functions now don't take a
+  default anymore, rather if a Setting isn't found they get their
+  defaults from normal Django settings -- a setting called "mysetting"
+  uses the LIZARD_MAP_DEFAULT_MYSETTING_SETTING setting. Setting
+  setting setting.
+
+- Several defaults were updated to what lizard5-site sets in its
+  base.py, so the settings can be removed there. No other settings
+  were actually set in lizard5-site, so how configurable do these
+  things need to be?
+
+- Added reloading of graphs upon flot pan/zoom. The
+  according-to-the-manual-zoom start/end date is passed in the normal way to
+  the backend: no changes necesseary. This is expensive, though, so the
+  backend *must* add an extra ``.dynamic-graph-zoomable`` class in addition to
+  the current ``.dynamic-graph`` class.
+
+- Made the interaction with graphs that fail to load nicer.
+
+- View state persists also on the dashboard page now.
+
+- Added 'please log in' hint when there are no visible workspace storages.
+
 
 4.28 (2013-05-06)
 -----------------

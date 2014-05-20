@@ -10,16 +10,23 @@
 {% endblock map-javascript %}
 
 {% block sidebar2 %}
-  <ul>
-  {% for workspace_storage in view.workspace_storages %}
-      <li><a href="{% url lizard_map_workspace_storage workspace_id=workspace_storage.pk %}">{{ workspace_storage.name }}</a></li>
-  {% endfor %}
-  </ul>
+  {% if view.workspace_storages %}
+    <ul>
+      {% for workspace_storage in view.workspace_storages %}
+        <li><a href="{% url lizard_map_workspace_storage workspace_id=workspace_storage.pk %}">{{ workspace_storage.name }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>
+      Er zijn nu geen themakaarten voor u beschikbaar. U zult in moeten loggen
+      (rechtsboven).
+    </p>
+  {% endif %}
 {% endblock sidebar2 %}
 
 {% block secondary-sidebar %}
   <div style="display: none;">
-  {% workspace_edit view.workspace_edit %}
+    {% workspace_edit view.workspace_edit %}
   </div>
 {% endblock secondary-sidebar %}
 
