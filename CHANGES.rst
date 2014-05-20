@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Fix grammatical mistakes in info-tour.
+
 - Move to Lizard 5.
 
 - Add `private` flag to WorkspaceStorage model. If a WorkspaceStorage
