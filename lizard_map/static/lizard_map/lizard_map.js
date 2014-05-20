@@ -2652,20 +2652,20 @@ function setUpTourDutch(){
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(2)",
 	    title: "Legenda",
-	    content: "Hier vind u de legenda.",
+	    content: "Hier vindt u de legenda.",
 	    placement: "bottom"
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(3)",
 	    title: "Hoogteprofiel",
-	    content: "Hier vind u het hoogteprofiel.",
+	    content: "Hier vindt u het hoogteprofiel.",
 	    placement: "bottom"
 
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(4)",
 	    title: "Apps",
-	    content: "Hier vind u specifieke apps.",
+	    content: "Hier vindt u specifieke apps.",
 	    placement: "bottom"
 
 	},
