@@ -81,6 +81,10 @@ Changelog of lizard-map
 
 - Added 'please log in' hint when there are no visible workspace storages.
 
+- The 'default_range_type' Setting can now be set to override the
+  default date range. Possible values are 'today', '2_day', 'week',
+  'week_plus_one' (default), 'month' and 'year'.
+
 
 4.28 (2013-05-06)
 -----------------

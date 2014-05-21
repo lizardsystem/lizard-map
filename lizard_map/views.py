@@ -2018,18 +2018,20 @@ def get_view_state(request):
 
     # when not in session, use the default from Django settings
     if not range_type:
-        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
+        range_type = Setting.get('default_range_type')
 
-    # when something invalid is in the session, also get it from Django settings
+    # when something invalid is in the session, also get it from
+    # Django settings
     elif range_type == 'custom' and not (dt_start and dt_end):
-        range_type = getattr(settings, 'DEFAULT_RANGE_TYPE', 'week_plus_one')
+        range_type = Setting.get('default_range_type')
 
     # allow a site to completely bypass the daterange mechanism
     override_range_type = getattr(settings, 'OVERRIDE_RANGE_TYPE', None)
     if override_range_type is not None:
         override_start_days = getattr(settings, 'OVERRIDE_START_DAYS', None)
         override_end_days = getattr(settings, 'OVERRIDE_END_DAYS', None)
-        if override_range_type == 'custom' and override_start_days and override_end_days:
+        if (override_range_type == 'custom' and override_start_days
+            and override_end_days):
             now = datetime.datetime.now()
             dt_start = now + datetime.timedelta(days=int(override_start_days))
             dt_end = now + datetime.timedelta(days=int(override_end_days))
