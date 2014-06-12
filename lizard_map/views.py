@@ -1277,10 +1277,10 @@ def search(workspace, google_x, google_y, radius, request=None):
             search_results = workspace_item.adapter.search(
                 google_x, google_y, radius=radius, **requestarg)
             found += search_results
-        except:
+        except Exception as e:
             logger.exception(
-                "Crashed while calling search on %s" %
-                workspace_item)
+                "Crashed while calling search on %s: %s",
+                workspace_item, e)
 
     return found
 
