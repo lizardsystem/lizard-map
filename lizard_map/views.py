@@ -1279,8 +1279,10 @@ def search(workspace, google_x, google_y, radius, request=None):
             found += search_results
         except Exception as e:
             logger.exception(
-                "Error while calling search on %s: %s",
-                workspace_item, e)
+                "Error calling search (with adapter %s) on layer %s: %s",
+                workspace_item,
+                workspace_item.adapter_class,
+                e)
 
     return found
 
