@@ -1279,7 +1279,7 @@ def search(workspace, google_x, google_y, radius, request=None):
             found += search_results
         except Exception as e:
             logger.exception(
-                "Crashed while calling search on %s: %s",
+                "Error while calling search on %s: %s",
                 workspace_item, e)
 
     return found
