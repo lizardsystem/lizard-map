@@ -1918,25 +1918,43 @@ class AdapterValuesView(AdapterMixin, UiView):
         identifier = self.identifier()
         start_date, end_date = self.start_end_dates_from_request()
 
-        self.values = adapter.values(identifier, start_date, end_date)
 
         self.name = adapter.location(**identifier).get('name', 'export')
 
         if output_type == 'csv':
-            filename = ('%s.csv' % (self.name)).encode('us-ascii',
-                                                       errors='ignore')
+            filename = "{}.csv".format(self.name.encode('utf8'))
             # Make the csv output.
             response = HttpResponse(mimetype='text/csv')
             response['Content-Disposition'] = (
                 'attachment; filename="%s"' %
                 filename)
-            writer = csv.writer(response)
-            writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
-            for row in self.values:
-                writer.writerow([row['datetime'], row['value'], row['unit']])
+
+            timezone = pytz.timezone(settings.TIME_ZONE)
+
+            if hasattr(adapter, 'values_multiple_timeseries'):
+                # Make CSV based on lizard_datasource.timeseries.Timeseries object
+                # (with multiple values).
+                timeseries = adapter.values_multiple_timeseries(
+                    identifier, start_date, end_date)
+                outfile = StringIO.StringIO()
+                timeseries.to_csv(outfile, timezone=timezone)
+                response.write(outfile.getvalue())
+                outfile.close()
+            else:
+                # Old way (for almost all adapters)
+                self.values = adapter.values(identifier, start_date, end_date)
+                writer = csv.writer(response)
+                writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+                for row in self.values:
+                    # Translate datetime to local timezone, then format it
+                    dt = row['datetime'].astimezone(timezone)
+                    writer.writerow([
+                        dt.strftime('%Y-%m-%d %H:%M'),
+                        row['value'], row['unit']])
             return response
         else:
             # Make html table using self.values
+            self.values = adapter.values(identifier, start_date, end_date)
             return super(AdapterValuesView, self).get(
                 request, *args, **kwargs)
 
