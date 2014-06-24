@@ -85,6 +85,8 @@ Changelog of lizard-map
   default date range. Possible values are 'today', '2_day', 'week',
   'week_plus_one' (default), 'month' and 'year'.
 
+- Use the function values_multiple_timeseries() to export timeseries from 
+  lizard-fancylayers adapter. 
 
 4.28 (2013-05-06)
 -----------------
