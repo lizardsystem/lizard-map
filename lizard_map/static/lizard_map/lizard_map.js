@@ -2,6 +2,7 @@
 /*jslint browser: true */
 
 var flot_x_global_min, flot_x_global_max, flot_reload_timeout;
+var reload_faulty_timeout;
 
 
 // in use (26-09-2012)
@@ -1843,8 +1844,18 @@ function reloadDynamicGraph($graph, callback, force) {
             on_loaded();
             $graph.data('fault_when_loading', true);
             if (!flot_x_global_min) {
-                // Not flot dynamic reloading; so it is ok to show graph-disabling error.
-                $graph.html('Waarschijnlijk duurt het inlezen van de data lang. Probeer over 20 seconden de <a href="javascript:reloadFaultyGraphs()">grafieken opnieuw te laden</a>.');
+                // Not flot dynamic reloading; so it is ok to show
+                // a graph-disabling html error.
+                // The message is shown for 15 seconds, afterwards the graphs
+                // are reloaded automatically.
+                if (reload_faulty_timeout) {
+                    clearTimeout(reload_faulty_timeout);
+                }
+                reload_faulty_timeout = setTimeout(reloadFaultyGraphs, 15000);
+                $graph.html(
+                    '<i class="icon-exclamation-sign text-success"></i> ' +
+                    'U heeft een grote hoeveelheid data opgevraagd. Het ' +
+                    'opbouwen van de grafiek gaat enkele seconden duren.');
             }
         };
 
@@ -1866,7 +1877,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     on_drawn();
                     //bindPanZoomEvents($graph);
                 },
-                timeout: 25000,
+                timeout: 28000,
                 error: on_error
             });
         }
