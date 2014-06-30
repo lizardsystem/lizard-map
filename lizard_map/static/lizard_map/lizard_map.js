@@ -2,6 +2,7 @@
 /*jslint browser: true */
 
 var flot_x_global_min, flot_x_global_max, flot_reload_timeout;
+var reload_faulty_timeout;
 
 
 // in use (26-09-2012)
@@ -1866,7 +1867,7 @@ function reloadDynamicGraph($graph, callback, force) {
                     on_drawn();
                     //bindPanZoomEvents($graph);
                 },
-                timeout: 25000,
+                timeout: 28000,
                 error: on_error
             });
         }
