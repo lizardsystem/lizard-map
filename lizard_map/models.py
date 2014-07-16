@@ -638,6 +638,11 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     sidebar_is_collapsed = models.BooleanField(default=False)
     rightbar_is_collapsed = models.BooleanField(default=True)
     index = models.IntegerField(default=100)
+    data_set = models.ForeignKey(DataSet,
+                                 null=True,
+                                 blank=True)
+
+    objects = FilteredManager()
 
     class Meta:
         ordering = ('index', )
@@ -663,11 +668,6 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
     workspace = models.ForeignKey(
         WorkspaceStorage,
         related_name='workspace_items')
-    data_set = models.ForeignKey(DataSet,
-                                 null=True,
-                                 blank=True)
-
-    objects = FilteredManager()
 
     def as_edit(self, workspace):
         """Return self as a WorkspaceEditItem."""
