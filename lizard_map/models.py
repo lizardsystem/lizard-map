@@ -12,6 +12,8 @@ from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
+from lizard_security.manager import FilteredManager
+from lizard_security.models import DataSet
 import jsonfield
 import lizard_map.configchecker
 import mapnik
@@ -661,6 +663,11 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
     workspace = models.ForeignKey(
         WorkspaceStorage,
         related_name='workspace_items')
+    data_set = models.ForeignKey(DataSet,
+                                 null=True,
+                                 blank=True)
+
+    objects = FilteredManager()
 
     def as_edit(self, workspace):
         """Return self as a WorkspaceEditItem."""

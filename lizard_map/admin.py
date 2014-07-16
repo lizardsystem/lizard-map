@@ -22,6 +22,9 @@ class WorkspaceEditItemInline(admin.TabularInline):
 
 class WorkspaceStorageItemInline(admin.TabularInline):
     model = WorkspaceStorageItem
+    # Note: this one doesn't use lizard_security.admin.SecurityFilteredAdmin,
+    # but that probably isn't too bad as normally only the main admin user
+    # will edit these items.
 
 
 class CollageEditItemInline(admin.TabularInline):
