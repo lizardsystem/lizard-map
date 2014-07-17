@@ -12,6 +12,8 @@ from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
+from lizard_security.manager import FilteredManager
+from lizard_security.models import DataSet
 import jsonfield
 import lizard_map.configchecker
 import mapnik
@@ -636,6 +638,11 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     sidebar_is_collapsed = models.BooleanField(default=False)
     rightbar_is_collapsed = models.BooleanField(default=True)
     index = models.IntegerField(default=100)
+    data_set = models.ForeignKey(DataSet,
+                                 null=True,
+                                 blank=True)
+
+    objects = FilteredManager()
 
     class Meta:
         ordering = ('index', )

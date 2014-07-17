@@ -1,4 +1,5 @@
 from django.contrib import admin
+from lizard_security.admin import SecurityFilteredAdmin
 
 from lizard_map.models import BackgroundMap
 from lizard_map.models import Legend
@@ -44,7 +45,7 @@ class WorkspaceEditAdmin(admin.ModelAdmin):
         ]
 
 
-class WorkspaceStorageAdmin(admin.ModelAdmin):
+class WorkspaceStorageAdmin(SecurityFilteredAdmin):
     list_display = ('name', 'owner', 'secret_slug', 'index')
     inlines = [
         WorkspaceStorageItemInline,

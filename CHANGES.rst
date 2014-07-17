@@ -4,6 +4,9 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Added lizard-security to WorkspaceStorage: this allows you to effectively
+  filter the start page.
+
 - Set workspace on default as private.
 
 - Fix grammatical mistakes in info-tour.
@@ -85,8 +88,8 @@ Changelog of lizard-map
   default date range. Possible values are 'today', '2_day', 'week',
   'week_plus_one' (default), 'month' and 'year'.
 
-- Use the function values_multiple_timeseries() to export timeseries from 
-  lizard-fancylayers adapter. 
+- Use the function values_multiple_timeseries() to export timeseries from
+  lizard-fancylayers adapter.
 
 4.28 (2013-05-06)
 -----------------
