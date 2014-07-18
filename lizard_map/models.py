@@ -645,6 +645,7 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
                                  null=True,
                                  blank=True)
 
+    supports_object_permissions = True
     objects = FilteredManager()
 
     class Meta:
