@@ -638,6 +638,9 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     sidebar_is_collapsed = models.BooleanField(default=False)
     rightbar_is_collapsed = models.BooleanField(default=True)
     index = models.IntegerField(default=100)
+    private = models.BooleanField(
+        default=True, help_text=_("When checked, this workspace is only "
+                                   "available for logged-in users."))
     data_set = models.ForeignKey(DataSet,
                                  null=True,
                                  blank=True)
@@ -647,10 +650,6 @@ class WorkspaceStorage(BackgroundMapMixin, PeriodMixin, ExtentMixin,
     class Meta:
         ordering = ('index', )
 
-    # private: if True, show only to logged-in users
-    private = models.BooleanField(
-        default=True, help_text=_("When checked, this workspace is only "
-                                   "available for logged-in users."))
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
