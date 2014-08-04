@@ -74,6 +74,12 @@ USE_TZ = True
 
 LIZARD_MAP_STANDALONE = True
 
+# Pickle serializer is less secure (if an attacker can poison the session
+# contents, arbitrary code can be run). But as of now, lizard_map still
+# stores datetimes in the session, and that's not compatible with
+# the more secure JsonSerializer.
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
 # As this is a public repository and this settings.py is only used for
 # unit testing, SECRET_KEY doesn't have to be actually secret.
 SECRET_KEY = "This is not secret but that is fine"
