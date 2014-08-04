@@ -74,6 +74,10 @@ USE_TZ = True
 
 LIZARD_MAP_STANDALONE = True
 
+# As this is a public repository and this settings.py is only used for
+# unit testing, SECRET_KEY doesn't have to be actually secret.
+SECRET_KEY = "This is not secret but that is fine"
+
 try:
     # Import local settings that aren't stored in svn.
     from lizard_map.local_testsettings import *
