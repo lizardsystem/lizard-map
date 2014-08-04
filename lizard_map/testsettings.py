@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'lizard_map',
     'lizard_ui',
     'lizard_security',
-    'staticfiles',
+    'django.contrib.staticfiles',
     'compressor',
     'piston',
     'south',
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     ]
+
 ROOT_URLCONF = 'lizard_map.urls'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

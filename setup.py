@@ -10,13 +10,12 @@ long_description = '\n\n'.join([
     ])
 
 install_requires = [
-    'Django',
+    'Django >= 1.4, < 1.7',
     'Pillow',
     'django-extensions',
     'django-jsonfield',
     'django-nose',
     'django-piston',
-    'django-staticfiles',
     'djangorestframework >= 2.0',
     'iso8601',
     'lizard-help',
