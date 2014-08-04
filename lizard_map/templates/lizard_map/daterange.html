@@ -13,7 +13,7 @@
 {% block content %}
   <h1>Datumkeuze</h1>
   <div>
-    <form action="{% url lizard_map.set_date_range %}"
+    <form action="{% url "lizard_map.set_date_range" %}"
           method="post">
       {% csrf_token %}
       {{ date_range_form.as_p }}

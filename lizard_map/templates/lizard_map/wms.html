@@ -48,8 +48,8 @@
        {# for WMS: EPSG:28992, EPSG:900913, EPSG:4326 #}
        data-display-projection="{{ view.display_projection }}"
        {# URLS for saving, loading map locations #}
-       data-save-location-url="{% url lizard_map.map_location_save %}"
-       data-load-location-url="{% url lizard_map.map_location_load_default %}"
+       data-save-location-url="{% url "lizard_map.map_location_save" %}"
+       data-load-location-url="{% url "lizard_map.map_location_load_default" %}"
        {# Selected base layer #}
        data-selected-base-layer="{{ view.base_layer_name }}"
        >

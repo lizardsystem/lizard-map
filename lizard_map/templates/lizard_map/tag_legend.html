@@ -26,7 +26,7 @@
     <h1>{{ name }}</h1>
     <div>Persoonlijke legenda</div>
     <form class="legend-options popup-form"
-          data-url="{% url lizard_map_legend_edit %}">
+          data-url="{% url "lizard_map_legend_edit" %}">
       <input type="hidden" name="name" value="{{ name }}" />
       <fieldset class="fixed-label-width">
         <div>
