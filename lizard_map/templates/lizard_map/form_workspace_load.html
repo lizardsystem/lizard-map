@@ -1,6 +1,6 @@
 <div class="dialog-box">
 Workspace laden
-<form action="{% url lizard_map_workspace_load %}" method="POST">
+<form action="{% url "lizard_map_workspace_load" %}" method="POST">
 {% csrf_token %}
 {{ form.as_p }}
 <div>

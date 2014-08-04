@@ -7,9 +7,9 @@
 <div id="edit-workspace"
      class="sidebarbox workspace"
      data-workspace-id="{{ view.workspace.id }}"
-     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates workspace_storage_id=view.workspace.id %}"
-     data-url-lizard-map-search-name="{% url lizard_map.search_name workspace_storage_id=view.workspace.id %}"
-     data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_storage_item_extent %}"
+     data-url-lizard-map-search-coordinates="{% url "lizard_map.search_coordinates" workspace_storage_id=view.workspace.id %}"
+     data-url-lizard-map-search-name="{% url "lizard_map.search_name" workspace_storage_id=view.workspace.id %}"
+     data-url-lizard-map-workspace-item-extent="{% url "lizard_map_workspace_storage_item_extent" %}"
      >
   <h2>
     <span title="{% trans 'This is your workspace. Hover your mouse over the containing items to see options.' %}">
@@ -57,7 +57,7 @@
   <ul class="wscol-actions">
     <li>
       <a id="workspace-load"
-         href="{% url lizard_map_workspace_load %}"
+         href="{% url "lizard_map_workspace_load" %}"
          title="{% trans 'Edit this workspace' %}"
          class="btn sidebarbox-action-icon workspace-load"
          data-workspace-id="{{ view.workspace.id }}">

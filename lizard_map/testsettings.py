@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     'lizard_map',
     'lizard_ui',
     'lizard_security',
-    'staticfiles',
+    'django.contrib.staticfiles',
     'compressor',
     'piston',
     'south',
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.sites',
     ]
+
 ROOT_URLCONF = 'lizard_map.urls'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
@@ -72,6 +73,16 @@ USE_TZ = True
 #SOUTH_TESTS_MIGRATE = False
 
 LIZARD_MAP_STANDALONE = True
+
+# Pickle serializer is less secure (if an attacker can poison the session
+# contents, arbitrary code can be run). But as of now, lizard_map still
+# stores datetimes in the session, and that's not compatible with
+# the more secure JsonSerializer.
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+# As this is a public repository and this settings.py is only used for
+# unit testing, SECRET_KEY doesn't have to be actually secret.
+SECRET_KEY = "This is not secret but that is fine"
 
 try:
     # Import local settings that aren't stored in svn.

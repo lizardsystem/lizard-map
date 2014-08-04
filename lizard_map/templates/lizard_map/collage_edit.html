@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block object-actions %}
-<a href="{% url lizard_map.collage collage_id=collage.id %}"
+<a href="{% url "lizard_map.collage" collage_id=collage.id %}"
    class="ss_sprite ss_application_view_gallery">View</a> |
 <span id="print-button">Print</span>
 {% endblock object-actions %}

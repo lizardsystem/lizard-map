@@ -30,12 +30,12 @@
              {% if collage_item.visible %}
              checked="checked"
              {% endif %}
-             href="{% url lizard_map_collage_item_edit %}"
+             href="{% url "lizard_map_collage_item_edit" %}"
              data-target-id="#edit-collage"/>
       </td>
       <td class="maintd">
       <a class="collage-item-name collage-popup"
-         href="{% url lizard_map_collage_item_popup collage_item_id=collage_item.id %}">
+         href="{% url "lizard_map_collage_item_popup" collage_item_id=collage_item.id %}">
         {% firstof collage_item.name '(noname)' %}
       </a>
       </td>
@@ -44,7 +44,7 @@
       <a class="ss_sprite ss_delete sidebarbox-action-icon
                 collage-item-delete{% if reload_after_action %} reload-after-action{% endif %}"
             title="{% trans 'Delete item' %}"
-            href="{% url lizard_map_collage_item_edit %}"
+            href="{% url "lizard_map_collage_item_edit" %}"
             data-target-id="#edit-collage">
       </a>
       </td>
@@ -58,7 +58,7 @@
   <ul class="wscol-actions">
     <li>
     <a id="collage-empty"
-       href="{% url lizard_map_collage_empty %}"
+       href="{% url "lizard_map_collage_empty" %}"
        title="{% trans 'Empty your collage' %}"
        class="title btn btn-danger sidebarbox-action-icon action-post-workspace-empty{% if reload_after_action %} reload-after-action{% endif %}"
        data-target-id="#edit-collage">
@@ -67,7 +67,7 @@
     </li>
     <li>
     <button id="collage-popup"
-       href="{% url lizard_map_collage_popup %}"
+       href="{% url "lizard_map_collage_popup" %}"
        title="{% trans 'Selection popup' %}"
        class="title btn sidebarbox-action-icon collage-popup"
        {% if not collage_edit.collage_items.exists %} disabled="disabled" {% endif %}>
@@ -85,7 +85,7 @@
     {% else %}
       <a class="btn sidebarbox-action-icon"
          title="{% trans 'Selection page' %}"
-         href="{% url lizard_map_collage_edit_detail %}">
+         href="{% url "lizard_map_collage_edit_detail" %}">
         <i class="ss_sprite ss_arrow_turn_right"></i>
       </a>
     {% endif %}
