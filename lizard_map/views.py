@@ -4,11 +4,11 @@ except ImportError:
     import StringIO
 import csv
 import datetime
+import json
 import logging
 import math
 import re
 import urllib2
-from xml.dom.minidom import parseString
 
 from dateutil import parser as date_parser
 
@@ -24,7 +24,6 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
