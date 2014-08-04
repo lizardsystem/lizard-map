@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.34 (unreleased)
+4.40 (2014-08-04)
 -----------------
 
 - Updated Django to 1.6.5. Possibly incompatible with older versions
