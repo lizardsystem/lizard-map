@@ -4,7 +4,9 @@ Changelog of lizard-map
 4.41 (unreleased)
 -----------------
 
-- Nothing changed yet.
+- From this version onwards, we use Mapnik _2_. Not compatible with
+  older Mapniks. Apps should require lizard-map < 4.50 if they do
+  not support Mapnik 2.
 
 
 4.40 (2014-08-04)
