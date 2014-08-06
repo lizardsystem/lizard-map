@@ -31,8 +31,8 @@ def database_settings(name="default", user_settings=None):
         if name in user_settings.DATABASES:
             database_settings = user_settings.DATABASES[name]
             if database_settings['ENGINE'] in (
-                'postgresql_psycopg2',
-                'django.contrib.gis.db.backends.postgis'):
+                    'postgresql_psycopg2',
+                    'django.contrib.gis.db.backends.postgis'):
                 datasource = mapnik.PostGIS
                 options = {
                     'host': database_settings["HOST"],
@@ -125,9 +125,8 @@ def point_rule(icon, mask, color, mapnik_filter=None):
     output_filename_abs = os.path.join(
         settings.MEDIA_ROOT, 'generated_icons', output_filename)
 
-    # Use filename in mapnik pointsymbolizer
-    point_looks = mapnik.PointSymbolizer(
-        str(output_filename_abs), 'png', 16, 16)
+    point_looks = mapnik.PointSymbolizer()
+    point_looks.filename = str(output_filename_abs)
     point_looks.allow_overlap = True
     layout_rule = mapnik.Rule()
     layout_rule.symbols.append(point_looks)
@@ -137,20 +136,8 @@ def point_rule(icon, mask, color, mapnik_filter=None):
     return layout_rule
 
 
-def add_datasource_point(datasource, x, y, name, info):
-    """
-    Use this function to compensate for Mapnik bug #402 where some
-    points are lost.
-    """
-    # Use these coordinates to put points 'around' actual
-    # coordinates, to compensate for bug #402 in mapnik.
-    e = 0.000001
-    around = [(0, 0), (e, 0), (-e, 0), (0, e), (0, -e)]
-    for offset_x, offset_y in around:
-        datasource.add_point(x + offset_x, y + offset_y, name, info)
-
-
-def add_datasource_point_mapnik2(datasource, x, y, name, info, _id=0, context=None):
+def add_datasource_point_mapnik(
+        datasource, x, y, name, info, _id=0, context=None):
     if context is None:
         context = mapnik.Context()
     context.push(name)
