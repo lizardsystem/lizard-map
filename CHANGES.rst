@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.41 (unreleased)
+4.50 (2014-08-06)
 -----------------
 
 - From this version onwards, we use Mapnik _2_. Not compatible with
