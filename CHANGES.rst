@@ -91,6 +91,8 @@ Changelog of lizard-map
 - Use the function values_multiple_timeseries() to export timeseries from
   lizard-fancylayers adapter.
 
+- Add LanguageView to setup a different language per site.
+
 4.28 (2013-05-06)
 -----------------
 

@@ -293,7 +293,30 @@ class CrumbsMixin(object):
             return initial
 
 
-class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
+class LanguageView(object):
+    """
+    Set LANGUAGE_CODE defined in Setting model to user session.
+    The code has to be allowed through the LANGUAGES in base settings.
+    """
+
+    def dispatch(self, request, *args, **kwargs):
+            
+        try:
+            setting_language = Setting.objects.get(key__iexact='LANGUAGE_CODE')
+            allowed_language_codes = [lang[0].upper() for lang in settings.LANGUAGES]
+
+            if setting_language.value.upper() in allowed_language_codes:
+                request.session['django_language'] = setting_language.value
+
+        except Setting.DoesNotExist:
+            logger.info("'LANGUAGE_CODE' not in lizard-map.Setting model.")
+        except:
+            logger.info("The language settings or LocaleMiddleware not propely configured.")
+                        
+        return super(LanguageView, self).dispatch(request, *args, **kwargs)
+
+
+class AppView(LanguageView, WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
               MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
