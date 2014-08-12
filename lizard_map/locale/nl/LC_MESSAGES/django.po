@@ -7,16 +7,16 @@
 # Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: lizardsystem\n"
+"Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-11 17:42+0200\n"
-"PO-Revision-Date: 2013-05-14 12:37+0000\n"
-"Last-Translator: Sander Smits <sander.smits@nelen-schuurmans.nl>\n"
+"POT-Creation-Date: 2014-08-11 17:38+0200\n"
+"PO-Revision-Date: 2014-08-12 09:13+0000\n"
+"Last-Translator: alexandr <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: adapter.py:143
@@ -156,9 +156,8 @@ msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
 #: views.py:424
-#, fuzzy
 msgid "Go to your collage"
-msgstr "Selectie leegmaken"
+msgstr ""
 
 #: views.py:433
 msgid "Show tour"
