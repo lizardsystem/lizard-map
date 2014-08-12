@@ -2526,9 +2526,9 @@ function setup_location_list () {
         var template = '' +
               '<div class="location-list">' +
               '<form class="form-search">' +
-              '<legend>' + gettext("Search location") + </legend>' +
+              '<legend>' + gettext("Search location") + '</legend>' +
               '<input type="text" class="search-query" placeholder="' + gettext("Type at least three characters ...") + '" style="width:300px"/>' +
-              '<button type="submit" class="btn" style="margin-left:10px">Zoek</button>' +
+              '<button type="submit" class="btn" style="margin-left:10px">' + gettext("Zoek") + '</button>' +
               '</form>' +
               '<div class="results" />' +
               '</div>';

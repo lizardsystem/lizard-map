@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 14:06+0200\n"
+"POT-Creation-Date: 2014-08-12 16:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -244,6 +244,14 @@ msgstr ""
 
 #: templates/403.html:35
 msgid "Email: "
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:2
+msgid "Chart options"
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:9
+msgid "Customize"
 msgstr ""
 
 #: templates/lizard_map/collage_edit_detail.html:36

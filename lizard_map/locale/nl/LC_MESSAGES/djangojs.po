@@ -1,22 +1,58 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 #   <>, 2014.
 msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-12 09:48+0200\n"
+"POT-Creation-Date: 2014-08-12 16:03+0200\n"
 "PO-Revision-Date: 2014-08-12 12:28+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: static/lizard_map/lizard_map.js:180 static/lizard_map/lizard_map.js.c:261
+msgid "Nothing has been found around this location."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:719
+msgid "Error on action. Reload the page and try it again."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2064
+msgid "Slide left"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2081
+msgid "Slide right"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2502
+msgid "Add to selection"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2529 static/lizard_map/lizard_map.js:2700
+msgid "Search location"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2530
+msgid "Type at least three characters ..."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2531
+msgid "Zoek"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2598
+msgid "Nothing found."
+msgstr ""
 
 #: static/lizard_map/lizard_map.js:2695
 msgid "Welcom to Lizard"
@@ -30,4 +66,80 @@ msgstr ""
 "Dit informatie portaal werkt op actuele browsers: IE9 of hoger, Firefox en "
 "Chrome."
 
+#: static/lizard_map/lizard_map.js:2701
+msgid "Enter the search term and click the magnifying glass."
+msgstr ""
 
+#: static/lizard_map/lizard_map.js:2706
+msgid "Topic map"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2707
+msgid "These are the maps sorted for you per topic."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2711
+msgid "The map"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2712
+msgid ""
+"Click on the map for more information about the object. Does this "
+"information contain a chart, double-click to see the chart in full screen."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2716
+msgid "Legend"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2717
+msgid "Here is the legend"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2722
+msgid "Elevation profile"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2723
+msgid "Here is the elevation profile."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2729
+msgid "Apps"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2730
+msgid "Here are the specific apps."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2736
+msgid "Backgroud maps"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2737
+msgid "Select here a different background map."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2742
+msgid "Maps"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2743
+msgid "Select a specific map of the topic map to make them (in) visible."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2748
+msgid "Calendar"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2749
+msgid "Change in the date selection for date dependent information."
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2754
+msgid "Info toure"
+msgstr ""
+
+#: static/lizard_map/lizard_map.js:2755
+msgid "Click here to start the tour again. Click stop to end the tour."
+msgstr ""
