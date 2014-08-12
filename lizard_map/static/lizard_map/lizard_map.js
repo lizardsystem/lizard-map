@@ -2676,15 +2676,15 @@ function setUpAppTab(){
 function setUpBootstrapTour() {
     var tour_type = $('#lizard-map-wms').data('bootstrap-tour');
 
-    if (tour_type === 'nl') {
-	var tour = setUpTourDutch();
+    if (tour_type) {
+	var tour = setUpTour();
 	$('#action-bootstrap-tour').click(function (){
 	    tour.restart();
 	});
     }
 }
 
-function setUpTourDutch(){
+function setUpTour(){
     var tour = new Tour({
 	template: "<div class='popover tour'><div class='arrow arrow-info'></div><h3 class='popover-title popover-title-info'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
     });
@@ -2692,8 +2692,8 @@ function setUpTourDutch(){
     tour.addSteps([
 	{
 	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
-	    title: "Welkom op Lizard", // string - title of the popover
-	    content: "Dit informatie portaal werkt op actuele browsers: IE9 of hoger, Firefox en Chrome." // string - content of the popover
+	    title: gettext("Welcom to Lizard"), // string - title of the popover
+	    content: gettext("This information portal works in current browsers: IE9 of higher, Firefox and Chrome.") // string - content of the popover
 	},
 	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
