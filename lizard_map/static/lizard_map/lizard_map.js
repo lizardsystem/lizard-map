@@ -177,7 +177,7 @@ function boxAwesomeSetContent($contentPane, data) {
             reloadGraphsIn($contentPane);
         }
         else {
-            $contentPane.html("Er is niets rond deze locatie gevonden.");
+            $contentPane.html(gettext("Nothing has been found around this location."));
         }
     }
 }
@@ -258,7 +258,7 @@ function set_popup_content(data, title) {
             reloadGraphs();
         }
         else {
-            $("#movable-dialog-content").html("Er is niets rond deze locatie gevonden.");
+            $("#movable-dialog-content").html(gettext("Nothing has been found around this location."));
         }
     }
 }
@@ -716,7 +716,7 @@ function actionPostClick(event, preAction, postAction, parameters) {
               }
           })
           .error(function (data) {
-              target.html("Fout bij actie. Herlaad pagina en probeer opnieuw");
+              target.html(gettext("Error on action. Reload the page and try it again."));
           });
     return false;
 }
@@ -2061,24 +2061,24 @@ function flotGraphLoadData($container, response) {
           });
     // controls
     // TODO should implement JavaScript gettext / i18n
-    var $c_bwd = $('<button title="Schuif naar links" class="btn" type="button"><i class="icon-backward"></i></button>');
+    var $c_bwd = $('<button title="' + gettext("Slide left") + '" class="btn" type="button"><i class="icon-backward"></i></button>');
     $control_row.append($c_bwd);
 
     var $center = $('<span style="position: absolute; left: 50%; width:40px; margin-left:-20px;">');
     $control_row.append($center);
 
     /*
-      var $c_reset = $('<button title="Reset zoom" class="btn" type="button"><i class="icon-refresh"></i></button>');
+      var $c_reset = $('<button title="' + gettext("Reset zoom") + '" class="btn" type="button"><i class="icon-refresh"></i></button>');
       $center.append($c_reset);
 
-      var $c_plus = $('<button title="Zoom in" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-in"></i></button>');
+      var $c_plus = $('<button title="' + gettext("Zoom in") + '" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-in"></i></button>');
       $center.append($c_plus);
 
-      var $c_min = $('<button title="Zoom uit" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-out"></i></button>');
+      var $c_min = $('<button title="' + gettext("Zoom uit") + '" class="btn" type="button" style="margin-left:3px;"><i class="icon-zoom-out"></i></button>');
       $center.append($c_min);
     */
 
-    var $c_fwd = $('<button title="Schuif naar rechts" class="btn pull-right" type="button"><i class="icon-forward"></i></button>');
+    var $c_fwd = $('<button title="' + gettext("Slide right") + '" class="btn pull-right" type="button"><i class="icon-forward"></i></button>');
     $control_row.append($c_fwd);
 
     $container.append($control_row);
@@ -2499,7 +2499,7 @@ function setup_location_list () {
                 else {
                     $.each(data, function () {
                         var item = this;
-                        var $link = $('<a title="Toevoegen aan selectie" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
+                        var $link = $('<a title="' + gettext("Add to selection") + '" data-target-id="#edit-collage" class="ss_sprite ss_star collage-add" />')
                               .attr('data-adapter-class', item[0])
                               .attr('data-adapter-layer-json', item[1])
                               .attr('data-identifier', item[2])
@@ -2526,8 +2526,8 @@ function setup_location_list () {
         var template = '' +
               '<div class="location-list">' +
               '<form class="form-search">' +
-              '<legend>Zoek naar locaties</legend>' +
-              '<input type="text" class="search-query" placeholder="Type ten minste drie karakters..." style="width:300px"/>' +
+              '<legend>' + gettext("Search location") + </legend>' +
+              '<input type="text" class="search-query" placeholder="' + gettext("Type at least three characters ...") + '" style="width:300px"/>' +
               '<button type="submit" class="btn" style="margin-left:10px">Zoek</button>' +
               '</form>' +
               '<div class="results" />' +
@@ -2595,7 +2595,7 @@ function setup_location_search () {
                 html: items.join('')
             }).appendTo($contentPane);
         } else {
-            $('<p/>', { html: "Er is niets gevonden." }).appendTo($contentPane);
+            $('<p/>', { html: gettext("Nothing found.") }).appendTo($contentPane);
         }
 
 
@@ -2697,62 +2697,62 @@ function setUpTour(){
 	},
 	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown
-	    title: "Zoeken op locatie", // string - title of the popover
-	    content: "Vul hier de zoekterm in en klik op het vergrootglas.", // string - content of the popover
+	    title: gettext("Search location"), // string - title of the popover
+	    content: gettext("Enter the search term and click the magnifying glass."), // string - content of the popover
 	    placement: "bottom"
 	},
 	{
 	    element: "#box-awesome-content-themes",
-	    title: "Themakaarten",
-	    content: "Dit zijn kaarten, voor u gesorteerd op thema."
+	    title: gettext("Topic map"),
+	    content: gettext("These are the maps sorted for you per topic.")
 	},
 	{
 	    element: "#box-awesome-content-themes",
-	    title: "De kaart",
-	    content: "Klik op de kaart voor meer informatie over het object. Bestaat deze informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig scherm te zien."
+	    title: gettext("The map"),
+	    content: gettext("Click on the map for more information about the object. Does this information contain a chart, double-click to see the chart in full screen.")
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(2)",
-	    title: "Legenda",
-	    content: "Hier vindt u de legenda.",
+	    title: gettext("Legend"),
+	    content: gettext("Here is the legend"),
 	    placement: "bottom"
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(3)",
-	    title: "Hoogteprofiel",
-	    content: "Hier vindt u het hoogteprofiel.",
+	    title: gettext("Elevation profile"),
+	    content: gettext("Here is the elevation profile."),
 	    placement: "bottom"
 
 	},
 	{
 	    element: "#box-awesome-tabs ul.nav li:nth-child(4)",
-	    title: "Apps",
-	    content: "Hier vindt u specifieke apps.",
+	    title: gettext("Apps"),
+	    content: gettext("Here are the specific apps."),
 	    placement: "bottom"
 
 	},
 	{
 	    element: "#action-base-layers",
-	    title: "Achtergrond kaarten",
-	    content: "Selecteer hier een andere achtergrond kaart.",
+	    title: gettext("Backgroud maps"),
+	    content: gettext("Select here a different background map."),
 	    placement: "bottom"
 	},
 	{
 	    element: "#action-layers",
-	    title: "Kaarten",
-	    content: "Selecteer hier een specifieke kaart van de themakaart om ze (on)zichtbaar te maken.",
+	    title: gettext("Maps"),
+	    content: gettext("Select a specific map of the topic map to make them (in) visible."),
 	    placement: "bottom"
 	},
 	{
 	    element: "#action-calendar",
-	    title: "Kalender",
-	    content: "Wijzig hier de datum selectie voor datum afhankelijke informatie.",
+	    title: gettext("Calendar"),
+	    content: gettext("Change in the date selection for date dependent information."),
 	    placement: "bottom"
 	},
 	{
 	    element: "#action-bootstrap-tour",
-	    title: "Rondleiding",
-	    content: "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor het einde van de rondleiding.",
+	    title: gettext("Info toure"),
+	    content: gettext("Click here to start the tour again. Click stop to end the tour."),
 	    placement: "bottom"
 	},
 

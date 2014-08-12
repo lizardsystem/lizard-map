@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-08-12 09:48+0200\n"
-"PO-Revision-Date: 2014-08-12 09:29+0000\n"
+"PO-Revision-Date: 2014-08-12 12:28+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -20,12 +20,14 @@ msgstr ""
 
 #: static/lizard_map/lizard_map.js:2695
 msgid "Welcom to Lizard"
-msgstr "Welkom op lizard"
+msgstr "Welkom op Lizard"
 
 #: static/lizard_map/lizard_map.js:2696
 msgid ""
 "This information portal works in current browsers: IE9 of higher, Firefox "
 "and Chrome."
 msgstr ""
+"Dit informatie portaal werkt op actuele browsers: IE9 of hoger, Firefox en "
+"Chrome."
 
 
