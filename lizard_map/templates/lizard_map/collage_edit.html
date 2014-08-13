@@ -10,8 +10,8 @@
 
 {% block object-actions %}
 <a href="{% url lizard_map.collage collage_id=collage.id %}"
-   class="ss_sprite ss_application_view_gallery">View</a> |
-<span id="print-button">Print</span>
+   class="ss_sprite ss_application_view_gallery">{% trans 'View' %}</a> |
+<span id="print-button">{% trans 'Print' %}</span>
 {% endblock object-actions %}
 
 {% block content %}

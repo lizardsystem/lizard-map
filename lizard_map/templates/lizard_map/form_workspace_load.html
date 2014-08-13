@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="dialog-box">
 Workspace laden
 <form action="{% url lizard_map_workspace_load %}" method="POST">
@@ -8,7 +9,7 @@ Workspace laden
   <input id="workspace-load"
          class="alternative-submit update-workspace-after"
          type="submit"
-         value="laden" />
+         value="{% trans 'Load' %}" />
 </div>
 </form>
 </div>

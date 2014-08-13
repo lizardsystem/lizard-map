@@ -1,3 +1,4 @@
+{% load i18n %}
 <div class="dialog-box date-range-box">
    <form id="date-range-form"
          action="{% url lizard_map_date_range %}"
@@ -10,7 +11,7 @@
       <label for="id_dt_end">Tot:</label>
       {{ view.date_range_form.dt_end }}
     </p>
-    <div><input id="date-range-submit" type="submit" value="opslaan"/></div>
+    <div><input id="date-range-submit" type="submit" value="{% trans 'Save' %}"/></div>
   </form>
 </div>
 

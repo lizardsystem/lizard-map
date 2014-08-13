@@ -5,12 +5,12 @@
 {% if legend %}
   <span class="ss_sprite ss_table sidebarbox-action-icon legend-tooltip">&nbsp;</span>
   <div class="tooltip">
-    <h4>Legenda voor {{ name }}
+    <h4>{% trans 'Legend for' %} {{ name }}
     {% if allow_custom_legend %}
     <span class="ss_sprite ss_table_edit sidebarbox-action-icon legend-edit"
           data-name="{{ name }}"
           rel="#legend-edit-{{ idhash }}"
-          title="Bewerk legenda">&nbsp;</span>
+          title="{% trans 'Edit legend' %}">&nbsp;</span>
     {% endif %}
     </h4>
     <table>
@@ -24,38 +24,38 @@
   {% if allow_custom_legend %}
   <div id="legend-edit-{{ idhash }}" class="popup popup-fat popup-size-standard">
     <h1>{{ name }}</h1>
-    <div>Persoonlijke legenda</div>
+    <div>{% trans 'Personal legend' %}</div>
     <form class="legend-options popup-form"
           data-url="{% url lizard_map_legend_edit %}">
       <input type="hidden" name="name" value="{{ name }}" />
       <fieldset class="fixed-label-width">
         <div>
-          <label>Min. waarde</label>
+          <label>{% trans 'Min. value' %}</label>
           <input type="text" name="min_value" value="{{ custom_legend.min_value }}" />
         </div>
         <div>
-          <label>Max. waarde</label>
+          <label>{% trans 'Max. value' %}</label>
           <input type="text" name="max_value" value="{{ custom_legend.max_value }}" />
         </div>
         <div>
-          <label>Aantal stappen</label>
+          <label>{% trans 'Number of steps' %}</label>
           <input type="text" name="steps" value="{{ custom_legend.steps }}" />
         </div>
         <div>
-          <label>Kleur min. waarde</label>
+          <label>{% trans 'Color min. value' %}</label>
           <input id="legend-min-color-{{ idhash }}" type="text" name="min_color" value="{{ custom_legend.min_color }}"/>
           <!--div id="colorSelector" rel="#legend-min-color-{{ idhash }}"><div></div></div-->
         </div>
         <div>
-          <label>Kleur max. waarde</label>
+          <label>{% trans 'Color max. value' %}</label>
           <input type="text" name="max_color" value="{{ custom_legend.max_color }}" />
         </div>
         <div>
-          <label>Kleur < min. waarde</label>
+          <label>{% trans 'Color < min. value' %}</label>
           <input type="text" name="too_low_color" value="{{ custom_legend.too_low_color }}" />
         </div>
         <div>
-          <label>Kleur > max. waarde</label>
+          <label>{% trans 'Color > max. value' %}</label>
           <input type="text" name="too_high_color" value="{{ custom_legend.too_high_color }}" />
         </div>
       </fieldset>

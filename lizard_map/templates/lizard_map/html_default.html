@@ -1,3 +1,4 @@
+{% load i18n %}
 {# Default template for popup #}
 {% load workspaces %}
 
@@ -23,7 +24,7 @@
   <li>
   <a href="{{ collage_item_prop.url }}"
      class="ss_table_save ss_sprite"
-     title="Export csv">&nbsp;</a>
+     title="{% trans 'Export' %} csv">&nbsp;</a>
   </li>
   {{ collage_item_prop.name }}
   {% endfor %}

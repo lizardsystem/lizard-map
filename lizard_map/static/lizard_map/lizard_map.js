@@ -2703,7 +2703,7 @@ function setUpTour(){
 	},
 	{
 	    element: "#box-awesome-content-themes",
-	    title: gettext("Topic map"),
+	    title: gettext("Topic maps"),
 	    content: gettext("These are the maps sorted for you per topic.")
 	},
 	{

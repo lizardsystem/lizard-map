@@ -1,7 +1,8 @@
+{% load i18n %}
 <div class="dialog-box">
 <form id="workspace-save-form" class="form-horizontal" action="{% url lizard_map_workspace_save %}" method="POST">
 {% csrf_token %}
-<legend>Workspace opslaan</legend>
+<legend>{% trans 'Save workspace' %}</legend>
 
 {% for field in form %}
 <fieldset class="control-group {% if field.errors %}error{% endif %}">
@@ -21,7 +22,7 @@
   <input id="workspace-save-submit"
 	 class="alternative-submit open-new-window-after btn btn-success"
          type="submit"
-         value="opslaan" />
+         value="{% trans 'Save' %}" />
 </div>
 </div>
 </form>

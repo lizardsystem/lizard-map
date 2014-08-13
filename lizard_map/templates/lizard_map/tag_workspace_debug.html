@@ -1,12 +1,12 @@
 <div class="sidebarbox">
-  <h2>Workspaces</h2>
-  <div>Information on available workspaces</div>
+  <h2>{% trans 'Workspaces' %}</h2>
+  <div>{% trans 'Information on available workspaces' %}</div>
   {% for workspace in workspaces %}
   <h3>{{ workspace }}</h3>
-  <div> todo </div>
+  <div> {% trans 'todo' %} </div>
   {% empty %}
   <div>
-    No workspaces chosen/defined/whatever.
+    {% trans 'No workspaces chosen/defined/whatever.' %}
   </div>
   {% endfor %}
 </div>

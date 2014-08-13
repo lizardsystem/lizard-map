@@ -1,7 +1,8 @@
+{% load i18n %}
 {% comment %}
 
-Popup and full-page visualization of snippet group. This popup.html is
-the default template for the html_default method.
+{% trans 'Popup and full-page visualization of snippet group. This popup.html is
+the default template for the html_default method.' %}
 
 {% endcomment %}
 
@@ -14,35 +15,35 @@ the default template for the html_default method.
      class="img-use-my-size">
   <a href="{{ img_url }}"
      class="replace-with-image">
-    afbeelding nog niet geladen
+    {% trans 'Image not loaded yet' %}
   </a>
 </div>
 <br />
 <div class="toggle_table_wrapper">
   <p>
-    <input type="button" name="toggle" value="Acties" class="toggle_button" />
+    <input type="button" name="toggle" value="{% trans 'Actions' %}" class="toggle_button" />
   </p>
   <table class="noprint generic-table toggle_table">
     <thead>
       <tr>
-        <th>Naam</th>
-        <th class="button">Export</th>
+        <th>{% trans 'Name' %}</th>
+        <th class="button">{% trans 'Export' %}</th>
         {% if editing %}
-        <th class="button">Bewerken</th>
+        <th class="button">{% trans 'Edit' %}</th>
         {% endif %}
         {% if add_snippet %}
-        <th class="button">Voeg&nbsp;toe</th>
+        <th class="button">{% trans 'Add' %}</th>
         {% endif %}
       </tr>
     </thead>
     <tbody>
       {% if editing %}
       <tr>
-        <td>Hele grafiek</td>
+        <td>{% trans 'Whole graph' %}</td>
         <td class="button">
           <a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
              class="ss_table_save ss_sprite"
-             title="Export csv"
+             title="{% trans 'Export' %} csv"
              >&nbsp;</a>
         </td>
         <td class="button">
@@ -50,17 +51,17 @@ the default template for the html_default method.
           {% if snippet_group %}
           <a href="#"
              class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
-             title="Bewerk grafiek"
+             title="{% trans 'Edit graph' %}"
              rel="#graph_edit_overlay_{{ snippet_group.id }}">&nbsp;</a>
           <div id="graph_edit_overlay_{{ snippet_group.id }}" class="popup noprint">
             <div class="popup-content">
-              <h1>Grafiek opties</h1>
+              <h1>{% trans 'Graph options' %}</h1>
               <form class="popup-graph-edit-form popup-graph-edit-global graph-options popup-form"
                     action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}"
                     method="post">
                 <fieldset class="fixed-label-width">
                   <div>
-                    <label>Titel</label>
+                    <label>{% trans 'Title' %}</label>
                     <input class="graph-title" type="text" name="title"
                            value="{% firstof snippet_group.layout_title '' %}" />
                   </div>
@@ -87,61 +88,61 @@ the default template for the html_default method.
                 </fieldset>
                 <fieldset>
                   <div>
-                    <label>Drempelwaarde</label><br />
+                    <label>{% trans 'Threshold' %}</label><br />
                     <input class="graph-boundary-value" type="text" name="boundary_value"
                            value="{{ snippet_group.boundary_value|floatformat }}" />
                   </div>
                   <div>
-                    <label>Percentiel</label><br />
+                    <label>{% trans 'Percentile' %}</label><br />
                     <input class="graph-percentile-value" type="text" name="percentile_value"
                           value="{{ snippet_group.percentile_value|floatformat }}" />
                   </div>
                   <div>
-                    <label>Samenvattingsperiode</label><br />
+                    <label>{% trans 'Summary period' %}</label><br />
                     <div>
                       <input class="graph-aggregation-period"
                              type="radio" name="aggregation_period"
                              value="1"
                              {% ifequal snippet_group.aggregation_period 1 %} checked{% endifequal %}/>
-                      hele periode
+                      {% trans 'Whole period' %}
                       <input class="graph-aggregation-period"
                              type="radio" name="aggregation_period"
                              value="2"
                              {% ifequal snippet_group.aggregation_period 2 %} checked{% endifequal %} />
-                      jaar
+                      {% trans 'Year' %}
                       <input class="graph-aggregation-period"
                              type="radio" name="aggregation_period"
                              value="3"
                              {% ifequal snippet_group.aggregation_period 3 %} checked{% endifequal %} />
-                      kwartaal
+                      {% trans 'Quater' %}
                       <input class="graph-aggregation-period"
                              type="radio" name="aggregation_period"
                              value="4"
                              {% ifequal snippet_group.aggregation_period 4 %} checked{% endifequal %} />
-                      maand
+                      {% trans 'Month' %}
                     </div>
                   </div>
                   <div>
-                    <label>Filter op maand</label><br />
+                    <label>{% trans 'Filter by month' %}</label><br />
                     <select class="graph-filter-month" type="text" name="restrict_to_month">
-                      <option value="no-restriction">Geen filter</option>
-                      <option value="1">Alleen januari</option>
-                      <option value="2">Alleen februari</option>
-                      <option value="3">Alleen maart</option>
-                      <option value="4">Alleen april</option>
-                      <option value="5">Alleen mei</option>
-                      <option value="6">Alleen juni</option>
-                      <option value="7">Alleen juli</option>
-                      <option value="8">Alleen augustus</option>
-                      <option value="9">Alleen september</option>
-                      <option value="10">Alleen oktober</option>
-                      <option value="11">Alleen november</option>
-                      <option value="12">Alleen december</option>
+                      <option value="no-restriction">{% trans 'No filter' %}</option>
+                      <option value="1">{% trans 'Only' %} {% trans 'january' %}</option>
+                      <option value="2">{% trans 'Only' %} {% trans 'februari' %}</option>
+                      <option value="3">{% trans 'Only' %} {% trans 'march' %}</option>
+                      <option value="4">{% trans 'Only' %} {% trans 'april' %}</option>
+                      <option value="5">{% trans 'Only' %} {% trans 'may' %}</option>
+                      <option value="6">{% trans 'Only' %} {% trans 'june' %}</option>
+                      <option value="7">{% trans 'Only' %} {% trans 'july' %}</option>
+                      <option value="8">{% trans 'Only' %} {% trans 'august' %}</option>
+                      <option value="9">{% trans 'Only' %} {% trans 'september' %}</option>
+                      <option value="10">{% trans 'Only' %} {% trans 'october' %}</option>
+                      <option value="11">{% trans 'Only' %} {% trans 'november' %}</option>
+                      <option value="12">{% trans 'Only' %} {% trans 'december' %}</option>
                     </select>
                   </div>
                 </fieldset>
                 <p>
-                  <input class="graph-options-submit" type="submit" value="Update grafiek" />
+                  <input class="graph-options-submit" type="submit" value="{% trans 'Update graph' %}" />
                 </p>
               </form>
             </div>
@@ -161,14 +162,14 @@ the default template for the html_default method.
         <td class="button">
           <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&amp;identifier_json={{ snippet.identifier|json_escaped }}"
              class="ss_table_save ss_sprite"
-             title="Export csv"
+             title="{% trans 'Export' %} csv"
              >&nbsp;</a>
         </td>
         {% if editing %}
         <td class="button">
           <a href="#"
              class="ss_chart_curve_edit ss_sprite graph_edit_trigger"
-             title="Bewerk lijn"
+             title="{% trans 'Edit line' %}"
              rel="#graph_edit_overlay_snippet_{{ snippet.id }}">&nbsp;</a>
           <div id="graph_edit_overlay_snippet_{{ snippet.id }}"
                class="popup noprint popup-graph-edit-form popup-form">
@@ -178,9 +179,9 @@ the default template for the html_default method.
                     action="{% url lizard_map_snippet_edit snippet_id=snippet.id %}"
                     method="post">
                 <p>
-                  <label>Kleur</label>
+                  <label>{% trans 'Color' %}</label>
                   <select class="graph-color" name="color">
-                    <option value="">(kies kleur)</option>
+                    <option value="">({% trans 'choose a color' %})</option>
                     {% for color in colors %}
                     <option value="{{ color.mapnik }}"{% ifequal snippet.identifier.layout.color color.mapnik %} selected{% endifequal %}>{{ color.display_name }}</option>
                     {% endfor %}
@@ -189,22 +190,22 @@ the default template for the html_default method.
                 <p>
                   <input class="graph-line-min" type="checkbox" name="line_min"
                          value="{{ snippet.identifier.layout.line_min }}" />
-                  <label>Toon minimum</label>
+                  <label>{% trans 'Show minimum' %}</label>
                 </p>
                 <p>
                   <input class="graph-line-max" type="checkbox" name="line_max"
                          value="{{ snippet.identifier.layout.line_max }}" />
-                  <label>Toon maximum</label>
+                  <label>{% trans 'Show maximum' %}</label>
                 </p>
                 <p>
                   <input class="graph-line-avg" type="checkbox" name="line_avg"
                          value="{{ snippet.identifier.layout.line_avg }}" />
-                  <label>Toon gemiddelde</label>
+                  <label>{% trans 'Show average' %}</label>
                 </p>
                 <p>
                   <input class="graph-line-options-submit"
                          type="submit"
-                         value="Update grafiek" />
+                         value="{% trans 'Update graph' %}" />
                 </p>
               </form>
             </div>
@@ -223,14 +224,14 @@ the default template for the html_default method.
         <td class="button">
           <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
              class="ss_table_save ss_sprite"
-             title="Export csv"
+             title="{% trans 'Export' %} csv"
              >&nbsp;</a>
         </td>
         {% if editing %}
         <td class="button">
           <a href="{{ display_object.object.get_absolute_url }}"
              class="ss_chart_curve_edit ss_sprite"
-             title="Bewerk lijn">&nbsp;</a>
+             title="{% trans 'Edit line' %}">&nbsp;</a>
         </td>
         {% endif %}
       </tr>

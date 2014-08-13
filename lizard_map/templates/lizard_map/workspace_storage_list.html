@@ -1,7 +1,7 @@
 {# Workspace (storage) list. Used as a dialog/box #}
-
+{% load i18n %}
 <div class="dialog-box">
-Ga naar een opgeslagen workspace
+{% trans 'Go to a saved workspace.' %}
 
 <ul>
   {% for workspace in view.workspaces %}
@@ -9,7 +9,7 @@ Ga naar een opgeslagen workspace
     <a href="{% url lizard_map_workspace_storage workspace_id=workspace.id %}">
   {{ workspace.name }}</a></li>
   {% empty %}
-    <li>Geen opgeslagen workspaces</li>
+    <li>{% trans 'No saved workspaces.' %}</li>
   {% endfor %}
 </ul>
 
