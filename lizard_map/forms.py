@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import ugettext as _
 
 from lizard_map.dateperiods import MONTH
 from lizard_map.models import StatisticsMixin
@@ -12,7 +13,7 @@ class WorkspaceSaveForm(forms.Form):
     """
     Save workspace from edit to storage
     """
-    name = forms.CharField(max_length=100, required=True, label='Naam')
+    name = forms.CharField(max_length=100, required=True, label=_('Name'))
 
 
 class WorkspaceLoadForm(forms.Form):
@@ -107,21 +108,21 @@ class CollageItemEditorForm(forms.Form):
     """
 
     # Group fields
-    title = forms.CharField(max_length=100, required=False, label='Titel')
-    y_min = forms.FloatField(required=False, label='Minimale y waarde')
-    y_max = forms.FloatField(required=False, label='Maximale y waarde')
-    x_label = forms.CharField(max_length=100, required=False, label='X label')
-    y_label = forms.CharField(max_length=100, required=False, label='Y label')
-    aggregation_period = forms.ChoiceField(label='Aggregatie periode')
-    restrict_to_month = forms.ChoiceField(required=False, label='Maand')
+    title = forms.CharField(max_length=100, required=False, label=_('Title'))
+    y_min = forms.FloatField(required=False, label=_('Minimum y value'))
+    y_max = forms.FloatField(required=False, label=_('Maximum y value'))
+    x_label = forms.CharField(max_length=100, required=False, label=_('X label'))
+    y_label = forms.CharField(max_length=100, required=False, label=_('Y label'))
+    aggregation_period = forms.ChoiceField(label=_('Aggregation period'))
+    restrict_to_month = forms.ChoiceField(required=False, label=_('Month'))
 
     # Single item fields
-    boundary_value = forms.FloatField(required=False, label='Grenswaarde')
+    boundary_value = forms.FloatField(required=False, label=_('Limit'))
     percentile_value = forms.FloatField(required=False,
-                                        label='Percentielgrens')
-    line_min = forms.BooleanField(required=False, label='Toon minimum')
-    line_max = forms.BooleanField(required=False, label='Toon maximum')
-    line_avg = forms.BooleanField(required=False, label='Toon gemiddelde')
+                                        label=_('Percentile limit'))
+    line_min = forms.BooleanField(required=False, label=_('Show minimum'))
+    line_max = forms.BooleanField(required=False, label=_('Show maximum'))
+    line_avg = forms.BooleanField(required=False, label=_('Show average'))
 
     def __init__(self, *args, **kwargs):
         """
@@ -132,19 +133,19 @@ class CollageItemEditorForm(forms.Form):
         self.fields['aggregation_period'].choices = (
             StatisticsMixin.AGGREGATION_PERIOD_CHOICES[:4])
         self.fields['restrict_to_month'].choices = (
-            (0, 'alle'),
-            (1, 'alleen januari'),
-            (2, 'alleen februari'),
-            (3, 'alleen maart'),
-            (4, 'alleen april'),
-            (5, 'alleen mei'),
-            (6, 'alleen juni'),
-            (7, 'alleen juli'),
-            (8, 'alleen augustus'),
-            (9, 'alleen september'),
-            (10, 'alleen oktober'),
-            (11, 'alleen november'),
-            (12, 'alleen december'),
+            (0, _('all')),
+            (1, _('only january')),
+            (2, _('only february')),
+            (3, _('only march')),
+            (4, _('only april')),
+            (5, _('only may')),
+            (6, _('only june')),
+            (7, _('only july')),
+            (8, _('only august')),
+            (9, _('only september')),
+            (10, _('only oktober')),
+            (11, _('only november')),
+            (12, _('only december')),
             )
 
         # Initial status

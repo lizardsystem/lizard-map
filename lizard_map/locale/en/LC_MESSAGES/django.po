@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 09:10+0200\n"
+"POT-Creation-Date: 2014-08-13 11:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,12 +97,113 @@ msgstr ""
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: models.py:642
-msgid "When checked, this workspace is only available for logged-in users."
+#: forms.py:16 views.py:1797 templates/lizard_map/popup.html:29
+#: templates/lizard_map/tag_statistics.html:6
+msgid "Name"
 msgstr ""
 
-#: models.py:702
+#: forms.py:111 templates/lizard_map/popup.html:64
+msgid "Title"
+msgstr ""
+
+#: forms.py:112
+msgid "Minimum y value"
+msgstr ""
+
+#: forms.py:113
+msgid "Maximum y value"
+msgstr ""
+
+#: forms.py:114
+msgid "X label"
+msgstr ""
+
+#: forms.py:115
+msgid "Y label"
+msgstr ""
+
+#: forms.py:116
+msgid "Aggregation period"
+msgstr ""
+
+#: forms.py:117 templates/lizard_map/popup.html:122
+msgid "Month"
+msgstr ""
+
+#: forms.py:120 views.py:1799
+msgid "Limit"
+msgstr ""
+
+#: forms.py:122 views.py:1798
+msgid "Percentile limit"
+msgstr ""
+
+#: forms.py:123 templates/lizard_map/popup.html:193
+msgid "Show minimum"
+msgstr ""
+
+#: forms.py:124 templates/lizard_map/popup.html:198
+msgid "Show maximum"
+msgstr ""
+
+#: forms.py:125 templates/lizard_map/popup.html:203
+msgid "Show average"
+msgstr ""
+
+#: forms.py:136 models.py:702
 msgid "all"
+msgstr ""
+
+#: forms.py:137
+msgid "only january"
+msgstr ""
+
+#: forms.py:138
+msgid "only february"
+msgstr ""
+
+#: forms.py:139
+msgid "only march"
+msgstr ""
+
+#: forms.py:140
+msgid "only april"
+msgstr ""
+
+#: forms.py:141
+msgid "only may"
+msgstr ""
+
+#: forms.py:142
+msgid "only june"
+msgstr ""
+
+#: forms.py:143
+msgid "only july"
+msgstr ""
+
+#: forms.py:144
+msgid "only august"
+msgstr ""
+
+#: forms.py:145
+msgid "only september"
+msgstr ""
+
+#: forms.py:146
+msgid "only oktober"
+msgstr ""
+
+#: forms.py:147
+msgid "only november"
+msgstr ""
+
+#: forms.py:148
+msgid "only december"
+msgstr ""
+
+#: models.py:642
+msgid "When checked, this workspace is only available for logged-in users."
 msgstr ""
 
 #: models.py:703
@@ -194,6 +295,46 @@ msgstr ""
 msgid "Collage"
 msgstr ""
 
+#: views.py:1797 templates/lizard_map/tag_statistics.html:7
+msgid "Period"
+msgstr ""
+
+#: views.py:1797
+msgid "Minimum"
+msgstr ""
+
+#: views.py:1797
+msgid "Maximum"
+msgstr ""
+
+#: views.py:1798
+msgid "Average"
+msgstr ""
+
+#: views.py:1798
+msgid "Percentile value"
+msgstr ""
+
+#: views.py:1799
+msgid "Number above the limit"
+msgstr ""
+
+#: views.py:1800
+msgid "Number below the limit"
+msgstr ""
+
+#: views.py:1970 templates/lizard_map/box_table.html:11
+msgid "Date + time"
+msgstr ""
+
+#: views.py:1970 templates/lizard_map/box_table.html:12
+msgid "Value"
+msgstr ""
+
+#: views.py:1970 templates/lizard_map/box_table.html:13
+msgid "Unit"
+msgstr ""
+
 #: workspace.py:20
 msgid "blue"
 msgstr ""
@@ -263,18 +404,6 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
-#: templates/lizard_map/box_table.html:11
-msgid "Date + time"
-msgstr ""
-
-#: templates/lizard_map/box_table.html:12
-msgid "Value"
-msgstr ""
-
-#: templates/lizard_map/box_table.html:13
-msgid "Unit"
-msgstr ""
-
 #: templates/lizard_map/box_table.html:26
 msgid "No values"
 msgstr ""
@@ -300,6 +429,10 @@ msgstr ""
 #: templates/lizard_map/collage_edit_detail.html:71
 #: templates/lizard_map/tag_collage_edit.html:62
 msgid "Empty your collage"
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:75
+msgid "Empty whole dashboard"
 msgstr ""
 
 #: templates/lizard_map/daterange.html:3
@@ -356,10 +489,6 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: templates/lizard_map/popup.html:29
-msgid "Name"
-msgstr ""
-
 #: templates/lizard_map/popup.html:32
 msgid "Edit"
 msgstr ""
@@ -380,10 +509,6 @@ msgstr ""
 msgid "Graph options"
 msgstr ""
 
-#: templates/lizard_map/popup.html:64
-msgid "Title"
-msgstr ""
-
 #: templates/lizard_map/popup.html:91
 msgid "Threshold"
 msgstr ""
@@ -402,10 +527,6 @@ msgstr ""
 
 #: templates/lizard_map/popup.html:117
 msgid "Quater"
-msgstr ""
-
-#: templates/lizard_map/popup.html:122
-msgid "Month"
 msgstr ""
 
 #: templates/lizard_map/popup.html:126
@@ -489,16 +610,16 @@ msgstr ""
 msgid "choose a color"
 msgstr ""
 
-#: templates/lizard_map/popup.html:193
-msgid "Show minimum"
+#: templates/lizard_map/tag_animation_control_panel.html:3
+msgid "Control panel"
 msgstr ""
 
-#: templates/lizard_map/popup.html:198
-msgid "Show maximum"
+#: templates/lizard_map/tag_animation_control_panel.html:6
+msgid "Time step"
 msgstr ""
 
-#: templates/lizard_map/popup.html:203
-msgid "Show average"
+#: templates/lizard_map/tag_animation_control_panel.html:16
+msgid "Reset"
 msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:8
@@ -609,6 +730,10 @@ msgstr ""
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
+msgstr ""
+
+#: templates/lizard_map/workspace_storage_detail.html:16
+msgid "Workspace"
 msgstr ""
 
 #: templates/lizard_map/workspace_storage_detail.html:45

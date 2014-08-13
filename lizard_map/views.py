@@ -1794,10 +1794,10 @@ def statistics_csv(request):
     response = HttpResponse(mimetype='text/csv')
     response['Content-Disposition'] = ('attachment; filename="%s"' % filename)
     writer = csv.writer(response)
-    writer.writerow(['Naam', 'Periode', 'Minimum', 'Maximum', 'Gemiddeld',
-                     'Percentiel grens', 'Percentiel waarde',
-                     'Grenswaarde', 'Aantal boven grenswaarde',
-                     'Aantal onder grenswaarde'])
+    writer.writerow([_('Name'), _('Period'), _('Minimum'), _('Maximum'),
+                      _('Average'), _('Percentile limit'), _('Percentile value'),
+                     _('Limit'), _('Number above the limit'),
+                      _('Number below the limit')])
     for row in statistics:
         writer.writerow([
                 row['name'], row['period'], row['min'], row['max'], row['avg'],
@@ -1967,7 +1967,7 @@ class AdapterValuesView(AdapterMixin, UiView):
                 # Old way (for almost all adapters)
                 self.values = adapter.values(identifier, start_date, end_date)
                 writer = csv.writer(response)
-                writer.writerow(['Datum + tijdstip', 'Waarde', 'Eenheid'])
+                writer.writerow([_('Date + time'), _('Value'), _('Unit')])
                 for row in self.values:
                     # Translate datetime to local timezone, then format it
                     dt = row['datetime'].astimezone(timezone)
