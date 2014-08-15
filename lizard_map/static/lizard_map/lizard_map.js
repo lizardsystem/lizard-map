@@ -2682,7 +2682,7 @@ function setUpTour(){
 	{
 	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
 	    title: gettext("Welcom to Lizard"), // string - title of the popover
-	    content: gettext("This information portal works in current browsers: IE9 of higher, Firefox and Chrome.") // string - content of the popover
+	    content: gettext("This information portal works in current browsers: IE9 or higher, Firefox and Chrome.") // string - content of the popover
 	},
 	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown

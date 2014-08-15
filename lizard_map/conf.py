@@ -10,6 +10,9 @@ here, it is possible to import Django's settings with `from
 lizard_damage.conf import settings` and be certain that the AppConf
 stuff has also been loaded."""
 
+# Use LANGUAGE_CODE = 'nl', 'en', etc. in Setting model
+# to setup language per site
+
 # Python 3 is coming
 from __future__ import unicode_literals
 
@@ -45,7 +48,7 @@ class MyAppConf(AppConf):
 
     DEFAULT_POPUP_MAX_TABS_SETTING = None
 
-    DEFAULT_BOOTSTRAP_TOUR_SETTING = ''  # Set to 'nl' to turn on
+    DEFAULT_BOOTSTRAP_TOUR_SETTING = ''  # Set to 'nl' or wat ever to turn on
 
     DEFAULT_START_EXTENT_SETTING = '-14675, 6668977, 1254790, 6964942'
     DEFAULT_MAX_EXTENT_SETTING = (

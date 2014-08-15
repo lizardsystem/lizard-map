@@ -302,14 +302,12 @@ class LanguageView(object):
     def dispatch(self, request, *args, **kwargs):
             
         try:
-            setting_language = Setting.objects.get(key__iexact='LANGUAGE_CODE')
+            setting_language = Setting.get('LANGUAGE_CODE')
             allowed_language_codes = [lang[0].upper() for lang in settings.LANGUAGES]
 
-            if setting_language.value.upper() in allowed_language_codes:
+            if ((setting_language is not None) and (
+                    setting_language.upper() in allowed_language_codes)):
                 request.session['django_language'] = setting_language.value
-
-        except Setting.DoesNotExist:
-            logger.info("'LANGUAGE_CODE' not in lizard-map.Setting model.")
         except:
             logger.info("The language settings or LocaleMiddleware not propely configured.")
                         
