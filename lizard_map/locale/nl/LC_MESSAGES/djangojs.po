@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-13 10:16+0200\n"
-"PO-Revision-Date: 2014-08-13 09:24+0000\n"
+"POT-Creation-Date: 2014-08-14 18:03+0200\n"
+"PO-Revision-Date: 2014-08-14 16:05+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -34,31 +34,143 @@ msgstr "Schuif naar links"
 msgid "Slide right"
 msgstr "Schuif naar rechts"
 
-#: static/lizard_map/lizard_map.js:2502
+#: static/lizard_map/lizard_map.js:2397
+msgid "Last day"
+msgstr "Afgelopen dag"
+
+#: static/lizard_map/lizard_map.js:2399
+msgid "Last 2 days"
+msgstr "Afgelopen 2 dagen"
+
+#: static/lizard_map/lizard_map.js:2401
+msgid "Last week"
+msgstr "Afgelopen week"
+
+#: static/lizard_map/lizard_map.js:2403
+msgid "Last week + 1"
+msgstr "Afgelopen week + 1"
+
+#: static/lizard_map/lizard_map.js:2406
+msgid "Last month"
+msgstr "Afgelopen maand"
+
+#: static/lizard_map/lizard_map.js:2408
+msgid "Last year"
+msgstr "Afgelopen jaar"
+
+#: static/lizard_map/lizard_map.js:2415
+msgid "Apply"
+msgstr "Bevestigen"
+
+#: static/lizard_map/lizard_map.js:2416
+msgid "Cancel"
+msgstr "Annuleren"
+
+#: static/lizard_map/lizard_map.js:2417
+msgid "Manual input"
+msgstr "Handmatige invoer"
+
+#: static/lizard_map/lizard_map.js:2418
+msgid "Sun"
+msgstr "zo"
+
+#: static/lizard_map/lizard_map.js:2418
+msgid "Mon"
+msgstr "ma"
+
+#: static/lizard_map/lizard_map.js:2418
+msgid "Tue"
+msgstr "di"
+
+#: static/lizard_map/lizard_map.js:2419
+msgid "Wed"
+msgstr "wo"
+
+#: static/lizard_map/lizard_map.js:2419
+msgid "Thu"
+msgstr "do"
+
+#: static/lizard_map/lizard_map.js:2419
+msgid "Fri"
+msgstr "vr"
+
+#: static/lizard_map/lizard_map.js:2420
+msgid "Sat"
+msgstr "za"
+
+#: static/lizard_map/lizard_map.js:2421
+msgid "January"
+msgstr "januari"
+
+#: static/lizard_map/lizard_map.js:2421
+msgid "February"
+msgstr "februari"
+
+#: static/lizard_map/lizard_map.js:2421
+msgid "March"
+msgstr "maart"
+
+#: static/lizard_map/lizard_map.js:2422
+msgid "April"
+msgstr "april"
+
+#: static/lizard_map/lizard_map.js:2422
+msgid "May"
+msgstr "mei"
+
+#: static/lizard_map/lizard_map.js:2422
+msgid "June"
+msgstr "juni"
+
+#: static/lizard_map/lizard_map.js:2422
+msgid "July"
+msgstr "juli"
+
+#: static/lizard_map/lizard_map.js:2423
+msgid "August"
+msgstr "augustus"
+
+#: static/lizard_map/lizard_map.js:2423
+msgid "September"
+msgstr "september"
+
+#: static/lizard_map/lizard_map.js:2423
+msgid "October"
+msgstr "oktober"
+
+#: static/lizard_map/lizard_map.js:2424
+msgid "November"
+msgstr "november"
+
+#: static/lizard_map/lizard_map.js:2424
+msgid "December"
+msgstr "december"
+
+#: static/lizard_map/lizard_map.js:2491
 msgid "Add to selection"
 msgstr "Toevoegen aan selectie"
 
-#: static/lizard_map/lizard_map.js:2529 static/lizard_map/lizard_map.js:2700
+#: static/lizard_map/lizard_map.js:2518 static/lizard_map/lizard_map.js:2689
 msgid "Search location"
 msgstr "Zoek naar locaties"
 
-#: static/lizard_map/lizard_map.js:2530
+#: static/lizard_map/lizard_map.js:2519
 msgid "Type at least three characters ..."
 msgstr "Type ten minste drie karakters"
 
-#: static/lizard_map/lizard_map.js:2531
+#: static/lizard_map/lizard_map.js:2520
 msgid "Zoek"
 msgstr "Search"
 
-#: static/lizard_map/lizard_map.js:2598
+#: static/lizard_map/lizard_map.js:2587
 msgid "Nothing found."
 msgstr "Er is niets gevonden."
 
-#: static/lizard_map/lizard_map.js:2695
+#: static/lizard_map/lizard_map.js:2684
 msgid "Welcom to Lizard"
 msgstr "Welkom op Lizard"
 
-#: static/lizard_map/lizard_map.js:2696
+#: static/lizard_map/lizard_map.js:2685
 msgid ""
 "This information portal works in current browsers: IE9 of higher, Firefox "
 "and Chrome."
@@ -66,23 +178,23 @@ msgstr ""
 "Dit informatie portaal werkt op actuele browsers: IE9 of hoger, Firefox en "
 "Chrome."
 
-#: static/lizard_map/lizard_map.js:2701
+#: static/lizard_map/lizard_map.js:2690
 msgid "Enter the search term and click the magnifying glass."
 msgstr "Vul hier de zoekterm in en klik op het vergrootglas."
 
-#: static/lizard_map/lizard_map.js:2706
+#: static/lizard_map/lizard_map.js:2695
 msgid "Topic maps"
 msgstr "Themakaarten"
 
-#: static/lizard_map/lizard_map.js:2707
+#: static/lizard_map/lizard_map.js:2696
 msgid "These are the maps sorted for you per topic."
 msgstr "Dit zijn kaarten, voor u gesorteerd op thema"
 
-#: static/lizard_map/lizard_map.js:2711
+#: static/lizard_map/lizard_map.js:2700
 msgid "The map"
 msgstr "De kaart"
 
-#: static/lizard_map/lizard_map.js:2712
+#: static/lizard_map/lizard_map.js:2701
 msgid ""
 "Click on the map for more information about the object. Does this "
 "information contain a chart, double-click to see the chart in full screen."
@@ -91,61 +203,61 @@ msgstr ""
 "informatie uit een grafiek, klik dan dubbel om de grafiek in een volledig "
 "scherm te zien."
 
-#: static/lizard_map/lizard_map.js:2716
+#: static/lizard_map/lizard_map.js:2705
 msgid "Legend"
 msgstr "Legenda"
 
-#: static/lizard_map/lizard_map.js:2717
+#: static/lizard_map/lizard_map.js:2706
 msgid "Here is the legend"
 msgstr "Hier vindt u de legenda."
 
-#: static/lizard_map/lizard_map.js:2722
+#: static/lizard_map/lizard_map.js:2711
 msgid "Elevation profile"
 msgstr "Hoogteprofiel"
 
-#: static/lizard_map/lizard_map.js:2723
+#: static/lizard_map/lizard_map.js:2712
 msgid "Here is the elevation profile."
 msgstr "Hier vindt u het hoogteprofiel."
 
-#: static/lizard_map/lizard_map.js:2729
+#: static/lizard_map/lizard_map.js:2718
 msgid "Apps"
 msgstr "Apps"
 
-#: static/lizard_map/lizard_map.js:2730
+#: static/lizard_map/lizard_map.js:2719
 msgid "Here are the specific apps."
 msgstr "Hier vindt u specifieke apps."
 
-#: static/lizard_map/lizard_map.js:2736
+#: static/lizard_map/lizard_map.js:2725
 msgid "Backgroud maps"
 msgstr "Achtergrond kaarten"
 
-#: static/lizard_map/lizard_map.js:2737
+#: static/lizard_map/lizard_map.js:2726
 msgid "Select here a different background map."
 msgstr "Selecteer hier een andere achtergrond kaart."
 
-#: static/lizard_map/lizard_map.js:2742
+#: static/lizard_map/lizard_map.js:2731
 msgid "Maps"
 msgstr "Kaarten"
 
-#: static/lizard_map/lizard_map.js:2743
+#: static/lizard_map/lizard_map.js:2732
 msgid "Select a specific map of the topic map to make them (in) visible."
 msgstr ""
 "Selecteer hier een specifieke kaart van de themakaart om ze (on)zichtbaar te"
 " maken."
 
-#: static/lizard_map/lizard_map.js:2748
+#: static/lizard_map/lizard_map.js:2737
 msgid "Calendar"
 msgstr "Kalender"
 
-#: static/lizard_map/lizard_map.js:2749
+#: static/lizard_map/lizard_map.js:2738
 msgid "Change in the date selection for date dependent information."
 msgstr "Wijzig hier de datum selectie voor datum afhankelijke informatie."
 
-#: static/lizard_map/lizard_map.js:2754
+#: static/lizard_map/lizard_map.js:2743
 msgid "Info toure"
 msgstr "Rondleiding"
 
-#: static/lizard_map/lizard_map.js:2755
+#: static/lizard_map/lizard_map.js:2744
 msgid "Click here to start the tour again. Click stop to end the tour."
 msgstr ""
 "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor "

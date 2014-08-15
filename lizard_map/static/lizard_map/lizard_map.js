@@ -2393,49 +2393,38 @@ function setup_view_state() {
 
 function setup_daterangepicker() {
     if ($('.popup-date-range').exists()) {
+	var ranges = {};
+	ranges[gettext('Last day')] = [moment.utc().subtract('days', 1),
+				       moment.utc(), 'today'];
+        ranges[gettext('Last 2 days')] = [moment.utc().subtract('days', 2),
+					  moment.utc(), '2_day'];
+        ranges[gettext('Last week')] = [moment.utc().subtract('weeks', 1),
+					moment.utc(), 'week'];
+        ranges[gettext('Last week + 1')] = [moment.utc().subtract('weeks', 1),
+					    moment.utc().add('days', 1),
+					    'week_plus_one'];
+        ranges[gettext('Last month')] = [moment.utc().subtract('months', 1),
+					 moment.utc(), 'month'];
+        ranges[gettext('Last year')] = [moment.utc().subtract('years', 1),
+					moment.utc(), 'year'];
+ 
         var picker = $('.popup-date-range').daterangepicker({
             opens: 'left',
             format: 'DD-MM-YYYY',
             locale: {
-                applyLabel:'Bevestigen',
-                cancelLabel:'Annuleren',
-                customRangeLabel:'Handmatige invoer',
-                daysOfWeek:['zo', 'ma', 'di', 'wo', 'do', 'vr','za'],
-                monthNames:['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'],
+                applyLabel:gettext('Apply'),
+                cancelLabel:gettext('Cancel'),
+                customRangeLabel:gettext('Manual input'),
+                daysOfWeek:[gettext('Sun'), gettext('Mon'), gettext('Tue'),
+			    gettext('Wed'), gettext('Thu'), gettext('Fri'),
+			    gettext('Sat')],
+                monthNames:[gettext('January'), gettext('February'), gettext('March'),
+			    gettext('April'), gettext('May'), gettext('June'), gettext('July'),
+			    gettext('August'), gettext('September'), gettext('October'),
+			    gettext('November'), gettext('December')],
                 firstDay:0
             },
-            ranges: {
-                'Afgelopen dag': [
-                    moment.utc().subtract('days', 1),
-                    moment.utc(),
-                    'today'
-                ],
-                'Afgelopen 2 dagen': [
-                    moment.utc().subtract('days', 2),
-                    moment.utc(),
-                    '2_day'
-                ],
-                'Afgelopen week': [
-                    moment.utc().subtract('weeks', 1),
-                    moment.utc(),
-                    'week'
-                ],
-                'Afgelopen week + 1': [
-                    moment.utc().subtract('weeks', 1),
-                    moment.utc().add('days', 1),
-                    'week_plus_one'
-                ],
-                'Afgelopen maand': [
-                    moment.utc().subtract('months', 1),
-                    moment.utc(),
-                    'month'
-                ],
-                'Afgelopen jaar': [
-                    moment.utc().subtract('years', 1),
-                    moment.utc(),
-                    'year'
-                ]
-            }
+            ranges: ranges
         },
                                                             function (range_type, dt_start, dt_end) {
                                                                 set_view_state({range_type: range_type, dt_start: dt_start, dt_end: dt_end},
