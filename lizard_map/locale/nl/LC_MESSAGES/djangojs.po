@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-15 11:50+0200\n"
-"PO-Revision-Date: 2014-08-15 09:55+0000\n"
+"POT-Creation-Date: 2014-08-15 13:45+0200\n"
+"PO-Revision-Date: 2014-08-15 11:46+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,6 +25,10 @@ msgstr "Er is niets rond deze locatie gevonden."
 #: static/lizard_map/lizard_map.js:719
 msgid "Error on action. Reload the page and try it again."
 msgstr "Fout bij actie. Herlaad pagina en probeer opnieuw."
+
+#: static/lizard_map/lizard_map.js:1957
+msgid "No data available at this period."
+msgstr "Geen gegevens beschikbaar in deze periode."
 
 #: static/lizard_map/lizard_map.js:2064
 msgid "Slide left"
