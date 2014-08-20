@@ -293,28 +293,7 @@ class CrumbsMixin(object):
             return initial
 
 
-class LanguageView(object):
-    """
-    Set LANGUAGE_CODE defined in Setting model to user session.
-    The code has to be allowed through the LANGUAGES in base settings.
-    """
-
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            # Do not use caching otherwise you will not be abble to change 
-            # the language directly
-            setting_language = Setting.objects.get(key__iexact='LANGUAGE_CODE')
-            allowed_language_codes = [lang[0].upper() for lang in settings.LANGUAGES]
-
-            if setting_language.value.upper() in allowed_language_codes:
-                request.session['django_language'] = setting_language.value
-        except:
-            logger.info("The language settings or LocaleMiddleware not propely configured.")
-                        
-        return super(LanguageView, self).dispatch(request, *args, **kwargs)
-
-
-class AppView(LanguageView, WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
+class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
               MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 

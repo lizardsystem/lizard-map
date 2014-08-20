@@ -93,6 +93,8 @@ Changelog of lizard-map
 
 - Add LanguageView to setup a different language per site.
 
+- Create LocaleFromSettingMiddleware to use language_code from Setting models.
+
 4.28 (2013-05-06)
 -----------------
 
