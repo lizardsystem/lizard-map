@@ -477,7 +477,7 @@ msgid "Workspace saved."
 msgstr "Workspace opgeslagen"
 
 #: templates/lizard_map/form_workspace_save_success.html:4
-msgid "The URL to the saved workspace is"
+msgid "The URL of the saved workspace is"
 msgstr "De URL van de opgeslagen workspace is"
 
 #: templates/lizard_map/html_default.html:27

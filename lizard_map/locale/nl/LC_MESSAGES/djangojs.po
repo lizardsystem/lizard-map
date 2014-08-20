@@ -171,7 +171,7 @@ msgid "Nothing found."
 msgstr "Er is niets gevonden."
 
 #: static/lizard_map/lizard_map.js:2684
-msgid "Welcom to Lizard"
+msgid "Welcome to Lizard"
 msgstr "Welkom op Lizard"
 
 #: static/lizard_map/lizard_map.js:2685
@@ -258,7 +258,7 @@ msgid "Change in the date selection for date dependent information."
 msgstr "Wijzig hier de datum selectie voor datum afhankelijke informatie."
 
 #: static/lizard_map/lizard_map.js:2743
-msgid "Info toure"
+msgid "Info tour"
 msgstr "Rondleiding"
 
 #: static/lizard_map/lizard_map.js:2744

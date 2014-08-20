@@ -2681,7 +2681,7 @@ function setUpTour(){
     tour.addSteps([
 	{
 	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
-	    title: gettext("Welcom to Lizard"), // string - title of the popover
+	    title: gettext("Welcome to Lizard"), // string - title of the popover
 	    content: gettext("This information portal works in current browsers: IE9 or higher, Firefox and Chrome.") // string - content of the popover
 	},
 	{
@@ -2740,7 +2740,7 @@ function setUpTour(){
 	},
 	{
 	    element: "#action-bootstrap-tour",
-	    title: gettext("Info toure"),
+	    title: gettext("Info tour"),
 	    content: gettext("Click here to start the tour again. Click stop to end the tour."),
 	    placement: "bottom"
 	},

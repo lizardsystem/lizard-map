@@ -170,7 +170,7 @@ msgid "Nothing found."
 msgstr ""
 
 #: static/lizard_map/lizard_map.js:2684
-msgid "Welcom to Lizard"
+msgid "Welcome to Lizard"
 msgstr ""
 
 #: static/lizard_map/lizard_map.js:2685
@@ -250,7 +250,7 @@ msgid "Change in the date selection for date dependent information."
 msgstr ""
 
 #: static/lizard_map/lizard_map.js:2743
-msgid "Info toure"
+msgid "Info tour"
 msgstr ""
 
 #: static/lizard_map/lizard_map.js:2744
