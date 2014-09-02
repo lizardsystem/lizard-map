@@ -1,5 +1,5 @@
+import json
 from django import template
-from django.utils import simplejson as json
 from django.core.urlresolvers import reverse
 
 from lizard_map.daterange import current_start_end_dates
