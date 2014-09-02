@@ -1,5 +1,5 @@
-from django.conf.urls.defaults import patterns
-from django.conf.urls.defaults import url
+from django.conf.urls import patterns
+from django.conf.urls import url
 from piston.resource import Resource
 
 from lizard_map.api.handlers import MapPluginsHandler
