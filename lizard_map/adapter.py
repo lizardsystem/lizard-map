@@ -3,6 +3,7 @@ Helper classes and functions for adapters
 """
 from __future__ import division
 import datetime
+import json
 import locale
 import math
 import numpy
@@ -14,7 +15,6 @@ from dateutil.rrule import YEARLY, MONTHLY, DAILY, HOURLY, MINUTELY, SECONDLY
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 
 from lizard_map.matplotlib_settings import FONT_SIZE
