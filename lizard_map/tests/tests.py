@@ -5,6 +5,9 @@ from django.core.urlresolvers import reverse
 from django.http import HttpRequest
 from django.test import TestCase
 from django.test.client import Client
+from django.test.client import MULTIPART_CONTENT
+from django.test.client import BOUNDARY
+from django.test.client import encode_multipart
 import mock
 import pytz
 import rest_framework
@@ -898,7 +901,9 @@ class ViewStateServiceTest(unittest.TestCase):
         date1 = datetime.datetime(1979, 5, 25, tzinfo=pytz.UTC)
         date2 = datetime.datetime(1979, 7, 15, tzinfo=pytz.UTC)
         data = {'range_type': '2_day',
-                'dt_start': str(date1),
-                'dt_end': str(date2)}
-        response = client.put(url, data=data)
+                'dt_start': unicode(date1),
+                'dt_end': unicode(date2)}
+        response = client.put(
+            url, data=encode_multipart(BOUNDARY, data),
+            content_type=MULTIPART_CONTENT)
         self.assertEqual(response.status_code, 200)
