@@ -3,14 +3,14 @@
 <div id="edit-workspace"
      class="sidebarbox workspace"
      data-workspace-id="{{ workspace_edit.id }}"
-     data-url-lizard-map-workspace-item-toggle="{% url lizard_map_workspace_item_toggle %}"
-     data-url-lizard-map-workspace-item-delete="{% url lizard_map_workspace_item_delete %}"
-     data-url-lizard-map-workspace-item-reorder="{% url lizard_map_workspace_item_reorder %}"
-     data-url-lizard-map-workspace-item-edit="{% url lizard_map_workspace_edit_item %}"
-     data-url-lizard-map-search-coordinates="{% url lizard_map.search_coordinates %}"
-     data-url-lizard-map-search-name="{% url lizard_map.search_name %}"
-     data-url-lizard-map-add-selection="{% url lizard_map_collage %}"
-     data-url-lizard-map-workspace-item-extent="{% url lizard_map_workspace_item_extent %}"
+     data-url-lizard-map-workspace-item-toggle="{% url "lizard_map_workspace_item_toggle" %}"
+     data-url-lizard-map-workspace-item-delete="{% url "lizard_map_workspace_item_delete" %}"
+     data-url-lizard-map-workspace-item-reorder="{% url "lizard_map_workspace_item_reorder" %}"
+     data-url-lizard-map-workspace-item-edit="{% url "lizard_map_workspace_edit_item" %}"
+     data-url-lizard-map-search-coordinates="{% url "lizard_map.search_coordinates" %}"
+     data-url-lizard-map-search-name="{% url "lizard_map.search_name" %}"
+     data-url-lizard-map-add-selection="{% url "lizard_map_collage" %}"
+     data-url-lizard-map-workspace-item-extent="{% url "lizard_map_workspace_item_extent" %}"
      >
   {% comment %}
   <h2>
@@ -78,13 +78,13 @@
     {% endcomment %}
     <div class="btn-group" style="display: block; width: 78px; margin-left: auto; margin-right: auto;">
         <button id="workspace-empty"
-                href="{% url lizard_map_workspace_empty %}"
+                href="{% url "lizard_map_workspace_empty" %}"
                 class="btn sidebarbox-action-icon action-post-workspace-empty"
                 title="{% trans 'Empty your workspace' %}">
            <i class="icon-trash icon-white"></i>
         </button>
         <button id="workspace-save"
-                href="{% url lizard_map_workspace_save %}"
+                href="{% url "lizard_map_workspace_save" %}"
                 class="btn sidebarbox-action-icon popup-workspace-save"
                 data-size="xs"
                 title="{% trans 'Save your workspace' %}"
@@ -100,7 +100,7 @@
     {% endcomment %}
     {% comment %}
       <a id="workspace-link-to-stored"
-         href="{% url lizard_map_workspace_storage_list %}"
+         href="{% url "lizard_map_workspace_storage_list" %}"
          title="{% trans 'Stored workspaces...' %}"
          class="title ss_sprite ss_database sidebarbox-action-icon ajax-dialog"
          data-size="xs">&nbsp;</a>
@@ -108,7 +108,7 @@
 
     {% comment %}
       <a id="workspace-load"
-         href="{% url lizard_map_workspace_load %}"
+         href="{% url "lizard_map_workspace_load" %}"
          title="{% trans 'Load workspace...' %}"
          class="title ss_sprite ss_database_go sidebarbox-action-icon ajax-dialog"
          data-size="xs">&nbsp;</a>

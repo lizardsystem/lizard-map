@@ -24,7 +24,7 @@
                          {% if collage_item.visible %}
                            checked="checked"
                          {% endif %}
-                         href="{% url lizard_map_collage_item_edit %}"
+                         href="{% url "lizard_map_collage_item_edit" %}"
                          data-target-id="#edit-collage"/>
                 </td>
                 <td style="width: 300px;">
@@ -34,7 +34,7 @@
                   <div>
                     <a class="ss_sprite ss_delete sidebarbox-action-icon collage-item-delete reload-after-action"
                        title="{% trans 'Delete item' %}"
-                       href="{% url lizard_map_collage_item_edit %}"
+                       href="{% url "lizard_map_collage_item_edit" %}"
                        data-target-id="#edit-collage">
                     </a>
                     &nbsp;
@@ -67,7 +67,7 @@
 
       <div>
         <a id="collage-empty"
-           href="{% url lizard_map_collage_empty %}"
+           href="{% url "lizard_map_collage_empty" %}"
            title="{% trans 'Empty your collage' %}"
            class="title btn btn-danger sidebarbox-action-icon action-post reload-after-action"
            data-target-id="#edit-collage">

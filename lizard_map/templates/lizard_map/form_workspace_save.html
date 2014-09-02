@@ -1,6 +1,6 @@
 {% load i18n %}
 <div class="dialog-box">
-<form id="workspace-save-form" class="form-horizontal" action="{% url lizard_map_workspace_save %}" method="POST">
+<form id="workspace-save-form" class="form-horizontal" action="{% url "lizard_map_workspace_save" %}" method="POST">
 {% csrf_token %}
 <legend>{% trans 'Save workspace' %}</legend>
 

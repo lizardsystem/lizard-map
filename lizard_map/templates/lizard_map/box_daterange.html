@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="dialog-box date-range-box">
    <form id="date-range-form"
-         action="{% url lizard_map_date_range %}"
+         action="{% url "lizard_map_date_range" %}"
          method="post">
     {% csrf_token %}
     <p>{% autoescape off %}{{ view.date_range_form.period }}{% endautoescape %}</p>
@@ -23,7 +23,7 @@
     data-max="{{ view.animation_slider.max }}"
     data-step="{{ view.animation_slider.step }}"
     data-value="{{ view.animation_slider.value }}"
-    data-ajax-path="{% url lizard_map.set_animation_date %}">
+    data-ajax-path="{% url "lizard_map.set_animation_date" %}">
 </li>
 <li id="animation-date" class="map-action">
   <span id="selected-date">{{ view.animation_slider.selected_date|date:"d/m/Y" }}</span>
