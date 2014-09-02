@@ -75,6 +75,11 @@ TIME_ZONE = "Europe/Amsterdam"
 
 LIZARD_MAP_STANDALONE = True
 
+# Necessary because we store objects in the session
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+SECRET_KEY = 'Does not need to be secret in testsettings'
+
 try:
     # Import local settings that aren't stored in svn.
     from lizard_map.local_testsettings import *
