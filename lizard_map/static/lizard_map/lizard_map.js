@@ -2609,7 +2609,7 @@ function setup_location_search () {
 	// make it an explicit JSONP request. Nominatim supports
 	// JSONP through the 'json_callback' GET parameter.
 	$.ajax(
-	    'http://nominatim.openstreetmap.org/search', {
+	    '//nominatim.openstreetmap.org/search', {
 		data: {
 		    q: inp,
 		    format: "json",
