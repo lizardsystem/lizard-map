@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '4.29.dev0'
+version = '5.0.dev0'
 
 long_description = '\n\n'.join([
     open('README.rst').read(),
@@ -21,6 +21,7 @@ install_requires = [
     'lizard-help',
     'lizard-security',
     'lizard-ui >= 4.27, < 5.0',
+    'lizard-wms',
     'pkginfo',
     'python-dateutil',
     'pytz',
