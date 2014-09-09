@@ -41,7 +41,7 @@ the default template for the html_default method.' %}
       <tr>
         <td>{% trans 'Whole graph' %}</td>
         <td class="button">
-          <a href="{% url lizard_map.export_snippet_group_csv snippet_group_id=snippet_group.id %}"
+          <a href="{% url "lizard_map.export_snippet_group_csv" snippet_group_id=snippet_group.id %}"
              class="ss_table_save ss_sprite"
              title="{% trans 'Export' %} csv"
              >&nbsp;</a>
@@ -57,7 +57,7 @@ the default template for the html_default method.' %}
             <div class="popup-content">
               <h1>{% trans 'Graph options' %}</h1>
               <form class="popup-graph-edit-form popup-graph-edit-global graph-options popup-form"
-                    action="{% url lizard_map.snippet_group_graph_edit snippet_group_id=snippet_group.id %}"
+                    action="{% url "lizard_map.snippet_group_graph_edit" snippet_group_id=snippet_group.id %}"
                     method="post">
                 <fieldset class="fixed-label-width">
                   <div>
@@ -160,7 +160,7 @@ the default template for the html_default method.' %}
       <tr>
         <td>{{ snippet.name }}</td>
         <td class="button">
-          <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ snippet.workspace_item.id }}&amp;identifier_json={{ snippet.identifier|json_escaped }}"
+          <a href="{% url "lizard_map.export_identifier_csv" %}?workspace_item_id={{ snippet.workspace_item.id }}&amp;identifier_json={{ snippet.identifier|json_escaped }}"
              class="ss_table_save ss_sprite"
              title="{% trans 'Export' %} csv"
              >&nbsp;</a>
@@ -176,7 +176,7 @@ the default template for the html_default method.' %}
             <div class="popup-content">
               <h2>{% firstof snippet.name snippet.shortname %}</h2>
               <form class="graph-line-options"
-                    action="{% url lizard_map_snippet_edit snippet_id=snippet.id %}"
+                    action="{% url "lizard_map_snippet_edit" snippet_id=snippet.id %}"
                     method="post">
                 <p>
                   <label>{% trans 'Color' %}</label>
@@ -222,7 +222,7 @@ the default template for the html_default method.' %}
         {% if display_object.object.get_absolute_url %}<a href="{{ display_object.object.get_absolute_url }}" class="ss_sprite ss_arrow_turn_right">&nbsp;</a>{% endif %}
         </td>
         <td class="button">
-          <a href="{% url lizard_map.export_identifier_csv %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
+          <a href="{% url "lizard_map.export_identifier_csv" %}?workspace_item_id={{ display_object.workspace_item.id }}&identifier_json={{ display_object.identifier|json_escaped }}"
              class="ss_table_save ss_sprite"
              title="{% trans 'Export' %} csv"
              >&nbsp;</a>

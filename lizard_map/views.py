@@ -4,6 +4,7 @@ except ImportError:
     import StringIO
 import csv
 import datetime
+import json
 import logging
 import math
 import re
@@ -25,7 +26,6 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.template import RequestContext, loader
 from django.template.loader import render_to_string
-from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView

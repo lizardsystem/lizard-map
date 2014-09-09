@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 import random
 import string
@@ -10,7 +11,6 @@ from django.db import models
 from django.db.models import Max
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
-from django.utils import simplejson as json
 from django.utils.translation import ugettext_lazy as _
 from lizard_security.manager import FilteredManager
 from lizard_security.models import DataSet

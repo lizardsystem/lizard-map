@@ -6,7 +6,7 @@
 <ul>
   {% for workspace in view.workspaces %}
   <li>
-    <a href="{% url lizard_map_workspace_storage workspace_id=workspace.id %}">
+    <a href="{% url "lizard_map_workspace_storage" workspace_id=workspace.id %}">
   {{ workspace.name }}</a></li>
   {% empty %}
     <li>{% trans 'No saved workspaces.' %}</li>
