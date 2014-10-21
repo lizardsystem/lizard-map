@@ -22,7 +22,8 @@ COLORS_DEFAULT = [
     {'mapnik': 'green', 'display_name': _('green')},
     {'mapnik': 'black', 'display_name': _('black')},
     {'mapnik': 'cyan', 'display_name': _('cyan')},
-    {'mapnik': 'yellow', 'display_name': _('yellow')},
+    #{'mapnik': 'yellow', 'display_name': _('yellow')},
+    {'mapnik': 'orangered', 'display_name': _('orangered')},
     {'mapnik': 'lightblue', 'display_name': _('lightblue')},
     {'mapnik': 'grey', 'display_name': _('grey')},
     ]
