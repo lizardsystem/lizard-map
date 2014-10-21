@@ -1994,7 +1994,7 @@ function flotGraphLoadData($container, response) {
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
         zoom: { interactive: true },
-        colors: ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"]
+        colors: ["#ed6c40", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"]
     };
     if (isAppleMobile) {
         // enable touch
