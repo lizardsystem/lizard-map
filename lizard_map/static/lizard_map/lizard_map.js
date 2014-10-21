@@ -1993,7 +1993,8 @@ function flotGraphLoadData($container, response) {
         },
         grid: { hoverable: true, labelMargin: 15, markings: markings },
         pan: { interactive: true },
-        zoom: { interactive: true }
+        zoom: { interactive: true },
+        colors: ["#edc240", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"]
     };
     if (isAppleMobile) {
         // enable touch
@@ -2407,7 +2408,7 @@ function setup_daterangepicker() {
 					 moment.utc(), 'month'];
         ranges[gettext('Last year')] = [moment.utc().subtract('years', 1),
 					moment.utc(), 'year'];
- 
+
         var picker = $('.popup-date-range').daterangepicker({
             opens: 'left',
             format: 'DD-MM-YYYY',
