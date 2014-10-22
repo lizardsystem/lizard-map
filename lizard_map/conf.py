@@ -48,7 +48,7 @@ class MyAppConf(AppConf):
 
     DEFAULT_POPUP_MAX_TABS_SETTING = None
 
-    DEFAULT_BOOTSTRAP_TOUR_SETTING = ''  # Set to 'nl' or wat ever to turn on
+    DEFAULT_BOOTSTRAP_TOUR_SETTING = ''  # Set to 'nl' or whatever to turn on
 
     DEFAULT_START_EXTENT_SETTING = '-14675, 6668977, 1254790, 6964942'
     DEFAULT_MAX_EXTENT_SETTING = (
