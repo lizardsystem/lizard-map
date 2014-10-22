@@ -8,22 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-14 14:30+0200\n"
+"POT-Creation-Date: 2014-10-22 16:56+0200\n"
 "PO-Revision-Date: 2013-05-14 12:54+0000\n"
 "Last-Translator: Zhanguo Bai <zhanguo.bai@wur.nl>\n"
 "Language-Team: Chinese (http://translations.lizard.net/projects/p/"
 "lizardsystem/team/zh/)\n"
+"Language: zh\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh\n"
 "Plural-Forms: nplurals=1; plural=0\n"
 
-#: adapter.py:144
+#: adapter.py:143
 msgid "with"
 msgstr "关于"
 
-#: adapter.py:145
+#: adapter.py:144
 msgid "percentile"
 msgstr "百分位"
 
@@ -91,7 +91,7 @@ msgstr "十一月"
 msgid "December"
 msgstr "十二月"
 
-#: dateperiods.py:155
+#: dateperiods.py:155 templates/lizard_map/popup.html:107
 msgid "Whole period"
 msgstr "整个期间"
 
@@ -99,79 +99,253 @@ msgstr "整个期间"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "输入一个有效的颜色代码rrggbbaa，其中aa可选或可不选"
 
-#: models.py:696
+#: forms.py:16 views.py:1774 templates/lizard_map/popup.html:29
+#: templates/lizard_map/tag_statistics.html:6
+msgid "Name"
+msgstr ""
+
+#: forms.py:111 templates/lizard_map/popup.html:64
+msgid "Title"
+msgstr ""
+
+#: forms.py:112
+msgid "Minimum y value"
+msgstr ""
+
+#: forms.py:113
+msgid "Maximum y value"
+msgstr ""
+
+#: forms.py:114
+msgid "X label"
+msgstr ""
+
+#: forms.py:115
+msgid "Y label"
+msgstr ""
+
+#: forms.py:116
+msgid "Aggregation period"
+msgstr ""
+
+#: forms.py:117 templates/lizard_map/popup.html:122
+#, fuzzy
+msgid "Month"
+msgstr "月"
+
+#: forms.py:120 views.py:1776
+msgid "Limit"
+msgstr ""
+
+#: forms.py:122 views.py:1775
+#, fuzzy
+msgid "Percentile limit"
+msgstr "百分位"
+
+#: forms.py:123 templates/lizard_map/popup.html:193
+msgid "Show minimum"
+msgstr ""
+
+#: forms.py:124 templates/lizard_map/popup.html:198
+msgid "Show maximum"
+msgstr ""
+
+#: forms.py:125 templates/lizard_map/popup.html:203
+#, fuzzy
+msgid "Show average"
+msgstr "显示基础图层"
+
+#: forms.py:136 models.py:702
 msgid "all"
 msgstr "全部"
 
-#: models.py:697
+#: forms.py:137
+#, fuzzy
+msgid "only january"
+msgstr "一月"
+
+#: forms.py:138
+#, fuzzy
+msgid "only february"
+msgstr "二月"
+
+#: forms.py:139
+msgid "only march"
+msgstr ""
+
+#: forms.py:140
+msgid "only april"
+msgstr ""
+
+#: forms.py:141
+msgid "only may"
+msgstr ""
+
+#: forms.py:142
+msgid "only june"
+msgstr ""
+
+#: forms.py:143
+msgid "only july"
+msgstr ""
+
+#: forms.py:144
+msgid "only august"
+msgstr ""
+
+#: forms.py:145
+#, fuzzy
+msgid "only september"
+msgstr "九月"
+
+#: forms.py:146
+msgid "only oktober"
+msgstr ""
+
+#: forms.py:147
+#, fuzzy
+msgid "only november"
+msgstr "十一月"
+
+#: forms.py:148
+#, fuzzy
+msgid "only december"
+msgstr "十二月"
+
+#: models.py:642
+msgid "When checked, this workspace is only available for logged-in users."
+msgstr ""
+
+#: models.py:703
 msgid "year"
 msgstr "年"
 
-#: models.py:698
+#: models.py:704
 msgid "quarter"
 msgstr "季度"
 
-#: models.py:699
+#: models.py:705
 msgid "month"
 msgstr "月"
 
-#: models.py:700
+#: models.py:706
 msgid "week"
 msgstr "周"
 
-#: models.py:701
+#: models.py:707
 msgid "day"
 msgstr "日"
 
-#: views.py:302 views.py:1322
+#: views.py:285 views.py:1414
 msgid "Back to homepage"
 msgstr "返回主页"
 
-#: views.py:327 templates/lizard_map/tag_workspace_edit.html:17
+#: views.py:309
 msgid "Layers"
 msgstr "图层"
 
-#: views.py:331 templates/lizard_map/legend_item.html:6
-#: templates/lizard_map/wms.html:19
+#: views.py:313 templates/lizard_map/legend_item.html:6
 msgid "Legend"
 msgstr "图例"
 
-#: views.py:377
-msgid "Multi-select"
-msgstr "多项选择"
-
-#: views.py:378
-msgid "Select multiple items"
-msgstr "选择多项"
-
-#: views.py:386 views.py:1310
-msgid "Change the date range of the measurements"
-msgstr "改变测定日期范围"
-
-#: views.py:394
-msgid "Zoom to default location"
-msgstr "缩放至预设位置"
-
-#: views.py:403
+#: views.py:363 views.py:458
 msgid "Show base layers"
 msgstr "显示基础图层"
 
-#: views.py:412
+#: views.py:371 views.py:467
 msgid "Show map layers"
 msgstr "显示地图层"
 
-#: views.py:964 views.py:1034
+#: views.py:382
+msgid "Filter WMS"
+msgstr ""
+
+#: views.py:390 views.py:440 views.py:1390
+msgid "Change the date range of the measurements"
+msgstr "改变测定日期范围"
+
+#: views.py:401
+#, fuzzy
+msgid "Go to your collage"
+msgstr "清空拼贴区"
+
+#: views.py:410
+msgid "Show tour"
+msgstr ""
+
+#: views.py:431
+msgid "Multi-select"
+msgstr "多项选择"
+
+#: views.py:432
+msgid "Select multiple items"
+msgstr "选择多项"
+
+#: views.py:449
+msgid "Zoom to default location"
+msgstr "缩放至预设位置"
+
+#: views.py:548
+msgid "This object is private. Forbidden for anonymous users."
+msgstr ""
+
+#: views.py:1040 views.py:1110
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1300 views.py:1325
+#: views.py:1377
+msgid "Dashboard"
+msgstr ""
+
+#: views.py:1412
+msgid "Home"
+msgstr "主页"
+
+#: views.py:1417
 msgid "Collage"
 msgstr "拼贴"
 
-#: views.py:1320
-msgid "Home"
-msgstr "主页"
+#: views.py:1774 templates/lizard_map/tag_statistics.html:7
+msgid "Period"
+msgstr ""
+
+#: views.py:1774
+msgid "Minimum"
+msgstr ""
+
+#: views.py:1774
+msgid "Maximum"
+msgstr ""
+
+#: views.py:1775
+msgid "Average"
+msgstr ""
+
+#: views.py:1775
+#, fuzzy
+msgid "Percentile value"
+msgstr "百分位"
+
+#: views.py:1776
+msgid "Number above the limit"
+msgstr ""
+
+#: views.py:1777
+msgid "Number below the limit"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:11
+msgid "Date + time"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:12
+msgid "Value"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:13
+msgid "Unit"
+msgstr ""
 
 #: workspace.py:20
 msgid "blue"
@@ -193,17 +367,99 @@ msgstr "黑色"
 msgid "cyan"
 msgstr "青色"
 
-#: workspace.py:25
-msgid "yellow"
-msgstr "黄色"
-
 #: workspace.py:26
+msgid "orangered"
+msgstr ""
+
+#: workspace.py:27
 msgid "lightblue"
 msgstr "浅蓝色"
 
-#: workspace.py:27
+#: workspace.py:28
 msgid "grey"
 msgstr "灰色"
+
+#: templates/403.html:6
+msgid "Page forbidden for anonymous users (403)."
+msgstr ""
+
+#: templates/403.html:32
+msgid "403 Page forbidden for anonymous users."
+msgstr ""
+
+#: templates/403.html:33
+msgid "Our apologies for the inconvenience."
+msgstr ""
+
+#: templates/403.html:34
+msgid "If there should be a page please contact us."
+msgstr ""
+
+#: templates/403.html:35
+msgid "Email: "
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:3
+msgid "Chart options"
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:10
+msgid "Customize"
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor_success.html:3
+msgid "Settings have been successfully saved."
+msgstr ""
+
+#: templates/lizard_map/box_daterange.html:14
+#: templates/lizard_map/form_workspace_save.html:25
+msgid "Save"
+msgstr ""
+
+#: templates/lizard_map/box_table.html:26
+msgid "No values"
+msgstr ""
+
+#: templates/lizard_map/collage_edit.html:13
+msgid "View"
+msgstr ""
+
+#: templates/lizard_map/collage_edit.html:14
+msgid "Print"
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:36
+#: templates/lizard_map/tag_collage_edit.html:46
+msgid "Delete item"
+msgstr "删除选项"
+
+#: templates/lizard_map/collage_edit_detail.html:61
+#: templates/lizard_map/tag_collage_edit.html:54
+msgid "Select items on the map."
+msgstr "在地图上选择项目"
+
+#: templates/lizard_map/collage_edit_detail.html:71
+#: templates/lizard_map/tag_collage_edit.html:62
+msgid "Empty your collage"
+msgstr "清空拼贴区"
+
+#: templates/lizard_map/collage_edit_detail.html:75
+msgid "Empty whole dashboard"
+msgstr ""
+
+#: templates/lizard_map/daterange.html:3
+msgid "Date range selector"
+msgstr ""
+
+#: templates/lizard_map/daterange.html:14
+#, fuzzy
+msgid "Date selection"
+msgstr "选择"
+
+#: templates/lizard_map/daterange.html:20
+#, fuzzy
+msgid "New period"
+msgstr "整个期间"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
@@ -213,6 +469,188 @@ msgstr "事例"
 msgid "Example with shapefile"
 msgstr "矢量图显示的事例"
 
+#: templates/lizard_map/form_workspace_load.html:12
+msgid "Load"
+msgstr ""
+
+#: templates/lizard_map/form_workspace_load_success.html:3
+msgid "Workspace loaded."
+msgstr ""
+
+#: templates/lizard_map/form_workspace_save.html:5
+#, fuzzy
+msgid "Save workspace"
+msgstr "保存工作区"
+
+#: templates/lizard_map/form_workspace_save_success.html:3
+msgid "Workspace saved."
+msgstr ""
+
+#: templates/lizard_map/form_workspace_save_success.html:4
+msgid "The URL of the saved workspace is"
+msgstr ""
+
+#: templates/lizard_map/html_default.html:27
+#: templates/lizard_map/popup.html:30 templates/lizard_map/popup.html.py:46
+#: templates/lizard_map/popup.html:165 templates/lizard_map/popup.html:227
+msgid "Export"
+msgstr ""
+
+#: templates/lizard_map/popup.html:18
+msgid "Image not loaded yet"
+msgstr ""
+
+#: templates/lizard_map/popup.html:24
+#, fuzzy
+msgid "Actions"
+msgstr "选择"
+
+#: templates/lizard_map/popup.html:32
+msgid "Edit"
+msgstr ""
+
+#: templates/lizard_map/popup.html:35
+msgid "Add"
+msgstr ""
+
+#: templates/lizard_map/popup.html:42
+#, fuzzy
+msgid "Whole graph"
+msgstr "整个期间"
+
+#: templates/lizard_map/popup.html:54
+msgid "Edit graph"
+msgstr ""
+
+#: templates/lizard_map/popup.html:58
+msgid "Graph options"
+msgstr ""
+
+#: templates/lizard_map/popup.html:91
+msgid "Threshold"
+msgstr ""
+
+#: templates/lizard_map/popup.html:96
+#, fuzzy
+msgid "Percentile"
+msgstr "百分位"
+
+#: templates/lizard_map/popup.html:101
+msgid "Summary period"
+msgstr ""
+
+#: templates/lizard_map/popup.html:112
+msgid "Year"
+msgstr ""
+
+#: templates/lizard_map/popup.html:117
+#, fuzzy
+msgid "Quarter"
+msgstr "第一季度"
+
+#: templates/lizard_map/popup.html:126
+msgid "Filter by month"
+msgstr ""
+
+#: templates/lizard_map/popup.html:128
+msgid "No filter"
+msgstr ""
+
+#: templates/lizard_map/popup.html:129 templates/lizard_map/popup.html:130
+#: templates/lizard_map/popup.html:131 templates/lizard_map/popup.html:132
+#: templates/lizard_map/popup.html:133 templates/lizard_map/popup.html:134
+#: templates/lizard_map/popup.html:135 templates/lizard_map/popup.html:136
+#: templates/lizard_map/popup.html:137 templates/lizard_map/popup.html:138
+#: templates/lizard_map/popup.html:139 templates/lizard_map/popup.html:140
+msgid "Only"
+msgstr ""
+
+#: templates/lizard_map/popup.html:129
+#, fuzzy
+msgid "january"
+msgstr "一月"
+
+#: templates/lizard_map/popup.html:130
+#, fuzzy
+msgid "februari"
+msgstr "二月"
+
+#: templates/lizard_map/popup.html:131
+#, fuzzy
+msgid "march"
+msgstr "三月"
+
+#: templates/lizard_map/popup.html:132
+#, fuzzy
+msgid "april"
+msgstr "四月"
+
+#: templates/lizard_map/popup.html:133
+#, fuzzy
+msgid "may"
+msgstr "五月"
+
+#: templates/lizard_map/popup.html:134
+msgid "june"
+msgstr ""
+
+#: templates/lizard_map/popup.html:135
+msgid "july"
+msgstr ""
+
+#: templates/lizard_map/popup.html:136
+#, fuzzy
+msgid "august"
+msgstr "八月"
+
+#: templates/lizard_map/popup.html:137
+#, fuzzy
+msgid "september"
+msgstr "九月"
+
+#: templates/lizard_map/popup.html:138
+#, fuzzy
+msgid "october"
+msgstr "十月"
+
+#: templates/lizard_map/popup.html:139
+#, fuzzy
+msgid "november"
+msgstr "十一月"
+
+#: templates/lizard_map/popup.html:140
+#, fuzzy
+msgid "december"
+msgstr "十二月"
+
+#: templates/lizard_map/popup.html:145 templates/lizard_map/popup.html:208
+msgid "Update graph"
+msgstr ""
+
+#: templates/lizard_map/popup.html:172 templates/lizard_map/popup.html:234
+msgid "Edit line"
+msgstr ""
+
+#: templates/lizard_map/popup.html:182
+msgid "Color"
+msgstr ""
+
+#: templates/lizard_map/popup.html:184
+msgid "choose a color"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:3
+msgid "Control panel"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:6
+msgid "Time step"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:16
+msgid "Reset"
+msgstr ""
+
 #: templates/lizard_map/tag_collage_edit.html:8
 msgid "This is your current selection."
 msgstr "这是你的当前选择"
@@ -220,19 +658,6 @@ msgstr "这是你的当前选择"
 #: templates/lizard_map/tag_collage_edit.html:9
 msgid "Selection"
 msgstr "选择"
-
-#: templates/lizard_map/tag_collage_edit.html:46
-#: templates/lizard_map/tag_workspace_edit.html:61
-msgid "Delete item"
-msgstr "删除选项"
-
-#: templates/lizard_map/tag_collage_edit.html:54
-msgid "Select items on the map."
-msgstr "在地图上选择项目"
-
-#: templates/lizard_map/tag_collage_edit.html:62
-msgid "Empty your collage"
-msgstr "清空拼贴区"
 
 #: templates/lizard_map/tag_collage_edit.html:71
 msgid "Selection popup"
@@ -243,32 +668,122 @@ msgstr "选择窗口"
 msgid "Selection page"
 msgstr "选择页面"
 
-#: templates/lizard_map/tag_workspace_edit.html:16
+#: templates/lizard_map/tag_legend.html:8
+#, fuzzy
+msgid "Legend for"
+msgstr "图例"
+
+#: templates/lizard_map/tag_legend.html:13
+msgid "Edit legend"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:27
+msgid "Personal legend"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:33
+msgid "Min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:37
+msgid "Max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:41
+msgid "Number of steps"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:45
+msgid "Color min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:50
+msgid "Color max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:54
+msgid "Color < min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:58
+msgid "Color > max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:2
+msgid "Workspaces"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:3
+msgid "Information on available workspaces"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:6
+msgid "todo"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:9
+msgid "No workspaces chosen/defined/whatever."
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:46
+msgid "Click to toggle visibility"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:75
+#: templates/lizard_map/workspace_storage_detail.html:53
+msgid "No map layers selected."
+msgstr "未选图层"
+
+#: templates/lizard_map/tag_workspace_edit.html:87
+msgid "Empty your workspace"
+msgstr "清空工作区"
+
+#: templates/lizard_map/tag_workspace_edit.html:94
+msgid "Save your workspace"
+msgstr "保存工作区"
+
+#: templates/lizard_map/wms.html:21
+msgid ""
+"Now there are no thematic maps available to you. You have to log on (top "
+"right)."
+msgstr ""
+
+#: templates/lizard_map/workspace_items.html:21
+msgid "noname"
+msgstr ""
+
+#: templates/lizard_map/workspace_items.html:26
+msgid "Click on the \"plus\" of workspace items to add them."
+msgstr ""
+
 #: templates/lizard_map/workspace_storage_detail.html:15
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
 msgstr "这是你的作业空间，将鼠标悬浮在条款上可以看到选项"
 
-#: templates/lizard_map/tag_workspace_edit.html:55
+#: templates/lizard_map/workspace_storage_detail.html:16
+msgid "Workspace"
+msgstr ""
+
 #: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
 msgstr "缩放程度"
-
-#: templates/lizard_map/tag_workspace_edit.html:69
-#: templates/lizard_map/workspace_storage_detail.html:53
-msgid "No map layers selected."
-msgstr "未选图层"
-
-#: templates/lizard_map/tag_workspace_edit.html:79
-msgid "Empty your workspace"
-msgstr "清空工作区"
-
-#: templates/lizard_map/tag_workspace_edit.html:89
-msgid "Save your workspace"
-msgstr "保存工作区"
 
 #: templates/lizard_map/workspace_storage_detail.html:61
 #: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
 msgstr "编辑工作区"
+
+#: templates/lizard_map/workspace_storage_list.html:4
+#, fuzzy
+msgid "Go to a saved workspace."
+msgstr "保存工作区"
+
+#: templates/lizard_map/workspace_storage_list.html:12
+#, fuzzy
+msgid "No saved workspaces."
+msgstr "保存工作区"
+
+#~ msgid "yellow"
+#~ msgstr "黄色"
