@@ -1435,7 +1435,7 @@ function ZoomSlider(options) {
             // initialize our internal div
             OpenLayers.Control.prototype.draw.apply(this, arguments);
             px = this.position.clone();
-	    px = new OpenLayers.Pixel(405, 43);
+	    px = new OpenLayers.Pixel(425, 43);
             // place the controls
             this.buttons = [];
 
