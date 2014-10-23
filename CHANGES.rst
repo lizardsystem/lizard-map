@@ -4,6 +4,11 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Removed 'week' from the period selection. 'Week+1' is now called 'week', but
+  retained the week+1 functionality. Added 'halfyear' option.
+
+- Using 'orangered'instead of yellow in the graphs as HHNK wants that.
+
 - Added lizard-security to WorkspaceStorage: this allows you to effectively
   filter the start page.
 
