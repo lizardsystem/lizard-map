@@ -1997,7 +1997,7 @@ function flotGraphLoadData($container, response) {
     };
     if (isAppleMobile) {
         // enable touch
-        defaultOpts.touch = { pan: 'xy', scale: 'x', autoWidth: false, autoHeight: false };
+        defaultOpts.touch = { pan: 'x', scale: 'x', autoWidth: false, autoHeight: false };
         // disable flot.navigate pan & zoom
         defaultOpts.pan.interactive = false;
         defaultOpts.zoom.interactive = false;
