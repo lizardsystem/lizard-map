@@ -8,22 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-14 14:30+0200\n"
+"POT-Creation-Date: 2014-10-22 16:56+0200\n"
 "PO-Revision-Date: 2013-05-14 12:35+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
 "Language-Team: Afrikaans (http://translations.lizard.net/projects/p/"
 "lizardsystem/team/af/)\n"
+"Language: af\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: adapter.py:144
+#: adapter.py:143
 msgid "with"
 msgstr ""
 
-#: adapter.py:145
+#: adapter.py:144
 msgid "percentile"
 msgstr ""
 
@@ -91,7 +91,7 @@ msgstr "November"
 msgid "December"
 msgstr "Desember"
 
-#: dateperiods.py:155
+#: dateperiods.py:155 templates/lizard_map/popup.html:107
 msgid "Whole period"
 msgstr "Gehele periode"
 
@@ -99,78 +99,248 @@ msgstr "Gehele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: models.py:696
+#: forms.py:16 views.py:1774 templates/lizard_map/popup.html:29
+#: templates/lizard_map/tag_statistics.html:6
+msgid "Name"
+msgstr ""
+
+#: forms.py:111 templates/lizard_map/popup.html:64
+msgid "Title"
+msgstr ""
+
+#: forms.py:112
+msgid "Minimum y value"
+msgstr ""
+
+#: forms.py:113
+msgid "Maximum y value"
+msgstr ""
+
+#: forms.py:114
+msgid "X label"
+msgstr ""
+
+#: forms.py:115
+msgid "Y label"
+msgstr ""
+
+#: forms.py:116
+msgid "Aggregation period"
+msgstr ""
+
+#: forms.py:117 templates/lizard_map/popup.html:122
+#, fuzzy
+msgid "Month"
+msgstr "maand"
+
+#: forms.py:120 views.py:1776
+msgid "Limit"
+msgstr ""
+
+#: forms.py:122 views.py:1775
+msgid "Percentile limit"
+msgstr ""
+
+#: forms.py:123 templates/lizard_map/popup.html:193
+msgid "Show minimum"
+msgstr ""
+
+#: forms.py:124 templates/lizard_map/popup.html:198
+msgid "Show maximum"
+msgstr ""
+
+#: forms.py:125 templates/lizard_map/popup.html:203
+msgid "Show average"
+msgstr ""
+
+#: forms.py:136 models.py:702
 msgid "all"
 msgstr "alle"
 
-#: models.py:697
+#: forms.py:137
+#, fuzzy
+msgid "only january"
+msgstr "Januarie"
+
+#: forms.py:138
+#, fuzzy
+msgid "only february"
+msgstr "Februarie"
+
+#: forms.py:139
+msgid "only march"
+msgstr ""
+
+#: forms.py:140
+msgid "only april"
+msgstr ""
+
+#: forms.py:141
+msgid "only may"
+msgstr ""
+
+#: forms.py:142
+msgid "only june"
+msgstr ""
+
+#: forms.py:143
+msgid "only july"
+msgstr ""
+
+#: forms.py:144
+msgid "only august"
+msgstr ""
+
+#: forms.py:145
+#, fuzzy
+msgid "only september"
+msgstr "September"
+
+#: forms.py:146
+msgid "only oktober"
+msgstr ""
+
+#: forms.py:147
+#, fuzzy
+msgid "only november"
+msgstr "November"
+
+#: forms.py:148
+#, fuzzy
+msgid "only december"
+msgstr "Desember"
+
+#: models.py:642
+msgid "When checked, this workspace is only available for logged-in users."
+msgstr ""
+
+#: models.py:703
 msgid "year"
 msgstr "jaar"
 
-#: models.py:698
+#: models.py:704
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:699
+#: models.py:705
 msgid "month"
 msgstr "maand"
 
-#: models.py:700
+#: models.py:706
 msgid "week"
 msgstr "week"
 
-#: models.py:701
+#: models.py:707
 msgid "day"
 msgstr "dag"
 
-#: views.py:302 views.py:1322
+#: views.py:285 views.py:1414
 msgid "Back to homepage"
 msgstr "Terug naar die huisbladsy toe"
 
-#: views.py:327 templates/lizard_map/tag_workspace_edit.html:17
+#: views.py:309
 msgid "Layers"
 msgstr "Lage"
 
-#: views.py:331 templates/lizard_map/legend_item.html:6
-#: templates/lizard_map/wms.html:19
+#: views.py:313 templates/lizard_map/legend_item.html:6
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:377
-msgid "Multi-select"
-msgstr ""
-
-#: views.py:378
-msgid "Select multiple items"
-msgstr "Selekteer meerdere items"
-
-#: views.py:386 views.py:1310
-msgid "Change the date range of the measurements"
-msgstr ""
-
-#: views.py:394
-msgid "Zoom to default location"
-msgstr ""
-
-#: views.py:403
+#: views.py:363 views.py:458
 msgid "Show base layers"
 msgstr ""
 
-#: views.py:412
+#: views.py:371 views.py:467
 msgid "Show map layers"
 msgstr ""
 
-#: views.py:964 views.py:1034
+#: views.py:382
+msgid "Filter WMS"
+msgstr ""
+
+#: views.py:390 views.py:440 views.py:1390
+msgid "Change the date range of the measurements"
+msgstr ""
+
+#: views.py:401
+msgid "Go to your collage"
+msgstr ""
+
+#: views.py:410
+msgid "Show tour"
+msgstr ""
+
+#: views.py:431
+msgid "Multi-select"
+msgstr ""
+
+#: views.py:432
+msgid "Select multiple items"
+msgstr "Selekteer meerdere items"
+
+#: views.py:449
+msgid "Zoom to default location"
+msgstr ""
+
+#: views.py:548
+msgid "This object is private. Forbidden for anonymous users."
+msgstr ""
+
+#: views.py:1040 views.py:1110
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1300 views.py:1325
+#: views.py:1377
+msgid "Dashboard"
+msgstr ""
+
+#: views.py:1412
+msgid "Home"
+msgstr ""
+
+#: views.py:1417
 msgid "Collage"
 msgstr ""
 
-#: views.py:1320
-msgid "Home"
+#: views.py:1774 templates/lizard_map/tag_statistics.html:7
+msgid "Period"
+msgstr ""
+
+#: views.py:1774
+msgid "Minimum"
+msgstr ""
+
+#: views.py:1774
+msgid "Maximum"
+msgstr ""
+
+#: views.py:1775
+msgid "Average"
+msgstr ""
+
+#: views.py:1775
+msgid "Percentile value"
+msgstr ""
+
+#: views.py:1776
+msgid "Number above the limit"
+msgstr ""
+
+#: views.py:1777
+msgid "Number below the limit"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:11
+msgid "Date + time"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:12
+msgid "Value"
+msgstr ""
+
+#: views.py:1947 templates/lizard_map/box_table.html:13
+msgid "Unit"
 msgstr ""
 
 #: workspace.py:20
@@ -193,17 +363,98 @@ msgstr ""
 msgid "cyan"
 msgstr ""
 
-#: workspace.py:25
-msgid "yellow"
-msgstr ""
-
 #: workspace.py:26
-msgid "lightblue"
+msgid "orangered"
 msgstr ""
 
 #: workspace.py:27
+msgid "lightblue"
+msgstr ""
+
+#: workspace.py:28
 msgid "grey"
 msgstr ""
+
+#: templates/403.html:6
+msgid "Page forbidden for anonymous users (403)."
+msgstr ""
+
+#: templates/403.html:32
+msgid "403 Page forbidden for anonymous users."
+msgstr ""
+
+#: templates/403.html:33
+msgid "Our apologies for the inconvenience."
+msgstr ""
+
+#: templates/403.html:34
+msgid "If there should be a page please contact us."
+msgstr ""
+
+#: templates/403.html:35
+msgid "Email: "
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:3
+msgid "Chart options"
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor.html:10
+msgid "Customize"
+msgstr ""
+
+#: templates/lizard_map/box_collage_item_editor_success.html:3
+msgid "Settings have been successfully saved."
+msgstr ""
+
+#: templates/lizard_map/box_daterange.html:14
+#: templates/lizard_map/form_workspace_save.html:25
+msgid "Save"
+msgstr ""
+
+#: templates/lizard_map/box_table.html:26
+msgid "No values"
+msgstr ""
+
+#: templates/lizard_map/collage_edit.html:13
+msgid "View"
+msgstr ""
+
+#: templates/lizard_map/collage_edit.html:14
+msgid "Print"
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:36
+#: templates/lizard_map/tag_collage_edit.html:46
+msgid "Delete item"
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:61
+#: templates/lizard_map/tag_collage_edit.html:54
+msgid "Select items on the map."
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:71
+#: templates/lizard_map/tag_collage_edit.html:62
+msgid "Empty your collage"
+msgstr ""
+
+#: templates/lizard_map/collage_edit_detail.html:75
+msgid "Empty whole dashboard"
+msgstr ""
+
+#: templates/lizard_map/daterange.html:3
+msgid "Date range selector"
+msgstr ""
+
+#: templates/lizard_map/daterange.html:14
+msgid "Date selection"
+msgstr ""
+
+#: templates/lizard_map/daterange.html:20
+#, fuzzy
+msgid "New period"
+msgstr "Gehele periode"
 
 #: templates/lizard_map/example_openlayers.html:19
 msgid "Examples"
@@ -213,25 +464,191 @@ msgstr ""
 msgid "Example with shapefile"
 msgstr ""
 
+#: templates/lizard_map/form_workspace_load.html:12
+msgid "Load"
+msgstr ""
+
+#: templates/lizard_map/form_workspace_load_success.html:3
+msgid "Workspace loaded."
+msgstr ""
+
+#: templates/lizard_map/form_workspace_save.html:5
+msgid "Save workspace"
+msgstr ""
+
+#: templates/lizard_map/form_workspace_save_success.html:3
+msgid "Workspace saved."
+msgstr ""
+
+#: templates/lizard_map/form_workspace_save_success.html:4
+msgid "The URL of the saved workspace is"
+msgstr ""
+
+#: templates/lizard_map/html_default.html:27
+#: templates/lizard_map/popup.html:30 templates/lizard_map/popup.html.py:46
+#: templates/lizard_map/popup.html:165 templates/lizard_map/popup.html:227
+msgid "Export"
+msgstr ""
+
+#: templates/lizard_map/popup.html:18
+msgid "Image not loaded yet"
+msgstr ""
+
+#: templates/lizard_map/popup.html:24
+msgid "Actions"
+msgstr ""
+
+#: templates/lizard_map/popup.html:32
+msgid "Edit"
+msgstr ""
+
+#: templates/lizard_map/popup.html:35
+msgid "Add"
+msgstr ""
+
+#: templates/lizard_map/popup.html:42
+#, fuzzy
+msgid "Whole graph"
+msgstr "Gehele periode"
+
+#: templates/lizard_map/popup.html:54
+msgid "Edit graph"
+msgstr ""
+
+#: templates/lizard_map/popup.html:58
+msgid "Graph options"
+msgstr ""
+
+#: templates/lizard_map/popup.html:91
+msgid "Threshold"
+msgstr ""
+
+#: templates/lizard_map/popup.html:96
+msgid "Percentile"
+msgstr ""
+
+#: templates/lizard_map/popup.html:101
+msgid "Summary period"
+msgstr ""
+
+#: templates/lizard_map/popup.html:112
+msgid "Year"
+msgstr ""
+
+#: templates/lizard_map/popup.html:117
+#, fuzzy
+msgid "Quarter"
+msgstr "1e kwartaal"
+
+#: templates/lizard_map/popup.html:126
+msgid "Filter by month"
+msgstr ""
+
+#: templates/lizard_map/popup.html:128
+msgid "No filter"
+msgstr ""
+
+#: templates/lizard_map/popup.html:129 templates/lizard_map/popup.html:130
+#: templates/lizard_map/popup.html:131 templates/lizard_map/popup.html:132
+#: templates/lizard_map/popup.html:133 templates/lizard_map/popup.html:134
+#: templates/lizard_map/popup.html:135 templates/lizard_map/popup.html:136
+#: templates/lizard_map/popup.html:137 templates/lizard_map/popup.html:138
+#: templates/lizard_map/popup.html:139 templates/lizard_map/popup.html:140
+msgid "Only"
+msgstr ""
+
+#: templates/lizard_map/popup.html:129
+#, fuzzy
+msgid "january"
+msgstr "Januarie"
+
+#: templates/lizard_map/popup.html:130
+#, fuzzy
+msgid "februari"
+msgstr "Februarie"
+
+#: templates/lizard_map/popup.html:131
+#, fuzzy
+msgid "march"
+msgstr "Maart"
+
+#: templates/lizard_map/popup.html:132
+#, fuzzy
+msgid "april"
+msgstr "April"
+
+#: templates/lizard_map/popup.html:133
+#, fuzzy
+msgid "may"
+msgstr "Mei"
+
+#: templates/lizard_map/popup.html:134
+msgid "june"
+msgstr ""
+
+#: templates/lizard_map/popup.html:135
+msgid "july"
+msgstr ""
+
+#: templates/lizard_map/popup.html:136
+#, fuzzy
+msgid "august"
+msgstr "Augustus"
+
+#: templates/lizard_map/popup.html:137
+#, fuzzy
+msgid "september"
+msgstr "September"
+
+#: templates/lizard_map/popup.html:138
+#, fuzzy
+msgid "october"
+msgstr "Oktober"
+
+#: templates/lizard_map/popup.html:139
+#, fuzzy
+msgid "november"
+msgstr "November"
+
+#: templates/lizard_map/popup.html:140
+#, fuzzy
+msgid "december"
+msgstr "Desember"
+
+#: templates/lizard_map/popup.html:145 templates/lizard_map/popup.html:208
+msgid "Update graph"
+msgstr ""
+
+#: templates/lizard_map/popup.html:172 templates/lizard_map/popup.html:234
+msgid "Edit line"
+msgstr ""
+
+#: templates/lizard_map/popup.html:182
+msgid "Color"
+msgstr ""
+
+#: templates/lizard_map/popup.html:184
+msgid "choose a color"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:3
+msgid "Control panel"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:6
+msgid "Time step"
+msgstr ""
+
+#: templates/lizard_map/tag_animation_control_panel.html:16
+msgid "Reset"
+msgstr ""
+
 #: templates/lizard_map/tag_collage_edit.html:8
 msgid "This is your current selection."
 msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:9
 msgid "Selection"
-msgstr ""
-
-#: templates/lizard_map/tag_collage_edit.html:46
-#: templates/lizard_map/tag_workspace_edit.html:61
-msgid "Delete item"
-msgstr ""
-
-#: templates/lizard_map/tag_collage_edit.html:54
-msgid "Select items on the map."
-msgstr ""
-
-#: templates/lizard_map/tag_collage_edit.html:62
-msgid "Empty your collage"
 msgstr ""
 
 #: templates/lizard_map/tag_collage_edit.html:71
@@ -243,32 +660,117 @@ msgstr ""
 msgid "Selection page"
 msgstr ""
 
-#: templates/lizard_map/tag_workspace_edit.html:16
+#: templates/lizard_map/tag_legend.html:8
+#, fuzzy
+msgid "Legend for"
+msgstr "Legenda"
+
+#: templates/lizard_map/tag_legend.html:13
+msgid "Edit legend"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:27
+msgid "Personal legend"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:33
+msgid "Min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:37
+msgid "Max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:41
+msgid "Number of steps"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:45
+msgid "Color min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:50
+msgid "Color max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:54
+msgid "Color < min. value"
+msgstr ""
+
+#: templates/lizard_map/tag_legend.html:58
+msgid "Color > max. value"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:2
+msgid "Workspaces"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:3
+msgid "Information on available workspaces"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:6
+msgid "todo"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_debug.html:9
+msgid "No workspaces chosen/defined/whatever."
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:46
+msgid "Click to toggle visibility"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:75
+#: templates/lizard_map/workspace_storage_detail.html:53
+msgid "No map layers selected."
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:87
+msgid "Empty your workspace"
+msgstr ""
+
+#: templates/lizard_map/tag_workspace_edit.html:94
+msgid "Save your workspace"
+msgstr ""
+
+#: templates/lizard_map/wms.html:21
+msgid ""
+"Now there are no thematic maps available to you. You have to log on (top "
+"right)."
+msgstr ""
+
+#: templates/lizard_map/workspace_items.html:21
+msgid "noname"
+msgstr ""
+
+#: templates/lizard_map/workspace_items.html:26
+msgid "Click on the \"plus\" of workspace items to add them."
+msgstr ""
+
 #: templates/lizard_map/workspace_storage_detail.html:15
 msgid ""
 "This is your workspace. Hover your mouse over the containing items to see "
 "options."
 msgstr ""
 
-#: templates/lizard_map/tag_workspace_edit.html:55
+#: templates/lizard_map/workspace_storage_detail.html:16
+msgid "Workspace"
+msgstr ""
+
 #: templates/lizard_map/workspace_storage_detail.html:45
 msgid "Zoom to extent"
-msgstr ""
-
-#: templates/lizard_map/tag_workspace_edit.html:69
-#: templates/lizard_map/workspace_storage_detail.html:53
-msgid "No map layers selected."
-msgstr ""
-
-#: templates/lizard_map/tag_workspace_edit.html:79
-msgid "Empty your workspace"
-msgstr ""
-
-#: templates/lizard_map/tag_workspace_edit.html:89
-msgid "Save your workspace"
 msgstr ""
 
 #: templates/lizard_map/workspace_storage_detail.html:61
 #: templates/lizard_map/workspace_storage_detail.html:65
 msgid "Edit this workspace"
+msgstr ""
+
+#: templates/lizard_map/workspace_storage_list.html:4
+msgid "Go to a saved workspace."
+msgstr ""
+
+#: templates/lizard_map/workspace_storage_list.html:12
+msgid "No saved workspaces."
 msgstr ""

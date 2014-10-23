@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-08-20 11:22+0200\n"
+"POT-Creation-Date: 2014-10-22 16:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,7 +96,7 @@ msgstr ""
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: forms.py:16 views.py:1795 templates/lizard_map/popup.html:29
+#: forms.py:16 views.py:1774 templates/lizard_map/popup.html:29
 #: templates/lizard_map/tag_statistics.html:6
 msgid "Name"
 msgstr ""
@@ -130,11 +129,11 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
-#: forms.py:120 views.py:1797
+#: forms.py:120 views.py:1776
 msgid "Limit"
 msgstr ""
 
-#: forms.py:122 views.py:1796
+#: forms.py:122 views.py:1775
 msgid "Percentile limit"
 msgstr ""
 
@@ -226,112 +225,112 @@ msgstr ""
 msgid "day"
 msgstr ""
 
-#: views.py:285 views.py:1435
+#: views.py:285 views.py:1414
 msgid "Back to homepage"
 msgstr ""
 
-#: views.py:330
+#: views.py:309
 msgid "Layers"
 msgstr ""
 
-#: views.py:334 templates/lizard_map/legend_item.html:6
+#: views.py:313 templates/lizard_map/legend_item.html:6
 msgid "Legend"
 msgstr ""
 
-#: views.py:384 views.py:479
+#: views.py:363 views.py:458
 msgid "Show base layers"
 msgstr ""
 
-#: views.py:392 views.py:488
+#: views.py:371 views.py:467
 msgid "Show map layers"
 msgstr ""
 
-#: views.py:403
+#: views.py:382
 msgid "Filter WMS"
 msgstr ""
 
-#: views.py:411 views.py:461 views.py:1411
+#: views.py:390 views.py:440 views.py:1390
 msgid "Change the date range of the measurements"
 msgstr ""
 
-#: views.py:422
+#: views.py:401
 msgid "Go to your collage"
 msgstr ""
 
-#: views.py:431
+#: views.py:410
 msgid "Show tour"
 msgstr ""
 
-#: views.py:452
+#: views.py:431
 msgid "Multi-select"
 msgstr ""
 
-#: views.py:453
+#: views.py:432
 msgid "Select multiple items"
 msgstr ""
 
-#: views.py:470
+#: views.py:449
 msgid "Zoom to default location"
 msgstr ""
 
-#: views.py:569
+#: views.py:548
 msgid "This object is private. Forbidden for anonymous users."
 msgstr ""
 
-#: views.py:1061 views.py:1131
+#: views.py:1040 views.py:1110
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1398
+#: views.py:1377
 msgid "Dashboard"
 msgstr ""
 
-#: views.py:1433
+#: views.py:1412
 msgid "Home"
 msgstr ""
 
-#: views.py:1438
+#: views.py:1417
 msgid "Collage"
 msgstr ""
 
-#: views.py:1795 templates/lizard_map/tag_statistics.html:7
+#: views.py:1774 templates/lizard_map/tag_statistics.html:7
 msgid "Period"
 msgstr ""
 
-#: views.py:1795
+#: views.py:1774
 msgid "Minimum"
 msgstr ""
 
-#: views.py:1795
+#: views.py:1774
 msgid "Maximum"
 msgstr ""
 
-#: views.py:1796
+#: views.py:1775
 msgid "Average"
 msgstr ""
 
-#: views.py:1796
+#: views.py:1775
 msgid "Percentile value"
 msgstr ""
 
-#: views.py:1797
+#: views.py:1776
 msgid "Number above the limit"
 msgstr ""
 
-#: views.py:1798
+#: views.py:1777
 msgid "Number below the limit"
 msgstr ""
 
-#: views.py:1968 templates/lizard_map/box_table.html:11
+#: views.py:1947 templates/lizard_map/box_table.html:11
 msgid "Date + time"
 msgstr ""
 
-#: views.py:1968 templates/lizard_map/box_table.html:12
+#: views.py:1947 templates/lizard_map/box_table.html:12
 msgid "Value"
 msgstr ""
 
-#: views.py:1968 templates/lizard_map/box_table.html:13
+#: views.py:1947 templates/lizard_map/box_table.html:13
 msgid "Unit"
 msgstr ""
 
@@ -355,15 +354,15 @@ msgstr ""
 msgid "cyan"
 msgstr ""
 
-#: workspace.py:25
-msgid "yellow"
-msgstr ""
-
 #: workspace.py:26
-msgid "lightblue"
+msgid "orangered"
 msgstr ""
 
 #: workspace.py:27
+msgid "lightblue"
+msgstr ""
+
+#: workspace.py:28
 msgid "grey"
 msgstr ""
 

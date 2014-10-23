@@ -1997,7 +1997,7 @@ function flotGraphLoadData($container, response) {
     };
     if (isAppleMobile) {
         // enable touch
-        defaultOpts.touch = { pan: 'xy', scale: 'x', autoWidth: false, autoHeight: false };
+        defaultOpts.touch = { pan: 'x', scale: 'x', autoWidth: false, autoHeight: false };
         // disable flot.navigate pan & zoom
         defaultOpts.pan.interactive = false;
         defaultOpts.zoom.interactive = false;
@@ -2399,15 +2399,15 @@ function setup_daterangepicker() {
         ranges[gettext('Last 2 days')] = [moment.utc().subtract('days', 2),
 					  moment.utc(), '2_day'];
         ranges[gettext('Last week')] = [moment.utc().subtract('weeks', 1),
-					moment.utc(), 'week'];
-        ranges[gettext('Last week + 1')] = [moment.utc().subtract('weeks', 1),
 					    moment.utc().add('days', 1),
 					    'week_plus_one'];
         ranges[gettext('Last month')] = [moment.utc().subtract('months', 1),
 					 moment.utc(), 'month'];
+        ranges[gettext('Last half year')] = [moment.utc().subtract('months', 6),
+					 moment.utc(), 'halfyear'];
         ranges[gettext('Last year')] = [moment.utc().subtract('years', 1),
 					moment.utc(), 'year'];
- 
+
         var picker = $('.popup-date-range').daterangepicker({
             opens: 'left',
             format: 'DD-MM-YYYY',
