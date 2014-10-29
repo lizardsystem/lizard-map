@@ -227,7 +227,7 @@ class MapMixin(object):
     def background_maps(self):
         if self.backgrounds:
             return self.backgrounds
-        logger.warn("No background maps are active. Taking default.")
+        logger.info("No background maps are active. Taking default.")
         return [BackgroundMap(
                 name='Default map',
                 default=True,
