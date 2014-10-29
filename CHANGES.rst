@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-4.51 (unreleased)
+4.51 (2014-10-29)
 -----------------
 
 - Removed some unnecessary warnings, for Sentry.
