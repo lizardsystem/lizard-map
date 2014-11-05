@@ -923,10 +923,6 @@ function popup_click_handler(lon, lat, map, x_pixel, y_pixel) {
         //resetColorAllMarkers();
         var marker = addMapMarker(lon, lat);
 
-        // Pan to where the user clicked, but apply an offset so
-        // the popup opens on the left, and the click location is
-        // centered on the right.
-        adjustedPanTo(lon, lat);
         var $contentPane = boxAwesomeAddTab(marker);
 
 	// Get the current active CQL filters
@@ -956,21 +952,6 @@ function popup_click_handler(lon, lat, map, x_pixel, y_pixel) {
 
 
     }
-}
-
-function adjustedPanTo(x, y) {
-    var boxAwesomeWidth = $('#box-awesome').width();
-    var boxAwesomeLeft = $('#box-awesome').position().left;
-
-    var mapWidth = map.getCurrentSize().w;
-
-    var point = new OpenLayers.LonLat(x, y);
-    var pointPx = map.getPixelFromLonLat(point);
-    var distPx = (mapWidth - boxAwesomeWidth + boxAwesomeLeft) / 2 + boxAwesomeWidth - (mapWidth / 2);
-    pointPx.x -= distPx;
-
-    var newCenter = map.getLonLatFromViewPortPx(pointPx);
-    map.panTo(newCenter);
 }
 
 /* Handle a hover */

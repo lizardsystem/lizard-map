@@ -4,6 +4,8 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- Removed pan-to-click-location, it is simply to obtrusive.
+
 - The display-name-while-hovering-over-the-map functionality now only searches
   in the first layer (=workspace item), not in all of them. This way, it is
   more predictable which results you get.
