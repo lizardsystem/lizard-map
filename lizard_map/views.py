@@ -1258,16 +1258,23 @@ def wms(request, workspace_item_id, workspace_storage_id=None,
     return response
 
 
-def search(workspace, google_x, google_y, radius, request=None):
+def search(workspace, google_x, google_y, radius, request=None,
+           first_only=False):
     """Search workspace for given coordinates.
 
     Return a list of found results in "adapter.search" dictionary
     format.
+
+    If first_only is True, only look in the very first workspace item. This is
+    used for the search_name view.
+
     """
     found = []
 
-    for workspace_item in workspace.workspace_items.filter(
-        visible=True):
+    workspace_items = workspace.workspace_items.filter(visible=True)
+    if first_only:
+        workspace_items = workspace_items[:1]
+    for workspace_item in workspace_items:
 
         requestarg = {}
         if getattr(workspace_item.adapter, 'search_with_request', False):
@@ -1342,7 +1349,8 @@ def search_coordinates(request,
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
     # The actual search!
-    found = search(workspace, google_x, google_y, radius, request=request)
+    found = search(workspace, google_x, google_y, radius, request=request,
+                   first_only=True)
     logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
 
     if found:

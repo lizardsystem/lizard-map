@@ -4,6 +4,10 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- The display-name-while-hovering-over-the-map functionality now only searches
+  in the first layer (=workspace item), not in all of them. This way, it is
+  more predictable which results you get.
+
 - Removed 'week' from the period selection. 'Week+1' is now called 'week', but
   retained the week+1 functionality. Added 'halfyear' option.
 
