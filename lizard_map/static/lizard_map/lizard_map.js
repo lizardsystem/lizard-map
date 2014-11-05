@@ -2659,11 +2659,16 @@ function setUpTour(){
 	template: "<div class='popover tour'><div class='arrow arrow-info'></div><h3 class='popover-title popover-title-info'></h3><div class='popover-content'></div><div class='popover-navigation'><button class='btn btn-default' data-role='prev'>« </button><span data-role='separator'>|</span><button class='btn btn-default' data-role='next'>»</button><button class='btn btn-default' data-role='end'>Stop</button></div></nav></div>"
     });
 
+    var first_step_content = gettext("This information portal works in current browsers: IE9 or higher, Firefox and Chrome.");
+    var disclaimer = $('#lizard-map-wms').data('disclaimer-text');
+    if (disclaimer) {
+        first_step_content = first_step_content + '<br><br>' + disclaimer;
+    }
     tour.addSteps([
 	{
 	    element: "#box-awesome-tabs", // string (jQuery selector) - html element next to which the step popover should be shown
 	    title: gettext("Welcome to Lizard"), // string - title of the popover
-	    content: gettext("This information portal works in current browsers: IE9 or higher, Firefox and Chrome.") // string - content of the popover
+	    content: first_step_content // string - content of the popover
 	},
 	{
 	    element: "#box-awesome-search button", // string (jQuery selector) - html element next to which the step popover should be shown

@@ -186,7 +186,6 @@ class MapMixin(object):
             MAP_LOCATION,
             Setting.extent('start_extent'))
 
-    # XXXX
     def projection(self):
         return Setting.get('projection')
 
@@ -470,6 +469,10 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 klass='dropdown-toggle')
             actions.insert(0, show_layers)
         return actions
+
+    @property
+    def disclaimer_text(self):
+        return Setting.get('disclaimer_text')
 
     @property
     def view_state(self):

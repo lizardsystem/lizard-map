@@ -4,6 +4,10 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- You can add a ``disclaimer_text`` setting in the admin now. This is copied
+  verbatim to the first window of the on-screen tour. So don't put html tags
+  in here.
+
 - Removed pan-to-click-location, it is simply to obtrusive.
 
 - The display-name-while-hovering-over-the-map functionality now only searches
