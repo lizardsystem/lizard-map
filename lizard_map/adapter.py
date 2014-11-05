@@ -942,6 +942,11 @@ class FlotGraph(object):
                 "The number of opacities must be half "
                 "the number of percentiles.")
 
+        if not self.axes.flot_data:
+            logger.debug(
+                "No data in the flot graph: we won't render percentiles.")
+            return
+
         for data in self.axes.flot_data:
             if data.get('label') == label:
                 # This is the plot line we are adding the percentiles
