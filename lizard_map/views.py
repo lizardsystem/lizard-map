@@ -1352,8 +1352,10 @@ def search_coordinates(request,
             workspace = WorkspaceStorage.objects.get(pk=stored_workspace_id)
 
     # The actual search!
+    first_only = (_format == 'name')
+    # If we want the 'name' hover, just search the first one.
     found = search(workspace, google_x, google_y, radius, request=request,
-                   first_only=True)
+                   first_only=first_only)
     logger.debug('>>> FOUND <<< %s\n%s' % (format, repr(found)))
 
     if found:
