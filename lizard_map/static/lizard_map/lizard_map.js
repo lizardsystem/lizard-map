@@ -1198,7 +1198,7 @@ function refreshBackgroundLayers() {
                 }
                 else if (data_google_type === "4") {
                     google_type = google.maps.MapTypeId.SATELLITE;
-		    zoomlevel = 22;
+		    zoomlevel = 21;
 
                 } else {
                     google_type = '';
