@@ -69,7 +69,6 @@ from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
 from lizard_map.models import CollageStorage
-from lizard_map.models import CollageStorageItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
@@ -1586,6 +1585,23 @@ class CollageView(CollageMixin, ActionDialogView):
         if not found:
             # Nothing found on this coordinates, return a 404
             return HttpResponseNotFound()
+
+    @property
+    def site_actions(self):
+        """Add the layer switcher icons to the site action bar.
+
+        This was done for a quick demo for Wytze."""
+
+        actions = super(CollageView, self).site_actions
+        if self.request.user.is_superuser:
+            save_collage = Action(
+                name='',
+                description='Save the collage (admin only)',
+                url=reverse('lizard_map_collage_save'),
+                icon='icon-download-alt',
+                klass='popup-collage-save')
+            actions.insert(0, save_collage)
+        return actions
 
 
 class CollageAddView(CollageMixin, ActionDialogView):
