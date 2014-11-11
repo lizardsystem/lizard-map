@@ -674,7 +674,7 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
         return self._as_new_object(WorkspaceEditItem, workspace)
 
 
-class CollageStorage(UserSessionMixin):
+class CollageStorage(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True)
