@@ -1588,10 +1588,6 @@ class CollageView(CollageMixin, ActionDialogView):
 
     @property
     def site_actions(self):
-        """Add the layer switcher icons to the site action bar.
-
-        This was done for a quick demo for Wytze."""
-
         actions = super(CollageView, self).site_actions
         if self.request.user.is_superuser:
             save_collage = Action(
