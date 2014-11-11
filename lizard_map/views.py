@@ -499,6 +499,15 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         return WorkspaceStorage.objects.filter(private=False)
 
     @property
+    def collage_storages(self):
+        # show all items to logged-in users
+        if self.request.user.is_authenticated():
+            return CollageStorage.objects.all()
+
+        # only show non-private items to not-logged-in users
+        return CollageStorage.objects.filter(private=False)
+
+    @property
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
         return Setting.get('bootstrap_tour')
