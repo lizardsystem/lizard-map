@@ -78,6 +78,9 @@ urlpatterns = patterns(
         'lizard_map.views.statistics_csv',
         name="lizard_map_statistics_csv"),
 
+    url(r'^mydashboard/save/$',
+        lizard_map.views.CollageSaveView.as_view(),
+        name="lizard_map_collage_save"),
     url(r'^dashboard/(?P<collage_id>\d+)/$',
         lizard_map.views.CollageStorageView.as_view(),
         name="lizard_map_collage_storage"),

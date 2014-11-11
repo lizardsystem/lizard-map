@@ -1469,6 +1469,14 @@ class CollageDetailView(CollageMixin, UiView):
             klass='popup-date-range',
             data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
+        if self.request.user.is_superuser:
+            save_collage = Action(
+                name='',
+                description='Save the collage (admin only)',
+                url=reverse('lizard_map_collage_save'),
+                icon='icon-download-alt',
+                klass='popup-collage-save')
+            actions.insert(0, save_collage)
         return actions
 
     @property
@@ -1585,19 +1593,6 @@ class CollageView(CollageMixin, ActionDialogView):
         if not found:
             # Nothing found on this coordinates, return a 404
             return HttpResponseNotFound()
-
-    @property
-    def site_actions(self):
-        actions = super(CollageView, self).site_actions
-        if self.request.user.is_superuser:
-            save_collage = Action(
-                name='',
-                description='Save the collage (admin only)',
-                url=reverse('lizard_map_collage_save'),
-                icon='icon-download-alt',
-                klass='popup-collage-save')
-            actions.insert(0, save_collage)
-        return actions
 
 
 class CollageAddView(CollageMixin, ActionDialogView):
