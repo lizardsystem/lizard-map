@@ -11,10 +11,8 @@ from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
 from lizard_map.models import WorkspaceStorage
 from lizard_map.models import WorkspaceStorageItem
-
-
-# class WorkspaceItemInline(admin.TabularInline):
-#     model = WorkspaceItem
+from lizard_map.models import CollageStorage
+from lizard_map.models import CollageStorageItem
 
 
 class WorkspaceEditItemInline(admin.TabularInline):
@@ -57,8 +55,20 @@ class BackgroundMapAdmin(admin.ModelAdmin):
     list_editable = ('default', 'index', 'active', )
 
 
+class CollageStorageItemInline(admin.TabularInline):
+    model = CollageStorageItem
+
+
+class CollageStorageAdmin(SecurityFilteredAdmin):
+    list_display = ('name', 'owner', 'secret_slug', 'index', 'data_set')
+    inlines = [
+        CollageStorageItemInline,
+        ]
+
+
 admin.site.register(BackgroundMap, BackgroundMapAdmin)
 admin.site.register(CollageEdit, CollageEditAdmin)
+admin.site.register(CollageStorage, CollageStorageAdmin)
 admin.site.register(CollageEditItem, CollageEditItemAdmin)
 admin.site.register(Legend)
 admin.site.register(LegendPoint)
