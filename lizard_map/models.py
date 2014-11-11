@@ -721,6 +721,39 @@ class CollageEdit(UserSessionMixin):
                 return True
         return False
 
+    def save_to_storage(self, name, owner):
+        """Save this model and collage_items to Storage.
+        """
+        collage_storage, _ = CollageStorage.objects.get_or_create(
+            name=name, owner=owner)
+
+        # Delete all existing collage item storages.
+        collage_storage.collage_items.all().delete()
+
+        # Init secret slug
+        collage_storage.init_secret_slug()
+        collage_storage.save()
+
+        # Create new collage items.
+        for collage_edit_item in self.collage_items.filter(visible=True):
+            collage_storage_item = collage_edit_item.as_storage(
+                collage=collage_storage)
+            collage_storage_item.save()
+
+        # Return slug so it can be shown
+        return collage_storage.secret_slug
+
+    def load_from_storage(self, collage_storage):
+        """Load model and collage_items from Storage.
+        """
+        # Delete all existing collage items.
+        self.collage_items.all().delete()
+        # Create new collage items.
+        for collage_storage_item in collage_storage.collage_items.all():
+            collage_edit_item = collage_storage_item.as_edit(
+                collage=self)
+            collage_edit_item.save()
+
 
 class StatisticsMixin(models.Model):
     """
@@ -756,6 +789,10 @@ class CollageStorageItem(WorkspaceItemMixin, StatisticsMixin):
 
     class Meta:
         ordering = ('name', )
+
+    def as_edit(self, collage):
+        """Return self as a CollageEditItem."""
+        return self._as_new_object(CollageEditItem, collage)
 
 
 class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
@@ -886,6 +923,10 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
                     statistics_row['percentile_value'] = self.percentile_value
                     statistics.append(statistics_row)
         return statistics
+
+    def as_storage(self, collage):
+        """Return self as a CollageStorageItem."""
+        return self._as_new_object(CollageStorageItem, collage)
 
 
 # TODO: Remove legend-shape dependencies of legend stuff, then remove
