@@ -16,6 +16,13 @@ class WorkspaceSaveForm(forms.Form):
     name = forms.CharField(max_length=100, required=True, label=_('Name'))
 
 
+class CollageSaveForm(forms.Form):
+    """
+    Save collage from edit to storage
+    """
+    name = forms.CharField(max_length=100, required=True, label=_('Name'))
+
+
 class WorkspaceLoadForm(forms.Form):
     """
     Load workspace from storage to edit.

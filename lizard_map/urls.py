@@ -78,6 +78,13 @@ urlpatterns = patterns(
         'lizard_map.views.statistics_csv',
         name="lizard_map_statistics_csv"),
 
+    url(r'^dashboard/(?P<collage_id>\d+)/$',
+        lizard_map.views.CollageStorageView.as_view(),
+        name="lizard_map_collage_storage"),
+    url(r'^dashboard/(?P<collage_storage_slug>\w+)/$',
+        lizard_map.views.CollageStorageView.as_view(),
+        name="lizard_map_collage_slug_storage"),
+
     # Search stuff for my workspace.
     url(r'^search_coordinates/',
         'lizard_map.views.search_coordinates',

@@ -59,6 +59,7 @@ from lizard_map.daterange import current_start_end_dates
 from lizard_map.forms import CollageAddForm
 from lizard_map.forms import CollageForm
 from lizard_map.forms import CollageItemEditorForm
+from lizard_map.forms import CollageSaveForm
 from lizard_map.forms import EditForm
 from lizard_map.forms import EmptyForm
 from lizard_map.forms import WorkspaceLoadForm
@@ -67,6 +68,8 @@ from lizard_map.lizard_widgets import Legend
 from lizard_map.models import BackgroundMap
 from lizard_map.models import CollageEdit
 from lizard_map.models import CollageEditItem
+from lizard_map.models import CollageStorage
+from lizard_map.models import CollageStorageItem
 from lizard_map.models import Setting
 from lizard_map.models import WorkspaceEdit
 from lizard_map.models import WorkspaceEditItem
@@ -566,6 +569,36 @@ class WorkspaceStorageView(View):
         return redirect(reverse('homepage'))
 
 
+class CollageStorageView(View):
+    def get(self, request, *args, **kwargs):
+        collage_storage_id = kwargs.get('collage_id', None)
+        collage_storage_slug = kwargs.get('collage_storage_slug', None)
+
+        collage_edit = get_collage_edit_by_request(request)
+
+        if collage_storage_id is not None:
+            collage_storage_id = int(collage_storage_id)
+            collage_storage = get_object_or_404(
+                CollageStorage, pk=collage_storage_id)
+        elif collage_storage_slug is not None:
+            collage_storage = get_object_or_404(
+                CollageStorage, secret_slug=collage_storage_slug)
+
+        # do not show private collage storage views to not-logged-in
+        # users
+        if (not request.user.is_authenticated() and
+                collage_storage.private is True):
+            t = loader.get_template('403.html')
+            c = RequestContext(request, {
+                'message': _("This object is private. Forbidden for anonymous "
+                             "users.")})
+            return HttpResponseForbidden(t.render(c))
+
+        collage_edit.load_from_storage(collage_storage)
+
+        return redirect(reverse('lizard_map_collage_edit_detail'))
+
+
 class ActionDialogView(ViewContextMixin, FormView):
     """
     Generic Action Dialog View.
@@ -660,15 +693,44 @@ class WorkspaceSaveView(ActionDialogView):
             and self.request.session[MAP_LOCATION]):
             extent = self.request.session[MAP_LOCATION]
         logger.debug("Before secret slug.")
-        secret_slug = (workspace_edit.
-                       save_to_storage(name=form_data['name'],
-                                       owner=user,
-                                       extent=extent))
+        secret_slug = workspace_edit.save_to_storage(
+            name=form_data['name'],
+            owner=user,
+            extent=extent)
         logger.debug("After secret slug. slug=%s" % (secret_slug,))
 
         self.saved_workspace_url = self.request.build_absolute_uri(
             reverse('lizard_map_workspace_slug_storage',
                     kwargs={'workspace_storage_slug': secret_slug}))
+
+
+class CollageSaveView(ActionDialogView):
+    template_name = 'lizard_map/form_collage_save.html'
+    template_name_success = 'lizard_map/form_collage_save_success.html'
+    template_name_forbidden = '403.html'
+    form_class = CollageSaveForm  # Define your form
+
+    def form_valid_action(self, form):
+        """
+        Save edit collage to storage collage
+        """
+        logger.debug("Saving stuff...")
+        form_data = form.cleaned_data
+
+        collage_edit = get_collage_edit_by_request(self.request)
+
+        user = self.request.user
+        if not user.is_authenticated():
+            user = None
+        logger.debug("Before secret slug.")
+        secret_slug = collage_edit.save_to_storage(
+            name=form_data['name'],
+            owner=user)
+        logger.debug("After secret slug. slug=%s" % (secret_slug,))
+
+        self.saved_collage_url = self.request.build_absolute_uri(
+            reverse('lizard_map_collage_slug_storage',
+                    kwargs={'collage_storage_slug': secret_slug}))
 
 
 class WorkspaceLoadView(ActionDialogView):
@@ -681,6 +743,7 @@ class WorkspaceLoadView(ActionDialogView):
         Load storage workspace to edit workspace
         """
         logger.debug("Loading stuff...")
+        # WARNING: THIS LINE BELOW FAILS!
         form_data = form.cleaned_data
 
         workspace_edit = get_workspace_edit_by_request(self.request)

@@ -1,0 +1,29 @@
+{% load i18n %}
+<div class="dialog-box">
+<form id="collage-save-form" class="form-horizontal" action="{% url "lizard_map_collage_save" %}" method="POST">
+{% csrf_token %}
+<legend>{% trans 'Save collage' %}</legend>
+
+{% for field in form %}
+<fieldset class="control-group {% if field.errors %}error{% endif %}">
+    <label class="control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+    <div class="controls">
+        {{ field }}
+        {% if field.errors %}
+            <span class="help-inline">{{ field.errors|join:'<br />' }}</span>
+        {% endif %}
+        <span class="help-block">{{ field.help_text }}</span>
+    </div>
+</fieldset>
+{% endfor %}
+
+<div class="control-group">
+<div class="controls">
+  <input id="collage-save-submit"
+	 class="alternative-submit open-new-window-after btn btn-success"
+         type="submit"
+         value="{% trans 'Save' %}" />
+</div>
+</div>
+</form>
+</div>
