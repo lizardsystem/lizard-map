@@ -4,6 +4,9 @@ Changelog of lizard-map
 4.29 (unreleased)
 -----------------
 
+- You can now save the dashboard just like you could already save the
+  workspace.
+
 - You can add a ``disclaimer_text`` setting in the admin now. This is copied
   verbatim to the first window of the on-screen tour. So don't put html tags
   in here.
