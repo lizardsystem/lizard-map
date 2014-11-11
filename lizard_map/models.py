@@ -674,6 +674,34 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
         return self._as_new_object(WorkspaceEditItem, workspace)
 
 
+class CollageStorage(UserSessionMixin):
+    name = models.CharField(max_length=40)
+    description = models.TextField(null=True, blank=True)
+    owner = models.ForeignKey(User, null=True, blank=True)
+    secret_slug = models.CharField(max_length=16, null=True)
+    index = models.IntegerField(default=100)
+    private = models.BooleanField(
+        default=True, help_text=_("When checked, this dashboard is only "
+                                   "available for logged-in users."))
+    data_set = models.ForeignKey(DataSet,
+                                 null=True,
+                                 blank=True)
+
+    supports_object_permissions = True
+    objects = FilteredManager()
+
+    class Meta:
+        ordering = ('index', )
+
+    def __unicode__(self):
+        return u'%s (%s)' % (self.name, self.owner)
+
+    def init_secret_slug(self):
+        if self.secret_slug is None:
+            self.secret_slug = ''.join(random.choice(SECRET_SLUG_CHARS)
+                                       for i in range(SECRET_SLUG_LENGTH))
+
+
 class CollageEdit(UserSessionMixin):
     """
     User selection of map locations.
@@ -718,6 +746,16 @@ class StatisticsMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class CollageStorageItem(WorkspaceItemMixin, StatisticsMixin):
+    collage_storage = models.ForeignKey(
+        CollageStorage,
+        related_name='collage_items')
+    identifier = jsonfield.JSONField()
+
+    class Meta:
+        ordering = ('name', )
 
 
 class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
