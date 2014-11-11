@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-22 16:56+0200\n"
+"POT-Creation-Date: 2014-11-11 15:47+0100\n"
 "PO-Revision-Date: 2014-08-20 09:23+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: Dutch (http://translations.lizard.net/projects/p/lizard5/team/"
@@ -101,243 +101,249 @@ msgstr "Hele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: forms.py:16 views.py:1774 templates/lizard_map/popup.html:29
+#: forms.py:16 forms.py:23 views.py:1866 templates/lizard_map/popup.html:29
 #: templates/lizard_map/tag_statistics.html:6
 msgid "Name"
 msgstr "Naam"
 
-#: forms.py:111 templates/lizard_map/popup.html:64
+#: forms.py:118 templates/lizard_map/popup.html:64
 msgid "Title"
 msgstr "Titel"
 
-#: forms.py:112
+#: forms.py:119
 msgid "Minimum y value"
 msgstr "Minimale y waarde"
 
-#: forms.py:113
+#: forms.py:120
 msgid "Maximum y value"
 msgstr "Maximale y waarde"
 
-#: forms.py:114
+#: forms.py:121
 msgid "X label"
 msgstr "X label"
 
-#: forms.py:115
+#: forms.py:122
 msgid "Y label"
 msgstr "Y label"
 
-#: forms.py:116
+#: forms.py:123
 msgid "Aggregation period"
 msgstr "Samengevoegde periode"
 
-#: forms.py:117 templates/lizard_map/popup.html:122
+#: forms.py:124 templates/lizard_map/popup.html:122
 msgid "Month"
 msgstr "Maand"
 
-#: forms.py:120 views.py:1776
+#: forms.py:127 views.py:1868
 msgid "Limit"
 msgstr "Limiet"
 
-#: forms.py:122 views.py:1775
+#: forms.py:129 views.py:1867
 msgid "Percentile limit"
 msgstr "Percentiel limiet"
 
-#: forms.py:123 templates/lizard_map/popup.html:193
+#: forms.py:130 templates/lizard_map/popup.html:193
 msgid "Show minimum"
 msgstr "Toon minimum"
 
-#: forms.py:124 templates/lizard_map/popup.html:198
+#: forms.py:131 templates/lizard_map/popup.html:198
 msgid "Show maximum"
 msgstr "Toon maximum"
 
-#: forms.py:125 templates/lizard_map/popup.html:203
+#: forms.py:132 templates/lizard_map/popup.html:203
 msgid "Show average"
 msgstr "Toon gemiddelde"
 
-#: forms.py:136 models.py:702
+#: forms.py:143 models.py:782
 msgid "all"
 msgstr "alles"
 
-#: forms.py:137
+#: forms.py:144
 msgid "only january"
 msgstr "alleen januari"
 
-#: forms.py:138
+#: forms.py:145
 msgid "only february"
 msgstr "alleen februari"
 
-#: forms.py:139
+#: forms.py:146
 msgid "only march"
 msgstr "alleen maart"
 
-#: forms.py:140
+#: forms.py:147
 msgid "only april"
 msgstr "alleen april"
 
-#: forms.py:141
+#: forms.py:148
 msgid "only may"
 msgstr "alleen mei"
 
-#: forms.py:142
+#: forms.py:149
 msgid "only june"
 msgstr "alleen juni"
 
-#: forms.py:143
+#: forms.py:150
 msgid "only july"
 msgstr "alleen july"
 
-#: forms.py:144
+#: forms.py:151
 msgid "only august"
 msgstr "alleen augustus"
 
-#: forms.py:145
+#: forms.py:152
 msgid "only september"
 msgstr "alleen september"
 
-#: forms.py:146
+#: forms.py:153
 msgid "only oktober"
 msgstr "alleen oktober"
 
-#: forms.py:147
+#: forms.py:154
 msgid "only november"
 msgstr "alleen november"
 
-#: forms.py:148
+#: forms.py:155
 msgid "only december"
 msgstr "alleen december"
 
-#: models.py:642
+#: models.py:661
 msgid "When checked, this workspace is only available for logged-in users."
 msgstr ""
 "Wanneer dit is aangevinkt, is de workspace alleen beschikbaar voor ingelogde "
 "gebruikers."
 
 #: models.py:703
+msgid "When checked, this dashboard is only available for logged-in users."
+msgstr ""
+"Wanneer dit is aangevinkt, is het dashboard alleen beschikbaar voor ingelogde "
+"gebruikers."
+
+#: models.py:783
 msgid "year"
 msgstr "jaar"
 
-#: models.py:704
+#: models.py:784
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:705
+#: models.py:785
 msgid "month"
 msgstr "maand"
 
-#: models.py:706
+#: models.py:786
 msgid "week"
 msgstr "week"
 
-#: models.py:707
+#: models.py:787
 msgid "day"
 msgstr "dag"
 
-#: views.py:285 views.py:1414
+#: views.py:286 views.py:1506
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
-#: views.py:309
+#: views.py:310
 msgid "Layers"
 msgstr "Kaartlagen"
 
-#: views.py:313 templates/lizard_map/legend_item.html:6
+#: views.py:314 templates/lizard_map/legend_item.html:6
 msgid "Legend"
 msgstr "Legenda"
 
-#: views.py:363 views.py:458
+#: views.py:364 views.py:459
 msgid "Show base layers"
 msgstr "Toon basislagen"
 
-#: views.py:371 views.py:467
+#: views.py:372 views.py:468
 msgid "Show map layers"
 msgstr "Toon kaartlagen"
 
-#: views.py:382
+#: views.py:383
 msgid "Filter WMS"
 msgstr "Filter WMS"
 
-#: views.py:390 views.py:440 views.py:1390
+#: views.py:391 views.py:441 views.py:1474
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
-#: views.py:401
+#: views.py:402
 msgid "Go to your collage"
 msgstr "Ga naar je collage."
 
-#: views.py:410
+#: views.py:411
 msgid "Show tour"
 msgstr "Neem de rondleiding door Lizard."
 
-#: views.py:431
+#: views.py:432
 msgid "Multi-select"
 msgstr "Multi-select"
 
-#: views.py:432
+#: views.py:433
 msgid "Select multiple items"
 msgstr "Selecteer meerdere items"
 
-#: views.py:449
+#: views.py:450
 msgid "Zoom to default location"
 msgstr "Zoom naar de standaard beginlocatie"
 
-#: views.py:548
+#: views.py:562 views.py:601
 msgid "This object is private. Forbidden for anonymous users."
 msgstr "Dit object is privé en afgeschermd voor anonieme gebruikers."
 
-#: views.py:1040 views.py:1110
+#: views.py:1114 views.py:1184
 #, python-format
 msgid "Tab %(number)s"
 msgstr "Tabblad %(number)s"
 
-#: views.py:1377
+#: views.py:1461
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: views.py:1412
+#: views.py:1504
 msgid "Home"
 msgstr "Thuispagina"
 
-#: views.py:1417
+#: views.py:1509
 msgid "Collage"
 msgstr "Collage"
 
-#: views.py:1774 templates/lizard_map/tag_statistics.html:7
+#: views.py:1866 templates/lizard_map/tag_statistics.html:7
 msgid "Period"
 msgstr "Periode"
 
-#: views.py:1774
+#: views.py:1866
 msgid "Minimum"
 msgstr "Minimum"
 
-#: views.py:1774
+#: views.py:1866
 msgid "Maximum"
 msgstr "Maximum"
 
-#: views.py:1775
+#: views.py:1867
 msgid "Average"
 msgstr "Gemiddelde"
 
-#: views.py:1775
+#: views.py:1867
 msgid "Percentile value"
 msgstr "Percentiel waarde"
 
-#: views.py:1776
+#: views.py:1868
 msgid "Number above the limit"
 msgstr "Aantal boven het limiet"
 
-#: views.py:1777
+#: views.py:1869
 msgid "Number below the limit"
 msgstr "Aantal onder het limiet"
 
-#: views.py:1947 templates/lizard_map/box_table.html:11
+#: views.py:2039 templates/lizard_map/box_table.html:11
 msgid "Date + time"
 msgstr "Datum + tijd"
 
-#: views.py:1947 templates/lizard_map/box_table.html:12
+#: views.py:2039 templates/lizard_map/box_table.html:12
 msgid "Value"
 msgstr "Waarde"
 
-#: views.py:1947 templates/lizard_map/box_table.html:13
+#: views.py:2039 templates/lizard_map/box_table.html:13
 msgid "Unit"
 msgstr "Eenheid"
 
@@ -363,7 +369,7 @@ msgstr "cyaan"
 
 #: workspace.py:26
 msgid "orangered"
-msgstr ""
+msgstr "oranjerood"
 
 #: workspace.py:27
 msgid "lightblue"
@@ -406,6 +412,7 @@ msgid "Settings have been successfully saved."
 msgstr "De instellingen zijn succesvol opgeslagen."
 
 #: templates/lizard_map/box_daterange.html:14
+#: templates/lizard_map/form_collage_save.html:25
 #: templates/lizard_map/form_workspace_save.html:25
 msgid "Save"
 msgstr "Opslaan"
@@ -460,6 +467,18 @@ msgstr "Voorbeelden"
 #: templates/lizard_map/example_openlayers.html:21
 msgid "Example with shapefile"
 msgstr "Voorbeeld met vormbestand"
+
+#: templates/lizard_map/form_collage_save.html:5
+msgid "Save collage"
+msgstr "Bewaar dashboard"
+
+#: templates/lizard_map/form_collage_save_success.html:3
+msgid "Collage saved."
+msgstr "Dashboard opgeslagen"
+
+#: templates/lizard_map/form_collage_save_success.html:4
+msgid "The URL of the saved collage is"
+msgstr "De URL van het opgeslagen dashboard is"
 
 #: templates/lizard_map/form_workspace_load.html:12
 msgid "Load"
@@ -724,6 +743,10 @@ msgid ""
 "right)."
 msgstr ""
 "Er zijn geen openbare workspaces beschikbaar. Meldt je aan (rechtsboven)."
+
+#: templates/lizard_map/wms.html:26
+msgid "Available dashboards"
+msgstr "Beschikbare dashboards"
 
 #: templates/lizard_map/workspace_items.html:21
 msgid "noname"

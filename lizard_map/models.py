@@ -238,6 +238,25 @@ class WorkspaceItemMixin(models.Model):
         workspace_item.workspace = workspace
         return workspace_item
 
+    def _as_new_collage_object(self, obj, collage):
+        """Return self as a new object with the same properties except
+        collage .
+
+        Used when duplicating CollageStorageItems to
+        CollageEditItems and vice versa."""
+        delete_fields = ['_state', '_collage_cache', 'collage_id', 'id']
+
+        # Get current data in dict.
+        kwargs = self.__dict__
+        for delete_me in delete_fields:
+            if delete_me in kwargs:
+                del kwargs[delete_me]
+
+        # Put data in new object.
+        collage_item = obj(**kwargs)
+        collage_item.collage = collage
+        return collage_item
+
     def _url_arguments(self, identifiers):
         """for img_url, csv_url"""
         layer_json = self.adapter_layer_json.replace('"', '%22')
@@ -674,7 +693,7 @@ class WorkspaceStorageItem(WorkspaceItemMixin):
         return self._as_new_object(WorkspaceEditItem, workspace)
 
 
-class CollageStorage(UserSessionMixin):
+class CollageStorage(models.Model):
     name = models.CharField(max_length=40)
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True)
@@ -782,7 +801,7 @@ class StatisticsMixin(models.Model):
 
 
 class CollageStorageItem(WorkspaceItemMixin, StatisticsMixin):
-    collage_storage = models.ForeignKey(
+    collage = models.ForeignKey(
         CollageStorage,
         related_name='collage_items')
     identifier = jsonfield.JSONField()
@@ -792,7 +811,7 @@ class CollageStorageItem(WorkspaceItemMixin, StatisticsMixin):
 
     def as_edit(self, collage):
         """Return self as a CollageEditItem."""
-        return self._as_new_object(CollageEditItem, collage)
+        return self._as_new_collage_object(CollageEditItem, collage)
 
 
 class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
@@ -926,7 +945,7 @@ class CollageEditItem(WorkspaceItemMixin, StatisticsMixin):
 
     def as_storage(self, collage):
         """Return self as a CollageStorageItem."""
-        return self._as_new_object(CollageStorageItem, collage)
+        return self._as_new_collage_object(CollageStorageItem, collage)
 
 
 # TODO: Remove legend-shape dependencies of legend stuff, then remove
