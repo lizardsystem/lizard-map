@@ -499,15 +499,6 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         return WorkspaceStorage.objects.filter(private=False)
 
     @property
-    def collage_storages(self):
-        # show all items to logged-in users
-        if self.request.user.is_authenticated():
-            return CollageStorage.objects.all()
-
-        # only show non-private items to not-logged-in users
-        return CollageStorage.objects.filter(private=False)
-
-    @property
     def bootstrap_tour(self):
         # Return false (for javascript), or the language used
         return Setting.get('bootstrap_tour')
@@ -591,19 +582,7 @@ class CollageStorageView(View):
         elif collage_storage_slug is not None:
             collage_storage = get_object_or_404(
                 CollageStorage, secret_slug=collage_storage_slug)
-
-        # do not show private collage storage views to not-logged-in
-        # users
-        if (not request.user.is_authenticated() and
-                collage_storage.private is True):
-            t = loader.get_template('403.html')
-            c = RequestContext(request, {
-                'message': _("This object is private. Forbidden for anonymous "
-                             "users.")})
-            return HttpResponseForbidden(t.render(c))
-
         collage_edit.load_from_storage(collage_storage)
-
         return redirect(reverse('lizard_map_collage_edit_detail'))
 
 
@@ -1478,10 +1457,10 @@ class CollageDetailView(CollageMixin, UiView):
             klass='popup-date-range',
             data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
-        if self.request.user.is_superuser:
+        if Setting.get('anon_can_store_collage'):
             save_collage = Action(
                 name='',
-                description='Save the collage (admin only)',
+                description='Save the collage',
                 url=reverse('lizard_map_collage_save'),
                 icon='icon-download-alt',
                 klass='popup-collage-save')

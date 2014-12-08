@@ -21,16 +21,6 @@
       {% trans 'Now there are no thematic maps available to you. You have to log on (top right).' %}
     </p>
   {% endif %}
-  {% if view.collage_storages %}
-    <p>
-      <b>{% trans 'Available dashboards' %}</b>
-    </p>
-    <ul>
-      {% for collage_storage in view.collage_storages %}
-        <li><a href="{% url "lizard_map_collage_storage" collage_id=collage_storage.pk %}">{{ collage_storage.name }}</a></li>
-      {% endfor %}
-    </ul>
-  {% endif %}
 {% endblock sidebar2 %}
 
 {% block secondary-sidebar %}

@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.core.urlresolvers import reverse
+from django.utils.safestring import mark_safe
 from lizard_security.admin import SecurityFilteredAdmin
 
 from lizard_map.models import BackgroundMap
@@ -60,10 +62,23 @@ class CollageStorageItemInline(admin.TabularInline):
 
 
 class CollageStorageAdmin(SecurityFilteredAdmin):
-    list_display = ('name', 'owner', 'secret_slug', 'index', 'data_set')
+    list_display = ('name', 'owner', 'secret_slug', 'url', 'data_set')
+    readonly_fields = ('url',)
     inlines = [
         CollageStorageItemInline,
         ]
+
+    def url(self, instance):
+        if instance.secret_slug:
+            the_url = reverse(
+                'lizard_map_collage_slug_storage',
+                kwargs={'collage_storage_slug': instance.secret_slug})
+        else:
+            the_url = reverse(
+                'lizard_map_collage_storage',
+                kwargs={'collage_id': instance.id})
+
+        return mark_safe('<a href="%s">%s</a>' % (the_url, the_url))
 
 
 admin.site.register(BackgroundMap, BackgroundMapAdmin)

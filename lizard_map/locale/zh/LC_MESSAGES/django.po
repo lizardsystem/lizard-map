@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-11 15:47+0100\n"
+"POT-Creation-Date: 2014-12-08 11:11+0100\n"
 "PO-Revision-Date: 2013-05-14 12:54+0000\n"
 "Last-Translator: Zhanguo Bai <zhanguo.bai@wur.nl>\n"
 "Language-Team: Chinese (http://translations.lizard.net/projects/p/"
@@ -99,7 +99,7 @@ msgstr "整个期间"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "输入一个有效的颜色代码rrggbbaa，其中aa可选或可不选"
 
-#: forms.py:16 forms.py:23 views.py:1866 templates/lizard_map/popup.html:29
+#: forms.py:16 forms.py:23 views.py:1845 templates/lizard_map/popup.html:29
 #: templates/lizard_map/tag_statistics.html:6
 msgid "Name"
 msgstr ""
@@ -133,11 +133,11 @@ msgstr ""
 msgid "Month"
 msgstr "月"
 
-#: forms.py:127 views.py:1868
+#: forms.py:127 views.py:1847
 msgid "Limit"
 msgstr ""
 
-#: forms.py:129 views.py:1867
+#: forms.py:129 views.py:1846
 #, fuzzy
 msgid "Percentile limit"
 msgstr "百分位"
@@ -155,7 +155,7 @@ msgstr ""
 msgid "Show average"
 msgstr "显示基础图层"
 
-#: forms.py:143 models.py:782
+#: forms.py:143 models.py:775
 msgid "all"
 msgstr "全部"
 
@@ -216,31 +216,27 @@ msgstr "十二月"
 msgid "When checked, this workspace is only available for logged-in users."
 msgstr ""
 
-#: models.py:703
-msgid "When checked, this dashboard is only available for logged-in users."
-msgstr ""
-
-#: models.py:783
+#: models.py:776
 msgid "year"
 msgstr "年"
 
-#: models.py:784
+#: models.py:777
 msgid "quarter"
 msgstr "季度"
 
-#: models.py:785
+#: models.py:778
 msgid "month"
 msgstr "月"
 
-#: models.py:786
+#: models.py:779
 msgid "week"
 msgstr "周"
 
-#: models.py:787
+#: models.py:780
 msgid "day"
 msgstr "日"
 
-#: views.py:286 views.py:1506
+#: views.py:286 views.py:1485
 msgid "Back to homepage"
 msgstr "返回主页"
 
@@ -264,7 +260,7 @@ msgstr "显示地图层"
 msgid "Filter WMS"
 msgstr ""
 
-#: views.py:391 views.py:441 views.py:1474
+#: views.py:391 views.py:441 views.py:1453
 msgid "Change the date range of the measurements"
 msgstr "改变测定日期范围"
 
@@ -289,65 +285,65 @@ msgstr "选择多项"
 msgid "Zoom to default location"
 msgstr "缩放至预设位置"
 
-#: views.py:562 views.py:601
+#: views.py:553
 msgid "This object is private. Forbidden for anonymous users."
 msgstr ""
 
-#: views.py:1114 views.py:1184
+#: views.py:1093 views.py:1163
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1461
+#: views.py:1440
 msgid "Dashboard"
 msgstr ""
 
-#: views.py:1504
+#: views.py:1483
 msgid "Home"
 msgstr "主页"
 
-#: views.py:1509
+#: views.py:1488
 msgid "Collage"
 msgstr "拼贴"
 
-#: views.py:1866 templates/lizard_map/tag_statistics.html:7
+#: views.py:1845 templates/lizard_map/tag_statistics.html:7
 msgid "Period"
 msgstr ""
 
-#: views.py:1866
+#: views.py:1845
 msgid "Minimum"
 msgstr ""
 
-#: views.py:1866
+#: views.py:1845
 msgid "Maximum"
 msgstr ""
 
-#: views.py:1867
+#: views.py:1846
 msgid "Average"
 msgstr ""
 
-#: views.py:1867
+#: views.py:1846
 #, fuzzy
 msgid "Percentile value"
 msgstr "百分位"
 
-#: views.py:1868
+#: views.py:1847
 msgid "Number above the limit"
 msgstr ""
 
-#: views.py:1869
+#: views.py:1848
 msgid "Number below the limit"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:11
+#: views.py:2018 templates/lizard_map/box_table.html:11
 msgid "Date + time"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:12
+#: views.py:2018 templates/lizard_map/box_table.html:12
 msgid "Value"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:13
+#: views.py:2018 templates/lizard_map/box_table.html:13
 msgid "Unit"
 msgstr ""
 
@@ -486,6 +482,10 @@ msgstr "拼贴"
 
 #: templates/lizard_map/form_collage_save_success.html:4
 msgid "The URL of the saved collage is"
+msgstr ""
+
+#: templates/lizard_map/form_collage_save_success.html:5
+msgid "You can copy/paste this into an email and send it to others"
 msgstr ""
 
 #: templates/lizard_map/form_workspace_load.html:12
@@ -765,10 +765,6 @@ msgstr "保存工作区"
 msgid ""
 "Now there are no thematic maps available to you. You have to log on (top "
 "right)."
-msgstr ""
-
-#: templates/lizard_map/wms.html:26
-msgid "Available dashboards"
 msgstr ""
 
 #: templates/lizard_map/workspace_items.html:21

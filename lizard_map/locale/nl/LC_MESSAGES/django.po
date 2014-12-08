@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-11 15:47+0100\n"
+"POT-Creation-Date: 2014-12-08 11:11+0100\n"
 "PO-Revision-Date: 2014-08-20 09:23+0000\n"
 "Last-Translator: alexandr <>\n"
 "Language-Team: Dutch (http://translations.lizard.net/projects/p/lizard5/team/"
@@ -101,7 +101,7 @@ msgstr "Hele periode"
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr "Voer een geldige kleurcode rrggbbaa in (aa is optioneel)."
 
-#: forms.py:16 forms.py:23 views.py:1866 templates/lizard_map/popup.html:29
+#: forms.py:16 forms.py:23 views.py:1845 templates/lizard_map/popup.html:29
 #: templates/lizard_map/tag_statistics.html:6
 msgid "Name"
 msgstr "Naam"
@@ -134,11 +134,11 @@ msgstr "Samengevoegde periode"
 msgid "Month"
 msgstr "Maand"
 
-#: forms.py:127 views.py:1868
+#: forms.py:127 views.py:1847
 msgid "Limit"
 msgstr "Limiet"
 
-#: forms.py:129 views.py:1867
+#: forms.py:129 views.py:1846
 msgid "Percentile limit"
 msgstr "Percentiel limiet"
 
@@ -154,7 +154,7 @@ msgstr "Toon maximum"
 msgid "Show average"
 msgstr "Toon gemiddelde"
 
-#: forms.py:143 models.py:782
+#: forms.py:143 models.py:775
 msgid "all"
 msgstr "alles"
 
@@ -212,33 +212,27 @@ msgstr ""
 "Wanneer dit is aangevinkt, is de workspace alleen beschikbaar voor ingelogde "
 "gebruikers."
 
-#: models.py:703
-msgid "When checked, this dashboard is only available for logged-in users."
-msgstr ""
-"Wanneer dit is aangevinkt, is het dashboard alleen beschikbaar voor ingelogde "
-"gebruikers."
-
-#: models.py:783
+#: models.py:776
 msgid "year"
 msgstr "jaar"
 
-#: models.py:784
+#: models.py:777
 msgid "quarter"
 msgstr "kwartaal"
 
-#: models.py:785
+#: models.py:778
 msgid "month"
 msgstr "maand"
 
-#: models.py:786
+#: models.py:779
 msgid "week"
 msgstr "week"
 
-#: models.py:787
+#: models.py:780
 msgid "day"
 msgstr "dag"
 
-#: views.py:286 views.py:1506
+#: views.py:286 views.py:1485
 msgid "Back to homepage"
 msgstr "Naar de beginpagina"
 
@@ -262,7 +256,7 @@ msgstr "Toon kaartlagen"
 msgid "Filter WMS"
 msgstr "Filter WMS"
 
-#: views.py:391 views.py:441 views.py:1474
+#: views.py:391 views.py:441 views.py:1453
 msgid "Change the date range of the measurements"
 msgstr "Verander het datumbereik van de metingen"
 
@@ -286,64 +280,64 @@ msgstr "Selecteer meerdere items"
 msgid "Zoom to default location"
 msgstr "Zoom naar de standaard beginlocatie"
 
-#: views.py:562 views.py:601
+#: views.py:553
 msgid "This object is private. Forbidden for anonymous users."
 msgstr "Dit object is privé en afgeschermd voor anonieme gebruikers."
 
-#: views.py:1114 views.py:1184
+#: views.py:1093 views.py:1163
 #, python-format
 msgid "Tab %(number)s"
 msgstr "Tabblad %(number)s"
 
-#: views.py:1461
+#: views.py:1440
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: views.py:1504
+#: views.py:1483
 msgid "Home"
 msgstr "Thuispagina"
 
-#: views.py:1509
+#: views.py:1488
 msgid "Collage"
 msgstr "Collage"
 
-#: views.py:1866 templates/lizard_map/tag_statistics.html:7
+#: views.py:1845 templates/lizard_map/tag_statistics.html:7
 msgid "Period"
 msgstr "Periode"
 
-#: views.py:1866
+#: views.py:1845
 msgid "Minimum"
 msgstr "Minimum"
 
-#: views.py:1866
+#: views.py:1845
 msgid "Maximum"
 msgstr "Maximum"
 
-#: views.py:1867
+#: views.py:1846
 msgid "Average"
 msgstr "Gemiddelde"
 
-#: views.py:1867
+#: views.py:1846
 msgid "Percentile value"
 msgstr "Percentiel waarde"
 
-#: views.py:1868
+#: views.py:1847
 msgid "Number above the limit"
 msgstr "Aantal boven het limiet"
 
-#: views.py:1869
+#: views.py:1848
 msgid "Number below the limit"
 msgstr "Aantal onder het limiet"
 
-#: views.py:2039 templates/lizard_map/box_table.html:11
+#: views.py:2018 templates/lizard_map/box_table.html:11
 msgid "Date + time"
 msgstr "Datum + tijd"
 
-#: views.py:2039 templates/lizard_map/box_table.html:12
+#: views.py:2018 templates/lizard_map/box_table.html:12
 msgid "Value"
 msgstr "Waarde"
 
-#: views.py:2039 templates/lizard_map/box_table.html:13
+#: views.py:2018 templates/lizard_map/box_table.html:13
 msgid "Unit"
 msgstr "Eenheid"
 
@@ -479,6 +473,10 @@ msgstr "Dashboard opgeslagen"
 #: templates/lizard_map/form_collage_save_success.html:4
 msgid "The URL of the saved collage is"
 msgstr "De URL van het opgeslagen dashboard is"
+
+#: templates/lizard_map/form_collage_save_success.html:5
+msgid "You can copy/paste this into an email and send it to others"
+msgstr "U kunt de url in een email knippen/plakken en doorsturen."
 
 #: templates/lizard_map/form_workspace_load.html:12
 msgid "Load"
@@ -744,10 +742,6 @@ msgid ""
 msgstr ""
 "Er zijn geen openbare workspaces beschikbaar. Meldt je aan (rechtsboven)."
 
-#: templates/lizard_map/wms.html:26
-msgid "Available dashboards"
-msgstr "Beschikbare dashboards"
-
 #: templates/lizard_map/workspace_items.html:21
 msgid "noname"
 msgstr "noname"
@@ -782,6 +776,3 @@ msgstr "Ga naar een opgeslagen workspace."
 #: templates/lizard_map/workspace_storage_list.html:12
 msgid "No saved workspaces."
 msgstr "Geen opgeslagen workspaces."
-
-#~ msgid "yellow"
-#~ msgstr "geel"

@@ -1,5 +1,6 @@
 {% load i18n %}
 <div class="dialog-box">
-<legend>{% trans 'Collage saved.' %}</legend>
-<p>{% trans 'The URL of the saved collage is' %}: <a href="{{ view.saved_collage_url }}" class="new-window-url">{{ view.saved_collage_url }}</a>.</p>
+  <legend>{% trans 'Collage saved.' %}</legend>
+  <p>{% trans 'The URL of the saved collage is' %}: <a href="{{ view.saved_collage_url }}" class="new-window-url">{{ view.saved_collage_url }}</a>.</p>
+  <p>{% trans "You can copy/paste this into an email and send it to others" %}</p>
 </div>

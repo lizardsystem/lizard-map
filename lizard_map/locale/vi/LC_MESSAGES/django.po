@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: lizardsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-11-11 15:47+0100\n"
+"POT-Creation-Date: 2014-12-08 11:11+0100\n"
 "PO-Revision-Date: 2013-05-14 12:35+0000\n"
 "Last-Translator: admin <admin@example.com>\n"
 "Language-Team: Vietnamese (http://translations.lizard.net/projects/p/"
@@ -100,7 +100,7 @@ msgstr ""
 msgid "Enter a valid color code rrggbbaa, where aa is optional."
 msgstr ""
 
-#: forms.py:16 forms.py:23 views.py:1866 templates/lizard_map/popup.html:29
+#: forms.py:16 forms.py:23 views.py:1845 templates/lizard_map/popup.html:29
 #: templates/lizard_map/tag_statistics.html:6
 msgid "Name"
 msgstr ""
@@ -133,11 +133,11 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
-#: forms.py:127 views.py:1868
+#: forms.py:127 views.py:1847
 msgid "Limit"
 msgstr ""
 
-#: forms.py:129 views.py:1867
+#: forms.py:129 views.py:1846
 msgid "Percentile limit"
 msgstr ""
 
@@ -153,7 +153,7 @@ msgstr ""
 msgid "Show average"
 msgstr ""
 
-#: forms.py:143 models.py:782
+#: forms.py:143 models.py:775
 msgid "all"
 msgstr ""
 
@@ -214,31 +214,27 @@ msgstr "Tháng Mười Hai"
 msgid "When checked, this workspace is only available for logged-in users."
 msgstr ""
 
-#: models.py:703
-msgid "When checked, this dashboard is only available for logged-in users."
-msgstr ""
-
-#: models.py:783
+#: models.py:776
 msgid "year"
 msgstr ""
 
-#: models.py:784
+#: models.py:777
 msgid "quarter"
 msgstr ""
 
-#: models.py:785
+#: models.py:778
 msgid "month"
 msgstr ""
 
-#: models.py:786
+#: models.py:779
 msgid "week"
 msgstr ""
 
-#: models.py:787
+#: models.py:780
 msgid "day"
 msgstr ""
 
-#: views.py:286 views.py:1506
+#: views.py:286 views.py:1485
 msgid "Back to homepage"
 msgstr ""
 
@@ -262,7 +258,7 @@ msgstr ""
 msgid "Filter WMS"
 msgstr ""
 
-#: views.py:391 views.py:441 views.py:1474
+#: views.py:391 views.py:441 views.py:1453
 msgid "Change the date range of the measurements"
 msgstr ""
 
@@ -286,64 +282,64 @@ msgstr ""
 msgid "Zoom to default location"
 msgstr ""
 
-#: views.py:562 views.py:601
+#: views.py:553
 msgid "This object is private. Forbidden for anonymous users."
 msgstr ""
 
-#: views.py:1114 views.py:1184
+#: views.py:1093 views.py:1163
 #, python-format
 msgid "Tab %(number)s"
 msgstr ""
 
-#: views.py:1461
+#: views.py:1440
 msgid "Dashboard"
 msgstr ""
 
-#: views.py:1504
+#: views.py:1483
 msgid "Home"
 msgstr ""
 
-#: views.py:1509
+#: views.py:1488
 msgid "Collage"
 msgstr ""
 
-#: views.py:1866 templates/lizard_map/tag_statistics.html:7
+#: views.py:1845 templates/lizard_map/tag_statistics.html:7
 msgid "Period"
 msgstr ""
 
-#: views.py:1866
+#: views.py:1845
 msgid "Minimum"
 msgstr ""
 
-#: views.py:1866
+#: views.py:1845
 msgid "Maximum"
 msgstr ""
 
-#: views.py:1867
+#: views.py:1846
 msgid "Average"
 msgstr ""
 
-#: views.py:1867
+#: views.py:1846
 msgid "Percentile value"
 msgstr ""
 
-#: views.py:1868
+#: views.py:1847
 msgid "Number above the limit"
 msgstr ""
 
-#: views.py:1869
+#: views.py:1848
 msgid "Number below the limit"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:11
+#: views.py:2018 templates/lizard_map/box_table.html:11
 msgid "Date + time"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:12
+#: views.py:2018 templates/lizard_map/box_table.html:12
 msgid "Value"
 msgstr ""
 
-#: views.py:2039 templates/lizard_map/box_table.html:13
+#: views.py:2018 templates/lizard_map/box_table.html:13
 msgid "Unit"
 msgstr ""
 
@@ -478,6 +474,10 @@ msgstr ""
 
 #: templates/lizard_map/form_collage_save_success.html:4
 msgid "The URL of the saved collage is"
+msgstr ""
+
+#: templates/lizard_map/form_collage_save_success.html:5
+msgid "You can copy/paste this into an email and send it to others"
 msgstr ""
 
 #: templates/lizard_map/form_workspace_load.html:12
@@ -752,10 +752,6 @@ msgstr ""
 msgid ""
 "Now there are no thematic maps available to you. You have to log on (top "
 "right)."
-msgstr ""
-
-#: templates/lizard_map/wms.html:26
-msgid "Available dashboards"
 msgstr ""
 
 #: templates/lizard_map/workspace_items.html:21
