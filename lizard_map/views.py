@@ -582,19 +582,7 @@ class CollageStorageView(View):
         elif collage_storage_slug is not None:
             collage_storage = get_object_or_404(
                 CollageStorage, secret_slug=collage_storage_slug)
-
-        # do not show private collage storage views to not-logged-in
-        # users
-        if (not request.user.is_authenticated() and
-                collage_storage.private is True):
-            t = loader.get_template('403.html')
-            c = RequestContext(request, {
-                'message': _("This object is private. Forbidden for anonymous "
-                             "users.")})
-            return HttpResponseForbidden(t.render(c))
-
         collage_edit.load_from_storage(collage_storage)
-
         return redirect(reverse('lizard_map_collage_edit_detail'))
 
 
