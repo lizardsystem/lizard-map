@@ -5,7 +5,8 @@ Changelog of lizard-map
 -----------------
 
 - You can now save the dashboard just like you could already save the
-  workspace.
+  workspace. They're not shown on the homepage, though. If needed you
+  can add an app icon for that.
 
 - You can add a ``disclaimer_text`` setting in the admin now. This is copied
   verbatim to the first window of the on-screen tour. So don't put html tags
