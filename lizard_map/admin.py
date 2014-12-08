@@ -60,7 +60,7 @@ class CollageStorageItemInline(admin.TabularInline):
 
 
 class CollageStorageAdmin(SecurityFilteredAdmin):
-    list_display = ('name', 'owner', 'secret_slug', 'index', 'data_set')
+    list_display = ('name', 'owner', 'secret_slug', 'data_set')
     inlines = [
         CollageStorageItemInline,
         ]

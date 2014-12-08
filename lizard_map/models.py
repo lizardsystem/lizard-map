@@ -698,19 +698,12 @@ class CollageStorage(models.Model):
     description = models.TextField(null=True, blank=True)
     owner = models.ForeignKey(User, null=True, blank=True)
     secret_slug = models.CharField(max_length=16, null=True)
-    index = models.IntegerField(default=100)
-    private = models.BooleanField(
-        default=True, help_text=_("When checked, this dashboard is only "
-                                   "available for logged-in users."))
     data_set = models.ForeignKey(DataSet,
                                  null=True,
                                  blank=True)
 
     supports_object_permissions = True
     objects = FilteredManager()
-
-    class Meta:
-        ordering = ('index', )
 
     def __unicode__(self):
         return u'%s (%s)' % (self.name, self.owner)
