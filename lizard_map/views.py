@@ -1469,10 +1469,10 @@ class CollageDetailView(CollageMixin, UiView):
             klass='popup-date-range',
             data_attributes={'offset': self.timezone_offset_string})
         actions.insert(0, set_date_range)
-        if self.request.user.is_superuser:
+        if Setting.get('anon_can_store_collage'):
             save_collage = Action(
                 name='',
-                description='Save the collage (admin only)',
+                description='Save the collage',
                 url=reverse('lizard_map_collage_save'),
                 icon='icon-download-alt',
                 klass='popup-collage-save')
