@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-4.29 (unreleased)
------------------
+5.0 (2014-12-15)
+----------------
 
 - You can now save the dashboard just like you could already save the
   workspace. They're not shown on the homepage, though. If needed you
