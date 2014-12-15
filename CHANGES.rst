@@ -4,7 +4,7 @@ Changelog of lizard-map
 5.1 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Upped lizard-ui requirement.
 
 
 5.0 (2014-12-15)
