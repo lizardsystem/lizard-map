@@ -10,7 +10,7 @@ long_description = '\n\n'.join([
     ])
 
 install_requires = [
-    'Django >= 1.4, < 1.7',
+    'Django >= 1.6, < 1.7',
     'Pillow',
     'django-extensions',
     'django-jsonfield',
@@ -20,7 +20,7 @@ install_requires = [
     'iso8601',
     'lizard-help',
     'lizard-security',
-    'lizard-ui >= 4.27, < 5.0',
+    'lizard-ui >= 5.0',
     'lizard-wms',
     'pkginfo',
     'python-dateutil',
