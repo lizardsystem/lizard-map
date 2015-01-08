@@ -1,8 +1,8 @@
 Changelog of lizard-map
 =======================
 
-4.52 (unreleased)
------------------
+4.51.1 (2015-01-08)
+-------------------
 
 - Fixed an issue with old migrations and a newer JSONField that could
   cause migrating from an empty database to fail.
