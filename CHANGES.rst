@@ -4,7 +4,9 @@ Changelog of lizard-map
 5.2 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Remove defaults from JSONFields in old migrations. The default
+  default (dict) is fine, and incorrect defaults caused some
+  migrations to fail.
 
 
 5.1 (2014-12-15)
