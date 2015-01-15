@@ -37,7 +37,7 @@ class MyAppConf(AppConf):
     SHOW_COLLAGE = True  # Value taken from lizard5-site's base.py
 
     # Defaults for the Setting model, DEFAULT_X_SETTING for Setting x
-    DEFAULT_PROJECTION_SETTING = 'EPSG:900913'
+    DEFAULT_PROJECTION_SETTING = 'EPSG:3857'
 
     DEFAULT_DEFAULT_WORKSPACE_USER_SETTING = None
     DEFAULT_DEFAULT_WORKSPACE_ANONYMOUS_USER_SETTING = None
