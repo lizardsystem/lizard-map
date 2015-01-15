@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-5.2 (unreleased)
+5.2 (2015-01-15)
 ----------------
 
 - Remove defaults from JSONFields in old migrations. The default
