@@ -1,3 +1,5259 @@
-!function(t,s){"function"==typeof define&&define.amd?define(s):"undefined"!=typeof module?module.exports=s():t.proj4=s()}(this,function(){var t,s,i;return function(a){function h(t,s){return x.call(t,s)}function e(t,s){var i,a,h,e,n,r,o,l,u,p,c=s&&s.split("/"),m=y.map,M=m&&m["*"]||{};if(t&&"."===t.charAt(0))if(s){for(c=c.slice(0,c.length-1),t=c.concat(t.split("/")),l=0;l<t.length;l+=1)if(p=t[l],"."===p)t.splice(l,1),l-=1;else if(".."===p){if(1===l&&(".."===t[2]||".."===t[0]))break;l>0&&(t.splice(l-1,2),l-=2)}t=t.join("/")}else 0===t.indexOf("./")&&(t=t.substring(2));if((c||M)&&m){for(i=t.split("/"),l=i.length;l>0;l-=1){if(a=i.slice(0,l).join("/"),c)for(u=c.length;u>0;u-=1)if(h=m[c.slice(0,u).join("/")],h&&(h=h[a])){e=h,n=l;break}if(e)break;!r&&M&&M[a]&&(r=M[a],o=l)}!e&&r&&(e=r,n=o),e&&(i.splice(0,n,e),t=i.join("/"))}return t}function n(t,s){return function(){return m.apply(a,g.call(arguments,0).concat([t,s]))}}function r(t){return function(s){return e(s,t)}}function o(t){return function(s){d[t]=s}}function l(t){if(h(_,t)){var s=_[t];delete _[t],j[t]=!0,c.apply(a,s)}if(!h(d,t)&&!h(j,t))throw new Error("No "+t);return d[t]}function u(t){var s,i=t?t.indexOf("!"):-1;return i>-1&&(s=t.substring(0,i),t=t.substring(i+1,t.length)),[s,t]}function p(t){return function(){return y&&y.config&&y.config[t]||{}}}var c,m,M,f,d={},_={},y={},j={},x=Object.prototype.hasOwnProperty,g=[].slice;M=function(t,s){var i,a=u(t),h=a[0];return t=a[1],h&&(h=e(h,s),i=l(h)),h?t=i&&i.normalize?i.normalize(t,r(s)):e(t,s):(t=e(t,s),a=u(t),h=a[0],t=a[1],h&&(i=l(h))),{f:h?h+"!"+t:t,n:t,pr:h,p:i}},f={require:function(t){return n(t)},exports:function(t){var s=d[t];return"undefined"!=typeof s?s:d[t]={}},module:function(t){return{id:t,uri:"",exports:d[t],config:p(t)}}},c=function(t,s,i,e){var r,u,p,c,m,y,x=[];if(e=e||t,"function"==typeof i){for(s=!s.length&&i.length?["require","exports","module"]:s,m=0;m<s.length;m+=1)if(c=M(s[m],e),u=c.f,"require"===u)x[m]=f.require(t);else if("exports"===u)x[m]=f.exports(t),y=!0;else if("module"===u)r=x[m]=f.module(t);else if(h(d,u)||h(_,u)||h(j,u))x[m]=l(u);else{if(!c.p)throw new Error(t+" missing "+u);c.p.load(c.n,n(e,!0),o(u),{}),x[m]=d[u]}p=i.apply(d[t],x),t&&(r&&r.exports!==a&&r.exports!==d[t]?d[t]=r.exports:p===a&&y||(d[t]=p))}else t&&(d[t]=i)},t=s=m=function(t,s,i,h,e){return"string"==typeof t?f[t]?f[t](s):l(M(t,s).f):(t.splice||(y=t,s.splice?(t=s,s=i,i=null):t=a),s=s||function(){},"function"==typeof i&&(i=h,h=e),h?c(a,t,s,i):setTimeout(function(){c(a,t,s,i)},4),m)},m.config=function(t){return y=t,y.deps&&m(y.deps,y.callback),m},t._defined=d,i=function(t,s,i){s.splice||(i=s,s=[]),h(d,t)||h(_,t)||(_[t]=[t,s,i])},i.amd={jQuery:!0}}(),i("node_modules/almond/almond",function(){}),i("proj4/mgrs",["require","exports","module"],function(t,s){function i(t){return t*(Math.PI/180)}function a(t){return 180*(t/Math.PI)}function h(t){var s,a,h,e,r,o,l,u,p,c=t.lat,m=t.lon,M=6378137,f=.00669438,d=.9996,_=i(c),y=i(m);p=Math.floor((m+180)/6)+1,180===m&&(p=60),c>=56&&64>c&&m>=3&&12>m&&(p=32),c>=72&&84>c&&(m>=0&&9>m?p=31:m>=9&&21>m?p=33:m>=21&&33>m?p=35:m>=33&&42>m&&(p=37)),s=6*(p-1)-180+3,u=i(s),a=f/(1-f),h=M/Math.sqrt(1-f*Math.sin(_)*Math.sin(_)),e=Math.tan(_)*Math.tan(_),r=a*Math.cos(_)*Math.cos(_),o=Math.cos(_)*(y-u),l=M*((1-f/4-3*f*f/64-5*f*f*f/256)*_-(3*f/8+3*f*f/32+45*f*f*f/1024)*Math.sin(2*_)+(15*f*f/256+45*f*f*f/1024)*Math.sin(4*_)-35*f*f*f/3072*Math.sin(6*_));var j=d*h*(o+(1-e+r)*o*o*o/6+(5-18*e+e*e+72*r-58*a)*o*o*o*o*o/120)+5e5,x=d*(l+h*Math.tan(_)*(o*o/2+(5-e+9*r+4*r*r)*o*o*o*o/24+(61-58*e+e*e+600*r-330*a)*o*o*o*o*o*o/720));return 0>c&&(x+=1e7),{northing:Math.round(x),easting:Math.round(j),zoneNumber:p,zoneLetter:n(c)}}function e(t){var s=t.northing,i=t.easting,h=t.zoneLetter,n=t.zoneNumber;if(0>n||n>60)return null;var r,o,l,u,p,c,m,M,f,d,_=.9996,y=6378137,j=.00669438,x=(1-Math.sqrt(1-j))/(1+Math.sqrt(1-j)),g=i-5e5,v=s;"N">h&&(v-=1e7),M=6*(n-1)-180+3,r=j/(1-j),m=v/_,f=m/(y*(1-j/4-3*j*j/64-5*j*j*j/256)),d=f+(3*x/2-27*x*x*x/32)*Math.sin(2*f)+(21*x*x/16-55*x*x*x*x/32)*Math.sin(4*f)+151*x*x*x/96*Math.sin(6*f),o=y/Math.sqrt(1-j*Math.sin(d)*Math.sin(d)),l=Math.tan(d)*Math.tan(d),u=r*Math.cos(d)*Math.cos(d),p=y*(1-j)/Math.pow(1-j*Math.sin(d)*Math.sin(d),1.5),c=g/(o*_);var P=d-o*Math.tan(d)/p*(c*c/2-(5+3*l+10*u-4*u*u-9*r)*c*c*c*c/24+(61+90*l+298*u+45*l*l-252*r-3*u*u)*c*c*c*c*c*c/720);P=a(P);var b=(c-(1+2*l+u)*c*c*c/6+(5-2*u+28*l-3*u*u+8*r+24*l*l)*c*c*c*c*c/120)/Math.cos(d);b=M+a(b);var C;if(t.accuracy){var S=e({northing:t.northing+t.accuracy,easting:t.easting+t.accuracy,zoneLetter:t.zoneLetter,zoneNumber:t.zoneNumber});C={top:S.lat,right:S.lon,bottom:P,left:b}}else C={lat:P,lon:b};return C}function n(t){var s="Z";return 84>=t&&t>=72?s="X":72>t&&t>=64?s="W":64>t&&t>=56?s="V":56>t&&t>=48?s="U":48>t&&t>=40?s="T":40>t&&t>=32?s="S":32>t&&t>=24?s="R":24>t&&t>=16?s="Q":16>t&&t>=8?s="P":8>t&&t>=0?s="N":0>t&&t>=-8?s="M":-8>t&&t>=-16?s="L":-16>t&&t>=-24?s="K":-24>t&&t>=-32?s="J":-32>t&&t>=-40?s="H":-40>t&&t>=-48?s="G":-48>t&&t>=-56?s="F":-56>t&&t>=-64?s="E":-64>t&&t>=-72?s="D":-72>t&&t>=-80&&(s="C"),s}function r(t,s){var i=""+t.easting,a=""+t.northing;return t.zoneNumber+t.zoneLetter+o(t.easting,t.northing,t.zoneNumber)+i.substr(i.length-5,s)+a.substr(a.length-5,s)}function o(t,s,i){var a=l(i),h=Math.floor(t/1e5),e=Math.floor(s/1e5)%20;return u(h,e,a)}function l(t){var s=t%f;return 0===s&&(s=f),s}function u(t,s,i){var a=i-1,h=d.charCodeAt(a),e=_.charCodeAt(a),n=h+t-1,r=e+s,o=!1;n>v&&(n=n-v+y-1,o=!0),(n===j||j>h&&n>j||(n>j||j>h)&&o)&&n++,(n===x||x>h&&n>x||(n>x||x>h)&&o)&&(n++,n===j&&n++),n>v&&(n=n-v+y-1),r>g?(r=r-g+y-1,o=!0):o=!1,(r===j||j>e&&r>j||(r>j||j>e)&&o)&&r++,(r===x||x>e&&r>x||(r>x||x>e)&&o)&&(r++,r===j&&r++),r>g&&(r=r-g+y-1);var l=String.fromCharCode(n)+String.fromCharCode(r);return l}function p(t){if(t&&0===t.length)throw"MGRSPoint coverting from nothing";for(var s,i=t.length,a=null,h="",e=0;!/[A-Z]/.test(s=t.charAt(e));){if(e>=2)throw"MGRSPoint bad conversion from: "+t;h+=s,e++}var n=parseInt(h,10);if(0===e||e+3>i)throw"MGRSPoint bad conversion from: "+t;var r=t.charAt(e++);if("A">=r||"B"===r||"Y"===r||r>="Z"||"I"===r||"O"===r)throw"MGRSPoint zone letter "+r+" not handled: "+t;a=t.substring(e,e+=2);for(var o=l(n),u=c(a.charAt(0),o),p=m(a.charAt(1),o);p<M(r);)p+=2e6;var f=i-e;if(0!==f%2)throw"MGRSPoint has to have an even number \nof digits after the zone letter and two 100km letters - front \nhalf for easting meters, second half for \nnorthing meters"+t;var d,_,y,j,x,g=f/2,v=0,P=0;return g>0&&(d=1e5/Math.pow(10,g),_=t.substring(e,e+g),v=parseFloat(_)*d,y=t.substring(e+g),P=parseFloat(y)*d),j=v+u,x=P+p,{easting:j,northing:x,zoneLetter:r,zoneNumber:n,accuracy:d}}function c(t,s){for(var i=d.charCodeAt(s-1),a=1e5,h=!1;i!==t.charCodeAt(0);){if(i++,i===j&&i++,i===x&&i++,i>v){if(h)throw"Bad character: "+t;i=y,h=!0}a+=1e5}return a}function m(t,s){if(t>"V")throw"MGRSPoint given invalid Northing "+t;for(var i=_.charCodeAt(s-1),a=0,h=!1;i!==t.charCodeAt(0);){if(i++,i===j&&i++,i===x&&i++,i>g){if(h)throw"Bad character: "+t;i=y,h=!0}a+=1e5}return a}function M(t){var s;switch(t){case"C":s=11e5;break;case"D":s=2e6;break;case"E":s=28e5;break;case"F":s=37e5;break;case"G":s=46e5;break;case"H":s=55e5;break;case"J":s=64e5;break;case"K":s=73e5;break;case"L":s=82e5;break;case"M":s=91e5;break;case"N":s=0;break;case"P":s=8e5;break;case"Q":s=17e5;break;case"R":s=26e5;break;case"S":s=35e5;break;case"T":s=44e5;break;case"U":s=53e5;break;case"V":s=62e5;break;case"W":s=7e6;break;case"X":s=79e5;break;default:s=-1}if(s>=0)return s;throw"Invalid zone letter: "+t}var f=6,d="AJSAJS",_="AFAFAF",y=65,j=73,x=79,g=86,v=90;s.forward=function(t,s){return s=s||5,r(h({lat:t.lat,lon:t.lon}),s)},s.inverse=function(t){var s=e(p(t.toUpperCase()));return[s.left,s.bottom,s.right,s.top]}}),i("proj4/Point",["require","proj4/mgrs"],function(t){function s(t,i,a){if(!(this instanceof s))return new s(t,i,a);if("object"==typeof t)this.x=t[0],this.y=t[1],this.z=t[2]||0;else if("string"==typeof t&&"undefined"==typeof i){var h=t.split(",");this.x=parseFloat(h[0]),this.y=parseFloat(h[1]),this.z=parseFloat(h[2])||0}else this.x=t,this.y=i,this.z=a||0;this.clone=function(){return new s(this.x,this.y,this.z)},this.toString=function(){return"x="+this.x+",y="+this.y},this.toShortString=function(){return this.x+", "+this.y}}var i=t("proj4/mgrs");return s.fromMGRS=function(t){var a=i.inverse(t);return new s((a[2]+a[0])/2,(a[3]+a[1])/2)},s.prototype.toMGRS=function(t){return i.forward({lon:this.x,lat:this.y},t)},s}),i("proj4/extend",[],function(){return function(t,s){t=t||{};var i,a;if(!s)return t;for(a in s)i=s[a],void 0!==i&&(t[a]=i);return t}}),i("proj4/common",[],function(){var t={PI:3.141592653589793,HALF_PI:1.5707963267948966,TWO_PI:6.283185307179586,FORTPI:.7853981633974483,R2D:57.29577951308232,D2R:.017453292519943295,SEC_TO_RAD:484813681109536e-20,EPSLN:1e-10,MAX_ITER:20,COS_67P5:.3826834323650898,AD_C:1.0026,PJD_UNKNOWN:0,PJD_3PARAM:1,PJD_7PARAM:2,PJD_GRIDSHIFT:3,PJD_WGS84:4,PJD_NODATUM:5,SRS_WGS84_SEMIMAJOR:6378137,SRS_WGS84_ESQUARED:.006694379990141316,SIXTH:.16666666666666666,RA4:.04722222222222222,RA6:.022156084656084655,RV4:.06944444444444445,RV6:.04243827160493827,msfnz:function(t,s,i){var a=t*s;return i/Math.sqrt(1-a*a)},tsfnz:function(t,s,i){var a=t*i,h=.5*t;return a=Math.pow((1-a)/(1+a),h),Math.tan(.5*(this.HALF_PI-s))/a},phi2z:function(t,s){for(var i,a,h=.5*t,e=this.HALF_PI-2*Math.atan(s),n=0;15>=n;n++)if(i=t*Math.sin(e),a=this.HALF_PI-2*Math.atan(s*Math.pow((1-i)/(1+i),h))-e,e+=a,Math.abs(a)<=1e-10)return e;return-9999},qsfnz:function(t,s){var i;return t>1e-7?(i=t*s,(1-t*t)*(s/(1-i*i)-.5/t*Math.log((1-i)/(1+i)))):2*s},iqsfnz:function(s,i){var a=1-(1-s*s)/(2*s)*Math.log((1-s)/(1+s));if(Math.abs(Math.abs(i)-a)<1e-6)return 0>i?-1*t.HALF_PI:t.HALF_PI;for(var h,e,n,r,o=Math.asin(.5*i),l=0;30>l;l++)if(e=Math.sin(o),n=Math.cos(o),r=s*e,h=Math.pow(1-r*r,2)/(2*n)*(i/(1-s*s)-e/(1-r*r)+.5/s*Math.log((1-r)/(1+r))),o+=h,Math.abs(h)<=1e-10)return o;return 0/0},asinz:function(t){return Math.abs(t)>1&&(t=t>1?1:-1),Math.asin(t)},e0fn:function(t){return 1-.25*t*(1+t/16*(3+1.25*t))},e1fn:function(t){return.375*t*(1+.25*t*(1+.46875*t))},e2fn:function(t){return.05859375*t*t*(1+.75*t)},e3fn:function(t){return t*t*t*(35/3072)},mlfn:function(t,s,i,a,h){return t*h-s*Math.sin(2*h)+i*Math.sin(4*h)-a*Math.sin(6*h)},imlfn:function(t,s,i,a,h){var e,n;e=t/s;for(var r=0;15>r;r++)if(n=(t-(s*e-i*Math.sin(2*e)+a*Math.sin(4*e)-h*Math.sin(6*e)))/(s-2*i*Math.cos(2*e)+4*a*Math.cos(4*e)-6*h*Math.cos(6*e)),e+=n,Math.abs(n)<=1e-10)return e;return 0/0},srat:function(t,s){return Math.pow((1-t)/(1+t),s)},sign:function(t){return 0>t?-1:1},adjust_lon:function(t){return t=Math.abs(t)<this.PI?t:t-this.sign(t)*this.TWO_PI},adjust_lat:function(t){return t=Math.abs(t)<this.HALF_PI?t:t-this.sign(t)*this.PI},latiso:function(t,s,i){if(Math.abs(s)>this.HALF_PI)return Number.NaN;if(s===this.HALF_PI)return Number.POSITIVE_INFINITY;if(s===-1*this.HALF_PI)return Number.NEGATIVE_INFINITY;var a=t*i;return Math.log(Math.tan((this.HALF_PI+s)/2))+t*Math.log((1-a)/(1+a))/2},fL:function(t,s){return 2*Math.atan(t*Math.exp(s))-this.HALF_PI},invlatiso:function(t,s){var i=this.fL(1,s),a=0,h=0;do a=i,h=t*Math.sin(a),i=this.fL(Math.exp(t*Math.log((1+h)/(1-h))/2),s);while(Math.abs(i-a)>1e-12);return i},sinh:function(t){var s=Math.exp(t);return s=(s-1/s)/2},cosh:function(t){var s=Math.exp(t);return s=(s+1/s)/2},tanh:function(t){var s=Math.exp(t);return s=(s-1/s)/(s+1/s)},asinh:function(t){var s=t>=0?1:-1;return s*Math.log(Math.abs(t)+Math.sqrt(t*t+1))},acosh:function(t){return 2*Math.log(Math.sqrt((t+1)/2)+Math.sqrt((t-1)/2))},atanh:function(t){return Math.log((t-1)/(t+1))/2},gN:function(t,s,i){var a=s*i;return t/Math.sqrt(1-a*a)},pj_enfn:function(t){var s=[];s[0]=this.C00-t*(this.C02+t*(this.C04+t*(this.C06+t*this.C08))),s[1]=t*(this.C22-t*(this.C04+t*(this.C06+t*this.C08)));var i=t*t;return s[2]=i*(this.C44-t*(this.C46+t*this.C48)),i*=t,s[3]=i*(this.C66-t*this.C68),s[4]=i*t*this.C88,s},pj_mlfn:function(t,s,i,a){return i*=s,s*=s,a[0]*t-i*(a[1]+s*(a[2]+s*(a[3]+s*a[4])))},pj_inv_mlfn:function(s,i,a){for(var h=1/(1-i),e=s,n=t.MAX_ITER;n;--n){var r=Math.sin(e),o=1-i*r*r;if(o=(this.pj_mlfn(e,r,Math.cos(e),a)-s)*o*Math.sqrt(o)*h,e-=o,Math.abs(o)<t.EPSLN)return e}return e},nad_intr:function(t,s){var i,a={x:(t.x-1e-7)/s.del[0],y:(t.y-1e-7)/s.del[1]},h={x:Math.floor(a.x),y:Math.floor(a.y)},e={x:a.x-1*h.x,y:a.y-1*h.y},n={x:Number.NaN,y:Number.NaN};if(h.x<0){if(!(-1===h.x&&e.x>.99999999999))return n;h.x++,e.x=0}else if(i=h.x+1,i>=s.lim[0]){if(!(i===s.lim[0]&&e.x<1e-11))return n;h.x--,e.x=1}if(h.y<0){if(!(-1===h.y&&e.y>.99999999999))return n;h.y++,e.y=0}else if(i=h.y+1,i>=s.lim[1]){if(!(i===s.lim[1]&&e.y<1e-11))return n;h.y++,e.y=1}i=h.y*s.lim[0]+h.x;var r={x:s.cvs[i][0],y:s.cvs[i][1]};i++;var o={x:s.cvs[i][0],y:s.cvs[i][1]};i+=s.lim[0];var l={x:s.cvs[i][0],y:s.cvs[i][1]};i--;var u={x:s.cvs[i][0],y:s.cvs[i][1]},p=e.x*e.y,c=e.x*(1-e.y),m=(1-e.x)*(1-e.y),M=(1-e.x)*e.y;return n.x=m*r.x+c*o.x+M*u.x+p*l.x,n.y=m*r.y+c*o.y+M*u.y+p*l.y,n},nad_cvt:function(s,i,a){var h={x:Number.NaN,y:Number.NaN};if(isNaN(s.x))return h;var e={x:s.x,y:s.y};e.x-=a.ll[0],e.y-=a.ll[1],e.x=t.adjust_lon(e.x-t.PI)+t.PI;var n=t.nad_intr(e,a);if(i){if(isNaN(n.x))return h;n.x=e.x+n.x,n.y=e.y-n.y;var r,o,l=9,u=1e-12;do{if(o=t.nad_intr(n,a),isNaN(o.x)){this.reportError("Inverse grid shift iteration failed, presumably at grid edge.  Using first approximation.");break}r={x:n.x-o.x-e.x,y:n.y+o.y-e.y},n.x-=r.x,n.y-=r.y}while(l--&&Math.abs(r.x)>u&&Math.abs(r.y)>u);if(0>l)return this.reportError("Inverse grid shift iterator failed to converge."),h;h.x=t.adjust_lon(n.x+a.ll[0]),h.y=n.y+a.ll[1]}else isNaN(n.x)||(h.x=s.x-n.x,h.y=s.y+n.y);return h},C00:1,C02:.25,C04:.046875,C06:.01953125,C08:.01068115234375,C22:.75,C44:.46875,C46:.013020833333333334,C48:.007120768229166667,C66:.3645833333333333,C68:.005696614583333333,C88:.3076171875};return t}),i("proj4/global",[],function(){return function(t){t("WGS84","+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"),t("EPSG:4326","+title=WGS 84 (long/lat) +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees"),t("EPSG:4269","+title=NAD83 (long/lat) +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees"),t("EPSG:3857","+title=WGS 84 / Pseudo-Mercator +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"),t["EPSG:3785"]=t["EPSG:3857"],t.GOOGLE=t["EPSG:3857"],t["EPSG:900913"]=t["EPSG:3857"],t["EPSG:102113"]=t["EPSG:3857"]}}),i("proj4/constants/PrimeMeridian",{greenwich:0,lisbon:-9.131906111111,paris:2.337229166667,bogota:-74.080916666667,madrid:-3.687938888889,rome:12.452333333333,bern:7.439583333333,jakarta:106.807719444444,ferro:-17.666666666667,brussels:4.367975,stockholm:18.058277777778,athens:23.7163375,oslo:10.722916666667}),i("proj4/constants/Ellipsoid",{MERIT:{a:6378137,rf:298.257,ellipseName:"MERIT 1983"},SGS85:{a:6378136,rf:298.257,ellipseName:"Soviet Geodetic System 85"},GRS80:{a:6378137,rf:298.257222101,ellipseName:"GRS 1980(IUGG, 1980)"},IAU76:{a:6378140,rf:298.257,ellipseName:"IAU 1976"},airy:{a:6377563.396,b:6356256.91,ellipseName:"Airy 1830"},"APL4.":{a:6378137,rf:298.25,ellipseName:"Appl. Physics. 1965"},NWL9D:{a:6378145,rf:298.25,ellipseName:"Naval Weapons Lab., 1965"},mod_airy:{a:6377340.189,b:6356034.446,ellipseName:"Modified Airy"},andrae:{a:6377104.43,rf:300,ellipseName:"Andrae 1876 (Den., Iclnd.)"},aust_SA:{a:6378160,rf:298.25,ellipseName:"Australian Natl & S. Amer. 1969"},GRS67:{a:6378160,rf:298.247167427,ellipseName:"GRS 67(IUGG 1967)"},bessel:{a:6377397.155,rf:299.1528128,ellipseName:"Bessel 1841"},bess_nam:{a:6377483.865,rf:299.1528128,ellipseName:"Bessel 1841 (Namibia)"},clrk66:{a:6378206.4,b:6356583.8,ellipseName:"Clarke 1866"},clrk80:{a:6378249.145,rf:293.4663,ellipseName:"Clarke 1880 mod."},clrk58:{a:6378293.645208759,rf:294.2606763692654,ellipseName:"Clarke 1858"},CPM:{a:6375738.7,rf:334.29,ellipseName:"Comm. des Poids et Mesures 1799"},delmbr:{a:6376428,rf:311.5,ellipseName:"Delambre 1810 (Belgium)"},engelis:{a:6378136.05,rf:298.2566,ellipseName:"Engelis 1985"},evrst30:{a:6377276.345,rf:300.8017,ellipseName:"Everest 1830"},evrst48:{a:6377304.063,rf:300.8017,ellipseName:"Everest 1948"},evrst56:{a:6377301.243,rf:300.8017,ellipseName:"Everest 1956"},evrst69:{a:6377295.664,rf:300.8017,ellipseName:"Everest 1969"},evrstSS:{a:6377298.556,rf:300.8017,ellipseName:"Everest (Sabah & Sarawak)"},fschr60:{a:6378166,rf:298.3,ellipseName:"Fischer (Mercury Datum) 1960"},fschr60m:{a:6378155,rf:298.3,ellipseName:"Fischer 1960"},fschr68:{a:6378150,rf:298.3,ellipseName:"Fischer 1968"},helmert:{a:6378200,rf:298.3,ellipseName:"Helmert 1906"},hough:{a:6378270,rf:297,ellipseName:"Hough"},intl:{a:6378388,rf:297,ellipseName:"International 1909 (Hayford)"},kaula:{a:6378163,rf:298.24,ellipseName:"Kaula 1961"},lerch:{a:6378139,rf:298.257,ellipseName:"Lerch 1979"},mprts:{a:6397300,rf:191,ellipseName:"Maupertius 1738"},new_intl:{a:6378157.5,b:6356772.2,ellipseName:"New International 1967"},plessis:{a:6376523,rf:6355863,ellipseName:"Plessis 1817 (France)"},krass:{a:6378245,rf:298.3,ellipseName:"Krassovsky, 1942"},SEasia:{a:6378155,b:6356773.3205,ellipseName:"Southeast Asia"},walbeck:{a:6376896,b:6355834.8467,ellipseName:"Walbeck"},WGS60:{a:6378165,rf:298.3,ellipseName:"WGS 60"},WGS66:{a:6378145,rf:298.25,ellipseName:"WGS 66"},WGS72:{a:6378135,rf:298.26,ellipseName:"WGS 72"},WGS84:{a:6378137,rf:298.257223563,ellipseName:"WGS 84"},sphere:{a:6370997,b:6370997,ellipseName:"Normal Sphere (r=6370997)"}}),i("proj4/constants/Datum",{wgs84:{towgs84:"0,0,0",ellipse:"WGS84",datumName:"WGS84"},ch1903:{towgs84:"674.374,15.056,405.346",ellipse:"bessel",datumName:"swiss"},ggrs87:{towgs84:"-199.87,74.79,246.62",ellipse:"GRS80",datumName:"Greek_Geodetic_Reference_System_1987"},nad83:{towgs84:"0,0,0",ellipse:"GRS80",datumName:"North_American_Datum_1983"},nad27:{nadgrids:"@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat",ellipse:"clrk66",datumName:"North_American_Datum_1927"},potsdam:{towgs84:"606.0,23.0,413.0",ellipse:"bessel",datumName:"Potsdam Rauenberg 1950 DHDN"},carthage:{towgs84:"-263.0,6.0,431.0",ellipse:"clark80",datumName:"Carthage 1934 Tunisia"},hermannskogel:{towgs84:"653.0,-212.0,449.0",ellipse:"bessel",datumName:"Hermannskogel"},ire65:{towgs84:"482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15",ellipse:"mod_airy",datumName:"Ireland 1965"},rassadiran:{towgs84:"-133.63,-157.5,-158.62",ellipse:"intl",datumName:"Rassadiran"},nzgd49:{towgs84:"59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993",ellipse:"intl",datumName:"New Zealand Geodetic Datum 1949"},osgb36:{towgs84:"446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894",ellipse:"airy",datumName:"Airy 1830"},s_jtsk:{towgs84:"589,76,480",ellipse:"bessel",datumName:"S-JTSK (Ferro)"},beduaram:{towgs84:"-106,-87,188",ellipse:"clrk80",datumName:"Beduaram"},gunung_segara:{towgs84:"-403,684,41",ellipse:"bessel",datumName:"Gunung Segara Jakarta"}}),i("proj4/constants/grids",{"null":{ll:[-3.14159265,-1.57079633],del:[3.14159265,1.57079633],lim:[3,3],count:9,cvs:[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]}}),i("proj4/constants",["require","exports","module","proj4/constants/PrimeMeridian","proj4/constants/Ellipsoid","proj4/constants/Datum","proj4/constants/grids"],function(t,s){s.PrimeMeridian=t("proj4/constants/PrimeMeridian"),s.Ellipsoid=t("proj4/constants/Ellipsoid"),s.Datum=t("proj4/constants/Datum"),s.Datum.OSB36=s.Datum.OSGB36,s.grids=t("proj4/constants/grids")}),i("proj4/projString",["require","proj4/common","proj4/constants"],function(t){var s=t("proj4/common"),i=t("proj4/constants");return function(t){var a={},h={};t.split("+").map(function(t){return t.trim()}).filter(function(t){return t}).forEach(function(t){var s=t.split("=");s.push(!0),h[s[0].toLowerCase()]=s[1]});var e,n,r,o={proj:"projName",datum:"datumCode",rf:function(t){a.rf=parseFloat(t,10)},lat_0:function(t){a.lat0=t*s.D2R},lat_1:function(t){a.lat1=t*s.D2R},lat_2:function(t){a.lat2=t*s.D2R},lat_ts:function(t){a.lat_ts=t*s.D2R},lon_0:function(t){a.long0=t*s.D2R},lon_1:function(t){a.long1=t*s.D2R},lon_2:function(t){a.long2=t*s.D2R},alpha:function(t){a.alpha=parseFloat(t)*s.D2R},lonc:function(t){a.longc=t*s.D2R},x_0:function(t){a.x0=parseFloat(t,10)},y_0:function(t){a.y0=parseFloat(t,10)},k_0:function(t){a.k0=parseFloat(t,10)},k:function(t){a.k0=parseFloat(t,10)},r_a:function(){a.R_A=!0},zone:function(t){a.zone=parseInt(t,10)},south:function(){a.utmSouth=!0},towgs84:function(t){a.datum_params=t.split(",").map(function(t){return parseFloat(t,10)})},to_meter:function(t){a.to_meter=parseFloat(t,10)},from_greenwich:function(t){a.from_greenwich=t*s.D2R},pm:function(t){a.from_greenwich=(i.PrimeMeridian[t]?i.PrimeMeridian[t]:parseFloat(t,10))*s.D2R},nadgrids:function(t){"@null"===t?a.datumCode="none":a.nadgrids=t},axis:function(t){var s="ewnsud";3===t.length&&-1!==s.indexOf(t.substr(0,1))&&-1!==s.indexOf(t.substr(1,1))&&-1!==s.indexOf(t.substr(2,1))&&(a.axis=t)}};for(e in h)n=h[e],e in o?(r=o[e],"function"==typeof r?r(n):a[r]=n):a[e]=n;return a}}),i("proj4/wkt",["require","proj4/common","proj4/extend"],function(t){function s(t,s,a){t[s]=a.map(function(t){var s={};return i(t,s),s}).reduce(function(t,s){return r(t,s)},{})}function i(t,a){var h;return Array.isArray(t)?(h=t.shift(),"PARAMETER"===h&&(h=t.shift()),1===t.length?Array.isArray(t[0])?(a[h]={},i(t[0],a[h])):a[h]=t[0]:t.length?"TOWGS84"===h?a[h]=t:(a[h]={},["UNIT","PRIMEM","VERT_DATUM"].indexOf(h)>-1?(a[h]={name:t[0].toLowerCase(),convert:t[1]},3===t.length&&(a[h].auth=t[2])):"SPHEROID"===h?(a[h]={name:t[0],a:t[1],rf:t[2]},4===t.length&&(a[h].auth=t[3])):["GEOGCS","GEOCCS","DATUM","VERT_CS","COMPD_CS","LOCAL_CS","FITTED_CS","LOCAL_DATUM"].indexOf(h)>-1?(t[0]=["name",t[0]],s(a,h,t)):t.every(function(t){return Array.isArray(t)})?s(a,h,t):i(t,a[h])):a[h]=!0,void 0):(a[t]=!0,void 0)}function a(t,s){var i=s[0],a=s[1];!(i in t)&&a in t&&(t[i]=t[a],3===s.length&&(t[i]=s[2](t[i])))}function h(t){return t*n.D2R}function e(t){function s(s){var i=t.to_meter||1;return parseFloat(s,10)*i}"GEOGCS"===t.type?t.projName="longlat":"LOCAL_CS"===t.type?(t.projName="identity",t.local=!0):t.projName="object"==typeof t.PROJECTION?Object.keys(t.PROJECTION)[0]:t.PROJECTION,t.UNIT&&(t.units=t.UNIT.name.toLowerCase(),"metre"===t.units&&(t.units="meter"),t.UNIT.convert&&(t.to_meter=parseFloat(t.UNIT.convert,10))),t.GEOGCS&&(t.datumCode=t.GEOGCS.DATUM?t.GEOGCS.DATUM.name.toLowerCase():t.GEOGCS.name.toLowerCase(),"d_"===t.datumCode.slice(0,2)&&(t.datumCode=t.datumCode.slice(2)),("new_zealand_geodetic_datum_1949"===t.datumCode||"new_zealand_1949"===t.datumCode)&&(t.datumCode="nzgd49"),"wgs_1984"===t.datumCode&&("Mercator_Auxiliary_Sphere"===t.PROJECTION&&(t.sphere=!0),t.datumCode="wgs84"),"_ferro"===t.datumCode.slice(-6)&&(t.datumCode=t.datumCode.slice(0,-6)),"_jakarta"===t.datumCode.slice(-8)&&(t.datumCode=t.datumCode.slice(0,-8)),t.GEOGCS.DATUM&&t.GEOGCS.DATUM.SPHEROID&&(t.ellps=t.GEOGCS.DATUM.SPHEROID.name.replace("_19","").replace(/[Cc]larke\_18/,"clrk"),"international"===t.ellps.toLowerCase().slice(0,13)&&(t.ellps="intl"),t.a=t.GEOGCS.DATUM.SPHEROID.a,t.rf=parseFloat(t.GEOGCS.DATUM.SPHEROID.rf,10))),t.b&&!isFinite(t.b)&&(t.b=t.a);var i=function(s){return a(t,s)},e=[["standard_parallel_1","Standard_Parallel_1"],["standard_parallel_2","Standard_Parallel_2"],["false_easting","False_Easting"],["false_northing","False_Northing"],["central_meridian","Central_Meridian"],["latitude_of_origin","Latitude_Of_Origin"],["scale_factor","Scale_Factor"],["k0","scale_factor"],["latitude_of_center","Latitude_of_center"],["lat0","latitude_of_center",h],["longitude_of_center","Longitude_Of_Center"],["longc","longitude_of_center",h],["x0","false_easting",s],["y0","false_northing",s],["long0","central_meridian",h],["lat0","latitude_of_origin",h],["lat0","standard_parallel_1",h],["lat1","standard_parallel_1",h],["lat2","standard_parallel_2",h],["alpha","azimuth",h],["srsCode","name"]];e.forEach(i),t.long0||!t.longc||"Albers_Conic_Equal_Area"!==t.PROJECTION&&"Lambert_Azimuthal_Equal_Area"!==t.PROJECTION||(t.long0=t.longc)}var n=t("proj4/common"),r=t("proj4/extend");return function(t,s){var a=JSON.parse((","+t).replace(/\s*\,\s*([A-Z_0-9]+?)(\[)/g,',["$1",').slice(1).replace(/\s*\,\s*([A-Z_0-9]+?)\]/g,',"$1"]')),h=a.shift(),n=a.shift();a.unshift(["name",n]),a.unshift(["type",h]),a.unshift("output");var o={};return i(a,o),e(o.output),r(s,o.output)}}),i("proj4/defs",["require","proj4/global","proj4/projString","proj4/wkt"],function(t){function s(t){var i=this;if(2===arguments.length)s[t]="+"===arguments[1][0]?a(arguments[1]):h(arguments[1]);else if(1===arguments.length)return Array.isArray(t)?t.map(function(t){Array.isArray(t)?s.apply(i,t):s(t)}):("string"==typeof t||("EPSG"in t?s["EPSG:"+t.EPSG]=t:"ESRI"in t?s["ESRI:"+t.ESRI]=t:"IAU2000"in t?s["IAU2000:"+t.IAU2000]=t:console.log(t)),void 0)}var i=t("proj4/global"),a=t("proj4/projString"),h=t("proj4/wkt");return i(s),s}),i("proj4/datum",["require","proj4/common"],function(t){var s=t("proj4/common"),i=function(t){if(!(this instanceof i))return new i(t);if(this.datum_type=s.PJD_WGS84,t){if(t.datumCode&&"none"===t.datumCode&&(this.datum_type=s.PJD_NODATUM),t.datum_params){for(var a=0;a<t.datum_params.length;a++)t.datum_params[a]=parseFloat(t.datum_params[a]);(0!==t.datum_params[0]||0!==t.datum_params[1]||0!==t.datum_params[2])&&(this.datum_type=s.PJD_3PARAM),t.datum_params.length>3&&(0!==t.datum_params[3]||0!==t.datum_params[4]||0!==t.datum_params[5]||0!==t.datum_params[6])&&(this.datum_type=s.PJD_7PARAM,t.datum_params[3]*=s.SEC_TO_RAD,t.datum_params[4]*=s.SEC_TO_RAD,t.datum_params[5]*=s.SEC_TO_RAD,t.datum_params[6]=t.datum_params[6]/1e6+1)}this.datum_type=t.grids?s.PJD_GRIDSHIFT:this.datum_type,this.a=t.a,this.b=t.b,this.es=t.es,this.ep2=t.ep2,this.datum_params=t.datum_params,this.datum_type===s.PJD_GRIDSHIFT&&(this.grids=t.grids)}};return i.prototype={compare_datums:function(t){return this.datum_type!==t.datum_type?!1:this.a!==t.a||Math.abs(this.es-t.es)>5e-11?!1:this.datum_type===s.PJD_3PARAM?this.datum_params[0]===t.datum_params[0]&&this.datum_params[1]===t.datum_params[1]&&this.datum_params[2]===t.datum_params[2]:this.datum_type===s.PJD_7PARAM?this.datum_params[0]===t.datum_params[0]&&this.datum_params[1]===t.datum_params[1]&&this.datum_params[2]===t.datum_params[2]&&this.datum_params[3]===t.datum_params[3]&&this.datum_params[4]===t.datum_params[4]&&this.datum_params[5]===t.datum_params[5]&&this.datum_params[6]===t.datum_params[6]:this.datum_type===s.PJD_GRIDSHIFT||t.datum_type===s.PJD_GRIDSHIFT?this.nadgrids===t.nadgrids:!0},geodetic_to_geocentric:function(t){var i,a,h,e,n,r,o,l=t.x,u=t.y,p=t.z?t.z:0,c=0;if(u<-s.HALF_PI&&u>-1.001*s.HALF_PI)u=-s.HALF_PI;else if(u>s.HALF_PI&&u<1.001*s.HALF_PI)u=s.HALF_PI;else if(u<-s.HALF_PI||u>s.HALF_PI)return null;return l>s.PI&&(l-=2*s.PI),n=Math.sin(u),o=Math.cos(u),r=n*n,e=this.a/Math.sqrt(1-this.es*r),i=(e+p)*o*Math.cos(l),a=(e+p)*o*Math.sin(l),h=(e*(1-this.es)+p)*n,t.x=i,t.y=a,t.z=h,c},geocentric_to_geodetic:function(t){var i,a,h,e,n,r,o,l,u,p,c,m,M,f,d,_,y,j=1e-12,x=j*j,g=30,v=t.x,P=t.y,b=t.z?t.z:0;if(M=!1,i=Math.sqrt(v*v+P*P),a=Math.sqrt(v*v+P*P+b*b),i/this.a<j){if(M=!0,d=0,a/this.a<j)return _=s.HALF_PI,y=-this.b,void 0}else d=Math.atan2(P,v);h=b/a,e=i/a,n=1/Math.sqrt(1-this.es*(2-this.es)*e*e),l=e*(1-this.es)*n,u=h*n,f=0;do f++,o=this.a/Math.sqrt(1-this.es*u*u),y=i*l+b*u-o*(1-this.es*u*u),r=this.es*o/(o+y),n=1/Math.sqrt(1-r*(2-r)*e*e),p=e*(1-r)*n,c=h*n,m=c*l-p*u,l=p,u=c;while(m*m>x&&g>f);return _=Math.atan(c/Math.abs(p)),t.x=d,t.y=_,t.z=y,t},geocentric_to_geodetic_noniter:function(t){var i,a,h,e,n,r,o,l,u,p,c,m,M,f,d,_,y,j=t.x,x=t.y,g=t.z?t.z:0;if(j=parseFloat(j),x=parseFloat(x),g=parseFloat(g),y=!1,0!==j)i=Math.atan2(x,j);else if(x>0)i=s.HALF_PI;else if(0>x)i=-s.HALF_PI;else if(y=!0,i=0,g>0)a=s.HALF_PI;else{if(!(0>g))return a=s.HALF_PI,h=-this.b,void 0;a=-s.HALF_PI}return n=j*j+x*x,e=Math.sqrt(n),r=g*s.AD_C,l=Math.sqrt(r*r+n),p=r/l,m=e/l,c=p*p*p,o=g+this.b*this.ep2*c,_=e-this.a*this.es*m*m*m,u=Math.sqrt(o*o+_*_),M=o/u,f=_/u,d=this.a/Math.sqrt(1-this.es*M*M),h=f>=s.COS_67P5?e/f-d:f<=-s.COS_67P5?e/-f-d:g/M+d*(this.es-1),y===!1&&(a=Math.atan(M/f)),t.x=i,t.y=a,t.z=h,t},geocentric_to_wgs84:function(t){if(this.datum_type===s.PJD_3PARAM)t.x+=this.datum_params[0],t.y+=this.datum_params[1],t.z+=this.datum_params[2];else if(this.datum_type===s.PJD_7PARAM){var i=this.datum_params[0],a=this.datum_params[1],h=this.datum_params[2],e=this.datum_params[3],n=this.datum_params[4],r=this.datum_params[5],o=this.datum_params[6],l=o*(t.x-r*t.y+n*t.z)+i,u=o*(r*t.x+t.y-e*t.z)+a,p=o*(-n*t.x+e*t.y+t.z)+h;t.x=l,t.y=u,t.z=p}},geocentric_from_wgs84:function(t){if(this.datum_type===s.PJD_3PARAM)t.x-=this.datum_params[0],t.y-=this.datum_params[1],t.z-=this.datum_params[2];else if(this.datum_type===s.PJD_7PARAM){var i=this.datum_params[0],a=this.datum_params[1],h=this.datum_params[2],e=this.datum_params[3],n=this.datum_params[4],r=this.datum_params[5],o=this.datum_params[6],l=(t.x-i)/o,u=(t.y-a)/o,p=(t.z-h)/o;t.x=l+r*u-n*p,t.y=-r*l+u+e*p,t.z=n*l-e*u+p}}},i}),i("proj4/projCode/tmerc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.e0=i.e0fn(this.es),this.e1=i.e1fn(this.es),this.e2=i.e2fn(this.es),this.e3=i.e3fn(this.es),this.ml0=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat0)},s.forward=function(t){var s,a,h,e=t.x,n=t.y,r=i.adjust_lon(e-this.long0),o=Math.sin(n),l=Math.cos(n);if(this.sphere){var u=l*Math.sin(r);if(Math.abs(Math.abs(u)-1)<1e-10)return 93;a=.5*this.a*this.k0*Math.log((1+u)/(1-u)),s=Math.acos(l*Math.cos(r)/Math.sqrt(1-u*u)),0>n&&(s=-s),h=this.a*this.k0*(s-this.lat0)}else{var p=l*r,c=Math.pow(p,2),m=this.ep2*Math.pow(l,2),M=Math.tan(n),f=Math.pow(M,2);s=1-this.es*Math.pow(o,2);var d=this.a/Math.sqrt(s),_=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,n);a=this.k0*d*p*(1+c/6*(1-f+m+c/20*(5-18*f+Math.pow(f,2)+72*m-58*this.ep2)))+this.x0,h=this.k0*(_-this.ml0+d*M*c*(.5+c/24*(5-f+9*m+4*Math.pow(m,2)+c/30*(61-58*f+Math.pow(f,2)+600*m-330*this.ep2))))+this.y0}return t.x=a,t.y=h,t},s.inverse=function(t){var s,a,h,e,n,r,o=6;if(this.sphere){var l=Math.exp(t.x/(this.a*this.k0)),u=.5*(l-1/l),p=this.lat0+t.y/(this.a*this.k0),c=Math.cos(p);s=Math.sqrt((1-c*c)/(1+u*u)),n=i.asinz(s),0>p&&(n=-n),r=0===u&&0===c?this.long0:i.adjust_lon(Math.atan2(u,c)+this.long0)}else{var m=t.x-this.x0,M=t.y-this.y0;for(s=(this.ml0+M/this.k0)/this.a,a=s,e=0;!0&&(h=(s+this.e1*Math.sin(2*a)-this.e2*Math.sin(4*a)+this.e3*Math.sin(6*a))/this.e0-a,a+=h,!(Math.abs(h)<=i.EPSLN));e++)if(e>=o)return 95;if(Math.abs(a)<i.HALF_PI){var f=Math.sin(a),d=Math.cos(a),_=Math.tan(a),y=this.ep2*Math.pow(d,2),j=Math.pow(y,2),x=Math.pow(_,2),g=Math.pow(x,2);s=1-this.es*Math.pow(f,2);var v=this.a/Math.sqrt(s),P=v*(1-this.es)/s,b=m/(v*this.k0),C=Math.pow(b,2);n=a-v*_*C/P*(.5-C/24*(5+3*x+10*y-4*j-9*this.ep2-C/30*(61+90*x+298*y+45*g-252*this.ep2-3*j))),r=i.adjust_lon(this.long0+b*(1-C/6*(1+2*x+y-C/20*(5-2*y+28*x-3*j+8*this.ep2+24*g)))/d)}else n=i.HALF_PI*i.sign(M),r=this.long0}return t.x=r,t.y=n,t},s.names=["Transverse_Mercator","Transverse Mercator","tmerc"]}),i("proj4/projCode/utm",["require","exports","module","proj4/common","proj4/projCode/tmerc"],function(t,s){var i=t("proj4/common"),a=t("proj4/projCode/tmerc");s.dependsOn="tmerc",s.init=function(){this.zone&&(this.lat0=0,this.long0=(6*Math.abs(this.zone)-183)*i.D2R,this.x0=5e5,this.y0=this.utmSouth?1e7:0,this.k0=.9996,a.init.apply(this),this.forward=a.forward,this.inverse=a.inverse)},s.names=["Universal Transverse Mercator System","utm"]}),i("proj4/projCode/gauss",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){var t=Math.sin(this.lat0),s=Math.cos(this.lat0);s*=s,this.rc=Math.sqrt(1-this.es)/(1-this.es*t*t),this.C=Math.sqrt(1+this.es*s*s/(1-this.es)),this.phic0=Math.asin(t/this.C),this.ratexp=.5*this.C*this.e,this.K=Math.tan(.5*this.phic0+i.FORTPI)/(Math.pow(Math.tan(.5*this.lat0+i.FORTPI),this.C)*i.srat(this.e*t,this.ratexp))
-},s.forward=function(t){var s=t.x,a=t.y;return t.y=2*Math.atan(this.K*Math.pow(Math.tan(.5*a+i.FORTPI),this.C)*i.srat(this.e*Math.sin(a),this.ratexp))-i.HALF_PI,t.x=this.C*s,t},s.inverse=function(t){for(var s=1e-14,a=t.x/this.C,h=t.y,e=Math.pow(Math.tan(.5*h+i.FORTPI)/this.K,1/this.C),n=i.MAX_ITER;n>0&&(h=2*Math.atan(e*i.srat(this.e*Math.sin(t.y),-.5*this.e))-i.HALF_PI,!(Math.abs(h-t.y)<s));--n)t.y=h;return n?(t.x=a,t.y=h,t):null},s.names=["gauss"]}),i("proj4/projCode/sterea",["require","exports","module","proj4/common","proj4/projCode/gauss"],function(t,s){var i=t("proj4/common"),a=t("proj4/projCode/gauss");s.init=function(){a.init.apply(this),this.rc&&(this.sinc0=Math.sin(this.phic0),this.cosc0=Math.cos(this.phic0),this.R2=2*this.rc,this.title||(this.title="Oblique Stereographic Alternative"))},s.forward=function(t){var s,h,e,n;return t.x=i.adjust_lon(t.x-this.long0),a.forward.apply(this,[t]),s=Math.sin(t.y),h=Math.cos(t.y),e=Math.cos(t.x),n=this.k0*this.R2/(1+this.sinc0*s+this.cosc0*h*e),t.x=n*h*Math.sin(t.x),t.y=n*(this.cosc0*s-this.sinc0*h*e),t.x=this.a*t.x+this.x0,t.y=this.a*t.y+this.y0,t},s.inverse=function(t){var s,h,e,n,r;if(t.x=(t.x-this.x0)/this.a,t.y=(t.y-this.y0)/this.a,t.x/=this.k0,t.y/=this.k0,r=Math.sqrt(t.x*t.x+t.y*t.y)){var o=2*Math.atan2(r,this.R2);s=Math.sin(o),h=Math.cos(o),n=Math.asin(h*this.sinc0+t.y*s*this.cosc0/r),e=Math.atan2(t.x*s,r*this.cosc0*h-t.y*this.sinc0*s)}else n=this.phic0,e=0;return t.x=e,t.y=n,a.inverse.apply(this,[t]),t.x=i.adjust_lon(t.x+this.long0),t},s.names=["Stereographic_North_Pole","Oblique_Stereographic","Polar_Stereographic","sterea"]}),i("proj4/projCode/stere",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.ssfn_=function(t,s,a){return s*=a,Math.tan(.5*(i.HALF_PI+t))*Math.pow((1-s)/(1+s),.5*a)},s.init=function(){this.coslat0=Math.cos(this.lat0),this.sinlat0=Math.sin(this.lat0),this.sphere?1===this.k0&&!isNaN(this.lat_ts)&&Math.abs(this.coslat0)<=i.EPSLN&&(this.k0=.5*(1+i.sign(this.lat0)*Math.sin(this.lat_ts))):(Math.abs(this.coslat0)<=i.EPSLN&&(this.con=this.lat0>0?1:-1),this.cons=Math.sqrt(Math.pow(1+this.e,1+this.e)*Math.pow(1-this.e,1-this.e)),1===this.k0&&!isNaN(this.lat_ts)&&Math.abs(this.coslat0)<=i.EPSLN&&(this.k0=.5*this.cons*i.msfnz(this.e,Math.sin(this.lat_ts),Math.cos(this.lat_ts))/i.tsfnz(this.e,this.con*this.lat_ts,this.con*Math.sin(this.lat_ts))),this.ms1=i.msfnz(this.e,this.sinlat0,this.coslat0),this.X0=2*Math.atan(this.ssfn_(this.lat0,this.sinlat0,this.e))-i.HALF_PI,this.cosX0=Math.cos(this.X0),this.sinX0=Math.sin(this.X0))},s.forward=function(t){var s,a,h,e,n,r,o=t.x,l=t.y,u=Math.sin(l),p=Math.cos(l),c=i.adjust_lon(o-this.long0);return Math.abs(Math.abs(o-this.long0)-i.PI)<=i.EPSLN&&Math.abs(l+this.lat0)<=i.EPSLN?(t.x=0/0,t.y=0/0,t):this.sphere?(s=2*this.k0/(1+this.sinlat0*u+this.coslat0*p*Math.cos(c)),t.x=this.a*s*p*Math.sin(c)+this.x0,t.y=this.a*s*(this.coslat0*u-this.sinlat0*p*Math.cos(c))+this.y0,t):(a=2*Math.atan(this.ssfn_(l,u,this.e))-i.HALF_PI,e=Math.cos(a),h=Math.sin(a),Math.abs(this.coslat0)<=i.EPSLN?(n=i.tsfnz(this.e,l*this.con,this.con*u),r=2*this.a*this.k0*n/this.cons,t.x=this.x0+r*Math.sin(o-this.long0),t.y=this.y0-this.con*r*Math.cos(o-this.long0),t):(Math.abs(this.sinlat0)<i.EPSLN?(s=2*this.a*this.k0/(1+e*Math.cos(c)),t.y=s*h):(s=2*this.a*this.k0*this.ms1/(this.cosX0*(1+this.sinX0*h+this.cosX0*e*Math.cos(c))),t.y=s*(this.cosX0*h-this.sinX0*e*Math.cos(c))+this.y0),t.x=s*e*Math.sin(c)+this.x0,t))},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s,a,h,e,n,r=Math.sqrt(t.x*t.x+t.y*t.y);if(this.sphere){var o=2*Math.atan(r/(.5*this.a*this.k0));return s=this.long0,a=this.lat0,r<=i.EPSLN?(t.x=s,t.y=a,t):(a=Math.asin(Math.cos(o)*this.sinlat0+t.y*Math.sin(o)*this.coslat0/r),s=Math.abs(this.coslat0)<i.EPSLN?this.lat0>0?i.adjust_lon(this.long0+Math.atan2(t.x,-1*t.y)):i.adjust_lon(this.long0+Math.atan2(t.x,t.y)):i.adjust_lon(this.long0+Math.atan2(t.x*Math.sin(o),r*this.coslat0*Math.cos(o)-t.y*this.sinlat0*Math.sin(o))),t.x=s,t.y=a,t)}if(Math.abs(this.coslat0)<=i.EPSLN){if(r<=i.EPSLN)return a=this.lat0,s=this.long0,t.x=s,t.y=a,t;t.x*=this.con,t.y*=this.con,h=r*this.cons/(2*this.a*this.k0),a=this.con*i.phi2z(this.e,h),s=this.con*i.adjust_lon(this.con*this.long0+Math.atan2(t.x,-1*t.y))}else e=2*Math.atan(r*this.cosX0/(2*this.a*this.k0*this.ms1)),s=this.long0,r<=i.EPSLN?n=this.X0:(n=Math.asin(Math.cos(e)*this.sinX0+t.y*Math.sin(e)*this.cosX0/r),s=i.adjust_lon(this.long0+Math.atan2(t.x*Math.sin(e),r*this.cosX0*Math.cos(e)-t.y*this.sinX0*Math.sin(e)))),a=-1*i.phi2z(this.e,Math.tan(.5*(i.HALF_PI+n)));return t.x=s,t.y=a,t},s.names=["stere"]}),i("proj4/projCode/somerc",["require","exports","module"],function(t,s){s.init=function(){var t=this.lat0;this.lambda0=this.long0;var s=Math.sin(t),i=this.a,a=this.rf,h=1/a,e=2*h-Math.pow(h,2),n=this.e=Math.sqrt(e);this.R=this.k0*i*Math.sqrt(1-e)/(1-e*Math.pow(s,2)),this.alpha=Math.sqrt(1+e/(1-e)*Math.pow(Math.cos(t),4)),this.b0=Math.asin(s/this.alpha);var r=Math.log(Math.tan(Math.PI/4+this.b0/2)),o=Math.log(Math.tan(Math.PI/4+t/2)),l=Math.log((1+n*s)/(1-n*s));this.K=r-this.alpha*o+this.alpha*n/2*l},s.forward=function(t){var s=Math.log(Math.tan(Math.PI/4-t.y/2)),i=this.e/2*Math.log((1+this.e*Math.sin(t.y))/(1-this.e*Math.sin(t.y))),a=-this.alpha*(s+i)+this.K,h=2*(Math.atan(Math.exp(a))-Math.PI/4),e=this.alpha*(t.x-this.lambda0),n=Math.atan(Math.sin(e)/(Math.sin(this.b0)*Math.tan(h)+Math.cos(this.b0)*Math.cos(e))),r=Math.asin(Math.cos(this.b0)*Math.sin(h)-Math.sin(this.b0)*Math.cos(h)*Math.cos(e));return t.y=this.R/2*Math.log((1+Math.sin(r))/(1-Math.sin(r)))+this.y0,t.x=this.R*n+this.x0,t},s.inverse=function(t){for(var s=t.x-this.x0,i=t.y-this.y0,a=s/this.R,h=2*(Math.atan(Math.exp(i/this.R))-Math.PI/4),e=Math.asin(Math.cos(this.b0)*Math.sin(h)+Math.sin(this.b0)*Math.cos(h)*Math.cos(a)),n=Math.atan(Math.sin(a)/(Math.cos(this.b0)*Math.cos(a)-Math.sin(this.b0)*Math.tan(h))),r=this.lambda0+n/this.alpha,o=0,l=e,u=-1e3,p=0;Math.abs(l-u)>1e-7;){if(++p>20)return;o=1/this.alpha*(Math.log(Math.tan(Math.PI/4+e/2))-this.K)+this.e*Math.log(Math.tan(Math.PI/4+Math.asin(this.e*Math.sin(l))/2)),u=l,l=2*Math.atan(Math.exp(o))-Math.PI/2}return t.x=r,t.y=l,t},s.names=["somerc"]}),i("proj4/projCode/omerc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.no_off=this.no_off||!1,this.no_rot=this.no_rot||!1,isNaN(this.k0)&&(this.k0=1);var t=Math.sin(this.lat0),s=Math.cos(this.lat0),a=this.e*t;this.bl=Math.sqrt(1+this.es/(1-this.es)*Math.pow(s,4)),this.al=this.a*this.bl*this.k0*Math.sqrt(1-this.es)/(1-a*a);var h=i.tsfnz(this.e,this.lat0,t),e=this.bl/s*Math.sqrt((1-this.es)/(1-a*a));1>e*e&&(e=1);var n,r;if(isNaN(this.longc)){var o=i.tsfnz(this.e,this.lat1,Math.sin(this.lat1)),l=i.tsfnz(this.e,this.lat2,Math.sin(this.lat2));this.el=this.lat0>=0?(e+Math.sqrt(e*e-1))*Math.pow(h,this.bl):(e-Math.sqrt(e*e-1))*Math.pow(h,this.bl);var u=Math.pow(o,this.bl),p=Math.pow(l,this.bl);n=this.el/u,r=.5*(n-1/n);var c=(this.el*this.el-p*u)/(this.el*this.el+p*u),m=(p-u)/(p+u),M=i.adjust_lon(this.long1-this.long2);this.long0=.5*(this.long1+this.long2)-Math.atan(c*Math.tan(.5*this.bl*M)/m)/this.bl,this.long0=i.adjust_lon(this.long0);var f=i.adjust_lon(this.long1-this.long0);this.gamma0=Math.atan(Math.sin(this.bl*f)/r),this.alpha=Math.asin(e*Math.sin(this.gamma0))}else n=this.lat0>=0?e+Math.sqrt(e*e-1):e-Math.sqrt(e*e-1),this.el=n*Math.pow(h,this.bl),r=.5*(n-1/n),this.gamma0=Math.asin(Math.sin(this.alpha)/e),this.long0=this.longc-Math.asin(r*Math.tan(this.gamma0))/this.bl;this.uc=this.no_off?0:this.lat0>=0?this.al/this.bl*Math.atan2(Math.sqrt(e*e-1),Math.cos(this.alpha)):-1*this.al/this.bl*Math.atan2(Math.sqrt(e*e-1),Math.cos(this.alpha))},s.forward=function(t){var s,a,h,e=t.x,n=t.y,r=i.adjust_lon(e-this.long0);if(Math.abs(Math.abs(n)-i.HALF_PI)<=i.EPSLN)h=n>0?-1:1,a=this.al/this.bl*Math.log(Math.tan(i.FORTPI+.5*h*this.gamma0)),s=-1*h*i.HALF_PI*this.al/this.bl;else{var o=i.tsfnz(this.e,n,Math.sin(n)),l=this.el/Math.pow(o,this.bl),u=.5*(l-1/l),p=.5*(l+1/l),c=Math.sin(this.bl*r),m=(u*Math.sin(this.gamma0)-c*Math.cos(this.gamma0))/p;a=Math.abs(Math.abs(m)-1)<=i.EPSLN?Number.POSITIVE_INFINITY:.5*this.al*Math.log((1-m)/(1+m))/this.bl,s=Math.abs(Math.cos(this.bl*r))<=i.EPSLN?this.al*this.bl*r:this.al*Math.atan2(u*Math.cos(this.gamma0)+c*Math.sin(this.gamma0),Math.cos(this.bl*r))/this.bl}return this.no_rot?(t.x=this.x0+s,t.y=this.y0+a):(s-=this.uc,t.x=this.x0+a*Math.cos(this.alpha)+s*Math.sin(this.alpha),t.y=this.y0+s*Math.cos(this.alpha)-a*Math.sin(this.alpha)),t},s.inverse=function(t){var s,a;this.no_rot?(a=t.y-this.y0,s=t.x-this.x0):(a=(t.x-this.x0)*Math.cos(this.alpha)-(t.y-this.y0)*Math.sin(this.alpha),s=(t.y-this.y0)*Math.cos(this.alpha)+(t.x-this.x0)*Math.sin(this.alpha),s+=this.uc);var h=Math.exp(-1*this.bl*a/this.al),e=.5*(h-1/h),n=.5*(h+1/h),r=Math.sin(this.bl*s/this.al),o=(r*Math.cos(this.gamma0)+e*Math.sin(this.gamma0))/n,l=Math.pow(this.el/Math.sqrt((1+o)/(1-o)),1/this.bl);return Math.abs(o-1)<i.EPSLN?(t.x=this.long0,t.y=i.HALF_PI):Math.abs(o+1)<i.EPSLN?(t.x=this.long0,t.y=-1*i.HALF_PI):(t.y=i.phi2z(this.e,l),t.x=i.adjust_lon(this.long0-Math.atan2(e*Math.cos(this.gamma0)-r*Math.sin(this.gamma0),Math.cos(this.bl*s/this.al))/this.bl)),t},s.names=["Hotine_Oblique_Mercator","Hotine Oblique Mercator","Hotine_Oblique_Mercator_Azimuth_Natural_Origin","Hotine_Oblique_Mercator_Azimuth_Center","omerc"]}),i("proj4/projCode/lcc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){if(this.lat2||(this.lat2=this.lat1),this.k0||(this.k0=1),!(Math.abs(this.lat1+this.lat2)<i.EPSLN)){var t=this.b/this.a;this.e=Math.sqrt(1-t*t);var s=Math.sin(this.lat1),a=Math.cos(this.lat1),h=i.msfnz(this.e,s,a),e=i.tsfnz(this.e,this.lat1,s),n=Math.sin(this.lat2),r=Math.cos(this.lat2),o=i.msfnz(this.e,n,r),l=i.tsfnz(this.e,this.lat2,n),u=i.tsfnz(this.e,this.lat0,Math.sin(this.lat0));this.ns=Math.abs(this.lat1-this.lat2)>i.EPSLN?Math.log(h/o)/Math.log(e/l):s,isNaN(this.ns)&&(this.ns=s),this.f0=h/(this.ns*Math.pow(e,this.ns)),this.rh=this.a*this.f0*Math.pow(u,this.ns),this.title||(this.title="Lambert Conformal Conic")}},s.forward=function(t){var s=t.x,a=t.y;Math.abs(2*Math.abs(a)-i.PI)<=i.EPSLN&&(a=i.sign(a)*(i.HALF_PI-2*i.EPSLN));var h,e,n=Math.abs(Math.abs(a)-i.HALF_PI);if(n>i.EPSLN)h=i.tsfnz(this.e,a,Math.sin(a)),e=this.a*this.f0*Math.pow(h,this.ns);else{if(n=a*this.ns,0>=n)return null;e=0}var r=this.ns*i.adjust_lon(s-this.long0);return t.x=this.k0*e*Math.sin(r)+this.x0,t.y=this.k0*(this.rh-e*Math.cos(r))+this.y0,t},s.inverse=function(t){var s,a,h,e,n,r=(t.x-this.x0)/this.k0,o=this.rh-(t.y-this.y0)/this.k0;this.ns>0?(s=Math.sqrt(r*r+o*o),a=1):(s=-Math.sqrt(r*r+o*o),a=-1);var l=0;if(0!==s&&(l=Math.atan2(a*r,a*o)),0!==s||this.ns>0){if(a=1/this.ns,h=Math.pow(s/(this.a*this.f0),a),e=i.phi2z(this.e,h),-9999===e)return null}else e=-i.HALF_PI;return n=i.adjust_lon(l/this.ns+this.long0),t.x=n,t.y=e,t},s.names=["Lambert Tangential Conformal Conic Projection","Lambert_Conformal_Conic","Lambert_Conformal_Conic_2SP","lcc"]}),i("proj4/projCode/krovak",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.a=6377397.155,this.es=.006674372230614,this.e=Math.sqrt(this.es),this.lat0||(this.lat0=.863937979737193),this.long0||(this.long0=.4334234309119251),this.k0||(this.k0=.9999),this.s45=.785398163397448,this.s90=2*this.s45,this.fi0=this.lat0,this.e2=this.es,this.e=Math.sqrt(this.e2),this.alfa=Math.sqrt(1+this.e2*Math.pow(Math.cos(this.fi0),4)/(1-this.e2)),this.uq=1.04216856380474,this.u0=Math.asin(Math.sin(this.fi0)/this.alfa),this.g=Math.pow((1+this.e*Math.sin(this.fi0))/(1-this.e*Math.sin(this.fi0)),this.alfa*this.e/2),this.k=Math.tan(this.u0/2+this.s45)/Math.pow(Math.tan(this.fi0/2+this.s45),this.alfa)*this.g,this.k1=this.k0,this.n0=this.a*Math.sqrt(1-this.e2)/(1-this.e2*Math.pow(Math.sin(this.fi0),2)),this.s0=1.37008346281555,this.n=Math.sin(this.s0),this.ro0=this.k1*this.n0/Math.tan(this.s0),this.ad=this.s90-this.uq},s.forward=function(t){var s,a,h,e,n,r,o,l=t.x,u=t.y,p=i.adjust_lon(l-this.long0);return s=Math.pow((1+this.e*Math.sin(u))/(1-this.e*Math.sin(u)),this.alfa*this.e/2),a=2*(Math.atan(this.k*Math.pow(Math.tan(u/2+this.s45),this.alfa)/s)-this.s45),h=-p*this.alfa,e=Math.asin(Math.cos(this.ad)*Math.sin(a)+Math.sin(this.ad)*Math.cos(a)*Math.cos(h)),n=Math.asin(Math.cos(a)*Math.sin(h)/Math.cos(e)),r=this.n*n,o=this.ro0*Math.pow(Math.tan(this.s0/2+this.s45),this.n)/Math.pow(Math.tan(e/2+this.s45),this.n),t.y=o*Math.cos(r)/1,t.x=o*Math.sin(r)/1,this.czech||(t.y*=-1,t.x*=-1),t},s.inverse=function(t){var s,i,a,h,e,n,r,o,l=t.x;t.x=t.y,t.y=l,this.czech||(t.y*=-1,t.x*=-1),n=Math.sqrt(t.x*t.x+t.y*t.y),e=Math.atan2(t.y,t.x),h=e/Math.sin(this.s0),a=2*(Math.atan(Math.pow(this.ro0/n,1/this.n)*Math.tan(this.s0/2+this.s45))-this.s45),s=Math.asin(Math.cos(this.ad)*Math.sin(a)-Math.sin(this.ad)*Math.cos(a)*Math.cos(h)),i=Math.asin(Math.cos(a)*Math.sin(h)/Math.cos(s)),t.x=this.long0-i/this.alfa,r=s,o=0;var u=0;do t.y=2*(Math.atan(Math.pow(this.k,-1/this.alfa)*Math.pow(Math.tan(s/2+this.s45),1/this.alfa)*Math.pow((1+this.e*Math.sin(r))/(1-this.e*Math.sin(r)),this.e/2))-this.s45),Math.abs(r-t.y)<1e-10&&(o=1),r=t.y,u+=1;while(0===o&&15>u);return u>=15?null:t},s.names=["Krovak","krovak"]}),i("proj4/projCode/cass",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.sphere||(this.e0=i.e0fn(this.es),this.e1=i.e1fn(this.es),this.e2=i.e2fn(this.es),this.e3=i.e3fn(this.es),this.ml0=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat0))},s.forward=function(t){var s,a,h=t.x,e=t.y;if(h=i.adjust_lon(h-this.long0),this.sphere)s=this.a*Math.asin(Math.cos(e)*Math.sin(h)),a=this.a*(Math.atan2(Math.tan(e),Math.cos(h))-this.lat0);else{var n=Math.sin(e),r=Math.cos(e),o=i.gN(this.a,this.e,n),l=Math.tan(e)*Math.tan(e),u=h*Math.cos(e),p=u*u,c=this.es*r*r/(1-this.es),m=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,e);s=o*u*(1-p*l*(1/6-(8-l+8*c)*p/120)),a=m-this.ml0+o*n/r*p*(.5+(5-l+6*c)*p/24)}return t.x=s+this.x0,t.y=a+this.y0,t},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s,a,h=t.x/this.a,e=t.y/this.a;if(this.sphere){var n=e+this.lat0;s=Math.asin(Math.sin(n)*Math.cos(h)),a=Math.atan2(Math.tan(h),Math.cos(n))}else{var r=this.ml0/this.a+e,o=i.imlfn(r,this.e0,this.e1,this.e2,this.e3);if(Math.abs(Math.abs(o)-i.HALF_PI)<=i.EPSLN)return t.x=this.long0,t.y=i.HALF_PI,0>e&&(t.y*=-1),t;var l=i.gN(this.a,this.e,Math.sin(o)),u=l*l*l/this.a/this.a*(1-this.es),p=Math.pow(Math.tan(o),2),c=h*this.a/l,m=c*c;s=o-l*Math.tan(o)/u*c*c*(.5-(1+3*p)*c*c/24),a=c*(1-m*(p/3+(1+3*p)*p*m/15))/Math.cos(o)}return t.x=i.adjust_lon(a+this.long0),t.y=i.adjust_lat(s),t},s.names=["Cassini","Cassini_Soldner","cass"]}),i("proj4/projCode/laea",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.S_POLE=1,s.N_POLE=2,s.EQUIT=3,s.OBLIQ=4,s.init=function(){var t=Math.abs(this.lat0);if(this.mode=Math.abs(t-i.HALF_PI)<i.EPSLN?this.lat0<0?this.S_POLE:this.N_POLE:Math.abs(t)<i.EPSLN?this.EQUIT:this.OBLIQ,this.es>0){var s;switch(this.qp=i.qsfnz(this.e,1),this.mmf=.5/(1-this.es),this.apa=this.authset(this.es),this.mode){case this.N_POLE:this.dd=1;break;case this.S_POLE:this.dd=1;break;case this.EQUIT:this.rq=Math.sqrt(.5*this.qp),this.dd=1/this.rq,this.xmf=1,this.ymf=.5*this.qp;break;case this.OBLIQ:this.rq=Math.sqrt(.5*this.qp),s=Math.sin(this.lat0),this.sinb1=i.qsfnz(this.e,s)/this.qp,this.cosb1=Math.sqrt(1-this.sinb1*this.sinb1),this.dd=Math.cos(this.lat0)/(Math.sqrt(1-this.es*s*s)*this.rq*this.cosb1),this.ymf=(this.xmf=this.rq)/this.dd,this.xmf*=this.dd}}else this.mode===this.OBLIQ&&(this.sinph0=Math.sin(this.lat0),this.cosph0=Math.cos(this.lat0))},s.forward=function(t){var s,a,h,e,n,r,o,l,u,p,c=t.x,m=t.y;if(c=i.adjust_lon(c-this.long0),this.sphere){if(n=Math.sin(m),p=Math.cos(m),h=Math.cos(c),this.mode===this.OBLIQ||this.mode===this.EQUIT){if(a=this.mode===this.EQUIT?1+p*h:1+this.sinph0*n+this.cosph0*p*h,a<=i.EPSLN)return null;a=Math.sqrt(2/a),s=a*p*Math.sin(c),a*=this.mode===this.EQUIT?n:this.cosph0*n-this.sinph0*p*h}else if(this.mode===this.N_POLE||this.mode===this.S_POLE){if(this.mode===this.N_POLE&&(h=-h),Math.abs(m+this.phi0)<i.EPSLN)return null;a=i.FORTPI-.5*m,a=2*(this.mode===this.S_POLE?Math.cos(a):Math.sin(a)),s=a*Math.sin(c),a*=h}}else{switch(o=0,l=0,u=0,h=Math.cos(c),e=Math.sin(c),n=Math.sin(m),r=i.qsfnz(this.e,n),(this.mode===this.OBLIQ||this.mode===this.EQUIT)&&(o=r/this.qp,l=Math.sqrt(1-o*o)),this.mode){case this.OBLIQ:u=1+this.sinb1*o+this.cosb1*l*h;break;case this.EQUIT:u=1+l*h;break;case this.N_POLE:u=i.HALF_PI+m,r=this.qp-r;break;case this.S_POLE:u=m-i.HALF_PI,r=this.qp+r}if(Math.abs(u)<i.EPSLN)return null;switch(this.mode){case this.OBLIQ:case this.EQUIT:u=Math.sqrt(2/u),a=this.mode===this.OBLIQ?this.ymf*u*(this.cosb1*o-this.sinb1*l*h):(u=Math.sqrt(2/(1+l*h)))*o*this.ymf,s=this.xmf*u*l*e;break;case this.N_POLE:case this.S_POLE:r>=0?(s=(u=Math.sqrt(r))*e,a=h*(this.mode===this.S_POLE?u:-u)):s=a=0}}return t.x=this.a*s+this.x0,t.y=this.a*a+this.y0,t},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s,a,h,e,n,r,o,l=t.x/this.a,u=t.y/this.a;if(this.sphere){var p,c=0,m=0;if(p=Math.sqrt(l*l+u*u),a=.5*p,a>1)return null;switch(a=2*Math.asin(a),(this.mode===this.OBLIQ||this.mode===this.EQUIT)&&(m=Math.sin(a),c=Math.cos(a)),this.mode){case this.EQUIT:a=Math.abs(p)<=i.EPSLN?0:Math.asin(u*m/p),l*=m,u=c*p;break;case this.OBLIQ:a=Math.abs(p)<=i.EPSLN?this.phi0:Math.asin(c*this.sinph0+u*m*this.cosph0/p),l*=m*this.cosph0,u=(c-Math.sin(a)*this.sinph0)*p;break;case this.N_POLE:u=-u,a=i.HALF_PI-a;break;case this.S_POLE:a-=i.HALF_PI}s=0!==u||this.mode!==this.EQUIT&&this.mode!==this.OBLIQ?Math.atan2(l,u):0}else{if(o=0,this.mode===this.OBLIQ||this.mode===this.EQUIT){if(l/=this.dd,u*=this.dd,r=Math.sqrt(l*l+u*u),r<i.EPSLN)return t.x=0,t.y=this.phi0,t;e=2*Math.asin(.5*r/this.rq),h=Math.cos(e),l*=e=Math.sin(e),this.mode===this.OBLIQ?(o=h*this.sinb1+u*e*this.cosb1/r,n=this.qp*o,u=r*this.cosb1*h-u*this.sinb1*e):(o=u*e/r,n=this.qp*o,u=r*h)}else if(this.mode===this.N_POLE||this.mode===this.S_POLE){if(this.mode===this.N_POLE&&(u=-u),n=l*l+u*u,!n)return t.x=0,t.y=this.phi0,t;o=1-n/this.qp,this.mode===this.S_POLE&&(o=-o)}s=Math.atan2(l,u),a=this.authlat(Math.asin(o),this.apa)}return t.x=i.adjust_lon(this.long0+s),t.y=a,t},s.P00=.3333333333333333,s.P01=.17222222222222222,s.P02=.10257936507936508,s.P10=.06388888888888888,s.P11=.0664021164021164,s.P20=.016415012942191543,s.authset=function(t){var s,i=[];return i[0]=t*this.P00,s=t*t,i[0]+=s*this.P01,i[1]=s*this.P10,s*=t,i[0]+=s*this.P02,i[1]+=s*this.P11,i[2]=s*this.P20,i},s.authlat=function(t,s){var i=t+t;return t+s[0]*Math.sin(i)+s[1]*Math.sin(i+i)+s[2]*Math.sin(i+i+i)},s.names=["Lambert Azimuthal Equal Area","Lambert_Azimuthal_Equal_Area","laea"]}),i("proj4/projCode/merc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){var t=this.b/this.a;this.es=1-t*t,this.e=Math.sqrt(this.es),this.lat_ts?this.k0=this.sphere?Math.cos(this.lat_ts):i.msfnz(this.e,Math.sin(this.lat_ts),Math.cos(this.lat_ts)):this.k0||(this.k0=this.k?this.k:1)},s.forward=function(t){var s=t.x,a=t.y;if(a*i.R2D>90&&a*i.R2D<-90&&s*i.R2D>180&&s*i.R2D<-180)return null;var h,e;if(Math.abs(Math.abs(a)-i.HALF_PI)<=i.EPSLN)return null;if(this.sphere)h=this.x0+this.a*this.k0*i.adjust_lon(s-this.long0),e=this.y0+this.a*this.k0*Math.log(Math.tan(i.FORTPI+.5*a));else{var n=Math.sin(a),r=i.tsfnz(this.e,a,n);h=this.x0+this.a*this.k0*i.adjust_lon(s-this.long0),e=this.y0-this.a*this.k0*Math.log(r)}return t.x=h,t.y=e,t},s.inverse=function(t){var s,a,h=t.x-this.x0,e=t.y-this.y0;if(this.sphere)a=i.HALF_PI-2*Math.atan(Math.exp(-e/(this.a*this.k0)));else{var n=Math.exp(-e/(this.a*this.k0));if(a=i.phi2z(this.e,n),-9999===a)return null}return s=i.adjust_lon(this.long0+h/(this.a*this.k0)),t.x=s,t.y=a,t},s.names=["Mercator","Popular Visualisation Pseudo Mercator","Mercator_1SP","Mercator_Auxiliary_Sphere","merc"]}),i("proj4/projCode/aea",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){Math.abs(this.lat1+this.lat2)<i.EPSLN||(this.temp=this.b/this.a,this.es=1-Math.pow(this.temp,2),this.e3=Math.sqrt(this.es),this.sin_po=Math.sin(this.lat1),this.cos_po=Math.cos(this.lat1),this.t1=this.sin_po,this.con=this.sin_po,this.ms1=i.msfnz(this.e3,this.sin_po,this.cos_po),this.qs1=i.qsfnz(this.e3,this.sin_po,this.cos_po),this.sin_po=Math.sin(this.lat2),this.cos_po=Math.cos(this.lat2),this.t2=this.sin_po,this.ms2=i.msfnz(this.e3,this.sin_po,this.cos_po),this.qs2=i.qsfnz(this.e3,this.sin_po,this.cos_po),this.sin_po=Math.sin(this.lat0),this.cos_po=Math.cos(this.lat0),this.t3=this.sin_po,this.qs0=i.qsfnz(this.e3,this.sin_po,this.cos_po),this.ns0=Math.abs(this.lat1-this.lat2)>i.EPSLN?(this.ms1*this.ms1-this.ms2*this.ms2)/(this.qs2-this.qs1):this.con,this.c=this.ms1*this.ms1+this.ns0*this.qs1,this.rh=this.a*Math.sqrt(this.c-this.ns0*this.qs0)/this.ns0)},s.forward=function(t){var s=t.x,a=t.y;this.sin_phi=Math.sin(a),this.cos_phi=Math.cos(a);var h=i.qsfnz(this.e3,this.sin_phi,this.cos_phi),e=this.a*Math.sqrt(this.c-this.ns0*h)/this.ns0,n=this.ns0*i.adjust_lon(s-this.long0),r=e*Math.sin(n)+this.x0,o=this.rh-e*Math.cos(n)+this.y0;return t.x=r,t.y=o,t},s.inverse=function(t){var s,a,h,e,n,r;return t.x-=this.x0,t.y=this.rh-t.y+this.y0,this.ns0>=0?(s=Math.sqrt(t.x*t.x+t.y*t.y),h=1):(s=-Math.sqrt(t.x*t.x+t.y*t.y),h=-1),e=0,0!==s&&(e=Math.atan2(h*t.x,h*t.y)),h=s*this.ns0/this.a,this.sphere?r=Math.asin((this.c-h*h)/(2*this.ns0)):(a=(this.c-h*h)/this.ns0,r=this.phi1z(this.e3,a)),n=i.adjust_lon(e/this.ns0+this.long0),t.x=n,t.y=r,t},s.phi1z=function(t,s){var a,h,e,n,r,o=i.asinz(.5*s);if(t<i.EPSLN)return o;for(var l=t*t,u=1;25>=u;u++)if(a=Math.sin(o),h=Math.cos(o),e=t*a,n=1-e*e,r=.5*n*n/h*(s/(1-l)-a/n+.5/t*Math.log((1-e)/(1+e))),o+=r,Math.abs(r)<=1e-7)return o;return null},s.names=["Albers_Conic_Equal_Area","Albers","aea"]}),i("proj4/projCode/gnom",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.sin_p14=Math.sin(this.lat0),this.cos_p14=Math.cos(this.lat0),this.infinity_dist=1e3*this.a,this.rc=1},s.forward=function(t){var s,a,h,e,n,r,o,l,u=t.x,p=t.y;return h=i.adjust_lon(u-this.long0),s=Math.sin(p),a=Math.cos(p),e=Math.cos(h),r=this.sin_p14*s+this.cos_p14*a*e,n=1,r>0||Math.abs(r)<=i.EPSLN?(o=this.x0+this.a*n*a*Math.sin(h)/r,l=this.y0+this.a*n*(this.cos_p14*s-this.sin_p14*a*e)/r):(o=this.x0+this.infinity_dist*a*Math.sin(h),l=this.y0+this.infinity_dist*(this.cos_p14*s-this.sin_p14*a*e)),t.x=o,t.y=l,t},s.inverse=function(t){var s,a,h,e,n,r;return t.x=(t.x-this.x0)/this.a,t.y=(t.y-this.y0)/this.a,t.x/=this.k0,t.y/=this.k0,(s=Math.sqrt(t.x*t.x+t.y*t.y))?(e=Math.atan2(s,this.rc),a=Math.sin(e),h=Math.cos(e),r=i.asinz(h*this.sin_p14+t.y*a*this.cos_p14/s),n=Math.atan2(t.x*a,s*this.cos_p14*h-t.y*this.sin_p14*a),n=i.adjust_lon(this.long0+n)):(r=this.phic0,n=0),t.x=n,t.y=r,t},s.names=["gnom"]}),i("proj4/projCode/cea",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.sphere||(this.k0=i.msfnz(this.e,Math.sin(this.lat_ts),Math.cos(this.lat_ts)))},s.forward=function(t){var s,a,h=t.x,e=t.y,n=i.adjust_lon(h-this.long0);if(this.sphere)s=this.x0+this.a*n*Math.cos(this.lat_ts),a=this.y0+this.a*Math.sin(e)/Math.cos(this.lat_ts);else{var r=i.qsfnz(this.e,Math.sin(e));s=this.x0+this.a*this.k0*n,a=this.y0+.5*this.a*r/this.k0}return t.x=s,t.y=a,t},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s,a;return this.sphere?(s=i.adjust_lon(this.long0+t.x/this.a/Math.cos(this.lat_ts)),a=Math.asin(t.y/this.a*Math.cos(this.lat_ts))):(a=i.iqsfnz(this.e,2*t.y*this.k0/this.a),s=i.adjust_lon(this.long0+t.x/(this.a*this.k0))),t.x=s,t.y=a,t},s.names=["cea"]}),i("proj4/projCode/eqc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.x0=this.x0||0,this.y0=this.y0||0,this.lat0=this.lat0||0,this.long0=this.long0||0,this.lat_ts=this.lat_t||0,this.title=this.title||"Equidistant Cylindrical (Plate Carre)",this.rc=Math.cos(this.lat_ts)},s.forward=function(t){var s=t.x,a=t.y,h=i.adjust_lon(s-this.long0),e=i.adjust_lat(a-this.lat0);return t.x=this.x0+this.a*h*this.rc,t.y=this.y0+this.a*e,t},s.inverse=function(t){var s=t.x,a=t.y;return t.x=i.adjust_lon(this.long0+(s-this.x0)/(this.a*this.rc)),t.y=i.adjust_lat(this.lat0+(a-this.y0)/this.a),t},s.names=["Equirectangular","Equidistant_Cylindrical","eqc"]}),i("proj4/projCode/poly",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.temp=this.b/this.a,this.es=1-Math.pow(this.temp,2),this.e=Math.sqrt(this.es),this.e0=i.e0fn(this.es),this.e1=i.e1fn(this.es),this.e2=i.e2fn(this.es),this.e3=i.e3fn(this.es),this.ml0=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat0)},s.forward=function(t){var s,a,h,e=t.x,n=t.y,r=i.adjust_lon(e-this.long0);if(h=r*Math.sin(n),this.sphere)Math.abs(n)<=i.EPSLN?(s=this.a*r,a=-1*this.a*this.lat0):(s=this.a*Math.sin(h)/Math.tan(n),a=this.a*(i.adjust_lat(n-this.lat0)+(1-Math.cos(h))/Math.tan(n)));else if(Math.abs(n)<=i.EPSLN)s=this.a*r,a=-1*this.ml0;else{var o=i.gN(this.a,this.e,Math.sin(n))/Math.tan(n);s=o*Math.sin(h),a=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,n)-this.ml0+o*(1-Math.cos(h))}return t.x=s+this.x0,t.y=a+this.y0,t},s.inverse=function(t){var s,a,h,e,n,r,o,l,u;if(h=t.x-this.x0,e=t.y-this.y0,this.sphere)if(Math.abs(e+this.a*this.lat0)<=i.EPSLN)s=i.adjust_lon(h/this.a+this.long0),a=0;else{r=this.lat0+e/this.a,o=h*h/this.a/this.a+r*r,l=r;var p;for(n=i.MAX_ITER;n;--n)if(p=Math.tan(l),u=-1*(r*(l*p+1)-l-.5*(l*l+o)*p)/((l-r)/p-1),l+=u,Math.abs(u)<=i.EPSLN){a=l;break}s=i.adjust_lon(this.long0+Math.asin(h*Math.tan(l)/this.a)/Math.sin(a))}else if(Math.abs(e+this.ml0)<=i.EPSLN)a=0,s=i.adjust_lon(this.long0+h/this.a);else{r=(this.ml0+e)/this.a,o=h*h/this.a/this.a+r*r,l=r;var c,m,M,f,d;for(n=i.MAX_ITER;n;--n)if(d=this.e*Math.sin(l),c=Math.sqrt(1-d*d)*Math.tan(l),m=this.a*i.mlfn(this.e0,this.e1,this.e2,this.e3,l),M=this.e0-2*this.e1*Math.cos(2*l)+4*this.e2*Math.cos(4*l)-6*this.e3*Math.cos(6*l),f=m/this.a,u=(r*(c*f+1)-f-.5*c*(f*f+o))/(this.es*Math.sin(2*l)*(f*f+o-2*r*f)/(4*c)+(r-f)*(c*M-2/Math.sin(2*l))-M),l-=u,Math.abs(u)<=i.EPSLN){a=l;break}c=Math.sqrt(1-this.es*Math.pow(Math.sin(a),2))*Math.tan(a),s=i.adjust_lon(this.long0+Math.asin(h*c/this.a)/Math.sin(a))}return t.x=s,t.y=a,t},s.names=["Polyconic","poly"]}),i("proj4/projCode/nzmg",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.iterations=1,s.init=function(){this.A=[],this.A[1]=.6399175073,this.A[2]=-.1358797613,this.A[3]=.063294409,this.A[4]=-.02526853,this.A[5]=.0117879,this.A[6]=-.0055161,this.A[7]=.0026906,this.A[8]=-.001333,this.A[9]=67e-5,this.A[10]=-34e-5,this.B_re=[],this.B_im=[],this.B_re[1]=.7557853228,this.B_im[1]=0,this.B_re[2]=.249204646,this.B_im[2]=.003371507,this.B_re[3]=-.001541739,this.B_im[3]=.04105856,this.B_re[4]=-.10162907,this.B_im[4]=.01727609,this.B_re[5]=-.26623489,this.B_im[5]=-.36249218,this.B_re[6]=-.6870983,this.B_im[6]=-1.1651967,this.C_re=[],this.C_im=[],this.C_re[1]=1.3231270439,this.C_im[1]=0,this.C_re[2]=-.577245789,this.C_im[2]=-.007809598,this.C_re[3]=.508307513,this.C_im[3]=-.112208952,this.C_re[4]=-.15094762,this.C_im[4]=.18200602,this.C_re[5]=1.01418179,this.C_im[5]=1.64497696,this.C_re[6]=1.9660549,this.C_im[6]=2.5127645,this.D=[],this.D[1]=1.5627014243,this.D[2]=.5185406398,this.D[3]=-.03333098,this.D[4]=-.1052906,this.D[5]=-.0368594,this.D[6]=.007317,this.D[7]=.0122,this.D[8]=.00394,this.D[9]=-.0013},s.forward=function(t){var s,a=t.x,h=t.y,e=h-this.lat0,n=a-this.long0,r=1e-5*(e/i.SEC_TO_RAD),o=n,l=1,u=0;for(s=1;10>=s;s++)l*=r,u+=this.A[s]*l;var p,c,m=u,M=o,f=1,d=0,_=0,y=0;for(s=1;6>=s;s++)p=f*m-d*M,c=d*m+f*M,f=p,d=c,_=_+this.B_re[s]*f-this.B_im[s]*d,y=y+this.B_im[s]*f+this.B_re[s]*d;return t.x=y*this.a+this.x0,t.y=_*this.a+this.y0,t},s.inverse=function(t){var s,a,h,e=t.x,n=t.y,r=e-this.x0,o=n-this.y0,l=o/this.a,u=r/this.a,p=1,c=0,m=0,M=0;for(s=1;6>=s;s++)a=p*l-c*u,h=c*l+p*u,p=a,c=h,m=m+this.C_re[s]*p-this.C_im[s]*c,M=M+this.C_im[s]*p+this.C_re[s]*c;for(var f=0;f<this.iterations;f++){var d,_,y=m,j=M,x=l,g=u;for(s=2;6>=s;s++)d=y*m-j*M,_=j*m+y*M,y=d,j=_,x+=(s-1)*(this.B_re[s]*y-this.B_im[s]*j),g+=(s-1)*(this.B_im[s]*y+this.B_re[s]*j);y=1,j=0;var v=this.B_re[1],P=this.B_im[1];for(s=2;6>=s;s++)d=y*m-j*M,_=j*m+y*M,y=d,j=_,v+=s*(this.B_re[s]*y-this.B_im[s]*j),P+=s*(this.B_im[s]*y+this.B_re[s]*j);var b=v*v+P*P;m=(x*v+g*P)/b,M=(g*v-x*P)/b}var C=m,S=M,N=1,I=0;for(s=1;9>=s;s++)N*=C,I+=this.D[s]*N;var A=this.lat0+1e5*I*i.SEC_TO_RAD,E=this.long0+S;return t.x=E,t.y=A,t},s.names=["New_Zealand_Map_Grid","nzmg"]}),i("proj4/projCode/mill",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){},s.forward=function(t){var s=t.x,a=t.y,h=i.adjust_lon(s-this.long0),e=this.x0+this.a*h,n=this.y0+1.25*this.a*Math.log(Math.tan(i.PI/4+a/2.5));return t.x=e,t.y=n,t},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s=i.adjust_lon(this.long0+t.x/this.a),a=2.5*(Math.atan(Math.exp(.8*t.y/this.a))-i.PI/4);return t.x=s,t.y=a,t},s.names=["Miller_Cylindrical","mill"]}),i("proj4/projCode/sinu",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.sphere?(this.n=1,this.m=0,this.es=0,this.C_y=Math.sqrt((this.m+1)/this.n),this.C_x=this.C_y/(this.m+1)):this.en=i.pj_enfn(this.es)},s.forward=function(t){var s,a,h=t.x,e=t.y;if(h=i.adjust_lon(h-this.long0),this.sphere){if(this.m)for(var n=this.n*Math.sin(e),r=i.MAX_ITER;r;--r){var o=(this.m*e+Math.sin(e)-n)/(this.m+Math.cos(e));if(e-=o,Math.abs(o)<i.EPSLN)break}else e=1!==this.n?Math.asin(this.n*Math.sin(e)):e;s=this.a*this.C_x*h*(this.m+Math.cos(e)),a=this.a*this.C_y*e}else{var l=Math.sin(e),u=Math.cos(e);a=this.a*i.pj_mlfn(e,l,u,this.en),s=this.a*h*u/Math.sqrt(1-this.es*l*l)}return t.x=s,t.y=a,t},s.inverse=function(t){var s,a,h,e;return t.x-=this.x0,h=t.x/this.a,t.y-=this.y0,s=t.y/this.a,this.sphere?(s/=this.C_y,h/=this.C_x*(this.m+Math.cos(s)),this.m?s=i.asinz((this.m*s+Math.sin(s))/this.n):1!==this.n&&(s=i.asinz(Math.sin(s)/this.n)),h=i.adjust_lon(h+this.long0),s=i.adjust_lat(s)):(s=i.pj_inv_mlfn(t.y/this.a,this.es,this.en),e=Math.abs(s),e<i.HALF_PI?(e=Math.sin(s),a=this.long0+t.x*Math.sqrt(1-this.es*e*e)/(this.a*Math.cos(s)),h=i.adjust_lon(a)):e-i.EPSLN<i.HALF_PI&&(h=this.long0)),t.x=h,t.y=s,t},s.names=["Sinusoidal","sinu"]}),i("proj4/projCode/moll",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){},s.forward=function(t){for(var s=t.x,a=t.y,h=i.adjust_lon(s-this.long0),e=a,n=i.PI*Math.sin(a),r=0;!0;r++){var o=-(e+Math.sin(e)-n)/(1+Math.cos(e));if(e+=o,Math.abs(o)<i.EPSLN)break}e/=2,i.PI/2-Math.abs(a)<i.EPSLN&&(h=0);var l=.900316316158*this.a*h*Math.cos(e)+this.x0,u=1.4142135623731*this.a*Math.sin(e)+this.y0;return t.x=l,t.y=u,t},s.inverse=function(t){var s,a;t.x-=this.x0,t.y-=this.y0,a=t.y/(1.4142135623731*this.a),Math.abs(a)>.999999999999&&(a=.999999999999),s=Math.asin(a);var h=i.adjust_lon(this.long0+t.x/(.900316316158*this.a*Math.cos(s)));h<-i.PI&&(h=-i.PI),h>i.PI&&(h=i.PI),a=(2*s+Math.sin(2*s))/i.PI,Math.abs(a)>1&&(a=1);var e=Math.asin(a);return t.x=h,t.y=e,t},s.names=["Mollweide","moll"]}),i("proj4/projCode/eqdc",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){return Math.abs(this.lat1+this.lat2)<i.EPSLN?(i.reportError("eqdc:init: Equal Latitudes"),void 0):(this.lat2=this.lat2||this.lat1,this.temp=this.b/this.a,this.es=1-Math.pow(this.temp,2),this.e=Math.sqrt(this.es),this.e0=i.e0fn(this.es),this.e1=i.e1fn(this.es),this.e2=i.e2fn(this.es),this.e3=i.e3fn(this.es),this.sinphi=Math.sin(this.lat1),this.cosphi=Math.cos(this.lat1),this.ms1=i.msfnz(this.e,this.sinphi,this.cosphi),this.ml1=i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat1),Math.abs(this.lat1-this.lat2)<i.EPSLN?this.ns=this.sinphi:(this.sinphi=Math.sin(this.lat2),this.cosphi=Math.cos(this.lat2),this.ms2=i.msfnz(this.e,this.sinphi,this.cosphi),this.ml2=i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat2),this.ns=(this.ms1-this.ms2)/(this.ml2-this.ml1)),this.g=this.ml1+this.ms1/this.ns,this.ml0=i.mlfn(this.e0,this.e1,this.e2,this.e3,this.lat0),this.rh=this.a*(this.g-this.ml0),void 0)
-},s.forward=function(t){var s,a=t.x,h=t.y;if(this.sphere)s=this.a*(this.g-h);else{var e=i.mlfn(this.e0,this.e1,this.e2,this.e3,h);s=this.a*(this.g-e)}var n=this.ns*i.adjust_lon(a-this.long0),r=this.x0+s*Math.sin(n),o=this.y0+this.rh-s*Math.cos(n);return t.x=r,t.y=o,t},s.inverse=function(t){t.x-=this.x0,t.y=this.rh-t.y+this.y0;var s,a,h,e;this.ns>=0?(a=Math.sqrt(t.x*t.x+t.y*t.y),s=1):(a=-Math.sqrt(t.x*t.x+t.y*t.y),s=-1);var n=0;if(0!==a&&(n=Math.atan2(s*t.x,s*t.y)),this.sphere)return e=i.adjust_lon(this.long0+n/this.ns),h=i.adjust_lat(this.g-a/this.a),t.x=e,t.y=h,t;var r=this.g-a/this.a;return h=i.imlfn(r,this.e0,this.e1,this.e2,this.e3),e=i.adjust_lon(this.long0+n/this.ns),t.x=e,t.y=h,t},s.names=["Equidistant_Conic","eqdc"]}),i("proj4/projCode/vandg",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.R=this.a},s.forward=function(t){var s,a,h=t.x,e=t.y,n=i.adjust_lon(h-this.long0);Math.abs(e)<=i.EPSLN&&(s=this.x0+this.R*n,a=this.y0);var r=i.asinz(2*Math.abs(e/i.PI));(Math.abs(n)<=i.EPSLN||Math.abs(Math.abs(e)-i.HALF_PI)<=i.EPSLN)&&(s=this.x0,a=e>=0?this.y0+i.PI*this.R*Math.tan(.5*r):this.y0+i.PI*this.R*-Math.tan(.5*r));var o=.5*Math.abs(i.PI/n-n/i.PI),l=o*o,u=Math.sin(r),p=Math.cos(r),c=p/(u+p-1),m=c*c,M=c*(2/u-1),f=M*M,d=i.PI*this.R*(o*(c-f)+Math.sqrt(l*(c-f)*(c-f)-(f+l)*(m-f)))/(f+l);0>n&&(d=-d),s=this.x0+d;var _=l+c;return d=i.PI*this.R*(M*_-o*Math.sqrt((f+l)*(l+1)-_*_))/(f+l),a=e>=0?this.y0+d:this.y0-d,t.x=s,t.y=a,t},s.inverse=function(t){var s,a,h,e,n,r,o,l,u,p,c,m,M;return t.x-=this.x0,t.y-=this.y0,c=i.PI*this.R,h=t.x/c,e=t.y/c,n=h*h+e*e,r=-Math.abs(e)*(1+n),o=r-2*e*e+h*h,l=-2*r+1+2*e*e+n*n,M=e*e/l+(2*o*o*o/l/l/l-9*r*o/l/l)/27,u=(r-o*o/3/l)/l,p=2*Math.sqrt(-u/3),c=3*M/u/p,Math.abs(c)>1&&(c=c>=0?1:-1),m=Math.acos(c)/3,a=t.y>=0?(-p*Math.cos(m+i.PI/3)-o/3/l)*i.PI:-(-p*Math.cos(m+i.PI/3)-o/3/l)*i.PI,s=Math.abs(h)<i.EPSLN?this.long0:i.adjust_lon(this.long0+i.PI*(n-1+Math.sqrt(1+2*(h*h-e*e)+n*n))/2/h),t.x=s,t.y=a,t},s.names=["Van_der_Grinten_I","VanDerGrinten","vandg"]}),i("proj4/projCode/aeqd",["require","exports","module","proj4/common"],function(t,s){var i=t("proj4/common");s.init=function(){this.sin_p12=Math.sin(this.lat0),this.cos_p12=Math.cos(this.lat0)},s.forward=function(t){var s,a,h,e,n,r,o,l,u,p,c,m,M,f,d,_,y,j,x,g,v,P,b,C=t.x,S=t.y,N=Math.sin(t.y),I=Math.cos(t.y),A=i.adjust_lon(C-this.long0);return this.sphere?Math.abs(this.sin_p12-1)<=i.EPSLN?(t.x=this.x0+this.a*(i.HALF_PI-S)*Math.sin(A),t.y=this.y0-this.a*(i.HALF_PI-S)*Math.cos(A),t):Math.abs(this.sin_p12+1)<=i.EPSLN?(t.x=this.x0+this.a*(i.HALF_PI+S)*Math.sin(A),t.y=this.y0+this.a*(i.HALF_PI+S)*Math.cos(A),t):(j=this.sin_p12*N+this.cos_p12*I*Math.cos(A),_=Math.acos(j),y=_/Math.sin(_),t.x=this.x0+this.a*y*I*Math.sin(A),t.y=this.y0+this.a*y*(this.cos_p12*N-this.sin_p12*I*Math.cos(A)),t):(s=i.e0fn(this.es),a=i.e1fn(this.es),h=i.e2fn(this.es),e=i.e3fn(this.es),Math.abs(this.sin_p12-1)<=i.EPSLN?(n=this.a*i.mlfn(s,a,h,e,i.HALF_PI),r=this.a*i.mlfn(s,a,h,e,S),t.x=this.x0+(n-r)*Math.sin(A),t.y=this.y0-(n-r)*Math.cos(A),t):Math.abs(this.sin_p12+1)<=i.EPSLN?(n=this.a*i.mlfn(s,a,h,e,i.HALF_PI),r=this.a*i.mlfn(s,a,h,e,S),t.x=this.x0+(n+r)*Math.sin(A),t.y=this.y0+(n+r)*Math.cos(A),t):(o=N/I,l=i.gN(this.a,this.e,this.sin_p12),u=i.gN(this.a,this.e,N),p=Math.atan((1-this.es)*o+this.es*l*this.sin_p12/(u*I)),c=Math.atan2(Math.sin(A),this.cos_p12*Math.tan(p)-this.sin_p12*Math.cos(A)),x=0===c?Math.asin(this.cos_p12*Math.sin(p)-this.sin_p12*Math.cos(p)):Math.abs(Math.abs(c)-i.PI)<=i.EPSLN?-Math.asin(this.cos_p12*Math.sin(p)-this.sin_p12*Math.cos(p)):Math.asin(Math.sin(A)*Math.cos(p)/Math.sin(c)),m=this.e*this.sin_p12/Math.sqrt(1-this.es),M=this.e*this.cos_p12*Math.cos(c)/Math.sqrt(1-this.es),f=m*M,d=M*M,g=x*x,v=g*x,P=v*x,b=P*x,_=l*x*(1-g*d*(1-d)/6+v/8*f*(1-2*d)+P/120*(d*(4-7*d)-3*m*m*(1-7*d))-b/48*f),t.x=this.x0+_*Math.sin(c),t.y=this.y0+_*Math.cos(c),t))},s.inverse=function(t){t.x-=this.x0,t.y-=this.y0;var s,a,h,e,n,r,o,l,u,p,c,m,M,f,d,_,y,j,x,g,v,P,b;if(this.sphere){if(s=Math.sqrt(t.x*t.x+t.y*t.y),s>2*i.HALF_PI*this.a)return;return a=s/this.a,h=Math.sin(a),e=Math.cos(a),n=this.long0,Math.abs(s)<=i.EPSLN?r=this.lat0:(r=i.asinz(e*this.sin_p12+t.y*h*this.cos_p12/s),o=Math.abs(this.lat0)-i.HALF_PI,n=Math.abs(o)<=i.EPSLN?this.lat0>=0?i.adjust_lon(this.long0+Math.atan2(t.x,-t.y)):i.adjust_lon(this.long0-Math.atan2(-t.x,t.y)):i.adjust_lon(this.long0+Math.atan2(t.x*h,s*this.cos_p12*e-t.y*this.sin_p12*h))),t.x=n,t.y=r,t}return l=i.e0fn(this.es),u=i.e1fn(this.es),p=i.e2fn(this.es),c=i.e3fn(this.es),Math.abs(this.sin_p12-1)<=i.EPSLN?(m=this.a*i.mlfn(l,u,p,c,i.HALF_PI),s=Math.sqrt(t.x*t.x+t.y*t.y),M=m-s,r=i.imlfn(M/this.a,l,u,p,c),n=i.adjust_lon(this.long0+Math.atan2(t.x,-1*t.y)),t.x=n,t.y=r,t):Math.abs(this.sin_p12+1)<=i.EPSLN?(m=this.a*i.mlfn(l,u,p,c,i.HALF_PI),s=Math.sqrt(t.x*t.x+t.y*t.y),M=s-m,r=i.imlfn(M/this.a,l,u,p,c),n=i.adjust_lon(this.long0+Math.atan2(t.x,t.y)),t.x=n,t.y=r,t):(s=Math.sqrt(t.x*t.x+t.y*t.y),_=Math.atan2(t.x,t.y),f=i.gN(this.a,this.e,this.sin_p12),y=Math.cos(_),j=this.e*this.cos_p12*y,x=-j*j/(1-this.es),g=3*this.es*(1-x)*this.sin_p12*this.cos_p12*y/(1-this.es),v=s/f,P=v-x*(1+x)*Math.pow(v,3)/6-g*(1+3*x)*Math.pow(v,4)/24,b=1-x*P*P/2-v*P*P*P/6,d=Math.asin(this.sin_p12*Math.cos(P)+this.cos_p12*Math.sin(P)*y),n=i.adjust_lon(this.long0+Math.asin(Math.sin(_)*Math.sin(P)/Math.cos(d))),r=Math.atan((1-this.es*b*this.sin_p12/Math.sin(d))*Math.tan(d)/(1-this.es)),t.x=n,t.y=r,t)},s.names=["Azimuthal_Equidistant","aeqd"]}),i("proj4/projCode/longlat",["require","exports","module"],function(t,s){function i(t){return t}s.init=function(){},s.forward=i,s.inverse=i,s.names=["longlat","identity"]}),i("proj4/projections",["require","exports","module","proj4/projCode/tmerc","proj4/projCode/utm","proj4/projCode/sterea","proj4/projCode/stere","proj4/projCode/somerc","proj4/projCode/omerc","proj4/projCode/lcc","proj4/projCode/krovak","proj4/projCode/cass","proj4/projCode/laea","proj4/projCode/merc","proj4/projCode/aea","proj4/projCode/gnom","proj4/projCode/cea","proj4/projCode/eqc","proj4/projCode/poly","proj4/projCode/nzmg","proj4/projCode/mill","proj4/projCode/sinu","proj4/projCode/moll","proj4/projCode/eqdc","proj4/projCode/vandg","proj4/projCode/aeqd","proj4/projCode/longlat"],function(t,s){function i(t,s){var i=e.length;return t.names?(e[i]=t,t.names.forEach(function(t){h[t.toLowerCase()]=i}),this):(console.log(s),!0)}var a=[t("proj4/projCode/tmerc"),t("proj4/projCode/utm"),t("proj4/projCode/sterea"),t("proj4/projCode/stere"),t("proj4/projCode/somerc"),t("proj4/projCode/omerc"),t("proj4/projCode/lcc"),t("proj4/projCode/krovak"),t("proj4/projCode/cass"),t("proj4/projCode/laea"),t("proj4/projCode/merc"),t("proj4/projCode/aea"),t("proj4/projCode/gnom"),t("proj4/projCode/cea"),t("proj4/projCode/eqc"),t("proj4/projCode/poly"),t("proj4/projCode/nzmg"),t("proj4/projCode/mill"),t("proj4/projCode/sinu"),t("proj4/projCode/moll"),t("proj4/projCode/eqdc"),t("proj4/projCode/vandg"),t("proj4/projCode/aeqd"),t("proj4/projCode/longlat")],h={},e=[];s.add=i,s.get=function(t){if(!t)return!1;var s=t.toLowerCase();return"undefined"!=typeof h[s]&&e[h[s]]?e[h[s]]:void 0},s.start=function(){a.forEach(i)}}),i("proj4/Proj",["require","proj4/extend","proj4/common","proj4/defs","proj4/constants","proj4/datum","proj4/projections","proj4/wkt","proj4/projString"],function(t){function s(t){if(!(this instanceof s))return new s(t);this.srsCodeInput=t,this.x0=0,this.y0=0;var a;"string"==typeof t?t in h?(this.deriveConstants(h[t]),i(this,h[t])):t.indexOf("GEOGCS")>=0||t.indexOf("GEOCCS")>=0||t.indexOf("PROJCS")>=0||t.indexOf("LOCAL_CS")>=0?(a=o(t),this.deriveConstants(a),i(this,a)):"+"===t[0]&&(a=l(t),this.deriveConstants(a),i(this,a)):(this.deriveConstants(t),i(this,t)),this.initTransforms(this.projName)}var i=t("proj4/extend"),a=t("proj4/common"),h=t("proj4/defs"),e=t("proj4/constants"),n=t("proj4/datum"),r=t("proj4/projections"),o=t("proj4/wkt"),l=t("proj4/projString");return s.projections=r,s.projections.start(),s.prototype={initTransforms:function(t){var a=s.projections.get(t);if(!a)throw"unknown projection "+t;i(this,a),this.init()},deriveConstants:function(t){if(t.nadgrids&&0===t.nadgrids.length&&(t.nadgrids=null),t.nadgrids){t.grids=t.nadgrids.split(",");var s=null,h=t.grids.length;if(h>0)for(var r=0;h>r;r++){s=t.grids[r];var o=s.split("@");""!==o[o.length-1]&&(t.grids[r]={mandatory:1===o.length,name:o[o.length-1],grid:e.grids[o[o.length-1]]},t.grids[r].mandatory&&!t.grids[r].grid)}}if(t.datumCode&&"none"!==t.datumCode){var l=e.Datum[t.datumCode];l&&(t.datum_params=l.towgs84?l.towgs84.split(","):null,t.ellps=l.ellipse,t.datumName=l.datumName?l.datumName:t.datumCode)}if(!t.a){var u=e.Ellipsoid[t.ellps]?e.Ellipsoid[t.ellps]:e.Ellipsoid.WGS84;i(t,u)}t.rf&&!t.b&&(t.b=(1-1/t.rf)*t.a),(0===t.rf||Math.abs(t.a-t.b)<a.EPSLN)&&(t.sphere=!0,t.b=t.a),t.a2=t.a*t.a,t.b2=t.b*t.b,t.es=(t.a2-t.b2)/t.a2,t.e=Math.sqrt(t.es),t.R_A&&(t.a*=1-t.es*(a.SIXTH+t.es*(a.RA4+t.es*a.RA6)),t.a2=t.a*t.a,t.b2=t.b*t.b,t.es=0),t.ep2=(t.a2-t.b2)/t.b2,t.k0||(t.k0=1),t.axis||(t.axis="enu"),t.datum=n(t)}},s}),i("proj4/datum_transform",["require","proj4/common"],function(t){var s=t("proj4/common");return function(t,i,a){function h(t){return t===s.PJD_3PARAM||t===s.PJD_7PARAM}var e,n,r;if(t.compare_datums(i))return a;if(t.datum_type===s.PJD_NODATUM||i.datum_type===s.PJD_NODATUM)return a;var o=t.a,l=t.es,u=i.a,p=i.es,c=t.datum_type;if(c===s.PJD_GRIDSHIFT)if(0===this.apply_gridshift(t,0,a))t.a=s.SRS_WGS84_SEMIMAJOR,t.es=s.SRS_WGS84_ESQUARED;else{if(!t.datum_params)return t.a=o,t.es=t.es,a;for(e=1,n=0,r=t.datum_params.length;r>n;n++)e*=t.datum_params[n];if(0===e)return t.a=o,t.es=t.es,a;c=t.datum_params.length>3?s.PJD_7PARAM:s.PJD_3PARAM}return i.datum_type===s.PJD_GRIDSHIFT&&(i.a=s.SRS_WGS84_SEMIMAJOR,i.es=s.SRS_WGS84_ESQUARED),(t.es!==i.es||t.a!==i.a||h(c)||h(i.datum_type))&&(t.geodetic_to_geocentric(a),h(t.datum_type)&&t.geocentric_to_wgs84(a),h(i.datum_type)&&i.geocentric_from_wgs84(a),i.geocentric_to_geodetic(a)),i.datum_type===s.PJD_GRIDSHIFT&&this.apply_gridshift(i,1,a),t.a=o,t.es=l,i.a=u,i.es=p,a}}),i("proj4/adjust_axis",[],function(){return function(t,s,i){var a,h,e,n=i.x,r=i.y,o=i.z||0;for(e=0;3>e;e++)if(!s||2!==e||void 0!==i.z)switch(0===e?(a=n,h="x"):1===e?(a=r,h="y"):(a=o,h="z"),t.axis[e]){case"e":i[h]=a;break;case"w":i[h]=-a;break;case"n":i[h]=a;break;case"s":i[h]=-a;break;case"u":void 0!==i[h]&&(i.z=a);break;case"d":void 0!==i[h]&&(i.z=-a);break;default:return null}return i}}),i("proj4/transform",["require","proj4/common","proj4/datum_transform","proj4/adjust_axis","proj4/Proj"],function(t){var s=t("proj4/common"),i=t("proj4/datum_transform"),a=t("proj4/adjust_axis"),h=t("proj4/Proj");return function e(t,n,r){function o(t,i){return(t.datum.datum_type===s.PJD_3PARAM||t.datum.datum_type===s.PJD_7PARAM)&&"WGS84"!==i.datumCode}var l;return t.datum&&n.datum&&(o(t,n)||o(n,t))&&(l=new h("WGS84"),e(t,l,r),t=l),"enu"!==t.axis&&a(t,!1,r),"longlat"===t.projName?(r.x*=s.D2R,r.y*=s.D2R):(t.to_meter&&(r.x*=t.to_meter,r.y*=t.to_meter),t.inverse(r)),t.from_greenwich&&(r.x+=t.from_greenwich),r=i(t.datum,n.datum,r),n.from_greenwich&&(r.x-=n.from_greenwich),"longlat"===n.projName?(r.x*=s.R2D,r.y*=s.R2D):(n.forward(r),n.to_meter&&(r.x/=n.to_meter,r.y/=n.to_meter)),"enu"!==n.axis&&a(n,!0,r),r}}),i("proj4/core",["require","proj4/Point","proj4/Proj","proj4/transform"],function(t){function s(t,s,i){var h;return Array.isArray(i)?(h=e(t,s,a(i)),3===i.length?[h.x,h.y,h.z]:[h.x,h.y]):e(t,s,i)}function i(t){return t instanceof h?t:t.oProj?t.oProj:h(t)}var a=t("proj4/Point"),h=t("proj4/Proj"),e=t("proj4/transform"),n=h("WGS84");return function(t,a,h){t=i(t);var e,r=!1;return"undefined"==typeof a?(a=t,t=n,r=!0):("undefined"!=typeof a.x||Array.isArray(a))&&(h=a,a=t,t=n,r=!0),a=i(a),h?s(t,a,h):(e={forward:function(i){return s(t,a,i)},inverse:function(i){return s(a,t,i)}},r&&(e.oProj=a),e)}}),i("proj4/version",[],function(){return"1.4.1"}),i("proj4",["require","proj4/core","proj4/Proj","proj4/Point","proj4/defs","proj4/transform","proj4/mgrs","proj4/version"],function(t){var s=t("proj4/core");return s.defaultDatum="WGS84",s.Proj=t("proj4/Proj"),s.WGS84=new s.Proj("WGS84"),s.Point=t("proj4/Point"),s.defs=t("proj4/defs"),s.transform=t("proj4/transform"),s.mgrs=t("proj4/mgrs"),s.version=t("proj4/version"),s}),s("proj4")});
+/*
+  proj4js.js -- Javascript reprojection library. 
+  
+  Authors:      Mike Adair madairATdmsolutions.ca
+                Richard Greenwood richATgreenwoodmap.com
+                Didier Richard didier.richardATign.fr
+                Stephen Irons
+  License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html 
+                Note: This program is an almost direct port of the C library
+                Proj4.
+*/
+/* ======================================================================
+    proj4js.js
+   ====================================================================== */
+
+/*
+Author:       Mike Adair madairATdmsolutions.ca
+              Richard Greenwood rich@greenwoodmap.com
+License:      LGPL as per: http://www.gnu.org/copyleft/lesser.html
+
+$Id: Proj.js 2956 2007-07-09 12:17:52Z steven $
+*/
+
+/**
+ * Namespace: Proj4js
+ *
+ * Proj4js is a JavaScript library to transform point coordinates from one 
+ * coordinate system to another, including datum transformations.
+ *
+ * This library is a port of both the Proj.4 and GCTCP C libraries to JavaScript. 
+ * Enabling these transformations in the browser allows geographic data stored 
+ * in different projections to be combined in browser-based web mapping 
+ * applications.
+ * 
+ * Proj4js must have access to coordinate system initialization strings (which
+ * are the same as for PROJ.4 command line).  Thes can be included in your 
+ * application using a <script> tag or Proj4js can load CS initialization 
+ * strings from a local directory or a web service such as spatialreference.org.
+ *
+ * Similarly, Proj4js must have access to projection transform code.  These can
+ * be included individually using a <script> tag in your page, built into a 
+ * custom build of Proj4js or loaded dynamically at run-time.  Using the
+ * -combined and -compressed versions of Proj4js includes all projection class
+ * code by default.
+ *
+ * Note that dynamic loading of defs and code happens ascynchrously, check the
+ * Proj.readyToUse flag before using the Proj object.  If the defs and code
+ * required by your application are loaded through script tags, dynamic loading
+ * is not required and the Proj object will be readyToUse on return from the 
+ * constructor.
+ * 
+ * All coordinates are handled as points which have a .x and a .y property
+ * which will be modified in place.
+ *
+ * Override Proj4js.reportError for output of alerts and warnings.
+ *
+ * See http://trac.osgeo.org/proj4js/wiki/UserGuide for full details.
+*/
+
+/**
+ * Global namespace object for Proj4js library
+ */
+Proj4js = {
+
+    /**
+     * Property: defaultDatum
+     * The datum to use when no others a specified
+     */
+    defaultDatum: 'WGS84',                  //default datum
+
+    /** 
+    * Method: transform(source, dest, point)
+    * Transform a point coordinate from one map projection to another.  This is
+    * really the only public method you should need to use.
+    *
+    * Parameters:
+    * source - {Proj4js.Proj} source map projection for the transformation
+    * dest - {Proj4js.Proj} destination map projection for the transformation
+    * point - {Object} point to transform, may be geodetic (long, lat) or
+    *     projected Cartesian (x,y), but should always have x,y properties.
+    */
+    transform: function(source, dest, point) {
+        if (!source.readyToUse) {
+            this.reportError("Proj4js initialization for:"+source.srsCode+" not yet complete");
+            return point;
+        }
+        if (!dest.readyToUse) {
+            this.reportError("Proj4js initialization for:"+dest.srsCode+" not yet complete");
+            return point;
+        }
+        
+        // Workaround for Spherical Mercator
+        if ((source.srsProjNumber =="900913" && dest.datumCode != "WGS84" && !dest.datum_params) ||
+            (dest.srsProjNumber == "900913" && source.datumCode != "WGS84" && !source.datum_params)) {
+            var wgs84 = Proj4js.WGS84;
+            this.transform(source, wgs84, point);
+            source = wgs84;
+        }
+
+        // DGR, 2010/11/12
+        if (source.axis!="enu") {
+            this.adjust_axis(source,false,point);
+        }
+
+        // Transform source points to long/lat, if they aren't already.
+        if ( source.projName=="longlat") {
+            point.x *= Proj4js.common.D2R;  // convert degrees to radians
+            point.y *= Proj4js.common.D2R;
+        } else {
+            if (source.to_meter) {
+                point.x *= source.to_meter;
+                point.y *= source.to_meter;
+            }
+            source.inverse(point); // Convert Cartesian to longlat
+        }
+
+        // Adjust for the prime meridian if necessary
+        if (source.from_greenwich) { 
+            point.x += source.from_greenwich; 
+        }
+
+        // Convert datums if needed, and if possible.
+        point = this.datum_transform( source.datum, dest.datum, point );
+
+        // Adjust for the prime meridian if necessary
+        if (dest.from_greenwich) {
+            point.x -= dest.from_greenwich;
+        }
+
+        if( dest.projName=="longlat" ) {             
+            // convert radians to decimal degrees
+            point.x *= Proj4js.common.R2D;
+            point.y *= Proj4js.common.R2D;
+        } else  {               // else project
+            dest.forward(point);
+            if (dest.to_meter) {
+                point.x /= dest.to_meter;
+                point.y /= dest.to_meter;
+            }
+        }
+
+        // DGR, 2010/11/12
+        if (dest.axis!="enu") {
+            this.adjust_axis(dest,true,point);
+        }
+
+        return point;
+    }, // transform()
+
+    /** datum_transform()
+      source coordinate system definition,
+      destination coordinate system definition,
+      point to transform in geodetic coordinates (long, lat, height)
+    */
+    datum_transform : function( source, dest, point ) {
+
+      // Short cut if the datums are identical.
+      if( source.compare_datums( dest ) ) {
+          return point; // in this case, zero is sucess,
+                    // whereas cs_compare_datums returns 1 to indicate TRUE
+                    // confusing, should fix this
+      }
+
+      // Explicitly skip datum transform by setting 'datum=none' as parameter for either source or dest
+      if( source.datum_type == Proj4js.common.PJD_NODATUM
+          || dest.datum_type == Proj4js.common.PJD_NODATUM) {
+          return point;
+      }
+
+      // If this datum requires grid shifts, then apply it to geodetic coordinates.
+      if( source.datum_type == Proj4js.common.PJD_GRIDSHIFT )
+      {
+        alert("ERROR: Grid shift transformations are not implemented yet.");
+        /*
+          pj_apply_gridshift( pj_param(source.params,"snadgrids").s, 0,
+                              point_count, point_offset, x, y, z );
+          CHECK_RETURN;
+
+          src_a = SRS_WGS84_SEMIMAJOR;
+          src_es = 0.006694379990;
+        */
+      }
+
+      if( dest.datum_type == Proj4js.common.PJD_GRIDSHIFT )
+      {
+        alert("ERROR: Grid shift transformations are not implemented yet.");
+        /*
+          dst_a = ;
+          dst_es = 0.006694379990;
+        */
+      }
+
+      // Do we need to go through geocentric coordinates?
+      if( source.es != dest.es || source.a != dest.a
+          || source.datum_type == Proj4js.common.PJD_3PARAM
+          || source.datum_type == Proj4js.common.PJD_7PARAM
+          || dest.datum_type == Proj4js.common.PJD_3PARAM
+          || dest.datum_type == Proj4js.common.PJD_7PARAM)
+      {
+
+        // Convert to geocentric coordinates.
+        source.geodetic_to_geocentric( point );
+        // CHECK_RETURN;
+
+        // Convert between datums
+        if( source.datum_type == Proj4js.common.PJD_3PARAM || source.datum_type == Proj4js.common.PJD_7PARAM ) {
+          source.geocentric_to_wgs84(point);
+          // CHECK_RETURN;
+        }
+
+        if( dest.datum_type == Proj4js.common.PJD_3PARAM || dest.datum_type == Proj4js.common.PJD_7PARAM ) {
+          dest.geocentric_from_wgs84(point);
+          // CHECK_RETURN;
+        }
+
+        // Convert back to geodetic coordinates
+        dest.geocentric_to_geodetic( point );
+          // CHECK_RETURN;
+      }
+
+      // Apply grid shift to destination if required
+      if( dest.datum_type == Proj4js.common.PJD_GRIDSHIFT )
+      {
+        alert("ERROR: Grid shift transformations are not implemented yet.");
+        // pj_apply_gridshift( pj_param(dest.params,"snadgrids").s, 1, point);
+        // CHECK_RETURN;
+      }
+      return point;
+    }, // cs_datum_transform
+
+    /**
+     * Function: adjust_axis
+     * Normalize or de-normalized the x/y/z axes.  The normal form is "enu"
+     * (easting, northing, up).
+     * Parameters:
+     * crs {Proj4js.Proj} the coordinate reference system
+     * denorm {Boolean} when false, normalize
+     * point {Object} the coordinates to adjust
+     */
+    adjust_axis: function(crs, denorm, point) {
+        var xin= point.x, yin= point.y, zin= point.z || 0.0;
+        var v, t;
+        for (var i= 0; i<3; i++) {
+            if (denorm && i==2 && point.z===undefined) { continue; }
+                 if (i==0) { v= xin; t= 'x'; }
+            else if (i==1) { v= yin; t= 'y'; }
+            else           { v= zin; t= 'z'; }
+            switch(crs.axis[i]) {
+            case 'e':
+                point[t]= v;
+                break;
+            case 'w':
+                point[t]= -v;
+                break;
+            case 'n':
+                point[t]= v;
+                break;
+            case 's':
+                point[t]= -v;
+                break;
+            case 'u':
+                if (point[t]!==undefined) { point.z= v; }
+                break;
+            case 'd':
+                if (point[t]!==undefined) { point.z= -v; }
+                break;
+            default :
+                alert("ERROR: unknow axis ("+crs.axis[i]+") - check definition of "+src.projName);
+                return null;
+            }
+        }
+        return point;
+    },
+
+    /**
+     * Function: reportError
+     * An internal method to report errors back to user. 
+     * Override this in applications to report error messages or throw exceptions.
+     */
+    reportError: function(msg) {
+      //console.log(msg);
+    },
+
+/**
+ *
+ * Title: Private Methods
+ * The following properties and methods are intended for internal use only.
+ *
+ * This is a minimal implementation of JavaScript inheritance methods so that 
+ * Proj4js can be used as a stand-alone library.
+ * These are copies of the equivalent OpenLayers methods at v2.7
+ */
+ 
+/**
+ * Function: extend
+ * Copy all properties of a source object to a destination object.  Modifies
+ *     the passed in destination object.  Any properties on the source object
+ *     that are set to undefined will not be (re)set on the destination object.
+ *
+ * Parameters:
+ * destination - {Object} The object that will be modified
+ * source - {Object} The object with properties to be set on the destination
+ *
+ * Returns:
+ * {Object} The destination object.
+ */
+    extend: function(destination, source) {
+      destination = destination || {};
+      if(source) {
+          for(var property in source) {
+              var value = source[property];
+              if(value !== undefined) {
+                  destination[property] = value;
+              }
+          }
+      }
+      return destination;
+    },
+
+/**
+ * Constructor: Class
+ * Base class used to construct all other classes. Includes support for 
+ *     multiple inheritance. 
+ *  
+ */
+    Class: function() {
+      var Class = function() {
+          this.initialize.apply(this, arguments);
+      };
+  
+      var extended = {};
+      var parent;
+      for(var i=0; i<arguments.length; ++i) {
+          if(typeof arguments[i] == "function") {
+              // get the prototype of the superclass
+              parent = arguments[i].prototype;
+          } else {
+              // in this case we're extending with the prototype
+              parent = arguments[i];
+          }
+          Proj4js.extend(extended, parent);
+      }
+      Class.prototype = extended;
+      
+      return Class;
+    },
+
+    /**
+     * Function: bind
+     * Bind a function to an object.  Method to easily create closures with
+     *     'this' altered.
+     * 
+     * Parameters:
+     * func - {Function} Input function.
+     * object - {Object} The object to bind to the input function (as this).
+     * 
+     * Returns:
+     * {Function} A closure with 'this' set to the passed in object.
+     */
+    bind: function(func, object) {
+        // create a reference to all arguments past the second one
+        var args = Array.prototype.slice.apply(arguments, [2]);
+        return function() {
+            // Push on any additional arguments from the actual function call.
+            // These will come after those sent to the bind call.
+            var newArgs = args.concat(
+                Array.prototype.slice.apply(arguments, [0])
+            );
+            return func.apply(object, newArgs);
+        };
+    },
+    
+/**
+ * The following properties and methods handle dynamic loading of JSON objects.
+ */
+ 
+    /**
+     * Property: scriptName
+     * {String} The filename of this script without any path.
+     */
+    scriptName: "proj4js-combined.js",
+
+    /**
+     * Property: defsLookupService
+     * AJAX service to retreive projection definition parameters from
+     */
+    defsLookupService: 'http://spatialreference.org/ref',
+
+    /**
+     * Property: libPath
+     * internal: http server path to library code.
+     */
+    libPath: null,
+
+    /**
+     * Function: getScriptLocation
+     * Return the path to this script.
+     *
+     * Returns:
+     * Path to this script
+     */
+    getScriptLocation: function () {
+        if (this.libPath) return this.libPath;
+        var scriptName = this.scriptName;
+        var scriptNameLen = scriptName.length;
+
+        var scripts = document.getElementsByTagName('script');
+        for (var i = 0; i < scripts.length; i++) {
+            var src = scripts[i].getAttribute('src');
+            if (src) {
+                var index = src.lastIndexOf(scriptName);
+                // is it found, at the end of the URL?
+                if ((index > -1) && (index + scriptNameLen == src.length)) {
+                    this.libPath = src.slice(0, -scriptNameLen);
+                    break;
+                }
+            }
+        }
+        return this.libPath||"";
+    },
+
+    /**
+     * Function: loadScript
+     * Load a JS file from a URL into a <script> tag in the page.
+     * 
+     * Parameters:
+     * url - {String} The URL containing the script to load
+     * onload - {Function} A method to be executed when the script loads successfully
+     * onfail - {Function} A method to be executed when there is an error loading the script
+     * loadCheck - {Function} A boolean method that checks to see if the script 
+     *            has loaded.  Typically this just checks for the existance of
+     *            an object in the file just loaded.
+     */
+    loadScript: function(url, onload, onfail, loadCheck) {
+      var script = document.createElement('script');
+      script.defer = false;
+      script.type = "text/javascript";
+      script.id = url;
+      script.src = url;
+      script.onload = onload;
+      script.onerror = onfail;
+      script.loadCheck = loadCheck;
+      if (/MSIE/.test(navigator.userAgent)) {
+        script.onreadystatechange = this.checkReadyState;
+      }
+      document.getElementsByTagName('head')[0].appendChild(script);
+    },
+    
+    /**
+     * Function: checkReadyState
+     * IE workaround since there is no onerror handler.  Calls the user defined 
+     * loadCheck method to determine if the script is loaded.
+     * 
+     */
+    checkReadyState: function() {
+      if (this.readyState == 'loaded') {
+        if (!this.loadCheck()) {
+          this.onerror();
+        } else {
+          this.onload();
+        }
+      }
+    }
+};
+
+/**
+ * Class: Proj4js.Proj
+ *
+ * Proj objects provide transformation methods for point coordinates
+ * between geodetic latitude/longitude and a projected coordinate system. 
+ * once they have been initialized with a projection code.
+ *
+ * Initialization of Proj objects is with a projection code, usually EPSG codes,
+ * which is the key that will be used with the Proj4js.defs array.
+ * 
+ * The code passed in will be stripped of colons and converted to uppercase
+ * to locate projection definition files.
+ *
+ * A projection object has properties for units and title strings.
+ */
+Proj4js.Proj = Proj4js.Class({
+
+  /**
+   * Property: readyToUse
+   * Flag to indicate if initialization is complete for this Proj object
+   */
+  readyToUse: false,   
+  
+  /**
+   * Property: title
+   * The title to describe the projection
+   */
+  title: null,  
+  
+  /**
+   * Property: projName
+   * The projection class for this projection, e.g. lcc (lambert conformal conic,
+   * or merc for mercator).  These are exactly equivalent to their Proj4 
+   * counterparts.
+   */
+  projName: null,
+  /**
+   * Property: units
+   * The units of the projection.  Values include 'm' and 'degrees'
+   */
+  units: null,
+  /**
+   * Property: datum
+   * The datum specified for the projection
+   */
+  datum: null,
+  /**
+   * Property: x0
+   * The x coordinate origin
+   */
+  x0: 0,
+  /**
+   * Property: y0
+   * The y coordinate origin
+   */
+  y0: 0,
+  /**
+   * Property: localCS
+   * Flag to indicate if the projection is a local one in which no transforms
+   * are required.
+   */
+  localCS: false,
+
+  /**
+  * Property: queue
+  * Buffer (FIFO) to hold callbacks waiting to be called when projection loaded.
+  */
+  queue: null,
+
+  /**
+  * Constructor: initialize
+  * Constructor for Proj4js.Proj objects
+  *
+  * Parameters:
+  * srsCode - a code for map projection definition parameters.  These are usually
+  * (but not always) EPSG codes.
+  */
+  initialize: function(srsCode, callback) {
+      this.srsCodeInput = srsCode;
+      
+      //Register callbacks prior to attempting to process definition
+      this.queue = [];
+      if( callback ){
+           this.queue.push( callback );
+      }
+      
+      //check to see if this is a WKT string
+      if ((srsCode.indexOf('GEOGCS') >= 0) ||
+          (srsCode.indexOf('GEOCCS') >= 0) ||
+          (srsCode.indexOf('PROJCS') >= 0) ||
+          (srsCode.indexOf('LOCAL_CS') >= 0)) {
+            this.parseWKT(srsCode);
+            this.deriveConstants();
+            this.loadProjCode(this.projName);
+            return;
+      }
+      
+      // DGR 2008-08-03 : support urn and url
+      if (srsCode.indexOf('urn:') == 0) {
+          //urn:ORIGINATOR:def:crs:CODESPACE:VERSION:ID
+          var urn = srsCode.split(':');
+          if ((urn[1] == 'ogc' || urn[1] =='x-ogc') &&
+              (urn[2] =='def') &&
+              (urn[3] =='crs')) {
+              srsCode = urn[4]+':'+urn[urn.length-1];
+          }
+      } else if (srsCode.indexOf('http://') == 0) {
+          //url#ID
+          var url = srsCode.split('#');
+          if (url[0].match(/epsg.org/)) {
+            // http://www.epsg.org/#
+            srsCode = 'EPSG:'+url[1];
+          } else if (url[0].match(/RIG.xml/)) {
+            //http://librairies.ign.fr/geoportail/resources/RIG.xml#
+            //http://interop.ign.fr/registers/ign/RIG.xml#
+            srsCode = 'IGNF:'+url[1];
+          }
+      }
+      this.srsCode = srsCode.toUpperCase();
+      if (this.srsCode.indexOf("EPSG") == 0) {
+          this.srsCode = this.srsCode;
+          this.srsAuth = 'epsg';
+          this.srsProjNumber = this.srsCode.substring(5);
+      // DGR 2007-11-20 : authority IGNF
+      } else if (this.srsCode.indexOf("IGNF") == 0) {
+          this.srsCode = this.srsCode;
+          this.srsAuth = 'IGNF';
+          this.srsProjNumber = this.srsCode.substring(5);
+      // DGR 2008-06-19 : pseudo-authority CRS for WMS
+      } else if (this.srsCode.indexOf("CRS") == 0) {
+          this.srsCode = this.srsCode;
+          this.srsAuth = 'CRS';
+          this.srsProjNumber = this.srsCode.substring(4);
+      } else {
+          this.srsAuth = '';
+          this.srsProjNumber = this.srsCode;
+      }
+      
+      this.loadProjDefinition();
+  },
+  
+/**
+ * Function: loadProjDefinition
+ *    Loads the coordinate system initialization string if required.
+ *    Note that dynamic loading happens asynchronously so an application must 
+ *    wait for the readyToUse property is set to true.
+ *    To prevent dynamic loading, include the defs through a script tag in
+ *    your application.
+ *
+ */
+    loadProjDefinition: function() {
+      //check in memory
+      if (Proj4js.defs[this.srsCode]) {
+        this.defsLoaded();
+        return;
+      }
+
+      //else check for def on the server
+      var url = Proj4js.getScriptLocation() + 'defs/' + this.srsAuth.toUpperCase() + this.srsProjNumber + '.js';
+      Proj4js.loadScript(url, 
+                Proj4js.bind(this.defsLoaded, this),
+                Proj4js.bind(this.loadFromService, this),
+                Proj4js.bind(this.checkDefsLoaded, this) );
+    },
+
+/**
+ * Function: loadFromService
+ *    Creates the REST URL for loading the definition from a web service and 
+ *    loads it.
+ *
+ */
+    loadFromService: function() {
+      //else load from web service
+      var url = Proj4js.defsLookupService +'/' + this.srsAuth +'/'+ this.srsProjNumber + '/proj4js/';
+      Proj4js.loadScript(url, 
+            Proj4js.bind(this.defsLoaded, this),
+            Proj4js.bind(this.defsFailed, this),
+            Proj4js.bind(this.checkDefsLoaded, this) );
+    },
+
+/**
+ * Function: defsLoaded
+ * Continues the Proj object initilization once the def file is loaded
+ *
+ */
+    defsLoaded: function() {
+      this.parseDefs();
+      this.loadProjCode(this.projName);
+    },
+    
+/**
+ * Function: checkDefsLoaded
+ *    This is the loadCheck method to see if the def object exists
+ *
+ */
+    checkDefsLoaded: function() {
+      if (Proj4js.defs[this.srsCode]) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+ /**
+ * Function: defsFailed
+ *    Report an error in loading the defs file, but continue on using WGS84
+ *
+ */
+   defsFailed: function() {
+      Proj4js.reportError('failed to load projection definition for: '+this.srsCode);
+      Proj4js.defs[this.srsCode] = Proj4js.defs['WGS84'];  //set it to something so it can at least continue
+      this.defsLoaded();
+    },
+
+/**
+ * Function: loadProjCode
+ *    Loads projection class code dynamically if required.
+ *     Projection code may be included either through a script tag or in
+ *     a built version of proj4js
+ *
+ */
+    loadProjCode: function(projName) {
+      if (Proj4js.Proj[projName]) {
+        this.initTransforms();
+        return;
+      }
+
+      //the URL for the projection code
+      var url = Proj4js.getScriptLocation() + 'projCode/' + projName + '.js';
+      Proj4js.loadScript(url, 
+              Proj4js.bind(this.loadProjCodeSuccess, this, projName),
+              Proj4js.bind(this.loadProjCodeFailure, this, projName), 
+              Proj4js.bind(this.checkCodeLoaded, this, projName) );
+    },
+
+ /**
+ * Function: loadProjCodeSuccess
+ *    Loads any proj dependencies or continue on to final initialization.
+ *
+ */
+    loadProjCodeSuccess: function(projName) {
+      if (Proj4js.Proj[projName].dependsOn){
+        this.loadProjCode(Proj4js.Proj[projName].dependsOn);
+      } else {
+        this.initTransforms();
+      }
+    },
+
+ /**
+ * Function: defsFailed
+ *    Report an error in loading the proj file.  Initialization of the Proj
+ *    object has failed and the readyToUse flag will never be set.
+ *
+ */
+    loadProjCodeFailure: function(projName) {
+      Proj4js.reportError("failed to find projection file for: " + projName);
+      //TBD initialize with identity transforms so proj will still work?
+    },
+    
+/**
+ * Function: checkCodeLoaded
+ *    This is the loadCheck method to see if the projection code is loaded
+ *
+ */
+    checkCodeLoaded: function(projName) {
+      if (Proj4js.Proj[projName]) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+/**
+ * Function: initTransforms
+ *    Finalize the initialization of the Proj object
+ *
+ */
+    initTransforms: function() {
+      Proj4js.extend(this, Proj4js.Proj[this.projName]);
+      this.init();
+      this.readyToUse = true;
+      if( this.queue ) {
+        var item;
+        while( (item = this.queue.shift()) ) {
+          item.call( this, this );
+        }
+      }
+  },
+
+/**
+ * Function: parseWKT
+ * Parses a WKT string to get initialization parameters
+ *
+ */
+ wktRE: /^(\w+)\[(.*)\]$/,
+ parseWKT: function(wkt) {
+    var wktMatch = wkt.match(this.wktRE);
+    if (!wktMatch) return;
+    var wktObject = wktMatch[1];
+    var wktContent = wktMatch[2];
+    var wktTemp = wktContent.split(",");
+    var wktName;
+    if (wktObject.toUpperCase() == "TOWGS84") {
+      wktName = wktObject;  //no name supplied for the TOWGS84 array
+    } else {
+      wktName = wktTemp.shift();
+    }
+    wktName = wktName.replace(/^\"/,"");
+    wktName = wktName.replace(/\"$/,"");
+    
+    /*
+    wktContent = wktTemp.join(",");
+    var wktArray = wktContent.split("],");
+    for (var i=0; i<wktArray.length-1; ++i) {
+      wktArray[i] += "]";
+    }
+    */
+    
+    var wktArray = new Array();
+    var bkCount = 0;
+    var obj = "";
+    for (var i=0; i<wktTemp.length; ++i) {
+      var token = wktTemp[i];
+      for (var j=0; j<token.length; ++j) {
+        if (token.charAt(j) == "[") ++bkCount;
+        if (token.charAt(j) == "]") --bkCount;
+      }
+      obj += token;
+      if (bkCount === 0) {
+        wktArray.push(obj);
+        obj = "";
+      } else {
+        obj += ",";
+      }
+    }
+    
+    //do something based on the type of the wktObject being parsed
+    //add in variations in the spelling as required
+    switch (wktObject) {
+      case 'LOCAL_CS':
+        this.projName = 'identity'
+        this.localCS = true;
+        this.srsCode = wktName;
+        break;
+      case 'GEOGCS':
+        this.projName = 'longlat'
+        this.geocsCode = wktName;
+        if (!this.srsCode) this.srsCode = wktName;
+        break;
+      case 'PROJCS':
+        this.srsCode = wktName;
+        break;
+      case 'GEOCCS':
+        break;
+      case 'PROJECTION':
+        this.projName = Proj4js.wktProjections[wktName]
+        break;
+      case 'DATUM':
+        this.datumName = wktName;
+        break;
+      case 'LOCAL_DATUM':
+        this.datumCode = 'none';
+        break;
+      case 'SPHEROID':
+        this.ellps = wktName;
+        this.a = parseFloat(wktArray.shift());
+        this.rf = parseFloat(wktArray.shift());
+        break;
+      case 'PRIMEM':
+        this.from_greenwich = parseFloat(wktArray.shift()); //to radians?
+        break;
+      case 'UNIT':
+        this.units = wktName;
+        this.unitsPerMeter = parseFloat(wktArray.shift());
+        break;
+      case 'PARAMETER':
+        var name = wktName.toLowerCase();
+        var value = parseFloat(wktArray.shift());
+        //there may be many variations on the wktName values, add in case
+        //statements as required
+        switch (name) {
+          case 'false_easting':
+            this.x0 = value;
+            break;
+          case 'false_northing':
+            this.y0 = value;
+            break;
+          case 'scale_factor':
+            this.k0 = value;
+            break;
+          case 'central_meridian':
+            this.long0 = value*Proj4js.common.D2R;
+            break;
+          case 'latitude_of_origin':
+            this.lat0 = value*Proj4js.common.D2R;
+            break;
+          case 'more_here':
+            break;
+          default:
+            break;
+        }
+        break;
+      case 'TOWGS84':
+        this.datum_params = wktArray;
+        break;
+      //DGR 2010-11-12: AXIS
+      case 'AXIS':
+        var name= wktName.toLowerCase();
+        var value= wktArray.shift();
+        switch (value) {
+          case 'EAST' : value= 'e'; break;
+          case 'WEST' : value= 'w'; break;
+          case 'NORTH': value= 'n'; break;
+          case 'SOUTH': value= 's'; break;
+          case 'UP'   : value= 'u'; break;
+          case 'DOWN' : value= 'd'; break;
+          case 'OTHER':
+          default     : value= ' '; break;//FIXME
+        }
+        if (!this.axis) { this.axis= "enu"; }
+        switch(name) {
+          case 'X': this.axis=                         value + this.axis.substr(1,2); break;
+          case 'Y': this.axis= this.axis.substr(0,1) + value + this.axis.substr(2,1); break;
+          case 'Z': this.axis= this.axis.substr(0,2) + value                        ; break;
+          default : break;
+        }
+      case 'MORE_HERE':
+        break;
+      default:
+        break;
+    }
+    for (var i=0; i<wktArray.length; ++i) {
+      this.parseWKT(wktArray[i]);
+    }
+ },
+
+/**
+ * Function: parseDefs
+ * Parses the PROJ.4 initialization string and sets the associated properties.
+ *
+ */
+  parseDefs: function() {
+      this.defData = Proj4js.defs[this.srsCode];
+      var paramName, paramVal;
+      if (!this.defData) {
+        return;
+      }
+      var paramArray=this.defData.split("+");
+
+      for (var prop=0; prop<paramArray.length; prop++) {
+          var property = paramArray[prop].split("=");
+          paramName = property[0].toLowerCase();
+          paramVal = property[1];
+
+          switch (paramName.replace(/\s/gi,"")) {  // trim out spaces
+              case "": break;   // throw away nameless parameter
+              case "title":  this.title = paramVal; break;
+              case "proj":   this.projName =  paramVal.replace(/\s/gi,""); break;
+              case "units":  this.units = paramVal.replace(/\s/gi,""); break;
+              case "datum":  this.datumCode = paramVal.replace(/\s/gi,""); break;
+              case "nadgrids": this.nagrids = paramVal.replace(/\s/gi,""); break;
+              case "ellps":  this.ellps = paramVal.replace(/\s/gi,""); break;
+              case "a":      this.a =  parseFloat(paramVal); break;  // semi-major radius
+              case "b":      this.b =  parseFloat(paramVal); break;  // semi-minor radius
+              // DGR 2007-11-20
+              case "rf":     this.rf = parseFloat(paramVal); break; // inverse flattening rf= a/(a-b)
+              case "lat_0":  this.lat0 = paramVal*Proj4js.common.D2R; break;        // phi0, central latitude
+              case "lat_1":  this.lat1 = paramVal*Proj4js.common.D2R; break;        //standard parallel 1
+              case "lat_2":  this.lat2 = paramVal*Proj4js.common.D2R; break;        //standard parallel 2
+              case "lat_ts": this.lat_ts = paramVal*Proj4js.common.D2R; break;      // used in merc and eqc
+              case "lon_0":  this.long0 = paramVal*Proj4js.common.D2R; break;       // lam0, central longitude
+              case "alpha":  this.alpha =  parseFloat(paramVal)*Proj4js.common.D2R; break;  //for somerc projection
+              case "lonc":   this.longc = paramVal*Proj4js.common.D2R; break;       //for somerc projection
+              case "x_0":    this.x0 = parseFloat(paramVal); break;  // false easting
+              case "y_0":    this.y0 = parseFloat(paramVal); break;  // false northing
+              case "k_0":    this.k0 = parseFloat(paramVal); break;  // projection scale factor
+              case "k":      this.k0 = parseFloat(paramVal); break;  // both forms returned
+              case "r_a":    this.R_A = true; break;                 // sphere--area of ellipsoid
+              case "zone":   this.zone = parseInt(paramVal); break;  // UTM Zone
+              case "south":   this.utmSouth = true; break;  // UTM north/south
+              case "towgs84":this.datum_params = paramVal.split(","); break;
+              case "to_meter": this.to_meter = parseFloat(paramVal); break; // cartesian scaling
+              case "from_greenwich": this.from_greenwich = paramVal*Proj4js.common.D2R; break;
+              // DGR 2008-07-09 : if pm is not a well-known prime meridian take
+              // the value instead of 0.0, then convert to radians
+              case "pm":     paramVal = paramVal.replace(/\s/gi,"");
+                             this.from_greenwich = Proj4js.PrimeMeridian[paramVal] ?
+                                Proj4js.PrimeMeridian[paramVal] : parseFloat(paramVal);
+                             this.from_greenwich *= Proj4js.common.D2R; 
+                             break;
+              // DGR 2010-11-12: axis
+              case "axis":   paramVal = paramVal.replace(/\s/gi,"");
+                             var legalAxis= "ewnsud";
+                             if (paramVal.length==3 &&
+                                 legalAxis.indexOf(paramVal.substr(0,1))!=-1 &&
+                                 legalAxis.indexOf(paramVal.substr(1,1))!=-1 &&
+                                 legalAxis.indexOf(paramVal.substr(2,1))!=-1) {
+                                this.axis= paramVal;
+                             } //FIXME: be silent ?
+                             break
+              case "no_defs": break; 
+              default: //alert("Unrecognized parameter: " + paramName);
+          } // switch()
+      } // for paramArray
+      this.deriveConstants();
+  },
+
+/**
+ * Function: deriveConstants
+ * Sets several derived constant values and initialization of datum and ellipse
+ *     parameters.
+ *
+ */
+  deriveConstants: function() {
+      if (this.nagrids == '@null') this.datumCode = 'none';
+      if (this.datumCode && this.datumCode != 'none') {
+        var datumDef = Proj4js.Datum[this.datumCode];
+        if (datumDef) {
+          this.datum_params = datumDef.towgs84 ? datumDef.towgs84.split(',') : null;
+          this.ellps = datumDef.ellipse;
+          this.datumName = datumDef.datumName ? datumDef.datumName : this.datumCode;
+        }
+      }
+      if (!this.a) {    // do we have an ellipsoid?
+          var ellipse = Proj4js.Ellipsoid[this.ellps] ? Proj4js.Ellipsoid[this.ellps] : Proj4js.Ellipsoid['WGS84'];
+          Proj4js.extend(this, ellipse);
+      }
+      if (this.rf && !this.b) this.b = (1.0 - 1.0/this.rf) * this.a;
+      if (Math.abs(this.a - this.b)<Proj4js.common.EPSLN) {
+        this.sphere = true;
+        this.b= this.a;
+      }
+      this.a2 = this.a * this.a;          // used in geocentric
+      this.b2 = this.b * this.b;          // used in geocentric
+      this.es = (this.a2-this.b2)/this.a2;  // e ^ 2
+      this.e = Math.sqrt(this.es);        // eccentricity
+      if (this.R_A) {
+        this.a *= 1. - this.es * (Proj4js.common.SIXTH + this.es * (Proj4js.common.RA4 + this.es * Proj4js.common.RA6));
+        this.a2 = this.a * this.a;
+        this.b2 = this.b * this.b;
+        this.es = 0.;
+      }
+      this.ep2=(this.a2-this.b2)/this.b2; // used in geocentric
+      if (!this.k0) this.k0 = 1.0;    //default value
+      //DGR 2010-11-12: axis
+      if (!this.axis) { this.axis= "enu"; }
+
+      this.datum = new Proj4js.datum(this);
+  }
+});
+
+Proj4js.Proj.longlat = {
+  init: function() {
+    //no-op for longlat
+  },
+  forward: function(pt) {
+    //identity transform
+    return pt;
+  },
+  inverse: function(pt) {
+    //identity transform
+    return pt;
+  }
+};
+Proj4js.Proj.identity = Proj4js.Proj.longlat;
+
+/**
+  Proj4js.defs is a collection of coordinate system definition objects in the 
+  PROJ.4 command line format.
+  Generally a def is added by means of a separate .js file for example:
+
+    <SCRIPT type="text/javascript" src="defs/EPSG26912.js"></SCRIPT>
+
+  def is a CS definition in PROJ.4 WKT format, for example:
+    +proj="tmerc"   //longlat, etc.
+    +a=majorRadius
+    +b=minorRadius
+    +lat0=somenumber
+    +long=somenumber
+*/
+Proj4js.defs = {
+  // These are so widely used, we'll go ahead and throw them in
+  // without requiring a separate .js file
+  'WGS84': "+title=long/lat:WGS84 +proj=longlat +ellps=WGS84 +datum=WGS84 +units=degrees",
+  'EPSG:4326': "+title=long/lat:WGS84 +proj=longlat +a=6378137.0 +b=6356752.31424518 +ellps=WGS84 +datum=WGS84 +units=degrees",
+  'EPSG:4269': "+title=long/lat:NAD83 +proj=longlat +a=6378137.0 +b=6356752.31414036 +ellps=GRS80 +datum=NAD83 +units=degrees",
+  'EPSG:3785': "+title= Google Mercator +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs"
+};
+Proj4js.defs['GOOGLE'] = Proj4js.defs['EPSG:3785'];
+Proj4js.defs['EPSG:900913'] = Proj4js.defs['EPSG:3785'];
+Proj4js.defs['EPSG:102113'] = Proj4js.defs['EPSG:3785'];
+
+Proj4js.common = {
+  PI : 3.141592653589793238, //Math.PI,
+  HALF_PI : 1.570796326794896619, //Math.PI*0.5,
+  TWO_PI : 6.283185307179586477, //Math.PI*2,
+  FORTPI : 0.78539816339744833,
+  R2D : 57.29577951308232088,
+  D2R : 0.01745329251994329577,
+  SEC_TO_RAD : 4.84813681109535993589914102357e-6, /* SEC_TO_RAD = Pi/180/3600 */
+  EPSLN : 1.0e-10,
+  MAX_ITER : 20,
+  // following constants from geocent.c
+  COS_67P5 : 0.38268343236508977,  /* cosine of 67.5 degrees */
+  AD_C : 1.0026000,                /* Toms region 1 constant */
+
+  /* datum_type values */
+  PJD_UNKNOWN  : 0,
+  PJD_3PARAM   : 1,
+  PJD_7PARAM   : 2,
+  PJD_GRIDSHIFT: 3,
+  PJD_WGS84    : 4,   // WGS84 or equivalent
+  PJD_NODATUM  : 5,   // WGS84 or equivalent
+  SRS_WGS84_SEMIMAJOR : 6378137.0,  // only used in grid shift transforms
+
+  // ellipoid pj_set_ell.c
+  SIXTH : .1666666666666666667, /* 1/6 */
+  RA4   : .04722222222222222222, /* 17/360 */
+  RA6   : .02215608465608465608, /* 67/3024 */
+  RV4   : .06944444444444444444, /* 5/72 */
+  RV6   : .04243827160493827160, /* 55/1296 */
+
+// Function to compute the constant small m which is the radius of
+//   a parallel of latitude, phi, divided by the semimajor axis.
+// -----------------------------------------------------------------
+  msfnz : function(eccent, sinphi, cosphi) {
+      var con = eccent * sinphi;
+      return cosphi/(Math.sqrt(1.0 - con * con));
+  },
+
+// Function to compute the constant small t for use in the forward
+//   computations in the Lambert Conformal Conic and the Polar
+//   Stereographic projections.
+// -----------------------------------------------------------------
+  tsfnz : function(eccent, phi, sinphi) {
+    var con = eccent * sinphi;
+    var com = .5 * eccent;
+    con = Math.pow(((1.0 - con) / (1.0 + con)), com);
+    return (Math.tan(.5 * (this.HALF_PI - phi))/con);
+  },
+
+// Function to compute the latitude angle, phi2, for the inverse of the
+//   Lambert Conformal Conic and Polar Stereographic projections.
+// ----------------------------------------------------------------
+  phi2z : function(eccent, ts) {
+    var eccnth = .5 * eccent;
+    var con, dphi;
+    var phi = this.HALF_PI - 2 * Math.atan(ts);
+    for (var i = 0; i <= 15; i++) {
+      con = eccent * Math.sin(phi);
+      dphi = this.HALF_PI - 2 * Math.atan(ts *(Math.pow(((1.0 - con)/(1.0 + con)),eccnth))) - phi;
+      phi += dphi;
+      if (Math.abs(dphi) <= .0000000001) return phi;
+    }
+    alert("phi2z has NoConvergence");
+    return (-9999);
+  },
+
+/* Function to compute constant small q which is the radius of a 
+   parallel of latitude, phi, divided by the semimajor axis. 
+------------------------------------------------------------*/
+  qsfnz : function(eccent,sinphi) {
+    var con;
+    if (eccent > 1.0e-7) {
+      con = eccent * sinphi;
+      return (( 1.0- eccent * eccent) * (sinphi /(1.0 - con * con) - (.5/eccent)*Math.log((1.0 - con)/(1.0 + con))));
+    } else {
+      return(2.0 * sinphi);
+    }
+  },
+
+/* Function to eliminate roundoff errors in asin
+----------------------------------------------*/
+  asinz : function(x) {
+    if (Math.abs(x)>1.0) {
+      x=(x>1.0)?1.0:-1.0;
+    }
+    return Math.asin(x);
+  },
+
+// following functions from gctpc cproj.c for transverse mercator projections
+  e0fn : function(x) {return(1.0-0.25*x*(1.0+x/16.0*(3.0+1.25*x)));},
+  e1fn : function(x) {return(0.375*x*(1.0+0.25*x*(1.0+0.46875*x)));},
+  e2fn : function(x) {return(0.05859375*x*x*(1.0+0.75*x));},
+  e3fn : function(x) {return(x*x*x*(35.0/3072.0));},
+  mlfn : function(e0,e1,e2,e3,phi) {return(e0*phi-e1*Math.sin(2.0*phi)+e2*Math.sin(4.0*phi)-e3*Math.sin(6.0*phi));},
+
+  srat : function(esinp, exp) {
+    return(Math.pow((1.0-esinp)/(1.0+esinp), exp));
+  },
+
+// Function to return the sign of an argument
+  sign : function(x) { if (x < 0.0) return(-1); else return(1);},
+
+// Function to adjust longitude to -180 to 180; input in radians
+  adjust_lon : function(x) {
+    x = (Math.abs(x) < this.PI) ? x: (x - (this.sign(x)*this.TWO_PI) );
+    return x;
+  },
+
+// IGNF - DGR : algorithms used by IGN France
+
+// Function to adjust latitude to -90 to 90; input in radians
+  adjust_lat : function(x) {
+    x= (Math.abs(x) < this.HALF_PI) ? x: (x - (this.sign(x)*this.PI) );
+    return x;
+  },
+
+// Latitude Isometrique - close to tsfnz ...
+  latiso : function(eccent, phi, sinphi) {
+    if (Math.abs(phi) > this.HALF_PI) return +Number.NaN;
+    if (phi==this.HALF_PI) return Number.POSITIVE_INFINITY;
+    if (phi==-1.0*this.HALF_PI) return -1.0*Number.POSITIVE_INFINITY;
+
+    var con= eccent*sinphi;
+    return Math.log(Math.tan((this.HALF_PI+phi)/2.0))+eccent*Math.log((1.0-con)/(1.0+con))/2.0;
+  },
+
+  fL : function(x,L) {
+    return 2.0*Math.atan(x*Math.exp(L)) - this.HALF_PI;
+  },
+
+// Inverse Latitude Isometrique - close to ph2z
+  invlatiso : function(eccent, ts) {
+    var phi= this.fL(1.0,ts);
+    var Iphi= 0.0;
+    var con= 0.0;
+    do {
+      Iphi= phi;
+      con= eccent*Math.sin(Iphi);
+      phi= this.fL(Math.exp(eccent*Math.log((1.0+con)/(1.0-con))/2.0),ts)
+    } while (Math.abs(phi-Iphi)>1.0e-12);
+    return phi;
+  },
+
+// Needed for Gauss Schreiber
+// Original:  Denis Makarov (info@binarythings.com)
+// Web Site:  http://www.binarythings.com
+  sinh : function(x)
+  {
+    var r= Math.exp(x);
+    r= (r-1.0/r)/2.0;
+    return r;
+  },
+
+  cosh : function(x)
+  {
+    var r= Math.exp(x);
+    r= (r+1.0/r)/2.0;
+    return r;
+  },
+
+  tanh : function(x)
+  {
+    var r= Math.exp(x);
+    r= (r-1.0/r)/(r+1.0/r);
+    return r;
+  },
+
+  asinh : function(x)
+  {
+    var s= (x>= 0? 1.0:-1.0);
+    return s*(Math.log( Math.abs(x) + Math.sqrt(x*x+1.0) ));
+  },
+
+  acosh : function(x)
+  {
+    return 2.0*Math.log(Math.sqrt((x+1.0)/2.0) + Math.sqrt((x-1.0)/2.0));
+  },
+
+  atanh : function(x)
+  {
+    return Math.log((x-1.0)/(x+1.0))/2.0;
+  },
+
+// Grande Normale
+  gN : function(a,e,sinphi)
+  {
+    var temp= e*sinphi;
+    return a/Math.sqrt(1.0 - temp*temp);
+  }
+
+};
+
+/** datum object
+*/
+Proj4js.datum = Proj4js.Class({
+
+  initialize : function(proj) {
+    this.datum_type = Proj4js.common.PJD_WGS84;   //default setting
+    if (proj.datumCode && proj.datumCode == 'none') {
+      this.datum_type = Proj4js.common.PJD_NODATUM;
+    }
+    if (proj && proj.datum_params) {
+      for (var i=0; i<proj.datum_params.length; i++) {
+        proj.datum_params[i]=parseFloat(proj.datum_params[i]);
+      }
+      if (proj.datum_params[0] != 0 || proj.datum_params[1] != 0 || proj.datum_params[2] != 0 ) {
+        this.datum_type = Proj4js.common.PJD_3PARAM;
+      }
+      if (proj.datum_params.length > 3) {
+        if (proj.datum_params[3] != 0 || proj.datum_params[4] != 0 ||
+            proj.datum_params[5] != 0 || proj.datum_params[6] != 0 ) {
+          this.datum_type = Proj4js.common.PJD_7PARAM;
+          proj.datum_params[3] *= Proj4js.common.SEC_TO_RAD;
+          proj.datum_params[4] *= Proj4js.common.SEC_TO_RAD;
+          proj.datum_params[5] *= Proj4js.common.SEC_TO_RAD;
+          proj.datum_params[6] = (proj.datum_params[6]/1000000.0) + 1.0;
+        }
+      }
+    }
+    if (proj) {
+      this.a = proj.a;    //datum object also uses these values
+      this.b = proj.b;
+      this.es = proj.es;
+      this.ep2 = proj.ep2;
+      this.datum_params = proj.datum_params;
+    }
+  },
+
+  /****************************************************************/
+  // cs_compare_datums()
+  //   Returns 1 (TRUE) if the two datums match, otherwise 0 (FALSE).
+  compare_datums : function( dest ) {
+    if( this.datum_type != dest.datum_type ) {
+      return false; // false, datums are not equal
+    } else if( this.a != dest.a || Math.abs(this.es-dest.es) > 0.000000000050 ) {
+      // the tolerence for es is to ensure that GRS80 and WGS84
+      // are considered identical
+      return false;
+    } else if( this.datum_type == Proj4js.common.PJD_3PARAM ) {
+      return (this.datum_params[0] == dest.datum_params[0]
+              && this.datum_params[1] == dest.datum_params[1]
+              && this.datum_params[2] == dest.datum_params[2]);
+    } else if( this.datum_type == Proj4js.common.PJD_7PARAM ) {
+      return (this.datum_params[0] == dest.datum_params[0]
+              && this.datum_params[1] == dest.datum_params[1]
+              && this.datum_params[2] == dest.datum_params[2]
+              && this.datum_params[3] == dest.datum_params[3]
+              && this.datum_params[4] == dest.datum_params[4]
+              && this.datum_params[5] == dest.datum_params[5]
+              && this.datum_params[6] == dest.datum_params[6]);
+    } else if( this.datum_type == Proj4js.common.PJD_GRIDSHIFT ) {
+      return strcmp( pj_param(this.params,"snadgrids").s,
+                     pj_param(dest.params,"snadgrids").s ) == 0;
+    } else {
+      return true; // datums are equal
+    }
+  }, // cs_compare_datums()
+
+  /*
+   * The function Convert_Geodetic_To_Geocentric converts geodetic coordinates
+   * (latitude, longitude, and height) to geocentric coordinates (X, Y, Z),
+   * according to the current ellipsoid parameters.
+   *
+   *    Latitude  : Geodetic latitude in radians                     (input)
+   *    Longitude : Geodetic longitude in radians                    (input)
+   *    Height    : Geodetic height, in meters                       (input)
+   *    X         : Calculated Geocentric X coordinate, in meters    (output)
+   *    Y         : Calculated Geocentric Y coordinate, in meters    (output)
+   *    Z         : Calculated Geocentric Z coordinate, in meters    (output)
+   *
+   */
+  geodetic_to_geocentric : function(p) {
+    var Longitude = p.x;
+    var Latitude = p.y;
+    var Height = p.z ? p.z : 0;   //Z value not always supplied
+    var X;  // output
+    var Y;
+    var Z;
+
+    var Error_Code=0;  //  GEOCENT_NO_ERROR;
+    var Rn;            /*  Earth radius at location  */
+    var Sin_Lat;       /*  Math.sin(Latitude)  */
+    var Sin2_Lat;      /*  Square of Math.sin(Latitude)  */
+    var Cos_Lat;       /*  Math.cos(Latitude)  */
+
+    /*
+    ** Don't blow up if Latitude is just a little out of the value
+    ** range as it may just be a rounding issue.  Also removed longitude
+    ** test, it should be wrapped by Math.cos() and Math.sin().  NFW for PROJ.4, Sep/2001.
+    */
+    if( Latitude < -Proj4js.common.HALF_PI && Latitude > -1.001 * Proj4js.common.HALF_PI ) {
+        Latitude = -Proj4js.common.HALF_PI;
+    } else if( Latitude > Proj4js.common.HALF_PI && Latitude < 1.001 * Proj4js.common.HALF_PI ) {
+        Latitude = Proj4js.common.HALF_PI;
+    } else if ((Latitude < -Proj4js.common.HALF_PI) || (Latitude > Proj4js.common.HALF_PI)) {
+      /* Latitude out of range */
+      Proj4js.reportError('geocent:lat out of range:'+Latitude);
+      return null;
+    }
+
+    if (Longitude > Proj4js.common.PI) Longitude -= (2*Proj4js.common.PI);
+    Sin_Lat = Math.sin(Latitude);
+    Cos_Lat = Math.cos(Latitude);
+    Sin2_Lat = Sin_Lat * Sin_Lat;
+    Rn = this.a / (Math.sqrt(1.0e0 - this.es * Sin2_Lat));
+    X = (Rn + Height) * Cos_Lat * Math.cos(Longitude);
+    Y = (Rn + Height) * Cos_Lat * Math.sin(Longitude);
+    Z = ((Rn * (1 - this.es)) + Height) * Sin_Lat;
+
+    p.x = X;
+    p.y = Y;
+    p.z = Z;
+    return Error_Code;
+  }, // cs_geodetic_to_geocentric()
+
+
+  geocentric_to_geodetic : function (p) {
+/* local defintions and variables */
+/* end-criterium of loop, accuracy of sin(Latitude) */
+var genau = 1.E-12;
+var genau2 = (genau*genau);
+var maxiter = 30;
+
+    var P;        /* distance between semi-minor axis and location */
+    var RR;       /* distance between center and location */
+    var CT;       /* sin of geocentric latitude */
+    var ST;       /* cos of geocentric latitude */
+    var RX;
+    var RK;
+    var RN;       /* Earth radius at location */
+    var CPHI0;    /* cos of start or old geodetic latitude in iterations */
+    var SPHI0;    /* sin of start or old geodetic latitude in iterations */
+    var CPHI;     /* cos of searched geodetic latitude */
+    var SPHI;     /* sin of searched geodetic latitude */
+    var SDPHI;    /* end-criterium: addition-theorem of sin(Latitude(iter)-Latitude(iter-1)) */
+    var At_Pole;     /* indicates location is in polar region */
+    var iter;        /* # of continous iteration, max. 30 is always enough (s.a.) */
+
+    var X = p.x;
+    var Y = p.y;
+    var Z = p.z ? p.z : 0.0;   //Z value not always supplied
+    var Longitude;
+    var Latitude;
+    var Height;
+
+    At_Pole = false;
+    P = Math.sqrt(X*X+Y*Y);
+    RR = Math.sqrt(X*X+Y*Y+Z*Z);
+
+/*      special cases for latitude and longitude */
+    if (P/this.a < genau) {
+
+/*  special case, if P=0. (X=0., Y=0.) */
+        At_Pole = true;
+        Longitude = 0.0;
+
+/*  if (X,Y,Z)=(0.,0.,0.) then Height becomes semi-minor axis
+ *  of ellipsoid (=center of mass), Latitude becomes PI/2 */
+        if (RR/this.a < genau) {
+            Latitude = Proj4js.common.HALF_PI;
+            Height   = -this.b;
+            return;
+        }
+    } else {
+/*  ellipsoidal (geodetic) longitude
+ *  interval: -PI < Longitude <= +PI */
+        Longitude=Math.atan2(Y,X);
+    }
+
+/* --------------------------------------------------------------
+ * Following iterative algorithm was developped by
+ * "Institut f�r Erdmessung", University of Hannover, July 1988.
+ * Internet: www.ife.uni-hannover.de
+ * Iterative computation of CPHI,SPHI and Height.
+ * Iteration of CPHI and SPHI to 10**-12 radian resp.
+ * 2*10**-7 arcsec.
+ * --------------------------------------------------------------
+ */
+    CT = Z/RR;
+    ST = P/RR;
+    RX = 1.0/Math.sqrt(1.0-this.es*(2.0-this.es)*ST*ST);
+    CPHI0 = ST*(1.0-this.es)*RX;
+    SPHI0 = CT*RX;
+    iter = 0;
+
+/* loop to find sin(Latitude) resp. Latitude
+ * until |sin(Latitude(iter)-Latitude(iter-1))| < genau */
+    do
+    {
+        iter++;
+        RN = this.a/Math.sqrt(1.0-this.es*SPHI0*SPHI0);
+
+/*  ellipsoidal (geodetic) height */
+        Height = P*CPHI0+Z*SPHI0-RN*(1.0-this.es*SPHI0*SPHI0);
+
+        RK = this.es*RN/(RN+Height);
+        RX = 1.0/Math.sqrt(1.0-RK*(2.0-RK)*ST*ST);
+        CPHI = ST*(1.0-RK)*RX;
+        SPHI = CT*RX;
+        SDPHI = SPHI*CPHI0-CPHI*SPHI0;
+        CPHI0 = CPHI;
+        SPHI0 = SPHI;
+    }
+    while (SDPHI*SDPHI > genau2 && iter < maxiter);
+
+/*      ellipsoidal (geodetic) latitude */
+    Latitude=Math.atan(SPHI/Math.abs(CPHI));
+
+    p.x = Longitude;
+    p.y = Latitude;
+    p.z = Height;
+    return p;
+  }, // cs_geocentric_to_geodetic()
+
+  /** Convert_Geocentric_To_Geodetic
+   * The method used here is derived from 'An Improved Algorithm for
+   * Geocentric to Geodetic Coordinate Conversion', by Ralph Toms, Feb 1996
+   */
+  geocentric_to_geodetic_noniter : function (p) {
+    var X = p.x;
+    var Y = p.y;
+    var Z = p.z ? p.z : 0;   //Z value not always supplied
+    var Longitude;
+    var Latitude;
+    var Height;
+
+    var W;        /* distance from Z axis */
+    var W2;       /* square of distance from Z axis */
+    var T0;       /* initial estimate of vertical component */
+    var T1;       /* corrected estimate of vertical component */
+    var S0;       /* initial estimate of horizontal component */
+    var S1;       /* corrected estimate of horizontal component */
+    var Sin_B0;   /* Math.sin(B0), B0 is estimate of Bowring aux variable */
+    var Sin3_B0;  /* cube of Math.sin(B0) */
+    var Cos_B0;   /* Math.cos(B0) */
+    var Sin_p1;   /* Math.sin(phi1), phi1 is estimated latitude */
+    var Cos_p1;   /* Math.cos(phi1) */
+    var Rn;       /* Earth radius at location */
+    var Sum;      /* numerator of Math.cos(phi1) */
+    var At_Pole;  /* indicates location is in polar region */
+
+    X = parseFloat(X);  // cast from string to float
+    Y = parseFloat(Y);
+    Z = parseFloat(Z);
+
+    At_Pole = false;
+    if (X != 0.0)
+    {
+        Longitude = Math.atan2(Y,X);
+    }
+    else
+    {
+        if (Y > 0)
+        {
+            Longitude = Proj4js.common.HALF_PI;
+        }
+        else if (Y < 0)
+        {
+            Longitude = -Proj4js.common.HALF_PI;
+        }
+        else
+        {
+            At_Pole = true;
+            Longitude = 0.0;
+            if (Z > 0.0)
+            {  /* north pole */
+                Latitude = Proj4js.common.HALF_PI;
+            }
+            else if (Z < 0.0)
+            {  /* south pole */
+                Latitude = -Proj4js.common.HALF_PI;
+            }
+            else
+            {  /* center of earth */
+                Latitude = Proj4js.common.HALF_PI;
+                Height = -this.b;
+                return;
+            }
+        }
+    }
+    W2 = X*X + Y*Y;
+    W = Math.sqrt(W2);
+    T0 = Z * Proj4js.common.AD_C;
+    S0 = Math.sqrt(T0 * T0 + W2);
+    Sin_B0 = T0 / S0;
+    Cos_B0 = W / S0;
+    Sin3_B0 = Sin_B0 * Sin_B0 * Sin_B0;
+    T1 = Z + this.b * this.ep2 * Sin3_B0;
+    Sum = W - this.a * this.es * Cos_B0 * Cos_B0 * Cos_B0;
+    S1 = Math.sqrt(T1*T1 + Sum * Sum);
+    Sin_p1 = T1 / S1;
+    Cos_p1 = Sum / S1;
+    Rn = this.a / Math.sqrt(1.0 - this.es * Sin_p1 * Sin_p1);
+    if (Cos_p1 >= Proj4js.common.COS_67P5)
+    {
+        Height = W / Cos_p1 - Rn;
+    }
+    else if (Cos_p1 <= -Proj4js.common.COS_67P5)
+    {
+        Height = W / -Cos_p1 - Rn;
+    }
+    else
+    {
+        Height = Z / Sin_p1 + Rn * (this.es - 1.0);
+    }
+    if (At_Pole == false)
+    {
+        Latitude = Math.atan(Sin_p1 / Cos_p1);
+    }
+
+    p.x = Longitude;
+    p.y = Latitude;
+    p.z = Height;
+    return p;
+  }, // geocentric_to_geodetic_noniter()
+
+  /****************************************************************/
+  // pj_geocentic_to_wgs84( p )
+  //  p = point to transform in geocentric coordinates (x,y,z)
+  geocentric_to_wgs84 : function ( p ) {
+
+    if( this.datum_type == Proj4js.common.PJD_3PARAM )
+    {
+      // if( x[io] == HUGE_VAL )
+      //    continue;
+      p.x += this.datum_params[0];
+      p.y += this.datum_params[1];
+      p.z += this.datum_params[2];
+
+    }
+    else if (this.datum_type == Proj4js.common.PJD_7PARAM)
+    {
+      var Dx_BF =this.datum_params[0];
+      var Dy_BF =this.datum_params[1];
+      var Dz_BF =this.datum_params[2];
+      var Rx_BF =this.datum_params[3];
+      var Ry_BF =this.datum_params[4];
+      var Rz_BF =this.datum_params[5];
+      var M_BF  =this.datum_params[6];
+      // if( x[io] == HUGE_VAL )
+      //    continue;
+      var x_out = M_BF*(       p.x - Rz_BF*p.y + Ry_BF*p.z) + Dx_BF;
+      var y_out = M_BF*( Rz_BF*p.x +       p.y - Rx_BF*p.z) + Dy_BF;
+      var z_out = M_BF*(-Ry_BF*p.x + Rx_BF*p.y +       p.z) + Dz_BF;
+      p.x = x_out;
+      p.y = y_out;
+      p.z = z_out;
+    }
+  }, // cs_geocentric_to_wgs84
+
+  /****************************************************************/
+  // pj_geocentic_from_wgs84()
+  //  coordinate system definition,
+  //  point to transform in geocentric coordinates (x,y,z)
+  geocentric_from_wgs84 : function( p ) {
+
+    if( this.datum_type == Proj4js.common.PJD_3PARAM )
+    {
+      //if( x[io] == HUGE_VAL )
+      //    continue;
+      p.x -= this.datum_params[0];
+      p.y -= this.datum_params[1];
+      p.z -= this.datum_params[2];
+
+    }
+    else if (this.datum_type == Proj4js.common.PJD_7PARAM)
+    {
+      var Dx_BF =this.datum_params[0];
+      var Dy_BF =this.datum_params[1];
+      var Dz_BF =this.datum_params[2];
+      var Rx_BF =this.datum_params[3];
+      var Ry_BF =this.datum_params[4];
+      var Rz_BF =this.datum_params[5];
+      var M_BF  =this.datum_params[6];
+      var x_tmp = (p.x - Dx_BF) / M_BF;
+      var y_tmp = (p.y - Dy_BF) / M_BF;
+      var z_tmp = (p.z - Dz_BF) / M_BF;
+      //if( x[io] == HUGE_VAL )
+      //    continue;
+
+      p.x =        x_tmp + Rz_BF*y_tmp - Ry_BF*z_tmp;
+      p.y = -Rz_BF*x_tmp +       y_tmp + Rx_BF*z_tmp;
+      p.z =  Ry_BF*x_tmp - Rx_BF*y_tmp +       z_tmp;
+    } //cs_geocentric_from_wgs84()
+  }
+});
+
+/** point object, nothing fancy, just allows values to be
+    passed back and forth by reference rather than by value.
+    Other point classes may be used as long as they have
+    x and y properties, which will get modified in the transform method.
+*/
+Proj4js.Point = Proj4js.Class({
+
+    /**
+     * Constructor: Proj4js.Point
+     *
+     * Parameters:
+     * - x {float} or {Array} either the first coordinates component or
+     *     the full coordinates
+     * - y {float} the second component
+     * - z {float} the third component, optional.
+     */
+    initialize : function(x,y,z) {
+      if (typeof x == 'object') {
+        this.x = x[0];
+        this.y = x[1];
+        this.z = x[2] || 0.0;
+      } else if (typeof x == 'string' && typeof y == 'undefined') {
+        var coords = x.split(',');
+        this.x = parseFloat(coords[0]);
+        this.y = parseFloat(coords[1]);
+        this.z = parseFloat(coords[2]) || 0.0;
+      } else {
+        this.x = x;
+        this.y = y;
+        this.z = z || 0.0;
+      }
+    },
+
+    /**
+     * APIMethod: clone
+     * Build a copy of a Proj4js.Point object.
+     *
+     * Return:
+     * {Proj4js}.Point the cloned point.
+     */
+    clone : function() {
+      return new Proj4js.Point(this.x, this.y, this.z);
+    },
+
+    /**
+     * APIMethod: toString
+     * Return a readable string version of the point
+     *
+     * Return:
+     * {String} String representation of Proj4js.Point object. 
+     *           (ex. <i>"x=5,y=42"</i>)
+     */
+    toString : function() {
+        return ("x=" + this.x + ",y=" + this.y);
+    },
+
+    /** 
+     * APIMethod: toShortString
+     * Return a short string version of the point.
+     *
+     * Return:
+     * {String} Shortened String representation of Proj4js.Point object. 
+     *         (ex. <i>"5, 42"</i>)
+     */
+    toShortString : function() {
+        return (this.x + ", " + this.y);
+    }
+});
+
+Proj4js.PrimeMeridian = {
+    "greenwich": 0.0,               //"0dE",
+    "lisbon":     -9.131906111111,   //"9d07'54.862\"W",
+    "paris":       2.337229166667,   //"2d20'14.025\"E",
+    "bogota":    -74.080916666667,  //"74d04'51.3\"W",
+    "madrid":     -3.687938888889,  //"3d41'16.58\"W",
+    "rome":       12.452333333333,  //"12d27'8.4\"E",
+    "bern":        7.439583333333,  //"7d26'22.5\"E",
+    "jakarta":   106.807719444444,  //"106d48'27.79\"E",
+    "ferro":     -17.666666666667,  //"17d40'W",
+    "brussels":    4.367975,        //"4d22'4.71\"E",
+    "stockholm":  18.058277777778,  //"18d3'29.8\"E",
+    "athens":     23.7163375,       //"23d42'58.815\"E",
+    "oslo":       10.722916666667   //"10d43'22.5\"E"
+};
+
+Proj4js.Ellipsoid = {
+  "MERIT": {a:6378137.0, rf:298.257, ellipseName:"MERIT 1983"},
+  "SGS85": {a:6378136.0, rf:298.257, ellipseName:"Soviet Geodetic System 85"},
+  "GRS80": {a:6378137.0, rf:298.257222101, ellipseName:"GRS 1980(IUGG, 1980)"},
+  "IAU76": {a:6378140.0, rf:298.257, ellipseName:"IAU 1976"},
+  "airy": {a:6377563.396, b:6356256.910, ellipseName:"Airy 1830"},
+  "APL4.": {a:6378137, rf:298.25, ellipseName:"Appl. Physics. 1965"},
+  "NWL9D": {a:6378145.0, rf:298.25, ellipseName:"Naval Weapons Lab., 1965"},
+  "mod_airy": {a:6377340.189, b:6356034.446, ellipseName:"Modified Airy"},
+  "andrae": {a:6377104.43, rf:300.0, ellipseName:"Andrae 1876 (Den., Iclnd.)"},
+  "aust_SA": {a:6378160.0, rf:298.25, ellipseName:"Australian Natl & S. Amer. 1969"},
+  "GRS67": {a:6378160.0, rf:298.2471674270, ellipseName:"GRS 67(IUGG 1967)"},
+  "bessel": {a:6377397.155, rf:299.1528128, ellipseName:"Bessel 1841"},
+  "bess_nam": {a:6377483.865, rf:299.1528128, ellipseName:"Bessel 1841 (Namibia)"},
+  "clrk66": {a:6378206.4, b:6356583.8, ellipseName:"Clarke 1866"},
+  "clrk80": {a:6378249.145, rf:293.4663, ellipseName:"Clarke 1880 mod."},
+  "CPM": {a:6375738.7, rf:334.29, ellipseName:"Comm. des Poids et Mesures 1799"},
+  "delmbr": {a:6376428.0, rf:311.5, ellipseName:"Delambre 1810 (Belgium)"},
+  "engelis": {a:6378136.05, rf:298.2566, ellipseName:"Engelis 1985"},
+  "evrst30": {a:6377276.345, rf:300.8017, ellipseName:"Everest 1830"},
+  "evrst48": {a:6377304.063, rf:300.8017, ellipseName:"Everest 1948"},
+  "evrst56": {a:6377301.243, rf:300.8017, ellipseName:"Everest 1956"},
+  "evrst69": {a:6377295.664, rf:300.8017, ellipseName:"Everest 1969"},
+  "evrstSS": {a:6377298.556, rf:300.8017, ellipseName:"Everest (Sabah & Sarawak)"},
+  "fschr60": {a:6378166.0, rf:298.3, ellipseName:"Fischer (Mercury Datum) 1960"},
+  "fschr60m": {a:6378155.0, rf:298.3, ellipseName:"Fischer 1960"},
+  "fschr68": {a:6378150.0, rf:298.3, ellipseName:"Fischer 1968"},
+  "helmert": {a:6378200.0, rf:298.3, ellipseName:"Helmert 1906"},
+  "hough": {a:6378270.0, rf:297.0, ellipseName:"Hough"},
+  "intl": {a:6378388.0, rf:297.0, ellipseName:"International 1909 (Hayford)"},
+  "kaula": {a:6378163.0, rf:298.24, ellipseName:"Kaula 1961"},
+  "lerch": {a:6378139.0, rf:298.257, ellipseName:"Lerch 1979"},
+  "mprts": {a:6397300.0, rf:191.0, ellipseName:"Maupertius 1738"},
+  "new_intl": {a:6378157.5, b:6356772.2, ellipseName:"New International 1967"},
+  "plessis": {a:6376523.0, rf:6355863.0, ellipseName:"Plessis 1817 (France)"},
+  "krass": {a:6378245.0, rf:298.3, ellipseName:"Krassovsky, 1942"},
+  "SEasia": {a:6378155.0, b:6356773.3205, ellipseName:"Southeast Asia"},
+  "walbeck": {a:6376896.0, b:6355834.8467, ellipseName:"Walbeck"},
+  "WGS60": {a:6378165.0, rf:298.3, ellipseName:"WGS 60"},
+  "WGS66": {a:6378145.0, rf:298.25, ellipseName:"WGS 66"},
+  "WGS72": {a:6378135.0, rf:298.26, ellipseName:"WGS 72"},
+  "WGS84": {a:6378137.0, rf:298.257223563, ellipseName:"WGS 84"},
+  "sphere": {a:6370997.0, b:6370997.0, ellipseName:"Normal Sphere (r=6370997)"}
+};
+
+Proj4js.Datum = {
+  "WGS84": {towgs84: "0,0,0", ellipse: "WGS84", datumName: "WGS84"},
+  "GGRS87": {towgs84: "-199.87,74.79,246.62", ellipse: "GRS80", datumName: "Greek_Geodetic_Reference_System_1987"},
+  "NAD83": {towgs84: "0,0,0", ellipse: "GRS80", datumName: "North_American_Datum_1983"},
+  "NAD27": {nadgrids: "@conus,@alaska,@ntv2_0.gsb,@ntv1_can.dat", ellipse: "clrk66", datumName: "North_American_Datum_1927"},
+  "potsdam": {towgs84: "606.0,23.0,413.0", ellipse: "bessel", datumName: "Potsdam Rauenberg 1950 DHDN"},
+  "carthage": {towgs84: "-263.0,6.0,431.0", ellipse: "clark80", datumName: "Carthage 1934 Tunisia"},
+  "hermannskogel": {towgs84: "653.0,-212.0,449.0", ellipse: "bessel", datumName: "Hermannskogel"},
+  "ire65": {towgs84: "482.530,-130.596,564.557,-1.042,-0.214,-0.631,8.15", ellipse: "mod_airy", datumName: "Ireland 1965"},
+  "nzgd49": {towgs84: "59.47,-5.04,187.44,0.47,-0.1,1.024,-4.5993", ellipse: "intl", datumName: "New Zealand Geodetic Datum 1949"},
+  "OSGB36": {towgs84: "446.448,-125.157,542.060,0.1502,0.2470,0.8421,-20.4894", ellipse: "airy", datumName: "Airy 1830"}
+};
+
+Proj4js.WGS84 = new Proj4js.Proj('WGS84');
+Proj4js.Datum['OSB36'] = Proj4js.Datum['OSGB36']; //as returned from spatialreference.org
+
+//lookup table to go from the projection name in WKT to the Proj4js projection name
+//build this out as required
+Proj4js.wktProjections = {
+  "Lambert Tangential Conformal Conic Projection": "lcc",
+  "Mercator": "merc",
+  "Popular Visualisation Pseudo Mercator": "merc",
+  "Transverse_Mercator": "tmerc",
+  "Transverse Mercator": "tmerc",
+  "Lambert Azimuthal Equal Area": "laea",
+  "Universal Transverse Mercator System": "utm"
+};
+
+
+/* ======================================================================
+    projCode/aea.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                     ALBERS CONICAL EQUAL AREA 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and Northing
+		for the Albers Conical Equal Area projection.  The longitude
+		and latitude must be in radians.  The Easting and Northing
+		values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan,       	Feb, 1992
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+
+Proj4js.Proj.aea = {
+  init : function() {
+
+    if (Math.abs(this.lat1 + this.lat2) < Proj4js.common.EPSLN) {
+       Proj4js.reportError("aeaInitEqualLatitudes");
+       return;
+    }
+    this.temp = this.b / this.a;
+    this.es = 1.0 - Math.pow(this.temp,2);
+    this.e3 = Math.sqrt(this.es);
+
+    this.sin_po=Math.sin(this.lat1);
+    this.cos_po=Math.cos(this.lat1);
+    this.t1=this.sin_po;
+    this.con = this.sin_po;
+    this.ms1 = Proj4js.common.msfnz(this.e3,this.sin_po,this.cos_po);
+    this.qs1 = Proj4js.common.qsfnz(this.e3,this.sin_po,this.cos_po);
+
+    this.sin_po=Math.sin(this.lat2);
+    this.cos_po=Math.cos(this.lat2);
+    this.t2=this.sin_po;
+    this.ms2 = Proj4js.common.msfnz(this.e3,this.sin_po,this.cos_po);
+    this.qs2 = Proj4js.common.qsfnz(this.e3,this.sin_po,this.cos_po);
+
+    this.sin_po=Math.sin(this.lat0);
+    this.cos_po=Math.cos(this.lat0);
+    this.t3=this.sin_po;
+    this.qs0 = Proj4js.common.qsfnz(this.e3,this.sin_po,this.cos_po);
+
+    if (Math.abs(this.lat1 - this.lat2) > Proj4js.common.EPSLN) {
+      this.ns0 = (this.ms1 * this.ms1 - this.ms2 *this.ms2)/ (this.qs2 - this.qs1);
+    } else {
+      this.ns0 = this.con;
+    }
+    this.c = this.ms1 * this.ms1 + this.ns0 * this.qs1;
+    this.rh = this.a * Math.sqrt(this.c - this.ns0 * this.qs0)/this.ns0;
+  },
+
+/* Albers Conical Equal Area forward equations--mapping lat,long to x,y
+  -------------------------------------------------------------------*/
+  forward: function(p){
+
+    var lon=p.x;
+    var lat=p.y;
+
+    this.sin_phi=Math.sin(lat);
+    this.cos_phi=Math.cos(lat);
+
+    var qs = Proj4js.common.qsfnz(this.e3,this.sin_phi,this.cos_phi);
+    var rh1 =this.a * Math.sqrt(this.c - this.ns0 * qs)/this.ns0;
+    var theta = this.ns0 * Proj4js.common.adjust_lon(lon - this.long0); 
+    var x = rh1 * Math.sin(theta) + this.x0;
+    var y = this.rh - rh1 * Math.cos(theta) + this.y0;
+
+    p.x = x; 
+    p.y = y;
+    return p;
+  },
+
+
+  inverse: function(p) {
+    var rh1,qs,con,theta,lon,lat;
+
+    p.x -= this.x0;
+    p.y = this.rh - p.y + this.y0;
+    if (this.ns0 >= 0) {
+      rh1 = Math.sqrt(p.x *p.x + p.y * p.y);
+      con = 1.0;
+    } else {
+      rh1 = -Math.sqrt(p.x * p.x + p.y *p.y);
+      con = -1.0;
+    }
+    theta = 0.0;
+    if (rh1 != 0.0) {
+      theta = Math.atan2(con * p.x, con * p.y);
+    }
+    con = rh1 * this.ns0 / this.a;
+    qs = (this.c - con * con) / this.ns0;
+    if (this.e3 >= 1e-10) {
+      con = 1 - .5 * (1.0 -this.es) * Math.log((1.0 - this.e3) / (1.0 + this.e3))/this.e3;
+      if (Math.abs(Math.abs(con) - Math.abs(qs)) > .0000000001 ) {
+          lat = this.phi1z(this.e3,qs);
+      } else {
+          if (qs >= 0) {
+             lat = .5 * PI;
+          } else {
+             lat = -.5 * PI;
+          }
+      }
+    } else {
+      lat = this.phi1z(e3,qs);
+    }
+
+    lon = Proj4js.common.adjust_lon(theta/this.ns0 + this.long0);
+    p.x = lon;
+    p.y = lat;
+    return p;
+  },
+  
+/* Function to compute phi1, the latitude for the inverse of the
+   Albers Conical Equal-Area projection.
+-------------------------------------------*/
+  phi1z: function (eccent,qs) {
+    var con, com, dphi;
+    var phi = Proj4js.common.asinz(.5 * qs);
+    if (eccent < Proj4js.common.EPSLN) return phi;
+    
+    var eccnts = eccent * eccent; 
+    for (var i = 1; i <= 25; i++) {
+        sinphi = Math.sin(phi);
+        cosphi = Math.cos(phi);
+        con = eccent * sinphi; 
+        com = 1.0 - con * con;
+        dphi = .5 * com * com / cosphi * (qs / (1.0 - eccnts) - sinphi / com + .5 / eccent * Math.log((1.0 - con) / (1.0 + con)));
+        phi = phi + dphi;
+        if (Math.abs(dphi) <= 1e-7) return phi;
+    }
+    Proj4js.reportError("aea:phi1z:Convergence error");
+    return null;
+  }
+  
+};
+
+
+
+/* ======================================================================
+    projCode/sterea.js
+   ====================================================================== */
+
+
+Proj4js.Proj.sterea = {
+  dependsOn : 'gauss',
+
+  init : function() {
+    Proj4js.Proj['gauss'].init.apply(this);
+    if (!this.rc) {
+      Proj4js.reportError("sterea:init:E_ERROR_0");
+      return;
+    }
+    this.sinc0 = Math.sin(this.phic0);
+    this.cosc0 = Math.cos(this.phic0);
+    this.R2 = 2.0 * this.rc;
+    if (!this.title) this.title = "Oblique Stereographic Alternative";
+  },
+
+  forward : function(p) {
+    p.x = Proj4js.common.adjust_lon(p.x-this.long0); /* adjust del longitude */
+    Proj4js.Proj['gauss'].forward.apply(this, [p]);
+    sinc = Math.sin(p.y);
+    cosc = Math.cos(p.y);
+    cosl = Math.cos(p.x);
+    k = this.k0 * this.R2 / (1.0 + this.sinc0 * sinc + this.cosc0 * cosc * cosl);
+    p.x = k * cosc * Math.sin(p.x);
+    p.y = k * (this.cosc0 * sinc - this.sinc0 * cosc * cosl);
+    p.x = this.a * p.x + this.x0;
+    p.y = this.a * p.y + this.y0;
+    return p;
+  },
+
+  inverse : function(p) {
+    var lon,lat;
+    p.x = (p.x - this.x0) / this.a; /* descale and de-offset */
+    p.y = (p.y - this.y0) / this.a;
+
+    p.x /= this.k0;
+    p.y /= this.k0;
+    if ( (rho = Math.sqrt(p.x*p.x + p.y*p.y)) ) {
+      c = 2.0 * Math.atan2(rho, this.R2);
+      sinc = Math.sin(c);
+      cosc = Math.cos(c);
+      lat = Math.asin(cosc * this.sinc0 + p.y * sinc * this.cosc0 / rho);
+      lon = Math.atan2(p.x * sinc, rho * this.cosc0 * cosc - p.y * this.sinc0 * sinc);
+    } else {
+      lat = this.phic0;
+      lon = 0.;
+    }
+
+    p.x = lon;
+    p.y = lat;
+    Proj4js.Proj['gauss'].inverse.apply(this,[p]);
+    p.x = Proj4js.common.adjust_lon(p.x + this.long0); /* adjust longitude to CM */
+    return p;
+  }
+};
+
+/* ======================================================================
+    projCode/poly.js
+   ====================================================================== */
+
+/* Function to compute, phi4, the latitude for the inverse of the
+   Polyconic projection.
+------------------------------------------------------------*/
+function phi4z (eccent,e0,e1,e2,e3,a,b,c,phi) {
+	var sinphi, sin2ph, tanph, ml, mlp, con1, con2, con3, dphi, i;
+
+	phi = a;
+	for (i = 1; i <= 15; i++) {
+		sinphi = Math.sin(phi);
+		tanphi = Math.tan(phi);
+		c = tanphi * Math.sqrt (1.0 - eccent * sinphi * sinphi);
+		sin2ph = Math.sin (2.0 * phi);
+		/*
+		ml = e0 * *phi - e1 * sin2ph + e2 * sin (4.0 *  *phi);
+		mlp = e0 - 2.0 * e1 * cos (2.0 *  *phi) + 4.0 * e2 *  cos (4.0 *  *phi);
+		*/
+		ml = e0 * phi - e1 * sin2ph + e2 * Math.sin (4.0 *  phi) - e3 * Math.sin (6.0 * phi);
+		mlp = e0 - 2.0 * e1 * Math.cos (2.0 *  phi) + 4.0 * e2 * Math.cos (4.0 *  phi) - 6.0 * e3 * Math.cos (6.0 *  phi);
+		con1 = 2.0 * ml + c * (ml * ml + b) - 2.0 * a *  (c * ml + 1.0);
+		con2 = eccent * sin2ph * (ml * ml + b - 2.0 * a * ml) / (2.0 *c);
+		con3 = 2.0 * (a - ml) * (c * mlp - 2.0 / sin2ph) - 2.0 * mlp;
+		dphi = con1 / (con2 + con3);
+		phi += dphi;
+		if (Math.abs(dphi) <= .0000000001 ) return(phi);   
+	}
+	Proj4js.reportError("phi4z: No convergence");
+	return null;
+}
+
+
+/* Function to compute the constant e4 from the input of the eccentricity
+   of the spheroid, x.  This constant is used in the Polar Stereographic
+   projection.
+--------------------------------------------------------------------*/
+function e4fn(x) {
+	var con, com;
+	con = 1.0 + x;
+	com = 1.0 - x;
+	return (Math.sqrt((Math.pow(con,con))*(Math.pow(com,com))));
+}
+
+
+
+
+
+/*******************************************************************************
+NAME                             POLYCONIC 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Polyconic projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+Proj4js.Proj.poly = {
+
+	/* Initialize the POLYCONIC projection
+	  ----------------------------------*/
+	init: function() {
+		var temp;			/* temporary variable		*/
+		if (this.lat0=0) this.lat0=90;//this.lat0 ca
+
+		/* Place parameters in static storage for common use
+		  -------------------------------------------------*/
+		this.temp = this.b / this.a;
+		this.es = 1.0 - Math.pow(this.temp,2);// devait etre dans tmerc.js mais n y est pas donc je commente sinon retour de valeurs nulles 
+		this.e = Math.sqrt(this.es);
+		this.e0 = Proj4js.common.e0fn(this.es);
+		this.e1 = Proj4js.common.e1fn(this.es);
+		this.e2 = Proj4js.common.e2fn(this.es);
+		this.e3 = Proj4js.common.e3fn(this.es);
+		this.ml0 = Proj4js.common.mlfn(this.e0, this.e1,this.e2, this.e3, this.lat0);//si que des zeros le calcul ne se fait pas
+		//if (!this.ml0) {this.ml0=0;}
+	},
+
+
+	/* Polyconic forward equations--mapping lat,long to x,y
+	  ---------------------------------------------------*/
+	forward: function(p) {
+		var sinphi, cosphi;	/* sin and cos value				*/
+		var al;				/* temporary values				*/
+		var c;				/* temporary values				*/
+		var con, ml;		/* cone constant, small m			*/
+		var ms;				/* small m					*/
+		var x,y;
+
+		var lon=p.x;
+		var lat=p.y;	
+
+		con = Proj4js.common.adjust_lon(lon - this.long0);
+		if (Math.abs(lat) <= .0000001) {
+			x = this.x0 + this.a * con;
+			y = this.y0 - this.a * this.ml0;
+		} else {
+			sinphi = Math.sin(lat);
+			cosphi = Math.cos(lat);	   
+
+			ml = Proj4js.common.mlfn(this.e0, this.e1, this.e2, this.e3, lat);
+			ms = Proj4js.common.msfnz(this.e,sinphi,cosphi);
+			con = sinphi;
+			x = this.x0 + this.a * ms * Math.sin(con)/sinphi;
+			y = this.y0 + this.a * (ml - this.ml0 + ms * (1.0 - Math.cos(con))/sinphi);
+		}
+
+		p.x=x;
+		p.y=y;   
+		return p;
+	},
+
+
+	/* Inverse equations
+	-----------------*/
+	inverse: function(p) {
+		var sin_phi, cos_phi;	/* sin and cos value				*/
+		var al;					/* temporary values				*/
+		var b;					/* temporary values				*/
+		var c;					/* temporary values				*/
+		var con, ml;			/* cone constant, small m			*/
+		var iflg;				/* error flag					*/
+		var lon,lat;
+		p.x -= this.x0;
+		p.y -= this.y0;
+		al = this.ml0 + p.y/this.a;
+		iflg = 0;
+
+		if (Math.abs(al) <= .0000001) {
+			lon = p.x/this.a + this.long0;
+			lat = 0.0;
+		} else {
+			b = al * al + (p.x/this.a) * (p.x/this.a);
+			iflg = phi4z(this.es,this.e0,this.e1,this.e2,this.e3,this.al,b,c,lat);
+			if (iflg != 1) return(iflg);
+			lon = Proj4js.common.adjust_lon((Proj4js.common.asinz(p.x * c / this.a) / Math.sin(lat)) + this.long0);
+		}
+
+		p.x=lon;
+		p.y=lat;
+		return p;
+	}
+};
+
+
+
+/* ======================================================================
+    projCode/equi.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                             EQUIRECTANGULAR 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Equirectangular projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+Proj4js.Proj.equi = {
+
+  init: function() {
+    if(!this.x0) this.x0=0;
+    if(!this.y0) this.y0=0;
+    if(!this.lat0) this.lat0=0;
+    if(!this.long0) this.long0=0;
+    ///this.t2;
+  },
+
+
+
+/* Equirectangular forward equations--mapping lat,long to x,y
+  ---------------------------------------------------------*/
+  forward: function(p) {
+
+    var lon=p.x;				
+    var lat=p.y;			
+
+    var dlon = Proj4js.common.adjust_lon(lon - this.long0);
+    var x = this.x0 +this. a * dlon *Math.cos(this.lat0);
+    var y = this.y0 + this.a * lat;
+
+    this.t1=x;
+    this.t2=Math.cos(this.lat0);
+    p.x=x;
+    p.y=y;
+    return p;
+  },  //equiFwd()
+
+
+
+/* Equirectangular inverse equations--mapping x,y to lat/long
+  ---------------------------------------------------------*/
+  inverse: function(p) {
+
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var lat = p.y /this. a;
+
+    if ( Math.abs(lat) > Proj4js.common.HALF_PI) {
+        Proj4js.reportError("equi:Inv:DataError");
+    }
+    var lon = Proj4js.common.adjust_lon(this.long0 + p.x / (this.a * Math.cos(this.lat0)));
+    p.x=lon;
+    p.y=lat;
+  }//equiInv()
+};
+
+
+/* ======================================================================
+    projCode/merc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            MERCATOR
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Mercator projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+D. Steinwand, EROS      Nov, 1991
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+//static double r_major = a;		   /* major axis 				*/
+//static double r_minor = b;		   /* minor axis 				*/
+//static double lon_center = long0;	   /* Center longitude (projection center) */
+//static double lat_origin =  lat0;	   /* center latitude			*/
+//static double e,es;		           /* eccentricity constants		*/
+//static double m1;		               /* small value m			*/
+//static double false_northing = y0;   /* y offset in meters			*/
+//static double false_easting = x0;	   /* x offset in meters			*/
+//scale_fact = k0 
+
+Proj4js.Proj.merc = {
+  init : function() {
+	//?this.temp = this.r_minor / this.r_major;
+	//this.temp = this.b / this.a;
+	//this.es = 1.0 - Math.sqrt(this.temp);
+	//this.e = Math.sqrt( this.es );
+	//?this.m1 = Math.cos(this.lat_origin) / (Math.sqrt( 1.0 - this.es * Math.sin(this.lat_origin) * Math.sin(this.lat_origin)));
+	//this.m1 = Math.cos(0.0) / (Math.sqrt( 1.0 - this.es * Math.sin(0.0) * Math.sin(0.0)));
+    if (this.lat_ts) {
+      if (this.sphere) {
+        this.k0 = Math.cos(this.lat_ts);
+      } else {
+        this.k0 = Proj4js.common.msfnz(this.es, Math.sin(this.lat_ts), Math.cos(this.lat_ts));
+      }
+    }
+  },
+
+/* Mercator forward equations--mapping lat,long to x,y
+  --------------------------------------------------*/
+
+  forward : function(p) {	
+    //alert("ll2m coords : "+coords);
+    var lon = p.x;
+    var lat = p.y;
+    // convert to radians
+    if ( lat*Proj4js.common.R2D > 90.0 && 
+          lat*Proj4js.common.R2D < -90.0 && 
+          lon*Proj4js.common.R2D > 180.0 && 
+          lon*Proj4js.common.R2D < -180.0) {
+      Proj4js.reportError("merc:forward: llInputOutOfRange: "+ lon +" : " + lat);
+      return null;
+    }
+
+    var x,y;
+    if(Math.abs( Math.abs(lat) - Proj4js.common.HALF_PI)  <= Proj4js.common.EPSLN) {
+      Proj4js.reportError("merc:forward: ll2mAtPoles");
+      return null;
+    } else {
+      if (this.sphere) {
+        x = this.x0 + this.a * this.k0 * Proj4js.common.adjust_lon(lon - this.long0);
+        y = this.y0 + this.a * this.k0 * Math.log(Math.tan(Proj4js.common.FORTPI + 0.5*lat));
+      } else {
+        var sinphi = Math.sin(lat);
+        var ts = Proj4js.common.tsfnz(this.e,lat,sinphi);
+        x = this.x0 + this.a * this.k0 * Proj4js.common.adjust_lon(lon - this.long0);
+        y = this.y0 - this.a * this.k0 * Math.log(ts);
+      }
+      p.x = x; 
+      p.y = y;
+      return p;
+    }
+  },
+
+
+  /* Mercator inverse equations--mapping x,y to lat/long
+  --------------------------------------------------*/
+  inverse : function(p) {	
+
+    var x = p.x - this.x0;
+    var y = p.y - this.y0;
+    var lon,lat;
+
+    if (this.sphere) {
+      lat = Proj4js.common.HALF_PI - 2.0 * Math.atan(Math.exp(-y / this.a * this.k0));
+    } else {
+      var ts = Math.exp(-y / (this.a * this.k0));
+      lat = Proj4js.common.phi2z(this.e,ts);
+      if(lat == -9999) {
+        Proj4js.reportError("merc:inverse: lat = -9999");
+        return null;
+      }
+    }
+    lon = Proj4js.common.adjust_lon(this.long0+ x / (this.a * this.k0));
+
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+};
+
+
+/* ======================================================================
+    projCode/utm.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            TRANSVERSE MERCATOR
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Transverse Mercator projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+
+/**
+  Initialize Transverse Mercator projection
+*/
+
+Proj4js.Proj.utm = {
+  dependsOn : 'tmerc',
+
+  init : function() {
+    if (!this.zone) {
+      Proj4js.reportError("utm:init: zone must be specified for UTM");
+      return;
+    }
+    this.lat0 = 0.0;
+    this.long0 = ((6 * Math.abs(this.zone)) - 183) * Proj4js.common.D2R;
+    this.x0 = 500000.0;
+    this.y0 = this.utmSouth ? 10000000.0 : 0.0;
+    this.k0 = 0.9996;
+
+    Proj4js.Proj['tmerc'].init.apply(this);
+    this.forward = Proj4js.Proj['tmerc'].forward;
+    this.inverse = Proj4js.Proj['tmerc'].inverse;
+  }
+};
+/* ======================================================================
+    projCode/eqdc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            EQUIDISTANT CONIC 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and Northing
+		for the Equidistant Conic projection.  The longitude and
+		latitude must be in radians.  The Easting and Northing values
+		will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+/* Variables common to all subroutines in this code file
+  -----------------------------------------------------*/
+
+Proj4js.Proj.eqdc = {
+
+/* Initialize the Equidistant Conic projection
+  ------------------------------------------*/
+  init: function() {
+
+    /* Place parameters in static storage for common use
+      -------------------------------------------------*/
+
+    if(!this.mode) this.mode=0;//chosen default mode
+    this.temp = this.b / this.a;
+    this.es = 1.0 - Math.pow(this.temp,2);
+    this.e = Math.sqrt(this.es);
+    this.e0 = Proj4js.common.e0fn(this.es);
+    this.e1 = Proj4js.common.e1fn(this.es);
+    this.e2 = Proj4js.common.e2fn(this.es);
+    this.e3 = Proj4js.common.e3fn(this.es);
+
+    this.sinphi=Math.sin(this.lat1);
+    this.cosphi=Math.cos(this.lat1);
+
+    this.ms1 = Proj4js.common.msfnz(this.e,this.sinphi,this.cosphi);
+    this.ml1 = Proj4js.common.mlfn(this.e0, this.e1, this.e2,this.e3, this.lat1);
+
+    /* format B
+    ---------*/
+    if (this.mode != 0) {
+      if (Math.abs(this.lat1 + this.lat2) < Proj4js.common.EPSLN) {
+            Proj4js.reportError("eqdc:Init:EqualLatitudes");
+            //return(81);
+       }
+       this.sinphi=Math.sin(this.lat2);
+       this.cosphi=Math.cos(this.lat2);   
+
+       this.ms2 = Proj4js.common.msfnz(this.e,this.sinphi,this.cosphi);
+       this.ml2 = Proj4js.common.mlfn(this.e0, this.e1, this.e2, this.e3, this.lat2);
+       if (Math.abs(this.lat1 - this.lat2) >= Proj4js.common.EPSLN) {
+         this.ns = (this.ms1 - this.ms2) / (this.ml2 - this.ml1);
+       } else {
+          this.ns = this.sinphi;
+       }
+    } else {
+      this.ns = this.sinphi;
+    }
+    this.g = this.ml1 + this.ms1/this.ns;
+    this.ml0 = Proj4js.common.mlfn(this.e0, this.e1,this. e2, this.e3, this.lat0);
+    this.rh = this.a * (this.g - this.ml0);
+  },
+
+
+/* Equidistant Conic forward equations--mapping lat,long to x,y
+  -----------------------------------------------------------*/
+  forward: function(p) {
+    var lon=p.x;
+    var lat=p.y;
+
+    /* Forward equations
+      -----------------*/
+    var ml = Proj4js.common.mlfn(this.e0, this.e1, this.e2, this.e3, lat);
+    var rh1 = this.a * (this.g - ml);
+    var theta = this.ns * Proj4js.common.adjust_lon(lon - this.long0);
+
+    var x = this.x0  + rh1 * Math.sin(theta);
+    var y = this.y0 + this.rh - rh1 * Math.cos(theta);
+    p.x=x;
+    p.y=y;
+    return p;
+  },
+
+/* Inverse equations
+  -----------------*/
+  inverse: function(p) {
+    p.x -= this.x0;
+    p.y  = this.rh - p.y + this.y0;
+    var con, rh1;
+    if (this.ns >= 0) {
+       var rh1 = Math.sqrt(p.x *p.x + p.y * p.y); 
+       var con = 1.0;
+    } else {
+       rh1 = -Math.sqrt(p.x *p. x +p. y * p.y); 
+       con = -1.0;
+    }
+    var theta = 0.0;
+    if (rh1 != 0.0) theta = Math.atan2(con *p.x, con *p.y);
+    var ml = this.g - rh1 /this.a;
+    var lat = this.phi3z(ml,this.e0,this.e1,this.e2,this.e3);
+    var lon = Proj4js.common.adjust_lon(this.long0 + theta / this.ns);
+
+     p.x=lon;
+     p.y=lat;  
+     return p;
+    },
+    
+/* Function to compute latitude, phi3, for the inverse of the Equidistant
+   Conic projection.
+-----------------------------------------------------------------*/
+  phi3z: function(ml,e0,e1,e2,e3) {
+    var phi;
+    var dphi;
+
+    phi = ml;
+    for (var i = 0; i < 15; i++) {
+      dphi = (ml + e1 * Math.sin(2.0 * phi) - e2 * Math.sin(4.0 * phi) + e3 * Math.sin(6.0 * phi))/ e0 - phi;
+      phi += dphi;
+      if (Math.abs(dphi) <= .0000000001) {
+        return phi;
+      }
+    }
+    Proj4js.reportError("PHI3Z-CONV:Latitude failed to converge after 15 iterations");
+    return null;
+  }
+
+    
+};
+/* ======================================================================
+    projCode/tmerc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            TRANSVERSE MERCATOR
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Transverse Mercator projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+
+/**
+  Initialize Transverse Mercator projection
+*/
+
+Proj4js.Proj.tmerc = {
+  init : function() {
+    this.e0 = Proj4js.common.e0fn(this.es);
+    this.e1 = Proj4js.common.e1fn(this.es);
+    this.e2 = Proj4js.common.e2fn(this.es);
+    this.e3 = Proj4js.common.e3fn(this.es);
+    this.ml0 = this.a * Proj4js.common.mlfn(this.e0, this.e1, this.e2, this.e3, this.lat0);
+  },
+
+  /**
+    Transverse Mercator Forward  - long/lat to x/y
+    long/lat in radians
+  */
+  forward : function(p) {
+    var lon = p.x;
+    var lat = p.y;
+
+    var delta_lon = Proj4js.common.adjust_lon(lon - this.long0); // Delta longitude
+    var con;    // cone constant
+    var x, y;
+    var sin_phi=Math.sin(lat);
+    var cos_phi=Math.cos(lat);
+
+    if (this.sphere) {  /* spherical form */
+      var b = cos_phi * Math.sin(delta_lon);
+      if ((Math.abs(Math.abs(b) - 1.0)) < .0000000001)  {
+        Proj4js.reportError("tmerc:forward: Point projects into infinity");
+        return(93);
+      } else {
+        x = .5 * this.a * this.k0 * Math.log((1.0 + b)/(1.0 - b));
+        con = Math.acos(cos_phi * Math.cos(delta_lon)/Math.sqrt(1.0 - b*b));
+        if (lat < 0) con = - con;
+        y = this.a * this.k0 * (con - this.lat0);
+      }
+    } else {
+      var al  = cos_phi * delta_lon;
+      var als = Math.pow(al,2);
+      var c   = this.ep2 * Math.pow(cos_phi,2);
+      var tq  = Math.tan(lat);
+      var t   = Math.pow(tq,2);
+      con = 1.0 - this.es * Math.pow(sin_phi,2);
+      var n   = this.a / Math.sqrt(con);
+      var ml  = this.a * Proj4js.common.mlfn(this.e0, this.e1, this.e2, this.e3, lat);
+
+      x = this.k0 * n * al * (1.0 + als / 6.0 * (1.0 - t + c + als / 20.0 * (5.0 - 18.0 * t + Math.pow(t,2) + 72.0 * c - 58.0 * this.ep2))) + this.x0;
+      y = this.k0 * (ml - this.ml0 + n * tq * (als * (0.5 + als / 24.0 * (5.0 - t + 9.0 * c + 4.0 * Math.pow(c,2) + als / 30.0 * (61.0 - 58.0 * t + Math.pow(t,2) + 600.0 * c - 330.0 * this.ep2))))) + this.y0;
+
+    }
+    p.x = x; p.y = y;
+    return p;
+  }, // tmercFwd()
+
+  /**
+    Transverse Mercator Inverse  -  x/y to long/lat
+  */
+  inverse : function(p) {
+    var con, phi;  /* temporary angles       */
+    var delta_phi; /* difference between longitudes    */
+    var i;
+    var max_iter = 6;      /* maximun number of iterations */
+    var lat, lon;
+
+    if (this.sphere) {   /* spherical form */
+      var f = Math.exp(p.x/(this.a * this.k0));
+      var g = .5 * (f - 1/f);
+      var temp = this.lat0 + p.y/(this.a * this.k0);
+      var h = Math.cos(temp);
+      con = Math.sqrt((1.0 - h * h)/(1.0 + g * g));
+      lat = Proj4js.common.asinz(con);
+      if (temp < 0)
+        lat = -lat;
+      if ((g == 0) && (h == 0)) {
+        lon = this.long0;
+      } else {
+        lon = Proj4js.common.adjust_lon(Math.atan2(g,h) + this.long0);
+      }
+    } else {    // ellipsoidal form
+      var x = p.x - this.x0;
+      var y = p.y - this.y0;
+
+      con = (this.ml0 + y / this.k0) / this.a;
+      phi = con;
+      for (i=0;true;i++) {
+        delta_phi=((con + this.e1 * Math.sin(2.0*phi) - this.e2 * Math.sin(4.0*phi) + this.e3 * Math.sin(6.0*phi)) / this.e0) - phi;
+        phi += delta_phi;
+        if (Math.abs(delta_phi) <= Proj4js.common.EPSLN) break;
+        if (i >= max_iter) {
+          Proj4js.reportError("tmerc:inverse: Latitude failed to converge");
+          return(95);
+        }
+      } // for()
+      if (Math.abs(phi) < Proj4js.common.HALF_PI) {
+        // sincos(phi, &sin_phi, &cos_phi);
+        var sin_phi=Math.sin(phi);
+        var cos_phi=Math.cos(phi);
+        var tan_phi = Math.tan(phi);
+        var c = this.ep2 * Math.pow(cos_phi,2);
+        var cs = Math.pow(c,2);
+        var t = Math.pow(tan_phi,2);
+        var ts = Math.pow(t,2);
+        con = 1.0 - this.es * Math.pow(sin_phi,2);
+        var n = this.a / Math.sqrt(con);
+        var r = n * (1.0 - this.es) / con;
+        var d = x / (n * this.k0);
+        var ds = Math.pow(d,2);
+        lat = phi - (n * tan_phi * ds / r) * (0.5 - ds / 24.0 * (5.0 + 3.0 * t + 10.0 * c - 4.0 * cs - 9.0 * this.ep2 - ds / 30.0 * (61.0 + 90.0 * t + 298.0 * c + 45.0 * ts - 252.0 * this.ep2 - 3.0 * cs)));
+        lon = Proj4js.common.adjust_lon(this.long0 + (d * (1.0 - ds / 6.0 * (1.0 + 2.0 * t + c - ds / 20.0 * (5.0 - 2.0 * c + 28.0 * t - 3.0 * cs + 8.0 * this.ep2 + 24.0 * ts))) / cos_phi));
+      } else {
+        lat = Proj4js.common.HALF_PI * Proj4js.common.sign(y);
+        lon = this.long0;
+      }
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  } // tmercInv()
+};
+/* ======================================================================
+    defs/GOOGLE.js
+   ====================================================================== */
+
+Proj4js.defs["GOOGLE"]="+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+Proj4js.defs["EPSG:900913"]=Proj4js.defs["GOOGLE"];
+/* ======================================================================
+    projCode/gstmerc.js
+   ====================================================================== */
+
+Proj4js.Proj.gstmerc = {
+  init : function() {
+
+    // array of:  a, b, lon0, lat0, k0, x0, y0
+      var temp= this.b / this.a;
+      this.e= Math.sqrt(1.0 - temp*temp);
+      this.lc= this.long0;
+      this.rs= Math.sqrt(1.0+this.e*this.e*Math.pow(Math.cos(this.lat0),4.0)/(1.0-this.e*this.e));
+      var sinz= Math.sin(this.lat0);
+      var pc= Math.asin(sinz/this.rs);
+      var sinzpc= Math.sin(pc);
+      this.cp= Proj4js.common.latiso(0.0,pc,sinzpc)-this.rs*Proj4js.common.latiso(this.e,this.lat0,sinz);
+      this.n2= this.k0*this.a*Math.sqrt(1.0-this.e*this.e)/(1.0-this.e*this.e*sinz*sinz);
+      this.xs= this.x0;
+      this.ys= this.y0-this.n2*pc;
+
+      if (!this.title) this.title = "Gauss Schreiber transverse mercator";
+    },
+
+
+    // forward equations--mapping lat,long to x,y
+    // -----------------------------------------------------------------
+    forward : function(p) {
+
+      var lon= p.x;
+      var lat= p.y;
+
+      var L= this.rs*(lon-this.lc);
+      var Ls= this.cp+(this.rs*Proj4js.common.latiso(this.e,lat,Math.sin(lat)));
+      var lat1= Math.asin(Math.sin(L)/Proj4js.common.cosh(Ls));
+      var Ls1= Proj4js.common.latiso(0.0,lat1,Math.sin(lat1));
+      p.x= this.xs+(this.n2*Ls1);
+      p.y= this.ys+(this.n2*Math.atan(Proj4js.common.sinh(Ls)/Math.cos(L)));
+      return p;
+    },
+
+  // inverse equations--mapping x,y to lat/long
+  // -----------------------------------------------------------------
+  inverse : function(p) {
+
+    var x= p.x;
+    var y= p.y;
+
+    var L= Math.atan(Proj4js.common.sinh((x-this.xs)/this.n2)/Math.cos((y-this.ys)/this.n2));
+    var lat1= Math.asin(Math.sin((y-this.ys)/this.n2)/Proj4js.common.cosh((x-this.xs)/this.n2));
+    var LC= Proj4js.common.latiso(0.0,lat1,Math.sin(lat1));
+    p.x= this.lc+L/this.rs;
+    p.y= Proj4js.common.invlatiso(this.e,(LC-this.cp)/this.rs);
+    return p;
+  }
+
+};
+/* ======================================================================
+    projCode/ortho.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                             ORTHOGRAPHIC 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Orthographic projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+Proj4js.Proj.ortho = {
+
+  /* Initialize the Orthographic projection
+    -------------------------------------*/
+  init: function(def) {
+    //double temp;			/* temporary variable		*/
+
+    /* Place parameters in static storage for common use
+      -------------------------------------------------*/;
+    this.sin_p14=Math.sin(this.lat0);
+    this.cos_p14=Math.cos(this.lat0);	
+  },
+
+
+  /* Orthographic forward equations--mapping lat,long to x,y
+    ---------------------------------------------------*/
+  forward: function(p) {
+    var sinphi, cosphi;	/* sin and cos value				*/
+    var dlon;		/* delta longitude value			*/
+    var coslon;		/* cos of longitude				*/
+    var ksp;		/* scale factor					*/
+    var g;		
+    var lon=p.x;
+    var lat=p.y;	
+    /* Forward equations
+      -----------------*/
+    dlon = Proj4js.common.adjust_lon(lon - this.long0);
+
+    sinphi=Math.sin(lat);
+    cosphi=Math.cos(lat);	
+
+    coslon = Math.cos(dlon);
+    g = this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
+    ksp = 1.0;
+    if ((g > 0) || (Math.abs(g) <= Proj4js.common.EPSLN)) {
+      var x = this.a * ksp * cosphi * Math.sin(dlon);
+      var y = this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+    } else {
+      Proj4js.reportError("orthoFwdPointError");
+    }
+    p.x=x;
+    p.y=y;
+    return p;
+  },
+
+
+  inverse: function(p) {
+    var rh;		/* height above ellipsoid			*/
+    var z;		/* angle					*/
+    var sinz,cosz;	/* sin of z and cos of z			*/
+    var temp;
+    var con;
+    var lon , lat;
+    /* Inverse equations
+      -----------------*/
+    p.x -= this.x0;
+    p.y -= this.y0;
+    rh = Math.sqrt(p.x * p.x + p.y * p.y);
+    if (rh > this.a + .0000001) {
+      Proj4js.reportError("orthoInvDataError");
+    }
+    z = Proj4js.common.asinz(rh / this.a);
+
+    sinz=Math.sin(z);
+    cosz=Math.cos(z);
+
+    lon = this.long0;
+    if (Math.abs(rh) <= Proj4js.common.EPSLN) {
+      lat = this.lat0; 
+    }
+    lat = Proj4js.common.asinz(cosz * this.sin_p14 + (p.y * sinz * this.cos_p14)/rh);
+    con = Math.abs(this.lat0) - Proj4js.common.HALF_PI;
+    if (Math.abs(con) <= Proj4js.common.EPSLN) {
+       if (this.lat0 >= 0) {
+          lon = Proj4js.common.adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+       } else {
+          lon = Proj4js.common.adjust_lon(this.long0 -Math.atan2(-p.x, p.y));
+       }
+    }
+    con = cosz - this.sin_p14 * Math.sin(lat);
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }
+};
+
+
+/* ======================================================================
+    projCode/somerc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                       SWISS OBLIQUE MERCATOR
+
+PURPOSE:	Swiss projection.
+WARNING:  X and Y are inverted (weird) in the swiss coordinate system. Not
+   here, since we want X to be horizontal and Y vertical.
+
+ALGORITHM REFERENCES
+1. "Formules et constantes pour le Calcul pour la
+ projection cylindrique conforme à axe oblique et pour la transformation entre
+ des systèmes de référence".
+ http://www.swisstopo.admin.ch/internet/swisstopo/fr/home/topics/survey/sys/refsys/switzerland.parsysrelated1.31216.downloadList.77004.DownloadFile.tmp/swissprojectionfr.pdf
+
+*******************************************************************************/
+
+Proj4js.Proj.somerc = {
+
+  init: function() {
+    var phy0 = this.lat0;
+    this.lambda0 = this.long0;
+    var sinPhy0 = Math.sin(phy0);
+    var semiMajorAxis = this.a;
+    var invF = this.rf;
+    var flattening = 1 / invF;
+    var e2 = 2 * flattening - Math.pow(flattening, 2);
+    var e = this.e = Math.sqrt(e2);
+    this.R = this.k0 * semiMajorAxis * Math.sqrt(1 - e2) / (1 - e2 * Math.pow(sinPhy0, 2.0));
+    this.alpha = Math.sqrt(1 + e2 / (1 - e2) * Math.pow(Math.cos(phy0), 4.0));
+    this.b0 = Math.asin(sinPhy0 / this.alpha);
+    this.K = Math.log(Math.tan(Math.PI / 4.0 + this.b0 / 2.0))
+            - this.alpha
+            * Math.log(Math.tan(Math.PI / 4.0 + phy0 / 2.0))
+            + this.alpha
+            * e / 2
+            * Math.log((1 + e * sinPhy0)
+            / (1 - e * sinPhy0));
+  },
+
+
+  forward: function(p) {
+    var Sa1 = Math.log(Math.tan(Math.PI / 4.0 - p.y / 2.0));
+    var Sa2 = this.e / 2.0
+            * Math.log((1 + this.e * Math.sin(p.y))
+            / (1 - this.e * Math.sin(p.y)));
+    var S = -this.alpha * (Sa1 + Sa2) + this.K;
+
+        // spheric latitude
+    var b = 2.0 * (Math.atan(Math.exp(S)) - Math.PI / 4.0);
+
+        // spheric longitude
+    var I = this.alpha * (p.x - this.lambda0);
+
+        // psoeudo equatorial rotation
+    var rotI = Math.atan(Math.sin(I)
+            / (Math.sin(this.b0) * Math.tan(b) +
+               Math.cos(this.b0) * Math.cos(I)));
+
+    var rotB = Math.asin(Math.cos(this.b0) * Math.sin(b) -
+                         Math.sin(this.b0) * Math.cos(b) * Math.cos(I));
+
+    p.y = this.R / 2.0
+            * Math.log((1 + Math.sin(rotB)) / (1 - Math.sin(rotB)))
+            + this.y0;
+    p.x = this.R * rotI + this.x0;
+    return p;
+  },
+
+  inverse: function(p) {
+    var Y = p.x - this.x0;
+    var X = p.y - this.y0;
+
+    var rotI = Y / this.R;
+    var rotB = 2 * (Math.atan(Math.exp(X / this.R)) - Math.PI / 4.0);
+
+    var b = Math.asin(Math.cos(this.b0) * Math.sin(rotB)
+            + Math.sin(this.b0) * Math.cos(rotB) * Math.cos(rotI));
+    var I = Math.atan(Math.sin(rotI)
+            / (Math.cos(this.b0) * Math.cos(rotI) - Math.sin(this.b0)
+            * Math.tan(rotB)));
+
+    var lambda = this.lambda0 + I / this.alpha;
+
+    var S = 0.0;
+    var phy = b;
+    var prevPhy = -1000.0;
+    var iteration = 0;
+    while (Math.abs(phy - prevPhy) > 0.0000001)
+    {
+      if (++iteration > 20)
+      {
+        Proj4js.reportError("omercFwdInfinity");
+        return;
+      }
+      //S = Math.log(Math.tan(Math.PI / 4.0 + phy / 2.0));
+      S = 1.0
+              / this.alpha
+              * (Math.log(Math.tan(Math.PI / 4.0 + b / 2.0)) - this.K)
+              + this.e
+              * Math.log(Math.tan(Math.PI / 4.0
+              + Math.asin(this.e * Math.sin(phy))
+              / 2.0));
+      prevPhy = phy;
+      phy = 2.0 * Math.atan(Math.exp(S)) - Math.PI / 2.0;
+    }
+
+    p.x = lambda;
+    p.y = phy;
+    return p;
+  }
+};
+/* ======================================================================
+    projCode/stere.js
+   ====================================================================== */
+
+
+// Initialize the Stereographic projection
+
+Proj4js.Proj.stere = {
+  ssfn_: function(phit, sinphi, eccen) {
+  	sinphi *= eccen;
+  	return (Math.tan (.5 * (Proj4js.common.HALF_PI + phit)) * Math.pow((1. - sinphi) / (1. + sinphi), .5 * eccen));
+  },
+  TOL:	1.e-8,
+  NITER:	8,
+  CONV:	1.e-10,
+  S_POLE:	0,
+  N_POLE:	1,
+  OBLIQ:	2,
+  EQUIT:	3,
+
+  init : function() {
+  	this.phits = this.lat_ts ? this.lat_ts : Proj4js.common.HALF_PI;
+    var t = Math.abs(this.lat0);
+  	if ((Math.abs(t) - Proj4js.common.HALF_PI) < Proj4js.common.EPSLN) {
+  		this.mode = this.lat0 < 0. ? this.S_POLE : this.N_POLE;
+  	} else {
+  		this.mode = t > Proj4js.common.EPSLN ? this.OBLIQ : this.EQUIT;
+    }
+  	this.phits = Math.abs(this.phits);
+  	if (this.es) {
+  		var X;
+
+  		switch (this.mode) {
+  		case this.N_POLE:
+  		case this.S_POLE:
+  			if (Math.abs(this.phits - Proj4js.common.HALF_PI) < Proj4js.common.EPSLN) {
+  				this.akm1 = 2. * this.k0 / Math.sqrt(Math.pow(1+this.e,1+this.e)*Math.pow(1-this.e,1-this.e));
+  			} else {
+          t = Math.sin(this.phits);
+  				this.akm1 = Math.cos(this.phits) / Proj4js.common.tsfnz(this.e, this.phits, t);
+  				t *= this.e;
+  				this.akm1 /= Math.sqrt(1. - t * t);
+  			}
+  			break;
+  		case this.EQUIT:
+  			this.akm1 = 2. * this.k0;
+  			break;
+  		case this.OBLIQ:
+  			t = Math.sin(this.lat0);
+  			X = 2. * Math.atan(this.ssfn_(this.lat0, t, this.e)) - Proj4js.common.HALF_PI;
+  			t *= this.e;
+  			this.akm1 = 2. * this.k0 * Math.cos(this.lat0) / Math.sqrt(1. - t * t);
+  			this.sinX1 = Math.sin(X);
+  			this.cosX1 = Math.cos(X);
+  			break;
+  		}
+  	} else {
+  		switch (this.mode) {
+  		case this.OBLIQ:
+  			this.sinph0 = Math.sin(this.lat0);
+  			this.cosph0 = Math.cos(this.lat0);
+  		case this.EQUIT:
+  			this.akm1 = 2. * this.k0;
+  			break;
+  		case this.S_POLE:
+  		case this.N_POLE:
+  			this.akm1 = Math.abs(this.phits - Proj4js.common.HALF_PI) >= Proj4js.common.EPSLN ?
+  			   Math.cos(this.phits) / Math.tan(Proj4js.common.FORTPI - .5 * this.phits) :
+  			   2. * this.k0 ;
+  			break;
+  		}
+  	}
+  }, 
+
+// Stereographic forward equations--mapping lat,long to x,y
+  forward: function(p) {
+    var lon = p.x;
+    lon = Proj4js.common.adjust_lon(lon - this.long0);
+    var lat = p.y;
+    var x, y;
+    
+    if (this.sphere) {
+    	var  sinphi, cosphi, coslam, sinlam;
+
+    	sinphi = Math.sin(lat);
+    	cosphi = Math.cos(lat);
+    	coslam = Math.cos(lon);
+    	sinlam = Math.sin(lon);
+    	switch (this.mode) {
+    	case this.EQUIT:
+    		y = 1. + cosphi * coslam;
+    		if (y <= Proj4js.common.EPSLN) {
+          F_ERROR;
+        }
+        y = this.akm1 / y;
+    		x = y * cosphi * sinlam;
+        y *= sinphi;
+    		break;
+    	case this.OBLIQ:
+    		y = 1. + this.sinph0 * sinphi + this.cosph0 * cosphi * coslam;
+    		if (y <= Proj4js.common.EPSLN) {
+          F_ERROR;
+        }
+        y = this.akm1 / y;
+    		x = y * cosphi * sinlam;
+    		y *= this.cosph0 * sinphi - this.sinph0 * cosphi * coslam;
+    		break;
+    	case this.N_POLE:
+    		coslam = -coslam;
+    		lat = -lat;
+        //Note  no break here so it conitnues through S_POLE
+    	case this.S_POLE:
+    		if (Math.abs(lat - Proj4js.common.HALF_PI) < this.TOL) {
+          F_ERROR;
+        }
+        y = this.akm1 * Math.tan(Proj4js.common.FORTPI + .5 * lat);
+    		x = sinlam * y;
+    		y *= coslam;
+    		break;
+    	}
+    } else {
+    	coslam = Math.cos(lon);
+    	sinlam = Math.sin(lon);
+    	sinphi = Math.sin(lat);
+    	if (this.mode == this.OBLIQ || this.mode == this.EQUIT) {
+        X = 2. * Math.atan(this.ssfn_(lat, sinphi, this.e));
+    		sinX = Math.sin(X - Proj4js.common.HALF_PI);
+    		cosX = Math.cos(X);
+    	}
+    	switch (this.mode) {
+    	case this.OBLIQ:
+    		A = this.akm1 / (this.cosX1 * (1. + this.sinX1 * sinX + this.cosX1 * cosX * coslam));
+    		y = A * (this.cosX1 * sinX - this.sinX1 * cosX * coslam);
+    		x = A * cosX;
+    		break;
+    	case this.EQUIT:
+    		A = 2. * this.akm1 / (1. + cosX * coslam);
+    		y = A * sinX;
+    		x = A * cosX;
+    		break;
+    	case this.S_POLE:
+    		lat = -lat;
+    		coslam = - coslam;
+    		sinphi = -sinphi;
+    	case this.N_POLE:
+    		x = this.akm1 * Proj4js.common.tsfnz(this.e, lat, sinphi);
+    		y = - x * coslam;
+    		break;
+    	}
+    	x = x * sinlam;
+    }
+    p.x = x*this.a + this.x0;
+    p.y = y*this.a + this.y0;
+    return p;
+  },
+
+
+//* Stereographic inverse equations--mapping x,y to lat/long
+  inverse: function(p) {
+    var x = (p.x - this.x0)/this.a;   /* descale and de-offset */
+    var y = (p.y - this.y0)/this.a;
+    var lon, lat;
+
+    var cosphi, sinphi, tp=0.0, phi_l=0.0, rho, halfe=0.0, pi2=0.0;
+    var i;
+
+    if (this.sphere) {
+    	var  c, rh, sinc, cosc;
+
+      rh = Math.sqrt(x*x + y*y);
+      c = 2. * Math.atan(rh / this.akm1);
+    	sinc = Math.sin(c);
+    	cosc = Math.cos(c);
+    	lon = 0.;
+    	switch (this.mode) {
+    	case this.EQUIT:
+    		if (Math.abs(rh) <= Proj4js.common.EPSLN) {
+    			lat = 0.;
+    		} else {
+    			lat = Math.asin(y * sinc / rh);
+        }
+    		if (cosc != 0. || x != 0.) lon = Math.atan2(x * sinc, cosc * rh);
+    		break;
+    	case this.OBLIQ:
+    		if (Math.abs(rh) <= Proj4js.common.EPSLN) {
+    			lat = this.phi0;
+    		} else {
+    			lat = Math.asin(cosc * sinph0 + y * sinc * cosph0 / rh);
+        }
+        c = cosc - sinph0 * Math.sin(lat);
+    		if (c != 0. || x != 0.) {
+    			lon = Math.atan2(x * sinc * cosph0, c * rh);
+        }
+    		break;
+    	case this.N_POLE:
+    		y = -y;
+    	case this.S_POLE:
+    		if (Math.abs(rh) <= Proj4js.common.EPSLN) {
+    			lat = this.phi0;
+    		} else {
+    			lat = Math.asin(this.mode == this.S_POLE ? -cosc : cosc);
+        }
+    		lon = (x == 0. && y == 0.) ? 0. : Math.atan2(x, y);
+    		break;
+    	}
+        p.x = Proj4js.common.adjust_lon(lon + this.long0);
+        p.y = lat;
+    } else {
+    	rho = Math.sqrt(x*x + y*y);
+    	switch (this.mode) {
+    	case this.OBLIQ:
+    	case this.EQUIT:
+        tp = 2. * Math.atan2(rho * this.cosX1 , this.akm1);
+    		cosphi = Math.cos(tp);
+    		sinphi = Math.sin(tp);
+        if( rho == 0.0 ) {
+    		  phi_l = Math.asin(cosphi * this.sinX1);
+        } else {
+    		  phi_l = Math.asin(cosphi * this.sinX1 + (y * sinphi * this.cosX1 / rho));
+        }
+
+    		tp = Math.tan(.5 * (Proj4js.common.HALF_PI + phi_l));
+    		x *= sinphi;
+    		y = rho * this.cosX1 * cosphi - y * this.sinX1* sinphi;
+    		pi2 = Proj4js.common.HALF_PI;
+    		halfe = .5 * this.e;
+    		break;
+    	case this.N_POLE:
+    		y = -y;
+    	case this.S_POLE:
+        tp = - rho / this.akm1;
+    		phi_l = Proj4js.common.HALF_PI - 2. * Math.atan(tp);
+    		pi2 = -Proj4js.common.HALF_PI;
+    		halfe = -.5 * this.e;
+    		break;
+    	}
+    	for (i = this.NITER; i--; phi_l = lat) { //check this
+    		sinphi = this.e * Math.sin(phi_l);
+    		lat = 2. * Math.atan(tp * Math.pow((1.+sinphi)/(1.-sinphi), halfe)) - pi2;
+    		if (Math.abs(phi_l - lat) < this.CONV) {
+    			if (this.mode == this.S_POLE) lat = -lat;
+    			lon = (x == 0. && y == 0.) ? 0. : Math.atan2(x, y);
+          p.x = Proj4js.common.adjust_lon(lon + this.long0);
+          p.y = lat;
+    			return p;
+    		}
+    	}
+    }
+  }
+}; 
+/* ======================================================================
+    projCode/nzmg.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            NEW ZEALAND MAP GRID
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the New Zealand Map Grid projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+
+ALGORITHM REFERENCES
+
+1.  Department of Land and Survey Technical Circular 1973/32
+      http://www.linz.govt.nz/docs/miscellaneous/nz-map-definition.pdf
+
+2.  OSG Technical Report 4.1
+      http://www.linz.govt.nz/docs/miscellaneous/nzmg.pdf
+
+
+IMPLEMENTATION NOTES
+
+The two references use different symbols for the calculated values. This
+implementation uses the variable names similar to the symbols in reference [1].
+
+The alogrithm uses different units for delta latitude and delta longitude.
+The delta latitude is assumed to be in units of seconds of arc x 10^-5.
+The delta longitude is the usual radians. Look out for these conversions.
+
+The algorithm is described using complex arithmetic. There were three
+options:
+   * find and use a Javascript library for complex arithmetic
+   * write my own complex library
+   * expand the complex arithmetic by hand to simple arithmetic
+
+This implementation has expanded the complex multiplication operations
+into parallel simple arithmetic operations for the real and imaginary parts.
+The imaginary part is way over to the right of the display; this probably
+violates every coding standard in the world, but, to me, it makes it much
+more obvious what is going on.
+
+The following complex operations are used:
+   - addition
+   - multiplication
+   - division
+   - complex number raised to integer power
+   - summation
+
+A summary of complex arithmetic operations:
+   (from http://en.wikipedia.org/wiki/Complex_arithmetic)
+   addition:       (a + bi) + (c + di) = (a + c) + (b + d)i
+   subtraction:    (a + bi) - (c + di) = (a - c) + (b - d)i
+   multiplication: (a + bi) x (c + di) = (ac - bd) + (bc + ad)i
+   division:       (a + bi) / (c + di) = [(ac + bd)/(cc + dd)] + [(bc - ad)/(cc + dd)]i
+
+The algorithm needs to calculate summations of simple and complex numbers. This is
+implemented using a for-loop, pre-loading the summed value to zero.
+
+The algorithm needs to calculate theta^2, theta^3, etc while doing a summation.
+There are three possible implementations:
+   - use Math.pow in the summation loop - except for complex numbers
+   - precalculate the values before running the loop
+   - calculate theta^n = theta^(n-1) * theta during the loop
+This implementation uses the third option for both real and complex arithmetic.
+
+For example
+   psi_n = 1;
+   sum = 0;
+   for (n = 1; n <=6; n++) {
+      psi_n1 = psi_n * psi;       // calculate psi^(n+1)
+      psi_n = psi_n1;
+      sum = sum + A[n] * psi_n;
+   }
+
+
+TEST VECTORS
+
+NZMG E, N:         2487100.638      6751049.719     metres
+NZGD49 long, lat:      172.739194       -34.444066  degrees
+
+NZMG E, N:         2486533.395      6077263.661     metres
+NZGD49 long, lat:      172.723106       -40.512409  degrees
+
+NZMG E, N:         2216746.425      5388508.765     metres
+NZGD49 long, lat:      169.172062       -46.651295  degrees
+
+Note that these test vectors convert from NZMG metres to lat/long referenced
+to NZGD49, not the more usual WGS84. The difference is about 70m N/S and about
+10m E/W.
+
+These test vectors are provided in reference [1]. Many more test
+vectors are available in
+   http://www.linz.govt.nz/docs/topography/topographicdata/placenamesdatabase/nznamesmar08.zip
+which is a catalog of names on the 260-series maps.
+
+
+EPSG CODES
+
+NZMG     EPSG:27200
+NZGD49   EPSG:4272
+
+http://spatialreference.org/ defines these as
+  Proj4js.defs["EPSG:4272"] = "+proj=longlat +ellps=intl +datum=nzgd49 +no_defs ";
+  Proj4js.defs["EPSG:27200"] = "+proj=nzmg +lat_0=-41 +lon_0=173 +x_0=2510000 +y_0=6023150 +ellps=intl +datum=nzgd49 +units=m +no_defs ";
+
+
+LICENSE
+  Copyright: Stephen Irons 2008
+  Released under terms of the LGPL as per: http://www.gnu.org/copyleft/lesser.html
+
+*******************************************************************************/
+
+
+/**
+  Initialize New Zealand Map Grip projection
+*/
+
+Proj4js.Proj.nzmg = {
+
+  /**
+   * iterations: Number of iterations to refine inverse transform.
+   *     0 -> km accuracy
+   *     1 -> m accuracy -- suitable for most mapping applications
+   *     2 -> mm accuracy
+   */
+  iterations: 1,
+
+  init : function() {
+    this.A = new Array();
+    this.A[1]  = +0.6399175073;
+    this.A[2]  = -0.1358797613;
+    this.A[3]  = +0.063294409;
+    this.A[4]  = -0.02526853;
+    this.A[5]  = +0.0117879;
+    this.A[6]  = -0.0055161;
+    this.A[7]  = +0.0026906;
+    this.A[8]  = -0.001333;
+    this.A[9]  = +0.00067;
+    this.A[10] = -0.00034;
+
+    this.B_re = new Array();        this.B_im = new Array();
+    this.B_re[1] = +0.7557853228;   this.B_im[1] =  0.0;
+    this.B_re[2] = +0.249204646;    this.B_im[2] = +0.003371507;
+    this.B_re[3] = -0.001541739;    this.B_im[3] = +0.041058560;
+    this.B_re[4] = -0.10162907;     this.B_im[4] = +0.01727609;
+    this.B_re[5] = -0.26623489;     this.B_im[5] = -0.36249218;
+    this.B_re[6] = -0.6870983;      this.B_im[6] = -1.1651967;
+
+    this.C_re = new Array();        this.C_im = new Array();
+    this.C_re[1] = +1.3231270439;   this.C_im[1] =  0.0;
+    this.C_re[2] = -0.577245789;    this.C_im[2] = -0.007809598;
+    this.C_re[3] = +0.508307513;    this.C_im[3] = -0.112208952;
+    this.C_re[4] = -0.15094762;     this.C_im[4] = +0.18200602;
+    this.C_re[5] = +1.01418179;     this.C_im[5] = +1.64497696;
+    this.C_re[6] = +1.9660549;      this.C_im[6] = +2.5127645;
+
+    this.D = new Array();
+    this.D[1] = +1.5627014243;
+    this.D[2] = +0.5185406398;
+    this.D[3] = -0.03333098;
+    this.D[4] = -0.1052906;
+    this.D[5] = -0.0368594;
+    this.D[6] = +0.007317;
+    this.D[7] = +0.01220;
+    this.D[8] = +0.00394;
+    this.D[9] = -0.0013;
+  },
+
+  /**
+    New Zealand Map Grid Forward  - long/lat to x/y
+    long/lat in radians
+  */
+  forward : function(p) {
+    var lon = p.x;
+    var lat = p.y;
+
+    var delta_lat = lat - this.lat0;
+    var delta_lon = lon - this.long0;
+
+    // 1. Calculate d_phi and d_psi    ...                          // and d_lambda
+    // For this algorithm, delta_latitude is in seconds of arc x 10-5, so we need to scale to those units. Longitude is radians.
+    var d_phi = delta_lat / Proj4js.common.SEC_TO_RAD * 1E-5;       var d_lambda = delta_lon;
+    var d_phi_n = 1;  // d_phi^0
+
+    var d_psi = 0;
+    for (n = 1; n <= 10; n++) {
+      d_phi_n = d_phi_n * d_phi;
+      d_psi = d_psi + this.A[n] * d_phi_n;
+    }
+
+    // 2. Calculate theta
+    var th_re = d_psi;                                              var th_im = d_lambda;
+
+    // 3. Calculate z
+    var th_n_re = 1;                                                var th_n_im = 0;  // theta^0
+    var th_n_re1;                                                   var th_n_im1;
+
+    var z_re = 0;                                                   var z_im = 0;
+    for (n = 1; n <= 6; n++) {
+      th_n_re1 = th_n_re*th_re - th_n_im*th_im;                     th_n_im1 = th_n_im*th_re + th_n_re*th_im;
+      th_n_re = th_n_re1;                                           th_n_im = th_n_im1;
+      z_re = z_re + this.B_re[n]*th_n_re - this.B_im[n]*th_n_im;    z_im = z_im + this.B_im[n]*th_n_re + this.B_re[n]*th_n_im;
+    }
+
+    // 4. Calculate easting and northing
+    x = (z_im * this.a) + this.x0;
+    y = (z_re * this.a) + this.y0;
+
+    p.x = x; p.y = y;
+
+    return p;
+  },
+
+
+  /**
+    New Zealand Map Grid Inverse  -  x/y to long/lat
+  */
+  inverse : function(p) {
+
+    var x = p.x;
+    var y = p.y;
+
+    var delta_x = x - this.x0;
+    var delta_y = y - this.y0;
+
+    // 1. Calculate z
+    var z_re = delta_y / this.a;                                              var z_im = delta_x / this.a;
+
+    // 2a. Calculate theta - first approximation gives km accuracy
+    var z_n_re = 1;                                                           var z_n_im = 0;  // z^0
+    var z_n_re1;                                                              var z_n_im1;
+
+    var th_re = 0;                                                            var th_im = 0;
+    for (n = 1; n <= 6; n++) {
+      z_n_re1 = z_n_re*z_re - z_n_im*z_im;                                    z_n_im1 = z_n_im*z_re + z_n_re*z_im;
+      z_n_re = z_n_re1;                                                       z_n_im = z_n_im1;
+      th_re = th_re + this.C_re[n]*z_n_re - this.C_im[n]*z_n_im;              th_im = th_im + this.C_im[n]*z_n_re + this.C_re[n]*z_n_im;
+    }
+
+    // 2b. Iterate to refine the accuracy of the calculation
+    //        0 iterations gives km accuracy
+    //        1 iteration gives m accuracy -- good enough for most mapping applications
+    //        2 iterations bives mm accuracy
+    for (i = 0; i < this.iterations; i++) {
+       var th_n_re = th_re;                                                      var th_n_im = th_im;
+       var th_n_re1;                                                             var th_n_im1;
+
+       var num_re = z_re;                                                        var num_im = z_im;
+       for (n = 2; n <= 6; n++) {
+         th_n_re1 = th_n_re*th_re - th_n_im*th_im;                               th_n_im1 = th_n_im*th_re + th_n_re*th_im;
+         th_n_re = th_n_re1;                                                     th_n_im = th_n_im1;
+         num_re = num_re + (n-1)*(this.B_re[n]*th_n_re - this.B_im[n]*th_n_im);  num_im = num_im + (n-1)*(this.B_im[n]*th_n_re + this.B_re[n]*th_n_im);
+       }
+
+       th_n_re = 1;                                                              th_n_im = 0;
+       var den_re = this.B_re[1];                                                var den_im = this.B_im[1];
+       for (n = 2; n <= 6; n++) {
+         th_n_re1 = th_n_re*th_re - th_n_im*th_im;                               th_n_im1 = th_n_im*th_re + th_n_re*th_im;
+         th_n_re = th_n_re1;                                                     th_n_im = th_n_im1;
+         den_re = den_re + n * (this.B_re[n]*th_n_re - this.B_im[n]*th_n_im);    den_im = den_im + n * (this.B_im[n]*th_n_re + this.B_re[n]*th_n_im);
+       }
+
+       // Complex division
+       var den2 = den_re*den_re + den_im*den_im;
+       th_re = (num_re*den_re + num_im*den_im) / den2;                           th_im = (num_im*den_re - num_re*den_im) / den2;
+    }
+
+    // 3. Calculate d_phi              ...                                    // and d_lambda
+    var d_psi = th_re;                                                        var d_lambda = th_im;
+    var d_psi_n = 1;  // d_psi^0
+
+    var d_phi = 0;
+    for (n = 1; n <= 9; n++) {
+       d_psi_n = d_psi_n * d_psi;
+       d_phi = d_phi + this.D[n] * d_psi_n;
+    }
+
+    // 4. Calculate latitude and longitude
+    // d_phi is calcuated in second of arc * 10^-5, so we need to scale back to radians. d_lambda is in radians.
+    var lat = this.lat0 + (d_phi * Proj4js.common.SEC_TO_RAD * 1E5);
+    var lon = this.long0 +  d_lambda;
+
+    p.x = lon;
+    p.y = lat;
+
+    return p;
+  }
+};
+/* ======================================================================
+    projCode/mill.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                    MILLER CYLINDRICAL 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Miller Cylindrical projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE            
+----------              ----           
+T. Mittan		March, 1993
+
+This function was adapted from the Lambert Azimuthal Equal Area projection
+code (FORTRAN) in the General Cartographic Transformation Package software
+which is available from the U.S. Geological Survey National Mapping Division.
+ 
+ALGORITHM REFERENCES
+
+1.  "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
+    The American Cartographer, Vol 15, No. 4, October 1988, pp. 341-355.
+
+2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+3.  "Software Documentation for GCTP General Cartographic Transformation
+    Package", U.S. Geological Survey National Mapping Division, May 1982.
+*******************************************************************************/
+
+Proj4js.Proj.mill = {
+
+/* Initialize the Miller Cylindrical projection
+  -------------------------------------------*/
+  init: function() {
+    //no-op
+  },
+
+
+  /* Miller Cylindrical forward equations--mapping lat,long to x,y
+    ------------------------------------------------------------*/
+  forward: function(p) {
+    var lon=p.x;
+    var lat=p.y;
+    /* Forward equations
+      -----------------*/
+    var dlon = Proj4js.common.adjust_lon(lon -this.long0);
+    var x = this.x0 + this.a * dlon;
+    var y = this.y0 + this.a * Math.log(Math.tan((Proj4js.common.PI / 4.0) + (lat / 2.5))) * 1.25;
+
+    p.x=x;
+    p.y=y;
+    return p;
+  },//millFwd()
+
+  /* Miller Cylindrical inverse equations--mapping x,y to lat/long
+    ------------------------------------------------------------*/
+  inverse: function(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+
+    var lon = Proj4js.common.adjust_lon(this.long0 + p.x /this.a);
+    var lat = 2.5 * (Math.atan(Math.exp(0.8*p.y/this.a)) - Proj4js.common.PI / 4.0);
+
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }//millInv()
+};
+/* ======================================================================
+    projCode/gnom.js
+   ====================================================================== */
+
+/*****************************************************************************
+NAME                             GNOMONIC
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Gnomonic Projection.
+                Implementation based on the existing sterea and ortho
+                implementations.
+
+PROGRAMMER              DATE
+----------              ----
+Richard Marsden         November 2009
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Flattening the Earth - Two Thousand Years of Map 
+    Projections", University of Chicago Press 1993
+
+2.  Wolfram Mathworld "Gnomonic Projection"
+    http://mathworld.wolfram.com/GnomonicProjection.html
+    Accessed: 12th November 2009
+******************************************************************************/
+
+Proj4js.Proj.gnom = {
+
+  /* Initialize the Gnomonic projection
+    -------------------------------------*/
+  init: function(def) {
+
+    /* Place parameters in static storage for common use
+      -------------------------------------------------*/
+    this.sin_p14=Math.sin(this.lat0);
+    this.cos_p14=Math.cos(this.lat0);
+    // Approximation for projecting points to the horizon (infinity)
+    this.infinity_dist = 1000 * this.a;
+    this.rc = 1;
+  },
+
+
+  /* Gnomonic forward equations--mapping lat,long to x,y
+    ---------------------------------------------------*/
+  forward: function(p) {
+    var sinphi, cosphi;	/* sin and cos value				*/
+    var dlon;		/* delta longitude value			*/
+    var coslon;		/* cos of longitude				*/
+    var ksp;		/* scale factor					*/
+    var g;		
+    var lon=p.x;
+    var lat=p.y;	
+    /* Forward equations
+      -----------------*/
+    dlon = Proj4js.common.adjust_lon(lon - this.long0);
+
+    sinphi=Math.sin(lat);
+    cosphi=Math.cos(lat);	
+
+    coslon = Math.cos(dlon);
+    g = this.sin_p14 * sinphi + this.cos_p14 * cosphi * coslon;
+    ksp = 1.0;
+    if ((g > 0) || (Math.abs(g) <= Proj4js.common.EPSLN)) {
+      x = this.x0 + this.a * ksp * cosphi * Math.sin(dlon) / g;
+      y = this.y0 + this.a * ksp * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon) / g;
+    } else {
+      Proj4js.reportError("orthoFwdPointError");
+
+      // Point is in the opposing hemisphere and is unprojectable
+      // We still need to return a reasonable point, so we project 
+      // to infinity, on a bearing 
+      // equivalent to the northern hemisphere equivalent
+      // This is a reasonable approximation for short shapes and lines that 
+      // straddle the horizon.
+
+      x = this.x0 + this.infinity_dist * cosphi * Math.sin(dlon);
+      y = this.y0 + this.infinity_dist * (this.cos_p14 * sinphi - this.sin_p14 * cosphi * coslon);
+
+    }
+    p.x=x;
+    p.y=y;
+    return p;
+  },
+
+
+  inverse: function(p) {
+    var rh;		/* Rho */
+    var z;		/* angle */
+    var sinc, cosc;
+    var c;
+    var lon , lat;
+
+    /* Inverse equations
+      -----------------*/
+    p.x = (p.x - this.x0) / this.a;
+    p.y = (p.y - this.y0) / this.a;
+
+    p.x /= this.k0;
+    p.y /= this.k0;
+
+    if ( (rh = Math.sqrt(p.x * p.x + p.y * p.y)) ) {
+      c = Math.atan2(rh, this.rc);
+      sinc = Math.sin(c);
+      cosc = Math.cos(c);
+
+      lat = Proj4js.common.asinz(cosc*this.sin_p14 + (p.y*sinc*this.cos_p14) / rh);
+      lon = Math.atan2(p.x*sinc, rh*this.cos_p14*cosc - p.y*this.sin_p14*sinc);
+      lon = Proj4js.common.adjust_lon(this.long0+lon);
+    } else {
+      lat = this.phic0;
+      lon = 0.0;
+    }
+ 
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }
+};
+
+
+/* ======================================================================
+    projCode/sinu.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                  		SINUSOIDAL
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Sinusoidal projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE            
+----------              ----           
+D. Steinwand, EROS      May, 1991     
+
+This function was adapted from the Sinusoidal projection code (FORTRAN) in the 
+General Cartographic Transformation Package software which is available from 
+the U.S. Geological Survey National Mapping Division.
+ 
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  "Software Documentation for GCTP General Cartographic Transformation
+    Package", U.S. Geological Survey National Mapping Division, May 1982.
+*******************************************************************************/
+
+Proj4js.Proj.sinu = {
+
+	/* Initialize the Sinusoidal projection
+	  ------------------------------------*/
+	init: function() {
+		/* Place parameters in static storage for common use
+		  -------------------------------------------------*/
+		this.R = 6370997.0; //Radius of earth
+	},
+
+	/* Sinusoidal forward equations--mapping lat,long to x,y
+	-----------------------------------------------------*/
+	forward: function(p) {
+		var x,y,delta_lon;	
+		var lon=p.x;
+		var lat=p.y;	
+		/* Forward equations
+		-----------------*/
+		delta_lon = Proj4js.common.adjust_lon(lon - this.long0);
+		x = this.R * delta_lon * Math.cos(lat) + this.x0;
+		y = this.R * lat + this.y0;
+
+		p.x=x;
+		p.y=y;	
+		return p;
+	},
+
+	inverse: function(p) {
+		var lat,temp,lon;	
+
+		/* Inverse equations
+		  -----------------*/
+		p.x -= this.x0;
+		p.y -= this.y0;
+		lat = p.y / this.R;
+		if (Math.abs(lat) > Proj4js.common.HALF_PI) {
+		    Proj4js.reportError("sinu:Inv:DataError");
+		}
+		temp = Math.abs(lat) - Proj4js.common.HALF_PI;
+		if (Math.abs(temp) > Proj4js.common.EPSLN) {
+			temp = this.long0+ p.x / (this.R *Math.cos(lat));
+			lon = Proj4js.common.adjust_lon(temp);
+		} else {
+			lon = this.long0;
+		}
+		  
+		p.x=lon;
+		p.y=lat;
+		return p;
+	}
+};
+
+
+/* ======================================================================
+    projCode/vandg.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                    VAN DER GRINTEN 
+
+PURPOSE:	Transforms input Easting and Northing to longitude and
+		latitude for the Van der Grinten projection.  The
+		Easting and Northing must be in meters.  The longitude
+		and latitude values will be returned in radians.
+
+PROGRAMMER              DATE            
+----------              ----           
+T. Mittan		March, 1993
+
+This function was adapted from the Van Der Grinten projection code
+(FORTRAN) in the General Cartographic Transformation Package software
+which is available from the U.S. Geological Survey National Mapping Division.
+ 
+ALGORITHM REFERENCES
+
+1.  "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
+    The American Cartographer, Vol 15, No. 4, October 1988, pp. 341-355.
+
+2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+3.  "Software Documentation for GCTP General Cartographic Transformation
+    Package", U.S. Geological Survey National Mapping Division, May 1982.
+*******************************************************************************/
+
+Proj4js.Proj.vandg = {
+
+/* Initialize the Van Der Grinten projection
+  ----------------------------------------*/
+	init: function() {
+		this.R = 6370997.0; //Radius of earth
+	},
+
+	forward: function(p) {
+
+		var lon=p.x;
+		var lat=p.y;	
+
+		/* Forward equations
+		-----------------*/
+		var dlon = Proj4js.common.adjust_lon(lon - this.long0);
+		var x,y;
+
+		if (Math.abs(lat) <= Proj4js.common.EPSLN) {
+			x = this.x0  + this.R * dlon;
+			y = this.y0;
+		}
+		var theta = Proj4js.common.asinz(2.0 * Math.abs(lat / Proj4js.common.PI));
+		if ((Math.abs(dlon) <= Proj4js.common.EPSLN) || (Math.abs(Math.abs(lat) - Proj4js.common.HALF_PI) <= Proj4js.common.EPSLN)) {
+			x = this.x0;
+			if (lat >= 0) {
+				y = this.y0 + Proj4js.common.PI * this.R * Math.tan(.5 * theta);
+			} else {
+				y = this.y0 + Proj4js.common.PI * this.R * - Math.tan(.5 * theta);
+			}
+			//  return(OK);
+		}
+		var al = .5 * Math.abs((Proj4js.common.PI / dlon) - (dlon / Proj4js.common.PI));
+		var asq = al * al;
+		var sinth = Math.sin(theta);
+		var costh = Math.cos(theta);
+
+		var g = costh / (sinth + costh - 1.0);
+		var gsq = g * g;
+		var m = g * (2.0 / sinth - 1.0);
+		var msq = m * m;
+		var con = Proj4js.common.PI * this.R * (al * (g - msq) + Math.sqrt(asq * (g - msq) * (g - msq) - (msq + asq) * (gsq - msq))) / (msq + asq);
+		if (dlon < 0) {
+		 con = -con;
+		}
+		x = this.x0 + con;
+		con = Math.abs(con / (Proj4js.common.PI * this.R));
+		if (lat >= 0) {
+		 y = this.y0 + Proj4js.common.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+		} else {
+		 y = this.y0 - Proj4js.common.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+		}
+		p.x = x;
+		p.y = y;
+		return p;
+	},
+
+/* Van Der Grinten inverse equations--mapping x,y to lat/long
+  ---------------------------------------------------------*/
+	inverse: function(p) {
+		var dlon;
+		var xx,yy,xys,c1,c2,c3;
+		var al,asq;
+		var a1;
+		var m1;
+		var con;
+		var th1;
+		var d;
+
+		/* inverse equations
+		-----------------*/
+		p.x -= this.x0;
+		p.y -= this.y0;
+		con = Proj4js.common.PI * this.R;
+		xx = p.x / con;
+		yy =p.y / con;
+		xys = xx * xx + yy * yy;
+		c1 = -Math.abs(yy) * (1.0 + xys);
+		c2 = c1 - 2.0 * yy * yy + xx * xx;
+		c3 = -2.0 * c1 + 1.0 + 2.0 * yy * yy + xys * xys;
+		d = yy * yy / c3 + (2.0 * c2 * c2 * c2 / c3 / c3 / c3 - 9.0 * c1 * c2 / c3 /c3) / 27.0;
+		a1 = (c1 - c2 * c2 / 3.0 / c3) / c3;
+		m1 = 2.0 * Math.sqrt( -a1 / 3.0);
+		con = ((3.0 * d) / a1) / m1;
+		if (Math.abs(con) > 1.0) {
+			if (con >= 0.0) {
+				con = 1.0;
+			} else {
+				con = -1.0;
+			}
+		}
+		th1 = Math.acos(con) / 3.0;
+		if (p.y >= 0) {
+			lat = (-m1 *Math.cos(th1 + Proj4js.common.PI / 3.0) - c2 / 3.0 / c3) * Proj4js.common.PI;
+		} else {
+			lat = -(-m1 * Math.cos(th1 + Proj4js.common.PI / 3.0) - c2 / 3.0 / c3) * Proj4js.common.PI;
+		}
+
+		if (Math.abs(xx) < Proj4js.common.EPSLN) {
+			lon = this.long0;
+		}
+		lon = Proj4js.common.adjust_lon(this.long0 + Proj4js.common.PI * (xys - 1.0 + Math.sqrt(1.0 + 2.0 * (xx * xx - yy * yy) + xys * xys)) / 2.0 / xx);
+
+		p.x=lon;
+		p.y=lat;
+		return p;
+	}
+};
+/* ======================================================================
+    projCode/cea.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                    LAMBERT CYLINDRICAL EQUAL AREA
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Lambert Cylindrical Equal Area projection.
+                This class of projection includes the Behrmann and 
+                Gall-Peters Projections.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE            
+----------              ----
+R. Marsden              August 2009
+Winwaed Software Tech LLC, http://www.winwaed.com
+
+This function was adapted from the Miller Cylindrical Projection in the Proj4JS
+library.
+
+Note: This implementation assumes a Spherical Earth. The (commented) code 
+has been included for the ellipsoidal forward transform, but derivation of 
+the ellispoidal inverse transform is beyond me. Note that most of the 
+Proj4JS implementations do NOT currently support ellipsoidal figures. 
+Therefore this is not seen as a problem - especially this lack of support 
+is explicitly stated here.
+ 
+ALGORITHM REFERENCES
+
+1.  "Cartographic Projection Procedures for the UNIX Environment - 
+     A User's Manual" by Gerald I. Evenden, USGS Open File Report 90-284
+    and Release 4 Interim Reports (2003)
+
+2.  Snyder, John P., "Flattening the Earth - Two Thousand Years of Map 
+    Projections", Univ. Chicago Press, 1993
+*******************************************************************************/
+
+Proj4js.Proj.cea = {
+
+/* Initialize the Cylindrical Equal Area projection
+  -------------------------------------------*/
+  init: function() {
+    //no-op
+  },
+
+
+  /* Cylindrical Equal Area forward equations--mapping lat,long to x,y
+    ------------------------------------------------------------*/
+  forward: function(p) {
+    var lon=p.x;
+    var lat=p.y;
+    /* Forward equations
+      -----------------*/
+    dlon = Proj4js.common.adjust_lon(lon -this.long0);
+    var x = this.x0 + this.a * dlon * Math.cos(this.lat_ts);
+    var y = this.y0 + this.a * Math.sin(lat) / Math.cos(this.lat_ts);
+   /* Elliptical Forward Transform
+      Not implemented due to a lack of a matchign inverse function
+    {
+      var Sin_Lat = Math.sin(lat);
+      var Rn = this.a * (Math.sqrt(1.0e0 - this.es * Sin_Lat * Sin_Lat ));
+      x = this.x0 + this.a * dlon * Math.cos(this.lat_ts);
+      y = this.y0 + Rn * Math.sin(lat) / Math.cos(this.lat_ts);
+    }
+   */
+
+
+    p.x=x;
+    p.y=y;
+    return p;
+  },//ceaFwd()
+
+  /* Cylindrical Equal Area inverse equations--mapping x,y to lat/long
+    ------------------------------------------------------------*/
+  inverse: function(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+
+    var lon = Proj4js.common.adjust_lon( this.long0 + (p.x / this.a) / Math.cos(this.lat_ts) );
+
+    var lat = Math.asin( (p.y/this.a) * Math.cos(this.lat_ts) );
+
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }//ceaInv()
+};
+/* ======================================================================
+    projCode/eqc.js
+   ====================================================================== */
+
+/* similar to equi.js FIXME proj4 uses eqc */
+Proj4js.Proj.eqc = {
+  init : function() {
+
+      if(!this.x0) this.x0=0;
+      if(!this.y0) this.y0=0;
+      if(!this.lat0) this.lat0=0;
+      if(!this.long0) this.long0=0;
+      if(!this.lat_ts) this.lat_ts=0;
+      if (!this.title) this.title = "Equidistant Cylindrical (Plate Carre)";
+
+      this.rc= Math.cos(this.lat_ts);
+    },
+
+
+    // forward equations--mapping lat,long to x,y
+    // -----------------------------------------------------------------
+    forward : function(p) {
+
+      var lon= p.x;
+      var lat= p.y;
+
+      var dlon = Proj4js.common.adjust_lon(lon - this.long0);
+      var dlat = Proj4js.common.adjust_lat(lat - this.lat0 );
+      p.x= this.x0 + (this.a*dlon*this.rc);
+      p.y= this.y0 + (this.a*dlat        );
+      return p;
+    },
+
+  // inverse equations--mapping x,y to lat/long
+  // -----------------------------------------------------------------
+  inverse : function(p) {
+
+    var x= p.x;
+    var y= p.y;
+
+    p.x= Proj4js.common.adjust_lon(this.long0 + ((x - this.x0)/(this.a*this.rc)));
+    p.y= Proj4js.common.adjust_lat(this.lat0  + ((y - this.y0)/(this.a        )));
+    return p;
+  }
+
+};
+/* ======================================================================
+    projCode/cass.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            CASSINI
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Cassini projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+    Ported from PROJ.4.
+
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+*******************************************************************************/
+
+
+//Proj4js.defs["EPSG:28191"] = "+proj=cass +lat_0=31.73409694444445 +lon_0=35.21208055555556 +x_0=170251.555 +y_0=126867.909 +a=6378300.789 +b=6356566.435 +towgs84=-275.722,94.7824,340.894,-8.001,-4.42,-11.821,1 +units=m +no_defs";
+
+// Initialize the Cassini projection
+// -----------------------------------------------------------------
+
+Proj4js.Proj.cass = {
+  init : function() {
+    if (!this.sphere) {
+      this.en = this.pj_enfn(this.es)
+      this.m0 = this.pj_mlfn(this.lat0, Math.sin(this.lat0), Math.cos(this.lat0), this.en);
+    }
+  },
+
+  C1:	.16666666666666666666,
+  C2:	.00833333333333333333,
+  C3:	.04166666666666666666,
+  C4:	.33333333333333333333,
+  C5:	.06666666666666666666,
+
+
+/* Cassini forward equations--mapping lat,long to x,y
+  -----------------------------------------------------------------------*/
+  forward: function(p) {
+
+    /* Forward equations
+      -----------------*/
+    var x,y;
+    var lam=p.x;
+    var phi=p.y;
+    lam = Proj4js.common.adjust_lon(lam - this.long0);
+    
+    if (this.sphere) {
+      x = Math.asin(Math.cos(phi) * Math.sin(lam));
+      y = Math.atan2(Math.tan(phi) , Math.cos(lam)) - this.phi0;
+    } else {
+        //ellipsoid
+      this.n = Math.sin(phi);
+      this.c = Math.cos(phi);
+      y = this.pj_mlfn(phi, this.n, this.c, this.en);
+      this.n = 1./Math.sqrt(1. - this.es * this.n * this.n);
+      this.tn = Math.tan(phi); 
+      this.t = this.tn * this.tn;
+      this.a1 = lam * this.c;
+      this.c *= this.es * this.c / (1 - this.es);
+      this.a2 = this.a1 * this.a1;
+      x = this.n * this.a1 * (1. - this.a2 * this.t * (this.C1 - (8. - this.t + 8. * this.c) * this.a2 * this.C2));
+      y -= this.m0 - this.n * this.tn * this.a2 * (.5 + (5. - this.t + 6. * this.c) * this.a2 * this.C3);
+    }
+    
+    p.x = this.a*x + this.x0;
+    p.y = this.a*y + this.y0;
+    return p;
+  },//cassFwd()
+
+/* Inverse equations
+  -----------------*/
+  inverse: function(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var x = p.x/this.a;
+    var y = p.y/this.a;
+    
+    if (this.sphere) {
+      this.dd = y + this.lat0;
+      phi = Math.asin(Math.sin(this.dd) * Math.cos(x));
+      lam = Math.atan2(Math.tan(x), Math.cos(this.dd));
+    } else {
+      /* ellipsoid */
+      ph1 = this.pj_inv_mlfn(this.m0 + y, this.es, this.en);
+      this.tn = Math.tan(ph1); 
+      this.t = this.tn * this.tn;
+      this.n = Math.sin(ph1);
+      this.r = 1. / (1. - this.es * this.n * this.n);
+      this.n = Math.sqrt(this.r);
+      this.r *= (1. - this.es) * this.n;
+      this.dd = x / this.n;
+      this.d2 = this.dd * this.dd;
+      phi = ph1 - (this.n * this.tn / this.r) * this.d2 * (.5 - (1. + 3. * this.t) * this.d2 * this.C3);
+      lam = this.dd * (1. + this.t * this.d2 * (-this.C4 + (1. + 3. * this.t) * this.d2 * this.C5)) / Math.cos(ph1);
+    }
+    p.x = Proj4js.common.adjust_lon(this.long0+lam);
+    p.y = phi;
+    return p;
+  },//lamazInv()
+
+
+  //code from the PROJ.4 pj_mlfn.c file;  this may be useful for other projections
+  pj_enfn: function(es) {
+    en = new Array();
+    en[0] = this.C00 - es * (this.C02 + es * (this.C04 + es * (this.C06 + es * this.C08)));
+    en[1] = es * (this.C22 - es * (this.C04 + es * (this.C06 + es * this.C08)));
+    var t = es * es;
+    en[2] = t * (this.C44 - es * (this.C46 + es * this.C48));
+    t *= es;
+    en[3] = t * (this.C66 - es * this.C68);
+    en[4] = t * es * this.C88;
+    return en;
+  },
+  
+  pj_mlfn: function(phi, sphi, cphi, en) {
+    cphi *= sphi;
+    sphi *= sphi;
+    return(en[0] * phi - cphi * (en[1] + sphi*(en[2]+ sphi*(en[3] + sphi*en[4]))));
+  },
+  
+  pj_inv_mlfn: function(arg, es, en) {
+    k = 1./(1.-es);
+    phi = arg;
+    for (i = Proj4js.common.MAX_ITER; i ; --i) { /* rarely goes over 2 iterations */
+      s = Math.sin(phi);
+      t = 1. - es * s * s;
+      //t = this.pj_mlfn(phi, s, Math.cos(phi), en) - arg;
+      //phi -= t * (t * Math.sqrt(t)) * k;
+      t = (this.pj_mlfn(phi, s, Math.cos(phi), en) - arg) * (t * Math.sqrt(t)) * k;
+      phi -= t;
+      if (Math.abs(t) < Proj4js.common.EPSLN)
+        return phi;
+    }
+    Proj4js.reportError("cass:pj_inv_mlfn: Convergence error");
+    return phi;
+  },
+
+/* meridinal distance for ellipsoid and inverse
+**	8th degree - accurate to < 1e-5 meters when used in conjuction
+**		with typical major axis values.
+**	Inverse determines phi to EPS (1e-11) radians, about 1e-6 seconds.
+*/
+  C00: 1.0,
+  C02: .25,
+  C04: .046875,
+  C06: .01953125,
+  C08: .01068115234375,
+  C22: .75,
+  C44: .46875,
+  C46: .01302083333333333333,
+  C48: .00712076822916666666,
+  C66: .36458333333333333333,
+  C68: .00569661458333333333,
+  C88: .3076171875
+
+}
+/* ======================================================================
+    projCode/gauss.js
+   ====================================================================== */
+
+
+Proj4js.Proj.gauss = {
+
+  init : function() {
+    sphi = Math.sin(this.lat0);
+    cphi = Math.cos(this.lat0);  
+    cphi *= cphi;
+    this.rc = Math.sqrt(1.0 - this.es) / (1.0 - this.es * sphi * sphi);
+    this.C = Math.sqrt(1.0 + this.es * cphi * cphi / (1.0 - this.es));
+    this.phic0 = Math.asin(sphi / this.C);
+    this.ratexp = 0.5 * this.C * this.e;
+    this.K = Math.tan(0.5 * this.phic0 + Proj4js.common.FORTPI) / (Math.pow(Math.tan(0.5*this.lat0 + Proj4js.common.FORTPI), this.C) * Proj4js.common.srat(this.e*sphi, this.ratexp));
+  },
+
+  forward : function(p) {
+    var lon = p.x;
+    var lat = p.y;
+
+    p.y = 2.0 * Math.atan( this.K * Math.pow(Math.tan(0.5 * lat + Proj4js.common.FORTPI), this.C) * Proj4js.common.srat(this.e * Math.sin(lat), this.ratexp) ) - Proj4js.common.HALF_PI;
+    p.x = this.C * lon;
+    return p;
+  },
+
+  inverse : function(p) {
+    var DEL_TOL = 1e-14;
+    var lon = p.x / this.C;
+    var lat = p.y;
+    num = Math.pow(Math.tan(0.5 * lat + Proj4js.common.FORTPI)/this.K, 1./this.C);
+    for (var i = Proj4js.common.MAX_ITER; i>0; --i) {
+      lat = 2.0 * Math.atan(num * Proj4js.common.srat(this.e * Math.sin(p.y), -0.5 * this.e)) - Proj4js.common.HALF_PI;
+      if (Math.abs(lat - p.y) < DEL_TOL) break;
+      p.y = lat;
+    }	
+    /* convergence failed */
+    if (!i) {
+      Proj4js.reportError("gauss:inverse:convergence failed");
+      return null;
+    }
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+};
+
+/* ======================================================================
+    projCode/omerc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                       OBLIQUE MERCATOR (HOTINE) 
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Oblique Mercator projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+T. Mittan		Mar, 1993
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+*******************************************************************************/
+
+Proj4js.Proj.omerc = {
+
+  /* Initialize the Oblique Mercator  projection
+    ------------------------------------------*/
+  init: function() {
+    if (!this.mode) this.mode=0;
+    if (!this.lon1)   {this.lon1=0;this.mode=1;}
+    if (!this.lon2)   this.lon2=0;
+    if (!this.lat2)    this.lat2=0;
+
+    /* Place parameters in static storage for common use
+      -------------------------------------------------*/
+    var temp = this.b/ this.a;
+    var es = 1.0 - Math.pow(temp,2);
+    var e = Math.sqrt(es);
+
+    this.sin_p20=Math.sin(this.lat0);
+    this.cos_p20=Math.cos(this.lat0);
+
+    this.con = 1.0 - this.es * this.sin_p20 * this.sin_p20;
+    this.com = Math.sqrt(1.0 - es);
+    this.bl = Math.sqrt(1.0 + this.es * Math.pow(this.cos_p20,4.0)/(1.0 - es));
+    this.al = this.a * this.bl * this.k0 * this.com / this.con;
+    if (Math.abs(this.lat0) < Proj4js.common.EPSLN) {
+       this.ts = 1.0;
+       this.d = 1.0;
+       this.el = 1.0;
+    } else {
+       this.ts = Proj4js.common.tsfnz(this.e,this.lat0,this.sin_p20);
+       this.con = Math.sqrt(this.con);
+       this.d = this.bl * this.com / (this.cos_p20 * this.con);
+       if ((this.d * this.d - 1.0) > 0.0) {
+          if (this.lat0 >= 0.0) {
+             this.f = this.d + Math.sqrt(this.d * this.d - 1.0);
+          } else {
+             this.f = this.d - Math.sqrt(this.d * this.d - 1.0);
+          }
+       } else {
+         this.f = this.d;
+       }
+       this.el = this.f * Math.pow(this.ts,this.bl);
+    }
+
+    //this.longc=52.60353916666667;
+
+    if (this.mode != 0) {
+       this.g = .5 * (this.f - 1.0/this.f);
+       this.gama = Proj4js.common.asinz(Math.sin(this.alpha) / this.d);
+       this.longc= this.longc - Proj4js.common.asinz(this.g * Math.tan(this.gama))/this.bl;
+
+       /* Report parameters common to format B
+       -------------------------------------*/
+       //genrpt(azimuth * R2D,"Azimuth of Central Line:    ");
+       //cenlon(lon_origin);
+      // cenlat(lat_origin);
+
+       this.con = Math.abs(this.lat0);
+       if ((this.con > Proj4js.common.EPSLN) && (Math.abs(this.con - Proj4js.common.HALF_PI) > Proj4js.common.EPSLN)) {
+            this.singam=Math.sin(this.gama);
+            this.cosgam=Math.cos(this.gama);
+
+            this.sinaz=Math.sin(this.alpha);
+            this.cosaz=Math.cos(this.alpha);
+
+            if (this.lat0>= 0) {
+               this.u =  (this.al / this.bl) * Math.atan(Math.sqrt(this.d*this.d - 1.0)/this.cosaz);
+            } else {
+               this.u =  -(this.al / this.bl) *Math.atan(Math.sqrt(this.d*this.d - 1.0)/this.cosaz);
+            }
+          } else {
+            Proj4js.reportError("omerc:Init:DataError");
+          }
+       } else {
+       this.sinphi =Math. sin(this.at1);
+       this.ts1 = Proj4js.common.tsfnz(this.e,this.lat1,this.sinphi);
+       this.sinphi = Math.sin(this.lat2);
+       this.ts2 = Proj4js.common.tsfnz(this.e,this.lat2,this.sinphi);
+       this.h = Math.pow(this.ts1,this.bl);
+       this.l = Math.pow(this.ts2,this.bl);
+       this.f = this.el/this.h;
+       this.g = .5 * (this.f - 1.0/this.f);
+       this.j = (this.el * this.el - this.l * this.h)/(this.el * this.el + this.l * this.h);
+       this.p = (this.l - this.h) / (this.l + this.h);
+       this.dlon = this.lon1 - this.lon2;
+       if (this.dlon < -Proj4js.common.PI) this.lon2 = this.lon2 - 2.0 * Proj4js.common.PI;
+       if (this.dlon > Proj4js.common.PI) this.lon2 = this.lon2 + 2.0 * Proj4js.common.PI;
+       this.dlon = this.lon1 - this.lon2;
+       this.longc = .5 * (this.lon1 + this.lon2) -Math.atan(this.j * Math.tan(.5 * this.bl * this.dlon)/this.p)/this.bl;
+       this.dlon  = Proj4js.common.adjust_lon(this.lon1 - this.longc);
+       this.gama = Math.atan(Math.sin(this.bl * this.dlon)/this.g);
+       this.alpha = Proj4js.common.asinz(this.d * Math.sin(this.gama));
+
+       /* Report parameters common to format A
+       -------------------------------------*/
+
+       if (Math.abs(this.lat1 - this.lat2) <= Proj4js.common.EPSLN) {
+          Proj4js.reportError("omercInitDataError");
+          //return(202);
+       } else {
+          this.con = Math.abs(this.lat1);
+       }
+       if ((this.con <= Proj4js.common.EPSLN) || (Math.abs(this.con - HALF_PI) <= Proj4js.common.EPSLN)) {
+           Proj4js.reportError("omercInitDataError");
+                //return(202);
+       } else {
+         if (Math.abs(Math.abs(this.lat0) - Proj4js.common.HALF_PI) <= Proj4js.common.EPSLN) {
+            Proj4js.reportError("omercInitDataError");
+            //return(202);
+         }
+       }
+
+       this.singam=Math.sin(this.gam);
+       this.cosgam=Math.cos(this.gam);
+
+       this.sinaz=Math.sin(this.alpha);
+       this.cosaz=Math.cos(this.alpha);  
+
+
+       if (this.lat0 >= 0) {
+          this.u =  (this.al/this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0)/this.cosaz);
+       } else {
+          this.u = -(this.al/this.bl) * Math.atan(Math.sqrt(this.d * this.d - 1.0)/this.cosaz);
+       }
+     }
+  },
+
+
+  /* Oblique Mercator forward equations--mapping lat,long to x,y
+    ----------------------------------------------------------*/
+  forward: function(p) {
+    var theta;		/* angle					*/
+    var sin_phi, cos_phi;/* sin and cos value				*/
+    var b;		/* temporary values				*/
+    var c, t, tq;	/* temporary values				*/
+    var con, n, ml;	/* cone constant, small m			*/
+    var q,us,vl;
+    var ul,vs;
+    var s;
+    var dlon;
+    var ts1;
+
+    var lon=p.x;
+    var lat=p.y;
+    /* Forward equations
+      -----------------*/
+    sin_phi = Math.sin(lat);
+    dlon = Proj4js.common.adjust_lon(lon - this.longc);
+    vl = Math.sin(this.bl * dlon);
+    if (Math.abs(Math.abs(lat) - Proj4js.common.HALF_PI) > Proj4js.common.EPSLN) {
+       ts1 = Proj4js.common.tsfnz(this.e,lat,sin_phi);
+       q = this.el / (Math.pow(ts1,this.bl));
+       s = .5 * (q - 1.0 / q);
+       t = .5 * (q + 1.0/ q);
+       ul = (s * this.singam - vl * this.cosgam) / t;
+       con = Math.cos(this.bl * dlon);
+       if (Math.abs(con) < .0000001) {
+          us = this.al * this.bl * dlon;
+       } else {
+          us = this.al * Math.atan((s * this.cosgam + vl * this.singam) / con)/this.bl;
+          if (con < 0) us = us + Proj4js.common.PI * this.al / this.bl;
+       }
+    } else {
+       if (lat >= 0) {
+          ul = this.singam;
+       } else {
+          ul = -this.singam;
+       }
+       us = this.al * lat / this.bl;
+    }
+    if (Math.abs(Math.abs(ul) - 1.0) <= Proj4js.common.EPSLN) {
+       //alert("Point projects into infinity","omer-for");
+       Proj4js.reportError("omercFwdInfinity");
+       //return(205);
+    }
+    vs = .5 * this.al * Math.log((1.0 - ul)/(1.0 + ul)) / this.bl;
+    us = us - this.u;
+    var x = this.x0 + vs * this.cosaz + us * this.sinaz;
+    var y = this.y0 + us * this.cosaz - vs * this.sinaz;
+
+    p.x=x;
+    p.y=y;
+    return p;
+  },
+
+  inverse: function(p) {
+    var delta_lon;	/* Delta longitude (Given longitude - center 	*/
+    var theta;		/* angle					*/
+    var delta_theta;	/* adjusted longitude				*/
+    var sin_phi, cos_phi;/* sin and cos value				*/
+    var b;		/* temporary values				*/
+    var c, t, tq;	/* temporary values				*/
+    var con, n, ml;	/* cone constant, small m			*/
+    var vs,us,q,s,ts1;
+    var vl,ul,bs;
+    var dlon;
+    var  flag;
+
+    /* Inverse equations
+      -----------------*/
+    p.x -= this.x0;
+    p.y -= this.y0;
+    flag = 0;
+    vs = p.x * this.cosaz - p.y * this.sinaz;
+    us = p.y * this.cosaz + p.x * this.sinaz;
+    us = us + this.u;
+    q = Math.exp(-this.bl * vs / this.al);
+    s = .5 * (q - 1.0/q);
+    t = .5 * (q + 1.0/q);
+    vl = Math.sin(this.bl * us / this.al);
+    ul = (vl * this.cosgam + s * this.singam)/t;
+    if (Math.abs(Math.abs(ul) - 1.0) <= Proj4js.common.EPSLN)
+       {
+       lon = this.longc;
+       if (ul >= 0.0) {
+          lat = Proj4js.common.HALF_PI;
+       } else {
+         lat = -Proj4js.common.HALF_PI;
+       }
+    } else {
+       con = 1.0 / this.bl;
+       ts1 =Math.pow((this.el / Math.sqrt((1.0 + ul) / (1.0 - ul))),con);
+       lat = Proj4js.common.phi2z(this.e,ts1);
+       //if (flag != 0)
+          //return(flag);
+       //~ con = Math.cos(this.bl * us /al);
+       theta = this.longc - Math.atan2((s * this.cosgam - vl * this.singam) , con)/this.bl;
+       lon = Proj4js.common.adjust_lon(theta);
+    }
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }
+};
+/* ======================================================================
+    projCode/lcc.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            LAMBERT CONFORMAL CONIC
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Lambert Conformal Conic projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+2.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+*******************************************************************************/
+
+
+//<2104> +proj=lcc +lat_1=10.16666666666667 +lat_0=10.16666666666667 +lon_0=-71.60561777777777 +k_0=1 +x0=-17044 +x0=-23139.97 +ellps=intl +units=m +no_defs  no_defs
+
+// Initialize the Lambert Conformal conic projection
+// -----------------------------------------------------------------
+
+//Proj4js.Proj.lcc = Class.create();
+Proj4js.Proj.lcc = {
+  init : function() {
+
+    // array of:  r_maj,r_min,lat1,lat2,c_lon,c_lat,false_east,false_north
+    //double c_lat;                   /* center latitude                      */
+    //double c_lon;                   /* center longitude                     */
+    //double lat1;                    /* first standard parallel              */
+    //double lat2;                    /* second standard parallel             */
+    //double r_maj;                   /* major axis                           */
+    //double r_min;                   /* minor axis                           */
+    //double false_east;              /* x offset in meters                   */
+    //double false_north;             /* y offset in meters                   */
+
+      if (!this.lat2){this.lat2=this.lat0;}//if lat2 is not defined
+      if (!this.k0) this.k0 = 1.0;
+
+    // Standard Parallels cannot be equal and on opposite sides of the equator
+      if (Math.abs(this.lat1+this.lat2) < Proj4js.common.EPSLN) {
+        Proj4js.reportError("lcc:init: Equal Latitudes");
+        return;
+      }
+
+      var temp = this.b / this.a;
+      this.e = Math.sqrt(1.0 - temp*temp);
+
+      var sin1 = Math.sin(this.lat1);
+      var cos1 = Math.cos(this.lat1);
+      var ms1 = Proj4js.common.msfnz(this.e, sin1, cos1);
+      var ts1 = Proj4js.common.tsfnz(this.e, this.lat1, sin1);
+
+      var sin2 = Math.sin(this.lat2);
+      var cos2 = Math.cos(this.lat2);
+      var ms2 = Proj4js.common.msfnz(this.e, sin2, cos2);
+      var ts2 = Proj4js.common.tsfnz(this.e, this.lat2, sin2);
+
+      var ts0 = Proj4js.common.tsfnz(this.e, this.lat0, Math.sin(this.lat0));
+
+      if (Math.abs(this.lat1 - this.lat2) > Proj4js.common.EPSLN) {
+        this.ns = Math.log(ms1/ms2)/Math.log(ts1/ts2);
+      } else {
+        this.ns = sin1;
+      }
+      this.f0 = ms1 / (this.ns * Math.pow(ts1, this.ns));
+      this.rh = this.a * this.f0 * Math.pow(ts0, this.ns);
+      if (!this.title) this.title = "Lambert Conformal Conic";
+    },
+
+
+    // Lambert Conformal conic forward equations--mapping lat,long to x,y
+    // -----------------------------------------------------------------
+    forward : function(p) {
+
+      var lon = p.x;
+      var lat = p.y;
+
+    // convert to radians
+      if ( lat <= 90.0 && lat >= -90.0 && lon <= 180.0 && lon >= -180.0) {
+        //lon = lon * Proj4js.common.D2R;
+        //lat = lat * Proj4js.common.D2R;
+      } else {
+        Proj4js.reportError("lcc:forward: llInputOutOfRange: "+ lon +" : " + lat);
+        return null;
+      }
+
+      var con  = Math.abs( Math.abs(lat) - Proj4js.common.HALF_PI);
+      var ts, rh1;
+      if (con > Proj4js.common.EPSLN) {
+        ts = Proj4js.common.tsfnz(this.e, lat, Math.sin(lat) );
+        rh1 = this.a * this.f0 * Math.pow(ts, this.ns);
+      } else {
+        con = lat * this.ns;
+        if (con <= 0) {
+          Proj4js.reportError("lcc:forward: No Projection");
+          return null;
+        }
+        rh1 = 0;
+      }
+      var theta = this.ns * Proj4js.common.adjust_lon(lon - this.long0);
+      p.x = this.k0 * (rh1 * Math.sin(theta)) + this.x0;
+      p.y = this.k0 * (this.rh - rh1 * Math.cos(theta)) + this.y0;
+
+      return p;
+    },
+
+  // Lambert Conformal Conic inverse equations--mapping x,y to lat/long
+  // -----------------------------------------------------------------
+  inverse : function(p) {
+
+    var rh1, con, ts;
+    var lat, lon;
+    var x = (p.x - this.x0)/this.k0;
+    var y = (this.rh - (p.y - this.y0)/this.k0);
+    if (this.ns > 0) {
+      rh1 = Math.sqrt (x * x + y * y);
+      con = 1.0;
+    } else {
+      rh1 = -Math.sqrt (x * x + y * y);
+      con = -1.0;
+    }
+    var theta = 0.0;
+    if (rh1 != 0) {
+      theta = Math.atan2((con * x),(con * y));
+    }
+    if ((rh1 != 0) || (this.ns > 0.0)) {
+      con = 1.0/this.ns;
+      ts = Math.pow((rh1/(this.a * this.f0)), con);
+      lat = Proj4js.common.phi2z(this.e, ts);
+      if (lat == -9999) return null;
+    } else {
+      lat = -Proj4js.common.HALF_PI;
+    }
+    lon = Proj4js.common.adjust_lon(theta/this.ns + this.long0);
+
+    p.x = lon;
+    p.y = lat;
+    return p;
+  }
+};
+
+
+
+
+/* ======================================================================
+    projCode/laea.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                  LAMBERT AZIMUTHAL EQUAL-AREA
+ 
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the Lambert Azimuthal Equal-Area projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE            
+----------              ----           
+D. Steinwand, EROS      March, 1991   
+
+This function was adapted from the Lambert Azimuthal Equal Area projection
+code (FORTRAN) in the General Cartographic Transformation Package software
+which is available from the U.S. Geological Survey National Mapping Division.
+ 
+ALGORITHM REFERENCES
+
+1.  "New Equal-Area Map Projections for Noncircular Regions", John P. Snyder,
+    The American Cartographer, Vol 15, No. 4, October 1988, pp. 341-355.
+
+2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+
+3.  "Software Documentation for GCTP General Cartographic Transformation
+    Package", U.S. Geological Survey National Mapping Division, May 1982.
+*******************************************************************************/
+
+Proj4js.Proj.laea = {
+  S_POLE: 1,
+  N_POLE: 2,
+  EQUIT: 3,
+  OBLIQ: 4,
+
+
+/* Initialize the Lambert Azimuthal Equal Area projection
+  ------------------------------------------------------*/
+  init: function() {
+    var t = Math.abs(this.lat0);
+    if (Math.abs(t - Proj4js.common.HALF_PI) < Proj4js.common.EPSLN) {
+      this.mode = this.lat0 < 0. ? this.S_POLE : this.N_POLE;
+    } else if (Math.abs(t) < Proj4js.common.EPSLN) {
+      this.mode = this.EQUIT;
+    } else {
+      this.mode = this.OBLIQ;
+    }
+    if (this.es > 0) {
+      var sinphi;
+  
+      this.qp = Proj4js.common.qsfnz(this.e, 1.0);
+      this.mmf = .5 / (1. - this.es);
+      this.apa = this.authset(this.es);
+      switch (this.mode) {
+        case this.N_POLE:
+        case this.S_POLE:
+          this.dd = 1.;
+          break;
+        case this.EQUIT:
+          this.rq = Math.sqrt(.5 * this.qp);
+          this.dd = 1. / this.rq;
+          this.xmf = 1.;
+          this.ymf = .5 * this.qp;
+          break;
+        case this.OBLIQ:
+          this.rq = Math.sqrt(.5 * this.qp);
+          sinphi = Math.sin(this.lat0);
+          this.sinb1 = Proj4js.common.qsfnz(this.e, sinphi) / this.qp;
+          this.cosb1 = Math.sqrt(1. - this.sinb1 * this.sinb1);
+          this.dd = Math.cos(this.lat0) / (Math.sqrt(1. - this.es * sinphi * sinphi) * this.rq * this.cosb1);
+          this.ymf = (this.xmf = this.rq) / this.dd;
+          this.xmf *= this.dd;
+          break;
+      }
+    } else {
+      if (this.mode == this.OBLIQ) {
+        this.sinph0 = Math.sin(this.lat0);
+        this.cosph0 = Math.cos(this.lat0);
+      }
+    }
+  },
+
+/* Lambert Azimuthal Equal Area forward equations--mapping lat,long to x,y
+  -----------------------------------------------------------------------*/
+  forward: function(p) {
+
+    /* Forward equations
+      -----------------*/
+    var x,y;
+    var lam=p.x;
+    var phi=p.y;
+    lam = Proj4js.common.adjust_lon(lam - this.long0);
+    
+    if (this.sphere) {
+        var coslam, cosphi, sinphi;
+      
+        sinphi = Math.sin(phi);
+        cosphi = Math.cos(phi);
+        coslam = Math.cos(lam);
+        switch (this.mode) {
+          case this.OBLIQ:
+          case this.EQUIT:
+            y = (this.mode == this.EQUIT) ? 1. + cosphi * coslam : 1. + this.sinph0 * sinphi + this.cosph0 * cosphi * coslam;
+            if (y <= Proj4js.common.EPSLN) {
+              Proj4js.reportError("laea:fwd:y less than eps");
+              return null;
+            }
+            y = Math.sqrt(2. / y);
+            x = y * cosphi * Math.sin(lam);
+            y *= (this.mode == this.EQUIT) ? sinphi : this.cosph0 * sinphi - this.sinph0 * cosphi * coslam;
+            break;
+          case this.N_POLE:
+            coslam = -coslam;
+          case this.S_POLE:
+            if (Math.abs(phi + this.phi0) < Proj4js.common.EPSLN) {
+              Proj4js.reportError("laea:fwd:phi < eps");
+              return null;
+            }
+            y = Proj4js.common.FORTPI - phi * .5;
+            y = 2. * ((this.mode == this.S_POLE) ? Math.cos(y) : Math.sin(y));
+            x = y * Math.sin(lam);
+            y *= coslam;
+            break;
+        }
+    } else {
+        var coslam, sinlam, sinphi, q, sinb=0.0, cosb=0.0, b=0.0;
+      
+        coslam = Math.cos(lam);
+        sinlam = Math.sin(lam);
+        sinphi = Math.sin(phi);
+        q = Proj4js.common.qsfnz(this.e, sinphi);
+        if (this.mode == this.OBLIQ || this.mode == this.EQUIT) {
+          sinb = q / this.qp;
+          cosb = Math.sqrt(1. - sinb * sinb);
+        }
+        switch (this.mode) {
+          case this.OBLIQ:
+            b = 1. + this.sinb1 * sinb + this.cosb1 * cosb * coslam;
+            break;
+          case this.EQUIT:
+            b = 1. + cosb * coslam;
+            break;
+          case this.N_POLE:
+            b = Proj4js.common.HALF_PI + phi;
+            q = this.qp - q;
+            break;
+          case this.S_POLE:
+            b = phi - Proj4js.common.HALF_PI;
+            q = this.qp + q;
+            break;
+        }
+        if (Math.abs(b) < Proj4js.common.EPSLN) {
+            Proj4js.reportError("laea:fwd:b < eps");
+            return null;
+        }
+        switch (this.mode) {
+          case this.OBLIQ:
+          case this.EQUIT:
+            b = Math.sqrt(2. / b);
+            if (this.mode == this.OBLIQ) {
+              y = this.ymf * b * (this.cosb1 * sinb - this.sinb1 * cosb * coslam);
+            } else {
+              y = (b = Math.sqrt(2. / (1. + cosb * coslam))) * sinb * this.ymf;
+            }
+            x = this.xmf * b * cosb * sinlam;
+            break;
+          case this.N_POLE:
+          case this.S_POLE:
+            if (q >= 0.) {
+              x = (b = Math.sqrt(q)) * sinlam;
+              y = coslam * ((this.mode == this.S_POLE) ? b : -b);
+            } else {
+              x = y = 0.;
+            }
+            break;
+        }
+    }
+
+    //v 1.0
+    /*
+    var sin_lat=Math.sin(lat);
+    var cos_lat=Math.cos(lat);
+
+    var sin_delta_lon=Math.sin(delta_lon);
+    var cos_delta_lon=Math.cos(delta_lon);
+
+    var g =this.sin_lat_o * sin_lat +this.cos_lat_o * cos_lat * cos_delta_lon;
+    if (g == -1.0) {
+      Proj4js.reportError("laea:fwd:Point projects to a circle of radius "+ 2.0 * R);
+      return null;
+    }
+    var ksp = this.a * Math.sqrt(2.0 / (1.0 + g));
+    var x = ksp * cos_lat * sin_delta_lon + this.x0;
+    var y = ksp * (this.cos_lat_o * sin_lat - this.sin_lat_o * cos_lat * cos_delta_lon) + this.y0;
+    */
+    p.x = this.a*x + this.x0;
+    p.y = this.a*y + this.y0;
+    return p;
+  },//lamazFwd()
+
+/* Inverse equations
+  -----------------*/
+  inverse: function(p) {
+    p.x -= this.x0;
+    p.y -= this.y0;
+    var x = p.x/this.a;
+    var y = p.y/this.a;
+    
+    if (this.sphere) {
+        var  cosz=0.0, rh, sinz=0.0;
+      
+        rh = Math.sqrt(x*x + y*y);
+        var phi = rh * .5;
+        if (phi > 1.) {
+          Proj4js.reportError("laea:Inv:DataError");
+          return null;
+        }
+        phi = 2. * Math.asin(phi);
+        if (this.mode == this.OBLIQ || this.mode == this.EQUIT) {
+          sinz = Math.sin(phi);
+          cosz = Math.cos(phi);
+        }
+        switch (this.mode) {
+        case this.EQUIT:
+          phi = (Math.abs(rh) <= Proj4js.common.EPSLN) ? 0. : Math.asin(y * sinz / rh);
+          x *= sinz;
+          y = cosz * rh;
+          break;
+        case this.OBLIQ:
+          phi = (Math.abs(rh) <= Proj4js.common.EPSLN) ? this.phi0 : Math.asin(cosz * sinph0 + y * sinz * cosph0 / rh);
+          x *= sinz * cosph0;
+          y = (cosz - Math.sin(phi) * sinph0) * rh;
+          break;
+        case this.N_POLE:
+          y = -y;
+          phi = Proj4js.common.HALF_PI - phi;
+          break;
+        case this.S_POLE:
+          phi -= Proj4js.common.HALF_PI;
+          break;
+        }
+        lam = (y == 0. && (this.mode == this.EQUIT || this.mode == this.OBLIQ)) ? 0. : Math.atan2(x, y);
+    } else {
+        var cCe, sCe, q, rho, ab=0.0;
+      
+        switch (this.mode) {
+          case this.EQUIT:
+          case this.OBLIQ:
+            x /= this.dd;
+            y *=  this.dd;
+            rho = Math.sqrt(x*x + y*y);
+            if (rho < Proj4js.common.EPSLN) {
+              p.x = 0.;
+              p.y = this.phi0;
+              return p;
+            }
+            sCe = 2. * Math.asin(.5 * rho / this.rq);
+            cCe = Math.cos(sCe);
+            x *= (sCe = Math.sin(sCe));
+            if (this.mode == this.OBLIQ) {
+              ab = cCe * this.sinb1 + y * sCe * this.cosb1 / rho
+              q = this.qp * ab;
+              y = rho * this.cosb1 * cCe - y * this.sinb1 * sCe;
+            } else {
+              ab = y * sCe / rho;
+              q = this.qp * ab;
+              y = rho * cCe;
+            }
+            break;
+          case this.N_POLE:
+            y = -y;
+          case this.S_POLE:
+            q = (x * x + y * y);
+            if (!q ) {
+              p.x = 0.;
+              p.y = this.phi0;
+              return p;
+            }
+            /*
+            q = this.qp - q;
+            */
+            ab = 1. - q / this.qp;
+            if (this.mode == this.S_POLE) {
+              ab = - ab;
+            }
+            break;
+        }
+        lam = Math.atan2(x, y);
+        phi = this.authlat(Math.asin(ab), this.apa);
+    }
+
+    /*
+    var Rh = Math.Math.sqrt(p.x *p.x +p.y * p.y);
+    var temp = Rh / (2.0 * this.a);
+
+    if (temp > 1) {
+      Proj4js.reportError("laea:Inv:DataError");
+      return null;
+    }
+
+    var z = 2.0 * Proj4js.common.asinz(temp);
+    var sin_z=Math.sin(z);
+    var cos_z=Math.cos(z);
+
+    var lon =this.long0;
+    if (Math.abs(Rh) > Proj4js.common.EPSLN) {
+       var lat = Proj4js.common.asinz(this.sin_lat_o * cos_z +this. cos_lat_o * sin_z *p.y / Rh);
+       var temp =Math.abs(this.lat0) - Proj4js.common.HALF_PI;
+       if (Math.abs(temp) > Proj4js.common.EPSLN) {
+          temp = cos_z -this.sin_lat_o * Math.sin(lat);
+          if(temp!=0.0) lon=Proj4js.common.adjust_lon(this.long0+Math.atan2(p.x*sin_z*this.cos_lat_o,temp*Rh));
+       } else if (this.lat0 < 0.0) {
+          lon = Proj4js.common.adjust_lon(this.long0 - Math.atan2(-p.x,p.y));
+       } else {
+          lon = Proj4js.common.adjust_lon(this.long0 + Math.atan2(p.x, -p.y));
+       }
+    } else {
+      lat = this.lat0;
+    }
+    */
+    //return(OK);
+    p.x = Proj4js.common.adjust_lon(this.long0+lam);
+    p.y = phi;
+    return p;
+  },//lamazInv()
+  
+/* determine latitude from authalic latitude */
+  P00: .33333333333333333333,
+  P01: .17222222222222222222,
+  P02: .10257936507936507936,
+  P10: .06388888888888888888,
+  P11: .06640211640211640211,
+  P20: .01641501294219154443,
+  
+  authset: function(es) {
+    var t;
+    var APA = new Array();
+    APA[0] = es * this.P00;
+    t = es * es;
+    APA[0] += t * this.P01;
+    APA[1] = t * this.P10;
+    t *= es;
+    APA[0] += t * this.P02;
+    APA[1] += t * this.P11;
+    APA[2] = t * this.P20;
+    return APA;
+  },
+  
+  authlat: function(beta, APA) {
+    var t = beta+beta;
+    return(beta + APA[0] * Math.sin(t) + APA[1] * Math.sin(t+t) + APA[2] * Math.sin(t+t+t));
+  }
+  
+};
+
+
+
+/* ======================================================================
+    projCode/aeqd.js
+   ====================================================================== */
+
+Proj4js.Proj.aeqd = {
+
+  init : function() {
+    this.sin_p12=Math.sin(this.lat0);
+    this.cos_p12=Math.cos(this.lat0);
+  },
+
+  forward: function(p) {
+    var lon=p.x;
+    var lat=p.y;
+    var ksp;
+
+    var sinphi=Math.sin(p.y);
+    var cosphi=Math.cos(p.y); 
+    var dlon = Proj4js.common.adjust_lon(lon - this.long0);
+    var coslon = Math.cos(dlon);
+    var g = this.sin_p12 * sinphi + this.cos_p12 * cosphi * coslon;
+    if (Math.abs(Math.abs(g) - 1.0) < Proj4js.common.EPSLN) {
+       ksp = 1.0;
+       if (g < 0.0) {
+         Proj4js.reportError("aeqd:Fwd:PointError");
+         return;
+       }
+    } else {
+       var z = Math.acos(g);
+       ksp = z/Math.sin(z);
+    }
+    p.x = this.x0 + this.a * ksp * cosphi * Math.sin(dlon);
+    p.y = this.y0 + this.a * ksp * (this.cos_p12 * sinphi - this.sin_p12 * cosphi * coslon);
+    return p;
+  },
+
+  inverse: function(p){
+    p.x -= this.x0;
+    p.y -= this.y0;
+
+    var rh = Math.sqrt(p.x * p.x + p.y *p.y);
+    if (rh > (2.0 * Proj4js.common.HALF_PI * this.a)) {
+       Proj4js.reportError("aeqdInvDataError");
+       return;
+    }
+    var z = rh / this.a;
+
+    var sinz=Math.sin(z);
+    var cosz=Math.cos(z);
+
+    var lon = this.long0;
+    var lat;
+    if (Math.abs(rh) <= Proj4js.common.EPSLN) {
+      lat = this.lat0;
+    } else {
+      lat = Proj4js.common.asinz(cosz * this.sin_p12 + (p.y * sinz * this.cos_p12) / rh);
+      var con = Math.abs(this.lat0) - Proj4js.common.HALF_PI;
+      if (Math.abs(con) <= Proj4js.common.EPSLN) {
+        if (lat0 >= 0.0) {
+          lon = Proj4js.common.adjust_lon(this.long0 + Math.atan2(p.x , -p.y));
+        } else {
+          lon = Proj4js.common.adjust_lon(this.long0 - Math.atan2(-p.x , p.y));
+        }
+      } else {
+        con = cosz - this.sin_p12 * Math.sin(lat);
+        if ((Math.abs(con) < Proj4js.common.EPSLN) && (Math.abs(p.x) < Proj4js.common.EPSLN)) {
+           //no-op, just keep the lon value as is
+        } else {
+          var temp = Math.atan2((p.x * sinz * this.cos_p12), (con * rh));
+          lon = Proj4js.common.adjust_lon(this.long0 + Math.atan2((p.x * sinz * this.cos_p12), (con * rh)));
+        }
+      }
+    }
+
+    p.x = lon;
+    p.y = lat;
+    return p;
+  } 
+};
+/* ======================================================================
+    projCode/moll.js
+   ====================================================================== */
+
+/*******************************************************************************
+NAME                            MOLLWEIDE
+
+PURPOSE:	Transforms input longitude and latitude to Easting and
+		Northing for the MOllweide projection.  The
+		longitude and latitude must be in radians.  The Easting
+		and Northing values will be returned in meters.
+
+PROGRAMMER              DATE
+----------              ----
+D. Steinwand, EROS      May, 1991;  Updated Sept, 1992; Updated Feb, 1993
+S. Nelson, EDC		Jun, 2993;	Made corrections in precision and
+					number of iterations.
+
+ALGORITHM REFERENCES
+
+1.  Snyder, John P. and Voxland, Philip M., "An Album of Map Projections",
+    U.S. Geological Survey Professional Paper 1453 , United State Government
+    Printing Office, Washington D.C., 1989.
+
+2.  Snyder, John P., "Map Projections--A Working Manual", U.S. Geological
+    Survey Professional Paper 1395 (Supersedes USGS Bulletin 1532), United
+    State Government Printing Office, Washington D.C., 1987.
+*******************************************************************************/
+
+Proj4js.Proj.moll = {
+
+  /* Initialize the Mollweide projection
+    ------------------------------------*/
+  init: function(){
+    //no-op
+  },
+
+  /* Mollweide forward equations--mapping lat,long to x,y
+    ----------------------------------------------------*/
+  forward: function(p) {
+
+    /* Forward equations
+      -----------------*/
+    var lon=p.x;
+    var lat=p.y;
+
+    var delta_lon = Proj4js.common.adjust_lon(lon - this.long0);
+    var theta = lat;
+    var con = Proj4js.common.PI * Math.sin(lat);
+
+    /* Iterate using the Newton-Raphson method to find theta
+      -----------------------------------------------------*/
+    for (var i=0;true;i++) {
+       var delta_theta = -(theta + Math.sin(theta) - con)/ (1.0 + Math.cos(theta));
+       theta += delta_theta;
+       if (Math.abs(delta_theta) < Proj4js.common.EPSLN) break;
+       if (i >= 50) {
+          Proj4js.reportError("moll:Fwd:IterationError");
+         //return(241);
+       }
+    }
+    theta /= 2.0;
+
+    /* If the latitude is 90 deg, force the x coordinate to be "0 + false easting"
+       this is done here because of precision problems with "cos(theta)"
+       --------------------------------------------------------------------------*/
+    if (Proj4js.common.PI/2 - Math.abs(lat) < Proj4js.common.EPSLN) delta_lon =0;
+    var x = 0.900316316158 * this.a * delta_lon * Math.cos(theta) + this.x0;
+    var y = 1.4142135623731 * this.a * Math.sin(theta) + this.y0;
+
+    p.x=x;
+    p.y=y;
+    return p;
+  },
+
+  inverse: function(p){
+    var theta;
+    var arg;
+
+    /* Inverse equations
+      -----------------*/
+    p.x-= this.x0;
+    //~ p.y -= this.y0;
+    var arg = p.y /  (1.4142135623731 * this.a);
+
+    /* Because of division by zero problems, 'arg' can not be 1.0.  Therefore
+       a number very close to one is used instead.
+       -------------------------------------------------------------------*/
+    if(Math.abs(arg) > 0.999999999999) arg=0.999999999999;
+    var theta =Math.asin(arg);
+    var lon = Proj4js.common.adjust_lon(this.long0 + (p.x / (0.900316316158 * this.a * Math.cos(theta))));
+    if(lon < (-Proj4js.common.PI)) lon= -Proj4js.common.PI;
+    if(lon > Proj4js.common.PI) lon= Proj4js.common.PI;
+    arg = (2.0 * theta + Math.sin(2.0 * theta)) / Proj4js.common.PI;
+    if(Math.abs(arg) > 1.0)arg=1.0;
+    var lat = Math.asin(arg);
+    //return(OK);
+
+    p.x=lon;
+    p.y=lat;
+    return p;
+  }
+};
+
