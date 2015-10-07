@@ -3,16 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-#   <admin@example.com>, 2013.
+#   <admin@example.com>, 2013, 2015.
 # Alexander Hoff <>, 2014.
 # Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-10-07 16:33+0200\n"
-"PO-Revision-Date: 2014-08-20 09:23+0000\n"
-"Last-Translator: alexandr <>\n"
+"POT-Creation-Date: 2015-10-07 16:42+0200\n"
+"PO-Revision-Date: 2015-10-07 14:40+0000\n"
+"Last-Translator: admin <admin@example.com>\n"
 "Language-Team: Dutch (http://translations.lizard.net/projects/p/lizard5/team/"
 "nl/)\n"
 "Language: nl\n"

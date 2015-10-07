@@ -1,22 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
+# 
 # Translators:
 #   <>, 2014.
+#   <admin@example.com>, 2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: Lizard 5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-11-11 15:48+0100\n"
-"PO-Revision-Date: 2014-08-20 09:24+0000\n"
-"Last-Translator: alexandr <>\n"
-"Language-Team: Dutch (http://translations.lizard.net/projects/p/lizard5/team/"
-"nl/)\n"
-"Language: nl\n"
+"PO-Revision-Date: 2015-10-07 14:41+0000\n"
+"Last-Translator: admin <admin@example.com>\n"
+"Language-Team: Dutch (http://translations.lizard.net/projects/p/lizard5/team/nl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: nl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: static/lizard_map/lizard_map.js:180 static/lizard_map/lizard_map.js.c:261
@@ -247,8 +247,8 @@ msgstr "Kaarten"
 #: static/lizard_map/lizard_map.js:2718
 msgid "Select a specific map of the topic map to make them (in) visible."
 msgstr ""
-"Selecteer hier een specifieke kaart van de themakaart om ze (on)zichtbaar te "
-"maken."
+"Selecteer hier een specifieke kaart van de themakaart om ze (on)zichtbaar te"
+" maken."
 
 #: static/lizard_map/lizard_map.js:2723
 msgid "Calendar"
@@ -268,5 +268,4 @@ msgstr ""
 "Klik hier om de rondleiding nog een keer te starten. Klik nu op stop voor "
 "het einde van de rondleiding."
 
-#~ msgid "Last week + 1"
-#~ msgstr "Afgelopen week + 1"
+
