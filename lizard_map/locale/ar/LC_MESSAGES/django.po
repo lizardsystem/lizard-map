@@ -1,24 +1,23 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-# Translators:
-#   <admin@example.com>, 2013.
-# Sander Smits <sander.smits@nelen-schuurmans.nl>, 2013.
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: lizardsystem\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-10-07 16:33+0200\n"
-"PO-Revision-Date: 2013-05-14 12:35+0000\n"
-"Last-Translator: admin <admin@example.com>\n"
-"Language-Team: Vietnamese (http://translations.lizard.net/projects/p/"
-"lizardsystem/team/vi/)\n"
-"Language: vi\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
 #: adapter.py:143
 msgid "with"
@@ -46,51 +45,51 @@ msgstr ""
 
 #: dateperiods.py:21
 msgid "January"
-msgstr "Tháng Một"
+msgstr ""
 
 #: dateperiods.py:22
 msgid "February"
-msgstr "Tháng Hai"
+msgstr ""
 
 #: dateperiods.py:23
 msgid "March"
-msgstr "Tháng Ba"
+msgstr ""
 
 #: dateperiods.py:24
 msgid "April"
-msgstr "Tháng Tư"
+msgstr ""
 
 #: dateperiods.py:25
 msgid "May"
-msgstr "Tháng Năm"
+msgstr ""
 
 #: dateperiods.py:26
 msgid "June"
-msgstr "Tháng Sáu"
+msgstr ""
 
 #: dateperiods.py:27
 msgid "July"
-msgstr "Tháng Bảy"
+msgstr ""
 
 #: dateperiods.py:28
 msgid "August"
-msgstr "Tháng Tám"
+msgstr ""
 
 #: dateperiods.py:29
 msgid "September"
-msgstr "Tháng Chín"
+msgstr ""
 
 #: dateperiods.py:30
 msgid "October"
-msgstr "Tháng Mười"
+msgstr ""
 
 #: dateperiods.py:31
 msgid "November"
-msgstr "Tháng Mười Một"
+msgstr ""
 
 #: dateperiods.py:32
 msgid "December"
-msgstr "Tháng Mười Hai"
+msgstr ""
 
 #: dateperiods.py:155 templates/lizard_map/popup.html:107
 msgid "Whole period"
@@ -158,14 +157,12 @@ msgid "all"
 msgstr ""
 
 #: forms.py:144
-#, fuzzy
 msgid "only january"
-msgstr "Tháng Một"
+msgstr ""
 
 #: forms.py:145
-#, fuzzy
 msgid "only february"
-msgstr "Tháng Hai"
+msgstr ""
 
 #: forms.py:146
 msgid "only march"
@@ -192,23 +189,20 @@ msgid "only august"
 msgstr ""
 
 #: forms.py:152
-#, fuzzy
 msgid "only september"
-msgstr "Tháng Chín"
+msgstr ""
 
 #: forms.py:153
 msgid "only oktober"
 msgstr ""
 
 #: forms.py:154
-#, fuzzy
 msgid "only november"
-msgstr "Tháng Mười Một"
+msgstr ""
 
 #: forms.py:155
-#, fuzzy
 msgid "only december"
-msgstr "Tháng Mười Hai"
+msgstr ""
 
 #: models.py:661
 msgid "When checked, this workspace is only available for logged-in users."
@@ -240,11 +234,11 @@ msgstr ""
 
 #: views.py:310
 msgid "Layers"
-msgstr "Lớp sơn"
+msgstr ""
 
 #: views.py:314 templates/lizard_map/legend_item.html:6
 msgid "Legend"
-msgstr "Thánh truyện"
+msgstr ""
 
 #: views.py:364 views.py:459
 msgid "Show base layers"
@@ -572,29 +566,24 @@ msgid "Only"
 msgstr ""
 
 #: templates/lizard_map/popup.html:129
-#, fuzzy
 msgid "january"
-msgstr "Tháng Một"
+msgstr ""
 
 #: templates/lizard_map/popup.html:130
-#, fuzzy
 msgid "februari"
-msgstr "Tháng Hai"
+msgstr ""
 
 #: templates/lizard_map/popup.html:131
-#, fuzzy
 msgid "march"
-msgstr "Tháng Ba"
+msgstr ""
 
 #: templates/lizard_map/popup.html:132
-#, fuzzy
 msgid "april"
-msgstr "Tháng Tư"
+msgstr ""
 
 #: templates/lizard_map/popup.html:133
-#, fuzzy
 msgid "may"
-msgstr "Tháng Năm"
+msgstr ""
 
 #: templates/lizard_map/popup.html:134
 msgid "june"
@@ -605,29 +594,24 @@ msgid "july"
 msgstr ""
 
 #: templates/lizard_map/popup.html:136
-#, fuzzy
 msgid "august"
-msgstr "Tháng Tám"
+msgstr ""
 
 #: templates/lizard_map/popup.html:137
-#, fuzzy
 msgid "september"
-msgstr "Tháng Chín"
+msgstr ""
 
 #: templates/lizard_map/popup.html:138
-#, fuzzy
 msgid "october"
-msgstr "Tháng Mười"
+msgstr ""
 
 #: templates/lizard_map/popup.html:139
-#, fuzzy
 msgid "november"
-msgstr "Tháng Mười Một"
+msgstr ""
 
 #: templates/lizard_map/popup.html:140
-#, fuzzy
 msgid "december"
-msgstr "Tháng Mười Hai"
+msgstr ""
 
 #: templates/lizard_map/popup.html:145 templates/lizard_map/popup.html:208
 msgid "Update graph"
@@ -675,9 +659,8 @@ msgid "Selection page"
 msgstr ""
 
 #: templates/lizard_map/tag_legend.html:8
-#, fuzzy
 msgid "Legend for"
-msgstr "Thánh truyện"
+msgstr ""
 
 #: templates/lizard_map/tag_legend.html:13
 msgid "Edit legend"
