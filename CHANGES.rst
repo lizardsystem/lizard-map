@@ -4,7 +4,24 @@ Changelog of lizard-map
 5.4 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Added ``show_language_picker`` as a ``Setting`` object with a default of
+  ``False``.
+  [reinout]
+
+- Moved language checker over from lizard-ui. That way it can be enabled
+  through abovementioned ``Setting`` object.
+  [reinout]
+
+- Added ``language_code`` as a proper ``Setting`` with a default of
+  ``nl``. Better explicit than implicitly falling back on the regular django
+  ``LANG_CODE`` setting.
+  [reinout]
+
+- Changed the lizard-map locale middleware to look at the
+  ``show_language_picker`` setting. If enabled, we obviously want to use the
+  user's preferred language. If there is no language picker, we keep returning
+  the language set in the ``language_code`` setting.
+  [reinout]
 
 
 5.3 (2015-10-08)
