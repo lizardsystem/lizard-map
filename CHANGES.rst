@@ -666,7 +666,7 @@ Changelog of lizard-map
 
   These functions in turn call functions in their adapters, with an identifier
   as argument (because one adapter can have items in different groups, with different
-  settings. This way it gets the identifier of the first item in each group):
+  settings. This way it gets the identifier of the first item in each group)::
 
     def collage_detail_data_description(self, identifier, *args, **kwargs):
       default 'Grafiek'
@@ -677,8 +677,9 @@ Changelog of lizard-map
     def collage_detail_show_statistics_block(self, identifier, *args, **kwargs):
       default True
 
-  *args and **kwargs are meaningless but present in case the functions' signatures
-  change in the future. These functions can be overridden in your adapter.
+  ``*args`` and ``**kwargs`` are meaningless but present in case the
+  functions' signatures change in the future. These functions can be
+  overridden in your adapter.
 
 
 3.25 (2012-04-04)
@@ -976,7 +977,7 @@ Changelog of lizard-map
 
 - Changed geoserver url to ip address, see #3283.
 
-- And yet another (last) bug in **identifier in
+- And yet another (last) bug in ``**identifier`` in
   html_default. Apparently keys from identifiers are transformed to
   unicode on the server, while the development environment works just fine.
 
