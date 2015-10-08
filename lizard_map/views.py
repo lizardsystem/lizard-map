@@ -8,6 +8,7 @@ import json
 import logging
 import math
 import re
+import urllib
 import urllib2
 from xml.dom.minidom import parseString
 from dateutil import parser as date_parser
@@ -19,19 +20,21 @@ from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.http import HttpResponse
-from django.http import (HttpResponseBadRequest, HttpResponseNotFound,
-                         HttpResponseForbidden)
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseForbidden
+from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404
-from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import render
 from django.template import RequestContext, loader
 from django.template.loader import render_to_string
+from django.utils.translation import get_language_info
+from django.utils.translation import get_language_from_request
 from django.utils.translation import ugettext as _
 from django.views.decorators.cache import never_cache
 from django.views.generic.base import TemplateView
 from django.views.generic.base import View
 from django.views.generic.edit import FormView
-from lizard_map.adapter import adapter_serialize
 from lizard_ui.layout import Action
 from lizard_ui.models import ApplicationIcon
 from lizard_ui.views import IconView
@@ -41,12 +44,13 @@ from rest_framework.response import Response as RestResponse
 from rest_framework.views import APIView
 import iso8601
 import mapnik
-import requests
 import pytz
+import requests
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
 from lizard_map.adapter import adapter_layer_arguments
+from lizard_map.adapter import adapter_serialize
 from lizard_map.adapter import parse_identifier_json
 from lizard_map.conf import settings
 from lizard_map.coordinates import transform_point
@@ -358,6 +362,30 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
         This was done for a quick demo for Wytze."""
 
         actions = super(AppView, self).site_actions
+
+        if Setting.get('show_language_picker'):
+            languages = settings.LANGUAGES
+            if len(languages) > 1:
+                language_code = get_language_from_request(self.request)
+                logger.info("Language code: %s", language_code)
+                language_name = _('Language')  # sort of default
+                try:
+                    language_name = get_language_info(language_code.lower())['name_local']
+                except KeyError:
+                    for code, name in languages:
+                        if language_code.lower().startswith(code):
+                            language_name = name
+                            break
+                query_string = urllib.urlencode(
+                    {'next': self.request.path_info})
+                lang_action = Action(icon='icon-flag')
+                lang_action.url = '%s?%s' % (
+                    reverse('lizard_ui.change_language'), query_string)
+                lang_action.name = language_name
+                lang_action.description = _('Pick a language')
+                lang_action.klass = 'ui-change-language-link'
+                actions.append(lang_action)
+
         show_layers = Action(
             name='',
             element_id='base-layers',
