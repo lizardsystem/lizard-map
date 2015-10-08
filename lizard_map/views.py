@@ -384,7 +384,7 @@ class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
                 lang_action.name = language_name
                 lang_action.description = _('Pick a language')
                 lang_action.klass = 'ui-change-language-link'
-                actions.append(lang_action)
+                actions.insert(0, lang_action)
 
         show_layers = Action(
             name='',
