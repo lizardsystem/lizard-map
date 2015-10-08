@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-5.4 (unreleased)
+5.4 (2015-10-08)
 ----------------
 
 - Added ``show_language_picker`` as a ``Setting`` object with a default of
