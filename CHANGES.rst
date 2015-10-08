@@ -1,7 +1,7 @@
 Changelog of lizard-map
 =======================
 
-5.3 (unreleased)
+5.3 (2015-10-08)
 ----------------
 
 - Added (still empty) arabic translation files.
