@@ -196,7 +196,10 @@ class MapMixin(object):
         return Setting.get('projection')
 
     def display_projection(self):
-        return Setting.get('projection')
+        result = Setting.get('display_projection')
+        if result is None:
+            result = Setting.get('projection')
+        return result
 
     def googlemaps_api_key(self):
         return Setting.get('projection')

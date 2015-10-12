@@ -1465,6 +1465,10 @@ function setUpMap() {
 
     window.setUpMapDimensions();
 
+    // From http://spatialreference.org/ref/epsg/28992/proj4js/
+    // and adjusted with http://wiki.openstreetmap.org/wiki/OpenLayers_Simple_Example
+    Proj4js.defs["EPSG:28992"] = "+title=Amersfoort / RD New +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +no_defs";
+
     // Find client-side extra data.
     $lizard_map_wms = $("#lizard-map-wms");
 
