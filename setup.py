@@ -11,7 +11,7 @@ long_description = '\n\n'.join([
 
 install_requires = [
     'Django',
-    'PIL',
+    'Pillow',
     'django-extensions',
     'django-nose',
     'django-piston',
