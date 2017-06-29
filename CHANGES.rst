@@ -4,7 +4,7 @@ Changelog of lizard-map
 5.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- Using http/https neutral url for google maps.
 
 
 5.4 (2015-10-08)
