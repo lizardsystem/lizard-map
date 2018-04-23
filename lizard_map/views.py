@@ -120,62 +120,6 @@ class GoogleTrackingMixin(object):
             return None
 
 
-class WorkspaceMixin(object):
-    """Add workspace and map variables.
-    """
-    # Override with an empty string for no click handler.
-    javascript_click_handler = 'popup_click_handler'
-    # javascript_click_handler = ''
-
-    @property
-    def workspace(self):
-        """Implement a function that returns a workspace-storage,
-        workspace-edit or other workspace."""
-        pass
-
-    def javascript_hover_handler(self):
-        if not hasattr(self, '_javascript_hover_handler'):
-            self._javascript_hover_handler = Setting.get(
-                'javascript_hover_handler', None)
-        return self._javascript_hover_handler
-
-    def extra_wms_layers(self):
-        """Overwrite to add custom WMS layers to your view.
-
-        Every item should be a dict with five items. ``models.py`` puts the
-        following in there for example::
-
-               {'wms_id': workspace_item.id,
-                'name': workspace_item.name,
-                'url': adapter_layer.get('url', ''),
-                'params': adapter_layer.get('params', '{}'),
-                'options': adapter_layer.get('options', '{}'),
-               }
-
-        """
-        return []
-
-    def wms_layers(self):
-        """Return the workspace's and our own extra wms layers."""
-        from_workspace = self.workspace.wms_layers()
-        extra = self.extra_wms_layers() or []
-        # ^^^ To work around '[] + None' error.
-        return from_workspace + extra
-
-
-class WorkspaceEditMixin(WorkspaceMixin):
-    def workspace_edit(self):
-        """Return your workspace"""
-        if not hasattr(self, '_workspace_edit'):
-            self._workspace_edit = get_workspace_edit_by_request(self.request)
-
-        return self._workspace_edit
-
-    @property
-    def workspace(self):
-        return self.workspace_edit()
-
-
 class MapMixin(object):
     """All map stuff
     """
@@ -235,14 +179,6 @@ class MapMixin(object):
                 active=True,
                 layer_type=BackgroundMap.LAYER_TYPE_OSM,
                 layer_url=DEFAULT_OSM_LAYER_URL), ]
-
-
-class CollageMixin(object):
-    def collage_edit(self):
-        if not hasattr(self, '_collage_edit'):
-            self._collage_edit = get_collage_edit_by_request(self.request)
-
-        return self._collage_edit
 
 
 class CrumbsMixin(object):
@@ -311,8 +247,7 @@ class CrumbsMixin(object):
         return initial
 
 
-class AppView(WorkspaceEditMixin, GoogleTrackingMixin, CollageMixin,
-              MapMixin, UiView):
+class AppView(MapMixin, UiView):
     """Main map view (using twitter bootstrap)."""
 
     show_secondary_sidebar_icon = 'icon-list'
@@ -1288,7 +1223,7 @@ def search_coordinates(request,
     return popup_json([], request=request)
 
 
-class CollageDetailView(CollageMixin, UiView):
+class CollageDetailView(UiView):
     """
     Shows "my collage" as big page.
     """
@@ -1351,7 +1286,7 @@ class CollageStatisticsView(UiView):
         return super(CollageStatisticsView, self).get(request, *args, **kwargs)
 
 
-class CollageView(CollageMixin, ActionDialogView):
+class CollageView(ActionDialogView):
     """
     Add collage item by coordinates
     """
@@ -1408,7 +1343,7 @@ class CollageView(CollageMixin, ActionDialogView):
             return HttpResponseNotFound()
 
 
-class CollageAddView(CollageMixin, ActionDialogView):
+class CollageAddView(ActionDialogView):
     """
     Add collage item by name + adapter_class + adapter_layer_json + identifier.
     """
@@ -1472,11 +1407,11 @@ class CollageItemEditView(CollageView):
             collage_item.delete()
 
 
-class CollagePopupView(CollageMixin, TemplateView):
+class CollagePopupView(TemplateView):
     template_name = 'lizard_map/box_collage_popup.html'
 
 
-class WorkspaceEmptyView(WorkspaceEditMixin, ActionDialogView):
+class WorkspaceEmptyView(ActionDialogView):
     template_name = 'lizard_map/box_workspace.html'
     template_name_success = template_name
     form_class = EmptyForm
@@ -1939,7 +1874,7 @@ def get_view_state(request):
     }
 
 
-class ViewStateService(APIView, WorkspaceEditMixin):
+class ViewStateService(APIView):
     @never_cache
     def get(self, request, *args, **kwargs):
         view_state = get_view_state(request)
@@ -1970,7 +1905,7 @@ class ViewStateService(APIView, WorkspaceEditMixin):
         return RestResponse()
 
 
-class LocationListService(APIView, WorkspaceEditMixin):
+class LocationListService(APIView):
 
     @never_cache
     def get(self, request, *args, **kwargs):
