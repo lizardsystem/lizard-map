@@ -32,3 +32,5 @@ nosetests.xml
 src/
 
 htmlcov/
+
+.idea
