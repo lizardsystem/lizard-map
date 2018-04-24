@@ -10,11 +10,11 @@ from django.utils import simplejson as json
 from django.utils.translation import ugettext as _
 from lizard_ui.views import UiView
 
-from lizard_map.coordinates import DEFAULT_OSM_LAYER_URL
 from lizard_map.models import BackgroundMap
 from lizard_map.models import Setting
 
 
+DEFAULT_OSM_LAYER_URL = 'http://tile.openstreetmap.nl/tiles/${z}/${x}/${y}.png'
 MAP_LOCATION = 'map_location'
 MAP_BASE_LAYER = 'map_base_layer'  # The selected base layer
 
