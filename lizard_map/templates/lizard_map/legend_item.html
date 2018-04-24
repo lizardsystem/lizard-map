@@ -1,9 +1,0 @@
-{% load i18n %}
-<h3>{{ legend.name }}</h3>
-{% for subitem in legend.subitems %}
-<div>
-  <img src="{{ subitem.img_url }}"
-       alt="{% trans 'Legend' %}: {{ legend.name }}" />
-  {% if subitem.description %} <span style="margin-left:10px">{{ subitem.description }}</span>{% endif %}
-</div>
-{% endfor %}
