@@ -41,12 +41,6 @@ urlpatterns = patterns(
      {},
      'lizard_map.map_location_load_default'),
 
-    # Download map as image
-    (r'^download-map/',
-     'lizard_map.views.save_map_as_image',
-     {},
-     'lizard_map.views.save_map_as_image'),
-
     # Actions on legends.
     url(r'^legend/edit/',
         'lizard_map.views.legend_edit',

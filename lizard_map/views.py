@@ -39,7 +39,6 @@ from lizard_ui.views import ViewContextMixin
 from rest_framework.response import Response as RestResponse
 from rest_framework.views import APIView
 import iso8601
-import mapnik
 
 from lizard_map import coordinates
 from lizard_map.adapter import adapter_entrypoint
@@ -288,114 +287,6 @@ def map_location_load_default(request):
     request.session[MAP_BASE_LAYER] = ''  # Reset selected base layer.
 
     return HttpResponse(json.dumps(map_location))
-
-
-# Save map
-def save_map_as_image(request):
-    """
-    Return map as png image to download.
-    """
-    data = {
-        'width': int(request.GET.get('WIDTH')),
-        'height': int(request.GET.get('HEIGHT')),
-        'layers': [layer.strip()
-                   for layer in request.GET.get('LAYERS').split(',')],
-        'bbox': tuple([float(i.strip())
-                       for i in request.GET.get('BBOX').split(',')]),
-        'srs': request.GET.get('SRS'),
-        'workspaces': request.session.get('workspaces'),
-        'color': "transparent",
-        'format': "png",
-        'content_type': "application/x-png",
-        }
-
-    img = create_mapnik_image(request, data)
-    buf = mapnik_image_to_stream(request, data, img)
-
-    response = HttpResponse(buf.read())
-    response['Content-Type'] = 'application/x-png'
-    response['Content-disposition'] = 'Attachment; filename=%s' % 'kaart.png'
-
-    return response
-
-
-def create_mapnik_image(request, data):
-    """TODO: remove copy-pasting.
-    """
-    # Map settings
-    mapnik_map = mapnik.Map(data['width'], data['height'])
-    layers = data['layers']
-    # Setup mapnik srs.
-    mapnik_map.srs = coordinates.srs_to_mapnik_projection[data['srs']]
-    mapnik_map.background = mapnik.Color(data['color'])
-    #m.background = mapnik.Color(data['color')]
-
-    workspace = get_workspace_edit_by_request(request)
-
-    workspace_items = workspace.workspace_items.filter(
-        visible=True).reverse()
-
-    for workspace_item in workspace_items:
-        logger.debug("Drawing layer for %s..." % workspace_item)
-        layers, styles = workspace_item.adapter.layer(layer_ids=layers,
-                                                      request=request)
-        layers.reverse()  # first item should be drawn on top (=last)
-        for layer in layers:
-            mapnik_map.layers.append(layer)
-        for name in styles:
-            mapnik_map.append_style(name, styles[name])
-
-    #Zoom and create image
-    logger.debug("Zooming to box...")
-    mapnik_map.zoom_to_box(mapnik.Envelope(*data['bbox']))
-    img = mapnik.Image(data['width'], data['height'])
-    logger.debug("Rendering map...")
-    mapnik.render(mapnik_map, img)
-
-    return img
-
-
-def mapnik_image_to_stream(request, data, img):
-    """
-    Convert mapnik image object to bytes stream
-
-    TODO: remove hardcoding url
-    """
-    http_user_agent = request.META.get('HTTP_USER_AGENT', '')
-    logger.debug("Converting image to rgba...")
-
-    bbox = ",".join([str(x) for x in data['bbox']])
-    geoserver_img = urllib2.urlopen(
-        "http://10.100.130.132:8080/geoserver/" +
-        "wms?LAYERS=waterkaart&FORMAT=image%2Fpng&MAXRESOLUTION=364&SERVICE" +
-        "=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=" +
-        "&EXCEPTIONS=application%2Fvnd." +
-        "ogc.se_inimage&SRS=EPSG%3A28992&BBOX=" + str(bbox) +
-        "&WIDTH=" + str(data['width']) +
-        "&HEIGHT=" + str(data['height'])).read()
-    # ^^^ TODO: This should be configurable! (Added by gnijholt on Sep
-    # 28 2011)
-    base_image = Image.open(StringIO.StringIO(geoserver_img))
-    rgba_image = Image.fromstring('RGBA',
-                                  (data['width'], data['height']),
-                                  img.tostring()).convert("RGBA")
-
-    base_w, base_h = base_image.size
-    rgba_w, rgba_h = rgba_image.size
-
-    offset = ((base_w - rgba_w), (base_h - rgba_h))
-    base_image.paste(rgba_image, offset, rgba_image)
-    # ^^^ Passing rgba_image twice to get transparency working in paste()
-
-    buf = StringIO.StringIO()
-    if 'MSIE 6.0' in http_user_agent:
-        imgPIL = base_image.convert('P')
-        imgPIL.save(buf, data['format'], transparency=0)
-    else:
-        base_image.save(buf, data['format'])
-    buf.seek(0)
-    return buf
-
 
 # Statistics
 
