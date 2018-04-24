@@ -11,29 +11,14 @@ long_description = '\n\n'.join([
 
 install_requires = [
     'Django',
-    'Pillow',
     'django-extensions',
-    'django-jsonfield',
-    'django-nose',
-    'django-piston',
     'django-staticfiles',
-    'djangorestframework >= 2.0',
-    'iso8601',
-    'lizard-help',
     'lizard-ui >= 4.27, < 5.0',
-    'pkginfo',
-    'python-dateutil',
-    'pytz',
     'south',
-    # 'pyproj', Including that as a dependency
-    # doesn't work right at the moment.
-    # mapnik: sorry, there's no real package for that.  We do need it however.
     'translations',
     ],
 
 tests_require = [
-    'mock',
-    'coverage',
     ]
 
 setup(name='lizard-map',
